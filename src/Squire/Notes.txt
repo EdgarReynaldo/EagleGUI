@@ -1,0 +1,11 @@
+Your task, should you choose to accept it, is to act as a Secret Santa and create a game for Arthur Kalliokoski. The game should be suitable for playing on a low end Linux machine, and implement at least one of the following ideas:
+
+    Player can take damage, but can offset damage with 12 oz. cans of life giving elixir, as in Duke Nukem.
+    Gravity is important (damage based on height of fall, difficulty of jumps).
+    Selectable difficulty settings. This could be changing the amount of health items available,
+    or changing gravitational strength.
+
+Development
+
+You have until 12/23/2012 to develop this game. Review the rules if necessary, then get to work!
+

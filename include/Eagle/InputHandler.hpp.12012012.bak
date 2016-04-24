@@ -1,0 +1,538 @@
+
+/*
+ *
+ *     _______       ___       ____      __       _______       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_    \ \ \_____
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\    \ \_____ \
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_    \/___/_\ \
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\    \/\______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/     \/______/
+ *
+ *
+ *    EAGLE5
+ *    Edgar's Allegro 5 Gui Library and Extensions
+ *
+ *    Copyright 2009-2011 by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ */
+
+#ifndef InputHandler_H
+#define InputHandler_H
+
+
+
+#include <iostream>
+#include <string>
+#include <map>
+#include <vector>
+
+#include "allegro5/allegro.h"
+
+
+
+enum INPUTSRC {
+   KB = 0,
+   MS = 1,
+   JS1 = 2,
+   JS2 = 3,
+   JS3 = 4,
+   JS4 = 5,
+   JS5 = 6,
+   JS6 = 7,
+   JS7 = 8,
+   JS8 = 9,
+   NUM_INPUT_SRCS = 10
+};
+
+extern const char* input_source_str[NUM_INPUT_SRCS];
+
+enum INPUTSTATE {
+   PRESS    = 1,
+   RELEASE  = 2,
+   HELD     = 4,
+   OPEN     = 8,
+   DBLCLICK = 17,// 16 | 1 (PRESS)
+   NUM_INPUT_STATES = 5
+};
+
+//extern const int NUM_INPUT_STATES;
+
+extern const char* input_state_str[NUM_INPUT_STATES];
+
+enum MOUSEBUTTON {
+   LMB  = 1,
+   RMB  = 2,
+   MMB  = 3,
+   EMB1 = 4,
+   EMB2 = 5,
+   EMB3 = 6,
+   EMB4 = 7,
+   EMB5 = 8
+};
+
+enum JOYSTICKBUTTON {
+   JSBTN1  = 0,
+   JSBTN2  = 1,
+   JSBTN3  = 2,
+   JSBTN4  = 3,
+   JSBTN5  = 4,
+   JSBTN6  = 5,
+   JSBTN7  = 6,
+   JSBTN8  = 7,
+   JSBTN9  = 8,
+   JSBTN10 = 9,
+   JSBTN11 = 10,
+   JSBTN12 = 11,
+   JSBTN13 = 12,
+   JSBTN14 = 13,
+   JSBTN15 = 14,
+   JSBTN16 = 15,
+};
+
+/** Additional key codes for the states of the shift, ctrl, and alt modifier keys,
+   as well as their possible combinations. */
+enum KEYCODES {
+   ALLEGRO_KEY_NONE               = 0,
+   ALLEGRO_KEY_ANY_SHIFT          = ALLEGRO_KEY_MAX + 0,
+   ALLEGRO_KEY_ANY_CTRL           = ALLEGRO_KEY_MAX + 1,
+   ALLEGRO_KEY_ANY_ALT            = ALLEGRO_KEY_MAX + 2,
+
+   ALLEGRO_KEY_NO_SHIFT           = ALLEGRO_KEY_MAX + 3,
+   ALLEGRO_KEY_NO_CTRL            = ALLEGRO_KEY_MAX + 4,
+   ALLEGRO_KEY_NO_ALT             = ALLEGRO_KEY_MAX + 5,
+
+   ALLEGRO_KEY_NO_MOD             = ALLEGRO_KEY_MAX + 6,
+   ALLEGRO_KEY_ONLY_SHIFT         = ALLEGRO_KEY_MAX + 7,
+   ALLEGRO_KEY_ONLY_CTRL          = ALLEGRO_KEY_MAX + 8,
+   ALLEGRO_KEY_ONLY_ALT           = ALLEGRO_KEY_MAX + 9,
+
+   ALLEGRO_KEY_ONLY_SHIFT_CTRL    = ALLEGRO_KEY_MAX + 10,
+   ALLEGRO_KEY_ONLY_SHIFT_ALT     = ALLEGRO_KEY_MAX + 11,
+   ALLEGRO_KEY_ONLY_CTRL_ALT      = ALLEGRO_KEY_MAX + 12,
+
+   ALLEGRO_KEY_STATE_EXTENDED_MAX = ALLEGRO_KEY_MAX + 13
+};
+
+#define JS_MAX_NUM_JOYSTICKS 8
+#define JS_MAX_NUM_STICKS 8
+#define JS_MAX_NUM_AXES 4
+#define JS_MAX_NUM_BUTTONS 16
+
+#define MS_MAX_NUM_BUTTONS 8
+
+
+const char* keycode_to_name(int keycode);// 0 to ALLEGRO_KEY_STATE_EXTENDED_MAX
+const char* mouse_button_to_name(int button);// 1 to 8, can use MOUSEBUTTON
+const char* joy_button_to_name(int button);// 0 to 
+
+typedef const char* (*VALUE_TO_NAME_FUNC) (int);
+
+extern VALUE_TO_NAME_FUNC value_to_name_func[NUM_INPUT_SRCS];
+
+extern float double_click_duration;
+
+
+
+class JOYSTICK_DATA {
+public :
+   ALLEGRO_JOYSTICK* joystick;
+   int num_sticks;
+   int num_axes[JS_MAX_NUM_STICKS];
+   int num_buttons;
+   int buttonstates[JS_MAX_NUM_BUTTONS];// array of KEYSTATE bitfields
+   float since_last_jspress[JS_MAX_NUM_BUTTONS];
+   float button_held_duration[JS_MAX_NUM_BUTTONS];
+   float axes[JS_MAX_NUM_STICKS][JS_MAX_NUM_AXES];
+   
+   JOYSTICK_DATA();
+   
+   void Initialize(ALLEGRO_JOYSTICK* joy);
+   void GetState();
+};
+
+
+
+// not copy safe - pass by reference only
+class TimerHandler {
+   
+private :
+   ALLEGRO_TIMER* timer;
+   int id;
+   double spt;
+//   double dt;
+
+   static int id_base;
+
+public :
+   TimerHandler();
+   TimerHandler(double seconds_per_tick);
+   ~TimerHandler() {Destroy();}
+   
+   ALLEGRO_TIMER* Create(double seconds_per_tick);
+   void Destroy();
+
+   inline operator ALLEGRO_TIMER* () const {return timer;}
+   
+   ALLEGRO_TIMER* AllegroTimer() {return timer;}
+   int Id() const {return id;}
+   double SecondsPerTick() const {return spt;}
+//   double DeltaTime() const {return dt;}
+//   double TakeDeltaTime();
+};
+
+
+
+extern JOYSTICK_DATA joysticks[JS_MAX_NUM_JOYSTICKS];
+extern int num_joysticks;
+
+extern char keystates[ALLEGRO_KEY_STATE_EXTENDED_MAX];// array of KEYSTATE bitfields
+extern bool keydown[ALLEGRO_KEY_MAX];
+extern float since_last_keypress[ALLEGRO_KEY_MAX];
+extern float key_held_duration[ALLEGRO_KEY_STATE_EXTENDED_MAX];
+
+extern int mouse_press;// button bitfield
+extern int mouse_release;// button bitfield
+extern int mouse_held;// button bitfield
+extern int mouse_open;// button bitfield
+extern int mouse_dblclick;// button bitfield
+extern int mouse_down;
+extern bool mouse_on;
+extern float msbtn_held_duration[MS_MAX_NUM_BUTTONS];
+extern float since_last_mspress[MS_MAX_NUM_BUTTONS];
+extern int mouse_x;
+extern int mouse_y;
+extern int mouse_w;
+extern int mouse_z;
+extern int mouse_dx;
+extern int mouse_dy;
+extern int mouse_dw;
+extern int mouse_dz;
+   
+extern ALLEGRO_DISPLAY* last_display_read;
+
+
+
+void SetInputTimer(TimerHandler* timer);
+void InitializeInput();
+void HandleInputEvent(ALLEGRO_EVENT* ev);
+int ReadKey(ALLEGRO_EVENT_QUEUE* queue);
+
+bool kb_press(int key);
+bool kb_held(int key);
+bool kb_release(int key);
+bool kb_open(int key);
+bool kb_dblclick(int key);
+
+bool ms_press(int btn);
+bool ms_held(int btn);
+bool ms_release(int btn);
+bool ms_open(int btn);
+bool ms_dblclick(int btn);
+
+bool js_press(int joy_num , int btn);
+bool js_held(int joy_num , int btn);
+bool js_release(int joy_num , int btn);
+bool js_open(int joy_num , int btn);
+bool js_dblclick(int joy_num , int btn);
+
+bool js1_press(int btn);
+bool js1_held(int btn);
+bool js1_release(int btn);
+bool js1_open(int btn);
+bool js1_dblclick(int btn);
+
+bool js2_press(int btn);
+bool js2_held(int btn);
+bool js2_release(int btn);
+bool js2_open(int btn);
+bool js2_dblclick(int btn);
+
+bool js3_press(int btn);
+bool js3_held(int btn);
+bool js3_release(int btn);
+bool js3_open(int btn);
+bool js3_dblclick(int btn);
+
+bool js4_press(int btn);
+bool js4_held(int btn);
+bool js4_release(int btn);
+bool js4_open(int btn);
+bool js4_dblclick(int btn);
+
+bool js5_press(int btn);
+bool js5_held(int btn);
+bool js5_release(int btn);
+bool js5_open(int btn);
+bool js5_dblclick(int btn);
+
+bool js6_press(int btn);
+bool js6_held(int btn);
+bool js6_release(int btn);
+bool js6_open(int btn);
+bool js6_dblclick(int btn);
+
+bool js7_press(int btn);
+bool js7_held(int btn);
+bool js7_release(int btn);
+bool js7_open(int btn);
+bool js7_dblclick(int btn);
+
+bool js8_press(int btn);
+bool js8_held(int btn);
+bool js8_release(int btn);
+bool js8_open(int btn);
+bool js8_dblclick(int btn);
+
+typedef bool (*INPUT_HANDLER)(int);
+
+extern INPUT_HANDLER input_handlers[NUM_INPUT_SRCS][NUM_INPUT_STATES];
+extern const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES];
+
+
+
+class Input {
+
+private :
+   INPUTSRC src;
+   INPUTSTATE state;
+   int value;
+   INPUT_HANDLER input_handler_func;
+
+
+public :
+   /** Constructors */
+   Input();
+   Input(INPUTSRC source , INPUTSTATE inputstate , int input_value);
+
+   /** Reassignment */
+   void AssignTo(INPUTSRC source , INPUTSTATE inputstate , int input_value);
+
+   /** Present time evaluation of input (NOTE : won't change until UpdateInput is called) */
+   operator bool() const;
+   operator int() const;
+
+   /** operator! can't be used for evaluation, it needs to return an InputGroup with NOT set */
+   //  bool operator!() {return !(bool)(*this);} /*      (Implemented globally below)      */
+
+   /** So you can compare Input objects */
+   bool operator==(const Input& i);
+   bool operator!=(const Input& i);
+
+   /** Text output */
+   friend std::ostream& operator<<(std::ostream& os , const Input& input);
+   std::ostream& Shortname(std::ostream& os) const ;
+
+   /** Getters */
+   int Source() const {return src;}
+   int State()  const {return state;}
+   int Value()  const {return value;}
+
+};
+
+
+inline Input input_key_press(int value)    {return Input(KB , PRESS    , value);}
+inline Input input_key_release(int value)  {return Input(KB , RELEASE  , value);}
+inline Input input_key_held(int value)     {return Input(KB , HELD     , value);}
+inline Input input_key_open(int value)     {return Input(KB , OPEN     , value);}
+inline Input input_key_dblclick(int value) {return Input(KB , DBLCLICK , value);}
+
+inline Input input_mouse_press(int value)    {return Input(MS , PRESS    , value);}
+inline Input input_mouse_release(int value)  {return Input(MS , RELEASE  , value);}
+inline Input input_mouse_held(int value)     {return Input(MS , HELD     , value);}
+inline Input input_mouse_open(int value)     {return Input(MS , OPEN     , value);}
+inline Input input_mouse_dblclick(int value) {return Input(MS , DBLCLICK , value);}
+
+inline Input input_jstk_press(int joy_num , int value)    {return Input(INPUTSRC(JS1 + joy_num) , PRESS    , value);}
+inline Input input_jstk_release(int joy_num , int value)  {return Input(INPUTSRC(JS1 + joy_num) , RELEASE  , value);}
+inline Input input_jstk_held(int joy_num , int value)     {return Input(INPUTSRC(JS1 + joy_num) , HELD     , value);}
+inline Input input_jstk_open(int joy_num , int value)     {return Input(INPUTSRC(JS1 + joy_num) , OPEN     , value);}
+inline Input input_jstk_dblclick(int joy_num , int value) {return Input(INPUTSRC(JS1 + joy_num) , DBLCLICK , value);}
+
+inline Input input_jstk1_press(int value)    {return Input(JS1 , PRESS    , value);}
+inline Input input_jstk1_release(int value)  {return Input(JS1 , RELEASE  , value);}
+inline Input input_jstk1_held(int value)     {return Input(JS1 , HELD     , value);}
+inline Input input_jstk1_open(int value)     {return Input(JS1 , OPEN     , value);}
+inline Input input_jstk1_dblclick(int value) {return Input(JS1 , DBLCLICK , value);}
+
+inline Input input_jstk2_press(int value)    {return Input(JS2 , PRESS    , value);}
+inline Input input_jstk2_release(int value)  {return Input(JS2 , RELEASE  , value);}
+inline Input input_jstk2_held(int value)     {return Input(JS2 , HELD     , value);}
+inline Input input_jstk2_open(int value)     {return Input(JS2 , OPEN     , value);}
+inline Input input_jstk2_dblclick(int value) {return Input(JS2 , DBLCLICK , value);}
+
+inline Input input_jstk3_press(int value)    {return Input(JS3 , PRESS    , value);}
+inline Input input_jstk3_release(int value)  {return Input(JS3 , RELEASE  , value);}
+inline Input input_jstk3_held(int value)     {return Input(JS3 , HELD     , value);}
+inline Input input_jstk3_open(int value)     {return Input(JS3 , OPEN     , value);}
+inline Input input_jstk3_dblclick(int value) {return Input(JS3 , DBLCLICK , value);}
+
+inline Input input_jstk4_press(int value)    {return Input(JS4 , PRESS    , value);}
+inline Input input_jstk4_release(int value)  {return Input(JS4 , RELEASE  , value);}
+inline Input input_jstk4_held(int value)     {return Input(JS4 , HELD     , value);}
+inline Input input_jstk4_open(int value)     {return Input(JS4 , OPEN     , value);}
+inline Input input_jstk4_dblclick(int value) {return Input(JS4 , DBLCLICK , value);}
+
+inline Input input_jstk5_press(int value)    {return Input(JS5 , PRESS    , value);}
+inline Input input_jstk5_release(int value)  {return Input(JS5 , RELEASE  , value);}
+inline Input input_jstk5_held(int value)     {return Input(JS5 , HELD     , value);}
+inline Input input_jstk5_open(int value)     {return Input(JS5 , OPEN     , value);}
+inline Input input_jstk5_dblclick(int value) {return Input(JS5 , DBLCLICK , value);}
+
+inline Input input_jstk6_press(int value)    {return Input(JS6 , PRESS    , value);}
+inline Input input_jstk6_release(int value)  {return Input(JS6 , RELEASE  , value);}
+inline Input input_jstk6_held(int value)     {return Input(JS6 , HELD     , value);}
+inline Input input_jstk6_open(int value)     {return Input(JS6 , OPEN     , value);}
+inline Input input_jstk6_dblclick(int value) {return Input(JS6 , DBLCLICK , value);}
+
+inline Input input_jstk7_press(int value)    {return Input(JS7 , PRESS    , value);}
+inline Input input_jstk7_release(int value)  {return Input(JS7 , RELEASE  , value);}
+inline Input input_jstk7_held(int value)     {return Input(JS7 , HELD     , value);}
+inline Input input_jstk7_open(int value)     {return Input(JS7 , OPEN     , value);}
+inline Input input_jstk7_dblclick(int value) {return Input(JS7 , DBLCLICK , value);}
+
+inline Input input_jstk8_press(int value)    {return Input(JS8 , PRESS    , value);}
+inline Input input_jstk8_release(int value)  {return Input(JS8 , RELEASE  , value);}
+inline Input input_jstk8_held(int value)     {return Input(JS8 , HELD     , value);}
+inline Input input_jstk8_open(int value)     {return Input(JS8 , OPEN     , value);}
+inline Input input_jstk8_dblclick(int value) {return Input(JS8 , DBLCLICK , value);}
+
+
+/** How to implement the && || ! logic and chaining? With an object tree */
+
+/** Tree class for logical grouping of Input evaluations and storage */
+
+/** Trying to get a bool value from an empty input group will throw an exception, as
+    returning true or false would be incorrect, since there's no logical test to evaluate */
+
+class InputGroup {
+private :
+   bool all_apply;// True means this is operator AND - False means any apply (operator OR)
+   bool is;       // False means is not (operator NOT)
+   std::vector<Input>      inputs;
+   std::vector<InputGroup> nodes;/** ??? This works somehow...? */
+   mutable int node_level;
+
+   void SetNodeLevel(int level) const;
+
+   bool IS(bool basis) const {return (is?basis:!basis);}
+
+   bool SameTypeAs(const InputGroup& ig) {return ((all_apply == ig.all_apply) && (is == ig.is));}
+
+   /** TODO : Would equivalence operators be useful?
+       InputGroups would probably have to be sorted first */
+   bool operator==(const InputGroup& ig) const {return false;}
+
+public :
+   /** Constructors */
+   InputGroup();
+   InputGroup(const Input& i);
+   InputGroup(const InputGroup& ig);
+   explicit InputGroup(bool use_and , bool use_is , const Input& i);
+   explicit InputGroup(bool use_and , bool use_is , const InputGroup& ig);
+
+   /** Vector like behavior */
+   void        clear();
+   InputGroup& push_back(const Input& i);
+   InputGroup& push_back(const InputGroup& ig);
+
+   /** Logical grouping behavior */ /* TODO : Check that grouping of similar types groups inputs and groups */
+   InputGroup operator&&(const InputGroup& ig) const ;
+   InputGroup operator||(const InputGroup& ig) const ;
+   InputGroup operator!() const ;
+
+   /** Evaluation - Don't evaluate empty input groups! */
+   operator bool() const;
+   /* If it makes you feel better to call a function to evaluate the expression instead
+      of just using "if (InputGroup object) {...}", then here you go : */
+   bool operator()() const {return (bool)(*this);}
+
+   /** Small utility function for checking whether the input is from a pointer source - it
+         checks whether the input is from the mouse or joystick as well as being a button click.
+         As long as there is at least one mouse or joystick click input, this will return true. */
+   bool PointerInput();
+   
+   bool HasClickInput();
+   Input FindClickInput();// returns input_key_press(KEY_NONE) if there is no click input in the group
+   
+   /** Text logging */
+   friend std::ostream& operator<<(std::ostream& os , const InputGroup& ig);
+   std::ostream& ShowLogic(std::ostream& os) const ;
+   
+   void WriteLines(std::vector<std::string>* strvec);
+
+};
+
+/** Global operators to create InputGroup objects from logically joined Inputs */
+InputGroup operator&&(const Input& i1 , const Input& i2);
+InputGroup operator||(const Input& i1 , const Input& i2);
+InputGroup operator!(const Input& i);
+
+InputGroup operator&&(const Input& i , const InputGroup& ig);
+InputGroup operator||(const Input& i , const InputGroup& ig);
+
+
+bool AnyInputPressed(Input* store);
+bool NonModInputPressed(Input* store);
+bool ModifierHeld(Input* store);
+
+
+/** Input recording functions for setting Inputs and InputGroups to key/mouse/joystick input */
+/** These are both blocking calls - they will wait forever until there is input */
+void RecordInputPress(ALLEGRO_EVENT_QUEUE* queue , Input* input);// records first key press, blocks
+void RecordInputGroup(ALLEGRO_EVENT_QUEUE* queue , InputGroup* input_group);// records first key press along with any modifiers
+
+
+
+class InputAssignments {
+private :
+   typedef std::map<std::string , InputGroup> TASKINPUTMAP;
+   typedef TASKINPUTMAP::iterator TIMIT;
+
+   TASKINPUTMAP task_input_map;
+//   std::map<std::string , InputGroup> task_input_map;
+
+public :
+   InputAssignments() : task_input_map() {}
+   
+   /** Should support some map features, like [], should allow for testing the input from the task name */
+   void clear();
+   InputGroup& operator[](const std::string& str);
+   bool Activated(const std::string& str);/** TODO : Is there a better function name than Activated? */
+};
+
+/** Usage example
+void AssignPlayerDefaults(InputAssignment& player) {
+   player.clear();
+   player["Punch"]     = input_key_press(KEY_ONLY_SHIFT);
+   player["Kick"]      = input_key_press(KEY_ONLY_ALT);
+   player["Jump"]      = input_key_press(KEY_UP);
+   player["Crouch"]    = input_key_held(KEY_DOWN);
+   player["MoveLeft"]  = input_key_held(KEY_LEFT);
+   player["MoveRight"] = input_key_held(KEY_RIGHT);
+}
+
+AssignPlayerDefaults(Player);
+
+if (Player.Activated("Punch")) {...}
+if (player["Punch"]) {...}  // This should work as well, [] returns an InputGroup& and if () should evaluate it
+*/
+
+
+
+
+
+
+
+
+#endif // InputHandler_H
+
+
+
+
+
+
+
+

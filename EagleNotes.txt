@@ -1,0 +1,19 @@
+
+Notes for Eagle 5 development
+
+1. declspec
+
+fix class and global function declarations to use declspec or whatever on MSVC for DLLs
+so make a
+#ifdef MSVC && DLL_BUILD
+   #define EAGLE_DECLSPEC __declspec__
+#else
+   #define EAGLE_DECLSPEC
+#endif
+
+somewhere....
+
+
+2. Asynchronous timers? Can I implement an OnTick function for EagleTimer??????
+
+3. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code

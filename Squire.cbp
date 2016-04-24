@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Squire" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="cbbuild\bin\SquireDebug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild\obj\Dynamic\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+				<Linker>
+					<Add option="-lAllegro5_backend_d.dll" />
+					<Add option="-lEagle5d.dll" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="cbbuild\bin\Squire" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild\obj\Dynamic\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lAllegro5_backend_r.dll" />
+					<Add option="-lEagle5r.dll" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add directory="cbbuild\lib" />
+		</Linker>
+		<Unit filename="src\demo_SantaHack2012\Squire\Game.cpp" />
+		<Unit filename="src\demo_SantaHack2012\Squire\Game.hpp" />
+		<Unit filename="src\demo_SantaHack2012\Squire\Notes.txt" />
+		<Unit filename="src\demo_SantaHack2012\Squire\Squire.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
