@@ -166,7 +166,6 @@
 		<Unit filename="src/Gui/Button.cpp" />
 		<Unit filename="src/Gui/Camera.cpp" />
 		<Unit filename="src/Gui/Decorator/Decorator.cpp" />
-		<Unit filename="src/Gui/IconButton.cpp" />
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
 		<Unit filename="src/Gui/Layout/GridLayout.cpp" />

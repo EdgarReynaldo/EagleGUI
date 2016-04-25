@@ -105,11 +105,11 @@
 			<Add option="-Wall" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
-			<Add directory="C:/mingw/LIBS/A5112distro/include" />
+			<Add directory="C:/LIBS/A5113distro/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="C:/ctwoplus/progcode/Eagle5GUI/cbbuild/lib" />
-			<Add directory="C:/mingw/LIBS/A5112distro/lib" />
+			<Add directory="cbbuild/lib" />
+			<Add directory="C:/LIBS/A5113distro/lib" />
 		</Linker>
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />

@@ -168,11 +168,11 @@ signal(SIGABRT, signal_handler);
    
    Button testbtns[3];
    testbtns[0].SetLabel("Upper left");
-   testbtns[0].SetButtonType(ELLIPSE_BTN , SPRING_BTN);
+   testbtns[0].SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    testbtns[1].SetLabel("Upper right");
-   testbtns[1].SetButtonType(CIRCLE_BTN , SPRING_BTN);
+   testbtns[1].SetButtonType(CIRCLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    testbtns[2].SetLabel("Lower left");
-   testbtns[2].SetButtonType(ROUNDED_BTN , SPRING_BTN);
+   testbtns[2].SetButtonType(ROUNDED_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    testbtns[0].SetFont(verdana);
    testbtns[1].SetFont(verdana);
    testbtns[2].SetFont(verdana);
@@ -196,7 +196,7 @@ signal(SIGABRT, signal_handler);
    for (int i = 0 ; i < 12 ; ++i) {
       mpbtns[i].SetFont(verdana);
       mpbtns[i].SetLabel(StringPrintF("%d" , i));
-      mpbtns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN);
+      mpbtns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
       grid.PlaceWidget(&mpbtns[i] , i , false);
    }
 
@@ -670,14 +670,14 @@ int GuiTestMain(int argc , char** argv) {
    warray[0].SetBgDrawFunc(WidgetBorderedImagePainterStretch);
 ///   warray[0].SetColor(EagleColor(0,0,0,0));
 
-   warray[0].SetButtonType(CIRCLE_BTN , TOGGLE_BTN);
+   warray[0].SetButtonType(CIRCLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
 
 //   warray[1].UsePrivateColorset(true);
 ///   warray[1].SetColor(EagleColor(0,0,0,0));
    warray[1].SetBgImage(stallions , MARGIN_HCELL_CENTER , MARGIN_VCELL_CENTER);
    warray[1].SetBgDrawFunc(WidgetBGImagePainterStretch);
    
-   warray[1].SetButtonType(ROUNDED_BTN , TOGGLE_BTN);
+   warray[1].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
 //   warray[2].SetBgImages(np2);
 ///   warray[2].SetColor(EagleColor(0,0,0,0));
 //   warray[2].SetBgDrawFunc(WidgetBGImagePainterCenterClientArea);
@@ -685,7 +685,7 @@ int GuiTestMain(int argc , char** argv) {
    warray[2].SetBgDrawFunc(WidgetNPPainter);
    warray[2].SetBgImages(np3.imgs);
 
-   warray[2].SetButtonType(ELLIPSE_BTN , SPRING_BTN);
+   warray[2].SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
 //   warray[2].SetBgImage(stallions , MARGIN_HCELL_CENTER , MARGIN_VCELL_CENTER);
 
 

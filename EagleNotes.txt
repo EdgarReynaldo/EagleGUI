@@ -14,6 +14,8 @@ so make a
 somewhere....
 
 
-2. Asynchronous timers? Can I implement an OnTick function for EagleTimer??????
+2?. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code
 
-3. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code
+3. Buttons don't work now.
+
+

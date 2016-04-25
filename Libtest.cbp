@@ -204,11 +204,11 @@
 			<Add option="-Wall" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
-			<Add directory="C:/mingw/LIBS/A5112distro/include" />
+			<Add directory="C:/LIBS/A5113distro/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="C:/mingw/LIBS/A5112distro/lib" />
+			<Add directory="C:/LIBS/A5113distro/lib" />
 		</Linker>
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />
