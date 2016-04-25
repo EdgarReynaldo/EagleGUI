@@ -44,16 +44,13 @@
 /// Used by WidgetHandler::TakeNextMessage to signify an empty message queue
 extern const WidgetMsg NoMessages;
 
-
-extern const unsigned int TOPIC_GUI;
-
-
+static const unsigned int TOPIC_GUI = NextFreeTopicId();
 
 enum GUI_MSGS {
    GUI_RESIZED = 0
 };
 
-
+REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);
 
 
 enum FOCUS_DRAW_TYPE {

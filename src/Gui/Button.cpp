@@ -30,7 +30,6 @@
 using std::string;
 
 
-const unsigned int TOPIC_BUTTON_WIDGET = NextFreeTopicId();
 double SPRING_BTN_DURATION = 0.25;
 double BTN_ROUNDNESS = 0.4;
 
@@ -799,11 +798,7 @@ void DrawButtonText(EagleGraphicsContext* win , Button* btn , int x , int y) {
    EagleFont* text_font = btn->Font();
    string text = btn->Text();
    
-   if (!text_font) {
-      throw EagleError(StringPrintF("Null font for btn %p\n" , btn));
-   }
-   
-   if (text.length()) {
+   if (text.length() && text_font) {
       Rectangle r = btn->InnerArea();
       int tx = x + r.X() + r.W()/2;
       int ty = y + r.Y() + r.H()/2;

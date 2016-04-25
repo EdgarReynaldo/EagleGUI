@@ -58,6 +58,10 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
       height = size;
       srcfile = file;
    }
+   else {
+      EagleLog() << "Failed to load font " << file << " from disk." << std::endl;
+      EAGLE_ASSERT(0);
+   }
    return allegro_font;
 }
 

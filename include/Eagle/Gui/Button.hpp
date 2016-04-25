@@ -34,16 +34,23 @@
 
 
 
-extern const unsigned int TOPIC_BUTTON_WIDGET;
+static const unsigned int TOPIC_BUTTON_WIDGET = NextFreeTopicId();
 
 enum BUTTON_MSGS {
-   BUTTON_CLICKED      = 0, // Sent whenever a spring button is pushed down.
-   BUTTON_HELD         = 1, // Sent whenever a spring button is held down.
-   BUTTON_RELEASED     = 2, // Sent whenever a spring button is released.
-   BUTTON_TOGGLED      = 3, // Sent whenever a toggle button is toggled, poll for the current state.
-   BUTTON_GAINED_HOVER = 4, // Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
-   BUTTON_LOST_HOVER   = 5  // Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
+   BUTTON_CLICKED      = 0, /// Sent whenever a spring button is pushed down.
+   BUTTON_HELD         = 1, /// Sent whenever a spring button is held down.
+   BUTTON_RELEASED     = 2, /// Sent whenever a spring button is released.
+   BUTTON_TOGGLED      = 3, /// Sent whenever a toggle button is toggled, poll for the current state.
+   BUTTON_GAINED_HOVER = 4, /// Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
+   BUTTON_LOST_HOVER   = 5  /// Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
 };
+
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
 
 enum BUTTON_SHAPE {
    RECTANGLE_BTN = 0,

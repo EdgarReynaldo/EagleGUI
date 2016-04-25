@@ -33,12 +33,6 @@
 using std::string;
 
 
-
-const unsigned int TOPIC_CAMERA = NextFreeTopicId();
-
-const unsigned int TOPIC_ZOOM_CAMERA = NextFreeTopicId();
-
-
 void Camera::SetDestination(int xpos , int ypos) {
    EAGLE_ASSERT(view_bmp);
    

@@ -560,7 +560,7 @@ int GuiTestMain(int argc , char** argv) {
       if (!consola->Valid()) {EagleLog() << "Consola.ttf failed to load." << std::endl;}
    }
 
-   EagleImage* stallions = win->LoadImageFromFile("Data/jpgImages/Stallions2a.jpg" , VIDEO_IMAGE);
+   EagleImage* stallions = win->LoadImageFromFile("Stallions2a.jpg" , VIDEO_IMAGE);
    if (!stallions->Valid()) {EagleLog() << "Stallions2a.jpg failed to load." << std::endl;}
 
    win->Clear(EagleColor(0,0,0));
@@ -656,7 +656,10 @@ int GuiTestMain(int argc , char** argv) {
    
    Button* warray = new Button[sz - 1];
    
-   for (int i = 0 ; i < sz - 1 ; ++i) {grid_layout->AddWidget(&warray[i] , false);}
+   for (int i = 0 ; i < sz - 1 ; ++i) {
+      grid_layout->AddWidget(&warray[i] , false);
+      warray[i].SetLabel("Grid Button");
+   }
    for (int i = 0 ; i < sz - 1 ; ++i) {
       warray[i].SetMarginsContractFromOuter((i+1)*15 , (i+1)*15 , (i+1)*15 , (i+1)*15);
 //      warray[i].SetBgDrawFunc(WidgetNPPainter);
@@ -715,6 +718,7 @@ int GuiTestMain(int argc , char** argv) {
       warray2[i].WCols()[SDCOL] = EagleColor(50*(i+1),50*(i+1),50*(i+1));
       warray2[i].SetMarginsExpandFromInner(2*(i+1) , 2*(i+1) , 2*(i+1) , 2*(i+1));
       warray2[i].SetBgDrawFunc(WidgetBorderPainterShadow);
+      warray2[i].SetLabel("Relative Button");
       relative_layout->Layout::PlaceWidget(&warray2[i] , i , false);
 //      OutputLog() << "warray2[" << i << "].OuterArea() = " << warray2[i].OuterArea() << std::endl;
 //      OutputLog() << "warray2[" << i << "].InnerArea() = " << warray2[i].InnerArea() << std::endl;
@@ -738,8 +742,8 @@ int GuiTestMain(int argc , char** argv) {
       if (redraw) {
          
 //         win->Clear(EagleColor(rand()%255 , rand()%255 , rand() % 255));
+         win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         
          
 //         win->GetDrawingTarget()->PushClippingRectangle(Rectangle(200 , 150 , 400 , 300));
          
@@ -845,15 +849,11 @@ int GuiTestMain(int argc , char** argv) {
          
          while (gui->HasMessages()) {
             WidgetMsg wmsg = gui->TakeNextMessage();
-            if (wmsg.Topic() == TOPIC_BUTTON_WIDGET && wmsg.Messages() == BUTTON_CLICKED) {
-               std::stringstream ss;
-               ss << "Widget Button " << wmsg.From()->GetName() << "says BUTTON_CLICKED." << std::endl;
-               output = ss.str();
-               redraw = true;
-            }
-//            if (wmsg == WidgetMsg(&warray[0] , TOPIC_BUTTON , BUTTON_CLICKED) {
-                
-//            }
+            std::stringstream ss;
+            ss << "Widget Button " << wmsg.From()->GetName() << "says " << wmsg.MessageStr() << "." << std::endl;
+            output = ss.str();
+            OutputLog() << output << std::endl;
+            redraw = true;
          }
          
       } while (!sys->UpToDate());

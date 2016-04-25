@@ -52,10 +52,6 @@ const WidgetMsg NoMessages((WidgetBase*)0 , TOPIC_DIALOG , DIALOG_OKAY);
 
 
 
-const unsigned int TOPIC_GUI = NextFreeTopicId();
-
-
-
 bool WidgetHandler::OwnsWidget(WidgetBase* widget) {
    for (UINT i = 0 ; i < wlist.size() ; ++i) {
       if (wlist[i] == widget) {return true;}
@@ -925,6 +921,7 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    
    win->SetCopyBlender();
    
+///   clear_background = true;
    if (clear_background) {
       // WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
       // of the state of their NEEDS_REDRAW flag.
@@ -974,10 +971,14 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    win->PopDrawingTarget();
 
    if (flags & VISIBLE) {
+         
+      win->DrawRegion(buffer , Rectangle(0,0,buffer->W(),buffer->H()) , 0 , 0);
+      /**
       win->SetPMAlphaBlender();
       Rectangle a = area.InnerArea();
       cam.Display(win , xpos + a.X() , ypos + a.Y());
       win->RestoreLastBlendingState();
+      */
    }
    
    ClearRedrawFlag();

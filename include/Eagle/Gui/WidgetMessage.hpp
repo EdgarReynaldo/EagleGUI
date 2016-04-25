@@ -27,22 +27,53 @@
 
 #include <iostream>
 #include <string>
+#include <map>
+#include <utility>
 
 
-/* Returns the next available message id value to prevent message collision.
+
+std::string GetMessageString(unsigned int topic , int message);
+
+
+
+class RegisteredWidgetMessage {
+
+public :   
+   unsigned int topic;
+   int message;
+   std::string message_str;
+
+   RegisteredWidgetMessage(unsigned int _topic , int _message , std::string _message_str);
+   
+};
+
+#define REGISTER_WIDGET_MESSAGE(topic , msg) \
+   static RegisteredWidgetMessage RWM_##msg(topic , msg , #msg)
+
+
+
+class WidgetMessageMapCleaner {
+
+public :
+   ~WidgetMessageMapCleaner();
+
+};
+
+
+
+/** Returns the next available message id value to prevent message collision.
    Use TOPIC_* naming with
 
-      extern const unsigned int TOPIC_WHATEVER;
-   in the header and
-
-      const unsigned int TOPIC_WHATEVER = NextFreeTopicId();
-   in the source module.
+   static const unsigned int TOPIC_WHATEVER = NextFreeTopicId();
 */
 unsigned int NextFreeTopicId();
 
-extern const unsigned int TOPIC_NONE;
+static const unsigned int TOPIC_NONE = NextFreeTopicId();
+static const int MESSAGE_NONE = 0;
 
-typedef unsigned int UINT;/** HARHARHAR global namespace pollution */
+REGISTER_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
+
+
 
 
 ///void SetTopicAndMessageToStringsCallback(void (*callback)(unsigned int , int , std::string* , std::string* , bool*));
@@ -56,6 +87,8 @@ class WidgetMsg {
 
 public :
    
+typedef unsigned int UINT;
+
    WidgetBase* from; // Address of the widget returning this message.
    UINT        topic;// Whatever this is in regards to, like it being about a dialog. Each widget class is
                      // assigned a value for this field from the NextFreeTopicId function.
@@ -72,9 +105,10 @@ public :
 
    ~WidgetMsg() {}
    
-   inline WidgetBase* From()      const {return from;}
-   inline UINT        Topic()     const {return topic;}
-   inline int         Messages()  const {return msgs;}
+   inline WidgetBase* From()       const {return from;}
+   inline UINT        Topic()      const {return topic;}
+   inline int         Messages()   const {return msgs;}
+   inline std::string      MessageStr() const {return GetMessageString(topic,msgs);}
    
    inline bool IsAbout(const WidgetBase* widget , UINT widget_topic) const {
       return ((from == widget) && (topic == widget_topic));

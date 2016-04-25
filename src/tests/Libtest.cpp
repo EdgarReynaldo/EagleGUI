@@ -6,12 +6,13 @@
 #include "LayoutTestMain.hpp"
 #include "DrawingTestMain.hpp"
 #include "GuiTestMain.hpp"
+#include "NewGuiTestMain.hpp"
 
 #include <cstdlib>
 
 typedef int (*MAINFUNC)(int , char**);
 
-#define NUM_BRANCHES 8
+#define NUM_BRANCHES 9
 
 MAINFUNC branches[NUM_BRANCHES] = {
    Allegro5TestMain,
@@ -21,11 +22,12 @@ MAINFUNC branches[NUM_BRANCHES] = {
    DrawingTestMain,
    GuiTestMain,
    GuiTestMain2,
-   GuiTestMain3
+   GuiTestMain3,
+   NewGuiTestMain
 };
 
 
-int branch = 6;
+int branch = 8;
 
 int main(int argc , char** argv) {
    

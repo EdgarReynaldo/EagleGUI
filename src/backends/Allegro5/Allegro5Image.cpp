@@ -174,6 +174,7 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
    bmp = al_load_bitmap(file.c_str());
    if (!bmp) {
       EagleLog() << "Failed to load " << file << " from disk." << std::endl;
+      EAGLE_ASSERT(0);
    }
    else {
       source = file;

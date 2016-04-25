@@ -24,15 +24,59 @@
 #include "Eagle/Gui/WidgetMessage.hpp"
 
 #include "Eagle/StringWork.hpp"
+#include "Eagle/Error.hpp"
+
+
 
 using std::ostream;
 using std::string;
+using std::map;
+using std::pair;
+
+
+
+WidgetMessageMapCleaner map_cleaner;/// This needs to be here to free the message map, don't remove
+
+map<pair<unsigned int,int>,string>* message_map = 0;
+
+
+
+string GetMessageString(unsigned int topic , int message) {
+   EAGLE_ASSERT(message_map);
+   string s = (*message_map)[pair<unsigned int,int>(topic,message)];
+   if (!s.size()) {return "UNKNOWN_WIDGET_MESSAGE";}
+   return s;
+}
+
+
+
+RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , int _message , string _message_str) :
+      topic(_topic),
+      message(_message),
+      message_str(_message_str)
+{
+   static int init = 1;
+   if (init) {
+      message_map = new map<pair<unsigned int,int>,string>();
+      init = 0;
+   }
+   (*message_map)[pair<unsigned int,int>(topic,message)] = message_str;
+}
+
+
+
+WidgetMessageMapCleaner::~WidgetMessageMapCleaner() {
+   static int destruct = 1;
+   if (destruct) {
+      delete message_map;
+      message_map = 0;
+      destruct = 0;
+   }
+}
+
 
 
 #define NONE 0
-
-
-
 unsigned int NextFreeTopicId() {
    static unsigned int id = NONE;
    id += 1;
@@ -40,8 +84,7 @@ unsigned int NextFreeTopicId() {
 }
 
 
-
-const unsigned int TOPIC_NONE = NextFreeTopicId();
+///const unsigned int TOPIC_NONE = NextFreeTopicId();
 
 
 
@@ -61,8 +104,8 @@ void SetTopicAndMessageToStringsCallback(void (*callback)(unsigned int , int , s
 
 WidgetMsg::WidgetMsg() :
       from(0),
-      topic(NONE),
-      msgs(NONE)
+      topic(TOPIC_NONE),
+      msgs(MESSAGE_NONE)
    {}
 
 

@@ -17,6 +17,7 @@
 					<Add option="-ggdb3" />
 					<Add option="-DDEBUG" />
 					<Add option="-DLOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
 					<Add option="-leagle_a5_debug.dll" />
@@ -71,11 +72,12 @@
 					<Add option="-DALLEGRO_STATICLINK" />
 					<Add option="-DDEBUG" />
 					<Add option="-DLOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-static" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-leagle_a5_debug-static" />
 					<Add option="-leagle_debug-static" />
 					<Add option="-lallegro_monolith-debug-static" />
@@ -160,9 +162,9 @@
 					<Add option="-DALLEGRO_STATICLINK" />
 				</Compiler>
 				<Linker>
-					<Add option="-static" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-leagle_a5_profile-static" />
 					<Add option="-leagle_profile-static" />
 					<Add option="-lallegro_monolith-static" />
@@ -221,6 +223,8 @@
 		<Unit filename="src/tests/LayoutTestMain.cpp" />
 		<Unit filename="src/tests/LayoutTestMain.hpp" />
 		<Unit filename="src/tests/Libtest.cpp" />
+		<Unit filename="src/tests/NewGuiTestMain.cpp" />
+		<Unit filename="src/tests/NewGuiTestMain.hpp" />
 		<Unit filename="src/tests/RecordInputTestMain.cpp" />
 		<Unit filename="src/tests/RecordInputTestMain.hpp" />
 		<Extensions>
