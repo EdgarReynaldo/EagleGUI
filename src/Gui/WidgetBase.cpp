@@ -256,6 +256,8 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    /// TODO : unset clipping rectangle 
 // win->ResetClippingRectangle
    
+   EagleLog() << "WidgetBase::Display - " << GetName() << std::endl;
+   
    ClearRedrawFlag();
 }
 

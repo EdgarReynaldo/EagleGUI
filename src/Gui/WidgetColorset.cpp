@@ -26,12 +26,14 @@
 
 
 
-EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = { EagleColor(0 , 0 , 0 , 255),
-                                                  EagleColor(64 , 64 , 64 , 255),
-                                                  EagleColor(128 , 128 , 128 , 255),
-                                                  EagleColor(192 , 192 , 192 , 255),
-                                                  EagleColor(255 , 255 , 255 , 255),
-                                                  EagleColor(255 , 255 , 255 , 255)   };
+EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
+   EagleColor(0   , 0   , 0   , 255),
+   EagleColor(64  , 64  , 64  , 255),
+   EagleColor(128 , 128 , 128 , 255),
+   EagleColor(192 , 192 , 192 , 255),
+   EagleColor(255 , 255 , 255 , 255),
+   EagleColor(255 , 255 , 255 , 255)
+};
 //
 
 
