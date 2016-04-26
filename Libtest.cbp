@@ -94,6 +94,8 @@
 					<Add option="-lkernel32" />
 					<Add option="-lwinmm" />
 					<Add option="-lpsapi" />
+					<Add option="-ldsound" />
+					<Add option="-ld3dx9" />
 					<Add option="-lopengl32" />
 					<Add option="-lglu32" />
 					<Add option="-luser32" />
@@ -119,9 +121,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-static" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-leagle_a5-static" />
 					<Add option="-leagle-static" />
 					<Add option="-lallegro_monolith-static" />
@@ -138,6 +140,8 @@
 					<Add option="-lkernel32" />
 					<Add option="-lwinmm" />
 					<Add option="-lpsapi" />
+					<Add option="-ldsound" />
+					<Add option="-ld3dx9" />
 					<Add option="-lopengl32" />
 					<Add option="-lglu32" />
 					<Add option="-luser32" />
@@ -181,6 +185,8 @@
 					<Add option="-lkernel32" />
 					<Add option="-lwinmm" />
 					<Add option="-lpsapi" />
+					<Add option="-ldsound" />
+					<Add option="-ld3dx9" />
 					<Add option="-lopengl32" />
 					<Add option="-lglu32" />
 					<Add option="-luser32" />
@@ -206,11 +212,11 @@
 			<Add option="-Wall" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
-			<Add directory="C:/LIBS/A5113distro/include" />
+			<Add directory="C:/LIBS/A5GITdistro/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="C:/LIBS/A5113distro/lib" />
+			<Add directory="C:/LIBS/A5GITdistro/lib" />
 		</Linker>
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />

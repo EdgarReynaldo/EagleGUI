@@ -415,7 +415,7 @@ int Button::PrivateCheckInputs() {
                }
                break;
             case ROUNDED_BTN :
-               // Lazy hit detection since a rounded rectangle is so close to a rectangle anyway.
+               /// TODO : FIXME - Lazy hit detection since a rounded rectangle is so close to a rectangle anyway.
                activated = true;
                if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
                break;
@@ -428,6 +428,9 @@ int Button::PrivateCheckInputs() {
                   /// TODO: Hmm, distances are just off somehow - hit detection ellipse is slightly larger than drawn ellipse
                   double exd = (double)rad_a*cos(angle);
                   double eyd = (double)rad_b*sin(angle);
+///                  int cx = InnerArea().X() + InnerArea.W()/2;
+///                  int cy = InnerArea().Y() + InnerArea.H()/2;
+///                  double ex = ex
 //*
                   double ellp_dist = exd*exd + eyd*eyd;
                   if (dist_sq <= ellp_dist) {
@@ -917,7 +920,6 @@ void DrawButtonShape(EagleGraphicsContext* win , Button* btn , int x , int y) {
       throw EagleError("Null win passed to DrawButtonShape.\n");
    }
    bool up = (btn->ButtonState()%2) == 0;
-   EagleLog() << StringPrintF("Drawing button shape. Button is %s",up?"up":"down") << endl;
    int rad_a = btn->RadiusA();
 ///   int rad_b = btn->RadiusB();
    Rectangle r = btn->InnerArea();

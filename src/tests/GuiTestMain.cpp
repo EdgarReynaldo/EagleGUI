@@ -181,7 +181,7 @@ signal(SIGABRT, signal_handler);
    relative.Resize(1);
 
    GridLayout grid;
-   relative.PlaceWidget(&grid , 0 , LayoutRectangle(0.0 , 0.0 , 1.0 , 0.5));
+   relative.PlaceWidget(&grid , 0 , LayoutRectangle(0.0 , 0.0 , 1.0 , 1.0));
    grid.ResizeGrid(4,3);
    
    EagleImage* ptr = win->LoadImageFromFile("Pointer.png");
@@ -248,8 +248,8 @@ signal(SIGABRT, signal_handler);
    hsp.WCols()[SDCOL] = EagleColor(255,127,0);
    
    hsp.SetDividerPercent(0.5);
-   vsp1.SetDividerPercent(0.5);
-   vsp2.SetDividerPercent(0.5);
+   vsp1.SetDividerPercent(0.75);
+   vsp2.SetDividerPercent(0.25);
 
    hsp.SetDividerSize(10);
    vsp1.SetDividerSize(10);
