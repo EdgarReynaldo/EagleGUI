@@ -113,9 +113,9 @@ public :
 ///#ifdef DrawText
 ///   #warning "DrawText defined as " ## DrawText
 ///#endif
-   virtual void DrawTextString(EagleFont* font , std::string s , float x , float y , EagleColor c,
-                               TEXT_HDRAWING_FLAGS halign = DRAW_TEXT_LEFT ,
-                               TEXT_VDRAWING_FLAGS valign = DRAW_TEXT_TOP);
+   virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c,
+                               HALIGNMENT halign = HALIGN_LEFT ,
+                               VALIGNMENT valign = VALIGN_TOP);
 
 
    // getters

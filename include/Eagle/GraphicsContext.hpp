@@ -60,6 +60,10 @@ enum IMAGE_DRAWING_FLAGS {
 };
 
 
+#include "Eagle/Gui/Alignment.hpp"
+
+
+/*
 enum TEXT_HDRAWING_FLAGS {
    DRAW_TEXT_LEFT = 0,
    DRAW_TEXT_CENTER = 1,
@@ -72,7 +76,7 @@ enum TEXT_VDRAWING_FLAGS {
    DRAW_TEXT_BOTTOM = 2
 };
 
-
+*/
 
 extern unsigned int GUI_TEXT_LINE_SPACING;
 
@@ -272,13 +276,18 @@ public :
 /// TODO  virtual void Draw(EagleImage* src , EagleDrawingInfo info = EagleDrawingInfo())=0;
 
    // text drawing operations
-   virtual void DrawTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
-                               TEXT_HDRAWING_FLAGS halign = DRAW_TEXT_LEFT ,
-                               TEXT_VDRAWING_FLAGS valign = DRAW_TEXT_TOP)=0;
+   virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
+                               HALIGNMENT halign = HALIGN_LEFT ,
+                               VALIGNMENT valign = VALIGN_TOP)=0;
 
-   void DrawGuiTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
-                          TEXT_HDRAWING_FLAGS halign = DRAW_TEXT_LEFT ,
-                          TEXT_VDRAWING_FLAGS valign = DRAW_TEXT_TOP);
+   void DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
+                               HALIGNMENT halign = HALIGN_LEFT ,
+                               VALIGNMENT valign = VALIGN_TOP);
+
+
+   void DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , 
+                          HALIGNMENT halign = HALIGN_LEFT ,
+                          VALIGNMENT valign = VALIGN_TOP);
 
 
    // getters

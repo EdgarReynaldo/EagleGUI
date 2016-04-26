@@ -54,27 +54,6 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
    return ss.str();
 }
 
-std::string PrintLayoutAlignment(LAYOUT_HALIGN halign , LAYOUT_VALIGN valign) {
-   stringstream ss;
-   ss << "Layout alignment : ";
-   ss << "Horizontal alignment [";
-   switch (halign) {
-      case HALIGN_LEFT : ss << "HALIGN_LEFT";break;
-      case HALIGN_CENTER : ss << "HALIGN_CENTER";break;
-      case HALIGN_RIGHT : ss << "HALIGN_RIGHT";break;
-      default : throw EagleError(StringPrintF("Horizontal alignment value unknown (%d)\n",(int)halign));break;
-   }
-   ss << "] Vertical alignment [";
-   switch (valign) {
-      case VALIGN_TOP : ss << "VALIGN_TOP";break;
-      case VALIGN_CENTER : ss << "VALIGN_CENTER";break;
-      case VALIGN_BOTTOM : ss << "VALIGN_BOTTOM";break;
-      default : throw EagleError(StringPrintF("Vertical alignment value unknown (%d)\n",(int)valign));break;
-   }
-   ss << "]";
-   return ss.str();
-}
-
 
 
 /// ------------------------------------     Layout     ------------------------------------------
@@ -531,7 +510,7 @@ void Layout::ClearLayout() {
 
 
 
-void Layout::SetAlignment(LAYOUT_HALIGN h_align , LAYOUT_VALIGN v_align) {
+void Layout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 	halign = h_align;
 	valign = v_align;
 	RepositionAllChildren();
@@ -611,7 +590,7 @@ std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << StringPrintF("Layout object at %p named %s :",this,GetName().c_str()) << std::endl;
    ++indent;
    os << indent << PrintLayoutAttributes(attributes) << std::endl;
-   os << indent << PrintLayoutAlignment(halign , valign) << std::endl;
+   os << indent << PrintAlignment(halign , valign) << std::endl;
    WidgetBase::DescribeTo(os,indent);
    --indent;
    os << std::endl;

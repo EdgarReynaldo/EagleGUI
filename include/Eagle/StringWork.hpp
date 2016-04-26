@@ -25,6 +25,7 @@
 #define StringWork_H
 
 
+#include <vector>
 #include <string>
 #include <list>
 
@@ -34,6 +35,7 @@ extern unsigned int STRINGPRINTF_BUFFER_SIZE;
 
 std::string StringPrintF(const char* format_str , ...);/// 1024 character limit!
 
+std::vector<std::string> SplitByNewLines(std::string s);
 
 
 // returns pointer to one past end of quoted string, returns null on failure

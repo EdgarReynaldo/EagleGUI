@@ -973,7 +973,7 @@ void DrawButtonText(EagleGraphicsContext* win , Button* btn , int x , int y) {
       int tx = x + r.X() + r.W()/2;
       int ty = y + r.Y() + r.H()/2;
       
-      win->DrawGuiTextString(text_font , text.c_str() , tx , ty , btn->WCols()[TXTCOL] , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
+      win->DrawGuiTextString(text_font , text.c_str() , tx , ty , btn->WCols()[TXTCOL] , HALIGN_CENTER , VALIGN_CENTER);
    }
    
 }

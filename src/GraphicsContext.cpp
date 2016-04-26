@@ -24,6 +24,10 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/Gui/Text.hpp"
+
+#include <vector>
+using std::vector;
 
 
 unsigned int GUI_TEXT_LINE_SPACING = 3;
@@ -250,14 +254,50 @@ void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src ,
 
 
 
-void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
-                       TEXT_HDRAWING_FLAGS halign ,TEXT_VDRAWING_FLAGS valign) {
+void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
+                            HALIGNMENT halign , VALIGNMENT valign) {
+   EAGLE_ASSERT(font);
+   EAGLE_ASSERT(font->Valid());
+   
+   int lineheight = font->Height();
+   int nlines = 0;
+   std::vector<std::string> lines;
+   std::vector<int> linewidths;
+   int maxwidth = 0;
+   int totalheight = 0;
+   GetTextAttributes(str , font , line_spacing , &nlines , &lines , &linewidths , &maxwidth , &totalheight);
+   
+
+   if (valign == VALIGN_CENTER) {
+      y -= totalheight/2;
+   }
+   else if (valign == VALIGN_BOTTOM) {
+      y -= totalheight;
+   }
+   int ly = y;
+   for (int i = 0 ; i < nlines ; ++i) {
+      int lx = x;
+      if (halign == HALIGN_CENTER) {
+         lx -= linewidths[i]/2;
+      }
+      else if (halign == HALIGN_RIGHT) {
+         lx -= linewidths[i];
+      }
+      DrawTextString(font , lines[i].c_str() , lx , ly , c , HALIGN_LEFT , VALIGN_TOP);
+      ly += lineheight + line_spacing;
+   }
+}
+
+
+
+void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , 
+                       HALIGNMENT halign ,VALIGNMENT valign) {
   
   EAGLE_ASSERT(font);
   EAGLE_ASSERT(font->Valid());
   
-  std::string text = GetGuiText(s);
-  std::string underlinetext = GetGuiUnderlineText(s);
+  std::string text = GetGuiText(str);
+  std::string underlinetext = GetGuiUnderlineText(str);
   
   int height = font->Height();
   int vspace = height + GUI_TEXT_LINE_SPACING + 1;

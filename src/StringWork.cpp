@@ -33,6 +33,7 @@
 #include <cstdlib>
 #include <cstring>
 
+using std::vector;
 using std::string;
 using std::list;
 
@@ -51,6 +52,43 @@ string StringPrintF(const char* format_str , ...) {
    vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
    va_end(args);
    return std::string(buffer);
+}
+
+
+
+
+vector<string> SplitByNewLines(std::string s) {
+   vector<string> lines;
+   
+   if (s.length() == 0) {
+      lines.push_back("");
+      return lines;
+   }
+   
+   string line;
+   for (unsigned int i = 0 ; i < s.length() ; ) {
+      char c = s[i];
+      if (c == '\r' || c == '\n') {
+         
+         lines.push_back(line);
+         line = "";
+      
+         unsigned int i2 = i + 1;
+         char c2 = (i2 < s.length())?s[i2]:'\0';
+         if (c == '\r' && c2 == '\n') {
+            ++i;
+         }
+      }
+      else {
+         line.push_back(c);
+      }
+      ++i;
+      if (i == s.length() && line.length()) {
+         lines.push_back(line);
+      }
+   }
+   
+   return lines;
 }
 
 

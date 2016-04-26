@@ -522,26 +522,30 @@ void Allegro5GraphicsContext::Draw(EagleImage* src , EagleDrawingInfo info) {
 
 
 
-void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
-                                             TEXT_HDRAWING_FLAGS halign , TEXT_VDRAWING_FLAGS valign) {
+void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
+                                             HALIGNMENT halign , VALIGNMENT valign) {
+   EAGLE_ASSERT(font);
+   EAGLE_ASSERT(font->Valid());
    Allegro5Font* a5font = dynamic_cast<Allegro5Font*>(font);
    EAGLE_ASSERT(a5font);
    ALLEGRO_FONT* f = a5font->AllegroFont();
    EAGLE_ASSERT(f);
-   int textwidth = al_get_text_width(f , s.c_str());
-   int textheight = al_get_font_line_height(f);
-   if (halign == DRAW_TEXT_CENTER) {x -= textwidth/2;}
-   if (halign == DRAW_TEXT_RIGHT) {x -= textwidth;}
-   if (valign == DRAW_TEXT_VCENTER) {y -= textheight/2;}
-   if (valign == DRAW_TEXT_BOTTOM) {y -= textheight;}
+   if (halign != HALIGN_LEFT || valign != VALIGN_TOP) {
+      int textwidth = al_get_text_width(f , str.c_str());
+      int textheight = al_get_font_line_height(f);
+      if (halign == HALIGN_CENTER) {x -= textwidth/2;}
+      if (halign == HALIGN_RIGHT) {x -= textwidth;}
+      if (valign == VALIGN_CENTER) {y -= textheight/2;}
+      if (valign == VALIGN_BOTTOM) {y -= textheight;}
+   }
 //void al_draw_text(const ALLEGRO_FONT *font,
 //   ALLEGRO_COLOR color, float x, float y, int flags,
 //   char const *text) 
 
    /// Need to set the premultiplied alpha blender here , and maybe the non-pm alpha too sometimes
-///   SetNoPMAlphaBlender();
-   SetPMAlphaBlender();
-   al_draw_text(f , GetAllegroColor(c) , x , y , 0 , s.c_str());
+   SetNoPMAlphaBlender();
+///   SetPMAlphaBlender();
+   al_draw_text(f , GetAllegroColor(c) , x , y , 0 , str.c_str());
    RestoreLastBlendingState();
 }
 

@@ -62,7 +62,7 @@ int RecordInputTestMain(int argc , char** argv) {
          win->Clear(EagleColor(0,0,0));
          win->DrawTextString(font40 , StringPrintF("FPS : %i" , fps) , 40 , 40 , EagleColor(0,255,255));
          win->DrawTextString(font40 , StringPrintF("framecount = %i" , framecount + 1) , 40 , 80 , EagleColor(0,255,255));
-         win->DrawTextString(font20 , oss.str() , 400 , 300 , EagleColor(255,255,255) , DRAW_TEXT_CENTER , DRAW_TEXT_TOP);
+         win->DrawTextString(font20 , oss.str() , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
          win->FlipDisplay();
          ++framecount;
          redraw = false;

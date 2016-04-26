@@ -27,22 +27,12 @@
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
+#include "Eagle/Gui/Alignment.hpp"
+
 
 #include <iostream>
 #include <string>
 
-
-enum LAYOUT_HALIGN {
-   HALIGN_LEFT = 0,
-   HALIGN_CENTER = 1,
-   HALIGN_RIGHT = 2
-};
-
-enum LAYOUT_VALIGN {
-   VALIGN_TOP = 0,
-   VALIGN_CENTER = 1,
-   VALIGN_BOTTOM = 2
-};
 
 
 class WidgetHandler;
@@ -58,7 +48,6 @@ enum LAYOUT_ATTRIBUTES {
 
 
 std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
-std::string PrintLayoutAlignment(LAYOUT_HALIGN halign , LAYOUT_VALIGN valign);
 
 
 class Layout : public WidgetBase {
@@ -67,8 +56,8 @@ protected :
    
    LAYOUT_ATTRIBUTES attributes;
    
-   LAYOUT_HALIGN halign;
-   LAYOUT_VALIGN valign;
+   HALIGNMENT halign;
+   VALIGNMENT valign;
 
    bool size_fixed;
 
@@ -137,7 +126,7 @@ public :
 
 
 
-   void SetAlignment(LAYOUT_HALIGN h_align , LAYOUT_VALIGN v_align);
+   void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 
 protected :
    friend class WidgetHandler;

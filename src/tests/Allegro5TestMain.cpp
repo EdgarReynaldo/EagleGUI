@@ -67,7 +67,7 @@ int Allegro5TestMain(int argc , char** argv) {
    win->Clear(EagleColor(0,0,0));
    
    win->DrawTextString(font , "Hello consola.ttf!!!111~~~" , SCREEN_WIDTH/2 , SCREEN_HEIGHT/2 , EagleColor(255,127,255),
-                 DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
+                 HALIGN_CENTER , VALIGN_CENTER);
                  
    win->FlipDisplay();
 
