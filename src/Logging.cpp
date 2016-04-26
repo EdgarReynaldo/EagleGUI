@@ -131,14 +131,22 @@ Indenter& Indenter::operator--() {
 
 
 /// Postfix
-Indenter& Indenter::operator++(int) {
-   return ++(*this);
+Indenter Indenter::operator++(int) {
+   Indenter copy = *this;
+   ++indent_level;
+   ResetSpaces();
+   return copy;
 }
 
 
 
-Indenter& Indenter::operator--(int) {
-   return --(*this);
+Indenter Indenter::operator--(int) {
+   Indenter copy = *this;
+   if (indent_level) {
+      --indent_level;
+      ResetSpaces();
+   }
+   return copy;
 }
 
 

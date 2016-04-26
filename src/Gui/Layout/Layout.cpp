@@ -25,7 +25,59 @@
 #include "Eagle/Gui/Layout/Layout.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/StringWork.hpp"
+#include <sstream>
+using std::stringstream;
 
+
+
+/// ---------------------------------     Global functions     ----------------------------------
+
+
+std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
+   stringstream ss;
+   ss << "Layout attributes : ";
+   switch (attributes) {
+      case LAYOUT_ALLOWS_NOTHING :
+         ss << "LAYOUT_ALLOWS_NOTHING";
+         break;
+      case LAYOUT_ALLOWS_REPOSITION :
+         ss << "LAYOUT_ALLOWS_REPOSITION";
+         break;
+      case LAYOUT_ALLOWS_RESIZE :
+         ss << "LAYOUT_ALLOWS_RESIZE";
+         break;
+      case LAYOUT_ALLOWS_RESIZE_AND_REPOSITION :
+         ss << "LAYOUT_ALLOWS_RESIZE_AND_REPOSITION";
+         break;
+      default : throw EagleError(StringPrintF("Unknown layout attributes value (%d)\n",(int)attributes));break;
+   }
+   return ss.str();
+}
+
+std::string PrintLayoutAlignment(LAYOUT_HALIGN halign , LAYOUT_VALIGN valign) {
+   stringstream ss;
+   ss << "Layout alignment : ";
+   ss << "Horizontal alignment [";
+   switch (halign) {
+      case HALIGN_LEFT : ss << "HALIGN_LEFT";break;
+      case HALIGN_CENTER : ss << "HALIGN_CENTER";break;
+      case HALIGN_RIGHT : ss << "HALIGN_RIGHT";break;
+      default : throw EagleError(StringPrintF("Horizontal alignment value unknown (%d)\n",(int)halign));break;
+   }
+   ss << "] Vertical alignment [";
+   switch (valign) {
+      case VALIGN_TOP : ss << "VALIGN_TOP";break;
+      case VALIGN_CENTER : ss << "VALIGN_CENTER";break;
+      case VALIGN_BOTTOM : ss << "VALIGN_BOTTOM";break;
+      default : throw EagleError(StringPrintF("Vertical alignment value unknown (%d)\n",(int)valign));break;
+   }
+   ss << "]";
+   return ss.str();
+}
+
+
+
+/// ------------------------------------     Layout     ------------------------------------------
 
 
 int Layout::WidgetIndex(WidgetBase* widget) {
@@ -551,6 +603,19 @@ WidgetHandler* Layout::WHandler() {
 
 int Layout::GetLayoutSize() {
    return (int)wchildren.size();
+}
+
+
+
+std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << StringPrintF("Layout object at %p named %s :",this,GetName().c_str()) << std::endl;
+   ++indent;
+   os << indent << PrintLayoutAttributes(attributes) << std::endl;
+   os << indent << PrintLayoutAlignment(halign , valign) << std::endl;
+   WidgetBase::DescribeTo(os,indent);
+   --indent;
+   os << std::endl;
+   return os;
 }
 
 

@@ -505,6 +505,9 @@ public :
    bool operator!=(const Input& i);
 
    /** Text output */
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
    friend std::ostream& operator<<(std::ostream& os , const Input& input);
    std::ostream& Shortname(std::ostream& os) const ;
 
@@ -641,6 +644,8 @@ public :
    Input FindClickInput() const;// returns input_key_press(EAGLE_KEY_NONE) if there is no click input in the group
    
    /** Text logging */
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
    friend std::ostream& operator<<(std::ostream& os , const InputGroup& ig);
    std::ostream& ShowLogic(std::ostream& os) const ;
    

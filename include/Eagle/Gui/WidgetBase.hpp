@@ -61,11 +61,10 @@ enum WIDGET_FLAGS {
    NEEDS_REDRAW    = 0x040,   // Whether it should be redrawn before display?
    NEEDS_BG_REDRAW = 0x080,   // Whether it needs its background redrawn before being redrawn
    ALLOW_CLOSE     = 0x100,   // If it is allowed to close the dialog based on input
-   ALLOW_OVERLAP   = 0x200,   // TODO : DEPRECATED - REMOVE - If it is allowed to overlap other widgets
-   USER_FLAGS_START= 0x400
+   ALLOW_OVERLAP   = 0x200   // TODO : DEPRECATED - REMOVE - If it is allowed to overlap other widgets
 };
 
-#define NUM_WIDGET_FLAGS 10 // ENABLED thru ALLOW_OVERLAP
+static const int NUM_WIDGET_FLAGS = 11;
 
 typedef unsigned int UINT;
 
@@ -162,8 +161,11 @@ protected :
 
 public :
 
+   /// TODO : Do we want to call CheckInputs every time a timer event is fired? Not sure.
+   /// TODO : Right now it is called every time we get an event, which doesn't seem quite right.
    int HandleEvent(EagleEvent e);
 
+   
    void Display(EagleGraphicsContext* win , int xpos , int ypos);// Drawing target will already be set for you
                                                                  // But you can push and pop other drawing targets as well
 
@@ -178,7 +180,7 @@ public :
                                                         /// and only in the case that the top level parent widget is a 
                                                         /// WidgetHandler do they get spooled for the user.
    
-   void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);// Shortcut to virtual Q.U.M.
+   virtual void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);// Shortcut to virtual Q.U.M.
 
 	/// Setters
 	virtual void SetParent(WidgetBase* parent);

@@ -453,15 +453,15 @@ void WidgetHandler::CycleFocusBackward() {
 
 */
 WidgetHandler::WidgetHandler() :
-		WidgetBase(StringPrintF("WidgetHandler object %p" , this)),
+		WidgetBase(StringPrintF("WidgetHandler object at %p" , this)),
 		gwindow(),
 		buffer(0),
 		background(0),
 		user_bg_ptr(0),
 		stretch_bg(false),
 		use_bg_pic(false),
-		bg_col(255,0,0,255),
-		cam("WidgetHandler camera"),
+		bg_col(WCols()[BGCOL]),
+		cam(StringPrintF("WidgetHandler camera at %p" , &cam)),
 		shrink_buffer_on_resize(false),
 		dumb_layout(),
 		root_layout(0),
@@ -552,6 +552,7 @@ bool WidgetHandler::SetupBufferDimensions(int w , int h) throw (EagleError) {
 	}
 	else {
 	   success = buffer->Allocate(w,h) && background->Allocate(w,h);
+	   EAGLE_ASSERT(success);
 	}
 	if (success) {
 	   RedrawBackgroundBuffer();
@@ -917,6 +918,8 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
    if (!WidgetBase::flags & NEEDS_REDRAW) {return;}
 
+   cam.SetRedrawFlag();
+   
    win->PushDrawingTarget(buffer);
    
    win->SetCopyBlender();
@@ -1589,8 +1592,23 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
       os << indent << "NULL Background." << endl;
    }
    --indent;
-   os << indent << "clear_background = " << (clear_background?"true":"false") << endl;
-   os << indent << "wfocus = " << wfocus << " , whover = " << whover << endl;
+   os << indent;
+   os << "[clear_background = " << (clear_background?"true] ":"false] ");
+   os << "[use_bg_pic = " << (use_bg_pic?"true] ":"false] ");
+   os << "[stretch_bg = " << (stretch_bg?"true] ":"false] ");
+   os << endl;
+   os << indent << "Background color : [" << bg_col << "] ";
+   os << StringPrintF("user_bg_ptr = %p (",user_bg_ptr);
+   if (user_bg_ptr) {
+      user_bg_ptr->DescribeTo(os);
+   }
+   os << ")" << endl;
+   os << indent << StringPrintF("wfocus = %p (%s) , whover = %p (%s)" ,
+                                 wfocus , wfocus?wfocus->GetName().c_str():"" , whover , whover?whover->GetName().c_str():"") << endl;
+   os << indent << "Widget Camera info :" << endl;
+   ++indent;
+   cam.DescribeTo(os,indent);
+   --indent;
    WidgetBase::DescribeTo(os , indent);
    os << indent << "Widgets used by this dialog : {" << endl;
    ++indent;

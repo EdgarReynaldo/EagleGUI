@@ -129,7 +129,7 @@ typedef unsigned int UINT;
       return ((from == wmsg.from) && (topic == wmsg.topic) && (msgs == wmsg.msgs));
    }
 
-///   friend std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg);
+   friend std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg);
 
 };
 

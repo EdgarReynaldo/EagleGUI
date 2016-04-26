@@ -79,9 +79,9 @@ public :
    /// Prefix increment and decrement operators for changing the indentation level.
    Indenter& operator++();
    Indenter& operator--();
-   /// Postfix
-   Indenter& operator++(int);
-   Indenter& operator--(int);
+   /// Postfix - returns copy and increments indenter
+   Indenter operator++(int);
+   Indenter operator--(int);
 
    friend std::ostream& operator<<(std::ostream& os , const Indenter& i);
 };

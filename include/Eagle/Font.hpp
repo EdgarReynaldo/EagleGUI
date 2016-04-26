@@ -58,6 +58,9 @@ public :
    
    virtual int Width(const char* str)=0;
    virtual int Height()=0;
+
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
 };
 
 

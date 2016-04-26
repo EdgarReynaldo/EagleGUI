@@ -64,7 +64,7 @@ string PrintFlags(UINT flags) {
    if (flags == FLAGS_NONE) {
       return string("FLAGS_NONE");
    }
-   for (int i = 0 ; i < USER_FLAGS_START ; ++i) {
+   for (int i = 0 ; i < NUM_WIDGET_FLAGS ; ++i) {
       if (flags & (WIDGET_FLAGS)(1 << i)) {
          retstr = retstr + flagstrings[i];
          retstr.push_back(' ');
@@ -230,6 +230,8 @@ int WidgetBase::HandleEvent(EagleEvent e) {
    
    int ret = PrivateHandleEvent(e);
    
+   /// TODO : Do we really want to call CheckInput every time we get an event? 
+   /// TODO : It makes BUTTON_HELD messages spam like crazy when the mouse drags over a button
    if (!(ret & DIALOG_INPUT_USED)) {
       ret = ret | PrivateCheckInputs();
    }
@@ -244,6 +246,8 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       return;
    }
    
+///   EAGLE_DEBUG(EagleLog() << "WidgetBase::Display - " << GetName() << std::endl;);
+   
    /// TODO : 
 //   win->SetClippingRectangle(area.OuterArea());
    
@@ -255,8 +259,6 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    
    /// TODO : unset clipping rectangle 
 // win->ResetClippingRectangle
-   
-   EagleLog() << "WidgetBase::Display - " << GetName() << std::endl;
    
    ClearRedrawFlag();
 }
@@ -802,15 +804,21 @@ WidgetColorset& WidgetBase::WCols() {
 
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
-   os << indent << "Widget Base info :" << endl;
+   os << indent << "WidgetBase Info : " << endl;
+   os << indent << StringPrintF("WidgetBase object at (%p) named '%s'" , this , GetName().c_str()) << endl;
    ++indent;
    os << indent << StringPrintF("Widget parent %p , layout %p" , wparent , layout) << endl;
    area.DescribeTo(os , indent);
    os << indent << StringPrintF("Min WxH = %i x %i" , minw , minh) << endl;
-   os << indent;
-   os << PrintFlags(flags);
+   os << indent << PrintFlags(flags);
    os << endl;
    os << indent << StringPrintF("Display priority = %i" , display_priority) << endl;
+   os << indent << StringPrintF("Use private colorset = %s" , use_private_colorset?"true":"false") << endl;
+   os << indent << "wcols : " << endl;
+   wcols.DescribeTo(os , indent);
+   os << indent << "privwcols :" << endl;
+   privwcols.DescribeTo(os , indent);
+   os << indent << "Widget draw function : " << PrintWidgetDrawFunctionName(bg_draw_func) << endl;
    --indent;
    return os;
 }

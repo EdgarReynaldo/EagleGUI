@@ -932,12 +932,16 @@ bool Input::operator!=(const Input& i) {
 }
 
 
+std::ostream& Input::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "Input <src = \"" << input_source_str[src] << "\" type = \"" << input_state_str[state];
+   os << "\" value = \"" << value_to_name_func[src](value) << "\" >";
+   return os;
+}
+
 std::ostream& operator<<(std::ostream& os , const Input& input) {
    /** TODO : If the scancode enumeration is extended for things like KEY_CTRL_EITHER,
                then scancode_to_name will have to be extended with a wrapper function. */
-   os << "Input <src = \"" << input_source_str[input.src] << "\" type = \"" << input_state_str[input.state];
-   os << "\" value = \"" << value_to_name_func[input.src](input.value) << "\" >";
-   return os;
+   return input.DescribeTo(os);
 }
 
 
@@ -1161,7 +1165,30 @@ Input InputGroup::FindClickInput() const {
 
 
 
+std::ostream& InputGroup::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "InputGroup [Logical ";
+   os << (all_apply?"AND":"OR") << " , " << (is?"IS":"NOT") << "]" << endl;
+
+   os << indent << "{" << endl;
+   ++indent;
+   const int num_inputs = inputs.size();
+   const int num_nodes  = nodes.size();
+   for (int i = 0 ; i < num_inputs ; ++i) {
+      os << indent << inputs[i] << endl;
+   }
+   for (int i = 0 ; i < num_nodes ; ++i) {
+      nodes[i].DescribeTo(os,indent);
+   }
+   --indent;
+   os << indent << "}" << endl;
+   return os;
+}
+
+
+
 std::ostream& operator<<(std::ostream& os , const InputGroup& ig) {
+   return ig.DescribeTo(os);
+/**
    Indenter indent(ig.node_level,3);
    Indenter indent_input(ig.node_level + 1 , 3);
    os << indent << "InputGroup [Logical ";
@@ -1177,6 +1204,7 @@ std::ostream& operator<<(std::ostream& os , const InputGroup& ig) {
    }
    os << indent << "}" << endl;
    return os;
+*/
 }
 
 

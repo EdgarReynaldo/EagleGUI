@@ -188,7 +188,7 @@ bool GetValidByAddress(EagleObject* obj) {
 
 EagleObject::EagleObject() :
       id(NextId()),
-      wname("Nemo"),
+      wname(StringPrintF("Nemo at %p",this)),
       destroyed(false)
 {
    EagleLog() << StringPrintF("Creating eagle object at %p named %s" , this , wname.c_str()) << std::endl;
@@ -209,6 +209,11 @@ EagleObject::EagleObject(std::string name) :
 
 
 EagleObject::~EagleObject() {
+   if (destroyed) {
+      EagleLog() << StringPrintF("ERROR - Double free on object at %p" , this) << std::endl;
+      EAGLE_DEBUG(throw EagleError("Double free detected."););
+      return;
+   }
    EagleLog() << StringPrintF("Destroying object at %p named %s" , this , wname.c_str()) << std::endl;
    EAGLE_DEBUG(UnregisterObject(this););
    destroyed = true;// NOTE: primitive double destruction detection, will it work right?
@@ -217,9 +222,9 @@ EagleObject::~EagleObject() {
 
 
 
-std::string EagleObject::GetName() {
-   OutputLog() << StringPrintF("EagleObject::GetName - destroyed = %s\n" , destroyed?"true":"false");
-//   EAGLE_ASSERT(!destroyed);
+std::string EagleObject::GetName() const {
+///   EAGLE_DEBUG(OutputLog() << StringPrintF("EagleObject::GetName - destroyed = %s\n" , destroyed?"true":"false"););
+   EAGLE_ASSERT(!destroyed);
    return wname;
 }
 
@@ -243,7 +248,8 @@ int EagleObject::GetId() {
 
 ostream& EagleObject::DescribeTo(ostream& os , Indenter indent) const {
    EAGLE_ASSERT(!destroyed);
-	return os << indent << StringPrintF("EagleObject %c. Addr=%p. Id = %i" , wname.c_str() , this , id) << endl;
+	return os << indent << StringPrintF("EagleObject %s. Addr=%p. Id = %i" , wname.c_str() , this , id);
+	///<< endl;
 }
 
 

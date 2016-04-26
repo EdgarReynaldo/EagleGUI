@@ -14,6 +14,9 @@ int DrawingTestMain(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
+   EagleLog() << "DrawingTestMain not implemented." << std::endl;
+   return 0;
+   
    Allegro5System* sys = new Allegro5System();
    if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
       delete sys;

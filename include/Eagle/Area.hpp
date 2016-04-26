@@ -61,7 +61,11 @@ public :
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const =0;
    virtual AreaBase* Clone() const =0;// returns a newed copy of itself
    
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
+   friend std::ostream& operator<<(std::ostream& os , const AreaBase& area); 
 };
+
 
 
 
@@ -106,6 +110,8 @@ public :
    void AdoptAreaGroup(AreaGroup& ag);// takes ownership of ag's areas and clears ag of data
    
    int size() {return areas.size();}
+
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 
@@ -139,6 +145,8 @@ public :
 
    int X() const {return x;}
    int Y() const {return y;}
+   
+   friend std::ostream& operator<<(std::ostream& os , const Pos2d& p);
 };
 
 
@@ -191,9 +199,12 @@ class Line : public AreaBase {
 protected :
    Pos2d p1;
    Pos2d p2;
+   double thickness;
    
 public :
-   /// TODO : Working here...
+   /// TODO : Implement line class?
+
+///   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 
@@ -232,6 +243,8 @@ public :
    
    
    void SetPos(int x1 , int y1 , int x2 , int y2 , int x3 , int y3);
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 
@@ -264,6 +277,7 @@ public :
    void SetRadius(int radius);
    
 
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
 };
 
@@ -370,7 +384,6 @@ public :
 
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
-   friend std::ostream& operator<<(std::ostream& os , const Rectangle& r);
 };
 
 

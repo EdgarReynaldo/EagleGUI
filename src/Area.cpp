@@ -44,17 +44,19 @@ void DestroyBoundingRectangles(vector<Rectangle*>& vrect) {
 }
 
 
+/// -----------------------------------    Area Base     ----------------------------------------
 
-void Pos2d::Draw(EagleGraphicsContext* win , EagleColor color) const {
-   EAGLE_ASSERT(win);
-   win->PutPixel(x , y , color);
+
+
+std::ostream& AreaBase::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "AreaBase::DescribeTo - This classes DescribeTo has not yet been implented.";
+   return os;
 }
 
 
 
-void Pos2d::DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const {
-   EAGLE_ASSERT(win);
-   win->DrawLine(x , y , p.x , p.y , color);
+std::ostream& operator<<(std::ostream& os , const AreaBase& area) {
+   return area.DescribeTo(os);
 }
 
 
@@ -200,7 +202,44 @@ void AreaGroup::AdoptAreaGroup(AreaGroup& ag) {
 
 
 
-/// -----------------------------------      Pos2d class       ---------------------------------------------
+std::ostream& AreaGroup::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << areas.size() << " areas. Area = ";
+   if (!areas.size()) {
+      os << "Undefined";
+   }
+   for (unsigned int i = 0 ; i < areas.size() ; ++i) {
+      AreaBase* a = areas[i];
+      os << "[";
+      a->DescribeTo(os);
+      os << "] ";
+   }
+   return os;
+}
+
+
+
+/// -------------------------------------   Pos2D    -------------------------------------------
+
+
+
+void Pos2d::Draw(EagleGraphicsContext* win , EagleColor color) const {
+   EAGLE_ASSERT(win);
+   win->PutPixel(x , y , color);
+}
+
+
+
+void Pos2d::DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const {
+   EAGLE_ASSERT(win);
+   win->DrawLine(x , y , p.x , p.y , color);
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const Pos2d& p) {
+   os << p.x << " , " << p.y;
+   return os;
+}
 
 
 
@@ -338,6 +377,13 @@ void Triangle::SetPos(int x1 , int y1 , int x2 , int y2 , int x3 , int y3) {
 
 
 
+std::ostream& Triangle::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "Triangle points = [" << p1 << "] [" << p2 << "] [" << p3 << "]";
+   return os;
+}
+
+
+
 
 /// -----------------------------------      Circle clsss         -----------------------------------------
 
@@ -411,6 +457,13 @@ void Circle::SetCenter(int xpos , int ypos) {
 void Circle::SetRadius(int radius) {
    if (radius < 0) {radius = 0;}
    r = radius;
+}
+
+
+
+std::ostream& Circle::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "Circle (x,y,r) = (" << x << "," << y << "," << r << ")";
+   return os;
 }
 
 
@@ -783,18 +836,11 @@ void Rectangle::DrawGradientFrameTo(EagleGraphicsContext* win , const Rectangle*
 
 
 
-ostream& Rectangle::DescribeTo(ostream& os , Indenter indent) const {
-   (void)indent;
-   os << StringPrintF("(x,y,brx,bry,w,h) = %i,%i,%i,%i,%i,%i)" , x , y , brx , bry , w , h);
+std::ostream& Rectangle::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << StringPrintF("Rectangle (x,y,brx,bry,w,h) = (%i,%i,%i,%i,%i,%i)" , x , y , brx , bry , w , h);
    return os;
 }
 
-
-
-std::ostream& operator<<(std::ostream& os , const Rectangle& r) {
-   r.DescribeTo(os);
-   return os;
-}
 
 
 

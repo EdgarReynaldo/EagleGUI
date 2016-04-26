@@ -59,6 +59,7 @@ enum BUTTON_SHAPE {
    ELLIPSE_BTN   = 3
 };
 
+
 enum BUTTON_ACTION_TYPE {
    SPRING_BTN = 0,
    TOGGLE_BTN = 1
@@ -78,6 +79,14 @@ enum BUTTON_STATE {
    BUTTON_HOVER_UP = 2,
    BUTTON_HOVER_DOWN = 3
 };
+
+bool ButtonUp(BUTTON_STATE state);
+bool ButtonHover(BUTTON_STATE state);
+
+std::string GetButtonShapeText(BUTTON_SHAPE shape);
+std::string GetButtonActionTypeText(BUTTON_ACTION_TYPE type);
+std::string GetButtonClassText(BUTTON_CLASS _class);
+std::string GetButtonStateText(BUTTON_STATE state);
 
 /** Basic variety of simple spring or toggle buttons - rectangular, circular, rounded rectangular, and elliptical.
       Support for displaying text on the button included, will probably not look right on the circular buttons due to size.
@@ -123,6 +132,8 @@ protected :
 
 
 
+   void SetButtonState(bool hover , bool up);
+
    void ResetRadii();
    
 ///   void DrawButtonRectangle(BITMAP* bmp , int x , int y);
@@ -157,6 +168,8 @@ protected :
 
 public :
    
+   virtual void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);
+
    virtual void SetHoverState (bool state);
    // /* Does not set any redraw flag */ - OLD:Sets redraw flag and (false) sets bg redraw flag
 
@@ -192,6 +205,8 @@ public :
    BUTTON_STATE ButtonState();
    int          RadiusA();
    int          RadiusB();
+
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 

@@ -83,11 +83,12 @@ public :
    
    EagleObject();
    EagleObject(std::string name);
+   
    virtual ~EagleObject();
 
 
    
-   std::string GetName();
+   std::string GetName() const;
    void SetName(std::string newname);
    
    int GetId();

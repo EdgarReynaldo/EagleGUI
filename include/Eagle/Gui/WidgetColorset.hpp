@@ -27,6 +27,7 @@
 
 
 #include "Eagle/Color.hpp"
+#include "Eagle/Object.hpp"
 
 
 
@@ -62,21 +63,26 @@ enum WIDGETCOLOR {
 
 
 
-class WidgetColorset {
+class WidgetColorset : public EagleObject {
 
 public :
 
-   WidgetColorset();
-   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
-   WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
-   WidgetColorset(const WidgetColorset& rhs);
-   
-   
-
    EagleColor wcolorset[EAGLE_NUMCOLORS];
    
+
+
+   WidgetColorset();
+   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
+   WidgetColorset(const WidgetColorset& rhs);
+
+   WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
+   
+
    EagleColor& operator[] (const WIDGETCOLOR& wc) {return wcolorset[wc];}
    const EagleColor& operator[] (const WIDGETCOLOR& wc) const {return wcolorset[wc];}
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
 };
 
 extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];

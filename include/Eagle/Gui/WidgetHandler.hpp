@@ -79,7 +79,7 @@ protected :
 
 protected :
 
-   EagleGraphicsContext* gwindow;;
+   EagleGraphicsContext* gwindow;
 
    EagleImage* buffer;
    EagleImage* background;

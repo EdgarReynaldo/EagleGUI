@@ -23,7 +23,7 @@
 
 #include "Eagle/Gui/WidgetColorset.hpp"
 
-
+#include "Eagle/StringWork.hpp"
 
 
 EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
@@ -40,6 +40,7 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
 
 
 WidgetColorset::WidgetColorset() :
+      EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
       wcolorset()
 {
    *this = default_eagle_color_array;
@@ -48,9 +49,19 @@ WidgetColorset::WidgetColorset() :
 
 
 WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]) :
+   EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
    wcolorset()
 {
    *this = colorset;
+}
+
+
+
+WidgetColorset::WidgetColorset(const WidgetColorset& rhs) :
+   EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
+   wcolorset()
+{
+   *this = rhs.wcolorset;
 }
 
 
@@ -62,8 +73,15 @@ WidgetColorset& WidgetColorset::operator=(const EagleColor colorset[EAGLE_NUMCOL
 
 
 
-WidgetColorset::WidgetColorset(const WidgetColorset& rhs) {
-   *this = rhs.wcolorset;
+
+std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) const {
+   const EagleColor* c = wcolorset;
+   os << indent << StringPrintF("WidgetColorset object %s at %p : " , GetName().c_str() , this) << std::endl;
+   ++indent;
+   os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "]" << std::endl;
+   os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "]" << std::endl;
+   --indent;
+   return os;
 }
 
 

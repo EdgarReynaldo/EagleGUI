@@ -28,6 +28,8 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 
+#include <iostream>
+#include <string>
 
 
 enum LAYOUT_HALIGN {
@@ -55,6 +57,8 @@ enum LAYOUT_ATTRIBUTES {
 };
 
 
+std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
+std::string PrintLayoutAlignment(LAYOUT_HALIGN halign , LAYOUT_VALIGN valign);
 
 
 class Layout : public WidgetBase {
@@ -151,6 +155,7 @@ public :
 
    int GetLayoutSize();
    
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 

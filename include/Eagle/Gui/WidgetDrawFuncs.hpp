@@ -27,6 +27,7 @@
 #include "Eagle/Gui/WidgetArea.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 
+#include <string>
 
 
 typedef void (*WIDGET_DRAW_FUNC)(EagleGraphicsContext* , const WidgetArea& , const WidgetColorset& , int , int);
@@ -43,6 +44,10 @@ void WidgetBorderPainterContrast(EagleGraphicsContext* win , const WidgetArea& a
 void WidgetBorderPainterShadow(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
 void WidgetBorderedImagePainterCenter(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
 void WidgetBorderedImagePainterStretch(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
+
+std::string PrintWidgetDrawFunctionName(WIDGET_DRAW_FUNC draw_func);
+
+
 
 #endif // WidgetDrawFuncs_HPP
 

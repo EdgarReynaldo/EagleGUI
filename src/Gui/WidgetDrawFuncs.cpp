@@ -3,6 +3,13 @@
 #include "Eagle/Gui/WidgetDrawFuncs.hpp"
 
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
+
+#include "Eagle/StringWork.hpp"
+
+
+#include <sstream>
+using std::stringstream;
+
 /*
 void WidgetDefaultPainter(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos) {
    (void)win;
@@ -137,6 +144,24 @@ void WidgetBorderedImagePainterStretch(EagleGraphicsContext* win , const WidgetA
    WidgetBGImagePainterStretchClientArea(win , a , c , xpos , ypos);
 }
 
+
+
+std::string PrintWidgetDrawFunctionName(WIDGET_DRAW_FUNC draw_func) {
+   stringstream ss;
+   if (!draw_func) {ss << "NULL function";}
+   else if (draw_func == WidgetBGImagePainterCenter)            {ss << "WidgetBGImagePainterCenter";}
+   else if (draw_func == WidgetBGImagePainterStretch)           {ss << "WidgetBGImagePainterStretch";}
+   else if (draw_func == WidgetBGImagePainterCenterClientArea)  {ss << "WidgetBGImagePainterCenterClientArea";}
+   else if (draw_func == WidgetBGImagePainterStretchClientArea) {ss << "WidgetBGImagePainterStretchClientArea";}
+   else if (draw_func == WidgetNPPainter)                       {ss << "WidgetNPPainter";}
+   else if (draw_func == WidgetBorderPainterContrast)           {ss << "WidgetBorderPainterContrast";}
+   else if (draw_func == WidgetBorderPainterShadow)             {ss << "WidgetBorderPainterShadow";}
+   else if (draw_func == WidgetBorderedImagePainterCenter)      {ss << "WidgetBorderedImagePainterCenter";}
+   else if (draw_func == WidgetBorderedImagePainterStretch)     {ss << "WidgetBorderedImagePainterStretch";}
+   else {ss << StringPrintF("Unknown function (%p)",draw_func);}
+
+   return ss.str();
+}
 
 
 

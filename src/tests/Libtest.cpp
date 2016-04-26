@@ -27,7 +27,7 @@ MAINFUNC branches[NUM_BRANCHES] = {
 };
 
 
-int branch = 8;
+int branch = 6;
 
 int main(int argc , char** argv) {
    
