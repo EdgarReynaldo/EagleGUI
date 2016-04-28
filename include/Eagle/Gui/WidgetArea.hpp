@@ -27,6 +27,8 @@
 
 #include "Eagle/Area.hpp"
 #include "Eagle/Image.hpp"
+#include "Eagle/Gui/Layout/LayoutRectangle.hpp"
+
 
 
 enum MARGIN_CELL {
@@ -77,6 +79,7 @@ public :
 
    WidgetArea& operator=(const WidgetArea& a);
 
+   void MoveBy(int dx , int dy);
 	Rectangle OuterArea() const {return outer_area;}
 	Rectangle InnerArea() const {return inner_area;}
 	int       W() const {return outer_area.W();}
@@ -99,11 +102,12 @@ public :
 	void SetOuterArea(Rectangle r);
 	void SetOuterArea(int xpos , int ypos , unsigned int width , unsigned int height);
 
-	void SetInnerPos(int xpos , int ypos);
-	void SetInnerDim(unsigned int width , unsigned int height);
-	void SetInnerArea(Rectangle r);
-	void SetInnerArea(int xpos , int ypos , unsigned int width , unsigned int height);
-
+	void SetRelativeInnerPosition(int xpos , int ypos);/// Changes margins, probably not very useful
+	void SetRelativeInnerDimensions(unsigned int width , unsigned int height);/// Changes margins, probably not very useful
+	void SetRelativeInnerArea(Rectangle r);/// Changes margins!!!!
+	void SetRelativeInnerArea(int xpos , int ypos , unsigned int width , unsigned int height);/// changes margins!!!!
+   void SetFractionalInnerArea(float fx , float fy , float fw , float fh);/// Sets inner area based on fractions of outer area's width and height
+	
 	/// Changes position and outer area!!!
 	void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
 

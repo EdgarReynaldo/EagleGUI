@@ -99,6 +99,13 @@ public :
    virtual void SetArea(int xpos , int ypos , int width , int height);
    void SetArea(const Rectangle& r);
    
+	/// Changes position and outer area!!!
+	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
+
+	/// Make room in outer area for inner area first!!!
+	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
+
+
    virtual bool AcceptsFocus() {return true;}
 
 

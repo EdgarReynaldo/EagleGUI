@@ -448,6 +448,16 @@ EagleEvent EagleEventHandler::WaitForEvent(double timeout) {
 
 
 
+EagleEvent EagleEventHandler::WaitForEvent(EAGLE_EVENT_TYPE t) {
+   EagleEvent ev;
+   do {
+      ev = WaitForEvent();
+   } while (ev.type != t);
+   return ev;
+}
+
+
+
 void EagleEventHandler::RefreshQueue() {
    PrivateRefreshQueue();
    CheckSources();

@@ -246,13 +246,18 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       return;
    }
    
-///   EAGLE_DEBUG(EagleLog() << "WidgetBase::Display - " << GetName() << std::endl;);
+///   EAGLE_DEBUG(EagleLog() << "Displaying widget " << GetName() << std::endl;);
    
    /// TODO : 
 //   win->SetClippingRectangle(area.OuterArea());
-   
+   if (area.HasImageAlpha()) {
+      win->SetPMAlphaBlender();
+   }
    if (bg_draw_func) {
       (*bg_draw_func)(win , area , WCols() , xpos , ypos);
+   }
+   if (area.HasImageAlpha()) {
+      win->RestoreLastBlendingState();
    }
    
    PrivateDisplay(win , xpos , ypos);

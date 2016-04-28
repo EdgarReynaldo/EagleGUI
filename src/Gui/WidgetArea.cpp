@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -83,6 +83,13 @@ WidgetArea& WidgetArea::WidgetArea::operator=(const WidgetArea& a) {
 
 
 
+void WidgetArea::MoveBy(int dx , int dy) {
+   outer_area.MoveBy(dx,dy);
+   inner_area.MoveBy(dx,dy);
+}
+
+
+
 Rectangle WidgetArea::GetCellRectangle (MARGIN_CELL cell) const {
    return GetCellRectangle((MARGIN_HCELL)(cell%3) , (MARGIN_VCELL)(cell/3));
 }
@@ -127,10 +134,14 @@ void WidgetArea::PaintAll(EagleGraphicsContext* win , EagleColor col , int x , i
 
 void WidgetArea::PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell , int x , int y , int flags) const {
 	EagleImage* img = cell_images[vcell][hcell];
+	EAGLE_ASSERT(img);
 	if (!img) {return;}
 	Rectangle r = GetCellRectangle(hcell , vcell);
 	if (r.W() && r.H()) {
-      win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
+      if (img) {
+         win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
+      }
+      ///win->DrawRectangle(r , 1.0 , EagleColor(0,255,0));
 	}
 }
 
@@ -153,9 +164,9 @@ void WidgetArea::SetImage(EagleImage* img , MARGIN_HCELL hcell , MARGIN_VCELL vc
 
 
 void WidgetArea::SetImages(EagleImage* imgs[3][3]) {
-   for (unsigned int x = 0 ; x < 3 ; ++x) {
-      for (unsigned int y = 0 ; y < 3 ; ++y) {
-         cell_images[x][y] = imgs[x][y];
+   for (unsigned int y = 0 ; y < 3 ; ++y) {
+      for (unsigned int x = 0 ; x < 3 ; ++x) {
+         cell_images[y][x] = imgs[y][x];
       }
    }
 }
@@ -203,31 +214,35 @@ void WidgetArea::SetOuterArea(int xpos , int ypos , unsigned int width , unsigne
 
 
 
-void WidgetArea::SetInnerPos(int xpos , int ypos) {
-	inner_area.SetPos(xpos , ypos);
-	outer_area.SetPos(xpos - mleft , ypos - mtop);
+void WidgetArea::SetRelativeInnerPosition(int xpos , int ypos) {
+   SetRelativeInnerArea(xpos,ypos,inner_area.W(),inner_area.H());
 }
 
 
 
-void WidgetArea::SetInnerDim(unsigned int width , unsigned int height) {
-//	if (width < 0) {width = 0;}
-//	if (height < 0) {height = 0;}
-	inner_area.SetDimensions(width , height);
-	outer_area.SetDimensions(mleft + width + mright , mtop + height + mbot);
+void WidgetArea::SetRelativeInnerDimensions(unsigned int width , unsigned int height) {
+	SetRelativeInnerArea(inner_area.X() , inner_area.Y() , width , height);
 }
 
 
 
-void WidgetArea::SetInnerArea(Rectangle r) {
-	SetInnerArea(r.X() , r.Y() , r.W() , r.H());
+void WidgetArea::SetRelativeInnerArea(Rectangle r) {
+	SetRelativeInnerArea(r.X() , r.Y() , r.W() , r.H());
 }
 
 
 
-void WidgetArea::SetInnerArea(int xpos , int ypos , unsigned int width , unsigned int height) {
-//	if (width < 0) {width = 0;}
-//	if (height < 0) {height = 0;}
+void WidgetArea::SetRelativeInnerArea(int xpos , int ypos , unsigned int width , unsigned int height) {
+   
+   if (xpos < 0) {xpos = 0;}
+   if (ypos < 0) {ypos = 0;}
+   if (xpos >= outer_area.W()) {xpos = (outer_area.W() - 1);}
+   if (ypos >= outer_area.H()) {ypos = (outer_area.H() - 1);}
+
+   if ((xpos + (int)width) > outer_area.W()) {width = (unsigned int)(outer_area.W() - xpos);}
+   if ((ypos + (int)height) > outer_area.H()) {height = (unsigned int)(outer_area.H() - ypos);}
+
+   inner_area.SetArea(xpos,ypos,width,height);
 	
 	// resize
 	inner_area.SetDimensions(width , height);
@@ -236,6 +251,34 @@ void WidgetArea::SetInnerArea(int xpos , int ypos , unsigned int width , unsigne
 	// reposition
 	inner_area.SetPos(xpos , ypos);
 	outer_area.SetPos(xpos - mleft , ypos - mtop);
+}
+
+
+
+void WidgetArea::SetFractionalInnerArea(float fx , float fy , float fw , float fh) {
+//**
+   if (fx < 0.0f) {fx = 0.0f;}
+   if (fx > 1.0f) {fx = 1.0f;}
+   if (fy < 0.0f) {fy = 0.0f;}
+   if (fy > 1.0f) {fy = 1.0f;}
+   if (fw < 0.0f) {fw = 0.0f;}
+   if (fx + fw > 1.0f) {fw = 1.0f - fx;}
+   if (fh < 0.0f) {fh = 0.0f;}
+   if (fy + fh > 1.0f) {fh = 1.0f - fy;}
+   Rectangle r = OuterArea();
+   int left = (int)(fx*r.W());
+   int top = (int)(fy*r.H());
+   int right = (int)((1.0f - (fx + fw))*r.W());
+   int bottom = (int)((1.0f - (fy + fh))*r.H());
+   SetMarginsContractFromOuter(left , right , top , bottom);
+//*/
+/**
+   inner_area.SetArea(LayoutArea(OuterArea() , LayoutRectangle(fx,fy,fw,fh)));
+   mleft = inner_area.X() - outer_area.X();
+   mtop = inner_area.Y() - outer_area.Y();
+   mright = outer_area.BRX() - inner_area.BRX();
+   mbot = outer_area.BRY() - inner_area.BRY();
+*/
 }
 
 
@@ -262,32 +305,37 @@ void WidgetArea::SetMarginsContractFromOuter(int left , int right , int top , in
 	if (top < 0) {top = 0;}
 	if (bottom < 0) {bottom = 0;}
 	
-	/// contract margins inward from the boundaries of the outer area, thus changing the inner area
-	// check limits first
-	
-	int hmargin = left + right;
-	int vmargin = top + bottom;
-	
-	if (hmargin > outer_area.W()) {
-		// need to shrink horizontal margins, attempt to preserve original ratio of margins
-		left = (outer_area.W()*left)/hmargin;
-		right = (outer_area.W()*right)/hmargin;
-		EAGLE_ASSERT((left + right) <= outer_area.W());
+	/// Contract margins inward from the boundaries of the outer area, thus changing the inner area
+
+	/// We always set the margin values so they're preserved even when the size changes
+	/// This prevents us from setting incorrect margins on an zero sized rectangle
+	int newhmargin = left + right;
+	int newvmargin = top + bottom;
+
+	/// The new values don't necessarily match the new margins if the margins are too large for the outer area
+	int newleft = left;
+	int newtop = top;
+
+	/// Attempt to preserve ratio of margins if too large
+	if (newhmargin > outer_area.W()) {
+      newhmargin = outer_area.W();
+      newleft = (int)((float)outer_area.W()*left/((float)(left + right)));
+   }
+	if (newvmargin > outer_area.H()) {
+      newvmargin = outer_area.H();
+      newtop = (int)((float)outer_area.W()*top/((float)(top + bottom)));
 	}
-	if (vmargin > outer_area.H()) {
-		// need to shrink vertical margins, attempt to preserve original ratio of margins
-		top = (outer_area.H()*top)/vmargin;
-		bottom = (outer_area.H()*bottom)/vmargin;
-		EAGLE_ASSERT((top + bottom) <= outer_area.H());
-	}
 	
+	int innerhspaceleft = outer_area.W() - newhmargin;
+	int innervspaceleft = outer_area.H() - newvmargin;
+
 	mleft = left;
 	mright = right;
 	mtop = top;
 	mbot = bottom;
-	
+
 	// now set inner area
-	inner_area.SetArea(outer_area.X() + left , outer_area.Y() + top , outer_area.W() - (left + right) , outer_area.H() - (top + bottom));
+	inner_area.SetArea(outer_area.X() + newleft , outer_area.Y() + newtop , innerhspaceleft , innervspaceleft);
 }
 
 

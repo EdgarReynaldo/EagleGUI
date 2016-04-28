@@ -36,6 +36,7 @@
 #include "Eagle/MousePointer.hpp"
 
 
+/// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
 enum EAGLE_DISPLAY_FLAGS {
    EAGLE_WINDOWED                    = 1 << 0,
    EAGLE_FULLSCREEN                  = 1 << 1,

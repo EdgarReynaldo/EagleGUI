@@ -284,6 +284,22 @@ void Layout::SetArea(const Rectangle& r) {
 
 
 
+/// Changes position and outer area!!!
+void Layout::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
+   WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
+   RepositionAllChildren();
+}
+
+
+
+/// Make room in outer area for inner area first!!!
+void Layout::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
+   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
+   RepositionAllChildren();
+}
+
+
+
 /**
 void Layout::TakeOverLayoutFrom(Layout* l) {
    ClearLayout();

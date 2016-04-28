@@ -619,7 +619,7 @@ int GuiTestMain(int argc , char** argv) {
    
 
    gui->SetDrawWindow(win);
-   gui->SetBackgroundColor(EagleColor(0,255,255));
+   gui->SetBackgroundColor(EagleColor(0,127,0));
 
    
    Rectangle r(200,150,400,300);
@@ -636,6 +636,12 @@ int GuiTestMain(int argc , char** argv) {
 //   EagleLog() << "Gui inner area = " << gui->InnerArea() << std::endl;
    
    GridLayout* grid_layout = new GridLayout();
+   int rows = 2;
+   int columns = 2;
+   int sz = rows*columns;
+
+   grid_layout->ResizeGrid(columns , rows);
+
    grid_layout->SetName("Grid layout");
    
    gui->SetRootLayout(grid_layout);
@@ -648,17 +654,14 @@ int GuiTestMain(int argc , char** argv) {
 //   EagleLog() << "Grid layout outer area = " << grid_layout->OuterArea() << std::endl;
 //   EagleLog() << "Grid layout inner area = " << grid_layout->InnerArea() << std::endl;
    
-   int rows = 2;
-   int columns = 2;
-   int sz = rows*columns;
    
-   grid_layout->ResizeGrid(columns , rows);
    
    Button* warray = new Button[sz - 1];
    
    for (int i = 0 ; i < sz - 1 ; ++i) {
       grid_layout->AddWidget(&warray[i] , false);
       warray[i].SetLabel("Grid Button");
+      warray[i].SetFont(verdana);
    }
    for (int i = 0 ; i < sz - 1 ; ++i) {
       warray[i].SetMarginsContractFromOuter((i+1)*15 , (i+1)*15 , (i+1)*15 , (i+1)*15);
@@ -719,6 +722,7 @@ int GuiTestMain(int argc , char** argv) {
       warray2[i].SetMarginsExpandFromInner(2*(i+1) , 2*(i+1) , 2*(i+1) , 2*(i+1));
       warray2[i].SetBgDrawFunc(WidgetBorderPainterShadow);
       warray2[i].SetLabel("Relative Button");
+      warray2[i].SetFont(consola);
       relative_layout->Layout::PlaceWidget(&warray2[i] , i , false);
 //      OutputLog() << "warray2[" << i << "].OuterArea() = " << warray2[i].OuterArea() << std::endl;
 //      OutputLog() << "warray2[" << i << "].InnerArea() = " << warray2[i].InnerArea() << std::endl;
@@ -733,7 +737,12 @@ int GuiTestMain(int argc , char** argv) {
    bool resize_display = false;
    
    std::string output;
+
    
+   EagleLog() << "Printing Widgethandler hierarchy :" << endl;
+   EagleLog() << *gui << endl << endl;
+      
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
 //   sys->GetSystemTimer()->Create(1.0);
    sys->GetSystemTimer()->Start();
    

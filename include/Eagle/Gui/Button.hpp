@@ -117,7 +117,8 @@ protected :
    int rad_b;// Secondary vertical radius, only for ellipses
 
    double spring_duration;
-   double roundness;// for ROUNDED_BTN type buttons
+   float hradpercent;// for ROUNDED_BTN type buttons
+   float vradpercent;// for ROUNDED_BTN type buttons
    
    /// For tracking state while the button is held
    bool user_activated;
@@ -190,7 +191,7 @@ public :
    
    virtual void SetLabel(std::string label_text);
    
-   void SetRoundingPercent(double percent);// for ROUNDED_BTN type buttons
+   void SetRoundingPercent(float hpercent , float vpercent);// for ROUNDED_BTN type buttons
 
    virtual void SetFont(EagleFont* textfont);
    

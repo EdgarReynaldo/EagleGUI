@@ -300,7 +300,7 @@ void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str ,
   std::string underlinetext = GetGuiUnderlineText(str);
   
   int height = font->Height();
-  int vspace = height + GUI_TEXT_LINE_SPACING + 1;
+  int vspace = height/10;///GUI_TEXT_LINE_SPACING + 1;
   
   DrawTextString(font , text , x , y , c , halign , valign);
   DrawTextString(font , underlinetext , x , y + vspace, c , halign , valign);

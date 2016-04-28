@@ -35,7 +35,8 @@ Keywords used for source searches
 - CREDIT
 - CREDITS
 - TODO
+- URGENT
 - DESIGN
-
+- NOTE
 */
 

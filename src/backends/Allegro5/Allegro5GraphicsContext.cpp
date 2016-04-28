@@ -44,12 +44,10 @@ Allegro5GraphicsContext::Allegro5GraphicsContext() :
       EagleGraphicsContext(StringPrintF("Allegro5GraphicsContext at %p" , this)),
       display(0),
       realbackbuffer(),
-      blender_op(0),
-      blender_src(0),
-      blender_dest(0),
-      old_blender_op(0),
-      old_blender_src(0),
-      old_blender_dest(0)
+      blender_op(ALLEGRO_ADD),
+      blender_src(ALLEGRO_ONE),
+      blender_dest(ALLEGRO_INVERSE_ALPHA),
+      blender_stack()
 {}
 
 
@@ -58,12 +56,10 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
       EagleGraphicsContext(StringPrintF("Allegro5GraphicsContext at %p" , this)),
       display(0),
       realbackbuffer(),
-      blender_op(0),
-      blender_src(0),
-      blender_dest(0),
-      old_blender_op(0),
-      old_blender_src(0),
-      old_blender_dest(0)
+      blender_op(ALLEGRO_ADD),
+      blender_src(ALLEGRO_ONE),
+      blender_dest(ALLEGRO_INVERSE_ALPHA),
+      blender_stack()
 {
    Create(width , height , flags);
 }
@@ -80,6 +76,7 @@ Allegro5GraphicsContext::~Allegro5GraphicsContext() {
 bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    Destroy();
    
+   /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
    al_set_new_display_flags(flags);
    display = al_create_display(width,height);
    if (!display) {return false;}
@@ -174,18 +171,21 @@ void Allegro5GraphicsContext::RestoreLastBlendingState() {
 
 
 void Allegro5GraphicsContext::StoreBlender() {
-   old_blender_op = blender_op;
-   old_blender_src = blender_src;
-   old_blender_dest = blender_dest;
+   BLENDER b;
+   b.blender_op = blender_op;
+   b.blender_src = blender_src;
+   b.blender_dest = blender_dest;
+   blender_stack.push_back(b);
 }
 
 
 
 void Allegro5GraphicsContext::RestoreBlender() {
-   blender_op = old_blender_op;
-   blender_src = old_blender_src;
-   blender_dest = old_blender_dest;
-   al_set_blender(blender_op , blender_src , blender_dest);
+   if (blender_stack.size()) {
+      BLENDER b = blender_stack.back();
+      blender_stack.pop_back();
+      al_set_blender(blender_op = b.blender_op , blender_src = b.blender_src , blender_dest = b.blender_dest);
+   }
 }
 
 

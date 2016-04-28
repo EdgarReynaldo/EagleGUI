@@ -23,8 +23,8 @@
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Image.hpp"
-
-
+#include "Eagle/Gui/Layout/LayoutRectangle.hpp"
+#include "Eagle/System.hpp"
 
 NinePatch::NinePatch() : imgs() {
    for (int y = 0 ; y < 3 ; ++y) {
@@ -75,26 +75,53 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    EAGLE_ASSERT(nparea.InnerArea().W() < nparea.OuterArea().W() && nparea.InnerArea().W() > 0);
    EAGLE_ASSERT(nparea.InnerArea().H() < nparea.OuterArea().H() && nparea.InnerArea().H() > 0);
    
-   Rectangle img_rect(0 , 0 , src_img->W() , src_img->H());
+   nparea.MoveBy(-(nparea.OuterArea().X()) , -(nparea.OuterArea().Y()));
+   WidgetArea imgarea;
    
-   EAGLE_ASSERT(img_rect.Contains(nparea.OuterArea()));
+   imgarea.SetOuterArea(0 , 0 , src_img->W() , src_img->H());
    
+   EAGLE_DEBUG(
+      if (!imgarea.OuterArea().Contains(nparea.OuterArea())) {
+///         EagleLog() << "MakeNinePatch() - Image area does not fully contain the nine patch area!" << std::endl;
+      }
+   );
+   
+   /// Store relative positions in nplayout
+   LayoutRectangle nplayout(nparea.OuterArea() , nparea.InnerArea());
+   
+   /// Set the matching relative area on the image
+   imgarea.SetFractionalInnerArea(nplayout.fx , nplayout.fy , nplayout.fw , nplayout.fh);
+   
+   EagleLog() << "NPAREA :" << std::endl;
+   EagleLog() << nparea << std::endl;
+   EagleLog() << "IMGREA :" << std::endl;
+   EagleLog() << imgarea << std::endl;
+   
+   win->SetCopyBlender();
    NinePatch np;
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
-         np[x][y] = 0;
+         np[y][x] = 0;
          MARGIN_HCELL hcell = (MARGIN_HCELL)x;
          MARGIN_VCELL vcell = (MARGIN_VCELL)y;
-         Rectangle r = nparea.GetCellRectangle(hcell , vcell);
-         EagleImage* img = win->CreateImage(r.W() , r.H() , VIDEO_IMAGE);
+         Rectangle src = imgarea.GetCellRectangle(hcell , vcell);
+         Rectangle cell = nparea.GetCellRectangle(hcell , vcell);
+         Rectangle dest(0,0,cell.W(),cell.H());
+
+         EagleLog() << "Drawing Image :" << std::endl;
+         EagleLog() << "Src = [" << src << "]" << std::endl;
+         EagleLog() << "Dest = [" << dest << "]" << std::endl;
+         EagleImage* img = win->CreateImage(dest.W() , dest.H() , VIDEO_IMAGE);
          EAGLE_ASSERT(img);
          EAGLE_ASSERT(img->Valid());
          win->PushDrawingTarget(img);
-         win->DrawRegion(src_img , r , 0 , 0);
+         win->DrawStretchedRegion(src_img , src , dest , DRAW_NORMAL);
          win->PopDrawingTarget();
-         np[x][y] = img;
+         np[y][x] = img;
       }
    }
+   win->RestoreLastBlendingState();
+
    return np;
 }
 

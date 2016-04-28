@@ -22,13 +22,52 @@ int NewGuiTestMain(int argc , char** argv) {
       return 1;
    }
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
       return 2;
    }
    
-   Allegro5Font bfont("Verdana.ttf" , 20 , 0);
+
+   Allegro5Font bfont("Verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
+   Allegro5Font bfont2("Consola.ttf" , 20 , LOAD_FONT_MONOCHROME);
    
+   EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder.png");
+   EagleImage* npimage2 = win->LoadImageFromFile("Data/ninePatch/OrangeYellowNP.png");
+///   EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder2.bmp");
+///   EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder.tga");
+   
+   EAGLE_ASSERT(npimage->Valid());
+   
+   
+   
+   WidgetArea warea;
+   warea.SetOuterArea(Rectangle(0,0,800,600));///npimage->W(),npimage->H()));
+   EagleLog() << warea;
+   warea.SetMarginsContractFromOuter(100,100,75,75);
+   EagleLog() << warea;
+   for (int i = 0 ; i < 9 ; ++i) {
+      warea.SetImage(npimage2 , (MARGIN_HCELL)(i/3) , (MARGIN_VCELL)(i%3));
+   }
+   win->Clear(EagleColor(0,0,255));
+   warea.PaintImages(win , 0 , 0);
+   win->FlipDisplay();
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+
+   NinePatch np = MakeNinePatch(win , npimage , warea);
+   warea.SetImages(np.imgs);
+   
+   win->Clear(EagleColor(255,255,255));
+   win->SetPMAlphaBlender();
+   WidgetNPPainter(win , warea , WidgetColorset() , 0 , 0);
+   win->RestoreLastBlendingState();
+   win->FlipDisplay();
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   
+   win->Clear(EagleColor(0,0,0));
+   win->Draw(npimage , 0 , 0);
+   win->FlipDisplay();
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+      
    RelativeLayout r;
    
    WidgetHandler gui;
@@ -39,29 +78,82 @@ int NewGuiTestMain(int argc , char** argv) {
    gui.SetArea(0,0,800,600);
    
    Button b1;
-///   b1.SetArea(200,150,400,300);
-   b1.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_SPACE));
-   b1.SetLabel("Button 1");
+   b1.SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
+   b1.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_1));
+   b1.SetLabel("Spring Button &1");
    b1.SetFont(&bfont);
+
+   Button b2;
+   b2.SetButtonType(ROUNDED_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
+   b2.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_2));
+   b2.SetLabel("Spring Button &2");
+   b2.SetFont(&bfont);
+
+   Button b3;
+   b3.SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
+   b3.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_3));
+   b3.SetLabel("Spring Button &3");
+   b3.SetFont(&bfont);
+
+   Button b4;
+   b4.SetButtonType(CIRCLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
+   b4.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_4));
+   b4.SetLabel("Spring Button &4");
+   b4.SetFont(&bfont);
    
+   Button b5;
+   b5.SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
+   b5.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_5));
+   b5.SetLabel("Toggle Button &5");
+   b5.SetFont(&bfont2);
+
+   Button b6;
+   b6.SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
+   b6.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_6));
+   b6.SetLabel("Toggle Button &6");
+   b6.SetFont(&bfont2);
+
+   Button b7;
+   b7.SetButtonType(ELLIPSE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
+   b7.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_7));
+   b7.SetLabel("Toggle Button &7");
+   b7.SetFont(&bfont2);
+
+   Button b8;
+   b8.SetButtonType(CIRCLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
+   b8.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_8));
+   b8.SetLabel("Toggle Button &8");
+   b8.SetFont(&bfont2);
+
    DumbText text1;
 ///   text1.SetArea(0,0,800,200);
-   text1.SetTextParameters(HALIGN_CENTER , VALIGN_TOP , 10 , 20 , 10);
-   text1.SetTextString("Multiline\nText string\nTest" , &bfont);
+   text1.SetTextParameters(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10);
+   text1.SetTextString("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
+   text1.SetDisplayPriority(HIGH_DISPLAY_PRIORITY);
+   text1.SetMarginsContractFromOuter(10,10,10,10);
+   text1.SetBgImages(np.imgs);
+   text1.SetImagesHaveAlpha(true);
+   text1.SetBgDrawFunc(WidgetNPPainter);
 
-   r.Resize(2);
-   r.PlaceWidget(&b1 , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
-   r.PlaceWidget(&text1 , 1 , LayoutRectangle(0.25 , 0.0 , 0.5 , 0.25));
-///   gui.AddWidget(&b1 , false);
-///   gui.AddWidget(&text1 , false);
+   r.Resize(9);
+   r.PlaceWidget(&b1 , 0 , LayoutRectangle(0.0,0.0,0.4,0.4));
+   r.PlaceWidget(&b2 , 1 , LayoutRectangle(0.0,0.6,0.4,0.4));
+   r.PlaceWidget(&b3 , 2 , LayoutRectangle(0.6,0.0,0.4,0.4));
+   r.PlaceWidget(&b4 , 3 , LayoutRectangle(0.6,0.6,0.4,0.4));
    
-   EagleLog() << gui << endl;
-   EagleLog() << b1 << endl;
+   r.PlaceWidget(&b5 , 4 , LayoutRectangle(0.0,0.4,0.4,0.2));
+   r.PlaceWidget(&b6 , 5 , LayoutRectangle(0.4,0.6,0.2,0.4));
+   r.PlaceWidget(&b7 , 6 , LayoutRectangle(0.4,0.0,0.2,0.4));
+   r.PlaceWidget(&b8 , 7 , LayoutRectangle(0.6,0.4,0.4,0.2));
+   
+   r.PlaceWidget(&text1 , 8 , LayoutRectangle(0.4 , 0.4 , 0.2 , 0.2));
    
    Layout* layout = gui.GetRootLayout();
-   layout->SetMarginsContractFromOuter(10,10,10,10);
+   layout->SetMarginsContractFromOuter(20,20,20,20);
    layout->SetBgDrawFunc(WidgetBorderPainterContrast);
    
+   EagleLog() << text1 << std::endl;
+
    bool quit = false;
    bool redraw = true;
    

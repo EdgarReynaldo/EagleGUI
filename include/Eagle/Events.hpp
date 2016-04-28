@@ -293,6 +293,8 @@ public :
    
    EagleEvent WaitForEvent();
    EagleEvent WaitForEvent(double timeout);
+   EagleEvent WaitForEvent(EAGLE_EVENT_TYPE t);
+
    void RefreshQueue();
 
 

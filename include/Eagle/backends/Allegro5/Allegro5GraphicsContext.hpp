@@ -12,6 +12,9 @@
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 
+#include <vector>
+
+
 //#ifdef LoadImage
 //   #warning "LoadImage already defined @@@"
 //#endif
@@ -19,7 +22,11 @@
 ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float v , ALLEGRO_COLOR ac);
 
 
-
+typedef struct BLENDER {
+   int blender_op;
+   int blender_src;
+   int blender_dest;
+} BLENDER;
 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
    
@@ -30,9 +37,10 @@ private :
    int blender_op;
    int blender_src;
    int blender_dest;
-   int old_blender_op;
-   int old_blender_src;
-   int old_blender_dest;
+   std::vector<BLENDER> blender_stack;
+//   int old_blender_op;
+//   int old_blender_src;
+//   int old_blender_dest;
 
 
 

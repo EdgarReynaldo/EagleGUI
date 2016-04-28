@@ -258,6 +258,8 @@ void GridLayout::SetArea(int xpos , int ypos , int width , int height) {
 }
 
 
+/// TODO : URGENT : We need to figure out something other than clearing the layout.
+/// TODO : URGENT : It just caused all the widgets stored in the dialog to disappear
 
 void GridLayout::ResizeGrid(int numcolumns , int numrows) {
 	int newsize = numcolumns*numrows;

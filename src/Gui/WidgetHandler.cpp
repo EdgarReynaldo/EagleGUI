@@ -686,7 +686,7 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(w);
    EAGLE_ASSERT(GetValidByAddress(w));
    
-   /// NOTE : Uncomment the next line to crash
+   /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
    EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget - w->GetName() = (%s)\n" , w->GetName().c_str());
    
    if (!OwnsWidget(w)) {
@@ -922,13 +922,15 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    
    win->PushDrawingTarget(buffer);
    
-   win->SetCopyBlender();
-   
 ///   clear_background = true;
    if (clear_background) {
       // WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
       // of the state of their NEEDS_REDRAW flag.
+      win->SetCopyBlender();
+      
       win->Draw(background , 0 , 0);
+
+      win->RestoreLastBlendingState();
 //      blit(background , buffer , 0 , 0 , 0 , 0 , background.W() , background.H());
       
       dbg_list.clear();
@@ -1578,6 +1580,7 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    ++indent;
    if (buffer) {
       buffer->DescribeTo(os , indent);
+      os << endl;
    }
    else {
       os << indent << "NULL Buffer." << endl;
@@ -1587,6 +1590,7 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    ++indent;
    if (background) {
       background->DescribeTo(os , indent);
+      os << endl;
    }
    else {
       os << indent << "NULL Background." << endl;
@@ -1610,6 +1614,7 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    cam.DescribeTo(os,indent);
    --indent;
    WidgetBase::DescribeTo(os , indent);
+   os << indent << "Root Layout at " << root_layout << " is named " << (root_layout?root_layout->GetName().c_str():"NULL") << endl;
    os << indent << "Widgets used by this dialog : {" << endl;
    ++indent;
    unsigned int nwidgets = wlist.size();

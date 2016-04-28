@@ -107,8 +107,45 @@ string GetButtonStateText(BUTTON_STATE state) {
 
 
 void Button::SetButtonState(bool hover , bool up) {
+   bool oldhover = Flags() & HOVER;
+   bool oldup = (btn_state % 2 == 0);
+   if (up != oldup) {
+      if (btn_action_type == TOGGLE_BTN) {
+          QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+      }
+      else if (btn_action_type == SPRING_BTN) {
+         if (!up) {
+            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+         }
+         else {
+            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+         }
+      }
+      SetBgRedrawFlag();
+   }
+/** NOTE : THIS MAKES A BUTTON THAT IS DOWN SEND A HELD MESSAGE WHEN THE HOVER CHANGES - NOT USEFUL
+   else {
+      if (!up) {
+         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+      }
+   }
+//*/
+   if (hover != oldhover) {
+      WidgetBase::SetHoverState(hover);
+      if (hover_message_enabled) {
+         if (hover) {
+            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
+         }
+         else {
+            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+         }
+      }
+      if (btn_class == BUTTON_CLASS_HOVER) {
+         WidgetBase::SetBgRedrawFlag();
+      }
+      SetBgRedrawFlag();
+   }
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
-   SetRedrawFlag();
 }
 
 
@@ -124,8 +161,11 @@ void Button::ResetRadii() {
          break;
       case ROUNDED_BTN :
          {
-            int min = (r.W()< r.H())?(r.W()):(r.H());
-            rad_a = (int)(BTN_ROUNDNESS*min);
+            rad_a = hradpercent*InnerArea().W()/2.0;
+            rad_b = vradpercent*InnerArea().H()/2.0;
+            
+///            int min = (r.W()< r.H())?(r.W()):(r.H());
+///            rad_a = (int)(BTN_ROUNDNESS*min);
 //            rad_a = (2*min)/5;
          }
          break;
@@ -134,55 +174,9 @@ void Button::ResetRadii() {
          rad_b = r.H()/2;
          break;
    }
+   SetBgRedrawFlag();
 }
 
-
-/** OLD, replaced with global functions
-
-///void Button::DrawButtonRectangle(BITMAP* bmp , int x , int y) {
-void Button::DrawButtonRectangle(EagleGraphicsContext* win , int x , int y) {
-   Rectangle r = area.InnerArea();
-   bool up = 
-   r.MoveBy(x,y);
-   switch (btn_shape) {
-      case RECTANGLE_BTN : 
-         up?
-         r.DrawGuiRectUp(win , WCols()[FGCOL] , WCols()[SDCOL]):
-         r.DrawGuiRectDown(win , WCols()[MGCOL] , WCols()[SDCOL]);
-         break;
-      case CIRCLE_BTN : 
-         up?
-         r.DrawGuiCircleUp(win , rad_a , WCols()[FGCOL] , WCols()[SDCOL]):
-         r.DrawGuiCircleDown(win , rad_a , WCols()[MGCOL] , WCols()[SDCOL]);
-         break;
-      case ROUNDED_BTN :
-         up?
-         r.DrawGuiRoundedUp(win , rad_a , WCols()[FGCOL] , WCols()[SDCOL]):
-         r.DrawGuiRoundedDown(win , rad_a , WCols()[MGCOL] , WCols()[SDCOL]);
-         break;
-      case ELLIPSE_BTN : 
-         up?
-         r.DrawGuiEllipseUp(win , WCols()[FGCOL] , WCols()[SDCOL]):
-         r.DrawGuiEllipseDown(win , WCols()[MGCOL] , WCols()[SDCOL]);
-         break;
-   }
-}
-
-
-
-///void Button::DrawButtonText(BITMAP* bmp , int x , int y) {
-void Button::DrawButtonText(EagleGraphicsContext* win , int x , int y) {
-   if (text_font && text.length()) {
-      Rectangle r = area.InnerArea();
-      
-      int tx = x + r.X() + r.W()/2;
-//      int ty = y + r.Y() + (r.H() - text_font->Height())/2 ;
-      int ty = y + r.Y() + r.H()/2;
-      
-      win->DrawGuiTextString(text_font , text.c_str() , tx , ty , WCols()[TXTCOL] , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-   }
-}
-*/
 
 
 void Button::FreeClickArea() {
@@ -214,7 +208,8 @@ void Button::FreeClickArea() {
    int rad_b;// Secondary vertical radius, only for ellipses
 
    double spring_duration;
-   double roundness;// for ROUNDED_BTN type buttons
+   float hradpercent;// for ROUNDED_BTN type buttons
+   float vradpercent;// for ROUNDED_BTN type buttons
    
    /// For tracking state while the button is held
    bool user_activated;
@@ -242,7 +237,8 @@ Button::Button() :
       rad_a(0),
       rad_b(0),
       spring_duration(SPRING_BTN_DURATION),
-      roundness(BTN_ROUNDNESS),
+      hradpercent(0.75),
+      vradpercent(0.75),
       user_activated(false),
       focuskey_activated(false),
       pointer_activated(false),
@@ -271,7 +267,8 @@ Button::Button(string name) :
       rad_a(0),
       rad_b(0),
       spring_duration(SPRING_BTN_DURATION),
-      roundness(BTN_ROUNDNESS),
+      hradpercent(0.75),
+      vradpercent(0.75),
       user_activated(false),
       focuskey_activated(false),
       pointer_activated(false),
@@ -301,7 +298,8 @@ Button::Button(string name , BUTTON_SHAPE shape , BUTTON_ACTION_TYPE atype , Eag
       rad_a(0),
       rad_b(0),
       spring_duration(SPRING_BTN_DURATION),
-      roundness(BTN_ROUNDNESS),
+      hradpercent(0.75),
+      vradpercent(0.75),
       user_activated(false),
       focuskey_activated(false),
       pointer_activated(false),
@@ -368,7 +366,6 @@ int Button::PrivateCheckInputs() {
       }
       if (released) {
          SetButtonState(Flags() & HOVER , true);
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
          user_activated = false;
          focuskey_activated = false;
          pointer_activated = false;
@@ -415,30 +412,21 @@ int Button::PrivateCheckInputs() {
                }
                break;
             case ROUNDED_BTN :
-               /// TODO : FIXME - Lazy hit detection since a rounded rectangle is so close to a rectangle anyway.
-               activated = true;
-               if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-               break;
-            case ELLIPSE_BTN :
                {
-                  int xd = msx - (r.X() + r.W()/2);
-                  int yd = msy - (r.Y() + r.H()/2);
-                  double dist_sq = xd*xd + yd*yd;
-                  double angle = atan2(yd,xd);
-                  /// TODO: Hmm, distances are just off somehow - hit detection ellipse is slightly larger than drawn ellipse
-                  double exd = (double)rad_a*cos(angle);
-                  double eyd = (double)rad_b*sin(angle);
-///                  int cx = InnerArea().X() + InnerArea.W()/2;
-///                  int cy = InnerArea().Y() + InnerArea.H()/2;
-///                  double ex = ex
-//*
-                  double ellp_dist = exd*exd + eyd*eyd;
-                  if (dist_sq <= ellp_dist) {
+                  RoundedRectangle rr(InnerArea() , rad_a , rad_b , 1.0f);
+                  if (rr.Contains(msx,msy)) {
                      activated = true;
                      if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
                   }
-//*/
-///                  EagleLog() << StringPrintF("dist_sq = %f , ellp_dist = %f" , dist_sq , ellp_dist) << std::endl;
+               }
+               break;
+            case ELLIPSE_BTN :
+               {
+                  Ellipse e(InnerArea());
+                  if (e.Contains(msx,msy)) {
+                     activated = true;
+                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
+                  }
                }
                break;
          }
@@ -452,25 +440,17 @@ int Button::PrivateCheckInputs() {
       switch (btn_action_type) {
          case SPRING_BTN :
             if (up) {
-               EagleLog() << "Spring button activation.";
                up = false;
-               SetButtonState(Flags() & HOVER , up);
-               QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
-               if (WidgetBase::Flags() & ALLOW_CLOSE) {
-                  retmsg |= DIALOG_CLOSE;
-               }
             }
             break;
          case TOGGLE_BTN :
-            EagleLog() << "Toggle button activation.";
             up = !up;
-            SetButtonState(Flags() & HOVER , up);
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
-            if (WidgetBase::Flags() & ALLOW_CLOSE) {
-               retmsg |= DIALOG_CLOSE;
-            }
             break;
          default : throw EagleError("Button::PrivateCheckInputs - btn_action_type unknown");break;
+      }
+      SetButtonState(Flags() & HOVER , up);
+      if (WidgetBase::Flags() & ALLOW_CLOSE) {
+         retmsg |= DIALOG_CLOSE;
       }
    }
    return retmsg;
@@ -681,23 +661,7 @@ WidgetMsg Button::Update (double tsec) // logic handling with animation support
 
 
 void Button::SetHoverState (bool state) {
-   bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
-   if (hover != state) {
-      WidgetBase::SetHoverState(state);
-      SetButtonState(hover , up);
-      if (hover_message_enabled) {
-         if (state) {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
-         }
-         else {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
-         }
-      }
-      if (btn_class == BUTTON_CLASS_HOVER) {
-         WidgetBase::SetBgRedrawFlag();
-      }
-   }
+   SetButtonState(state , Up());
 }
 
 
@@ -711,6 +675,7 @@ void Button::SetRedrawFlag() {
 void Button::SetDrawDimensions(int width , int height) {
    WidgetBase::SetDrawDimensions(width,height);
    ResetRadii();
+   SetBgRedrawFlag();
 }
 
 
@@ -718,6 +683,7 @@ void Button::SetDrawDimensions(int width , int height) {
 void Button::SetArea(int xpos , int ypos , int width , int height) {
    WidgetBase::SetArea(xpos,ypos,width,height);
    ResetRadii();
+   SetBgRedrawFlag();
 }
 
 
@@ -725,6 +691,7 @@ void Button::SetArea(int xpos , int ypos , int width , int height) {
 void Button::SetArea(const Rectangle& r) {
    WidgetBase::SetArea(r);
    ResetRadii();
+   SetBgRedrawFlag();
 }
 
 
@@ -749,6 +716,7 @@ void Button::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_type ,
    btn_action_type = action_type;
    btn_class = button_class;
    ResetRadii();
+   SetBgRedrawFlag();
 }
 
 
@@ -765,7 +733,7 @@ void Button::SetButtonUpState(bool button_up) {
    bool hover = Flags() & HOVER;
    if (up != button_up) {
       up = button_up;
-      btn_state = (BUTTON_STATE)((hover?2:0) + up?0:1);
+      SetButtonState(hover , up);
       SetBgRedrawFlag();
    }
 }
@@ -776,7 +744,7 @@ void Button::ToggleButton() {
    bool up = btn_state % 2 == 0;
    bool hover = Flags() & HOVER;
    up = !up;
-   btn_state = (BUTTON_STATE)((hover?2:0) + up?0:1);
+   SetButtonState(hover , up);
    SetBgRedrawFlag();
 }
 
@@ -789,20 +757,17 @@ void Button::SetLabel(string label_text) {
 
 
 
-void Button::SetRoundingPercent(double percent) {
-   if (percent < 0.0) {percent = 0.0;}
-   if (percent > 1.0) {percent = 1.0;}
-   roundness = percent;
-   int min = (area.W() < area.H())?area.W():area.H();
-   min = min/2;
-   if (min) {
-      min -= 1;
-   }
-   if (btn_shape == ROUNDED_BTN) {
-      rad_a = (int)(roundness*(double)min);
-   }
-   SetBgRedrawFlag();
+
+void Button::SetRoundingPercent(float hpercent , float vpercent) {
+   if (hpercent < 0.0f) {hpercent = 0.0f;}
+   if (hpercent > 1.0f) {hpercent = 1.0f;}
+   if (vpercent < 0.0f) {vpercent = 0.0f;}
+   if (vpercent > 1.0f) {vpercent = 1.0f;}
+   hradpercent = hpercent;
+   vradpercent = vpercent;
+   ResetRadii();
 }
+
 
 
 
@@ -885,7 +850,7 @@ std::ostream& Button::DescribeTo(std::ostream& os , Indenter indent) const {
       os << "NULL" << endl;
    }
    os << indent << "Button radii (a,b) == (" << rad_a << "," << rad_b <<
-         ") , roundness = " << roundness << " , spring duration = " << spring_duration << endl;
+         ") , (hradpercent,vradpercent) = (" << hradpercent << "," << vradpercent << ") , spring duration = " << spring_duration << endl;
    os << indent << "Activation state (user , focuskey , pointer) = (" << user_activated <<
          " , " << focuskey_activated << " , " << pointer_activated << ")" << endl;
    os << indent << "Click area (" << click_area << ") = ";
@@ -921,6 +886,7 @@ void DrawButtonShape(EagleGraphicsContext* win , Button* btn , int x , int y) {
    }
    bool up = (btn->ButtonState()%2) == 0;
    int rad_a = btn->RadiusA();
+   int rad_b = btn->RadiusB();
 ///   int rad_b = btn->RadiusB();
    Rectangle r = btn->InnerArea();
    r.MoveBy(x,y);
@@ -937,8 +903,8 @@ void DrawButtonShape(EagleGraphicsContext* win , Button* btn , int x , int y) {
          break;
       case ROUNDED_BTN :
          up?
-         r.DrawGuiRoundedUp(win , rad_a , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
-         r.DrawGuiRoundedDown(win , rad_a , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
+         r.DrawGuiRoundedUp(win , rad_a , rad_b , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
+         r.DrawGuiRoundedDown(win , rad_a , rad_b , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
          break;
       case ELLIPSE_BTN : 
          up?

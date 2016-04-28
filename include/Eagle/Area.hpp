@@ -294,7 +294,7 @@ enum RECT_CORNER_POS {
 
 
 class Rectangle : public AreaBase {
-private :
+protected :
    int x,y,w,h,brx,bry;
    
    inline void RenewCornerPos();
@@ -348,7 +348,7 @@ public :
 
    inline bool Overlaps(const Rectangle& r) const;
 
-   inline bool Contains(int xpos , int ypos) const;
+   inline virtual bool Contains(int xpos , int ypos) const;
    inline bool Contains(const Rectangle& r) const;
    
    void Draw(EagleGraphicsContext* win , EagleColor color) const;
@@ -358,8 +358,8 @@ public :
    void Fill(EagleGraphicsContext* win , EagleColor color) const;
 
    void DrawInnerFrame(EagleGraphicsContext* win , unsigned int width , EagleColor color) const ;
-   void RoundedFill   (EagleGraphicsContext* win , int corner_radius  , EagleColor color) const ;
-   void RoundedOutline(EagleGraphicsContext* win , int corner_radius  , EagleColor color) const ;
+   void RoundedFill   (EagleGraphicsContext* win , int hrad , int vrad  , EagleColor color) const ;
+   void RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  , EagleColor color) const ;
    void DottedOutline(EagleGraphicsContext* win , EagleColor color , bool even = true) const;
 
    /// DrawGui* functions that draw the shape with a shadow underneath to the right
@@ -367,8 +367,8 @@ public :
    void DrawGuiRectDown   (EagleGraphicsContext* win , EagleColor fg_color , EagleColor sd_color) const ;
    void DrawGuiCircleUp   (EagleGraphicsContext* win , int radius   , EagleColor fg_color , EagleColor sd_color) const ;
    void DrawGuiCircleDown (EagleGraphicsContext* win , int radius   , EagleColor fg_color , EagleColor sd_color) const ;
-   void DrawGuiRoundedUp  (EagleGraphicsContext* win , int radius   , EagleColor fg_color , EagleColor sd_color) const ;
-   void DrawGuiRoundedDown(EagleGraphicsContext* win , int radius   , EagleColor fg_color , EagleColor sd_color) const ;
+   void DrawGuiRoundedUp  (EagleGraphicsContext* win , int hrad , int vrad , EagleColor fg_color , EagleColor sd_color) const ;
+   void DrawGuiRoundedDown(EagleGraphicsContext* win , int hrad , int vrad , EagleColor fg_color , EagleColor sd_color) const ;
    void DrawGuiEllipseUp  (EagleGraphicsContext* win , EagleColor fg_color , EagleColor sd_color) const ;
    void DrawGuiEllipseDown(EagleGraphicsContext* win , EagleColor fg_color , EagleColor sd_color) const ;
 
@@ -452,6 +452,43 @@ inline void Rectangle::OffsetDraw(EagleGraphicsContext* win , int ox , int oy , 
 ///   rect(bmp , x + ox , y + oy , brx + ox , bry + oy , color);
 }
 
+
+
+/// -------------------------------------      RoundedRectangle     ------------------------------------------------
+
+
+
+class RoundedRectangle : public Rectangle {
+
+private :
+   int hrad;
+   int vrad;
+   float thickness;
+   
+public :
+
+   RoundedRectangle(Rectangle r , int hradius , int vradius , float linethickness = 1.0f);
+   RoundedRectangle(Rectangle r , float hrad_percent , float vrad_percent , float linethickness = 1.0f);
+   RoundedRectangle(Rectangle r , const RoundedRectangle& rr);
+
+   virtual bool Contains(int xpos , int ypos) const ;
+   virtual AreaBase& MoveBy(int dx , int dy);
+   virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
+   virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
+   virtual AreaBase* Clone() const;
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
+   void SetRadii(int hradius , int vradius);
+   void SetRoundingPercent(float hp , float vp);
+   void SetThickness(float thickness);
+
+   
+};
+
+
+
 /// Global methods 
 inline bool DimensionsEqual(const Rectangle& r1 , const Rectangle& r2) {
    return r1.DimensionsEqual(r2);
@@ -503,6 +540,29 @@ std::list<Rectangle> CombineRectangles(Rectangle r1 , Rectangle r2);
 std::list<Rectangle> ConsolidateRectangles(std::list<Rectangle> rectlist);
 
 
+/// ------------------------------     Ellipse     ----------------------------------------
+
+
+
+class Ellipse : public Rectangle {
+   
+private :
+   float thickness;
+   
+public :
+
+   Ellipse(Rectangle r , float linethickness = 1.0f);
+   Ellipse(int x , int y , int w , int h , float linethickness = 1.0f);
+
+   virtual bool Contains(int xpos , int ypos) const ;
+   virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
+   virtual AreaBase* Clone() const;
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   void SetThickness(float linethickness);
+};
 
 
 #endif // Area_H
