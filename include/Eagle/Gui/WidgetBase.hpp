@@ -233,10 +233,11 @@ public :
    void         SetBgImages(EagleImage* imgs[3][3]);
    void         SetImagesHaveAlpha(bool have_alpha);
    
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   void         SetArea(const Rectangle& r);
+   /// These 4 functions all pass the requested parameters to their layout owner for adjustment if necessary
+   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
+   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
+   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   void         SetArea(const Rectangle& r , bool notify_layout = true);
 
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
@@ -253,8 +254,8 @@ public :
    virtual int AbsMinWidth() {return 1;}
    virtual int AbsMinHeight() {return 1;}
    
-   virtual bool HasGui() {return false;}
-   virtual WidgetHandler* GetGui() {return 0;}
+   virtual bool HasGui() {return false;}/// TODO : What is this function for again??? Oh right, it's for if the widget is a GUI
+   virtual WidgetHandler* GetGui() {return 0;}/// TODO : What is this function for again??? Oh Right, it's for if the widget is a GUI
    
    WidgetHandler* NearestParentGui();
    WidgetBase*    Root();
@@ -277,6 +278,8 @@ public :
    UINT                  Flags()           const {return flags;}
    int                   DisplayPriority() const {return display_priority;}
    
+   virtual std::string GetWidgetClassName() {return "WidgetBase object";}
+
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 

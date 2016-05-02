@@ -79,15 +79,19 @@ public :
    TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* mouse_window = 0);
    
    virtual ~TwoWaySplitter();
-   
+
    virtual bool PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed = false);
    virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
 
    /// Layout and WidgetBase
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   void SetArea(const Rectangle& r);
+   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
+   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
+   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+///   void SetArea(const Rectangle& r);
+   void SetArea(const Rectangle& r , bool notify_layout = true);
+
+
+   virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
 
    int AbsMinWidth();
    int AbsMinHeight();

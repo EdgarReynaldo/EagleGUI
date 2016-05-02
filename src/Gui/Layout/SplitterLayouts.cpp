@@ -81,6 +81,8 @@ void TwoWaySplitter::RepositionChild(int slot) {
    WidgetBase* widget = wchildren[slot];
    if (!widget) {return;}
    
+   widget->SetArea(RequestWidgetArea(widget , -1,-1,-1,-1) , false);
+/**
    Rectangle r(area.InnerArea());
    int x = r.X();
    int y = r.Y();
@@ -113,8 +115,8 @@ void TwoWaySplitter::RepositionChild(int slot) {
       break;
    }
    
-   widget->SetArea(x,y,w,h);
-   
+   widget->SetArea(x,y,w,h,false);
+//*/   
 }
 
 
@@ -278,9 +280,17 @@ TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* windo
 
 
 TwoWaySplitter::~TwoWaySplitter() {
-   ClearLayout();
+   ClearLayoutAndFreeWidgets();
+   /// In case we go out of scope before our WidgetHandler
+   DetachFromGui();
 }
 
+
+/**
+void TwoWaySplitter::SetArea(const Rectangle& r , bool notify_layout) {
+   WidgetBase::SetArea(r , notify_layout);
+}
+*/
 
 
 bool TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed) {
@@ -303,33 +313,31 @@ bool TwoWaySplitter::AddWidget(WidgetBase* widget , bool delete_when_removed) {
 
 
 
-void TwoWaySplitter::SetDrawPos(int xpos , int ypos) {
-   WidgetBase::SetDrawPos(xpos,ypos);
-   RepositionAllChildren();
+void TwoWaySplitter::SetDrawPos(int xpos , int ypos , bool notify_layout) {
+   /// Ok to call LayoutBase::SetDrawPos because the divpos hasn't changed
+   Layout::SetDrawPos(xpos,ypos,notify_layout);
 }
 
 
 
-void TwoWaySplitter::SetDrawDimensions(int width , int height) {
-   WidgetBase::SetDrawDimensions(width , height);
+void TwoWaySplitter::SetDrawDimensions(int width , int height , bool notify_layout) {
+   WidgetBase::SetDrawDimensions(width , height,notify_layout);
    SetDividerPercent(divider_percent);
-   RepositionAllChildren();
 }
 
 
 
-void TwoWaySplitter::SetArea(int xpos , int ypos , int width , int height) {
-   WidgetBase::SetArea(xpos , ypos , width , height);
+void TwoWaySplitter::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetArea(xpos , ypos , width , height,notify_layout);
    SetDividerPercent(divider_percent);
-   RepositionAllChildren();
 }
 
 
-
-void TwoWaySplitter::SetArea(const Rectangle& r) {
-   SetArea(r.X() , r.Y() , r.W() , r.H());
+//**
+void TwoWaySplitter::SetArea(const Rectangle& r , bool notify_layout) {
+   TwoWaySplitter::SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
 }
-
+//*/
 
 
 int TwoWaySplitter::AbsMinWidth() {
@@ -369,8 +377,6 @@ void TwoWaySplitter::SetDividerSize(int divsize) {
    if (divsize > maxdiv) {divsize = maxdiv;}
    divider_size = divsize;
    SetDividerPercent(divider_percent);
-   RepositionAllChildren();
-   SetBgRedrawFlag();
 }
 
 
@@ -384,6 +390,89 @@ void TwoWaySplitter::SetDividerPos(int divpos) {
    if (divpos > maxdiv) {divpos = maxdiv;}
    divider_percent = divider_position / (float)maxdiv;// |  x     |
    SetDividerPosActual(divpos);
+}
+
+
+
+Rectangle TwoWaySplitter::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
+   
+   (void)newx;
+   (void)newy;
+   (void)newwidth;
+   (void)newheight;
+   
+   if (!widget) {
+      return Rectangle();
+   }
+
+   int slot = WidgetIndex(widget);
+   EAGLE_ASSERT(slot >= 0);
+
+   Rectangle r(area.InnerArea());
+   int x = r.X();
+   int y = r.Y();
+   int w = r.W();
+   int h = r.H();
+   switch (splitter_type) {
+   case SPLITTER_VERTICAL :
+      if (slot == 0) {
+         // left panel
+         x += 0;
+         w = divider_position;
+      }
+      else if (slot == 1) {
+         // right panel
+         x += divider_position + divider_size;
+         w = (r.W() - (divider_position + divider_size));
+      }
+      break;
+   case SPLITTER_HORIZONTAL :
+      if (slot == 0) {
+         // top panel
+         y += 0;
+         h = divider_position;
+      }
+      else if (slot == 1) {
+         // bottom panel
+         y += divider_position + divider_size;
+         h = (r.H() - (divider_position + divider_size));
+      }
+      break;
+   }
+   
+   return Rectangle(x,y,w,h);
+
+/**
+   int maxdiv = 0;
+   if (splitter_type == SPLITTER_HORIZONTAL) {
+      maxdiv = area.InnerArea().H() - divider_size;
+      if (newheight > maxdiv) {newheight = maxdiv;}
+      if (wchildren[0] == widget) {
+         /// widget is on top
+         SetDividerPos(newheight);
+      }
+      else if (wchildren[1] == widget) {
+         /// widget is on bottom
+         SetDividerPos(InnerArea().H() - divider_size - newheight);
+      }
+   }
+   if (splitter_type == SPLITTER_VERTICAL) {
+      maxdiv = area.InnerArea().W() - divider_size;
+      if (newwidth > maxdiv) {newwidth = maxdiv;}
+      if (wchildren[0] == widget) {
+         /// widget is on left
+         SetDividerPos(newwidth);
+      }
+      else if (wchildren[1] == widget) {
+         /// widget is on right
+         SetDividerPos(InnerArea().W() - newwidth - divider_size);
+      }
+   }
+   if (!widget) {
+      return Rectangle();
+   }
+   return widget->OuterArea();
+//*/
 }
 
 

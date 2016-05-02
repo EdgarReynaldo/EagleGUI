@@ -47,6 +47,8 @@ public :
    ~RelativeLayout();
 
    // LayoutBase
+   void SetArea(const Rectangle& r , bool notify_layout = true);
+
    virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
    
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below
@@ -58,8 +60,8 @@ public :
    Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
    Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
    
-   void PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect , bool delete_when_removed = false);
-   void AddWidget(WidgetBase* widget , LayoutRectangle lrect , bool delete_when_removed = false);
+   bool PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect , bool delete_when_removed = false);
+   bool AddWidget(WidgetBase* widget , LayoutRectangle lrect , bool delete_when_removed = false);
 
 
    void Resize(unsigned int nsize);

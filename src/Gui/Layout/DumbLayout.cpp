@@ -58,6 +58,20 @@ DumbLayout::DumbLayout(std::string name) :
 
 
 DumbLayout::~DumbLayout() {
-   ClearLayout();
+   ClearLayoutAndFreeWidgets();
+   /// In case we go out of scope before our WidgetHandler
+   DetachFromGui();
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

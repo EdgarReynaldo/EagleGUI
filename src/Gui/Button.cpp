@@ -672,24 +672,24 @@ void Button::SetRedrawFlag() {
 
 
 
-void Button::SetDrawDimensions(int width , int height) {
-   WidgetBase::SetDrawDimensions(width,height);
+void Button::SetDrawDimensions(int width , int height , bool notify_layout) {
+   WidgetBase::SetDrawDimensions(width,height,notify_layout);
    ResetRadii();
    SetBgRedrawFlag();
 }
 
 
 
-void Button::SetArea(int xpos , int ypos , int width , int height) {
-   WidgetBase::SetArea(xpos,ypos,width,height);
+void Button::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetArea(xpos,ypos,width,height,notify_layout);
    ResetRadii();
    SetBgRedrawFlag();
 }
 
 
 
-void Button::SetArea(const Rectangle& r) {
-   WidgetBase::SetArea(r);
+void Button::SetArea(const Rectangle& r , bool notify_layout) {
+   WidgetBase::SetArea(r,notify_layout);
    ResetRadii();
    SetBgRedrawFlag();
 }
@@ -752,6 +752,7 @@ void Button::ToggleButton() {
 
 void Button::SetLabel(string label_text) {
    text = label_text;
+   SetName(StringPrintF("\"%s\" %s at %p.", GetName().c_str() , GetWidgetClassName().c_str() , this));
    SetBgRedrawFlag();
 }
 
@@ -823,6 +824,18 @@ BUTTON_STATE Button::ButtonState() {
 
 
 
+BUTTON_CLASS Button::ButtonClass() {
+   return btn_class;
+}
+
+
+
+BUTTON_ACTION_TYPE Button::ButtonType() {
+   return btn_action_type;
+}
+
+
+
 int Button::RadiusA() {
    return rad_a;
 }
@@ -832,6 +845,13 @@ int Button::RadiusA() {
 int Button::RadiusB() {
    return rad_b;
 }
+
+
+
+std::string Button::GetWidgetClassName() {
+   return "Button";
+}
+
 
 
 

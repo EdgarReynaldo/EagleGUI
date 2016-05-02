@@ -490,16 +490,13 @@ WidgetHandler::WidgetHandler() :
 
 
 
-// The background and buffer will be freed when the WidgetHandler destructor is run.
-// Global WidgetHandlers will need to have FreeImageBuffers() called before main exits.
+/// The background and buffer will be freed when the WidgetHandler destructor is run.
+/// Global WidgetHandlers will need to have FreeImageBuffers() called before main exits.
 WidgetHandler::~WidgetHandler() {
    FreeImageBuffers();
-//   for (MTIT it = memtrack.begin() ; it != memtrack.end() ; ++it) {
-//      if (it->second) {
-//         delete it->first;
-//      }
-//   }
-//   memtrack.clear();
+
+   ClearLayout();
+/**
    if (root_layout == &dumb_layout) {
       root_layout->ClearLayout();
    }
@@ -507,6 +504,7 @@ WidgetHandler::~WidgetHandler() {
       StopTrackingWidget(root_layout);
       root_layout = 0;
    }
+//*/
 }
 
 
@@ -536,6 +534,12 @@ void WidgetHandler::SetDrawWindow(EagleGraphicsContext* window) {
       oldwindow->FreeImage(oldbackground);
    }
    
+}
+
+
+
+EagleGraphicsContext* WidgetHandler::GetDrawWindow() {
+   return gwindow;
 }
 
 
@@ -602,9 +606,12 @@ void WidgetHandler::UseBackgroundColor(EagleColor col) {
 
 void WidgetHandler::FreeImageBuffers() {
    
-   gwindow->FreeImage(buffer);
-   gwindow->FreeImage(background);
+   EAGLE_ASSERT(gwindow);
    
+   if (gwindow) {
+      gwindow->FreeImage(buffer);
+      gwindow->FreeImage(background);
+   }
    buffer = 0;
    background = 0;
 
@@ -772,7 +779,9 @@ void WidgetHandler::RemoveWidget(WidgetBase* widget) {
 
 void WidgetHandler::ClearLayout() {
 
-   root_layout->ClearLayout();
+   EAGLE_ASSERT(root_layout);
+   
+   root_layout->ClearLayoutAndFreeWidgets();
 
    wlist.clear();
    inputlist.clear();
@@ -1117,7 +1126,7 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
-   root_layout->SetArea(area.InnerArea());
+   root_layout->WidgetBase::SetArea(area.InnerArea(),false);
 //   ((WidgetBase*)root_layout))->SetArea(area.InnerArea());
 }
 

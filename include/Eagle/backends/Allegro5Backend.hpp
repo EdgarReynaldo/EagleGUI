@@ -13,6 +13,8 @@
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Timer.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
+
 
 #endif // Allegro5_backend_HPP
 

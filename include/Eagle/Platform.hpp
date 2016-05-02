@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -83,6 +83,16 @@
 #endif
 
 
+
+#if defined _WIN32
+   #define EAGLE_WIN32
+#elif defined __linux__
+   #define EAGLE_LINUX
+#elif defined __unix__
+   #define EAGLE_UNIX
+#elif defined __APPLE__
+   #define EAGLE_APPLE
+#endif
 
 
 

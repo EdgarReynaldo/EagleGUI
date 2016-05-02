@@ -46,8 +46,8 @@ private :
 	int cellhpad;
 	int cellvpad;
 	
-	int colhgap;
-	int rowvgap;
+	int colhspace;
+	int rowvspace;
 	
 	GRID_OPTIONS options;
 	
@@ -72,24 +72,27 @@ public :
 	virtual ~GridLayout();
 	
 
-
+/**
 	/// LayoutBase
    virtual Rectangle RequestPosition   (WidgetBase* widget , int newx , int newy);
    virtual Rectangle RequestSize       (WidgetBase* widget , int newwidth , int newheight);
    virtual Rectangle RequestArea       (WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
-
+//*/
+   
    /// WidgetBase
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
+   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
+   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
+   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
 
-	void ResizeGrid(int numcolumns , int numrows);/// Has to ClearLayout()...sorry use Insert Row/Column instead
+	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed
 
 	void SetPadding(unsigned int hpad , unsigned int vpad);
-   void SetGaps(unsigned int hgap , unsigned int vgap);
+   void SetSpacing(unsigned int hspace , unsigned int vspace);
 
    Rectangle GetCellRectangle(int cellx , int celly);
+
+   virtual std::string GetWidgetClassName() {return "GridLayout object";}
 
 };
 

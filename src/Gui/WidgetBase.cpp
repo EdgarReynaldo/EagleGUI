@@ -169,9 +169,31 @@ WidgetBase::WidgetBase(std::string name) :
 
 
 WidgetBase::~WidgetBase() {
+   /// In case our widget goes out of scope before our layout does.
    if (layout) {
-      layout->RemoveWidget(this);
+      layout->RemoveWidget(this);/// Don't call RemoveWidgetFromLayout, as that could call our destructor again in an endless loop
    }
+/**
+   WidgetBase* wparent;
+   Layout* layout;
+   
+   WidgetColorset wcols;
+   WidgetColorset privwcols;
+   bool use_private_colorset;
+
+   WidgetArea area;
+   int minw;
+   int minh;
+   
+   UINT flags;
+   
+   int display_priority;
+   
+   WIDGET_DRAW_FUNC bg_draw_func;
+*/
+   wparent = 0;
+   layout = 0;
+   bg_draw_func = 0;
 }
 
 
@@ -583,14 +605,16 @@ void WidgetBase::SetImagesHaveAlpha(bool have_alpha) {
 
 
 
-void WidgetBase::SetDrawPos(int xpos , int ypos) {
-/*
-   if (layout) {
-      Rectangle r = layout->RequestPosition(this , xpos , ypos);
-      xpos = r.X();
-      ypos = r.Y();
+void WidgetBase::SetDrawPos(int xpos , int ypos , bool notify_layout) {
+
+   if (layout && notify_layout) {
+      Rectangle newrect = layout->RequestWidgetArea(this , xpos , ypos , OuterArea().W() , OuterArea().H());
+      if (flags & VISIBLE) {
+         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
+      }
+      area.SetOuterArea(newrect);
    }
-*/
    if (flags & MOVEABLE) {
 		if (flags & VISIBLE) {
 			WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
@@ -607,7 +631,7 @@ void WidgetBase::SetDrawPos(int xpos , int ypos) {
 
 
 
-void WidgetBase::SetDrawDimensions(int width , int height) {
+void WidgetBase::SetDrawDimensions(int width , int height , bool notify_layout) {
 /*
    if (layout) {
       Rectangle r = layout->RequestSize(this , width , height);
@@ -615,70 +639,88 @@ void WidgetBase::SetDrawDimensions(int width , int height) {
       height = r.H();
    }
 */
-   if (flags & RESIZEABLE) {
-   	/// TODO WORKING HERE
-		if (width < minw + area.MLeft() + area.MRight()) {
-			width = minw + area.MLeft() + area.MRight();
-		}
-		if (height < minh + area.MTop() + area.MBot()) {
-			height = minh + area.MTop() + area.MBot();
-		}
-		if (flags & VISIBLE) {
-			WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-			if (pwh) {
-				pwh->MakeAreaDirty(area.OuterArea());
-			}
-		}
-		area.SetOuterDim(width , height);
-		if (flags & VISIBLE) {
-			SetBgRedrawFlag();
-		}
+   if (layout && notify_layout) {
+      Rectangle newrect = layout->RequestWidgetArea(this , OuterArea().X() , OuterArea().Y() , width , height);
+      if (flags & VISIBLE) {
+         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
+      }
+      area.SetOuterArea(newrect);
+      SetBgRedrawFlag();
+   }
+   else {
+      if (flags & RESIZEABLE) {
+         /// TODO WORKING HERE
+         if (width < minw + area.MLeft() + area.MRight()) {
+            width = minw + area.MLeft() + area.MRight();
+         }
+         if (height < minh + area.MTop() + area.MBot()) {
+            height = minh + area.MTop() + area.MBot();
+         }
+         if (flags & VISIBLE) {
+            WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+            if (pwh) {
+               pwh->MakeAreaDirty(area.OuterArea());
+            }
+         }
+         area.SetOuterDim(width , height);
+         if (flags & VISIBLE) {
+            SetBgRedrawFlag();
+         }
+      }
    }
 }
 
 
 
-void WidgetBase::SetArea(int xpos , int ypos , int width , int height) {
+void WidgetBase::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
 
-	if (width < minw + area.MLeft() + area.MRight()) {
+	if (width < (minw + area.MLeft() + area.MRight())) {
 		width = minw + area.MLeft() + area.MRight();
 	}
-	if (height < minh + area.MTop() + area.MBot()) {
+	if (height < (minh + area.MTop() + area.MBot())) {
 		height = minh + area.MTop() + area.MBot();
 	}
-/*   
    Rectangle r(xpos , ypos , width , height);
    
-   if (layout) {
-      r = layout->RequestArea(this , xpos , ypos , width , height);
+   if (layout && notify_layout) {
+      if (flags & VISIBLE) {
+         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
+      }
+      area.SetOuterArea(layout->RequestWidgetArea(this , xpos , ypos , width , height));
+      SetBgRedrawFlag();
    }
-*/   
-   if ((flags & MOVEABLE) && !(flags & RESIZEABLE)) {
-      SetDrawPos(xpos , ypos);
-      //WidgetBase::SetDrawPos(xpos , ypos);
-      return;
+   else {
+//**
+      if ((flags & MOVEABLE) && !(flags & RESIZEABLE)) {
+         SetDrawPos(xpos , ypos);
+         //WidgetBase::SetDrawPos(xpos , ypos);
+         return;
+      }
+      if (!(flags & MOVEABLE) && (flags & RESIZEABLE)) {
+         SetDrawDimensions(width , height);
+         //WidgetBase::SetDrawDimensions(width , height);
+         return;
+      }
+      if ((flags & MOVEABLE) && (flags & RESIZEABLE)) {
+         if (flags & VISIBLE) {
+            WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+            if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
+         }
+         area.SetOuterArea(xpos , ypos , width , height);
+         if (flags & VISIBLE) {
+            SetBgRedrawFlag();
+         }
+      }
    }
-   if (!(flags & MOVEABLE) && (flags & RESIZEABLE)) {
-      SetDrawDimensions(width , height);
-      //WidgetBase::SetDrawDimensions(width , height);
-      return;
-   }
-   if ((flags & MOVEABLE) && (flags & RESIZEABLE)) {
-		if (flags & VISIBLE) {
-			WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-			if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
-		}
-		area.SetOuterArea(xpos , ypos , width , height);
-		if (flags & VISIBLE) {
-			SetBgRedrawFlag();
-		}
-   }
+//*/
 }
 
 
 
-void WidgetBase::SetArea(const Rectangle& r) {
-	SetArea(r.X() , r.Y() , r.W() , r.H());
+void WidgetBase::SetArea(const Rectangle& r , bool notify_layout) {
+	SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
 }
 
 

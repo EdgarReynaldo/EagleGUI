@@ -134,7 +134,7 @@ signal(SIGABRT, signal_handler);
    
 //   sys->Rest(2.0);
    
-   EagleFont* verdana = win->LoadFont("verdana.ttf" , 20 , 0);
+   EagleFont* verdana = win->LoadFont("verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
    
 //   EagleImage* stallions = win->LoadImageFromFile("Data/jpgImages/Stallions.jpg");
    EagleImage* stallions2a = win->LoadImageFromFile("Stallions2a.jpg");
@@ -163,8 +163,8 @@ signal(SIGABRT, signal_handler);
    
    
    hsp.SetDividerPercent(0.5);
-   vsp1.SetDividerPercent(0.5);
-   vsp2.SetDividerPercent(0.5);
+   vsp1.SetDividerPercent(0.75);
+   vsp2.SetDividerPercent(0.25);
    
    Button testbtns[3];
    testbtns[0].SetLabel("Upper left");
@@ -236,12 +236,12 @@ signal(SIGABRT, signal_handler);
    
    gui.SetRootLayout(&rl);
    
-   hsp.SetArea(Rectangle(100,100,600,375));
+   hsp.SetArea(Rectangle(100,100,600,375) , false);
    hsp.SetMarginsContractFromOuter(25,25,25,25);
    hsp.SetBgDrawFunc(WidgetBorderPainterContrast);
    
    rl.PlaceWidget(&hsp , 0 , false);
-   rl.RequestWidgetArea(&hsp , 100 , 100 , 600 , 375);
+///   rl.RequestWidgetArea(&hsp , 100 , 100 , 600 , 375);/// This function call does nothing
    
 //   gui.AddWidget(&hsp , false);
    gui.SetBackgroundColor(EagleColor(0,0,0,0));// Give gui a clear background
@@ -466,7 +466,8 @@ signal(SIGABRT, signal_handler);
                         break;
                   }
                   
-                  hsp.SetArea(newrect);
+                  rl.SetLayoutRectangle(&hsp , LayoutRectangle(rl.InnerArea() , newrect));
+///                  hsp.SetArea(newrect);
                   
                }
             }
@@ -475,7 +476,7 @@ signal(SIGABRT, signal_handler);
          
          while (gui.HasMessages()) {
             WidgetMsg wmsg = gui.TakeNextMessage();
-            EagleLog() << "Widget message received from gui." << endl;
+            EagleLog() << wmsg << endl;
             for (int i = 0 ; i < 11 ; ++i) {
                if (wmsg.from == &mpbtns[i] && wmsg.msgs == BUTTON_TOGGLED) {
                   EagleLog() << "Button # " << i << " toggled." << endl;
@@ -553,8 +554,8 @@ int GuiTestMain(int argc , char** argv) {
 
    /// Load resources
 //   EagleFont* LoadFont(std::string file , int height , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
-   EagleFont* verdana = win->LoadFont("verdana.ttf" , 20 , 0);
-   EagleFont* consola = win->LoadFont("consola.ttf" , 20 , 0);
+   EagleFont* verdana = win->LoadFont("verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
+   EagleFont* consola = win->LoadFont("consola.ttf" , 20 , LOAD_FONT_MONOCHROME);
    if (!verdana->Valid() || !consola->Valid()) {
       if (!verdana->Valid()) {EagleLog() << "Verdana.ttf failed to load." << std::endl;}
       if (!consola->Valid()) {EagleLog() << "Consola.ttf failed to load." << std::endl;}
@@ -636,6 +637,10 @@ int GuiTestMain(int argc , char** argv) {
 //   EagleLog() << "Gui inner area = " << gui->InnerArea() << std::endl;
    
    GridLayout* grid_layout = new GridLayout();
+
+   gui->SetRootLayout(grid_layout);
+
+
    int rows = 2;
    int columns = 2;
    int sz = rows*columns;
@@ -644,7 +649,6 @@ int GuiTestMain(int argc , char** argv) {
 
    grid_layout->SetName("Grid layout");
    
-   gui->SetRootLayout(grid_layout);
    
 //   grid_layout->SetMarginsContractFromOuter(10,10,10,10);
 //   grid_layout->SetBgImage(stallions , MARGIN_HCELL_CENTER , MARGIN_VCELL_CENTER);
@@ -710,10 +714,10 @@ int GuiTestMain(int argc , char** argv) {
    
    relative_layout->Resize(5);
    
-   relative_layout->SetLayoutRectangle(0 , LayoutRectangle(0.1 , 0.1 , 0.1 , 0.1));
-   relative_layout->SetLayoutRectangle(1 , LayoutRectangle(0.8 , 0.1 , 0.1 , 0.1));
-   relative_layout->SetLayoutRectangle(2 , LayoutRectangle(0.1 , 0.8 , 0.1 , 0.1));
-   relative_layout->SetLayoutRectangle(3 , LayoutRectangle(0.8 , 0.8 , 0.1 , 0.1));
+   relative_layout->SetLayoutRectangle(0 , LayoutRectangle(0.0 , 0.0 , 0.2 , 0.2));
+   relative_layout->SetLayoutRectangle(1 , LayoutRectangle(0.8 , 0.0 , 0.2 , 0.2));
+   relative_layout->SetLayoutRectangle(2 , LayoutRectangle(0.8 , 0.8 , 0.2 , 0.2));
+   relative_layout->SetLayoutRectangle(3 , LayoutRectangle(0.0 , 0.8 , 0.2 , 0.2));
    relative_layout->SetLayoutRectangle(4 , LayoutRectangle(0.3 , 0.3 , 0.4 , 0.4));
 
    for (int i = 0 ; i < 5 ; ++i) {
@@ -858,10 +862,7 @@ int GuiTestMain(int argc , char** argv) {
          
          while (gui->HasMessages()) {
             WidgetMsg wmsg = gui->TakeNextMessage();
-            std::stringstream ss;
-            ss << "Widget Button " << wmsg.From()->GetName() << "says " << wmsg.MessageStr() << "." << std::endl;
-            output = ss.str();
-            OutputLog() << output << std::endl;
+            OutputLog() << wmsg << std::endl;
             redraw = true;
          }
          

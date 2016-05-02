@@ -16,6 +16,7 @@ somewhere....
 
 2?. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code
 
-3. Buttons don't work now.
 
+
+3. Create a widget factory that tracks widgets and frees them so the gui and layouts don't have to?
 

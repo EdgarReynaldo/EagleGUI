@@ -25,3 +25,11 @@
 
 
 
+FlowLayout::~FlowLayout() {
+   ClearLayoutAndFreeWidgets();
+   /// In case we go out of scope before our WidgetHandler
+   DetachFromGui();
+}
+
+
+

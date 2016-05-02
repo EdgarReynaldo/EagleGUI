@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -84,9 +84,11 @@ EagleSystem::EagleSystem(std::string name) :
    timers(true),
    threads(true),
    mutexes(true),
+   clipboards(true),
    input_handler(0),
    system_timer(0),
    system_queue(0),
+   system_clipboard(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -116,6 +118,7 @@ void EagleSystem::Shutdown() {
    queues.FreeAll();
    threads.FreeAll();
    mutexes.FreeAll();
+   clipboards.FreeAll();
    
    /// TODO : Keep list of eagle systems
    if (eagle_system && eagle_system == this) {
@@ -156,11 +159,12 @@ bool EagleSystem::InitializeSystem() {
       EagleLog() << "Eagle : Initialized system." << std::endl;
    }
    
-   if (!input_handler) {input_handler = CreateInputHandler();}
-   if (!system_timer)  {system_timer  = CreateTimer();}
-   if (!system_queue)  {system_queue  = CreateEventHandler(false);}
+   if (!input_handler)    {input_handler    = CreateInputHandler();}
+   if (!system_timer)     {system_timer     = CreateTimer();}
+   if (!system_queue)     {system_queue     = CreateEventHandler(false);}
+   if (!system_clipboard) {system_clipboard = CreateClipboard();}
 
-   system_up = (system_up && input_handler && system_timer && system_queue);
+   system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard);
 
    if (system_timer) {
       bool created_system_timer = system_timer->Create(system_timer_rate);
@@ -406,6 +410,16 @@ int EagleSystem::EagleInitState() {
 /// TODO,DESIGN : This applies to GetInputHandler, GetSystemQueue , and GetSystemTimer
 /// TODO,DESIGN : As well as the Create functions
 
+EagleGraphicsContext* EagleSystem::GetWindow(int index) {
+   if (index < 0 || index >= windows.size()) {
+      EAGLE_ASSERT(0);
+      return 0;
+   }
+   return windows[index];
+}
+
+
+
 EagleInputHandler* EagleSystem::GetInputHandler() {
    if (!input_handler) {
       input_handler = CreateInputHandler();
@@ -441,6 +455,12 @@ EagleTimer* EagleSystem::GetSystemTimer() {
 		}
 	}
 	return system_timer;
+}
+
+
+
+EagleClipboard* EagleSystem::GetSystemClipboard() {
+   return system_clipboard;
 }
 
 
@@ -510,6 +530,17 @@ EagleMutex* EagleSystem::CreateMutex(bool recursive) {
       mutexes.Add(emutex);
    }
    return emutex;
+}
+
+
+
+EagleClipboard* EagleSystem::CreateClipboard() {
+   EAGLE_ASSERT(system_up);
+   EagleClipboard* cb = PrivateCreateClipboard();
+   if (cb) {
+      clipboards.Add(cb);
+   }
+   return cb;
 }
 
 

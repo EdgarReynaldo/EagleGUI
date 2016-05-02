@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -72,11 +72,10 @@ protected :
    int NextFreeSlot();
 
    virtual void ReserveSlots(int nslots);
-   void RemoveWidgetFromLayout(WidgetBase* widget);
    void ReplaceWidget(WidgetBase* widget , int slot);
 
    void AdjustWidgetArea(WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight);
-   void SetWidgetPos(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+///   void SetWidgetPos(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
 
    virtual void RepositionAllChildren()=0;
    virtual void RepositionChild(int slot)=0;
@@ -94,10 +93,11 @@ public :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y);
 
 
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   void SetArea(const Rectangle& r);
+   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
+   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
+   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   
+   void SetArea(const Rectangle& r , bool notify_layout = true);
    
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
@@ -110,28 +110,36 @@ public :
 
 
    /// LAYOUTBASE
-/*
+/**
    virtual Rectangle RequestPosition   (WidgetBase* widget , int newx , int newy);
    virtual Rectangle RequestSize       (WidgetBase* widget , int newwidth , int newheight);
    virtual Rectangle RequestArea       (WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
    Rectangle         RequestArea       (WidgetBase* widget , Rectangle newarea);
-*/
-
+//*/
+//**
    /// Pass INT_MAX for a parameter if you don't care about the position or size
+   /// NOTE : These two functions do NOT change the widget's area, they only return the area that the layout would give it
    virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
    Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea);
-
-   // Widget may be null for PlaceWidget
-   // Both replace the widget (addwidget replaces a null widget) and call RepositionChild
-   // Override if necessary, and use ReplaceWidget in your code
-   virtual bool PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed = false);
+//*/
+   
+   /// Widget may be null for PlaceWidget
+   /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
+   /// Override if necessary, and use ReplaceWidget in your code
+   virtual bool PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed = false);/// Will free the old widget if specified previously
    virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
 
-   void EmptySlot(int slot);
-   void RemoveWidget(WidgetBase* widget);
-   void ClearLayout();
+   void EmptySlot(int slot);/// Remove a widget from the layout without freeing it
+   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout without freeing it
+   void ClearWidgets();/// Remove all widgets from layout without freeing them
+   
+   void RemoveWidgetFromLayout(WidgetBase* widget);/// Optionally frees widget and places NULL in its slot
 
+   virtual void ClearLayoutAndFreeWidgets();/// Clears all widgets and frees the ones marked for deletion, 
+                                            /// call this in derived Layout destructors
 
+   void DetachFromGui();/// Call this in Layout derived class's destructor
+   
 
    void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 

@@ -9,6 +9,8 @@
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
+
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
@@ -162,6 +164,12 @@ EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive) {
       return 0;
    }
    return mutex;
+}
+
+
+
+EagleClipboard* Allegro5System::PrivateCreateClipboard() {
+   return new Allegro5Clipboard();
 }
 
 

@@ -56,6 +56,7 @@ protected :
 
 public :
 
+   virtual ~FlowLayout();
 	
 };
 

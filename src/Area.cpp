@@ -598,6 +598,7 @@ void Rectangle::DrawInnerFrame(EagleGraphicsContext* win , unsigned int width , 
 void Rectangle::RoundedFill(EagleGraphicsContext* win , int hrad , int vrad , EagleColor color) const {
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
+   EAGLE_ASSERT(hrad >= 0 && vrad >= 0);
    win->DrawFilledRoundedRectangle(x , y , w , h , hrad , vrad , color);
 /*
    int mid_tlx = x + corner_radius;
@@ -621,6 +622,7 @@ void Rectangle::RoundedFill(EagleGraphicsContext* win , int hrad , int vrad , Ea
 void Rectangle::RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  , EagleColor color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
+   EAGLE_ASSERT(hrad >= 0 && vrad >= 0);
 	win->DrawRoundedRectangle(x , y , w , h , hrad , vrad , 1.0 , color);
 /*
    ASSERT(bmp);
@@ -698,6 +700,7 @@ void Rectangle::DrawGuiCircleUp(EagleGraphicsContext* win , int radius , EagleCo
 void Rectangle::DrawGuiCircleDown(EagleGraphicsContext* win , int radius , EagleColor fg_color , EagleColor sd_color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
+   if (radius < 2) {radius = 2;}
    int cx = x + w/2;
    int cy = y + h/2;
    win->DrawFilledCircle(cx , cy , radius     , sd_color);
@@ -709,6 +712,9 @@ void Rectangle::DrawGuiCircleDown(EagleGraphicsContext* win , int radius , Eagle
 void Rectangle::DrawGuiRoundedUp(EagleGraphicsContext* win , int hrad , int vrad , EagleColor fg_color , EagleColor sd_color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
+   if (hrad < 1) {hrad = 1;}
+   if (vrad < 1) {vrad = 1;}
+   
    Rectangle upper(x , y , w - 2 , h - 2);
    Rectangle lower(x + 2 , y + 2 , w - 2 , h - 2);
    lower.RoundedFill(win , hrad-1 , vrad-1 , sd_color);

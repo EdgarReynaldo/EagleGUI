@@ -176,9 +176,9 @@ public :
 
    virtual void SetRedrawFlag();// Shortcut to SetNeedsRedrawState(true)
    
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   virtual void SetArea(const Rectangle& r);
+   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
+   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   virtual void SetArea(const Rectangle& r , bool notify_layout = true);
 
 
    /// Setters
@@ -198,14 +198,18 @@ public :
    void EnableHoverMessage(bool enabled);
 
    /// Getters
-   InputGroup   InputKey();
-   bool         Up();
-   std::string  Text();
-   EagleFont*   Font();
-   BUTTON_SHAPE ButtonShape();
-   BUTTON_STATE ButtonState();
-   int          RadiusA();
-   int          RadiusB();
+   InputGroup         InputKey();
+   bool               Up();
+   std::string        Text();
+   EagleFont*         Font();
+   BUTTON_SHAPE       ButtonShape();
+   BUTTON_STATE       ButtonState();
+   BUTTON_ACTION_TYPE ButtonType();
+   BUTTON_CLASS       ButtonClass();
+   int                RadiusA();
+   int                RadiusB();
+
+   virtual std::string GetWidgetClassName();
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };

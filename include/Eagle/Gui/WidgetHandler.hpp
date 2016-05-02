@@ -164,6 +164,7 @@ public :
 
 	/// Sets up drawing background and buffer to draw to.
 	void SetDrawWindow(EagleGraphicsContext* window);
+	EagleGraphicsContext* GetDrawWindow();
 	
 	bool SetupBufferDimensions(int w , int h) throw (EagleError);// set up draw window first please, and set up buffers before drawing please!
 	void SetBufferShrinkOnResize(bool buffer_shrink_on_resize);// defaults to false

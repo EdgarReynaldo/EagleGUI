@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -21,6 +21,9 @@
 
 
 #include "Eagle/Gui/Layout/GridLayout.hpp"
+
+#include "Eagle/StringWork.hpp"
+
 
 
 
@@ -35,7 +38,6 @@ void GridLayout::RepositionAllChildren() {
 			RepositionChild(x , y);
 		}
 	}
-	
 }
 
 
@@ -48,6 +50,24 @@ void GridLayout::RepositionChild(int slot) {
 
 void GridLayout::RepositionChild(int cellx , int celly) {
 	
+	if (cellx < 0 || cellx > ncols) {
+      throw EagleError(StringPrintF("GridLayout::RepositionChild(%d,%d) : cellx (%d) is out of bounds [%d,%d)",
+                                    cellx , celly , cellx , 0 , ncols));
+	}
+	if (celly < 0 || celly > nrows) {
+      throw EagleError(StringPrintF("GridLayout::RepositionChild(%d,%d) : celly (%d) is out of bounds [%d,%d)",
+                                    celly , celly , celly , 0 , nrows));
+	}
+	
+	int index = celly*ncols + cellx;
+	WidgetBase* widget = wchildren[index];
+   if (widget) {
+      widget->SetArea(RequestWidgetRectangle(widget));
+   }
+   
+}
+/**
+
 	int basex = area.InnerArea().X();
 	int basey = area.InnerArea().Y();
 	int index = celly*ncols + cellx;
@@ -58,10 +78,6 @@ void GridLayout::RepositionChild(int cellx , int celly) {
 	if (!widget) {return;}// WHAT DID YOU SEE HERE? HMM? NADA, EL CAPITAN!
 
    
-
-
-
-
 	int widget_width = widget->Area().W();
 	int widget_height = widget->Area().H();
 
@@ -96,7 +112,9 @@ void GridLayout::RepositionChild(int cellx , int celly) {
 			widget->SetArea(xpos + cellhpad , ypos + cellvpad , colwidth - 2*cellhpad , rowheight - 2*cellvpad);
 			break;
 	};
+
 }
+*/
 
 
 
@@ -104,10 +122,10 @@ Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) {
    EAGLE_ASSERT(widget);
    int index = WidgetIndex(widget);
    EAGLE_ASSERT(index != -1);
-   int col = index % nrows;
-   int row = index / nrows;
-   int basex = area.InnerArea().X() + col*(colwidth + colhgap);
-   int basey = area.InnerArea().Y() + row*(rowheight + rowvgap);
+   int col = index % ncols;
+   int row = index / ncols;
+   int basex = area.InnerArea().X() + col*(colwidth + colhspace);
+   int basey = area.InnerArea().Y() + row*(rowheight + rowvspace);
    
    int wwidth = widget->OuterArea().W();
    int wheight = widget->OuterArea().H();
@@ -165,10 +183,10 @@ void GridLayout::CalculateGrid() {
    int tw = area.InnerArea().W();
    int th = area.InnerArea().H();
    if (tw > 0 && ncols > 0) {
-      colwidth = (tw - (ncols - 1)*colhgap)/ncols;
+      colwidth = (tw - (ncols - 1)*colhspace)/ncols;
    }
    if (th > 0 && nrows > 0) {
-      rowheight = (th - (nrows - 1)*rowvgap)/nrows;
+      rowheight = (th - (nrows - 1)*rowvspace)/nrows;
    }
 }
 
@@ -182,8 +200,8 @@ GridLayout::GridLayout() :
 		rowheight(0),
 		cellhpad(0),
 		cellvpad(0),
-		colhgap(0),
-		rowvgap(0),
+		colhspace(0),
+		rowvspace(0),
 		options(GRID_FILL_CELL)
 {}
 
@@ -205,11 +223,13 @@ GridLayout::GridLayout(int numcolumns , int numrows) :
 
 
 GridLayout::~GridLayout() {
-   ClearLayout();
+   ClearLayoutAndFreeWidgets();
+   /// In case we go out of scope before our WidgetHandler
+   DetachFromGui();
 }
 
 
-
+/**
 Rectangle GridLayout::RequestPosition   (WidgetBase* widget , int newx , int newy) {
    (void)newx;
    (void)newy;
@@ -233,42 +253,80 @@ Rectangle GridLayout::RequestArea       (WidgetBase* widget , int newx , int new
    (void)newheight;
    return RequestWidgetRectangle(widget);
 }
+//*/
 
 
-
-void GridLayout::SetDrawPos(int xpos , int ypos) {
-   WidgetBase::SetDrawPos(xpos , ypos);
+void GridLayout::SetDrawPos(int xpos , int ypos , bool notify_layout) {
+   WidgetBase::SetDrawPos(xpos , ypos , notify_layout);
    RepositionAllChildren();
 }
 
 
 
-void GridLayout::SetDrawDimensions(int width , int height) {
-   WidgetBase::SetDrawDimensions(width , height);
+void GridLayout::SetDrawDimensions(int width , int height , bool notify_layout) {
+   WidgetBase::SetDrawDimensions(width , height , notify_layout);
    CalculateGrid();
    RepositionAllChildren();
 }
 
 
 
-void GridLayout::SetArea(int xpos , int ypos , int width , int height) {
-   WidgetBase::SetArea(xpos , ypos , width , height);
+void GridLayout::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetArea(xpos , ypos , width , height , notify_layout);
    CalculateGrid();
    RepositionAllChildren();
 }
 
 
-/// TODO : URGENT : We need to figure out something other than clearing the layout.
-/// TODO : URGENT : It just caused all the widgets stored in the dialog to disappear
 
-void GridLayout::ResizeGrid(int numcolumns , int numrows) {
-	int newsize = numcolumns*numrows;
-	EAGLE_ASSERT((numcolumns >= 1) && (numrows >= 1));
+/// Resize grid will keep all widgets that overlap the new grid, but all others will be removed and possibly freed
+void GridLayout::ResizeGrid(int newcolumns , int newrows) {
+   if (newcolumns < 0) {newcolumns = 0;}
+   if (newrows < 0) {newrows = 0;}
 
-   ClearLayout();
-   wchildren.resize(newsize , 0);
-	ncols = numcolumns;
-	nrows = numrows;
+	const int newsize = newcolumns*newrows;
+
+	if (newsize == 0) {
+      ClearLayoutAndFreeWidgets();
+	}
+   else {
+      std::vector<WidgetBase*> keep_widgets((unsigned int)newsize , (WidgetBase*)0);
+      std::vector<WidgetBase*> removed_widgets;
+      int oldindex = 0;
+      int newindex = 0;
+      const int oldrows = nrows;
+      const int oldcols = ncols;
+      int row = 0;
+      int col = 0;
+      for (row = 0 ; row < oldrows ; ++row) {
+         /// If the current row is outside the new grid, remove the widgets in that row
+         if (row >= newrows) {
+            for (col = 0 ; col < oldcols ; ++col) {
+               oldindex = row*oldcols + col;
+               RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
+            }
+         }
+         else {
+            for (col = 0 ; col < oldcols ; ++col) {
+               oldindex = row*oldcols + col;
+               /// If the current column is outside the new grid, remove the widget in the current row and column
+               if (col >= newcolumns) {
+                  RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
+               }
+               else {
+                  newindex = row*newcolumns + col;
+                  /// Keep this widget
+                  keep_widgets[newindex] = wchildren[oldindex];
+               }
+            }
+         }
+      }
+      wchildren = keep_widgets;
+      RepositionAllChildren();
+   }
+	
+	ncols = newcolumns;
+	nrows = newrows;
 	size = newsize;
 	CalculateGrid();
 }
@@ -283,14 +341,14 @@ void GridLayout::SetPadding(unsigned int hpad , unsigned int vpad) {
 
 
 
-void GridLayout::SetGaps(unsigned int hgap , unsigned int vgap) {
-   colhgap = hgap;
-   rowvgap = vgap;
+void GridLayout::SetSpacing(unsigned int hspace , unsigned int vspace) {
+   colhspace = hspace;
+   rowvspace = vspace;
    if (ncols > 0) {
-      colwidth = area.InnerArea().W() - (ncols-1)*hgap;
+      colwidth = area.InnerArea().W() - (ncols-1)*hspace;
    }
    if (nrows > 0) {
-      rowheight = area.InnerArea().H() - (nrows - 1)*vgap;
+      rowheight = area.InnerArea().H() - (nrows - 1)*vspace;
    }
    RepositionAllChildren();
 }
@@ -298,8 +356,8 @@ void GridLayout::SetGaps(unsigned int hgap , unsigned int vgap) {
 
 
 Rectangle GridLayout::GetCellRectangle(int cellx , int celly) {
-   int x = cellx*(colwidth + colhgap) + cellhpad;
-   int y = celly*(rowheight + rowvgap) + cellvpad;
+   int x = cellx*(colwidth + colhspace) + cellhpad;
+   int y = celly*(rowheight + rowvspace) + cellvpad;
    int w = colwidth - 2*cellhpad;
    int h = rowheight - 2*cellvpad;
    return Rectangle(x,y,w,h);

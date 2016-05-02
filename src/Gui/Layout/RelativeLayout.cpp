@@ -46,7 +46,7 @@ void RelativeLayout::RepositionChild(int slot) {
    LayoutRectangle layout_rect = layout_rectangles[slot];
    WidgetBase* widget = wchildren[slot];
    if (widget) {
-      widget->SetArea(LayoutArea(area.InnerArea() , layout_rect));
+      widget->SetArea(LayoutArea(area.InnerArea() , layout_rect) , false);
    }
 }
 
@@ -66,7 +66,15 @@ RelativeLayout::RelativeLayout(std::string name) :
 
 
 RelativeLayout::~RelativeLayout() {
-   ClearLayout();
+   ClearLayoutAndFreeWidgets();
+   /// In case we go out of scope before our WidgetHandler
+   DetachFromGui();
+}
+
+
+
+void RelativeLayout::SetArea(const Rectangle& r , bool notify_layout) {
+   WidgetBase::SetArea(r , notify_layout);
 }
 
 
@@ -77,24 +85,43 @@ Rectangle RelativeLayout::RequestWidgetArea(WidgetBase* widget , int newx , int 
    
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
    
+   Rectangle newrect(newx , newy , newwidth , newheight);
    
-   SetWidgetPos(widget , newx , newy , newwidth , newheight);
+///   SetWidgetPos(widget , newx , newy , newwidth , newheight);/// NOTE : Causes endless loops
    
    // need to reset layout rectangle for this widget
-   layout_rectangles[WidgetIndex(widget)] = LayoutRectangle(OuterArea() , widget->OuterArea());
+///   layout_rectangles[WidgetIndex(widget)] = LayoutRectangle(InnerArea() , newrect);
 
-   return widget->OuterArea();
+   return newrect;
 }
 
 
 
 bool RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed) {
-   return Layout::PlaceWidget(widget , slot , delete_when_removed);
+
+   if (widget) {
+      LayoutRectangle lrect(InnerArea() , widget->OuterArea());
+      return PlaceWidget(widget , slot , lrect , delete_when_removed);
+   }
+   else {
+      if (!Layout::PlaceWidget(widget , slot , delete_when_removed)) {
+         return false;
+      }
+   }
+
+   return true;
+///   return PlaceWidget(widget , slot , LayoutRectangle(InnerArea() , widget->OuterArea()) , delete_when_removed);
 }
 
 
 
 bool RelativeLayout::AddWidget(WidgetBase* widget , bool delete_when_removed) {
+   
+   if (widget) {
+         LayoutRectangle lrect(InnerArea() , widget->OuterArea());
+         return AddWidget(widget , lrect , delete_when_removed);
+   }
+
    return Layout::AddWidget(widget , delete_when_removed);
 }
 
@@ -122,16 +149,26 @@ Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangl
 
 
 
-void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect , bool delete_when_removed) {
-   Layout::PlaceWidget(widget , slot , delete_when_removed);
-   SetLayoutRectangle(widget , lrect);
+bool RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect , bool delete_when_removed) {
+   if (Layout::PlaceWidget(widget , slot , delete_when_removed)) {
+      if (widget) {
+         SetLayoutRectangle(widget , lrect);
+      }
+      return true;
+   }
+   return false;
 }
 
 
 
-void RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect , bool delete_when_removed) {
-   Layout::AddWidget(widget , delete_when_removed);
-   SetLayoutRectangle(widget , lrect);
+bool RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect , bool delete_when_removed) {
+   if (Layout::AddWidget(widget , delete_when_removed)) {
+      if (widget) {
+         SetLayoutRectangle(widget , lrect);
+      }
+      return true;
+   }
+   return false;
 }
 
 

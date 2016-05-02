@@ -33,6 +33,7 @@ private :
    EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags);
    EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           PrivateCreateMutex(bool recursive);
+   EagleClipboard*            PrivateCreateClipboard();
 
 public :
 

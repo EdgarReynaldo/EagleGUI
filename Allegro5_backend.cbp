@@ -112,6 +112,7 @@
 			<Add directory="C:/LIBS/A5GITdistro/lib" />
 		</Linker>
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Conditions.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5EventHandler.hpp" />
@@ -125,6 +126,7 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Threads.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
 		<Unit filename="postbuildcopy_libraries_a5.bat" />
+		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Conditions.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5EventHandler.cpp" />

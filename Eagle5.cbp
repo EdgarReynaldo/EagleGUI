@@ -96,6 +96,8 @@
 			<Add alias="AllStatic" targets="StaticDebug;StaticRelease;StaticProfile;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Wcast-align" />
 			<Add option="-Wall" />
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-DNOGDI" />
@@ -107,6 +109,7 @@
 		<Unit filename="README.txt" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
+		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
 		<Unit filename="include/Eagle/Container.hpp" />
@@ -159,6 +162,7 @@
 		<Unit filename="postbuildcopy_release.bat" />
 		<Unit filename="postbuildcopy_releasestatic.bat" />
 		<Unit filename="src/Area.cpp" />
+		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />
 		<Unit filename="src/Error.cpp" />
@@ -191,6 +195,7 @@
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/NinePatch.cpp" />
 		<Unit filename="src/Object.cpp" />
+		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />

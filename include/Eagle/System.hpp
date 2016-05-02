@@ -32,7 +32,7 @@
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Threads.hpp"
 #include "Eagle/Mutexes.hpp"
-
+#include "Eagle/Clipboard.hpp"
 
 
 enum EAGLE_INIT_STATE {
@@ -88,12 +88,15 @@ protected :
    PointerManager<EagleTimer> timers;
    PointerManager<EagleThread> threads;
    PointerManager<EagleMutex> mutexes;
+   PointerManager<EagleClipboard> clipboards;
 
    EagleInputHandler* input_handler;
    EagleTimer* system_timer;
    static float system_timer_rate;
    
    EagleEventHandler* system_queue;
+   
+   EagleClipboard* system_clipboard;
    
    bool system_up;
    bool images_up;
@@ -130,6 +133,7 @@ protected :
    virtual EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags)=0;
    virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
    virtual EagleMutex*           PrivateCreateMutex(bool recursive)=0;
+   virtual EagleClipboard*            PrivateCreateClipboard()=0;
 
 public :
 
@@ -178,9 +182,11 @@ public :
 
 ///   virtual EagleGraphicsContext* MakeGraphicsContext(int width , int height , int flags)=0;
 
+   EagleGraphicsContext* GetWindow(int index);
    EagleInputHandler* GetInputHandler();
    EagleEventHandler* GetSystemQueue();
    EagleTimer*        GetSystemTimer();
+   EagleClipboard*    GetSystemClipboard();
 
 	EagleInputHandler*    CreateInputHandler();
 	EagleEventHandler*    CreateEventHandler(bool delay_events);
@@ -188,6 +194,7 @@ public :
    EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
    EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           CreateMutex(bool recursive);
+   EagleClipboard*            CreateClipboard();
 
 	void RegisterKeyboardInput(EagleEventHandler* queue);
 	void RegisterMouseInput   (EagleEventHandler* queue);
