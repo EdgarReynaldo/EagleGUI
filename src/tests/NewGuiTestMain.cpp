@@ -127,7 +127,7 @@ int NewGuiTestMain(int argc , char** argv) {
 
    DumbText text1;
 ///   text1.SetArea(0,0,800,200);
-   text1.SetTextParameters(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10);
+   text1.SetTextParameters(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10 , &bfont);
    text1.SetTextString("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
    text1.SetDisplayPriority(HIGH_DISPLAY_PRIORITY);
    text1.SetMarginsContractFromOuter(10,10,10,10);

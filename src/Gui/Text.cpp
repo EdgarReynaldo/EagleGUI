@@ -51,11 +51,15 @@ void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleC
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 
-   if (text.size()) {
-      EAGLE_ASSERT(text_font && text_font->Valid());
-
-      win->DrawMultiLineTextString(text_font , text , tx + xpos , ty + ypos , c , linespacing , halign , valign);
+   for (int i = 0 ; i < nlines ; ++i) {
+      if (i == 0) {
+         EAGLE_ASSERT(text_font && text_font->Valid());
+      }
+      string s = lines[i];
+      Rectangle r = lineareas[i];
+      win->DrawTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , halign , valign);
    }
+///   win->DrawMultiLineTextString(text_font , text , tx + xpos , ty + ypos , c , linespacing , halign , valign);
 }
 
 
@@ -63,26 +67,41 @@ void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleC
 void DumbText::RefreshTextPosition() {
 
    EAGLE_ASSERT(text_font);
+   lines = SplitByNewLines(text);
+   nlines = lines.size();
+   
+   int lineheight = text_font->Height();
+   maxwidth = 0;
+   totalheight = lineheight*nlines + linespacing*(nlines-1);
 
-   int w = text_font->Width(text.c_str());
+   lineareas.clear();
+   
+   if (nlines < 1) {return;}
+
    int h = text_font->Height();
+   
+   int ystart = InnerArea().Y() + vpadding;
+   
+   for (int i = 0 ; i < nlines ; ++i) {
+      int w = text_font->Width(text.c_str());
 
-   int x = InnerArea().X() + hpadding;
-   int y = InnerArea().Y() + vpadding;
-   if (halign == HALIGN_CENTER) {
-      x = InnerArea().CX() - w/2;
+      int x = InnerArea().X() + hpadding;
+      int y = InnerArea().Y() + vpadding;
+      if (halign == HALIGN_CENTER) {
+         x = InnerArea().CX() - w/2;
+      }
+      if (halign == HALIGN_RIGHT) {
+         x = InnerArea().BRX() - hpadding - w;
+      }
+      if (valign == VALIGN_CENTER) {
+         y = InnerArea().CY() - h/2;
+      }
+      if (valign == VALIGN_BOTTOM) {
+         y = InnerArea().BRY() - vpadding - h;
+      }
+      if (w > maxwidth) {maxwidth = w;}
+      lineareas.push_back(Rectangle(x,y,w,h));
    }
-   if (halign == HALIGN_RIGHT) {
-      x = InnerArea().BRX() - hpadding - w;
-   }
-   if (valign == VALIGN_CENTER) {
-      y = InnerArea().CY() - h/2;
-   }
-   if (valign == VALIGN_BOTTOM) {
-      y = InnerArea().BRY() - vpadding - h;
-   }
-   tx = x;
-   ty = y;
    SetBgRedrawFlag();
 }
 
@@ -113,18 +132,37 @@ int DumbText::PrivateUpdate(double tsec) {
 }
 
 
+/**
+   HALIGNMENT halign;
+   VALIGNMENT valign;
+   EagleFont* text_font;
+   string text;
+   std::vector<std::string> lines;
+   std::vector<Rectangle> lineareas;
+   int nlines;
+   int hpadding;
+   int vpadding;
+   int linespacing;
+   int maxwidth;
+   int totalheight;
+   std::vector<int> widths_vector;
 
+//*/
 DumbText::DumbText() :
       WidgetBase(StringPrintF("Dumb Text object at %p" , this)),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
-      text(""),
       text_font(0),
+      text(""),
+      lines(),
+      lineareas(),
+      nlines(0),
       hpadding(0),
       vpadding(0),
       linespacing(0),
-      tx(0),
-      ty(0)
+      maxwidth(0),
+      totalheight(0),
+      widths_vector()
 {
    
 }
@@ -135,13 +173,18 @@ DumbText::DumbText(string name) :
       WidgetBase(name),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
-      text(""),
       text_font(0),
+      text(""),
+      lines(),
+      lineareas(),
+      nlines(0),
       hpadding(0),
       vpadding(0),
       linespacing(0),
-      tx(0),
-      ty(0)
+      maxwidth(0),
+      totalheight(0),
+      widths_vector()
+
 {
    
 }
@@ -175,23 +218,39 @@ void DumbText::SetArea(const Rectangle& r , bool notify_layout) {
 
 
 
-void DumbText::SetTextParameters(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing) {
+void DumbText::SetTextParameters(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing , EagleFont* font) { 
+   EAGLE_ASSERT(font);
    halign = hal;
    valign = val;
    hpadding = hpad;
    vpadding = vpad;
    linespacing = vspacing;
+   text_font = font;
+   RefreshTextPosition();
    SetBgRedrawFlag();
 }
 
 
 
 void DumbText::SetTextString(std::string str , EagleFont* font) {
-   if (font) {
-      text_font = font;
-   }
+   EAGLE_ASSERT(font);
    text = str;
+   SetFont(font);
    SetBgRedrawFlag();
+}
+
+
+
+void DumbText::SetFont(EagleFont* font) {
+   EAGLE_ASSERT(font);
+   text_font = font;
+   RefreshTextPosition();
+}
+
+
+
+void DumbText::Refresh() {
+   RefreshTextPosition();
 }
 
 

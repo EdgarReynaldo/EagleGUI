@@ -24,15 +24,21 @@ class DumbText : public WidgetBase {
 protected :
    HALIGNMENT halign;
    VALIGNMENT valign;
-   string text;
    EagleFont* text_font;
+   string text;
+   std::vector<std::string> lines;
+   std::vector<Rectangle> lineareas;
+   int nlines;
    int hpadding;
    int vpadding;
    int linespacing;
    int tx;
    int ty;
+   int maxwidth;
+   int totalheight;
+   std::vector<int> widths_vector;
    
-protected :
+
    
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);
    
@@ -55,9 +61,14 @@ public :
    void         SetArea(const Rectangle& r , bool notify_layout = true);
 //*/
 
-   void SetTextParameters(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing);
-   void SetTextString(std::string str , EagleFont* font = 0);
+   void SetTextParameters(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing , EagleFont* font);
+   void SetTextString(std::string str , EagleFont* font);
    
+   void SetFont(EagleFont* font);
+   void Refresh();
+
+   
+   string GetText() {return text;}
    
 };
 

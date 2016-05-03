@@ -411,7 +411,7 @@ int EagleSystem::EagleInitState() {
 /// TODO,DESIGN : As well as the Create functions
 
 EagleGraphicsContext* EagleSystem::GetWindow(int index) {
-   if (index < 0 || index >= windows.size()) {
+   if (index < 0 || index >= (int)windows.size()) {
       EAGLE_ASSERT(0);
       return 0;
    }
