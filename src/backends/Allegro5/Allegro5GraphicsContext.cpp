@@ -40,6 +40,13 @@ void Allegro5GraphicsContext::ResetBackBuffer() {
 
 
 
+void Allegro5GraphicsContext::PrivateFlipDisplay() {
+   al_flip_display();
+   ResetBackBuffer();
+}
+
+
+
 Allegro5GraphicsContext::Allegro5GraphicsContext() :
       EagleGraphicsContext(StringPrintF("Allegro5GraphicsContext at %p" , this)),
       display(0),
@@ -307,7 +314,7 @@ void Allegro5GraphicsContext::DrawLine(float x1 , float y1 , float x2 , float y2
 
 void Allegro5GraphicsContext::DrawRectangle(float x , float y , float w , float h , float thickness , EagleColor c) {
    ALLEGRO_COLOR ac = GetAllegroColor(c);
-   al_draw_rectangle(x , y , x + w , x + h , ac , thickness);
+   al_draw_rectangle(x , y , x + w , y + h , ac , thickness);
 }
 
 
@@ -572,13 +579,6 @@ EagleImage* Allegro5GraphicsContext::GetDrawingTarget() {
 
 
 // utilities
-void Allegro5GraphicsContext::FlipDisplay() {
-   al_flip_display();
-   ResetBackBuffer();
-}
-
-
-
 void Allegro5GraphicsContext::HoldDrawing() {
    al_hold_bitmap_drawing(true);
 }

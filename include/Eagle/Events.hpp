@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -32,6 +32,8 @@
 #include "Eagle/Gui/WidgetMessage.hpp"
 
 #include "Eagle/Mutexes.hpp"
+#include "Eagle/Error.hpp"
+
 
 
 
@@ -281,6 +283,14 @@ public :
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e);
    
+///   void Clear();
+   void Clear() {
+      EAGLE_ASSERT(mutex);
+      mutex->Lock();
+      queue.clear();
+      mutex->Unlock();
+   }
+
    void PushEvent(EagleEvent e);
 
    bool HasEvent();

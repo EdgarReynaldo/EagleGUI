@@ -34,6 +34,8 @@
 #include "Eagle/Container.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/MousePointer.hpp"
+#include "Eagle/System.hpp"
+
 
 
 /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
@@ -200,10 +202,22 @@ protected :
    MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    // cannot be called in a base class constructor
    
+   float maxframes;
+   float numframes;
+   float total_frame_time;
+   std::list<float> frame_times;
+   float previoustime;
+   float currenttime;
+
+
+   virtual void PrivateFlipDisplay()=0;
+
 public :
    EagleGraphicsContext(std::string name);
    
    virtual ~EagleGraphicsContext() {}
+
+   float GetFPS();
 
    // creation/destruction
    virtual bool Create(int width , int height , int flags)=0;
@@ -297,14 +311,15 @@ public :
    virtual EagleImage* GetDrawingTarget()=0;
    
    // utilities
-   virtual void FlipDisplay()=0;
+   void FlipDisplay();/// Overload PrivateFlipDisplay to affect this
+   
    virtual void HoldDrawing()=0;
    virtual void ReleaseDrawing()=0;
 protected :
    virtual void SetDrawingTarget(EagleImage* dest)=0;
 public :
    void DrawToBackBuffer();
-   
+      
    // image creation / loading / sub division
    virtual EagleImage* EmptyImage()=0;
    virtual EagleImage* CloneImage(EagleImage* clone)=0;

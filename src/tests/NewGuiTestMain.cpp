@@ -127,9 +127,8 @@ int NewGuiTestMain(int argc , char** argv) {
 
    DumbText text1;
 ///   text1.SetArea(0,0,800,200);
-   text1.SetTextParameters(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10 , &bfont);
-   text1.SetTextString("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
-   text1.SetDisplayPriority(HIGH_DISPLAY_PRIORITY);
+   text1.SetupText(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10 , "",  &bfont );
+   text1.SetText("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
    text1.SetMarginsContractFromOuter(10,10,10,10);
    text1.SetBgImages(np.imgs);
    text1.SetImagesHaveAlpha(true);
@@ -147,6 +146,9 @@ int NewGuiTestMain(int argc , char** argv) {
    r.PlaceWidget(&b8 , 7 , LayoutRectangle(0.6,0.4,0.4,0.2));
    
    r.PlaceWidget(&text1 , 8 , LayoutRectangle(0.4 , 0.4 , 0.2 , 0.2));
+   
+   EagleLog() << "Text widget 1 is :" << endl;
+   EagleLog() << text1 << endl;
    
    Layout* layout = gui.GetRootLayout();
    layout->SetMarginsContractFromOuter(20,20,20,20);

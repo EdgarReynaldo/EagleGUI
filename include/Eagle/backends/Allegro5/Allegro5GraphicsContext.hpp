@@ -45,6 +45,7 @@ private :
 
 
    void ResetBackBuffer();
+   virtual void PrivateFlipDisplay();
 
 public :
 
@@ -132,7 +133,6 @@ public :
    virtual EagleImage* GetDrawingTarget();
    
    // utilities
-   virtual void FlipDisplay();
    virtual void HoldDrawing();
    virtual void ReleaseDrawing();
    virtual void SetDrawingTarget(EagleImage* dest);

@@ -210,17 +210,30 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       drawing_target(0),
       images(true),
       fonts(true),
-      mp_manager(0)
+      mp_manager(0),
+      maxframes(60),
+      numframes(0.0f),
+      total_frame_time(0.0f),
+      frame_times(),
+      previoustime(0.0f),
+      currenttime(0.0f)
 {
-   // note: derived class needs to instantiate mp_manager
+   /// NOTE: derived class needs to instantiate mp_manager
 }
 
 
-//float EagleGraphicsContext::Width() {return scrw;}
+///float EagleGraphicsContext::Width() {return scrw;}
 
 
 
-//float EagleGraphicsContext::Height() {return scrh;}
+///float EagleGraphicsContext::Height() {return scrh;}
+
+
+
+float EagleGraphicsContext::GetFPS() {
+   EAGLE_ASSERT(total_frame_time != 0.0f);
+   return numframes/total_frame_time;
+}
 
 
 
@@ -304,6 +317,28 @@ void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str ,
   
   DrawTextString(font , text , x , y , c , halign , valign);
   DrawTextString(font , underlinetext , x , y + vspace, c , halign , valign);
+}
+
+
+
+void EagleGraphicsContext::FlipDisplay() {
+   
+   previoustime = currenttime;
+   currenttime = eagle_system->GetProgramTime();
+   float deltatime = currenttime - previoustime;
+   total_frame_time += deltatime;
+   
+   numframes++;
+   frame_times.push_back(deltatime);
+   if (numframes > maxframes) {
+      numframes = maxframes;
+      float oldtime = frame_times.front();
+      total_frame_time -= oldtime;
+      frame_times.pop_front();
+   }
+   
+   PrivateFlipDisplay();
+   
 }
 
 

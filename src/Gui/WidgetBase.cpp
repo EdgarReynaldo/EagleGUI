@@ -283,7 +283,11 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    }
    
    PrivateDisplay(win , xpos , ypos);
-   
+
+   EAGLE_DEBUG(
+      win->DrawRectangle(OuterArea() , 1.0 , WCols()[HLCOL]);
+      win->DrawRectangle(InnerArea() , 1.0 , WCols()[HLCOL]);
+   );
    /// TODO : unset clipping rectangle 
 // win->ResetClippingRectangle
    
