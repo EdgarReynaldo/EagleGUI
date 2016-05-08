@@ -112,34 +112,14 @@ void LinkText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 int LinkText::PrivateUpdate(double tsec) {
-   return SelectText::Update(tsec);
+   return SelectText::PrivateUpdate(tsec);
 }
 
 
 
-void LinkText::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-   WidgetBase::SetDrawPos(xpos,ypos,notify_layout);
+void LinkText::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    RefreshTextPosition(lineheight);
-}
-
-
-
-void LinkText::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width,height,notify_layout);
-   RefreshTextPosition(lineheight);
-}
-
-
-
-void LinkText::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos,ypos,width,height,notify_layout);
-   RefreshTextPosition(lineheight);
-}
-
-
-
-void LinkText::SetArea(const Rectangle& r , bool notify_layout) {
-   LinkText::SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
 }
 
 

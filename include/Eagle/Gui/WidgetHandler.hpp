@@ -218,9 +218,7 @@ public :
 
    void SyncLayoutPos();
    void SyncCamera();
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);

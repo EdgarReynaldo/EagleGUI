@@ -93,7 +93,9 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ResetBackBuffer();
 
    mp_manager = new Allegro5MousePointerManager(this);
-
+   default_font = LoadFont("Verdana.ttf" , -30 , 0 , VIDEO_IMAGE);
+   EAGLE_ASSERT(default_font->Valid());
+   
    return true;
 }
 

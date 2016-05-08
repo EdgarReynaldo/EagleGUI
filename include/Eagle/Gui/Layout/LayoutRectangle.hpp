@@ -47,7 +47,8 @@ public :
    float TY() {return fy;}
    float RX() {return fx + fw;}
    float BY() {return fy + fh;}
-   
+   float CX() {return fx + fw/2.0f;}
+   float CY() {return fy + fh/2.0f;}
 };
 
 Rectangle LayoutArea(Rectangle outer_area , LayoutRectangle layout_area);

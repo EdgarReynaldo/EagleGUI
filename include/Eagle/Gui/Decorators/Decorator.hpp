@@ -43,10 +43,7 @@ public :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   void         SetArea(const Rectangle& r);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height);
 /*
 int Decorator::PrivateHandleEvent(EagleEvent e) {
    return dwidget->PrivateHandleEvent(e);

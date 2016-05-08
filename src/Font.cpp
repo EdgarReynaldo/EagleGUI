@@ -27,6 +27,9 @@
 
 
 
+EagleFont* default_font = 0;
+
+
 EagleFont::EagleFont() :
       EagleObject(StringPrintF("EagleFont object at %p" , this)),
       height(0),

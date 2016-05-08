@@ -192,30 +192,6 @@ void Camera::SetPrivateColorset(const WidgetColorset& colors) {
 
 
 
-void Camera::SetDrawPos(int xpos , int ypos) {
-   WidgetBase::SetDrawPos(xpos,ypos);
-}
-
-
-
-void Camera::SetDrawDimensions(int width , int height) {
-   WidgetBase::SetDrawDimensions(width,height);
-}
-
-
-
-void Camera::SetArea(int xpos , int ypos , int width , int height) {
-   WidgetBase::SetArea(xpos,ypos,width,height);
-}
-
-
-
-void Camera::SetArea(const Rectangle& r) {
-   WidgetBase::SetArea(r);
-}
-
-
-
 void Camera::SetView(EagleImage* bmp , Rectangle area_to_view) {
    SetView(bmp , area_to_view.X() , area_to_view.Y() , area_to_view.W() , area_to_view.H());
 }

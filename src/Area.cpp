@@ -277,6 +277,36 @@ void Triangle::RenewAngles() {
 
 
 
+Triangle::Triangle() :
+      p1(),
+      p2(),
+      p3(),
+      angle_ab(0.0),
+      angle_bc(0.0),
+      angle_ca(0.0),
+      inside_is_positive_angle(false),
+      points_unique(false),
+      points_make_triangle(false)
+{
+   
+}
+
+
+
+Triangle::Triangle(const Triangle& t) :
+      p1(t.p1),
+      p2(t.p2),
+      p3(t.p3),
+      angle_ab(t.angle_ab),
+      angle_bc(t.angle_bc),
+      angle_ca(t.angle_ca),
+      inside_is_positive_angle(t.inside_is_positive_angle),
+      points_unique(t.points_unique),
+      points_make_triangle(t.points_make_triangle)
+{}
+
+
+
 Triangle::Triangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3) :
       p1(x1,y1),
       p2(x2,y2),

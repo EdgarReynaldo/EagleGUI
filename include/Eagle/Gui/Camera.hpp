@@ -101,10 +101,7 @@ public :
    virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
    virtual void SetPrivateColorset(const WidgetColorset& colors);
 
-   virtual void SetDrawPos(int xpos , int ypos);
-   virtual void SetDrawDimensions(int width , int height);
-   virtual void SetArea(int xpos , int ypos , int width , int height);
-   virtual void SetArea(const Rectangle& r);
+///   virtual void SetWidgetArea(int xpos , int ypos , int width , int height);
 
    /// Member functions
    virtual void SetView(EagleImage* bmp , int x , int y , int w , int h);

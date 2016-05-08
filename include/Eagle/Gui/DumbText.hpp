@@ -43,11 +43,12 @@ public :
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);
 
-   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-   void         SetArea(const Rectangle& r , bool notify_layout = true);
+   void SetWidgetArea(int x , int y , int w , int h , bool notify_layout = true);
 
+   /// Shrink wrap : Changes area so it exactly fits the text
+   void ShrinkWrap();
+
+   
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
 

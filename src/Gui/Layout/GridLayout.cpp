@@ -62,7 +62,7 @@ void GridLayout::RepositionChild(int cellx , int celly) {
 	int index = celly*ncols + cellx;
 	WidgetBase* widget = wchildren[index];
    if (widget) {
-      widget->SetArea(RequestWidgetRectangle(widget));
+      widget->SetWidgetArea(RequestWidgetRectangle(widget));
    }
    
 }
@@ -109,7 +109,7 @@ void GridLayout::RepositionChild(int cellx , int celly) {
 			widget->SetDrawPos(xpos , ypos);
 			break;
 		case GRID_FILL_CELL :
-			widget->SetArea(xpos + cellhpad , ypos + cellvpad , colwidth - 2*cellhpad , rowheight - 2*cellvpad);
+			widget->SetWidgetArea(xpos + cellhpad , ypos + cellvpad , colwidth - 2*cellhpad , rowheight - 2*cellvpad);
 			break;
 	};
 
@@ -256,23 +256,8 @@ Rectangle GridLayout::RequestArea       (WidgetBase* widget , int newx , int new
 //*/
 
 
-void GridLayout::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-   WidgetBase::SetDrawPos(xpos , ypos , notify_layout);
-   RepositionAllChildren();
-}
-
-
-
-void GridLayout::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width , height , notify_layout);
-   CalculateGrid();
-   RepositionAllChildren();
-}
-
-
-
-void GridLayout::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos , ypos , width , height , notify_layout);
+void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
    CalculateGrid();
    RepositionAllChildren();
 }

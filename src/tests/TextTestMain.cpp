@@ -61,7 +61,7 @@ int TextTestMain(int argc , char** argv) {
    WidgetHandler* gui = new WidgetHandler();
    gui->SetDrawWindow(win);
    gui->SetupBufferDimensions(ww , wh);
-   gui->SetArea(0,0,ww,wh);
+   gui->SetWidgetArea(0,0,ww,wh);
    gui->SetFocusDrawType(FOCUS_HIGHLIGHT_THICK_DOTTED);
    
    RelativeLayout rel;
@@ -70,12 +70,44 @@ int TextTestMain(int argc , char** argv) {
    EagleImage* up = win->LoadImageFromFile("Data/GuiTestImages/RBA_Up.png");
    EagleImage* down = win->LoadImageFromFile("Data/GuiTestImages/RBA_Down.png");
    EagleImage* hover = win->LoadImageFromFile("Data/GuiTestImages/RBA_Hover.png");
+
    IconButton icon;
    
    icon.SetImages(up , down , hover , down);
    
-   rel.AddWidget(&icon , LayoutRectangle(0.1,0.6,0.2,0.1));
+   
+   rel.AddWidget(&icon , LayoutRectangle(0.1,0.6,0.4,0.3));
+   
+   GridLayout button_grid;
+   button_grid.ResizeGrid(5,5);
+   
+   rel.AddWidget(&button_grid , LayoutRectangle(0.5,0.6,0.5,0.3));
+
+   BasicScrollButton scroll_buttons[4];
+   
+   scroll_buttons[0].SetScrollDirection(true,true);/// left
+   scroll_buttons[1].SetScrollDirection(false,true);/// right
+   scroll_buttons[2].SetScrollDirection(true,false);/// up
+   scroll_buttons[3].SetScrollDirection(false,false);/// down
+
+   button_grid.PlaceWidget(&scroll_buttons[0] , 10 , false);
+   button_grid.PlaceWidget(&scroll_buttons[1] , 14 , false);
+   button_grid.PlaceWidget(&scroll_buttons[2] , 2 , false);
+   button_grid.PlaceWidget(&scroll_buttons[3] , 22 , false);
+   
+/**
+   BasicButton basicbutton;
+   
+   rel.AddWidget(&basicbutton , LayoutRectangle(0.5,0.6,0.5,0.3));
       
+   Rectangle r = basicbutton.InnerArea();
+   r.MoveBy(-r.X() , -r.Y());
+   
+   Triangle triangle(r.X() , r.Y() , (r.X() + r.W()/2) , r.BRY() , r.BRX() , r.Y()+r.H()/2);
+   
+   basicbutton.SetClickArea(&triangle , false);
+*/
+
    DumbText dt;
    dt.SetupText(HALIGN_LEFT , VALIGN_TOP , 10 , 10 , 0 , "" , &textfont);
    dt.SetText("This is just dumb text." , &textfont);
@@ -136,6 +168,12 @@ int TextTestMain(int argc , char** argv) {
                   
          win->DrawRectangle(r , 2 , EagleColor(0,255,0));
                   
+         bool up = icon.Up();
+         bool hover = icon.Hover();
+         
+         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
+                             10,30,EagleColor(0,0,255));
+                  
          win->FlipDisplay();
          redraw = false;
 /**
@@ -158,7 +196,7 @@ int TextTestMain(int argc , char** argv) {
          
          if (ee.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             win->AcknowledgeResize();
-            gui->SetArea(0 , 0 , win->Width() , win->Height());
+            gui->SetWidgetArea(0 , 0 , win->Width() , win->Height());
          }
 
          gui->HandleEvent(ee);

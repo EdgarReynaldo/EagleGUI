@@ -46,9 +46,6 @@ public :
    RelativeLayout(std::string name);
    ~RelativeLayout();
 
-   // LayoutBase
-   void SetArea(const Rectangle& r , bool notify_layout = true);
-
    virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
    
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below

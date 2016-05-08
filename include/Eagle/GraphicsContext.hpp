@@ -201,7 +201,8 @@ protected :
    
    MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    // cannot be called in a base class constructor
-   
+   EagleFont* default_font;
+                                      
    float maxframes;
    float numframes;
    float total_frame_time;
@@ -329,8 +330,10 @@ public :
    void                FreeImage(EagleImage* img);
    
    // font loading
-   virtual EagleFont* LoadFont(std::string file , int height , int flags , IMAGE_TYPE type = VIDEO_IMAGE)=0;
+   virtual EagleFont* LoadFont(std::string file , int height , int flags = DRAW_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    void               FreeFont(EagleFont* font);
+   
+   EagleFont* DefaultFont() {return default_font;}
    
    // event handler registration
    virtual void RegisterDisplayInput(EagleEventHandler* queue)=0;

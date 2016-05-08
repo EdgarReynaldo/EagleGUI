@@ -234,10 +234,12 @@ public :
    void         SetImagesHaveAlpha(bool have_alpha);
    
    /// These 4 functions all pass the requested parameters to their layout owner for adjustment if necessary
-   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-   void         SetArea(const Rectangle& r , bool notify_layout = true);
+   void SetWidgetPos(int xpos , int ypos , bool notify_layout = true);
+   void SetWidgetCorners(int x1 , int y1 , int x2 , int y2 , bool notify_layout = true);
+   void SetWidgetDimensions(int width , int height , bool notify_layout = true);
+   void SetWidgetArea(Rectangle outer , bool notify_layout = true);
+   
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);

@@ -218,8 +218,6 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="C:/LIBS/A5GITdistro/lib" />
 		</Linker>
-		<Unit filename="include/Eagle/Gui/IconButton.hpp" />
-		<Unit filename="src/Gui/IconButton.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />
 		<Unit filename="src/tests/DrawingTestMain.cpp" />

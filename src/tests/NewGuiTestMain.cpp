@@ -75,58 +75,58 @@ int NewGuiTestMain(int argc , char** argv) {
 
    gui.SetDrawWindow(win);
    gui.SetupBufferDimensions(800,600);
-   gui.SetArea(0,0,800,600);
+   gui.SetWidgetArea(0,0,800,600);
    
-   Button b1;
+   GuiButton b1;
    b1.SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    b1.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_1));
    b1.SetLabel("Spring Button &1");
    b1.SetFont(&bfont);
 
-   Button b2;
+   GuiButton b2;
    b2.SetButtonType(ROUNDED_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    b2.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_2));
    b2.SetLabel("Spring Button &2");
    b2.SetFont(&bfont);
 
-   Button b3;
+   GuiButton b3;
    b3.SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    b3.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_3));
    b3.SetLabel("Spring Button &3");
    b3.SetFont(&bfont);
 
-   Button b4;
+   GuiButton b4;
    b4.SetButtonType(CIRCLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    b4.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_4));
    b4.SetLabel("Spring Button &4");
    b4.SetFont(&bfont);
    
-   Button b5;
+   GuiButton b5;
    b5.SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
    b5.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_5));
    b5.SetLabel("Toggle Button &5");
    b5.SetFont(&bfont2);
 
-   Button b6;
+   GuiButton b6;
    b6.SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
    b6.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_6));
    b6.SetLabel("Toggle Button &6");
    b6.SetFont(&bfont2);
 
-   Button b7;
+   GuiButton b7;
    b7.SetButtonType(ELLIPSE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
    b7.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_7));
    b7.SetLabel("Toggle Button &7");
    b7.SetFont(&bfont2);
 
-   Button b8;
+   GuiButton b8;
    b8.SetButtonType(CIRCLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
    b8.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_8));
    b8.SetLabel("Toggle Button &8");
    b8.SetFont(&bfont2);
 
    DumbText text1;
-///   text1.SetArea(0,0,800,200);
+///   text1.SetWidgetArea(0,0,800,200);
    text1.SetupText(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10 , "",  &bfont );
    text1.SetText("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
    text1.SetMarginsContractFromOuter(10,10,10,10);
@@ -177,7 +177,7 @@ int NewGuiTestMain(int argc , char** argv) {
          
          if (ee.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             win->AcknowledgeResize();
-            gui.SetArea(0 , 0 , win->Width() , win->Height());
+            gui.SetWidgetArea(0 , 0 , win->Width() , win->Height());
          }
 
          gui.HandleEvent(ee);

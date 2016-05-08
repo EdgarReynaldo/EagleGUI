@@ -20,3 +20,10 @@ somewhere....
 
 3. Create a widget factory that tracks widgets and frees them so the gui and layouts don't have to?
 
+4. Widgets needed
+
+a - Drop down list
+b - Radio Button
+c - Menu, MenuItem, MenuBar
+d - ButtonBar?
+e - Scroll bars

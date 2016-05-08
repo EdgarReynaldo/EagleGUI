@@ -80,8 +80,10 @@ public :
    WidgetArea& operator=(const WidgetArea& a);
 
    void MoveBy(int dx , int dy);
-	Rectangle OuterArea() const {return outer_area;}
-	Rectangle InnerArea() const {return inner_area;}
+	const Rectangle& OuterArea() const {return outer_area;}
+	const Rectangle& InnerArea() const {return inner_area;}
+	Rectangle& OuterArea() {return outer_area;}
+	Rectangle& InnerArea() {return inner_area;}
 	int       W() const {return outer_area.W();}
 	int       H() const {return outer_area.H();}
 	Rectangle   GetCellRectangle (MARGIN_CELL cell) const ;

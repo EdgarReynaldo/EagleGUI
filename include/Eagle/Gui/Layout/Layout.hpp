@@ -92,13 +92,8 @@ public :
    virtual int PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y);
 
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
-   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-   
-   void SetArea(const Rectangle& r , bool notify_layout = true);
-   
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
 

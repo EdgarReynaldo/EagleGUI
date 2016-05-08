@@ -689,9 +689,17 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
 
 /// TODO : WARNING : Tracked widgets may have gone out of scope by now, so we have to
 /// be careful not to call any widget functions through their pointers : WARNING : TODO
+
 void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(w);
-   EAGLE_ASSERT(GetValidByAddress(w));
+   if (!GetValidByAddress(w)) {
+      /// TODO : This widget has already been destroyed somehow - note it and move on - figure it out later
+      EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
+      return;
+   }
    
    /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
    EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget - w->GetName() = (%s)\n" , w->GetName().c_str());
@@ -1126,8 +1134,8 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
-   root_layout->WidgetBase::SetArea(area.InnerArea(),false);
-//   ((WidgetBase*)root_layout))->SetArea(area.InnerArea());
+   root_layout->WidgetBase::SetWidgetArea(area.InnerArea(),false);
+//   ((WidgetBase*)root_layout))->SetWidgetArea(area.InnerArea());
 }
 
 
@@ -1138,44 +1146,14 @@ void WidgetHandler::SyncCamera() {
 
 
 
-void WidgetHandler::SetDrawPos(int xpos , int ypos) {
-   WidgetBase::SetDrawPos(xpos , ypos);
-   SyncLayoutPos();
-}
-
-
-
-void WidgetHandler::SetDrawDimensions(int width , int height) {
-
-   WidgetBase::SetDrawDimensions(width,height);
-   Rectangle r = area.OuterArea();
-
-   /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
-   cam.SetArea(0,0 , r.W(), r.H());
-
+void WidgetHandler::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
    
-   if ((buffer->W() < r.W()) || (buffer->H() < r.H()) || shrink_buffer_on_resize) {
-      // buffer is too small or we're set to shrink on resized area, so resize buffer
-      SetupBufferDimensions(r.W() , r.H());
-   }
-   else {
-      // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-      cam.SetView(buffer , 0 , 0 , r.W() , r.H());
-   }
-   SyncLayoutPos();
-   clear_background = true;
-}
-
-
-
-void WidgetHandler::SetArea(int xpos , int ypos , int width , int height) {
-   
-   WidgetBase::SetArea(xpos,ypos,width,height);
+   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    
    Rectangle r = area.OuterArea();
 
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
-   cam.SetArea(0,0 , r.W(), r.H());
+   cam.SetWidgetArea(0,0 , r.W(), r.H());
 
    if ((buffer->W() < r.W()) || (buffer->H() < r.H()) || shrink_buffer_on_resize) {
       // buffer is too small or we're set to shrink on resized area, so resize buffer
@@ -1195,7 +1173,7 @@ void WidgetHandler::SetMarginsExpandFromInner(int left , int right , int top , i
    WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
    
    // reset camera to reflect new area
-   cam.SetArea(0,0,area.OuterArea().W(), area.OuterArea().H());
+   cam.SetWidgetArea(0,0,area.OuterArea().W(), area.OuterArea().H());
 }
 
 

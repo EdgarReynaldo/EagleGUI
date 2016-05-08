@@ -205,29 +205,14 @@ void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleC
 
 
 
-void DumbText::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-   WidgetBase::SetDrawPos(xpos,ypos,notify_layout);
+void DumbText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout) {
+   WidgetBase::SetWidgetArea(x,y,w,h,notify_layout);
    Refresh();
 }
 
 
-
-void DumbText::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width,height,notify_layout);
-   Refresh();
-}
-
-
-
-void DumbText::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos,ypos,width,height,notify_layout);
-   Refresh();
-}
-
-
-
-void DumbText::SetArea(const Rectangle& r , bool notify_layout) {
-   DumbText::SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
+void DumbText::ShrinkWrap() {
+   WidgetBase::SetWidgetArea(textx,texty,maxwidth,totalheight,true);
 }
 
 

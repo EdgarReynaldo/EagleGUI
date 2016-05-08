@@ -211,6 +211,7 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       images(true),
       fonts(true),
       mp_manager(0),
+      default_font(0),
       maxframes(60),
       numframes(0.0f),
       total_frame_time(0.0f),

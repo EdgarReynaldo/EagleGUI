@@ -20,7 +20,7 @@
  */
 
 
-#include "Eagle/Gui/Button.hpp"
+#include "Eagle/Gui/GuiButton.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/StringWork.hpp"
@@ -33,124 +33,14 @@ using std::stringstream;
 using std::string;
 using std::endl;
 
-double SPRING_BTN_DURATION = 0.25;
-double BTN_ROUNDNESS = 0.4;
+
+
+/// -------------------------------     GuiButton     -------------------------------------------
 
 
 
-bool ButtonUp(BUTTON_STATE state) {
-   return (state == BUTTON_UP || state == BUTTON_HOVER_UP);
-}
 
-
-
-bool ButtonHover(BUTTON_STATE state) {
-   return (state == BUTTON_HOVER_UP || state == BUTTON_HOVER_DOWN);
-}
-
-
-
-string GetButtonShapeText(BUTTON_SHAPE shape) {
-   stringstream ss;
-   switch (shape) {
-      case RECTANGLE_BTN : ss << "RECTANGLE_BTN";break;
-      case CIRCLE_BTN : ss << "CIRCLE_BTN";break;
-      case ROUNDED_BTN : ss << "ROUNDED_BTN";break;
-      case ELLIPSE_BTN : ss << "ELLIPSE_BTN";break;
-      default : ss << "Unknown button shape";break;
-   };
-   return ss.str();
-}
-
-
-
-string GetButtonActionTypeText(BUTTON_ACTION_TYPE type) {
-   stringstream ss;
-   switch (type) {
-      case SPRING_BTN : ss << "SPRING_BTN";break;
-      case TOGGLE_BTN : ss << "TOGGLE_BTN";break;
-      default : ss << "Unknown button action type";break;
-   };
-   return ss.str();
-}
-
-
-
-string GetButtonClassText(BUTTON_CLASS _class) {
-   stringstream ss;
-   switch (_class) {
-      case BUTTON_CLASS_PLAIN : ss << "BUTTON_CLASS_PLAIN";break;
-      case BUTTON_CLASS_HOVER : ss << "BUTTON_CLASS_HOVER";break;
-      default : ss << "Unknown button class";break;
-   };
-   return ss.str();
-}
-
-
-
-string GetButtonStateText(BUTTON_STATE state) {
-   stringstream ss;
-   switch (state) {
-      case BUTTON_UP : ss << "BUTTON_UP";break;
-      case BUTTON_DOWN : ss << "BUTTON_DOWN";break;
-      case BUTTON_HOVER_UP : ss << "BUTTON_HOVER_UP";break;
-      case BUTTON_HOVER_DOWN : ss << "BUTTON_HOVER_DOWN";break;
-      default : ss << "Unknown button state";break;
-   };
-   return ss.str();
-}
-
-
-
-/// -------------------------------     Button     -------------------------------------------
-
-
-
-void Button::SetButtonState(bool hover , bool up) {
-   bool oldhover = Flags() & HOVER;
-   bool oldup = (btn_state % 2 == 0);
-   if (up != oldup) {
-      if (btn_action_type == TOGGLE_BTN) {
-          QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
-      }
-      else if (btn_action_type == SPRING_BTN) {
-         if (!up) {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
-         }
-         else {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
-         }
-      }
-      SetBgRedrawFlag();
-   }
-/** NOTE : THIS MAKES A BUTTON THAT IS DOWN SEND A HELD MESSAGE WHEN THE HOVER CHANGES - NOT USEFUL
-   else {
-      if (!up) {
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
-      }
-   }
-//*/
-   if (hover != oldhover) {
-      WidgetBase::SetHoverState(hover);
-      if (hover_message_enabled) {
-         if (hover) {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
-         }
-         else {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
-         }
-      }
-      if (btn_class == BUTTON_CLASS_HOVER) {
-         WidgetBase::SetBgRedrawFlag();
-      }
-      SetBgRedrawFlag();
-   }
-   btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
-}
-
-
-
-void Button::ResetRadii() {
+void GuiButton::ResetRadii() {
    // Uses the largest size shape that will fit into the rectangle
    Rectangle r = area.InnerArea();
    switch (btn_shape) {
@@ -163,10 +53,6 @@ void Button::ResetRadii() {
          {
             rad_a = hradpercent*InnerArea().W()/2.0;
             rad_b = vradpercent*InnerArea().H()/2.0;
-            
-///            int min = (r.W()< r.H())?(r.W()):(r.H());
-///            rad_a = (int)(BTN_ROUNDNESS*min);
-//            rad_a = (2*min)/5;
          }
          break;
       case ELLIPSE_BTN : 
@@ -179,154 +65,50 @@ void Button::ResetRadii() {
 
 
 
-void Button::FreeClickArea() {
-   if (click_area && delete_area_ptr) {
-      delete click_area;
-   }
-   click_area = 0;
-}
-
-
 /**
-
-   InputGroup input_group;// For holding a key / mouse / jstk button combo to activate the button
-   bool pointer_input;
-
    BUTTON_SHAPE btn_shape;
-   BUTTON_ACTION_TYPE btn_action_type;// SPRING_BTN or TOGGLE_BTN
-   BUTTON_STATE btn_state;/// BUTTON_STATE
-   BUTTON_CLASS btn_class;
-///   bool up;
-   double dn_time_left;
+
    EagleFont* text_font;
-   std::string text;// gui_textout_ex, gui_strlen from allegro
+   std::string text;
 
    /// Button type determines hit detection properties as well
-   /// Rectangle button uses dimensions passed in constructor call
+   // Rectangle button uses dimensions passed in constructor call
    int rad_a;// Primary radius for circles and the horizontal radius for ellipse type buttons,
                // as well as the corner radius for rounded rectangular buttons
    int rad_b;// Secondary vertical radius, only for ellipses
 
-   double spring_duration;
    float hradpercent;// for ROUNDED_BTN type buttons
    float vradpercent;// for ROUNDED_BTN type buttons
-   
-   /// For tracking state while the button is held
-   bool user_activated;
-   bool focuskey_activated;
-   bool pointer_activated;
-   
-   AreaBase* click_area;
-   bool delete_area_ptr;
-
-
-   bool hover_message_enabled;
-
-*/
-Button::Button() :
-      WidgetBase(StringPrintF("Button object at %p" , this)),
-      input_group(input_key_press(EAGLE_KEY_NONE)),
-      pointer_input(false),
+   //*/
+GuiButton::GuiButton() :
+      BasicButton(StringPrintF("GuiButton object at %p" , this)),
       btn_shape(RECTANGLE_BTN),
-      btn_action_type(TOGGLE_BTN),
-      btn_state(BUTTON_UP),
-      btn_class(BUTTON_CLASS_PLAIN),
-      dn_time_left(SPRING_BTN_DURATION),
       text_font(0),
       text(""),
       rad_a(0),
       rad_b(0),
-      spring_duration(SPRING_BTN_DURATION),
       hradpercent(0.75),
-      vradpercent(0.75),
-      user_activated(false),
-      focuskey_activated(false),
-      pointer_activated(false),
-      click_area(0),
-      delete_area_ptr(false),
-      hover_message_enabled(false)
+      vradpercent(0.75)
 {
    SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
-   /// TODO : IMPLEMENT Default Font
-   // SetFont(sys->GetDefaultFont());
 }
 
 
 
-Button::Button(string name) :
-      WidgetBase(name),
-      input_group(input_key_press(EAGLE_KEY_NONE)),
-      pointer_input(false),
+GuiButton::GuiButton(string name) :
+      BasicButton(name),
       btn_shape(RECTANGLE_BTN),
-      btn_action_type(TOGGLE_BTN),
-      btn_state(BUTTON_UP),
-      btn_class(BUTTON_CLASS_PLAIN),
-      dn_time_left(SPRING_BTN_DURATION),
       text_font(0),
       text(""),
       rad_a(0),
       rad_b(0),
-      spring_duration(SPRING_BTN_DURATION),
       hradpercent(0.75),
-      vradpercent(0.75),
-      user_activated(false),
-      focuskey_activated(false),
-      pointer_activated(false),
-      click_area(0),
-      delete_area_ptr(false),
-      hover_message_enabled(false)
+      vradpercent(0.75)
 {
    SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
-   /// TODO : IMPLEMENT Default Font
-   // SetFont(sys->GetDefaultFont());
 }
 
-
-
-Button::Button(string name , BUTTON_SHAPE shape , BUTTON_ACTION_TYPE atype , EagleFont* textfont ,
-               string label , const InputGroup& input) :
-      WidgetBase(name),
-      input_group(input),
-      pointer_input(input.PointerInput()),
-      btn_shape(RECTANGLE_BTN),
-      btn_action_type(atype),
-      btn_state(BUTTON_UP),
-      btn_class(BUTTON_CLASS_PLAIN),
-      dn_time_left(SPRING_BTN_DURATION),
-      text_font(0),
-      text(label),
-      rad_a(0),
-      rad_b(0),
-      spring_duration(SPRING_BTN_DURATION),
-      hradpercent(0.75),
-      vradpercent(0.75),
-      user_activated(false),
-      focuskey_activated(false),
-      pointer_activated(false),
-      click_area(0),
-      delete_area_ptr(false),
-      hover_message_enabled(false)
-{
-   SetButtonType(shape , atype , BUTTON_CLASS_PLAIN);
-   SetFont(textfont);
-}
-
-
-
-Button::~Button() {
-   FreeClickArea();
-}
-
-
-
-int Button::PrivateHandleEvent(EagleEvent e) {
-   (void)e;
-   return DIALOG_OKAY;
-}
-
-
-
-int Button::PrivateCheckInputs() {
+int GuiButton::PrivateCheckInputs() {
 
    UINT retmsg = DIALOG_OKAY;
    bool activated = false;
@@ -370,7 +152,7 @@ int Button::PrivateCheckInputs() {
          focuskey_activated = false;
          pointer_activated = false;
       } else {
-         dn_time_left = spring_duration;
+         down_time_left = spring_duration;
          QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
       }
       return DIALOG_OKAY;
@@ -446,7 +228,7 @@ int Button::PrivateCheckInputs() {
          case TOGGLE_BTN :
             up = !up;
             break;
-         default : throw EagleError("Button::PrivateCheckInputs - btn_action_type unknown");break;
+         default : throw EagleError("GuiButton::PrivateCheckInputs - btn_action_type unknown");break;
       }
       SetButtonState(Flags() & HOVER , up);
       if (WidgetBase::Flags() & ALLOW_CLOSE) {
@@ -459,24 +241,24 @@ int Button::PrivateCheckInputs() {
 
 
 
-void Button::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   DrawButtonShape(win , this , xpos , ypos);
-   DrawButtonText(win , this , xpos , ypos);
+void GuiButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   DrawGuiButtonShape(win , this , xpos , ypos);
+   DrawGuiButtonText(win , this , xpos , ypos);
    ClearRedrawFlag();
 }
 
 
 
-int Button::PrivateUpdate(double tsec) {
+int GuiButton::PrivateUpdate(double tsec) {
    UINT retmsg = DIALOG_OKAY;
    
    if (btn_action_type == SPRING_BTN) {
       bool up = btn_state%2 == 0;
       bool hover = Flags() & HOVER;
       if (!up && !user_activated && !focuskey_activated && !pointer_activated) {
-         dn_time_left -= tsec;
-         if (dn_time_left <= 0.0) {
-            dn_time_left = spring_duration;
+         down_time_left -= tsec;
+         if (down_time_left <= 0.0) {
+            down_time_left = spring_duration;
             up = true;
             SetButtonState(hover , up);
          }
@@ -486,7 +268,7 @@ int Button::PrivateUpdate(double tsec) {
 }
 
 
-void Button::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages) {
+void GuiButton::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages) {
 /**
    WidgetMsg msg(widget_address , widget_topic , messages);
    EagleLog() << "Queueing user message [" << msg << "]. Widget state is currently :" << endl;
@@ -497,7 +279,7 @@ void Button::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , i
 }
 
 /* TODO OLD REMOVE
-WidgetMsg Button::CheckInputs(int msx , int msy)// Pass it the mouse position relative to it's drawing target,
+WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position relative to it's drawing target,
                                                 // except for WidgetHandlers
                                                 // Hover is taken care of by WidgetHandlers, if you need it to
                                                 // do something, override the virtual SetHoverState function.
@@ -624,11 +406,11 @@ WidgetMsg Button::CheckInputs(int msx , int msy)// Pass it the mouse position re
 
 
 /// TODO OLD REMOVE
-void Button::DisplayOn(BITMAP* bmp , int x , int y)/// DisplayOn should always draw, and always 
+void GuiButton::DisplayOn(BITMAP* bmp , int x , int y)/// DisplayOn should always draw, and always 
                                                    /// clear the NEEDS_REDRAW flag.
 {
-   DrawButtonRectangle(bmp , x , y);
-   DrawButtonText(bmp , x , y);
+   DrawGuiButtonRectangle(bmp , x , y);
+   DrawGuiButtonText(bmp , x , y);
    ClearRedrawFlag();
 }
 
@@ -636,7 +418,7 @@ void Button::DisplayOn(BITMAP* bmp , int x , int y)/// DisplayOn should always d
 
 
 /* TODO OLD REMOVE
-WidgetMsg Button::Update (double tsec) // logic handling with animation support
+WidgetMsg GuiButton::Update (double tsec) // logic handling with animation support
 {
    UINT retmsg = DIALOG_OKAY;
    if (!(WidgetBase::Flags() & ENABLED)) {
@@ -660,58 +442,21 @@ WidgetMsg Button::Update (double tsec) // logic handling with animation support
 
 
 
-void Button::SetHoverState (bool state) {
-   SetButtonState(state , Up());
-}
-
-
-
-void Button::SetRedrawFlag() {
+void GuiButton::SetRedrawFlag() {
    SetBgRedrawFlag();
 }
 
 
 
-void Button::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width,height,notify_layout);
+void GuiButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    ResetRadii();
    SetBgRedrawFlag();
 }
 
 
 
-void Button::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos,ypos,width,height,notify_layout);
-   ResetRadii();
-   SetBgRedrawFlag();
-}
-
-
-
-void Button::SetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetArea(r,notify_layout);
-   ResetRadii();
-   SetBgRedrawFlag();
-}
-
-
-
-void Button::SetInputGroup(InputGroup ig) {
-   input_group = ig;
-   pointer_input = input_group.PointerInput();
-}
-
-
-
-void Button::SetClickArea(AreaBase* btn_click_area , bool delete_when_done) {
-   FreeClickArea();
-   click_area = btn_click_area;
-   delete_area_ptr = delete_when_done;
-}
-
-
-
-void Button::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_type , BUTTON_CLASS button_class) {
+void GuiButton::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_type , BUTTON_CLASS button_class) {
    btn_shape = shape;
    btn_action_type = action_type;
    btn_class = button_class;
@@ -721,36 +466,7 @@ void Button::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_type ,
 
 
 
-void Button::SetSpringDuration(double duration) {
-   if (duration < 0.0) {duration = 0.0;}
-   spring_duration = duration;
-}
-
-
-
-void Button::SetButtonUpState(bool button_up) {
-   bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
-   if (up != button_up) {
-      up = button_up;
-      SetButtonState(hover , up);
-      SetBgRedrawFlag();
-   }
-}
-
-
-
-void Button::ToggleButton() {
-   bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
-   up = !up;
-   SetButtonState(hover , up);
-   SetBgRedrawFlag();
-}
-
-
-
-void Button::SetLabel(string label_text) {
+void GuiButton::SetLabel(string label_text) {
    text = label_text;
    SetName(StringPrintF("\"%s\" %s at %p.", GetName().c_str() , GetWidgetClassName().c_str() , this));
    SetBgRedrawFlag();
@@ -759,7 +475,7 @@ void Button::SetLabel(string label_text) {
 
 
 
-void Button::SetRoundingPercent(float hpercent , float vpercent) {
+void GuiButton::SetRoundingPercent(float hpercent , float vpercent) {
    if (hpercent < 0.0f) {hpercent = 0.0f;}
    if (hpercent > 1.0f) {hpercent = 1.0f;}
    if (vpercent < 0.0f) {vpercent = 0.0f;}
@@ -772,7 +488,7 @@ void Button::SetRoundingPercent(float hpercent , float vpercent) {
 
 
 
-void Button::SetFont(EagleFont* textfont) {
+void GuiButton::SetFont(EagleFont* textfont) {
 
    text_font = textfont;
    SetBgRedrawFlag();
@@ -781,87 +497,56 @@ void Button::SetFont(EagleFont* textfont) {
 
 
 
-void Button::EnableHoverMessage(bool enabled) {
-   hover_message_enabled = enabled;
-}
-
-
-
-InputGroup Button::InputKey() {
-   return input_group;
-}
-
-
-
-bool Button::Up() {
-   bool up = (btn_state % 2) == 0;
-   return up;
-}
-
-
-
-std::string Button::Text() {
+std::string GuiButton::Text() {
    return text;
 }
 
 
 
-EagleFont* Button::Font() {
+EagleFont* GuiButton::Font() {
    return text_font;
 }
 
 
 
-BUTTON_SHAPE Button::ButtonShape() {
+BUTTON_SHAPE GuiButton::ButtonShape() {
    return btn_shape;
 }
 
 
 
-BUTTON_STATE Button::ButtonState() {
-   return btn_state;
-}
-
-
-
-BUTTON_CLASS Button::ButtonClass() {
+BUTTON_CLASS GuiButton::ButtonClass() {
    return btn_class;
 }
 
 
 
-BUTTON_ACTION_TYPE Button::ButtonType() {
-   return btn_action_type;
-}
-
-
-
-int Button::RadiusA() {
+int GuiButton::RadiusA() {
    return rad_a;
 }
 
 
 
-int Button::RadiusB() {
+int GuiButton::RadiusB() {
    return rad_b;
 }
 
 
 
-std::string Button::GetWidgetClassName() {
-   return "Button";
+std::string GuiButton::GetWidgetClassName() {
+   return "GuiButton";
 }
 
 
 
 
-std::ostream& Button::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << StringPrintF("Button object %s at %p :",GetName().c_str(),this) << endl;
+std::ostream& GuiButton::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << StringPrintF("GuiButton object %s at %p :",GetName().c_str(),this) << endl;
    input_group.DescribeTo(os,indent);
-   os << indent << "Button shape = [" << GetButtonShapeText(btn_shape) <<
-                   "] Button action type = [" << GetButtonActionTypeText(btn_action_type) << "]" << endl;
-   os << indent << "Button state = [" << GetButtonStateText(btn_state) << 
-                   "] Button class = [" << GetButtonClassText(btn_class) << "]" << endl;
+   os << indent << "GuiButton shape = [" << GetButtonShapeText(btn_shape) <<
+                   "] GuiButton action type = [" << GetButtonActionTypeText(btn_action_type) << "]" << endl;
+   os << indent << "GuiButton state = [" << GetButtonStateText(btn_state) << 
+                   "] GuiButton class = [" << GetButtonClassText(btn_class) << "]" << endl;
    os << indent << "Text = \"" << text << "\" , Text font = ";
    if (text_font) {
       text_font->DescribeTo(os);
@@ -869,7 +554,7 @@ std::ostream& Button::DescribeTo(std::ostream& os , Indenter indent) const {
    else {
       os << "NULL" << endl;
    }
-   os << indent << "Button radii (a,b) == (" << rad_a << "," << rad_b <<
+   os << indent << "GuiButton radii (a,b) == (" << rad_a << "," << rad_b <<
          ") , (hradpercent,vradpercent) = (" << hradpercent << "," << vradpercent << ") , spring duration = " << spring_duration << endl;
    os << indent << "Activation state (user , focuskey , pointer) = (" << user_activated <<
          " , " << focuskey_activated << " , " << pointer_activated << ")" << endl;
@@ -894,15 +579,15 @@ std::ostream& Button::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
-void DrawButtonShape(EagleGraphicsContext* win , Button* btn , int x , int y) {
+void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int y) {
    if (!btn && !win) {
-      throw EagleError("Null win and Null btn passed to DrawButtonShape.\n");
+      throw EagleError("Null win and Null btn passed to DrawGuiButtonShape.\n");
    }
    else if (!btn) {
-      throw EagleError("Null btn passed to DrawButtonShape.\n");
+      throw EagleError("Null btn passed to DrawGuiButtonShape.\n");
    }
    else if (!win) {
-      throw EagleError("Null win passed to DrawButtonShape.\n");
+      throw EagleError("Null win passed to DrawGuiButtonShape.\n");
    }
    bool up = (btn->ButtonState()%2) == 0;
    int rad_a = btn->RadiusA();
@@ -936,15 +621,15 @@ void DrawButtonShape(EagleGraphicsContext* win , Button* btn , int x , int y) {
 
 
 
-void DrawButtonText(EagleGraphicsContext* win , Button* btn , int x , int y) {
+void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int y) {
    if (!btn || !win) {
-      throw EagleError("Null win and Null btn passed to DrawButtonText.\n");
+      throw EagleError("Null win and Null btn passed to DrawGuiButtonText.\n");
    }
    else if (!btn) {
-      throw EagleError("Null btn passed to DrawButtonText.\n");
+      throw EagleError("Null btn passed to DrawGuiButtonText.\n");
    }
    else if (!win) {
-      throw EagleError("Null win passed to DrawButtonText.\n");
+      throw EagleError("Null win passed to DrawGuiButtonText.\n");
    }
    
    EagleFont* text_font = btn->Font();
@@ -953,7 +638,7 @@ void DrawButtonText(EagleGraphicsContext* win , Button* btn , int x , int y) {
    if (text.length()) {
       EAGLE_ASSERT(text_font);
       if (!text_font) {
-         throw EagleError(StringPrintF("Button object has text (\"%s\" but no associated font has been set!!!\n",text.c_str()));
+         throw EagleError(StringPrintF("GuiButton object has text (\"%s\" but no associated font has been set!!!\n",text.c_str()));
       }
       Rectangle r = btn->InnerArea();
       int tx = x + r.X() + r.W()/2;
@@ -969,24 +654,24 @@ void DrawButtonText(EagleGraphicsContext* win , Button* btn , int x , int y) {
 
 
 
-/// --------------------------------     HoverButton     --------------------------------
+/// --------------------------------     HoverGuiButton     --------------------------------
 
 /*
 
-HoverButton::HoverButton(std::string name) :
-      Button(name)
+HoverGuiButton::HoverGuiButton(std::string name) :
+      GuiButton(name)
 {}
 
 
 
-HoverButton::HoverButton(std::string name , BUTTON_SHAPE shape , BTN_ACTION_TYPE atype , FONT* textfont , 
+HoverGuiButton::HoverGuiButton(std::string name , BUTTON_SHAPE shape , BTN_ACTION_TYPE atype , FONT* textfont , 
                          std::string label , const InputGroup& input , const Rectangle& position , UINT wflags) :
-      Button(name , shape , atype , textfont , label , input , position , wflags)
+      GuiButton(name , shape , atype , textfont , label , input , position , wflags)
 {}
 
 
 
-void HoverButton::DisplayOn(BITMAP* bmp , int x , int y) {
+void HoverGuiButton::DisplayOn(BITMAP* bmp , int x , int y) {
    if (flags & HOVER) {
       if (up) {
          Rectangle r = area;
@@ -1007,17 +692,17 @@ void HoverButton::DisplayOn(BITMAP* bmp , int x , int y) {
          }
       }
       else {
-         Button::DisplayOn(bmp , x , y);
+         GuiButton::DisplayOn(bmp , x , y);
       }
    }
    else {
-      Button::DisplayOn(bmp , x , y);
+      GuiButton::DisplayOn(bmp , x , y);
    }
 }
 
 
    
-void HoverButton::SetHoverState (bool state) {
+void HoverGuiButton::SetHoverState (bool state) {
    WidgetBase::SetHoverState(state);
    SetRedrawFlag();
 }
@@ -1038,7 +723,7 @@ void HoverButton::SetHoverState (bool state) {
 
 
 
-#include "Eagle/Gui/Button.hpp"
+#include "Eagle/Gui/GuiButton.hpp"
 #include "Eagle/InputHandler.hpp"
 
 
@@ -1047,7 +732,7 @@ const unsigned int TOPIC_BUTTON = NextFreeTopicId();
 
 
 
-ButtonBase::ButtonBase() :
+GuiButtonBase::GuiButtonBase() :
       down(false),
       hover(false),
       selected(false),
@@ -1069,7 +754,7 @@ ButtonBase::ButtonBase() :
 
 
 
-ButtonBase::ButtonBase(std::string text_str , EagleFont* text_font) :
+GuiButtonBase::GuiButtonBase(std::string text_str , EagleFont* text_font) :
       down(false),
       hover(false),
       selected(false),
@@ -1091,14 +776,14 @@ ButtonBase::ButtonBase(std::string text_str , EagleFont* text_font) :
 
 
 
-int ButtonBase::PrivateHandleEvent(EagleEvent e) {
+int GuiButtonBase::PrivateHandleEvent(EagleEvent e) {
    (void)e;
    return DIALOG_OKAY;
 }
 
 
 
-int ButtonBase::CheckInputs() {
+int GuiButtonBase::CheckInputs() {
    if (input_mouse_release(LMB) && down) {
       QueueUserMessage(this , TOPIC_BUTTON , BUTTON_RELEASED);
       down = false;
@@ -1127,7 +812,7 @@ int ButtonBase::CheckInputs() {
 
 
 
-void ButtonBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
+void GuiButtonBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 //   virtual void DrawTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
@@ -1175,17 +860,17 @@ void ButtonBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
-int ButtonBase::Update(double tsec) {
+int GuiButtonBase::Update(double tsec) {
    (void)tsec;
    return DIALOG_OKAY;
 }
 
 
 
-/// Highlight Button
+/// Highlight GuiButton
 
 
-void HighlightButton::Display(EagleGraphicsContext* win , int xpos , int ypos) {
+void HighlightGuiButton::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    
    Rectangle r = area.OuterArea();
    r.MoveBy(xpos , ypos);

@@ -8,7 +8,7 @@
 #define IconButton_HPP
 
 
-#include "Eagle/Gui/Button.hpp"
+#include "Eagle/Gui/GuiButton.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/StringWork.hpp"
 
@@ -21,7 +21,7 @@ enum BUTTON_STATE {
 };
 //*/
 
-class IconButton : public Button {
+class IconButton : public BasicButton {
 
 private :
 /**
@@ -34,6 +34,8 @@ private :
 ///   EagleImage* scaled_images[4];/// We own these, they are scaled to fit the inner area
 
    /// BUTTON_STATE btn_state
+   Rectangle click_rect;
+   
 
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
@@ -41,21 +43,21 @@ private :
 public :
    
    IconButton() :
-         Button(StringPrintF("IconButton object at %p" , this)),
-         original_images()
+         BasicButton(StringPrintF("IconButton object at %p" , this)),
+         original_images(),
+         click_rect()
    {
       for (int i = 0 ; i < 4 ; ++i) {
          original_images[i] = 0;
       }
+      SetClickArea(&click_rect , false);
    }
+   ~IconButton() {}
    
    void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
    
    
-   
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-   virtual void SetArea(const Rectangle& r , bool notify_layout = true);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
    
 

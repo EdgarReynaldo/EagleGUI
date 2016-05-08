@@ -40,10 +40,7 @@ public :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
-   void SetDrawPos(int xpos , int ypos , bool notify_layout);
-   void SetDrawDimensions(int width , int height , bool notify_layout);
-   void SetArea(int xpos , int ypos , int width , int height , bool notify_layout);
-   void SetArea(const Rectangle& r , bool notify_layout);
+   void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
    virtual void SetHoverState(bool state);
 

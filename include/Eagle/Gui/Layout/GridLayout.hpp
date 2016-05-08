@@ -80,9 +80,7 @@ public :
 //*/
    
    /// WidgetBase
-   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
 
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed

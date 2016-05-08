@@ -602,90 +602,53 @@ void  WidgetBase::SetBgImages(EagleImage* imgs[3][3]) {
 }
 
 
-
-void WidgetBase::SetImagesHaveAlpha(bool have_alpha) {
+void WidgetBase::WidgetBase::SetImagesHaveAlpha(bool have_alpha) {
    area.SetImagesHaveAlpha(have_alpha);
 }
 
 
 
-void WidgetBase::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-
-   if (layout && notify_layout) {
-      Rectangle newrect = layout->RequestWidgetArea(this , xpos , ypos , OuterArea().W() , OuterArea().H());
-      if (flags & VISIBLE) {
-         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
-      }
-      area.SetOuterArea(newrect);
-   }
-   if (flags & MOVEABLE) {
-		if (flags & VISIBLE) {
-			WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-			if (pwh) {
-				pwh->MakeAreaDirty(area.OuterArea());
-			}
-		}
-		area.SetOuterPos(xpos,ypos);
-		if (flags & VISIBLE) {
-			SetBgRedrawFlag();
-		}
-   }
+void WidgetBase::SetWidgetPos(int xpos , int ypos , bool notify_layout) {
+   SetWidgetArea(xpos , ypos , OuterArea().W() , OuterArea().H() , notify_layout);
 }
 
 
 
-void WidgetBase::SetDrawDimensions(int width , int height , bool notify_layout) {
-/*
-   if (layout) {
-      Rectangle r = layout->RequestSize(this , width , height);
-      width = r.W();
-      height = r.H();
-   }
-*/
-   if (layout && notify_layout) {
-      Rectangle newrect = layout->RequestWidgetArea(this , OuterArea().X() , OuterArea().Y() , width , height);
-      if (flags & VISIBLE) {
-         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
-      }
-      area.SetOuterArea(newrect);
-      SetBgRedrawFlag();
-   }
-   else {
-      if (flags & RESIZEABLE) {
-         /// TODO WORKING HERE
-         if (width < minw + area.MLeft() + area.MRight()) {
-            width = minw + area.MLeft() + area.MRight();
-         }
-         if (height < minh + area.MTop() + area.MBot()) {
-            height = minh + area.MTop() + area.MBot();
-         }
-         if (flags & VISIBLE) {
-            WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-            if (pwh) {
-               pwh->MakeAreaDirty(area.OuterArea());
-            }
-         }
-         area.SetOuterDim(width , height);
-         if (flags & VISIBLE) {
-            SetBgRedrawFlag();
-         }
-      }
-   }
+void WidgetBase::SetWidgetCorners(int x1 , int y1 , int x2 , int y2 , bool notify_layout) {
+   int lx = (x1<x2)?x1:x2;
+   int rx = (x1>x2)?x1:x2;
+   int ty = (y1<y2)?y1:y2;
+   int by = (y1>y2)?y1:y2;
+   SetWidgetArea(lx , ty , (rx - lx) + 1 , (by - ty) + 1 , notify_layout);
 }
 
 
 
-void WidgetBase::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+void WidgetBase::SetWidgetDimensions(int width , int height , bool notify_layout) {
+   SetWidgetArea(OuterArea().X() , OuterArea().Y() , width , height , notify_layout);
+}
 
-	if (width < (minw + area.MLeft() + area.MRight())) {
-		width = minw + area.MLeft() + area.MRight();
+
+
+void WidgetBase::SetWidgetArea(Rectangle outer , bool notify_layout) {
+   SetWidgetArea(outer.X() , outer.Y() , outer.W() , outer.H() , notify_layout);
+}
+
+
+
+void WidgetBase::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+
+   int realminwidth = minw + area.MLeft() + area.MRight();
+   int realminheight= minh + area.MTop() + area.MBot();
+
+	if (width < realminwidth) {
+      width = realminwidth;
 	}
-	if (height < (minh + area.MTop() + area.MBot())) {
-		height = minh + area.MTop() + area.MBot();
+	if (height < realminheight) {
+		height = realminheight;
 	}
-   Rectangle r(xpos , ypos , width , height);
+   
+   Rectangle r = OuterArea();
    
    if (layout && notify_layout) {
       if (flags & VISIBLE) {
@@ -696,42 +659,36 @@ void WidgetBase::SetArea(int xpos , int ypos , int width , int height , bool not
       SetBgRedrawFlag();
    }
    else {
-//**
-      if ((flags & MOVEABLE) && !(flags & RESIZEABLE)) {
-         SetDrawPos(xpos , ypos);
-         //WidgetBase::SetDrawPos(xpos , ypos);
-         return;
+      if (flags & MOVEABLE) {
+         r.SetPos(xpos,ypos);
       }
-      if (!(flags & MOVEABLE) && (flags & RESIZEABLE)) {
-         SetDrawDimensions(width , height);
-         //WidgetBase::SetDrawDimensions(width , height);
-         return;
+      if (flags & RESIZEABLE) {
+         r.SetDimensions(width,height);
       }
-      if ((flags & MOVEABLE) && (flags & RESIZEABLE)) {
-         if (flags & VISIBLE) {
-            WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
-            if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
-         }
-         area.SetOuterArea(xpos , ypos , width , height);
-         if (flags & VISIBLE) {
-            SetBgRedrawFlag();
-         }
+      if (flags & VISIBLE) {
+         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(wparent);
+         if (pwh) {pwh->MakeAreaDirty(area.OuterArea());}
+      }
+      area.SetOuterArea(r);
+      if (flags & VISIBLE) {
+         SetBgRedrawFlag();
       }
    }
-//*/
 }
 
 
 
-void WidgetBase::SetArea(const Rectangle& r , bool notify_layout) {
-	SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
-}
+
+
 
 
 
 void WidgetBase::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
    area.SetMarginsExpandFromInner(left,right,top,bottom);
    SetBgRedrawFlag();
+   
+   
+   
 }
 
 
@@ -747,7 +704,7 @@ void WidgetBase::SetMinInnerWidth(int w) {
    const int amw = AbsMinWidth();
    if (w < amw) {w = amw;}
    minw = w;
-   if (area.OuterArea().W() < minw) {SetDrawDimensions(minw , area.OuterArea().H());}
+   if (area.OuterArea().W() < minw) {SetWidgetDimensions(minw , area.OuterArea().H());}
 }
 
 
@@ -756,7 +713,7 @@ void WidgetBase::SetMinInnerHeight(int h) {
    const int amh = AbsMinHeight();
    if (h < amh) {h = amh;}
    minh = h;
-   if (area.OuterArea().H() < minh) {SetDrawDimensions(area.OuterArea().W() , minh);}
+   if (area.OuterArea().H() < minh) {SetWidgetDimensions(area.OuterArea().W() , minh);}
 }
 
 
@@ -769,7 +726,7 @@ void WidgetBase::SetMinInnerDimensions(int w , int h) {
    minw = w;
    minh = h;
    if ((area.W() < minw) || (area.H() < minh)) {
-      SetDrawDimensions((area.W() > minw)?area.W():minw , (area.H() > minh)?area.H():minh);
+      SetWidgetDimensions((area.W() > minw)?area.W():minw , (area.H() > minh)?area.H():minh);
    }
 }
 

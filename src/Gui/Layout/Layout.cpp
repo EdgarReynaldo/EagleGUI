@@ -176,7 +176,7 @@ void Layout::SetWidgetPos(WidgetBase* widget , int newx , int newy , int newwidt
    
    if ((newx != w.X()) || (newy != w.Y())) {
       if ((newwidth != w.W()) || (newheight != w.H())) {
-         widget->SetArea(newx , newy , newwidth , newheight);
+         widget->SetWidgetArea(newx , newy , newwidth , newheight);
       }
       else {
          widget->SetDrawPos(newx , newy);
@@ -247,30 +247,11 @@ void Layout::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
 
 
 
-void Layout::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-   WidgetBase::SetDrawPos(xpos , ypos , notify_layout);
+void Layout::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
    RepositionAllChildren();
 }
 
-
-
-void Layout::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width , height , notify_layout);
-   RepositionAllChildren();
-}
-
-
-
-void Layout::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos , ypos , width , height , notify_layout);
-   RepositionAllChildren();
-}
-
-
-
-void Layout::SetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetArea(r , notify_layout);
-}
 
 
 
@@ -379,7 +360,7 @@ Rectangle Layout::RequestArea(WidgetBase* widget , int newx , int newy , int new
    
    if (attributes & LAYOUT_ALLOWS_RESIZE_AND_REPOSITION) {
       if ((wflags & MOVEABLE) && (wflags & RESIZEABLE)) {
-         warea.SetArea(newx , newy , newwidth , newheight);
+         warea.SetWidgetArea(newx , newy , newwidth , newheight);
       }
       else if (wflags & MOVEABLE) {
          warea.SetPos(newx , newy);

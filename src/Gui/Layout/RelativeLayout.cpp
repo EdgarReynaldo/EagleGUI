@@ -46,7 +46,7 @@ void RelativeLayout::RepositionChild(int slot) {
    LayoutRectangle layout_rect = layout_rectangles[slot];
    WidgetBase* widget = wchildren[slot];
    if (widget) {
-      widget->SetArea(LayoutArea(area.InnerArea() , layout_rect) , false);
+      widget->SetWidgetArea(LayoutArea(area.InnerArea() , layout_rect) , false);
    }
 }
 
@@ -69,12 +69,6 @@ RelativeLayout::~RelativeLayout() {
    ClearLayoutAndFreeWidgets();
    /// In case we go out of scope before our WidgetHandler
    DetachFromGui();
-}
-
-
-
-void RelativeLayout::SetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetArea(r , notify_layout);
 }
 
 

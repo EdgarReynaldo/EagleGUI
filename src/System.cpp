@@ -140,6 +140,7 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_MOUSE)      {InstallMouse();}
    if (state & EAGLE_JOYSTICK)   {InstallJoystick();}
    if (state & EAGLE_TOUCH)      {InstallTouch();}
+   
    return EagleInitState();
 }
 

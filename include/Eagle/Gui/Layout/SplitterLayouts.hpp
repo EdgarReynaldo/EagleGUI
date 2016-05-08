@@ -84,11 +84,7 @@ public :
    virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
 
    /// Layout and WidgetBase
-   virtual void SetDrawPos(int xpos , int ypos , bool notify_layout = true);
-   virtual void SetDrawDimensions(int width , int height , bool notify_layout = true);
-   virtual void SetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-///   void SetArea(const Rectangle& r);
-   void SetArea(const Rectangle& r , bool notify_layout = true);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
 
    virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);

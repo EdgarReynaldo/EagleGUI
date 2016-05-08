@@ -134,12 +134,13 @@ signal(SIGABRT, signal_handler);
    
 //   sys->Rest(2.0);
    
-   EagleFont* verdana = win->LoadFont("verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
+   EagleFont* verdana = win->LoadFont("verdana.ttf" , -40 , LOAD_FONT_MONOCHROME);
    
 //   EagleImage* stallions = win->LoadImageFromFile("Data/jpgImages/Stallions.jpg");
    EagleImage* stallions2a = win->LoadImageFromFile("Stallions2a.jpg");
+   EagleImage* stallions2 = win->LoadImageFromFile("Stallions2.jpg");
    
-   EAGLE_ASSERT(verdana && verdana->Valid() && stallions2a && stallions2a->Valid());
+   EAGLE_ASSERT(verdana && verdana->Valid() && stallions2a && stallions2a->Valid() && stallions2 && stallions2->Valid());
    
    win->Draw(stallions2a , 0 , 0);
    
@@ -149,7 +150,6 @@ signal(SIGABRT, signal_handler);
 
    WidgetHandler gui;/// TEST : All other widgets will get destroyed first, make sure we don't call any methods on
                      /// a destroyed object
-
 
 
 
@@ -166,7 +166,7 @@ signal(SIGABRT, signal_handler);
    vsp1.SetDividerPercent(0.75);
    vsp2.SetDividerPercent(0.25);
    
-   Button testbtns[3];
+   GuiButton testbtns[3];
    testbtns[0].SetLabel("Upper left");
    testbtns[0].SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    testbtns[1].SetLabel("Upper right");
@@ -191,7 +191,7 @@ signal(SIGABRT, signal_handler);
    
    win->SetCustomPointer(msinfo);
    
-   Button mpbtns[12];
+   GuiButton mpbtns[12];
    
    for (int i = 0 ; i < 12 ; ++i) {
       mpbtns[i].SetFont(verdana);
@@ -226,21 +226,56 @@ signal(SIGABRT, signal_handler);
    gui.SetDrawWindow(win);
    
    gui.SetupBufferDimensions(800,600);
-   gui.WidgetBase::SetArea(Rectangle(0 , 0 , 800 , 600));
+   gui.WidgetBase::SetWidgetArea(Rectangle(0 , 0 , 800 , 600));
    
-   gui.UseBackgroundImage(stallions2a , true);
+   gui.UseBackgroundImage(stallions2 , true);
    gui.SetBufferShrinkOnResize(true);
    
    RelativeLayout rl(StringPrintF("RelativeLayout rl at %p" , &rl));;
-   rl.Resize(1);
+   rl.Resize(5);
+   
+   EagleFont* font1 = win->LoadFont("Data/fonts/English.ttf" , -40 , DRAW_NORMAL);
+   EagleFont* font2 = win->LoadFont("Data/fonts/EnglishCn.ttf" , -40 , DRAW_NORMAL);
+   EagleFont* font3 = win->LoadFont("Data/fonts/EnglishBold.ttf" , -40 , DRAW_NORMAL);
+   EagleFont* font4 = win->LoadFont("Data/fonts/consola.ttf" , -40 , DRAW_NORMAL);
+   EagleFont* font5 = win->LoadFont("Data/fonts/AlexBrush.ttf" , -40 , DRAW_NORMAL);
+
+   DumbText dumbtext;
+   dumbtext.SetText("Layout Test" , verdana);
+   
+   LinkText eaglelink;
+   LinkText bitbucketlink;
+   LinkText allegrolink;
+
+///   eaglelink.SetText("https://sourceforge.net/projects/eagle5gui" , verdana);
+   bitbucketlink.SetText("https://bitbucket.org/bugsquasher/eaglegui" , font5);
+   eaglelink.SetText("https://members.allegro.cc/EdgarReynaldo/Eagle.html" , font4);
+   allegrolink.SetText("http://www.allegro.cc" , font3);
+   
+   WidgetColorset wc;
+   wc[TXTCOL] = wc[SDCOL];
+   wc[HLCOL] = wc[SDCOL];
+   dumbtext.UsePrivateColorset(true);
+   eaglelink.UsePrivateColorset(true);
+   bitbucketlink.UsePrivateColorset(true);
+   allegrolink.UsePrivateColorset(true);
+   dumbtext.SetPrivateColorset(wc);
+   eaglelink.SetPrivateColorset(wc);
+   bitbucketlink.SetPrivateColorset(wc);
+   allegrolink.SetPrivateColorset(wc);
+   
+   rl.AddWidget(&eaglelink , LayoutRectangle( 0.05, 0.05 , 0.8 , 0.2));
+   rl.AddWidget(&bitbucketlink , LayoutRectangle( 0.05, 0.85 , 0.8 , 0.15));
+   rl.AddWidget(&allegrolink , LayoutRectangle(0.6 , 0.15 , 0.4 , 0.2));
+   
    
    gui.SetRootLayout(&rl);
    
-   hsp.SetArea(Rectangle(100,100,600,375) , false);
+   hsp.WidgetBase::SetWidgetArea(Rectangle(100,100,600,375) , false);
    hsp.SetMarginsContractFromOuter(25,25,25,25);
    hsp.SetBgDrawFunc(WidgetBorderPainterContrast);
    
-   rl.PlaceWidget(&hsp , 0 , false);
+   rl.PlaceWidget(&hsp , 3 , false);
 ///   rl.RequestWidgetArea(&hsp , 100 , 100 , 600 , 375);/// This function call does nothing
    
 //   gui.AddWidget(&hsp , false);
@@ -270,16 +305,6 @@ signal(SIGABRT, signal_handler);
    }
 
 
-/*
-   EagleLog() << hsp.Area().OuterArea() << " , " << hsp.Area().InnerArea() << endl;
-   EagleLog() << vsp1.Area().OuterArea() << " , " << vsp1.Area().InnerArea() << endl;
-   EagleLog() << vsp2.Area().OuterArea() << " , " << vsp2.Area().InnerArea() << endl;
-
-   EagleLog() << "Handle areas :" << endl;
-   EagleLog() << "hsp handle  = " << hsp.GetHandleArea() << endl;
-   EagleLog() << "vsp1 handle = " << vsp1.GetHandleArea() << endl;
-   EagleLog() << "vsp2 handle = " << vsp2.GetHandleArea() << endl;
-*/
    sys->GetSystemTimer()->Start();
    
    double etime = sys->GetProgramTime();
@@ -318,7 +343,7 @@ signal(SIGABRT, signal_handler);
 ///                                     EagleEventName(ev.type).c_str() , ev.timestamp , etime , etime - ev.timestamp , elapsed);
          if (ev.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             win->AcknowledgeResize();
-            gui.SetDrawDimensions(ev.display.width , ev.display.height);
+            gui.SetWidgetDimensions(ev.display.width , ev.display.height);
          }
 
 
@@ -467,7 +492,7 @@ signal(SIGABRT, signal_handler);
                   }
                   
                   rl.SetLayoutRectangle(&hsp , LayoutRectangle(rl.InnerArea() , newrect));
-///                  hsp.SetArea(newrect);
+///                  hsp.SetWidgetArea(newrect);
                   
                }
             }
@@ -503,17 +528,9 @@ signal(SIGABRT, signal_handler);
       
       
       if (redraw) {
-//         win->Clear(EagleColor(0,255,0));
-///         win->Draw(stallions , -400 , -300);
-         al_set_blender(ALLEGRO_ADD , ALLEGRO_ONE , ALLEGRO_ZERO);
-         win->Draw(stallions2a , 0 , 0);
-//         win->DrawStretchedRegion(stallions , 0 , 0 , 1600 , 1200 , -100 , -75 , 1000 , 750);
+
          al_set_blender(ALLEGRO_ADD , ALLEGRO_ALPHA , ALLEGRO_INVERSE_ALPHA);
          gui.Display(win , 0 , 0);
-         
-//         WidgetColorset wc;
-//         DefaultSplitterDrawFunction(win , Rectangle(50,275,700,50) , SPLITTER_HORIZONTAL , wc);
-//         DefaultSplitterDrawFunction(win , Rectangle(375,50,50,500) , SPLITTER_VERTICAL , wc);
          
          win->FlipDisplay();
          redraw = false;
@@ -631,8 +648,8 @@ int GuiTestMain(int argc , char** argv) {
 
 //*
    
-///   gui->SetArea((1280 - 800) / 2 , (768 - 600) / 2 , 800 , 600);
-   gui->SetArea(0 , 0 , 800 , 600);
+///   gui->SetWidgetArea((1280 - 800) / 2 , (768 - 600) / 2 , 800 , 600);
+   gui->SetWidgetArea(0 , 0 , 800 , 600);
 //   EagleLog() << "Gui outer area = " << gui->OuterArea() << std::endl;
 //   EagleLog() << "Gui inner area = " << gui->InnerArea() << std::endl;
    
@@ -660,7 +677,7 @@ int GuiTestMain(int argc , char** argv) {
    
    
    
-   Button* warray = new Button[sz - 1];
+   GuiButton* warray = new GuiButton[sz - 1];
    
    for (int i = 0 ; i < sz - 1 ; ++i) {
       grid_layout->AddWidget(&warray[i] , false);
@@ -707,7 +724,7 @@ int GuiTestMain(int argc , char** argv) {
    
    grid_layout->SetPadding(40,30);
    
-   Button* warray2 = new Button[5];
+   GuiButton* warray2 = new GuiButton[5];
    
    
 //   relative_layout.
@@ -790,7 +807,7 @@ int GuiTestMain(int argc , char** argv) {
             OutputLog() << resize_events.size() << " resize events." << std::endl;
             e = resize_events[resize_events.size() - 1];
             win->AcknowledgeResize();
-            gui->SetDrawDimensions(e.display.width , e.display.height);
+            gui->SetWidgetDimensions(e.display.width , e.display.height);
             gui->SetFullRedraw();
             continue;
          }
@@ -822,11 +839,11 @@ int GuiTestMain(int argc , char** argv) {
             small_window = !small_window;
             if (small_window) {
                al_resize_display(win->AllegroDisplay() , 400 , 300);
-               gui->SetDrawDimensions(400,300);
+               gui->SetWidgetDimensions(400,300);
             }
             else {
                al_resize_display(win->AllegroDisplay() , 800 , 600);
-               gui->SetDrawDimensions(800,600);
+               gui->SetWidgetDimensions(800,600);
             }
             redraw = true;
          }
@@ -841,7 +858,7 @@ int GuiTestMain(int argc , char** argv) {
          if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             
             win->AcknowledgeResize();
-            gui->SetDrawDimensions(e.display.width , e.display.height);
+            gui->SetWidgetDimensions(e.display.width , e.display.height);
             gui->SetFullRedraw();
 
          }

@@ -81,7 +81,7 @@ void TwoWaySplitter::RepositionChild(int slot) {
    WidgetBase* widget = wchildren[slot];
    if (!widget) {return;}
    
-   widget->SetArea(RequestWidgetArea(widget , -1,-1,-1,-1) , false);
+   widget->SetWidgetArea(RequestWidgetArea(widget , -1,-1,-1,-1) , false);
 /**
    Rectangle r(area.InnerArea());
    int x = r.X();
@@ -115,7 +115,7 @@ void TwoWaySplitter::RepositionChild(int slot) {
       break;
    }
    
-   widget->SetArea(x,y,w,h,false);
+   widget->SetWidgetArea(x,y,w,h,false);
 //*/   
 }
 
@@ -287,8 +287,8 @@ TwoWaySplitter::~TwoWaySplitter() {
 
 
 /**
-void TwoWaySplitter::SetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetArea(r , notify_layout);
+void TwoWaySplitter::SetWidgetArea(const Rectangle& r , bool notify_layout) {
+   WidgetBase::SetWidgetArea(r , notify_layout);
 }
 */
 
@@ -313,31 +313,11 @@ bool TwoWaySplitter::AddWidget(WidgetBase* widget , bool delete_when_removed) {
 
 
 
-void TwoWaySplitter::SetDrawPos(int xpos , int ypos , bool notify_layout) {
-   /// Ok to call LayoutBase::SetDrawPos because the divpos hasn't changed
-   Layout::SetDrawPos(xpos,ypos,notify_layout);
-}
-
-
-
-void TwoWaySplitter::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width , height,notify_layout);
+void TwoWaySplitter::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos , ypos , width , height,notify_layout);
    SetDividerPercent(divider_percent);
 }
 
-
-
-void TwoWaySplitter::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos , ypos , width , height,notify_layout);
-   SetDividerPercent(divider_percent);
-}
-
-
-//**
-void TwoWaySplitter::SetArea(const Rectangle& r , bool notify_layout) {
-   TwoWaySplitter::SetArea(r.X() , r.Y() , r.W() , r.H() , notify_layout);
-}
-//*/
 
 
 int TwoWaySplitter::AbsMinWidth() {

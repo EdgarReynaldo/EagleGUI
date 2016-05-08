@@ -2,8 +2,8 @@
 
 
 #include "Eagle/Gui/IconButton.hpp"
-
-
+#include "Eagle/Font.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 void IconButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
@@ -11,6 +11,19 @@ void IconButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    EAGLE_ASSERT(image && image->Valid());
    win->DrawStretchedRegion(image , 0 , 0 , image->W() , image->H() ,
                             InnerArea().X() + xpos , InnerArea().Y() + ypos , InnerArea().W() , InnerArea().H());
+/**
+   Rectangle r = click_rect;
+   r.MoveBy(InnerArea().X() , InnerArea().Y());
+   Rectangle r2 = InnerArea();
+   
+   int mx = RootGui()->GetMouseX();
+   int my = RootGui()->GetMouseY();
+      
+   win->DrawRectangle(r , 7.0 , EagleColor(255,0,255));
+   win->DrawRectangle(r2 , 3.0 , EagleColor(0,255,0));
+   win->DrawTextString(win->DefaultFont() , StringPrintF("Mouse xy = %d,%d" , mx , my) ,
+                        InnerArea().X() , InnerArea().BRY() + 10 , EagleColor(255,0,0));
+//*/
    ClearRedrawFlag();
 }
 
@@ -26,21 +39,10 @@ void IconButton::SetImages(EagleImage* upimage , EagleImage* downimage , EagleIm
 
 
 
-void IconButton::SetDrawDimensions(int width , int height , bool notify_layout) {
-   WidgetBase::SetDrawDimensions(width,height,notify_layout);
+void IconButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
+   click_rect.SetArea(0,0,InnerArea().W(),InnerArea().H());
 ///   RefreshImages();
 }
 
 
-
-void IconButton::SetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetArea(xpos,ypos,width,height,notify_layout);
-///   RefreshImages();
-}
-
-
-
-void IconButton::SetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetArea(r , notify_layout);
-///   RefreshImages();
-}

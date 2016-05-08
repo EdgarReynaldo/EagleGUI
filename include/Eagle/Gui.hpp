@@ -27,15 +27,18 @@
 
 
 #include "Gui/Alignment.hpp"
-#include "Gui/Button.hpp"
-#include "Gui/IconButton.hpp"
+#include "Gui/BasicButton.hpp"
 #include "Gui/Camera.hpp"
+#include "Gui/DumbText.hpp"
+#include "Gui/GuiButton.hpp"
+#include "Gui/IconButton.hpp"
 #include "Gui/Layouts.hpp"
+#include "Gui/LinkText.hpp"
+#include "Gui/ScrollButton.hpp"
+#include "Gui/SelectText.hpp"
 #include "Gui/TestWidget.hpp"
 #include "Gui/Text.hpp"
-#include "Gui/SelectText.hpp"
-#include "Gui/DumbText.hpp"
-#include "Gui/LinkText.hpp"
+
 #include "Gui/WidgetArea.hpp"
 #include "Gui/WidgetBase.hpp"
 #include "Gui/WidgetColorset.hpp"

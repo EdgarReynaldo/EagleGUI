@@ -40,6 +40,7 @@ enum FONT_LOADING_FLAGS {
 };
 
 
+
 class EagleFont : public EagleObject {
    
 protected :

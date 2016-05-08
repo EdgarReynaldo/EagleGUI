@@ -120,10 +120,12 @@
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
 		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
-		<Unit filename="include/Eagle/Gui/Button.hpp" />
+		<Unit filename="include/Eagle/Gui/BasicButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Camera.hpp" />
 		<Unit filename="include/Eagle/Gui/Decorators/Decorator.hpp" />
 		<Unit filename="include/Eagle/Gui/DumbText.hpp" />
+		<Unit filename="include/Eagle/Gui/GuiButton.hpp" />
+		<Unit filename="include/Eagle/Gui/IconButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FlowLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/GridLayout.hpp" />
@@ -134,6 +136,9 @@
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/LinkText.hpp" />
+		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
+		<Unit filename="include/Eagle/Gui/ScrollButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/TestWidget.hpp" />
 		<Unit filename="include/Eagle/Gui/Text.hpp" />
@@ -173,10 +178,12 @@
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
 		<Unit filename="src/Gui/Alignment.cpp" />
-		<Unit filename="src/Gui/Button.cpp" />
+		<Unit filename="src/Gui/BasicButton.cpp" />
 		<Unit filename="src/Gui/Camera.cpp" />
 		<Unit filename="src/Gui/Decorator/Decorator.cpp" />
 		<Unit filename="src/Gui/DumbText.cpp" />
+		<Unit filename="src/Gui/GuiButton.cpp" />
+		<Unit filename="src/Gui/IconButton.cpp" />
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
 		<Unit filename="src/Gui/Layout/GridLayout.cpp" />
@@ -185,6 +192,9 @@
 		<Unit filename="src/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Gui/LinkText.cpp" />
+		<Unit filename="src/Gui/ScrollBar.cpp" />
+		<Unit filename="src/Gui/ScrollButton.cpp" />
+		<Unit filename="src/Gui/Scroller.cpp" />
 		<Unit filename="src/Gui/SelectText.cpp" />
 		<Unit filename="src/Gui/TestWidget.cpp" />
 		<Unit filename="src/Gui/Text.cpp" />
