@@ -56,6 +56,7 @@ public :
    virtual bool Contains(int xpos , int ypos) const =0;
    virtual AreaBase& MoveBy(int dx , int dy)=0;
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const =0;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const =0;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const =0;
    // CreateBoundingRectangles creates a vector of NEW Rectangles, destroy with DestroyBoundingRectangles
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const =0;
@@ -97,6 +98,7 @@ public :
    virtual bool Contains(int xpos , int ypos) const;
    virtual AreaBase& MoveBy(int dx , int dy);
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
    virtual AreaBase* Clone() const;
@@ -136,6 +138,7 @@ public :
 
    void Draw(EagleGraphicsContext* win , EagleColor color) const;
    void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const;
+   void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , double thickness , EagleColor color) const ;
 
    inline double AngleToPoint(const Pos2d& p) const;
    inline double AngleToPoint(int x , int y) const;
@@ -238,6 +241,7 @@ public :
    virtual bool Contains(int xpos , int ypos) const;
    virtual AreaBase& MoveBy(int dx , int dy);
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
    virtual AreaBase* Clone() const;
@@ -269,6 +273,7 @@ public :
    virtual bool Contains(int xpos , int ypos) const;
    virtual AreaBase& MoveBy(int dx , int dy);
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
    virtual AreaBase* Clone() const;
@@ -382,6 +387,7 @@ public :
    inline bool Contains(const Rectangle& r) const;
    
    void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
 
    inline void OffsetDraw(EagleGraphicsContext* win , int ox , int oy , EagleColor color) const;
 
@@ -390,6 +396,7 @@ public :
    void DrawInnerFrame(EagleGraphicsContext* win , unsigned int width , EagleColor color) const ;
    void RoundedFill   (EagleGraphicsContext* win , int hrad , int vrad  , EagleColor color) const ;
    void RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  , EagleColor color) const ;
+   void RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  , double thickness , EagleColor color) const;
    void DottedOutline(EagleGraphicsContext* win , EagleColor color , bool even = true) const;
 
    /// DrawGui* functions that draw the shape with a shadow underneath to the right
@@ -493,17 +500,18 @@ class RoundedRectangle : public Rectangle {
 private :
    int hrad;
    int vrad;
-   float thickness;
+///   float thickness;
    
 public :
 
-   RoundedRectangle(Rectangle r , int hradius , int vradius , float linethickness = 1.0f);
-   RoundedRectangle(Rectangle r , float hrad_percent , float vrad_percent , float linethickness = 1.0f);
+   RoundedRectangle(Rectangle r , int hradius , int vradius);/// , float linethickness = 1.0f);
+   RoundedRectangle(Rectangle r , float hrad_percent , float vrad_percent);/// , float linethickness = 1.0f);
    RoundedRectangle(Rectangle r , const RoundedRectangle& rr);
 
    virtual bool Contains(int xpos , int ypos) const ;
    virtual AreaBase& MoveBy(int dx , int dy);
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
    virtual AreaBase* Clone() const;
@@ -512,7 +520,6 @@ public :
    
    void SetRadii(int hradius , int vradius);
    void SetRoundingPercent(float hp , float vp);
-   void SetThickness(float thickness);
 
    
 };
@@ -586,6 +593,7 @@ public :
 
    virtual bool Contains(int xpos , int ypos) const ;
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
+   virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual AreaBase* Clone() const;
    

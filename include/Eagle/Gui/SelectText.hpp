@@ -44,7 +44,7 @@ public :
    SelectText(string name);
    virtual ~SelectText() {}
    
-   void DrawSelectionBackground(int linenum , int left , int right , int xpos , int ypos);
+   void DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos);
 
    void MoveCaretUpOrDown(int keycode , bool shift_held);
    void MoveCaretLeftOrRight(int keycode , bool shift_held);
@@ -56,6 +56,7 @@ public :
 
    virtual void SetHoverState(bool state);
 
+   virtual void Refresh();
 };
 
 

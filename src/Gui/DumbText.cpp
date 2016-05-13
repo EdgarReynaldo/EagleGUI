@@ -194,12 +194,13 @@ void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleC
    EAGLE_ASSERT(win->Valid());
 
    EAGLE_ASSERT(text_font && text_font->Valid());
-   
+   win->HoldDrawing();
    for (int i = 0 ; i < nlines ; ++i) {
       string s = lines[i];
       Rectangle r = lineareas[i];
       win->DrawTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , HALIGN_LEFT , VALIGN_TOP);
    }
+   win->ReleaseDrawing();
 ///   win->DrawMultiLineTextString(text_font , text , tx + xpos , ty + ypos , c , linespacing , halign , valign);
 }
 

@@ -107,6 +107,15 @@ void AreaGroup::Draw(EagleGraphicsContext* win , EagleColor color) const {
 
 
 
+void AreaGroup::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
+   for (unsigned int i = 0 ; i < areas.size() ; ++i) {
+      AreaBase* a = areas[i];
+      a->Draw(win , thickness , color);
+   }
+}
+
+
+
 void AreaGroup::Fill(EagleGraphicsContext* win , EagleColor color) const {
    for (unsigned int i = 0 ; i < areas.size() ; ++i) {
       AreaBase* a = areas[i];
@@ -232,6 +241,13 @@ void Pos2d::Draw(EagleGraphicsContext* win , EagleColor color) const {
 void Pos2d::DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const {
    EAGLE_ASSERT(win);
    win->DrawLine(x , y , p.x , p.y , color);
+}
+
+
+
+void Pos2d::DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , double thickness , EagleColor color) const {
+   EAGLE_ASSERT(win);
+   win->DrawLine(x , y , p.x , p.y , thickness , color);
 }
 
 
@@ -363,6 +379,15 @@ void Triangle::Draw(EagleGraphicsContext* win , EagleColor color) const {
 
 
 
+void Triangle::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
+   EAGLE_ASSERT(win);
+   p1.DrawLineTo(win , p2 , thickness , color);
+   p2.DrawLineTo(win , p3 , thickness , color);
+   p3.DrawLineTo(win , p1 , thickness , color);
+}
+
+
+
 void Triangle::Fill(EagleGraphicsContext* win , EagleColor color) const {
    EAGLE_ASSERT(win);
    if (points_make_triangle) {
@@ -447,6 +472,13 @@ AreaBase& Circle::MoveBy(int dx , int dy) {
 void Circle::Draw(EagleGraphicsContext* win , EagleColor color) const {
 	EAGLE_ASSERT(win);
    win->DrawCircle(x , y , r , 1.0 , color);
+}
+
+
+
+void Circle::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
+	EAGLE_ASSERT(win);
+   win->DrawCircle(x , y , r , thickness , color);
 }
 
 
@@ -597,6 +629,14 @@ void Rectangle::Draw(EagleGraphicsContext* win , EagleColor color) const {
 
 
 
+void Rectangle::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
+	EAGLE_ASSERT(win);
+   EAGLE_ASSERT(win->Valid());
+	win->DrawRectangle(x,y,w,h,thickness,color);
+}
+
+
+
 void Rectangle::Fill(EagleGraphicsContext* win , EagleColor color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
@@ -673,6 +713,15 @@ void Rectangle::RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  
    vline(bmp , x       , mid_tly , mid_bry , color);
    vline(bmp , brx     , mid_tly , mid_bry , color);
 */
+}
+
+
+
+void Rectangle::RoundedOutline(EagleGraphicsContext* win , int hrad , int vrad  , double thickness , EagleColor color) const {
+	EAGLE_ASSERT(win);
+   EAGLE_ASSERT(win->Valid());
+   EAGLE_ASSERT(hrad >= 0 && vrad >= 0);
+	win->DrawRoundedRectangle(x , y , w , h , hrad , vrad , thickness , color);
 }
 
 
@@ -906,26 +955,26 @@ std::ostream& Rectangle::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
-RoundedRectangle::RoundedRectangle(Rectangle r , int hradius , int vradius , float linethickness) :
+RoundedRectangle::RoundedRectangle(Rectangle r , int hradius , int vradius) :
       Rectangle(r),
       hrad(0),
-      vrad(0),
-      thickness(1.0f)
+      vrad(0)
+///      thickness(1.0f)
 {
    SetRadii(hradius , vradius);
-   SetThickness(linethickness);
+///   SetThickness(linethickness);
 }
 
 
 
-RoundedRectangle::RoundedRectangle(Rectangle r , float hrad_percent , float vrad_percent , float linethickness) :
+RoundedRectangle::RoundedRectangle(Rectangle r , float hrad_percent , float vrad_percent) :
       Rectangle(r),
       hrad(0),
-      vrad(0),
-      thickness(1.0f)
+      vrad(0)
+///      thickness(1.0f)
 {
    SetRoundingPercent(hrad_percent , vrad_percent);
-   SetThickness(linethickness);
+///   SetThickness(linethickness);
 }
 
 
@@ -933,8 +982,8 @@ RoundedRectangle::RoundedRectangle(Rectangle r , float hrad_percent , float vrad
 RoundedRectangle::RoundedRectangle(Rectangle r , const RoundedRectangle& rr) :
       Rectangle(r),
       hrad(rr.hrad),
-      vrad(rr.vrad),
-      thickness(rr.thickness)
+      vrad(rr.vrad)
+///      thickness(rr.thickness)
 {}
 
 
@@ -966,6 +1015,12 @@ AreaBase& RoundedRectangle::MoveBy(int dx , int dy) {
 
 
 void RoundedRectangle::Draw(EagleGraphicsContext* win , EagleColor color) const {
+   win->DrawRoundedRectangle(x,y,w,h,hrad,vrad,1.0,color);
+}
+
+
+
+void RoundedRectangle::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
    win->DrawRoundedRectangle(x,y,w,h,hrad,vrad,thickness,color);
 }
 
@@ -994,7 +1049,7 @@ AreaBase* RoundedRectangle::Clone() const {
 std::ostream& RoundedRectangle::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "Rounded ";
    os << Rectangle::DescribeTo(os);
-   os << std::endl << indent << "(hrad,vrad) = (" << hrad << "," << vrad << ") , thickness = " << thickness << std::endl;
+   os << std::endl << indent << "(hrad,vrad) = (" << hrad << "," << vrad << ")" << std::endl;
    return os;
 }
 
@@ -1019,13 +1074,6 @@ void RoundedRectangle::SetRoundingPercent(float hp , float vp) {
    float hradius = hp*w/2;
    float vradius = vp*h/2;
    SetRadii((int)hradius , (int)vradius);
-}
-
-
-
-void RoundedRectangle::SetThickness(float thickness) {
-   if (thickness < 0.0f) {thickness = 0.0f;}
-   this->thickness = thickness;
 }
 
 
@@ -1306,6 +1354,16 @@ void Ellipse::Draw(EagleGraphicsContext* win , EagleColor color) const {
    float cx = x + hrad;
    float cy = y + vrad;
    win->DrawEllipse(cx,cy,hrad,vrad,1.0f,color);
+}
+
+
+
+void Ellipse::Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const {
+   float hrad = w/2.0f;
+   float vrad = h/2.0f;
+   float cx = x + hrad;
+   float cy = y + vrad;
+   win->DrawEllipse(cx,cy,hrad,vrad,thickness,color);
 }
 
 

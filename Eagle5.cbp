@@ -71,6 +71,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DLOG" />
 				</Compiler>
 			</Target>
 			<Target title="StaticProfile">
@@ -136,6 +137,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/LinkText.hpp" />
+		<Unit filename="include/Eagle/Gui/RadioButton.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
@@ -192,6 +194,7 @@
 		<Unit filename="src/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Gui/LinkText.cpp" />
+		<Unit filename="src/Gui/RadioButton.cpp" />
 		<Unit filename="src/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Gui/ScrollButton.cpp" />
 		<Unit filename="src/Gui/Scroller.cpp" />

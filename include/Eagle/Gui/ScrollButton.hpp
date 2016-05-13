@@ -9,7 +9,7 @@
 
 
 
-class ScrollBar;
+class BasicScrollBar;
 
 
 
@@ -20,7 +20,7 @@ protected :
    BasicButton our_basic_button;
 
    BasicButton* scroll_button;
-   ScrollBar* our_scrollbar;
+   BasicScrollBar* our_scrollbar;
    
    int increment;
    
@@ -67,7 +67,7 @@ public :
 
    void UseBasicButton();
    void UseButton(BasicButton* button);/// Shallow copy - don't destroy this button while in use
-   void SetScrollBar(ScrollBar* scrollbar);/// For scrollbars to use
+   void SetScrollBar(BasicScrollBar* scrollbar);/// For scrollbars to use
    void SetIncrement(int new_increment);
    virtual void SetScrollDirection(bool up_or_left , bool horizontal);
 

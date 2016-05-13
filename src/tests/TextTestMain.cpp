@@ -81,10 +81,37 @@ int TextTestMain(int argc , char** argv) {
    GridLayout button_grid;
    button_grid.ResizeGrid(5,5);
    
-   rel.AddWidget(&button_grid , LayoutRectangle(0.5,0.6,0.5,0.3));
+   rel.AddWidget(&button_grid , LayoutRectangle(0.5,0.6,0.4,0.3));
+
+   BasicScroller scroller1;
+   BasicScroller scroller2;
+   
+   scroller1.SetScrollDirection(true);
+   scroller2.SetScrollDirection(false);
+   scroller1.SetScrollLength(100);
+   scroller2.SetScrollLength(100);
+   scroller1.SetupView(100,10);
+   scroller2.SetupView(100,10);
+
+///   rel.AddWidget(&scroller1 , LayoutRectangle(0.0,0.9,0.9,0.1));
+///   rel.AddWidget(&scroller2 , LayoutRectangle(0.9,0.0,0.1,0.9));
 
    BasicScrollButton scroll_buttons[4];
    
+   BasicScrollBar scrollbar1;
+   BasicScrollBar scrollbar2;
+   
+   scrollbar1.SetScrollLength(100);
+   scrollbar2.SetScrollLength(100);
+   scrollbar1.SetupView(100,10);
+   scrollbar2.SetupView(100,10);
+   scrollbar1.SetScrollDirection(true);
+   scrollbar2.SetScrollDirection(false);
+
+   rel.AddWidget(&scrollbar1 , LayoutRectangle(0.0,0.9,0.9,0.1));
+   rel.AddWidget(&scrollbar2 , LayoutRectangle(0.9,0.0,0.1,0.9));
+
+/**   
    scroll_buttons[0].SetScrollDirection(true,true);/// left
    scroll_buttons[1].SetScrollDirection(false,true);/// right
    scroll_buttons[2].SetScrollDirection(true,false);/// up
@@ -94,7 +121,7 @@ int TextTestMain(int argc , char** argv) {
    button_grid.PlaceWidget(&scroll_buttons[1] , 14 , false);
    button_grid.PlaceWidget(&scroll_buttons[2] , 2 , false);
    button_grid.PlaceWidget(&scroll_buttons[3] , 22 , false);
-   
+*/   
 /**
    BasicButton basicbutton;
    
@@ -171,8 +198,12 @@ int TextTestMain(int argc , char** argv) {
          bool up = icon.Up();
          bool hover = icon.Hover();
          
-         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
-                             10,30,EagleColor(0,0,255));
+         win->DrawTextString(&textfont , StringPrintF("ScrollBar 1 value = %d , ScrollBar 2 value = %d" ,
+                                                       scrollbar1.GetScrollValue() , scrollbar2.GetScrollValue()) ,
+                             10,30,EagleColor(0,255,255));
+         
+///         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
+///                             10,30,EagleColor(0,0,255));
                   
          win->FlipDisplay();
          redraw = false;
@@ -201,9 +232,15 @@ int TextTestMain(int argc , char** argv) {
 
          gui->HandleEvent(ee);
 
+         if (ee.type == EAGLE_EVENT_TIMER) {
+            gui->Update(ee.timer.eagle_timer_source->SPT());
+         }
+         
          while (gui->HasMessages()) {
-            WidgetMsg wmsg = gui->TakeNextMessage();
-            EagleLog() << wmsg << std::endl;
+               WidgetMsg wmsg = gui->TakeNextMessage();
+            EAGLE_DEBUG(
+               EagleLog() << wmsg << std::endl;
+            );
          }
          if (ee.type == EAGLE_EVENT_KEY_DOWN) {
                if (ee.keyboard.keycode == EAGLE_KEY_1) {halign = HALIGN_LEFT;}

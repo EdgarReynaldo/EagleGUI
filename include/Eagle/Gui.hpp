@@ -35,6 +35,8 @@
 #include "Gui/Layouts.hpp"
 #include "Gui/LinkText.hpp"
 #include "Gui/ScrollButton.hpp"
+#include "Gui/Scroller.hpp"
+#include "Gui/ScrollBar.hpp"
 #include "Gui/SelectText.hpp"
 #include "Gui/TestWidget.hpp"
 #include "Gui/Text.hpp"

@@ -20,10 +20,11 @@ void GetTextAttributes(std::string text , EagleFont* font , int line_spacing , i
 using std::string;
 
 
-static const int TOPIC_TEXT_WIDGET = NextFreeTopicId();
+extern const int TOPIC_TEXT_WIDGET;
 
-static const int TEXT_COPIED = 1;
-static const int LINK_LAUNCHED = 0;
+extern const int TEXT_COPIED;
+extern const int LINK_LAUNCHED;
+
 
 REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
 REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);

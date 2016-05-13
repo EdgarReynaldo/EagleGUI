@@ -6,7 +6,7 @@
 
 void BasicScrollButton::Scroll() {
    EAGLE_ASSERT(our_scrollbar);
-   int scroll = (scroll_up_or_left?increment:-increment);
+   int scroll = (scroll_up_or_left?-increment:increment);
    our_scrollbar->ScrollBy(scroll);
 }
 
@@ -103,7 +103,7 @@ void BasicScrollButton::UseButton(BasicButton* button) {
 
 
 
-void BasicScrollButton::SetScrollBar(ScrollBar* scrollbar) {
+void BasicScrollButton::SetScrollBar(BasicScrollBar* scrollbar) {
    EAGLE_ASSERT(scrollbar);
    our_scrollbar = scrollbar;
 }
@@ -111,7 +111,6 @@ void BasicScrollButton::SetScrollBar(ScrollBar* scrollbar) {
 
 
 void BasicScrollButton::SetIncrement(int new_increment) {
-   if (new_increment < 1) {new_increment = 1;}
    increment = new_increment;
 }
 
@@ -141,25 +140,23 @@ int BasicScrollButton::PrivateCheckInputs() {
 
 
 void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (Flags() & NEEDS_REDRAW || scroll_button->Flags() & NEEDS_REDRAW) {
-      if (scroll_button == &our_basic_button) {
-         Triangle t = our_click_area;
-         t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
-         if (scroll_button->Up()) {
-            t.Fill(win , WCols()[MGCOL]);
-            t.Draw(win , WCols()[FGCOL]);
-         }
-         else {
-            t.Fill(win , WCols()[BGCOL]);
-            t.Draw(win , WCols()[MGCOL]);
-         }
+   if (scroll_button == &our_basic_button) {
+      Triangle t = our_click_area;
+      t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
+      if (scroll_button->Up()) {
+         t.Fill(win , WCols()[MGCOL]);
+         t.Draw(win , 3.0 , WCols()[HLCOL]);
       }
       else {
-         scroll_button->Display(win,xpos,ypos);
+         t.Fill(win , WCols()[BGCOL]);
+         t.Draw(win , 3.0 , WCols()[FGCOL]);
       }
-      scroll_button->ClearRedrawFlag();
-      ClearRedrawFlag();
    }
+   else {
+      scroll_button->Display(win,xpos,ypos);
+   }
+   scroll_button->ClearRedrawFlag();
+   ClearRedrawFlag();
 }
 
 
@@ -174,8 +171,8 @@ void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
    
    const WidgetMsg clickmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
    const WidgetMsg heldmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
-   
-   if (wmsg == clickmessage || wmsg == heldmessage) {
+
+   if ((wmsg == clickmessage) || (wmsg == heldmessage)) {
       Scroll();
    }
    WidgetBase::QueueUserMessage(wmsg);
@@ -204,6 +201,7 @@ void BasicScrollButton::UseColorset(bool use_public_colorset) {
 void BasicScrollButton::UsePrivateColorset(bool use_priv_colorset) {
    scroll_button->UsePrivateColorset(use_priv_colorset);
 }
+
 
 
 

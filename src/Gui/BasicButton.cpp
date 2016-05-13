@@ -10,6 +10,16 @@
 using namespace std;
 
 
+const unsigned int TOPIC_BUTTON_WIDGET = NextFreeTopicId();
+
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+
+
 
 bool ButtonUp(BUTTON_STATE state) {
    return (state == BUTTON_UP || state == BUTTON_HOVER_UP);
@@ -77,6 +87,9 @@ string GetButtonStateText(BUTTON_STATE state) {
 
 double SPRING_BTN_DURATION = 0.25;
 
+double SPRING_BTN_REPEAT_DELAY = 0.5;
+double SPRING_BTN_NUM_REPEAT_PER_SEC = 16;
+
 
 
 
@@ -141,7 +154,7 @@ int BasicButton::PrivateCheckInputs() {
          pointer_activated = false;
       } else {
          down_time_left = spring_duration;
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+///         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
       }
       return DIALOG_OKAY;
    }
@@ -257,6 +270,23 @@ int BasicButton::PrivateUpdate(double tsec) {
    if (btn_action_type == SPRING_BTN) {
       bool up = (btn_state%2) == 0;
       bool hover = Flags() & HOVER;
+      
+      if (!up) {
+         repeat_elapsed += tsec;
+         if (repeat_elapsed >= repeat_delay) {
+            if (repeat_previous < repeat_delay) {
+               repeat_previous = repeat_delay;
+            }
+            double dt = repeat_elapsed - repeat_previous;
+            int num_repeat = dt/repeat_rate;
+            for (int i = 0 ; i < num_repeat ; ++i) {
+               QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+            }
+            repeat_previous += (double)num_repeat*repeat_rate;
+            EAGLE_ASSERT(repeat_previous <= repeat_elapsed);
+         }
+      }
+      
       if (!up && !user_activated && !focuskey_activated && !pointer_activated) {
          down_time_left -= tsec;
          if (down_time_left <= 0.0) {
@@ -288,6 +318,10 @@ BasicButton::BasicButton() :
       pointer_input(false),
       spring_duration(SPRING_BTN_DURATION),
       down_time_left(0.0),
+      repeat_delay(SPRING_BTN_REPEAT_DELAY),
+      repeat_rate(1.0/SPRING_BTN_NUM_REPEAT_PER_SEC),
+      repeat_elapsed(0.0),
+      repeat_previous(0.0),
       user_activated(false),
       focuskey_activated(false),
       pointer_activated(false),
@@ -311,6 +345,10 @@ BasicButton::BasicButton(string name) :
       pointer_input(false),
       spring_duration(SPRING_BTN_DURATION),
       down_time_left(0.0),
+      repeat_delay(SPRING_BTN_REPEAT_DELAY),
+      repeat_rate(1.0/SPRING_BTN_NUM_REPEAT_PER_SEC),
+      repeat_elapsed(0.0),
+      repeat_previous(0.0),
       user_activated(false),
       focuskey_activated(false),
       pointer_activated(false),
@@ -393,6 +431,7 @@ void BasicButton::SetButtonState(bool hover , bool up) {
       else if (btn_action_type == SPRING_BTN) {
          if (!up) {
             QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+            repeat_elapsed = repeat_previous = 0.0;
          }
          else {
             QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);

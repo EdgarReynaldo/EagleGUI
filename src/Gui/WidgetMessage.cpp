@@ -34,33 +34,50 @@ using std::map;
 using std::pair;
 
 
+REGISTERED_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
+
+
 
 WidgetMessageMapCleaner map_cleaner;/// This needs to be here to free the message map, don't remove
 
-map<pair<unsigned int,int>,string>* message_map = 0;
+typedef map<pair<unsigned int,int>,pair<string,string> > MESSAGE_MAP; 
+typedef pair<unsigned int,int> MESSAGE_KEY;
+typedef pair<string,string> MESSAGE_VALUE;
+
+MESSAGE_MAP* message_map = 0;
 
 
 
 string GetMessageString(unsigned int topic , int message) {
    EAGLE_ASSERT(message_map);
-   string s = (*message_map)[pair<unsigned int,int>(topic,message)];
-   if (!s.size()) {return "UNKNOWN_WIDGET_MESSAGE";}
+   MESSAGE_MAP::iterator mit = message_map->find(MESSAGE_KEY(topic,message));
+   if (mit == message_map->end()) {
+      return "Message unknown";
+   }
+   string s;
+   s += mit->second.first;
+   s += " ";
+   s += mit->second.second;
    return s;
 }
 
 
 
-RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , int _message , string _message_str) :
+RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , string _topic_str , int _message , string _message_str) :
       topic(_topic),
+      topic_str(_topic_str),
       message(_message),
       message_str(_message_str)
 {
    static int init = 1;
    if (init) {
-      message_map = new map<pair<unsigned int,int>,string>();
+      message_map = new MESSAGE_MAP();
       init = 0;
    }
-   (*message_map)[pair<unsigned int,int>(topic,message)] = message_str;
+   if (message_map->find(MESSAGE_KEY(topic,message)) != message_map->end()) {
+      throw EagleError(StringPrintF("Message [%s] already registered!\n" , GetMessageString(topic,message).c_str()));
+   }
+   (*message_map)[MESSAGE_KEY(topic,message)] = MESSAGE_VALUE(topic_str , message_str);
 }
 
 
@@ -110,7 +127,7 @@ WidgetMsg::WidgetMsg(const WidgetMsg& wmsg) :
    
 
 std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg) {
-   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << StringPrintF("] from %s",wmsg.from?wmsg.from->GetName().c_str():"NULL widget");
+   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << StringPrintF("] from %s at %p",wmsg.from?wmsg.from->GetName().c_str():"NULL widget" , wmsg.from);
    return os;
 }
 

@@ -31,7 +31,7 @@
 
 
 
-static const unsigned int TOPIC_CAMERA = NextFreeTopicId();
+extern const unsigned int TOPIC_CAMERA;
 
 enum CAMERA_MSGS {
    CAMERA_VIEW_MOVED   = 0,
@@ -42,7 +42,7 @@ enum CAMERA_MSGS {
 REGISTER_WIDGET_MESSAGE(TOPIC_CAMERA , CAMERA_VIEW_MOVED);
 REGISTER_WIDGET_MESSAGE(TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);
 
-static const unsigned int TOPIC_ZOOM_CAMERA = NextFreeTopicId();
+extern const unsigned int TOPIC_ZOOM_CAMERA;
 
 enum ZOOM_CAMERA_MSGS {
    CAMERA_ZOOM_CHANGED      = 0,

@@ -38,6 +38,7 @@ int branch = 9;
 inline void crash() 
 {
    int x = 1/0;
+   (void)x;
 }
 
 inline void signal_handler(int)

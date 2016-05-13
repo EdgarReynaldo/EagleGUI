@@ -12,7 +12,7 @@
 
 #include <string>
 
-static const unsigned int TOPIC_BUTTON_WIDGET = NextFreeTopicId();
+extern const unsigned int TOPIC_BUTTON_WIDGET;
 
 enum BUTTON_MSGS {
    BUTTON_CLICKED      = 0, /// Sent whenever a spring button is pushed down.
@@ -29,6 +29,9 @@ REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+
+
+
 
 enum BUTTON_SHAPE {
    RECTANGLE_BTN = 0,
@@ -66,6 +69,9 @@ std::string GetButtonStateText(BUTTON_STATE state);
 
 extern double SPRING_BTN_DURATION;
 
+extern double SPRING_BTN_REPEAT_DELAY;
+extern double SPRING_BTN_NUM_REPEAT_PER_SEC;
+
 
 
 /// What does a button really need to be a button???
@@ -86,6 +92,11 @@ protected :
 
    double spring_duration;
    double down_time_left;
+   
+   double repeat_delay;
+   double repeat_rate;
+   double repeat_elapsed;
+   double repeat_previous;
    
    bool user_activated;
    bool focuskey_activated;

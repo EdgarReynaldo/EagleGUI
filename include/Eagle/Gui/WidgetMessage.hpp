@@ -40,16 +40,19 @@ class RegisteredWidgetMessage {
 
 public :   
    unsigned int topic;
+   std::string topic_str;
    int message;
    std::string message_str;
 
-   RegisteredWidgetMessage(unsigned int _topic , int _message , std::string _message_str);
+   RegisteredWidgetMessage(unsigned int _topic , std::string _topic_str , int _message , std::string _message_str);
    
 };
 
 #define REGISTER_WIDGET_MESSAGE(topic , msg) \
-   static RegisteredWidgetMessage RWM_##msg(topic , msg , #msg)
+   extern RegisteredWidgetMessage RWM_##topic_##msg
 
+#define REGISTERED_WIDGET_MESSAGE(topic , msg) \
+   RegisteredWidgetMessage RWM_##topic_##msg(topic , #topic , msg , #msg)
 
 
 class WidgetMessageMapCleaner {

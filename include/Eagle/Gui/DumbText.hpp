@@ -66,7 +66,7 @@ public :
    
    virtual void Realign(HALIGNMENT hal , VALIGNMENT val);
    
-   void Refresh();
+   virtual void Refresh();
 
    
    string GetText() {return text;}

@@ -195,7 +195,7 @@ int GuiButton::PrivateCheckInputs() {
                break;
             case ROUNDED_BTN :
                {
-                  RoundedRectangle rr(InnerArea() , rad_a , rad_b , 1.0f);
+                  RoundedRectangle rr(InnerArea() , rad_a , rad_b);
                   if (rr.Contains(msx,msy)) {
                      activated = true;
                      if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
