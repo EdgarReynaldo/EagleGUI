@@ -68,6 +68,7 @@ protected :
 
 public :
 	GridLayout();
+	GridLayout(string name);
 	GridLayout(int numcolumns , int numrows);
 	virtual ~GridLayout();
 	

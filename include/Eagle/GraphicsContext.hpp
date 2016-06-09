@@ -330,7 +330,7 @@ public :
    void                FreeImage(EagleImage* img);
    
    // font loading
-   virtual EagleFont* LoadFont(std::string file , int height , int flags = DRAW_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
+   virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    void               FreeFont(EagleFont* font);
    
    EagleFont* DefaultFont() {return default_font;}

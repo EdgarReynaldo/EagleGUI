@@ -145,7 +145,7 @@ public :
    EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height);
 
    // font loading
-   EagleFont* LoadFont(std::string file , int height , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
+   EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE);
 
    ALLEGRO_DISPLAY* AllegroDisplay() {return display;}
 
