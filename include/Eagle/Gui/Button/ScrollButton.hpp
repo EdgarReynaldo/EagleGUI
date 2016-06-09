@@ -4,7 +4,7 @@
 #define ScrollButton_HPP
 
 
-#include "Eagle/Gui/BasicButton.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/StringWork.hpp"
 
 

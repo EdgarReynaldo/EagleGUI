@@ -20,7 +20,7 @@
  */
 
 
-#include "Eagle/Gui/GuiButton.hpp"
+#include "Eagle/Gui/Button/GuiButton.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/StringWork.hpp"

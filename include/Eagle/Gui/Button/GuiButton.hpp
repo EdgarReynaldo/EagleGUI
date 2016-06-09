@@ -31,7 +31,7 @@
 #include <string>
 
 #include "Eagle/InputHandler.hpp"
-#include "Eagle/Gui/BasicButton.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 
 
 /** Basic variety of simple spring or toggle buttons - rectangular, circular, rounded rectangular, and elliptical.

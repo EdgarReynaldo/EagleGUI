@@ -1,6 +1,7 @@
 
 
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/StringWork.hpp"
 
 
 

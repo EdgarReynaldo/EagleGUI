@@ -11,7 +11,7 @@
 class BasicScroller;
 class BasicScrollButton;
 #include "Eagle/Gui/Scroller.hpp"
-#include "Eagle/Gui/ScrollButton.hpp"
+#include "Eagle/Gui/Button/ScrollButton.hpp"
 
 
 class BasicScrollBar : public WidgetBase {

@@ -8,7 +8,7 @@
 #define IconButton_HPP
 
 
-#include "Eagle/Gui/GuiButton.hpp"
+#include "Eagle/Gui/Button/GuiButton.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/StringWork.hpp"
 

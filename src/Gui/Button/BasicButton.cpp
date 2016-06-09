@@ -2,7 +2,7 @@
 
 
 #include "Eagle/Area.hpp"
-#include "Eagle/Gui/BasicButton.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 

@@ -7,6 +7,10 @@
 
 #include "Eagle/Gui/WidgetBase.hpp"
 
+#include "Eagle/Gui/Button/BasicButton.hpp"
+
+#include "Eagle/Gui/DumbText.hpp"
+
 
 
 extern const int TOPIC_MENU_MESSAGE;
@@ -34,7 +38,7 @@ class Menu;
 
 class MenuItem {
    
-   Button* menu_button;
+   BasicButton* menu_button;
    DumbText* menu_text;
    
    Menu* sub_menu;
@@ -47,7 +51,7 @@ public :
    virtual bool IsOpen()=0;
    virtual bool IsActivated()=0;
    
-}
+};
 
 
 

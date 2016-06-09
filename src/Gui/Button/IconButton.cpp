@@ -1,7 +1,7 @@
 
 
 
-#include "Eagle/Gui/IconButton.hpp"
+#include "Eagle/Gui/Button/IconButton.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 
