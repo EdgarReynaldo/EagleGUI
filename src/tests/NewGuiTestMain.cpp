@@ -125,7 +125,7 @@ int NewGuiTestMain(int argc , char** argv) {
    b8.SetLabel("Toggle Button &8");
    b8.SetFont(&bfont2);
 
-   DumbText text1;
+   BasicText text1;
 ///   text1.SetWidgetArea(0,0,800,200);
    text1.SetupText(HALIGN_CENTER , VALIGN_CENTER , 10 , 20 , 10 , "",  &bfont );
    text1.SetText("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);

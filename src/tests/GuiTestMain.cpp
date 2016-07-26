@@ -240,7 +240,7 @@ signal(SIGABRT, signal_handler);
    EagleFont* font4 = win->LoadFont("Data/fonts/consola.ttf" , -40 , DRAW_NORMAL);
    EagleFont* font5 = win->LoadFont("Data/fonts/AlexBrush.ttf" , -40 , DRAW_NORMAL);
 
-   DumbText dumbtext;
+   BasicText dumbtext;
    dumbtext.SetText("Layout Test" , verdana);
    
    LinkText eaglelink;

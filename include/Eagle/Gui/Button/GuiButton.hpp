@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,20 +25,20 @@
 #define EagleGuiButton_HPP
 
 
-#include "Eagle/Gui/WidgetBase.hpp"
-#include "Eagle/Font.hpp"
+#include "Eagle/InputHandler.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 
 #include <string>
 
-#include "Eagle/InputHandler.hpp"
-#include "Eagle/Gui/Button/BasicButton.hpp"
 
 
 /** Basic variety of simple spring or toggle buttons - rectangular, circular, rounded rectangular, and elliptical.
       Support for displaying text on the button included, will probably not look right on the circular buttons due to size.
 */
 
-class AreaBase;
+class EagleFont;
+
+
 
 class GuiButton : public BasicButton {
 

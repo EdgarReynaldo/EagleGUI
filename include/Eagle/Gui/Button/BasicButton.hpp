@@ -4,8 +4,8 @@
 
 
 
-#ifndef Button_HPP
-#define Button_HPP
+#ifndef BasicButton_HPP
+#define BasicButton_HPP
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
@@ -75,7 +75,8 @@ extern double SPRING_BTN_NUM_REPEAT_PER_SEC;
 
 
 /// What does a button really need to be a button???
-class AreaBase;
+
+
 
 class BasicButton : public WidgetBase {
    

@@ -5,9 +5,13 @@
 #ifndef DumbText_HPP
 #define DumbText_HPP
 
-#include "Text.hpp"
+#include "Eagle/Gui/Text/GlobalText.hpp"
 
-class DumbText : public WidgetBase {
+#include "Eagle/Gui/WidgetBase.hpp"
+
+
+
+class BasicText : public WidgetBase {
 
 protected :
    HALIGNMENT halign;
@@ -37,9 +41,9 @@ protected :
 
    
 public :
-   DumbText();
-   DumbText(string name);
-   virtual ~DumbText(){}
+   BasicText();
+   BasicText(string name);
+   virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);
 

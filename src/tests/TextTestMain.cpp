@@ -135,7 +135,7 @@ int TextTestMain(int argc , char** argv) {
    basicbutton.SetClickArea(&triangle , false);
 */
 
-   DumbText dt;
+   BasicText dt;
    dt.SetupText(HALIGN_LEFT , VALIGN_TOP , 10 , 10 , 0 , "" , &textfont);
    dt.SetText("This is just dumb text." , &textfont);
    

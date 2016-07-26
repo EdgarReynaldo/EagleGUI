@@ -9,7 +9,7 @@
 
 #include "Eagle/Gui/Button/BasicButton.hpp"
 
-#include "Eagle/Gui/DumbText.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 
 
@@ -20,8 +20,8 @@ extern const int TOPIC_MENU_MESSAGE;
 enum MENU_MESSAGES {
    
    MENU_OPENED = 0,
-   MENU_CLOSED = 0,
-   MENU_ITEM_ACTIVATED = 1
+   MENU_CLOSED = 1,
+   MENU_ITEM_ACTIVATED = 2
    
 };
 
@@ -39,7 +39,7 @@ class Menu;
 class MenuItem {
    
    BasicButton* menu_button;
-   DumbText* menu_text;
+   BasicText* menu_text;
    
    Menu* sub_menu;
    

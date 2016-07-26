@@ -2,20 +2,26 @@
 
 
 
-#include "Eagle/Gui/SelectText.hpp"
+#include "Eagle/Gui/Text/GlobalText.hpp"
+#include "Eagle/Gui/Text/SelectText.hpp"
 
 
 #include "Eagle/Platform.hpp"
-#include "Eagle/Gui/Text.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 
+#include "Eagle/StringWork.hpp"
+
+
 
 #include <cstdlib>
 
 
+const int TEXT_COPIED = GetNextFreeTextMessageId();
+
+REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
 
 
 
@@ -189,7 +195,7 @@ void SelectText::RefreshSelection() {
 
 
 SelectText::SelectText() :
-      DumbText(StringPrintF("SelectText object at %p" , this)),
+      BasicText(StringPrintF("SelectText object at %p" , this)),
       caret_time(0.0f),
       caret_blink_time(0.5f),
       caret_visible(true),
@@ -208,7 +214,7 @@ SelectText::SelectText() :
 
 
 SelectText::SelectText(string name) :
-      DumbText(name),
+      BasicText(name),
       caret_time(0.0),
       caret_blink_time(0.5),
       caret_visible(true),
@@ -635,7 +641,7 @@ void SelectText::SetHoverState(bool state) {
 
 
 void SelectText::Refresh() {
-   DumbText::Refresh();
+   BasicText::Refresh();
    RefreshSelection();
 }
 

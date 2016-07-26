@@ -7,9 +7,14 @@
 #define LinkText_HPP
 
 
-#include "Eagle/Gui/Text.hpp"
-#include "Eagle/Gui/SelectText.hpp"
+#include "Eagle/Gui/Text/GlobalText.hpp"
+#include "Eagle/Gui/Text/SelectText.hpp"
 
+
+
+extern const int LINK_LAUNCHED;
+
+REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 

@@ -7,12 +7,23 @@
 #define SelectText_HPP
 
 
-#include "Eagle/Gui/Text.hpp"
 
-#include "Eagle/Gui/DumbText.hpp"
+#include "Eagle/Gui/Text/GlobalText.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 
-class SelectText : public DumbText {
+
+#include "Eagle/Gui/Text/BasicText.hpp"
+
+
+
+extern const int TEXT_COPIED;
+
+REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
+
+
+
+class SelectText : public BasicText {
 
 protected :
    

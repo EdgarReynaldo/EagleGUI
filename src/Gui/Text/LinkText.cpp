@@ -3,11 +3,13 @@
 
 
 
-#include "Eagle/Gui/LinkText.hpp"
 
 
 #include "Eagle/Platform.hpp"
-#include "Eagle/Gui/Text.hpp"
+
+#include "Eagle/Gui/Text/GlobalText.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
+#include "Eagle/Gui/Text/LinkText.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"
@@ -16,6 +18,12 @@
 
 #include <cstdlib>
 
+
+
+
+const int LINK_LAUNCHED = GetNextFreeTextMessageId();
+
+REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
@@ -53,7 +61,7 @@ void LinkText::RefreshTextPosition() {
 
 
 void LinkText::RefreshTextPosition(int lineheight) {
-   DumbText::RefreshTextPosition(lineheight);
+   BasicText::RefreshTextPosition(lineheight);
 }
 
 
@@ -132,7 +140,7 @@ void LinkText::SetHoverState(bool state) {
 
 void LinkText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
                        std::string textstr , EagleFont* font) {
-   DumbText::SetupText(hal,val,hpad,vpad,vspacing,textstr,font);
+   BasicText::SetupText(hal,val,hpad,vpad,vspacing,textstr,font);
    ResetLinePadding();
    Refresh();
 }
@@ -140,7 +148,7 @@ void LinkText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad ,
 
 
 void LinkText::SetText(std::string textstr , EagleFont* font) {
-   DumbText::SetText(textstr , font);
+   BasicText::SetText(textstr , font);
    ResetLinePadding();
    Refresh();
 }
@@ -148,7 +156,7 @@ void LinkText::SetText(std::string textstr , EagleFont* font) {
 
 
 void LinkText::SetFont(EagleFont* font) {
-   DumbText::SetFont(font);
+   BasicText::SetFont(font);
    ResetLinePadding();
    Refresh();
 }

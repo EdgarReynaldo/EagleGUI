@@ -9,7 +9,7 @@
 
 #include "Eagle/Gui/Layout/Layout.hpp"
 
-#include "Eagle/Gui/BasicButton.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 
 
 class BasicRadioButton : public WidgetBase {
@@ -23,7 +23,7 @@ protected :
 public :
    
    
-}
+};
 
 
 

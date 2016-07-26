@@ -21,8 +21,8 @@
  */
 
 
-#ifndef Eagle5_H
-#define Eagle5_H
+#ifndef Eagle5_HPP
+#define Eagle5_HPP
 
 
 #include "Eagle/Platform.hpp"// Need to load this one first for basic settings
@@ -50,6 +50,6 @@
 
 
 
-#endif // Eagle5_H
+#endif // Eagle5_HPP
 
 

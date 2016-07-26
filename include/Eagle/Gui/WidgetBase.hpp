@@ -39,14 +39,15 @@
 
 extern const unsigned int TOPIC_DIALOG;
 
-/** Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions. */
+/// DIALOG_MSGS = Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
+
 enum DIALOG_MSGS {
-   DIALOG_OKAY       = 0x00,// Also used to signify that there are no messages for the WidgetHandler::TakeNextMessage function.
+   DIALOG_OKAY       = 0x00,/// Also used to signify that there are no messages for the WidgetHandler::TakeNextMessage function.
    DIALOG_CLOSE      = 0x01,
    DIALOG_REDRAW_ALL = 0x02,/// For when the background needs to be cleared / redrawn
    DIALOG_INPUT_USED = 0x04,/// Play nice, a WidgetHandler will stop checking other widgets input after this is received.
    DIALOG_TAKE_FOCUS = 0x08,
-   DIALOG_DISABLED   = 0x10,// Returned when you try to update or check the inputs of a disabled dialog.
+   DIALOG_DISABLED   = 0x10,/// Returned when you try to update or check the inputs of a disabled dialog.
    DIALOG_REMOVE_ME  = 0x20
 };
 

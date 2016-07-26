@@ -2,7 +2,7 @@
 
 
 
-#include "Eagle/Gui/DumbText.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 
 #include <iostream>
@@ -17,46 +17,14 @@ using namespace std;
 #include "Eagle/System.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 
+#include "Eagle/StringWork.hpp"
+
+
 
 #include <cstdlib>
 
 
-void GetTextAttributes(std::string text , EagleFont* font , int line_spacing , int* pnlines ,
-                       std::vector<std::string>* plines , std::vector<int>* pwidths_vector ,
-                       int* pmaxwidth , int* ptotalheight) {
-
-   EAGLE_ASSERT(font);
-   EAGLE_ASSERT(font->Valid());
-///   EAGLE_ASSERT(pnlines);
-///   EAGLE_ASSERT(plines);
-///   EAGLE_ASSERT(pwidths_vector);
-   EAGLE_ASSERT(pmaxwidth);
-   EAGLE_ASSERT(ptotalheight);
-
-   /// calculate size of entire text
-   if (plines) {*plines = SplitByNewLines(text);}
-   if (pnlines) {
-      if (plines) {
-         *pnlines = (int)plines->size();
-      }
-   }
-   if (*pnlines < 1) {
-      return;
-   }
-   int lineheight = font->Height();
-   if (pwidths_vector) {pwidths_vector->clear();}
-   *pmaxwidth = 0;
-   for (int i = 0 ; i < *pnlines ; ++i) {
-      int w = font->Width((*plines)[i].c_str());
-      if (pwidths_vector) {pwidths_vector->push_back(w);}
-      if (w > *pmaxwidth) {*pmaxwidth = w;}
-   }
-   *ptotalheight = lineheight*(*pnlines) + line_spacing*(*pnlines-1);
-
-}
-
-
-void DumbText::RefreshTextPosition(int lineheight) {
+void BasicText::RefreshTextPosition(int lineheight) {
 
    EAGLE_ASSERT(text_font);
    EAGLE_ASSERT(text_font->Valid());
@@ -100,26 +68,26 @@ void DumbText::RefreshTextPosition(int lineheight) {
 
 
 
-int DumbText::PrivateHandleEvent(EagleEvent e) {
+int BasicText::PrivateHandleEvent(EagleEvent e) {
    (void)e;
    return DIALOG_OKAY;
 }
 
 
 
-int DumbText::PrivateCheckInputs() {
+int BasicText::PrivateCheckInputs() {
    return DIALOG_OKAY;
 }
 
 
 
-void DumbText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+void BasicText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    DrawText(win , xpos , ypos , WCols()[TXTCOL]);
 }
 
 
 
-int DumbText::PrivateUpdate(double tsec) {
+int BasicText::PrivateUpdate(double tsec) {
    (void)tsec;
    return DIALOG_OKAY;
 }
@@ -141,7 +109,7 @@ int DumbText::PrivateUpdate(double tsec) {
    std::vector<int> widths_vector;
 
 //*/
-DumbText::DumbText() :
+BasicText::BasicText() :
       WidgetBase(StringPrintF("Dumb Text object at %p" , this)),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
@@ -164,7 +132,7 @@ DumbText::DumbText() :
 
 
 
-DumbText::DumbText(string name) :
+BasicText::BasicText(string name) :
       WidgetBase(name),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
@@ -189,7 +157,7 @@ DumbText::DumbText(string name) :
 
 
 
-void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c) {
+void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c) {
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 
@@ -206,33 +174,33 @@ void DumbText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleC
 
 
 
-void DumbText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout) {
+void BasicText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout) {
    WidgetBase::SetWidgetArea(x,y,w,h,notify_layout);
    Refresh();
 }
 
 
-void DumbText::ShrinkWrap() {
+void BasicText::ShrinkWrap() {
    WidgetBase::SetWidgetArea(textx,texty,maxwidth,totalheight,true);
 }
 
 
 
-void DumbText::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
+void BasicText::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
    WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
    Refresh();
 }
 
 
 
-void DumbText::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
+void BasicText::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
    WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
    Refresh();
 }
 
 
 
-void DumbText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
+void BasicText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
                std::string textstr , EagleFont* font) {
    
    EAGLE_ASSERT(font);
@@ -249,7 +217,7 @@ void DumbText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad ,
    
 
 
-void DumbText::SetText(std::string textstr , EagleFont* font) {
+void BasicText::SetText(std::string textstr , EagleFont* font) {
    EAGLE_ASSERT(font);
    EAGLE_ASSERT(font->Valid());
    text = textstr;
@@ -259,7 +227,7 @@ void DumbText::SetText(std::string textstr , EagleFont* font) {
 
 
 
-void DumbText::SetFont(EagleFont* font) {
+void BasicText::SetFont(EagleFont* font) {
    EAGLE_ASSERT(font);
    EAGLE_ASSERT(font->Valid());
    text_font = font;
@@ -268,13 +236,13 @@ void DumbText::SetFont(EagleFont* font) {
 
 
 
-void DumbText::Refresh() {
+void BasicText::Refresh() {
    RefreshTextPosition(text_font->Height());
 }
 
 
 
-void DumbText::Realign(HALIGNMENT hal , VALIGNMENT val) {
+void BasicText::Realign(HALIGNMENT hal , VALIGNMENT val) {
    halign = hal;
    valign = val;
    Refresh();
@@ -283,7 +251,7 @@ void DumbText::Realign(HALIGNMENT hal , VALIGNMENT val) {
 
 
 using std::endl;
-std::ostream& DumbText::DescribeTo(std::ostream& os , Indenter indent) const {
+std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
    os <<indent << StringPrintF("Dumb text object \"%s\" at %p." , GetName().c_str() , this) << endl;
    os << indent << PrintAlignment(halign , valign) << endl;
    os << indent << StringPrintF("Using text font (%p) :",this) << endl;
