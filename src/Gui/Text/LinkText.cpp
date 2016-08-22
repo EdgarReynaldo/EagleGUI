@@ -18,7 +18,9 @@
 
 #include <cstdlib>
 
+#include <cstring>
 
+#include <cmath>
 
 
 const int LINK_LAUNCHED = GetNextFreeTextMessageId();
@@ -28,49 +30,6 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 /// ------------------------------     LinkText     -----------------------------------
-
-
-/**
-void LinkText::RefreshTextPosition() {
-
-   EAGLE_ASSERT(text_font);
-
-   int w = text_font->Width(text.c_str());
-   int h = (int)(1.2*text_font->Height());
-
-   int x = InnerArea().X() + hpadding;
-   int y = InnerArea().Y() + vpadding;
-   if (halign == HALIGN_CENTER) {
-      x = InnerArea().CX() - w/2;
-   }
-   if (halign == HALIGN_RIGHT) {
-      x = InnerArea().BRX() - hpadding - w;
-   }
-   if (valign == VALIGN_CENTER) {
-      y = InnerArea().CY() - h/2;
-   }
-   if (valign == VALIGN_BOTTOM) {
-      y = InnerArea().BRY() + vpadding - h;
-   }
-   textx = x;
-   texty = y;
-   SetBgRedrawFlag();
-
-}
-//*/
-
-
-void LinkText::RefreshTextPosition(int lineheight) {
-   BasicText::RefreshTextPosition(lineheight);
-}
-
-
-
-void LinkText::ResetLinePadding() {
-   float fontheight = text_font->Height();
-   vline_padding = 0.2*fontheight;
-   lineheight = fontheight + vline_padding + linespacing;
-}
 
 
 
@@ -84,6 +43,7 @@ int LinkText::LinkText::PrivateHandleEvent(EagleEvent e) {
             if (ms_dblclick(LMB)) {
                /// Double click on link, launch hyperlink
                LaunchLink();
+               ret |= DIALOG_INPUT_USED;
             }
          }
       }
@@ -101,19 +61,14 @@ int LinkText::PrivateCheckInputs() {
 
 void LinkText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    SelectText::PrivateDisplay(win,xpos,ypos);
-   EAGLE_ASSERT(text_font);
-   EAGLE_ASSERT(text_font->Valid());
+
 
    /// Draw underline for hyperlink
-   float y1 = texty + ypos + 1.1*text_font->Height();
-   if (Flags() & HOVER) {
-      for (int i = 0 ; i < nlines ; ++i) {
-         float x1 = textx + xpos;
-         float w = text_font->Width(text.c_str());
-         float h = (0.1)*text_font->Height();
-         win->DrawFilledRectangle(x1 , y1 , w , h , WCols()[HLCOL]);
-         y1 += lineheight;
-      }
+   for (unsigned int i = 0 ; i < lineareas.size() ; ++i) {
+      const Rectangle& r = lineareas[i];
+      float x = r.X() + xpos;
+      float y = r.Y() + ypos + fontheight + ceil(link_height);
+      win->DrawFilledRectangle(x,y,(float)r.W(), link_height , WCols()[HLCOL]);
    }
 }
 
@@ -125,12 +80,6 @@ int LinkText::PrivateUpdate(double tsec) {
 
 
 
-void LinkText::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   RefreshTextPosition(lineheight);
-}
-
-
 void LinkText::SetHoverState(bool state) {
    SelectText::SetHoverState(state);
    SetBgRedrawFlag();
@@ -138,27 +87,26 @@ void LinkText::SetHoverState(bool state) {
 
 
 
-void LinkText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
-                       std::string textstr , EagleFont* font) {
-   BasicText::SetupText(hal,val,hpad,vpad,vspacing,textstr,font);
-   ResetLinePadding();
-   Refresh();
-}
-
-
-
-void LinkText::SetText(std::string textstr , EagleFont* font) {
-   BasicText::SetText(textstr , font);
-   ResetLinePadding();
-   Refresh();
-}
-
-
-
 void LinkText::SetFont(EagleFont* font) {
    BasicText::SetFont(font);
-   ResetLinePadding();
-   Refresh();
+   
+   SetLineSpacing(linespacing);
+}
+
+
+
+void LinkText::SetLineSpacing(int vspacing) {
+   if (text_font) {
+      link_height = 0.1f*(text_font->Height());
+   }
+   else {
+      link_height = 0.0f;
+   }
+   
+   int min_link_vspace = (int)ceil(3.0f*link_height);
+   if (min_link_vspace < linespacing) {
+      BasicText::SetLineSpacing(min_link_vspace);
+   }
 }
 
 
@@ -169,6 +117,10 @@ void LinkText::LaunchLink() {
    string s1 = text;
    bool link = false;
    if (strncmp(s1.c_str() , "http://" , 7) == 0) {
+      /// Should have a web address here
+      link = true;
+   }
+   if (strncmp(s1.c_str() , "https://" , 8) == 0) {
       /// Should have a web address here
       link = true;
    }

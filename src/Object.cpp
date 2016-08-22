@@ -32,50 +32,30 @@ using std::endl;
 using std::ostream;
 
 
+const EAGLE_ID EAGLE_ID_UNASSIGNED = -1;
 
-ShutdownVar global_shutdown_variable = ShutdownVar("Eagle global variable (Object.cpp)");
 
-ShutdownVar::ShutdownVar(std::string name) :
-   str(name)
-{
-//      static int shutdown = register_shutdown_function();
-//      (void)shutdown;
-   EagleLog() << StringPrintF("ShutdownVar object '%s' created\n" , str.c_str());
-}
-ShutdownVar::~ShutdownVar() {
-   EagleLog() << StringPrintF("Destroying eagle shutdown variable '%s'\n" , str.c_str());
+
+static int next_id = 0;
+
+static int NextId() {
+   return next_id++;
 }
 
-//*
-void shutdown_object_module_function() {
-   EagleLog() << StringPrintF("Eagle atexit function shutdown_object_module_function called\n");
+int CurrentId() {
+   return next_id;
 }
 
 
+///std::map<EagleObject* , std::string>         object_map;
 
-#include <cstdlib>
-int register_object_shutdown_function() {
-   int ret = 0;
-   printf("register object shutdown function called. Address of atexit is %p\n" , (void*)atexit);
-   printf("atexit(shutdown_object_module_function) returned %d\n" , ret = atexit(shutdown_object_module_function));
-//   return atexit(shutdown_function);
-   return ret;
-}
-//*/
+std::multimap<std::string , EagleObject*>    object_name_map;
 
+std::vector<std::string>                     id_name_map;
 
-int NextId() {
-   static int i = 0;
-   return i++;
-}
-
-
-std::map<EagleObject* , std::string> object_map;
-std::multimap<std::string , EagleObject*> object_name_map;
-std::vector<std::string> id_name_map;
 std::vector<std::pair<bool , EagleObject*> > id_valid_address_map;
 
-std::map<EagleObject* , int> object_id_map;
+///std::map<EagleObject* , int>                 object_id_map;/// Redundant
 
 
 
@@ -182,73 +162,90 @@ bool GetValidByAddress(EagleObject* obj) {
 
 
 
+/// ----------------------------------- EagleObjectRegistry -------------------------------------------
+
+
+
+
+
+
+
+/// ----------------------------------- EagleObjectRegistryManager -------------------------------------------
+
+
+
+
+
+
 /// ----------------------------------- EagleObject -------------------------------------------
 
 
 
+void EagleObject::Register(EagleObject* obj , std::string name , EAGLE_ID eid) {
+   EagleObjectRegistryManager::Registry()->Register(obj , name , eid);
+}
+
+
+
+void EagleObject::Unregister() {
+   EagleObjectRegistryManager::Registry()->Unregister(id);
+   
+}
+
+
+
 EagleObject::EagleObject() :
-      id(NextId()),
-      wname(StringPrintF("Nemo at %p",this)),
-      destroyed(false)
+      id(EAGLE_ID_UNASSIGNED)
+{
+   Register(this , StringPrintF("Nemo at %p" , this) , id);
+}
+
+      wname(StringPrintF("Nemo at %p",this))
 {
    EagleLog() << StringPrintF("Creating eagle object at %p named %s" , this , wname.c_str()) << std::endl;
-   EAGLE_DEBUG(RegisterObject(this););
+   SetName(StringPrintF("Nemo at %p" , this));
+///   EAGLE_DEBUG(RegisterObject(this););
 }
 
 
 
 EagleObject::EagleObject(std::string name) :
-      id(NextId()),
-      wname(name),
-      destroyed(false)
+      id(EAGLE_ID_UNASSIGNED)
 {
+   Register(this , name , id);
+}
+
+{
+   
+   
    EagleLog() << StringPrintF("Creating object at %p named %s" , this , wname.c_str()) << std::endl;
-   EAGLE_DEBUG(RegisterObject(this););
+   SetName(name);
+///   EAGLE_DEBUG(RegisterObject(this););
 }
 
 
 
 EagleObject::~EagleObject() {
-   if (destroyed) {
-      EagleLog() << StringPrintF("ERROR - Double free on object at %p" , this) << std::endl;
-      EAGLE_DEBUG(throw EagleError("Double free detected."););
-      return;
-   }
-   EagleLog() << StringPrintF("Destroying object at %p named %s" , this , wname.c_str()) << std::endl;
-   EAGLE_DEBUG(UnregisterObject(this););
-   destroyed = true;// NOTE: primitive double destruction detection, will it work right?
-   EAGLE_DEBUG(id_valid_address_map[id].first = false;);// make it invalid
+   Deregister();
 }
 
 
 
 std::string EagleObject::GetName() const {
-///   EAGLE_DEBUG(OutputLog() << StringPrintF("EagleObject::GetName - destroyed = %s\n" , destroyed?"true":"false"););
-   EAGLE_ASSERT(!destroyed);
-   return wname;
+   return GetNameById(id);
 }
 
 
 
 void EagleObject::SetName(std::string newname) {
-   EAGLE_ASSERT(!destroyed);
-   EAGLE_DEBUG(UnregisterObject(this););
-   wname = newname;
-   EAGLE_DEBUG(RegisterObject(this););
-}
-
-
-
-int EagleObject::GetId() {
-   EAGLE_ASSERT(!destroyed);
-   return id;
+   Register(this , newname , id);
 }
 
 
 
 ostream& EagleObject::DescribeTo(ostream& os , Indenter indent) const {
    EAGLE_ASSERT(!destroyed);
-	return os << indent << StringPrintF("EagleObject %s. Addr=%p. Id = %i" , wname.c_str() , this , id);
+	return os << indent << StringPrintF("EagleObject %s. Addr=%p. Id = %i" , shortname.c_str() , this , id);
 	///<< endl;
 }
 

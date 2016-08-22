@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -63,6 +63,10 @@ public :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
 };
+
+
+EagleFont* GetFont(std::string font_name);
+
 
 
 

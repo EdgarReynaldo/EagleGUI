@@ -24,14 +24,14 @@ using namespace std;
 #include <cstdlib>
 
 
-void BasicText::RefreshTextPosition(int lineheight) {
+void BasicText::RefreshTextPosition() {
 
    EAGLE_ASSERT(text_font);
    EAGLE_ASSERT(text_font->Valid());
    lines = SplitByNewLines(text);
    nlines = lines.size();
    
-///   int lineheight = text_font->Height();
+   int lineheight = fontheight + linespacing;
    maxwidth = 0;
    totalheight = lineheight*nlines + linespacing*(nlines-1);
 
@@ -145,6 +145,7 @@ BasicText::BasicText(string name) :
       vpadding(0),
       linespacing(0),
       maxwidth(0),
+      fontheight(0),
       totalheight(0),
       textx(0),
       texty(0),
@@ -210,41 +211,66 @@ void BasicText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad 
    hpadding = hpad;
    vpadding = vpad;
    linespacing = vspacing;
-   text = textstr;
-   text_font = font;
-   Refresh();
+   SetText(textstr , font);
 }
    
 
 
 void BasicText::SetText(std::string textstr , EagleFont* font) {
-   EAGLE_ASSERT(font);
-   EAGLE_ASSERT(font->Valid());
    text = textstr;
-   text_font = font;
+   SetFont(font);
+   Refresh();
+}
+
+
+
+void BasicText::SetText(std::string textstr) {
+   text = textstr;
    Refresh();
 }
 
 
 
 void BasicText::SetFont(EagleFont* font) {
-   EAGLE_ASSERT(font);
-   EAGLE_ASSERT(font->Valid());
    text_font = font;
+   if (text_font) {
+      fontheight = text_font->Height();
+   }
+   else {
+      fontheight = 0;
+   }
    Refresh();
 }
 
 
 
 void BasicText::Refresh() {
-   RefreshTextPosition(text_font->Height());
+   if (text_font) {
+      RefreshTextPosition();
+   }
+   else {
+      EagleLog() << StringPrintF("INFO : BasicText::Refresh called on object %s without an active text_font.\n" , GetName().c_str());
+   }
 }
 
 
 
-void BasicText::Realign(HALIGNMENT hal , VALIGNMENT val) {
+void BasicText::Realign(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad) {
+   
+   if (hpad < 0) {hpad = 0;}
+   if (vpad < 0) {vpad = 0;}
+   
    halign = hal;
    valign = val;
+   hpadding = hpad;
+   vpadding = vpad;
+   Refresh();
+}
+
+
+
+void BasicText::SetLineSpacing(int vspacing) {
+   linespacing = vspacing;
    Refresh();
 }
 

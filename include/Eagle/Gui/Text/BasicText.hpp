@@ -25,6 +25,7 @@ protected :
    int vpadding;
    int linespacing;
    int maxwidth;
+   int fontheight;
    int totalheight;
    int textx;
    int texty;
@@ -32,7 +33,7 @@ protected :
 
    
    
-   virtual void RefreshTextPosition(int lineheight);
+   virtual void RefreshTextPosition();
 
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();
@@ -65,10 +66,13 @@ public :
                           std::string textstr , EagleFont* font);
    
    virtual void SetText(std::string textstr , EagleFont* font);
+   virtual void SetText(std::string textstr);
 
    virtual void SetFont(EagleFont* font);
    
-   virtual void Realign(HALIGNMENT hal , VALIGNMENT val);
+   virtual void Realign(HALIGNMENT hal , VALIGNMENT val , int hpad = 0 , int vpad = 0);
+   
+   virtual void SetLineSpacing(int vspacing);
    
    virtual void Refresh();
 
