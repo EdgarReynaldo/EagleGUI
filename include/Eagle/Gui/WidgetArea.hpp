@@ -82,8 +82,8 @@ public :
    void MoveBy(int dx , int dy);
 	const Rectangle& OuterArea() const {return outer_area;}
 	const Rectangle& InnerArea() const {return inner_area;}
-	Rectangle& OuterArea() {return outer_area;}
-	Rectangle& InnerArea() {return inner_area;}
+///	Rectangle& OuterArea() {return outer_area;}
+///	Rectangle& InnerArea() {return inner_area;}
 	int       W() const {return outer_area.W();}
 	int       H() const {return outer_area.H();}
 	Rectangle   GetCellRectangle (MARGIN_CELL cell) const ;
@@ -98,12 +98,14 @@ public :
 	void SetImages(EagleImage* imgs[3][3]);
    void SetImagesHaveAlpha(bool has_alpha);
 
-
+   /// Changes inner area, but preserves margins
 	void SetOuterPos(int xpos , int ypos);
 	void SetOuterDim(unsigned int width , unsigned int height);
 	void SetOuterArea(Rectangle r);
 	void SetOuterArea(int xpos , int ypos , unsigned int width , unsigned int height);
 
+   void SetInnerDimensions(unsigned int width , unsigned int height);/// Changes outer area, preserves margins
+	
 	void SetRelativeInnerPosition(int xpos , int ypos);/// Changes margins, probably not very useful
 	void SetRelativeInnerDimensions(unsigned int width , unsigned int height);/// Changes margins, probably not very useful
 	void SetRelativeInnerArea(Rectangle r);/// Changes margins!!!!

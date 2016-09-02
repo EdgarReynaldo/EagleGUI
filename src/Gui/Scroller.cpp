@@ -98,6 +98,7 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
          else if (!horizontal_scroller) {
             length = (scroller_area.H() - scroll_handle_area.H());
          }
+         if (length == 0) {length = 1;}
          float percent = (float)delta/length;
          SetScrollPercent(start_percent + percent);
       }

@@ -23,7 +23,8 @@ int TextTestMain(int argc , char** argv) {
    
    int ww = 800;
    int wh = 600;
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww,wh,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+///   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
       return 2;
    }
@@ -71,6 +72,28 @@ int TextTestMain(int argc , char** argv) {
    EagleImage* down = win->LoadImageFromFile("Data/GuiTestImages/RBA_Down.png");
    EagleImage* hover = win->LoadImageFromFile("Data/GuiTestImages/RBA_Hover.png");
 
+   
+/**
+   EagleImage* i1 = win->LoadImageFromFile("Data/temp/00001.png");
+   EagleImage* i2 = win->LoadImageFromFile("Data/temp/00002.png");
+   EagleImage* i3 = win->LoadImageFromFile("Data/temp/00003.png");
+   EagleImage* i4 = win->LoadImageFromFile("Data/temp/00004.png");
+   EagleImage* i5 = win->LoadImageFromFile("Data/temp/Four.png");
+   EagleImage* i6 = win->LoadImageFromFile("Data/temp/Four.jpg");
+   
+   if (!i1->Valid()) {
+      EagleLog() << "Failed to load image." << std::endl;
+   }
+   
+   win->Clear(EagleColor(0,0,0));
+   win->Draw(i1 , 0 , 0 , HALIGN_LEFT , VALIGN_TOP);
+   win->FlipDisplay();
+   
+   sys->Rest(3.0);
+//*/
+   
+   
+   
    IconButton icon;
    
    icon.SetImages(up , down , hover , down);
@@ -168,7 +191,6 @@ int TextTestMain(int argc , char** argv) {
    EagleLog() << linktext << std::endl;
    
    
-   int tickcount = 0;
    bool quit = false;
    bool redraw = true;
    float fps = 0.0f;
@@ -177,33 +199,64 @@ int TextTestMain(int argc , char** argv) {
 ///   sys->GetSystemTimer()->Create(0.5);
    sys->GetSystemTimer()->Start();
    
+   int tick_count = 0;
+   bool update_fps = true;
+   
    do {
+      redraw = true;
       if (redraw) {
-         ++tickcount;
-///         win->Clear(EagleColor(0,tickcount*4,0));
 
-         
-         if (tickcount == 20) {
+         if (update_fps) {
             fps = win->GetFPS();
-            tickcount = 0;
          }
          
+         win->Clear(EagleColor(0,0,0));
+         
          gui->Display(win,0,0);
+          
          win->DrawTextString(&textfont , StringPrintF("%5.1f" , fps) , 10,10,EagleColor(0,255,0));
 
-         Rectangle r = select.TextArea();
-                  
-         win->DrawRectangle(r , 2 , EagleColor(0,255,0));
-                  
+         WidgetBase* focus_widget = gui->CurrentFocus();
+         
+         if (focus_widget) {
+///            string focus_name = focus_widget->GetName();
+            
+///            win->DrawTextString(&textfont , focus_name , 100 , 10 , EagleColor(0,255,255));
+            
+            Rectangle r = focus_widget->OuterArea();
+            
+            win->DrawRectangle(r , 2 , EagleColor(0,255,0));
+         }
+         
+         int pos = -1;
+         int linenum = -1;
+         
+         SelectText* pselect = &select;
+         
+         int select_line = -1;
+         int select_pos = -1;
+         int caret_line = -1;
+         int caret_pos = -1;
+         
+         linktext.FindCaretPos(gui->GetMouseX() , gui->GetMouseY() , &pos , &linenum);
+         
+         win->DrawTextString(&textfont , StringPrintF("Pos = %d , Linenum = %d" , pos , linenum) , 100 , 10 , EagleColor(0,255,255));
+         
+         pselect->GetCaretAttributes(&select_line , &select_pos , &caret_line , &caret_pos);
+         
+         string select_attr = StringPrintF("SL = %d , SP = %d , CL = %d , CP = %d" , select_line , select_pos , caret_line , caret_pos);
+         
+         win->DrawTextString(&textfont , select_attr , win->Width() - 10 , 30 , EagleColor(255,255,0) , HALIGN_RIGHT);
+         
          bool up = icon.Up();
          bool hover = icon.Hover();
          
-         win->DrawTextString(&textfont , StringPrintF("ScrollBar 1 value = %d , ScrollBar 2 value = %d" ,
-                                                       scrollbar1.GetScrollValue() , scrollbar2.GetScrollValue()) ,
-                             10,30,EagleColor(0,255,255));
+///         win->DrawTextString(&textfont , StringPrintF("ScrollBar 1 value = %d , ScrollBar 2 value = %d" ,
+///                                                       scrollbar1.GetScrollValue() , scrollbar2.GetScrollValue()) ,
+///                             10,30,EagleColor(0,255,255));
          
-///         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
-///                             10,30,EagleColor(0,0,255));
+         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
+                             10,30,EagleColor(0,255,255));
                   
          win->FlipDisplay();
          redraw = false;
@@ -223,7 +276,9 @@ int TextTestMain(int argc , char** argv) {
       
       do {
          EagleEvent ee;
-         ee = sys->WaitForSystemEventAndUpdateState();
+///         ee = sys->WaitForSystemEventAndUpdateState();
+         ee = sys->UpdateSystemState();
+         
          
          if (ee.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             win->AcknowledgeResize();
@@ -233,14 +288,19 @@ int TextTestMain(int argc , char** argv) {
          gui->HandleEvent(ee);
 
          if (ee.type == EAGLE_EVENT_TIMER) {
+            ++tick_count;
+            if (tick_count == 20) {
+               update_fps = true;
+               tick_count = 0;
+            }
             gui->Update(ee.timer.eagle_timer_source->SPT());
          }
          
          while (gui->HasMessages()) {
                WidgetMsg wmsg = gui->TakeNextMessage();
-            EAGLE_DEBUG(
-               EagleLog() << wmsg << std::endl;
-            );
+               EAGLE_DEBUG(
+                  EagleLog() << wmsg << std::endl;
+               );
          }
          if (ee.type == EAGLE_EVENT_KEY_DOWN) {
                if (ee.keyboard.keycode == EAGLE_KEY_1) {halign = HALIGN_LEFT;}
@@ -264,7 +324,14 @@ int TextTestMain(int argc , char** argv) {
          
       } while(!sys->UpToDate());
    } while (!quit);
-    
+   
+   
+   EagleLog() << std::endl << "Live object count = " << LiveObjectCount() << std::endl;
+   EagleLog() << std::endl;
+   
+   delete gui;
+   delete sys;
+
    return 0;
 }
 

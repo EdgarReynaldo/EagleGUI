@@ -52,6 +52,10 @@ const WidgetMsg NoMessages((WidgetBase*)0 , TOPIC_DIALOG , DIALOG_OKAY);
 
 
 
+const unsigned int TOPIC_GUI = NextFreeTopicId();
+
+
+
 bool WidgetHandler::OwnsWidget(WidgetBase* widget) {
    for (UINT i = 0 ; i < wlist.size() ; ++i) {
       if (wlist[i] == widget) {return true;}
@@ -496,6 +500,10 @@ WidgetHandler::~WidgetHandler() {
    FreeImageBuffers();
 
    ClearLayout();
+   
+   root_layout->DetachFromGui();
+   
+   root_layout = &dumb_layout;
 /**
    if (root_layout == &dumb_layout) {
       root_layout->ClearLayout();
@@ -815,13 +823,13 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       they won't have to adjust it.
    */
 
-// Need to adjust mouse position, alter it
-   const int relx = mouse_x + cam.X() - area.OuterArea().X() - AbsParentX();
-   const int rely = mouse_y + cam.Y() - area.OuterArea().Y() - AbsParentY();
+   /// Need to get mouse position relative to buffer
+   const int mx = GetMouseX();
+   const int my = GetMouseY();
    
    if (IsMouseEvent(e)) {
-      e.mouse.x = relx;
-      e.mouse.y = rely;
+      e.mouse.x = mx;
+      e.mouse.y = my;
    }
    
 //   WidgetMsg retval;
@@ -833,6 +841,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    /// GUIs can take the focus too
    if (wparent && area.OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
       /// TODO : this is kind of a relic of a gui being a window... but they're not anymore, sort of
+      /// TODO : Leave this to the EagleGuiWindow subclass
 //      gui_takes_focus = true;
    }
 
@@ -844,7 +853,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       WidgetBase* new_whover = 0;
       for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
          WidgetBase* w = drawlist[i];
-         bool hover = w->IsMouseOver(relx , rely);
+         bool hover = w->IsMouseOver(mouse_x , mouse_y);
          if (hover) {
             new_whover = w;
             break;
@@ -933,7 +942,7 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
    RemoveOldWidgets();
 
-   if (!WidgetBase::flags & NEEDS_REDRAW) {return;}
+///   if (!(WidgetBase::flags & NEEDS_REDRAW)) {return;}
 
    cam.SetRedrawFlag();
    
@@ -994,13 +1003,18 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
    if (flags & VISIBLE) {
          
-      win->DrawRegion(buffer , Rectangle(0,0,buffer->W(),buffer->H()) , 0 , 0);
-      /**
-      win->SetPMAlphaBlender();
-      Rectangle a = area.InnerArea();
-      cam.Display(win , xpos + a.X() , ypos + a.Y());
+///      win->DrawRegion(buffer , Rectangle(0,0,buffer->W(),buffer->H()) , xpos , ypos);
+      //** TODO : IMPORTANT : FIX CAMERA CODE FOR WIDGETHANDLER
+///      win->SetPMAlphaBlender();
+///      Rectangle a = area.InnerArea();
+///      cam.Display(win , xpos + a.X() , ypos + a.Y());
+
+      win->SetCopyBlender();
+      cam.Display(win , xpos , ypos);
       win->RestoreLastBlendingState();
-      */
+      
+///      win->RestoreLastBlendingState();
+      //*/
    }
    
    ClearRedrawFlag();
@@ -1321,11 +1335,16 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
       return true;
    }
    if (HasWidget(widget) && widget->AcceptsFocus()) {
-/** WARNING : Do not enable this line, if you do it will break RemoveWidget because it depends
+/** TODO : WARNING : Do not enable this line, if you do it will break RemoveWidget because it depends
               on being able to set the same focus again (this resets the focus_index properly).
    if ((widget != wfocus) && HasWidget(widget) && widget->AcceptsFocus()) {
+      
+      TODO : I think this is fixed now, by the "if (wfocus && wfocus != widget)" line below
 */      
-      if (wfocus) {
+      
+
+      /// Remove focus from previous widget
+      if (wfocus && wfocus != widget) {
          /// The widget handler that owns the wfocus needs to be notified it has lost focus as well
          wfocus->SetFocusState(false);
          WidgetBase* pfocus = wfocus->Parent();
@@ -1534,13 +1553,32 @@ int WidgetHandler::GetMouseX() {
    
    WidgetHandler* whandler = dynamic_cast<WidgetHandler*>(wparent);
    
+   int mx = mouse_x;
+   
+   int absx = area.OuterArea().X();
+   
    if (whandler) {
-      return whandler->GetMouseX() - cam.X() - area.OuterArea().X();
+      mx = whandler->GetMouseX();
+   }
+   else if (wparent) {
+      absx += AbsParentX();
+   }
+   
+   const int cx = cam.X();
+   
+   return (mx - absx) + cx;
+/**   
+   if (whandler) {
+      return (whandler->GetMouseX() - area.OuterArea().X()) + cam.X();
+   }
+   else if (wparent) {
+      return (mouse_x - (AbsParentX() + area.OuterArea().X())) + cam.X();
    }
    else {
-      return mouse_x - cam.X() - area.OuterArea().X();
+      return (mouse_x - area.OuterArea().X()) + cam.X();
    }
    return 0;
+*/
 }
 
 
@@ -1549,12 +1587,32 @@ int WidgetHandler::GetMouseY() {
    
    WidgetHandler* whandler = dynamic_cast<WidgetHandler*>(wparent);
    
+   int my = mouse_y;
+   
+   int absy = area.OuterArea().Y();
+   
    if (whandler) {
-      return whandler->GetMouseY() - cam.Y() - area.OuterArea().Y();
+      my = whandler->GetMouseY();
+   }
+   else if (wparent) {
+      absy += AbsParentY();
+   }
+   
+   const int cy = cam.Y();
+   
+   return (my - absy) + cy;
+
+/**
+   if (whandler) {
+      return (whandler->GetMouseY() - area.OuterArea().Y()) + cam.Y();
+   }
+   else if (wparent) {
+      return (mouse_y  - (area.OuterArea().Y() + AbsParentY())) + cam.Y();
    }
    else {
-      return mouse_y - cam.Y() - area.OuterArea().Y();
+      return (mouse_y  - area.OuterArea().Y()) + cam.Y();
    }
+*/
    return 0;
 }
 

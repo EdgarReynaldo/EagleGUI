@@ -9,7 +9,7 @@
 
 #include "Eagle/Gui/Text/GlobalText.hpp"
 #include "Eagle/Gui/Text/SelectText.hpp"
-
+#include "Eagle/StringWork.hpp"
 
 
 extern const int LINK_LAUNCHED;
@@ -27,7 +27,11 @@ protected :
 public :
 ///   LinkText();
    LinkText() :
-      SelectText(),
+      SelectText(StringPrintF("LinkText at %p" , this)),
+      link_height(0.0f)
+   {}
+   LinkText(std::string name) :
+      SelectText(name),
       link_height(0.0f)
    {}
    

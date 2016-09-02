@@ -25,6 +25,8 @@ using namespace std;
 
 WidgetFactory eagle_widget_factory;
 
+
+
 RegisteredWidgetCreator::RegisteredWidgetCreator(string widget_class , WIDGET_CREATION_FUNCTION widget_creator_func) {
    eagle_widget_factory.RegisterWidgetCreationFunction(widget_class , widget_creator_func);
 }

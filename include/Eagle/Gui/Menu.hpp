@@ -48,6 +48,8 @@ class MenuItem {
    
 public :
    
+   virtual ~MenuItem() {}
+   
    virtual bool IsOpen()=0;
    virtual bool IsActivated()=0;
    

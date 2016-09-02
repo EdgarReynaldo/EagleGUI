@@ -22,7 +22,7 @@ void shutdown_main() {
    esys = 0;
 }
 
-ShutdownVar gui_global_shutdown_var = ShutdownVar("Main global variable");
+///ShutdownVar gui_global_shutdown_var = ShutdownVar("Main global variable");
 
 
 
@@ -64,7 +64,7 @@ int GuiTestMain3(int argc , char** argv) {
    printf("Registering 'shutdown_main' with atexit. Atexit ptr is %p\n" , (void*)atexit);
    printf("atexit(shutdown_main) returned %d\n" , atexit(shutdown_main));
    
-   register_object_shutdown_function();
+///   register_object_shutdown_function();
    
    
    
@@ -906,8 +906,8 @@ int GuiTestMain(int argc , char** argv) {
    delete gui;
    
 
-   OutputLog() << "Current objects left after cleanup : " << ObjectCount() << std::endl;
-   OutputObjects();
+   OutputLog() << "Current objects left after cleanup : " << LiveObjectCount() << std::endl;
+   OutputLiveObjectsBrief();
    OutputLog() << std::endl;
 
 //   al_uninstall_system();

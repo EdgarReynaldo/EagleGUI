@@ -110,7 +110,7 @@ int BasicText::PrivateUpdate(double tsec) {
 
 //*/
 BasicText::BasicText() :
-      WidgetBase(StringPrintF("Dumb Text object at %p" , this)),
+      WidgetBase(StringPrintF("Basic Text object at %p" , this)),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
       text_font(0),
@@ -276,16 +276,34 @@ void BasicText::SetLineSpacing(int vspacing) {
 
 
 
+int BasicText::NLines() {return nlines;}
+
+
+
+Rectangle BasicText::LineArea(int linenum) {
+   EAGLE_ASSERT(linenum >= 0 && linenum < nlines);
+   return lineareas[linenum];
+}
+
+
+
+std::string BasicText::LineString(int linenum) {
+   EAGLE_ASSERT(linenum >= 0 && linenum < nlines);
+   return lines[linenum];
+}
+
+
+
 using std::endl;
 std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
-   os <<indent << StringPrintF("Dumb text object \"%s\" at %p." , GetName().c_str() , this) << endl;
+   os <<indent << StringPrintF("Basic text object \"%s\" at %p." , GetName().c_str() , this) << endl;
    os << indent << PrintAlignment(halign , valign) << endl;
    os << indent << StringPrintF("Using text font (%p) :",this) << endl;
    if (text_font) {
       text_font->DescribeTo(os , indent);
    }
    os << endl;
-   os << "There are " << nlines << " lines of text." << endl;
+   os << StringPrintF("There %s %d line%s of text." , (nlines==1)?"is":"are" , nlines , (nlines==1)?"":"s") << endl;
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       string s = lines[i];
       Rectangle r = lineareas[i];
@@ -294,7 +312,7 @@ std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
       os << endl;
    }
    os << indent << "HPadding and VPadding are : " << hpadding << " and " << vpadding << endl;
-   os << indent << StringPrintF("Linespacing is %d , Max width = is %d , Total height is %d",
+   os << indent << StringPrintF("Linespacing is %d , Max width is %d , Total height is %d",
                      linespacing , maxwidth , totalheight) << endl;
    WidgetBase::DescribeTo(os , indent);
    return os;

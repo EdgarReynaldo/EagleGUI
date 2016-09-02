@@ -28,7 +28,7 @@ public :
    MenuLayout();
    
    
-   void ResizeMenu(int size);
+   void ResizeMenu(int new_menu_size);
    
    
 };

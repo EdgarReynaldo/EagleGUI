@@ -214,6 +214,13 @@ void WidgetArea::SetOuterArea(int xpos , int ypos , unsigned int width , unsigne
 
 
 
+void WidgetArea::SetInnerDimensions(unsigned int width , unsigned int height) {
+   inner_area.SetDimensions(width , height);
+   SetMarginsExpandFromInner(mleft , mright , mtop , mbot);
+}
+
+
+
 void WidgetArea::SetRelativeInnerPosition(int xpos , int ypos) {
    SetRelativeInnerArea(xpos,ypos,inner_area.W(),inner_area.H());
 }

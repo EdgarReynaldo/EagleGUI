@@ -34,8 +34,6 @@ using std::map;
 using std::pair;
 
 
-REGISTERED_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
-
 
 
 WidgetMessageMapCleaner map_cleaner;/// This needs to be here to free the message map, don't remove
@@ -99,6 +97,19 @@ unsigned int NextFreeTopicId() {
    id += 1;
    return id;
 }
+
+
+
+extern const unsigned int TOPIC_NONE = NextFreeTopicId();
+
+
+
+const int MESSAGE_NONE = 0;
+
+
+
+
+REGISTERED_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
 
 
 

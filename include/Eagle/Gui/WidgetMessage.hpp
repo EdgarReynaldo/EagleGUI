@@ -71,8 +71,9 @@ public :
 */
 unsigned int NextFreeTopicId();
 
-static const unsigned int TOPIC_NONE = NextFreeTopicId();
-static const int MESSAGE_NONE = 0;
+extern const unsigned int TOPIC_NONE;
+
+extern const int MESSAGE_NONE;
 
 REGISTER_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
 

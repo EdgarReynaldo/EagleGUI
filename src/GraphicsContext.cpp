@@ -232,7 +232,9 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
 
 
 float EagleGraphicsContext::GetFPS() {
-   EAGLE_ASSERT(total_frame_time != 0.0f);
+   if (total_frame_time <= 0.0f) {
+      return 0.0f;
+   }
    return numframes/total_frame_time;
 }
 
@@ -258,6 +260,24 @@ void EagleGraphicsContext::DrawRoundedRectangle(Rectangle r , int rx , int ry , 
 
 void EagleGraphicsContext::DrawFilledRoundedRectangle(Rectangle r , int rx , int ry , EagleColor c) {
    DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , rx , ry , c);
+}
+
+
+
+void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags) {
+   if (halign == HALIGN_CENTER) {
+      x -= img->W()/2.0f;
+   }
+   else if (halign == HALIGN_RIGHT) {
+      x -= img->W();
+   }
+   if (valign == VALIGN_CENTER) {
+      y -= img->H()/2.0f;
+   }
+   else if (valign == VALIGN_BOTTOM) {
+      y -= img->H();
+   }
+   Draw(img , x , y , flags);
 }
 
 

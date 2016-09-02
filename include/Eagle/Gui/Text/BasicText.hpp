@@ -81,6 +81,12 @@ public :
    
    Rectangle TextArea() {return Rectangle(textx , texty , maxwidth , totalheight);}
    
+   int NLines();
+
+   Rectangle LineArea(int linenum);
+   
+   string LineString(int linenum);
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
 };

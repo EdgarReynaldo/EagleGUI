@@ -282,14 +282,19 @@ public :
 										 float x3 , float y3 , EagleColor c3 , 
 										 float x4 , float y4 , EagleColor c4)=0;
 
-   // image drawing operations
+   /// image drawing operations
+
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
+   void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
+
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL)=0;
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
    void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
+
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
-/// TODO  virtual void Draw(EagleImage* src , EagleDrawingInfo info = EagleDrawingInfo())=0;
+
+/// TODO? : virtual void Draw(EagleImage* src , EagleDrawingInfo info = EagleDrawingInfo())=0;
 
    // text drawing operations
    virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,

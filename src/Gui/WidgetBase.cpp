@@ -565,12 +565,11 @@ void WidgetBase::ToggleWidgetVisibility() {
 
 
 
-bool WidgetBase::IsMouseOver(int msx , int msy) const {
-	Pos2d p = GetParentOffset();
+bool WidgetBase::IsMouseOver(int realmsx , int realmsy) const {
+	Pos2d offset = GetParentOffset();
 	Rectangle realarea = area.OuterArea();
-	realarea.MoveBy(p);
-	return realarea.Contains(msx,msy);
-   /// return area.Contains(msx,msy);
+	realarea.MoveBy(offset);
+	return realarea.Contains(realmsx,realmsy);
 }
 
 
@@ -684,36 +683,71 @@ void WidgetBase::SetWidgetArea(int xpos , int ypos , int width , int height , bo
 
 
 void WidgetBase::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   area.SetMarginsExpandFromInner(left,right,top,bottom);
-   SetBgRedrawFlag();
    
+   EAGLE_ASSERT(left >= 0);
+   EAGLE_ASSERT(right >= 0);
+   EAGLE_ASSERT(top >= 0);
+   EAGLE_ASSERT(bottom >= 0);
    
+   Rectangle outer = area.InnerArea();
    
+   /// Get position of new outer area
+   outer.MoveBy(-left , -top);
+   
+   /// Expand outer area to include new margins
+   outer.SetDimensions(left + area.InnerArea().W() + right , top + area.InnerArea().H() + bottom);
+   
+   /// Attempt to change position to new area
+   SetWidgetArea(outer);
+   
+   /// Attempt to set the margins
+   SetMarginsContractFromOuter(left,right,top,bottom);
+
 }
 
 
 
 void WidgetBase::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   area.SetMarginsContractFromOuter(left,right,top,bottom);
+
+   EAGLE_ASSERT(left >= 0);
+   EAGLE_ASSERT(right >= 0);
+   EAGLE_ASSERT(top >= 0);
+   EAGLE_ASSERT(bottom >= 0);
+
+   area.SetMarginsContractFromOuter(left,right,top,bottom);/// No need to notify layout, outer position doesn't change
    SetBgRedrawFlag();
 }
 
 
 
 void WidgetBase::SetMinInnerWidth(int w) {
+
    const int amw = AbsMinWidth();
    if (w < amw) {w = amw;}
    minw = w;
-   if (area.OuterArea().W() < minw) {SetWidgetDimensions(minw , area.OuterArea().H());}
+   
+   if (minw > area.InnerArea().W()) {
+      
+      area.SetInnerDimensions(minw , area.InnerArea().H());
+
+      SetWidgetArea(area.OuterArea());/// Verify position with layout
+   }
 }
 
 
 
 void WidgetBase::SetMinInnerHeight(int h) {
+
    const int amh = AbsMinHeight();
    if (h < amh) {h = amh;}
    minh = h;
-   if (area.OuterArea().H() < minh) {SetWidgetDimensions(area.OuterArea().W() , minh);}
+
+   if (minh > area.InnerArea().H()) {
+      
+      area.SetInnerDimensions(area.InnerArea().W() , minh);
+
+      SetWidgetArea(area.OuterArea());/// Verify position with layout
+   }
 }
 
 
@@ -725,9 +759,14 @@ void WidgetBase::SetMinInnerDimensions(int w , int h) {
    if (h < amh) {h = amh;}
    minw = w;
    minh = h;
-   if ((area.W() < minw) || (area.H() < minh)) {
-      SetWidgetDimensions((area.W() > minw)?area.W():minw , (area.H() > minh)?area.H():minh);
+
+   if ((minw > area.InnerArea().W()) || (minh > area.InnerArea().H())) {
+
+      area.SetInnerDimensions(minw , minh);
+
+      SetWidgetArea(area.OuterArea());/// Verify position with layout
    }
+
 }
 
 

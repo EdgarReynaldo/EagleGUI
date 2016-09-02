@@ -125,7 +125,7 @@ public :
    virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
 
    void EmptySlot(int slot);/// Remove a widget from the layout without freeing it
-   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout without freeing it
+   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout without freeing it : TODO : This doesn't work as intended
    void ClearWidgets();/// Remove all widgets from layout without freeing them
    
    void RemoveWidgetFromLayout(WidgetBase* widget);/// Optionally frees widget and places NULL in its slot

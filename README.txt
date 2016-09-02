@@ -18,6 +18,9 @@ EAGLE_ASSERT_EXCEPTION :
 EAGLE_STATIC_LINK
  - links statically
 
+EAGLE_LIBRARY_BUILD
+ - Turn on to enable building of the shared library
+ 
 Macros
 --------------------------------
 EAGLE_ASSERT(exp);
@@ -35,6 +38,7 @@ Keywords used for source searches
 - CREDIT
 - CREDITS
 - TODO
+- WARNING
 - URGENT
 - DESIGN
 - NOTE

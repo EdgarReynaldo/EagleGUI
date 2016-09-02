@@ -13,17 +13,20 @@ MenuLayout::MenuLayout() :
 
 
 
-void MenuLayout::ResizeMenu(int size) {
+void MenuLayout::ResizeMenu(int new_menu_size) {
    switch(layout_direction) {
    case MENU_HORIZONTAL :
-      ResizeGrid(menu_size , 1);
+      ResizeGrid(new_menu_size , 1);
       break;
    case MENU_VERTICAL :
-      ResizeGrid(1,menu_size);
+      ResizeGrid(1,new_menu_size);
       break;
    default :
       throw EagleError("Unknown MENU_LAYOUT_DIRECTION");
    }
+   
+   menu_size = GridLayout::GetLayoutSize();
+   
 }
 
 

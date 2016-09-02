@@ -44,7 +44,7 @@
 /// Used by WidgetHandler::TakeNextMessage to signify an empty message queue
 extern const WidgetMsg NoMessages;
 
-static const unsigned int TOPIC_GUI = NextFreeTopicId();
+extern const unsigned int TOPIC_GUI;
 
 enum GUI_MSGS {
    GUI_RESIZED = 0
@@ -233,7 +233,7 @@ public :
    virtual bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);// notify_parent for internal use only
 
    virtual void SetRedrawAllFlag();
-
+   
    virtual bool HasGui();
    virtual WidgetHandler* GetGui();
 

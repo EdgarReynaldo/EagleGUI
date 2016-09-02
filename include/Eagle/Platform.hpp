@@ -27,7 +27,7 @@
 
 #ifdef EAGLE_LIBRARY_BUILD
 
-   // Library build
+   /// Library build
    #if defined (_WIN32) && !defined (EAGLE_STATIC_LINK)
       #if !defined (EAGLE_STATIC_LINK)
          #define EAGLE_LINK_TYPE __declspec__(dllexport)
@@ -41,9 +41,9 @@
       #error "Platform not supported yet."
    #endif
 
-#else // !defined EAGLE_LIBRARY_BUILD - Not building library - user building app / dll
+#else /// !defined EAGLE_LIBRARY_BUILD - Not building library - user building app / dll
 
-   // User building app
+   /// User building app
    #ifdef WIN32
       #ifndef EAGLE_STATIC_LINK
          #define EAGLE_LINK_TYPE __declspec(dllimport)
@@ -60,7 +60,7 @@
 
 #endif
 
-// Make sure EAGLE_LINK_TYPE is defined
+/// Make sure EAGLE_LINK_TYPE is defined
 #if !defined (EAGLE_LINK_TYPE)
    #define EAGLE_LINK_TYPE
 #endif
@@ -69,7 +69,7 @@
    #define EAGLE_CALL_TYPE __stdcall__
 #endif
 
-// Native path separator definitions
+/// Native path separator definitions
 #if defined _WIN32
    #define EAGLE_NATIVE_PATH_SEP '\\'
    #define EAGLE_OTHER_PATH_SEP '/'
@@ -83,7 +83,7 @@
 #endif
 
 
-
+/// Eagle platform definitions
 #if defined _WIN32
    #define EAGLE_WIN32
 #elif defined __linux__

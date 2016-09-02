@@ -36,8 +36,8 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 int LinkText::LinkText::PrivateHandleEvent(EagleEvent e) {
    int ret = SelectText::PrivateHandleEvent(e);
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-      int msx = RootGui()->GetMouseX();
-      int msy = RootGui()->GetMouseY();
+      int msx = e.mouse.x;
+      int msy = e.mouse.y;
       if (InnerArea().Contains(msx,msy)) {
          if (e.mouse.button == LMB) {
             if (ms_dblclick(LMB)) {
@@ -62,13 +62,14 @@ int LinkText::PrivateCheckInputs() {
 void LinkText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    SelectText::PrivateDisplay(win,xpos,ypos);
 
-
-   /// Draw underline for hyperlink
-   for (unsigned int i = 0 ; i < lineareas.size() ; ++i) {
-      const Rectangle& r = lineareas[i];
-      float x = r.X() + xpos;
-      float y = r.Y() + ypos + fontheight + ceil(link_height);
-      win->DrawFilledRectangle(x,y,(float)r.W(), link_height , WCols()[HLCOL]);
+   if (flags & HOVER) {
+      /// Draw underline for hyperlink
+      for (unsigned int i = 0 ; i < lineareas.size() ; ++i) {
+         const Rectangle& r = lineareas[i];
+         float x = r.X() + xpos;
+         float y = r.Y() + ypos + fontheight + ceil(link_height);
+         win->DrawFilledRectangle(x,y,(float)r.W(), link_height , WCols()[HLCOL]);
+      }
    }
 }
 
@@ -96,6 +97,7 @@ void LinkText::SetFont(EagleFont* font) {
 
 
 void LinkText::SetLineSpacing(int vspacing) {
+
    if (text_font) {
       link_height = 0.1f*(text_font->Height());
    }
@@ -104,9 +106,13 @@ void LinkText::SetLineSpacing(int vspacing) {
    }
    
    int min_link_vspace = (int)ceil(3.0f*link_height);
-   if (min_link_vspace < linespacing) {
-      BasicText::SetLineSpacing(min_link_vspace);
+   
+   if (vspacing < min_link_vspace) {
+      vspacing = min_link_vspace;
    }
+
+   BasicText::SetLineSpacing(min_link_vspace);
+
 }
 
 

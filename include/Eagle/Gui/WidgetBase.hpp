@@ -221,7 +221,7 @@ public :
    virtual void ToggleWidgetVisibility();// Toggles the enabled and visible state of the widget
 
    virtual bool AcceptsFocus() {return true;}
-   virtual bool IsMouseOver(int msx , int msy) const;
+   virtual bool IsMouseOver(int realmsx , int realmsy) const;
    
    /// For widgets to ask their parent widget handlers to give them the focus
 ///   virtual bool GiveWidgetFocus(WidgetBase* widget);

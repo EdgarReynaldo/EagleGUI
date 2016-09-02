@@ -91,7 +91,7 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
       }
       else {
          *pstrpos = 0;
-         for (int index = 0; index < (int)linestr.size() - 1 ; ++index) {
+         for (int index = 0; index < (int)linestr.size() ; ++index) {
             string sub = linestr.substr(0 , (unsigned int)index);
             string sub2 = linestr.substr(0 , (unsigned int)index + 1);
             float xpos = lx + text_font->Width(sub.c_str());
@@ -179,7 +179,7 @@ void SelectText::RefreshSelection() {
       for (int i = select_line_start ; i <= select_line_close ; ++i) {
          if (i == select_line_start) {
                selected_text = s1.substr(select_left);
-               selected_text += EAGLE_NATIVE_PATH_SEP;
+               selected_text += '\n';
          }
          else if (i == select_line_close) {
                selected_text += s2.substr(0 , select_right);
@@ -187,7 +187,7 @@ void SelectText::RefreshSelection() {
          else {
             string s3 = lines[i];
             selected_text += s3;
-            selected_text += EAGLE_NATIVE_PATH_SEP;
+            selected_text += '\n';
          }
       }
    }
@@ -208,7 +208,8 @@ SelectText::SelectText() :
       select_left(0),
       select_right(0),
       drag(false),
-      selected_text("")
+      selected_text(""),
+      deselect_on_lost_focus(true)
 {}
 
 
@@ -227,48 +228,59 @@ SelectText::SelectText(string name) :
       select_left(0),
       select_right(0),
       drag(false),
-      selected_text("")
+      selected_text(""),
+      deselect_on_lost_focus(true)
 {}
 
 
 
-void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos) {
-   EAGLE_ASSERT(win);
-   EAGLE_ASSERT(win->Valid());
+Rectangle SelectText::GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey) {
    EAGLE_ASSERT(linenum >= 0 && linenum < (int)lines.size());
-   EAGLE_ASSERT(left >= 0 && left <= (int)lines[linenum].size());
-   EAGLE_ASSERT(right >= 0 && right <= (int)lines[linenum].size());
-   EAGLE_ASSERT(left <= right);
+   EAGLE_ASSERT(leftchar >= 0 && leftchar <= (int)lines[linenum].size());
+   EAGLE_ASSERT(rightchar >= 0 && rightchar <= (int)lines[linenum].size());
+   EAGLE_ASSERT(leftchar <= rightchar);
    
-///   EagleLog() << StringPrintF("DrawBackground : begin - Linenum = %d , left = %d , right = %d , lines[linenum].size() = %d",
-///                  linenum , left , right , (int)lines[linenum].size()) << std::endl;
+   EAGLE_ASSERT(text_font && text_font->Valid());
    
-   int nchar = right - left;
-   if (nchar) {
-      string s = lines[linenum];
-      Rectangle r = lineareas[linenum];
-      int tx = r.X();
-      int ty = r.Y();
-      string s1,s2;
-      s1 = s.substr(0,left);
-      s2 = s.substr(0,right);
-      int w1 = text_font->Width(s1.c_str());
-      int w2 = text_font->Width(s2.c_str());
-      int x1 = tx + w1 + xpos;
-      int x2 = tx + w2 + xpos;
-      int y1 = ty + ypos;
-      int y2 = y1 + text_font->Height();
-      int w = x2 - x1;
-      int h = y2 - y1;
-///      EagleGraphicsContext* win = 0;
+   Rectangle r = lineareas[linenum];
+   string s = lines[linenum];
 
-///      EagleLog() << "DrawBackground : before drawing" << std::endl;
-      
-///      EAGLE_ASSERT(win = GetDrawWindow());
-      win->DrawFilledRectangle(x1,y1,w,h,WCols()[MGCOL]);
-      win->DrawRectangle(Rectangle(x1,y1,w,h) , 3.0 , WCols()[HLCOL]);
+   int tx = r.X();
+   int ty = r.Y();
 
-///      EagleLog() << "DrawBackground : after drawing" << std::endl;
+   string s1,s2;
+   s1 = s.substr(0,leftchar);
+   s2 = s.substr(0,rightchar);
+   int w1 = text_font->Width(s1.c_str());
+   int w2 = text_font->Width(s2.c_str());
+   int x1 = tx + w1 + basex;
+   int x2 = tx + w2 + basex;
+   int y1 = ty + basey;
+   int y2 = y1 + text_font->Height();
+   int w = x2 - x1;
+   int h = y2 - y1;
+   
+   int nchar = rightchar - leftchar;
+   
+   if (nchar <= 0) {
+      w = 0;
+      h = 0;
+   }
+   
+   return Rectangle(x1,y1,w,h);
+   
+}
+
+
+
+void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos) {
+   EAGLE_ASSERT(win && win->Valid());
+
+   Rectangle r = GetSelectionArea(linenum , left , right , xpos , ypos);
+
+   if (r.W()) {
+      win->DrawFilledRectangle(r , WCols()[MGCOL]);
+      win->DrawRectangle(r , 3.0 , WCols()[HLCOL]);
    }
 }
 
@@ -398,19 +410,14 @@ void SelectText::MoveCaretLeftOrRight(int keycode , bool shift_held) {
 
 
 int SelectText::PrivateHandleEvent(EagleEvent ev) {
-   int flags = DIALOG_OKAY;
+   int retflags = DIALOG_OKAY;
    if (IsMouseEvent(ev)) {
       int msx = ev.mouse.x;
       int msy = ev.mouse.y;
-      WidgetHandler* root_gui = RootGui();
-      if (root_gui) {
-         msx = root_gui->GetMouseX();
-         msy = root_gui->GetMouseY();
-      }
       if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
          EagleLog() << "SelectText::PrivateHandleEvent - mouse button down." << std::endl;
          if (InnerArea().Contains(msx,msy)) {
-            flags = flags | DIALOG_TAKE_FOCUS;
+            retflags |= DIALOG_TAKE_FOCUS;
             if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
                if (select_pos != -1) {
                   int new_caret_pos = -1;
@@ -488,7 +495,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
 
          if (ev.keyboard.keycode == EAGLE_KEY_A) {
             if (input_key_held(EAGLE_KEY_LCTRL) || input_key_held(EAGLE_KEY_RCTRL)) {
-               /// CTRL-A : select all
+               /// CTRL + A : select all
                select_pos = 0;
                select_line = 0;
                int endline = (int)lines.size() - 1;
@@ -510,7 +517,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
          }
       }
    }
-   return flags;
+   return retflags;
 }
 
 
@@ -611,9 +618,11 @@ int SelectText::PrivateUpdate(double tsec) {
    caret_time += tsec;
    if (caret_time >= caret_blink_time) {
       int numblinks = (int)(caret_time / caret_blink_time);
-      if (numblinks % 2 == 1) {caret_visible = !caret_visible;}
+      if (numblinks % 2 == 1) {
+         caret_visible = !caret_visible;
+         SetBgRedrawFlag();
+      }
       caret_time = fmod(caret_time,caret_blink_time);
-      SetRedrawFlag();
    }
    return DIALOG_OKAY;
 }
@@ -636,6 +645,23 @@ void SelectText::SetHoverState(bool state) {
       }
    }
    SetBgRedrawFlag();
+}
+
+
+
+void SelectText::SetFocusState(bool state) {
+   if (!state) {
+      if (deselect_on_lost_focus) {
+         select_line = -1;
+         RefreshSelection();
+      }
+   }
+}
+
+
+
+void SelectText::SetDeselectOnLostFocus(bool deselect) {
+   deselect_on_lost_focus = deselect;
 }
 
 

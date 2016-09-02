@@ -29,6 +29,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <utility>
 
 #include <iostream>
 
@@ -51,17 +52,32 @@ EAGLE_ID CurrentId();
 /// We should be able to retrieve an EagleObject* from an object name or eagle id
 /// We should be able to retrieve a name from an eagle id, but what for?
 
+/**
+   All EagleObject objects are registered with the EagleObjectRegisty. If you have an EAGLE_ID, you can get the address, name,
+   and validity of the object. These attributes persist outside the scope of the EagleObject's themselves.
+   
+   The registry allows you to retrieve a reference to the object, and you can use dynamic_cast or GetRealObject to retrieve
+   a reference to the real class of the object. For instance, this allows you to retrieve objects such as fonts or images by their
+   unique EAGLE_ID or more loosely, by their name (not guaranteed to be unique).
+*/
 
 
 
+int TotalObjectCount();
 
-void OutputObjects();
-int ObjectCount();
+int LiveObjectCount();
 
-//void RegisterObject(EagleObject* obj);
-//void UnregisterObject(EagleObject* obj);
+void OutputLiveObjectsBrief();
 
-std::vector<EagleObject*> GetObjectsByName(std::string name);/// Not the best way to get an object - use EAGLE_ID instead
+void OutputLiveObjectsFull();
+
+
+
+std::vector<EagleObject*> GetObjectsByName(std::string name);/// Not the best way to get an object - use EAGLE_ID if possible
+
+EagleObject* GetFirstObjectByName(std::string name);
+
+int GetNameCount(std::string name);
 
 
 EagleObject* GetObjectById(EAGLE_ID eid);
@@ -71,17 +87,18 @@ std::string  GetNameById  (EAGLE_ID eid);
 ///int GetIdByAddress(EagleObject* obj);
 
 bool GetValidByAddress(EagleObject* obj);
+std::string GetNameByAddress(EagleObject* obj);
+
 
 
 class EagleObjectInfo {
+
 public :
+
    EagleObject* object;
-   
    std::string wname;
-   
    bool destroyed;
 
-///   EagleObjectInfo(EagleObject* obj , std::string name);
    EagleObjectInfo(EagleObject* obj , std::string name) :
          object(obj),
          wname(name),
@@ -91,168 +108,104 @@ public :
 
 
 
+typedef std::vector<EagleObjectInfo> EOBINFO;
+
+typedef std::map<EagleObject* , EAGLE_ID> ADDRESSMAP;
+
+typedef std::multimap<std::string , EAGLE_ID> NAMEMAP;
+
+typedef NAMEMAP::iterator NMIT;
+
+typedef std::pair<NMIT , NMIT> NAMERANGE;
+
+typedef std::pair<std::string , EAGLE_ID> NMVALUETYPE;
+
+
 class EagleObjectRegistry {
    
-   friend class EagleObject;
+   friend class EagleObject;/// For EagleObjects to automatically register themselves with the registry (which are private functions).
    
-   typedef vector<EagleObjectInfo> EOBINFO;
    
-   static EOBINFO* pinfo = 0;
+   static EOBINFO* pinfo;
+   static ADDRESSMAP* paddressmap;
+   static NAMEMAP* pnamemap;
 
-   static int start_id = 0;
-   static int stop_id = 0;
+   static int start_id;
+   static int stop_id;
    
-   static int id_offset = 0;
+   static int destruct_count;
 
+
+   
+
+      
+   
    static void CheckIdRange(EAGLE_ID eid);
+
+   static void RemoveNameEntry(EAGLE_ID eid);
+
    static EOBINFO* Objects();/// Creator function. Returns object info vector (Singleton)
-   static void Register(EagleObject* object);
+   static ADDRESSMAP* AddressMap();/// Creator function. Returns address map (Singleton)
+   static NAMEMAP* NameMap();/// Creator function. Returns name map (Singleton)
+
+   static void Register(EagleObject* object , std::string name , EAGLE_ID eid);
    static void Unregister(EAGLE_ID eid);
 
-void EagleObjectRegistry::CheckIdRange(EAGLE_ID eid) {
-   EAGLE_ASSERT((eid >= start_id) && (eid < stop_id));
-}
-   
-EOBINFO* EagleObjectRegistry::Objects() {
-   if (!pinfo) {
-      pinfo = new EOBINFO();
-   }
-   return pinfo;
-}
-void Register(EagleObject* object , std::string name , EAGLE_ID eid /* = EAGLE_ID_UNASSIGNED*/) {
-   EAGLE_ASSERT(object);
-   
-   EOBINFO& eobinfo = *Objects();
-
-   int id_index = -1;
-   
-   if (eid != EAGLE_ID_UNASSIGNED) {
-      CheckIdRange(eid);
-      id_index = eid - start_id;
-      EAGLE_ASSERT(eobinfo[id_index].object == object);
-      eobinfo[id_index].wname = name;
-      return;
-   }
-   
-   EAGLE_ID new_id = NextId();
-   
-   object->SetId(new_id);
-   
-   stop_id = new_id + 1;
-   
-   id_index = new_id - start_id;
-   
-   EAGLE_ASSERT(eobinfo.size() == id_index);
-   
-   EagleObjectInfo eoi(object , name);
-   
-   eobinfo.push_back(eoi);
-   
-   EagleLog() << StringPrintF("Creating eagle object '%s' at %p\n" , eoi.wname.c_str() , eoi.object).c_str() << std::endl;
-}
-void Unregister(EAGLE_ID eid) {
-   EAGLE_ASSERT(eid != EAGLE_ID_UNASSIGNED);
-   
-   EOBINFO& info = *Objects();
-   
-   CheckIdRange(eid);
-   
-   int id_index = eid - start_id;
-   
-   EagleObjectInfo& eoi = info[id_index];
-   
-   eoi.destroyed = true;
-   
-   EagleLog() << StringPrintF("Destroying eagle object '%s' at %p\n" , eoi.wname.c_str() , eoi.object).c_str() << std::endl;
-}
    
 public :
    
    EagleObjectRegistry();
    ~EagleObjectRegistry();
 
-   
    static bool Destroyed(EAGLE_ID eid);
    static bool Valid(EAGLE_ID eid);
    static std::string Name(EAGLE_ID eid);
    static EagleObject* Object(EAGLE_ID eid);
-
-EagleObjectRegistry::EagleObjectRegistry() :
-{}
-
-EagleObjectRegistry::~EagleObjectRegistry() {
-   delete pinfo;
-   pinfo = 0;
-   start_id = stop_id = id_offset = -1;
-}
    
+   static bool Destroyed(EagleObject* obj);
+   static bool Valid(EagleObject* obj);
+   static std::string Name(EagleObject* obj);
 
-bool EagleObjectRegistry::Destroyed(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return (*Objects())[eid-id_offset].destroyed;
-}
-bool EagleObjectRegistry::Valid(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return !((*Objects())[eid-id_offset].destroyed);
-}
+   static const EagleObjectInfo& Info(EAGLE_ID eid);
+   static const EagleObjectInfo& FindInfoByAddress(EagleObject* object);
    
-std::string EagleObjectRegistry::Name(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return (*Objects())[eid-id_offset].wname;
-}
-EagleObject* EagleObjectRegistry::Object(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return ((*Objects())[eid-id_offset].object;
-}
+   static int TotalObjectCount();
+   static int LiveObjectCount();
 
+   static std::vector<EagleObject*> GetObjectsByName(std::string name);
+
+   static EagleObject* GetFirstObjectByName(std::string name);
+   
+   static int GetNameCount(std::string name);
+
+   static void OutputLiveObjectsBrief();
+   static void OutputLiveObjectsFull();
 };
+
 
 
 
 class EagleObjectRegistryManager {
    
-   static EagleObjectRegistry* registry=0;
+   static EagleObjectRegistry* registry;
    
-   
+   static void DeleteRegistry();
+
 public :
    EagleObjectRegistryManager();
    ~EagleObjectRegistryManager();
 
    static EagleObjectRegistry* Registry();
-   void DeleteRegistry();
-
-EagleObjectRegistryManager::EagleObjectRegistryManager() :
-      registry(Registry())
-{}
-
-EagleObjectRegistryManager::~EagleObjectRegistryManager() {
-   DeleteRegistry();
-}
-
-
-static EagleObjectRegistryManager::EagleObjectRegistry* Registry() {
-   if (!registry) {
-      registry = new EagleObjectRegistry();
-   }
-   return registry;
-}
-
-void EagleObjectRegistryManager::DeleteRegistry() {
-   delete registry;
-   registry = 0;
-}
 };
 
 
 class EagleObject {
 
-   friend class EagleObjectRegistry;
+   friend class EagleObjectRegistry;/// For private SetId function
 
 private :
 
-   EAGLE_ID id;
-///   bool destroyed;/// This is an unreliable method to track destruction of an EagleObject
-                     /// because once it goes out of scope its value is undefined. Track separately.
+   EAGLE_ID id;/// Unique id to track EagleObjects
    
    void SetId(EAGLE_ID eid) {id = eid;}
    
@@ -265,6 +218,10 @@ public :
    EagleObject();
    EagleObject(std::string name);
    
+   EagleObject(const EagleObject& rhs);/// Generates warning about name duplication
+   
+   EagleObject& operator=(const EagleObject& rhs);/// Safe, ids are preserved
+   
    virtual ~EagleObject();
 
    std::string GetName() const;
@@ -273,10 +230,10 @@ public :
    EAGLE_ID GetEagleId() {return id;}
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
-//   virtual ostream& Describe(ostream& os);
 };
 
 std::ostream& operator<<(std::ostream& os , const EagleObject& obj);
+
 
 
 
