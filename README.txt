@@ -3,6 +3,10 @@
 
 
 /**
+
+Here is some general all around useful information for building and compiling the EAGLE library.
+
+
 #defines used in building Eagle5
 ----------------------------
 
@@ -11,8 +15,9 @@ DEBUG :
 LOG :
  - turns on debugging log (enables EagleLog())
 EAGLE_ASSERT_EXCEPTION :
- - turns on assertion failure on exceptions, which allows you to get a backtrace because
- - the debugger will catch an intentional divide by zero and let you examine the stack.
+ - turns on assertion failure when throwing EagleError exceptions,
+ - which allows you to get a backtrace because the debugger will catch an
+ - intentional divide by zero and let you examine the stack.
  - Make sure to make good use of EAGLE_ASSERT
 
 EAGLE_STATIC_LINK

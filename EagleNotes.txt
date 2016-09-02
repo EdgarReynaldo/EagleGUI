@@ -1,7 +1,11 @@
 
 Notes for Eagle 5 development
 
-1. declspec
+Major issues
+
+0. Building with MSVC
+
+1. EAGLE_LINK_TYPE (necessary for 0)
 
 fix class and global function declarations to use declspec or whatever on MSVC for DLLs
 so make a
@@ -14,16 +18,43 @@ so make a
 somewhere....
 
 
-2?. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code
-
+2. Widgets going out of scope before their Layouts / WidgetHandlers - can't call functions on their pointers in destructo code
+ - Need to test differing destruction orders of widgets and layouts and widgethandlers
 
 
 3. Create a widget factory that tracks widgets and frees them so the gui and layouts don't have to?
+ - Mostly complete
 
-4. Widgets needed
 
-a - Drop down list
-b - Radio Button
-c - Menu, MenuItem, MenuBar
-d - ButtonBar?
-e - Scroll bars
+TODO : Milestones necessary for development
+
+1. Finish basic widget set
+
+   TODO : Widgets in production
+      a - Drop down list (might want ScrollArea first)
+      b - Radio Button
+      c - Menu, MenuItem, MenuBar
+      d - WrapText , EditText
+      e - ScrollArea , ScrollBar(edit it to work as a standalone scroller if desired)
+      f - ZoomCamera (might want ScrollArea first)
+      f - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
+      g - PinLayout (use alignment) , NPLayout , MenuLayout (might want to use PinLayout)
+      
+   COMPLETE : 
+      A - BasicButton , GuiButton , IconButton , ScrollButton
+      B - BasicText , SelectText , LinkText
+      C - Scroller, ScrollBar
+      D - Camera
+      C - DumbLayout , GridLayout , RelativeLayout , SplitterLayout
+
+2. Create documentation - doxygen looks best for this
+
+3. Make the library work with MSVC (Not looking forward to this)
+   A - DECLSPEC DLLEXPORT necessary for MSVC when building without .def files
+   
+4. Build system
+   A - CodeBlocks projects are nice for me, but they're not fully portable
+   B - CMake
+   C - Premake http://premake.github.io/ (looks like it is under active development, with new features, and lots of compiler support)
+   D - Autotools? You're kidding right?
+
