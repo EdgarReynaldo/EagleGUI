@@ -45,6 +45,8 @@ const char* CopyQuotedString(const char* start_quote , std::string& s);
 const char* SkipWhiteSpace(const char* str);
 void TrimTrailingWhiteSpace(char* str);
 
+char* CStrDup(const char* str);
+
 
 
 // Splits a gui string into two, one w/o ampersands, and one with underlines and spaces only

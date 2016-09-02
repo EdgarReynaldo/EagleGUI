@@ -583,13 +583,10 @@ std::list<Rectangle> ConsolidateRectangles(std::list<Rectangle> rectlist);
 
 class Ellipse : public Rectangle {
    
-private :
-   float thickness;
-   
 public :
 
-   Ellipse(Rectangle r , float linethickness = 1.0f);
-   Ellipse(int x , int y , int w , int h , float linethickness = 1.0f);
+   Ellipse(Rectangle r);
+   Ellipse(int ex , int ey , int ew , int eh);
 
    virtual bool Contains(int xpos , int ypos) const ;
    virtual void Draw(EagleGraphicsContext* win , EagleColor color) const;
@@ -598,8 +595,6 @@ public :
    virtual AreaBase* Clone() const;
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
-
-   void SetThickness(float linethickness);
 };
 
 

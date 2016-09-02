@@ -8,9 +8,8 @@
 #include "TextTestMain.hpp"
 
 
-
 int TextTestMain(int argc , char** argv) {
-   
+
    (void)argc;
    (void)argv;
    

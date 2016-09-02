@@ -171,6 +171,16 @@ void TrimTrailingWhiteSpace(char* str) {
 
 
 
+char* CStrDup(const char* str) {
+   int sz = strlen(str);
+   char* dup = (char*)malloc(sizeof(char)*(sz + 1));
+   memcpy(dup , str , sz);
+   dup[sz] = '\0';
+   return dup;
+}
+
+
+
 std::string GetGuiText(std::string gui_text) {
    std::string stripped_text;
    const char amp = '&';
@@ -284,7 +294,7 @@ string RemoveTrailingSlash(string str) {
 
 
 string FixFilenameSlashes(const string& str) {
-   char* copy = strdup(str.c_str());
+   char* copy = CStrDup(str.c_str());
    for (int i = 0 ; i < (int)strlen(copy) ; ++i) {
       if ((copy[i] == '\\') || (copy[i] == '/')) {
          copy[i] = EAGLE_NATIVE_PATH_SEP;

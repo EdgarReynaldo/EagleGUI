@@ -145,18 +145,22 @@ void BasicScrollBar::QueueUserMessage(const WidgetMsg& wmsg) {
 
 
 
-void BasicScrollBar::SetScrollWidgets(BasicScroller* basic_scroller , BasicScrollButton* basic_up_or_left_button , BasicScrollButton* basic_down_or_right_button) {
-   scroller = basic_scroller;
-   if (!basic_scroller) {
-      scroller = &(this->basic_scroller);
+void BasicScrollBar::SetScrollWidgets(BasicScroller* pbasic_scroller , BasicScrollButton* pbasic_up_or_left_button , BasicScrollButton* pbasic_down_or_right_button) {
+   scroller = pbasic_scroller;
+
+   scroller = &basic_scroller;
+   if (pbasic_scroller) {
+      scroller = pbasic_scroller;
    }
-   up_or_left_button = basic_up_or_left_button;
-   if(!basic_up_or_left_button) {
-      up_or_left_button = &basic_scroll_button_up_or_left;
+
+   up_or_left_button = &basic_scroll_button_up_or_left;
+   if (pbasic_up_or_left_button) {
+      up_or_left_button = pbasic_up_or_left_button;
    }
-   down_or_right_button = basic_down_or_right_button;
-   if (!basic_down_or_right_button) {
-      down_or_right_button = &basic_scroll_button_down_or_right;
+
+   down_or_right_button = &basic_scroll_button_down_or_right;
+   if (pbasic_down_or_right_button) {
+      down_or_right_button = pbasic_down_or_right_button;
    }
    
    scroller->SetParent(this);

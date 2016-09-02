@@ -52,8 +52,8 @@ public :
    
    virtual void QueueUserMessage(const WidgetMsg& wmsg);
 
-   void SetScrollWidgets(BasicScroller* basic_scroller , 
-                         BasicScrollButton* basic_up_or_left_button , BasicScrollButton* basic_down_or_right_button);
+   void SetScrollWidgets(BasicScroller* pbasic_scroller , 
+                         BasicScrollButton* pbasic_up_or_left_button , BasicScrollButton* pbasic_down_or_right_button);
 
    void SetScrollLength(int max_scroll);
    void SetScrollPercent(float new_percent);

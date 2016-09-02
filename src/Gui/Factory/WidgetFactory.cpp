@@ -15,6 +15,7 @@
 #include "Eagle/Gui/Button/RadioButton.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 
+#include "Eagle/StringWork.hpp"
 
 using namespace std;
 
@@ -176,8 +177,8 @@ map<string , string> ParseWidgetParameters(string widget_parameters) {
       }
       string attribute = attribute_pair[0];
       string value = attribute_pair[1];
-      char* attstr = strdup(attribute.c_str());
-      char* valstr = strdup(value.c_str());
+      char* attstr = CStrDup(attribute.c_str());
+      char* valstr = CStrDup(value.c_str());
       TrimTrailingWhiteSpace(attstr);
       TrimTrailingWhiteSpace(valstr);
       const char* attstr_start = SkipWhiteSpace(attstr);

@@ -49,7 +49,7 @@ protected :
    bool mouse_drag_handle;
    int start_mouse_x;
    int start_mouse_y;
-   float start_percent;
+   int start_percent;
    
    bool down;
    int repeat_scroll_increment;

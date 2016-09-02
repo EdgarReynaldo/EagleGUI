@@ -34,7 +34,11 @@ using std::list;
 using std::vector;
 using std::map;
 
+/// NOTE : std=c++11 doesn't define M_PI
 
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
 
 void DestroyBoundingRectangles(vector<Rectangle*>& vrect) {
    for (unsigned int i = 0 ; i < vrect.size() ; ++i) {
@@ -1048,7 +1052,7 @@ AreaBase* RoundedRectangle::Clone() const {
 
 std::ostream& RoundedRectangle::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "Rounded ";
-   os << Rectangle::DescribeTo(os);
+   Rectangle::DescribeTo(os);
    os << std::endl << indent << "(hrad,vrad) = (" << hrad << "," << vrad << ")" << std::endl;
    return os;
 }
@@ -1301,21 +1305,15 @@ list<Rectangle> ConsolidateRectangles(list<Rectangle> rectlist) {
 
 
 
-Ellipse::Ellipse(Rectangle r , float linethickness) :
-      Rectangle(r),
-      thickness(1.0f)
-{
-   SetThickness(linethickness);
-}
+Ellipse::Ellipse(Rectangle r) :
+      Rectangle(r)
+{}
 
 
 
-Ellipse::Ellipse(int x , int y , int w , int h , float linethickness) :
-      Rectangle(x,y,w,h),
-      thickness(1.0f)
-{
-   SetThickness(linethickness);
-}
+Ellipse::Ellipse(int ex , int ey , int ew , int eh) :
+      Rectangle(ex,ey,ew,eh)
+{}
 
 
    
@@ -1394,13 +1392,6 @@ std::ostream& Ellipse::DescribeTo(std::ostream& os , Indenter indent) const {
    os << endl;
    return os;
 }
-
-
-
-void Ellipse::SetThickness(float linethickness) {
-   thickness = linethickness;
-}
-
 
 
 

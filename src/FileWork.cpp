@@ -67,7 +67,7 @@ FILE* GetLinePN(FILE* f , std::string& s) {
       if (c == '\n') {// NIX
          return f;
       }
-      s += c;
+      s += (char)c;
    }
    return f;
 }
