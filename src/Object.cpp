@@ -439,7 +439,7 @@ void EagleObjectRegistry::OutputLiveObjectsBrief() {
 
       if (info.destroyed) {continue;}
       
-      OutputLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname) << endl;
+      EagleLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname.c_str()) << std::endl;
    }
 }
 
@@ -454,8 +454,8 @@ void EagleObjectRegistry::OutputLiveObjectsFull() {
 
       if (info.destroyed) {continue;}
       
-      OutputLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname) << endl;
-      OutputLog() << *(info.object) << endl;
+      OutputLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname.c_str()) << std::endl;
+      OutputLog() << *(info.object) << std::endl;
    }
 }
 

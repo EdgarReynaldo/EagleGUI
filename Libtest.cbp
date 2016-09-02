@@ -81,8 +81,8 @@
 					<Add option="-leagle_a5_debug-static" />
 					<Add option="-leagle_debug-static" />
 					<Add option="-lallegro_monolith-debug-static" />
+					<Add option="-lFLAC.dll" />
 					<Add option="-ldumb" />
-					<Add option="-lFLAC" />
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
 					<Add option="-lfreetype" />
@@ -259,11 +259,11 @@
 			<Add option="-Wall" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
-			<Add directory="C:/LIBS5302Distro/Allegro520_MinGW5302/include" />
+			<Add directory="Allegro5/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="C:/LIBS5302Distro/Allegro520_MinGW5302/lib" />
+			<Add directory="Allegro5/lib" />
 		</Linker>
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />

@@ -228,36 +228,10 @@ int TextTestMain(int argc , char** argv) {
             win->DrawRectangle(r , 2 , EagleColor(0,255,0));
          }
          
-         int pos = -1;
-         int linenum = -1;
+         string percent_str = StringPrintF("Start%% = %5.3f , Scroll%% = %5.3f" , scrollbar1.GetStartPercent() , scrollbar1.GetScrollPercent());
          
-         SelectText* pselect = &select;
+         win->DrawTextString(&textfont , percent_str , 100 , 10 , EagleColor(255,255,0));
          
-         int select_line = -1;
-         int select_pos = -1;
-         int caret_line = -1;
-         int caret_pos = -1;
-         
-         linktext.FindCaretPos(gui->GetMouseX() , gui->GetMouseY() , &pos , &linenum);
-         
-         win->DrawTextString(&textfont , StringPrintF("Pos = %d , Linenum = %d" , pos , linenum) , 100 , 10 , EagleColor(0,255,255));
-         
-         pselect->GetCaretAttributes(&select_line , &select_pos , &caret_line , &caret_pos);
-         
-         string select_attr = StringPrintF("SL = %d , SP = %d , CL = %d , CP = %d" , select_line , select_pos , caret_line , caret_pos);
-         
-         win->DrawTextString(&textfont , select_attr , win->Width() - 10 , 30 , EagleColor(255,255,0) , HALIGN_RIGHT);
-         
-         bool up = icon.Up();
-         bool hover = icon.Hover();
-         
-///         win->DrawTextString(&textfont , StringPrintF("ScrollBar 1 value = %d , ScrollBar 2 value = %d" ,
-///                                                       scrollbar1.GetScrollValue() , scrollbar2.GetScrollValue()) ,
-///                             10,30,EagleColor(0,255,255));
-         
-         win->DrawTextString(&textfont , StringPrintF("Button state = %s and %s" , up?"up":"down" , hover?"hover":"nohover"),
-                             10,30,EagleColor(0,255,255));
-                  
          win->FlipDisplay();
          redraw = false;
 /**

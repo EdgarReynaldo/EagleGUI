@@ -53,15 +53,17 @@ EagleGraphicsContext* SelectText::GetDrawWindow() {
 void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) {
    EAGLE_ASSERT(pstrpos);
    EAGLE_ASSERT(plinenum);
-   Rectangle inner = InnerArea();
+   Rectangle outer = OuterArea();
    *pstrpos = -1;
    *plinenum = -1;
-   /// TODO : This only works for HALIGN_LEFT AND VALIGN_TOP
 
+   /// NOTE : This works for all HALIGN and VALIGN values
+   
    EAGLE_ASSERT(lines.size());
    if (!lines.size()) {return;}
       
-   if (inner.Contains(msx,msy)) {
+   /// Allow margin space to be considered for selection purposes. It makes for nicer selection characteristics.
+   if (outer.Contains(msx,msy)) {
 
       if (msy < lineareas[0].Y()) {
          *plinenum = 0;

@@ -24,6 +24,11 @@ extern double SCROLLER_REPEAT_DELAY;
 extern double SCROLLER_NUM_REPEAT_PER_SEC;
 
 class BasicScroller : public WidgetBase {
+
+public :
+   /// DIAGNOSTIC purposes only
+   float GetStartPercent() {return start_percent;}
+   float GetScrollPercent() {return scroll_percent;}
    
 protected :
    
@@ -44,7 +49,7 @@ protected :
    bool mouse_drag_handle;
    int start_mouse_x;
    int start_mouse_y;
-   int start_percent;
+   float start_percent;
    
    bool down;
    int repeat_scroll_increment;

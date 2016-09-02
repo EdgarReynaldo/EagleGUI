@@ -44,10 +44,12 @@ void BasicScroller::ResetHandleArea() {
 
 
 int BasicScroller::PrivateHandleEvent(EagleEvent e) {
+   int retmsg = DIALOG_OKAY;
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && e.mouse.button == 1) {
       int msx = e.mouse.x;
       int msy = e.mouse.y;
       if (InnerArea().Contains(msx,msy)) {
+         retmsg |= DIALOG_TAKE_FOCUS;
          if (scroll_handle_area.Contains(msx,msy)) {
             mouse_drag_handle = true;
             start_mouse_x = msx;
@@ -111,7 +113,7 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
          }
       }
    }
-   return DIALOG_OKAY;
+   return retmsg;
 }
 
 

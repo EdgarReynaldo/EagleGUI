@@ -16,6 +16,12 @@ class BasicScrollButton;
 
 class BasicScrollBar : public WidgetBase {
    
+public :
+   /// DIAGNOSTIC purposes only
+   float GetStartPercent() {return scroller->GetStartPercent();}
+   float GetScrollPercent() {return scroller->GetScrollPercent();}
+   
+   
 protected:
    
    BasicScroller basic_scroller;
