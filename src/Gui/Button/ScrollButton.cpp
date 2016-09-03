@@ -5,7 +5,7 @@
 
 
 void BasicScrollButton::Scroll() {
-   EAGLE_ASSERT(our_scrollbar);
+   if (!our_scrollbar) {return;}
    int scroll = (scroll_up_or_left?-increment:increment);
    our_scrollbar->ScrollBy(scroll);
 }
@@ -104,7 +104,6 @@ void BasicScrollButton::UseButton(BasicButton* button) {
 
 
 void BasicScrollButton::SetScrollBar(BasicScrollBar* scrollbar) {
-   EAGLE_ASSERT(scrollbar);
    our_scrollbar = scrollbar;
 }
 

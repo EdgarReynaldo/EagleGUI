@@ -42,10 +42,12 @@ Keywords used for source searches
 ---------------------------------
 - CREDIT
 - CREDITS
+- NOTE
 - TODO
+- FIXME
 - WARNING
 - URGENT
+- REMOVE
 - DESIGN
-- NOTE
 */
 

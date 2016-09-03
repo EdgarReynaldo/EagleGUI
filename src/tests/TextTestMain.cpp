@@ -27,27 +27,6 @@ int TextTestMain(int argc , char** argv) {
    if (!win->Valid()) {
       return 2;
    }
-   
-/**
-   float x = 200;
-   float y = 150;
-   float w = 400;
-   float h = 300;
-   ALLEGRO_COLOR fillcolor = al_map_rgb(0,255,0);
-   ALLEGRO_COLOR linecolor = al_map_rgb(0,0,0);
-   
-   float thickness = 10.0;
-   
-   win->DrawToBackBuffer();
-   al_clear_to_color(al_map_rgb(0,0,255));
-   al_draw_filled_rectangle(x , y , x + w , y + h , fillcolor);
-   al_draw_rectangle(x , y , x + w , y + h , linecolor , thickness);
-   win->FlipDisplay();
-   sys->GetSystemQueue()->Clear();
-   sys->GetSystemQueue()->WaitForEvent(ALLEGRO_EVENT_KEY_DOWN);
-   sys->Rest(3.0);
-//*/
-   
 
    Allegro5Font textfont("Verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
    Allegro5Font textfont2("Consola.ttf" , -20 , LOAD_FONT_MONOCHROME);
@@ -70,28 +49,6 @@ int TextTestMain(int argc , char** argv) {
    EagleImage* up = win->LoadImageFromFile("Data/GuiTestImages/RBA_Up.png");
    EagleImage* down = win->LoadImageFromFile("Data/GuiTestImages/RBA_Down.png");
    EagleImage* hover = win->LoadImageFromFile("Data/GuiTestImages/RBA_Hover.png");
-
-   
-/**
-   EagleImage* i1 = win->LoadImageFromFile("Data/temp/00001.png");
-   EagleImage* i2 = win->LoadImageFromFile("Data/temp/00002.png");
-   EagleImage* i3 = win->LoadImageFromFile("Data/temp/00003.png");
-   EagleImage* i4 = win->LoadImageFromFile("Data/temp/00004.png");
-   EagleImage* i5 = win->LoadImageFromFile("Data/temp/Four.png");
-   EagleImage* i6 = win->LoadImageFromFile("Data/temp/Four.jpg");
-   
-   if (!i1->Valid()) {
-      EagleLog() << "Failed to load image." << std::endl;
-   }
-   
-   win->Clear(EagleColor(0,0,0));
-   win->Draw(i1 , 0 , 0 , HALIGN_LEFT , VALIGN_TOP);
-   win->FlipDisplay();
-   
-   sys->Rest(3.0);
-//*/
-   
-   
    
    IconButton icon;
    
@@ -133,17 +90,17 @@ int TextTestMain(int argc , char** argv) {
    rel.AddWidget(&scrollbar1 , LayoutRectangle(0.0,0.9,0.9,0.1));
    rel.AddWidget(&scrollbar2 , LayoutRectangle(0.9,0.0,0.1,0.9));
 
-/**   
+//**   
    scroll_buttons[0].SetScrollDirection(true,true);/// left
    scroll_buttons[1].SetScrollDirection(false,true);/// right
    scroll_buttons[2].SetScrollDirection(true,false);/// up
    scroll_buttons[3].SetScrollDirection(false,false);/// down
 
-   button_grid.PlaceWidget(&scroll_buttons[0] , 10 , false);
-   button_grid.PlaceWidget(&scroll_buttons[1] , 14 , false);
-   button_grid.PlaceWidget(&scroll_buttons[2] , 2 , false);
-   button_grid.PlaceWidget(&scroll_buttons[3] , 22 , false);
-*/   
+   button_grid.PlaceWidget(&scroll_buttons[0] , 10);
+   button_grid.PlaceWidget(&scroll_buttons[1] , 14);
+   button_grid.PlaceWidget(&scroll_buttons[2] , 2);
+   button_grid.PlaceWidget(&scroll_buttons[3] , 22);
+//*/   
 /**
    BasicButton basicbutton;
    

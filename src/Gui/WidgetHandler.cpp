@@ -767,21 +767,21 @@ void WidgetHandler::SetRootLayout(Layout* l) {
 
 
 
-void WidgetHandler::AddWidget(WidgetBase* widget , bool delete_when_removed) {
-   root_layout->AddWidget(widget , delete_when_removed);
+void WidgetHandler::AddWidget(WidgetBase* widget) {
+   root_layout->AddWidget(widget);
 }
 
 
 
 WidgetHandler& WidgetHandler::operator<<(WidgetBase* widget) {
-   AddWidget(widget , false);
+   AddWidget(widget);
    return *this;
 }
 
 
 
 WidgetHandler& WidgetHandler::operator<<(WidgetBase& widget) {
-   AddWidget(&widget , false);
+   AddWidget(&widget);
    return *this;
 }
 
@@ -797,7 +797,7 @@ void WidgetHandler::ClearLayout() {
 
    EAGLE_ASSERT(root_layout);
    
-   root_layout->ClearLayoutAndFreeWidgets();
+   root_layout->ClearWidgets();
 
    wlist.clear();
    inputlist.clear();

@@ -241,7 +241,6 @@ GridLayout::GridLayout(int numcolumns , int numrows) :
 
 
 GridLayout::~GridLayout() {
-   ClearLayoutAndFreeWidgets();
    /// In case we go out of scope before our WidgetHandler
    DetachFromGui();
 }
@@ -290,7 +289,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
 	const int newsize = newcolumns*newrows;
 
 	if (newsize == 0) {
-      ClearLayoutAndFreeWidgets();
+      ClearWidgets();
 	}
    else {
       std::vector<WidgetBase*> keep_widgets((unsigned int)newsize , (WidgetBase*)0);

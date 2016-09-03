@@ -178,39 +178,6 @@ int TwoWaySplitter::PrivateHandleEvent(EagleEvent e) {
          if (!drag && olddrag) {
             mouse_window->ReleaseMousePointer(this);
          }
-         
-         
-         
-         
-/*  old or current, buggy
-         if (hover && !oldhover) {
-            if (!drag) {
-               mouse_window->AcquireMousePointer(this , POINTER_IN_USE , true);
-            }
-         }
-
-         if (drag && !olddrag) {
-            mouse_window->ReleaseMousePointer(this);
-            mouse_window->AcquireMousePointer(this , POINTER_IN_USE , true);
-         }
-         
-         if (olddrag && !drag) {
-            mouse_window->ReleaseMousePointer(this);
-            if (hover) {
-               mouse_window->AcquireMousePointer(this , POINTER_IN_USE , true);
-            }
-            else {
-               mouse_window->ReleaseMousePointer(this);
-            }
-         }
-
-         if (oldhover && !hover) {
-            if (!drag) {
-               mouse_window->ReleaseMousePointer(this);
-            }
-         }
-*/
-
       }
       
       if (drag && e.type == EAGLE_EVENT_MOUSE_AXES) {
@@ -280,7 +247,6 @@ TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* windo
 
 
 TwoWaySplitter::~TwoWaySplitter() {
-   ClearLayoutAndFreeWidgets();
    /// In case we go out of scope before our WidgetHandler
    DetachFromGui();
 }
@@ -293,22 +259,16 @@ void TwoWaySplitter::SetWidgetArea(const Rectangle& r , bool notify_layout) {
 */
 
 
-bool TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed) {
-   if (slot < 0 || slot > 1) {
-      // only two slots
-      return false;
-   }
-   return Layout::PlaceWidget(widget , slot , delete_when_removed);
+void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
+   EAGLE_ASSERT(slot == 0 || slot == 1);
+   Layout::PlaceWidget(widget , slot);
 }
 
 
 
-bool TwoWaySplitter::AddWidget(WidgetBase* widget , bool delete_when_removed) {
-   if (NextFreeSlot() == -1) {
-      // full, can't add widget
-      return false;
-   }
-   return Layout::AddWidget(widget , delete_when_removed);
+void TwoWaySplitter::AddWidget(WidgetBase* widget) {
+   EAGLE_ASSERT(NextFreeSlot() != -1);
+   Layout::AddWidget(widget);
 }
 
 
@@ -421,38 +381,6 @@ Rectangle TwoWaySplitter::RequestWidgetArea(WidgetBase* widget , int newx , int 
    }
    
    return Rectangle(x,y,w,h);
-
-/**
-   int maxdiv = 0;
-   if (splitter_type == SPLITTER_HORIZONTAL) {
-      maxdiv = area.InnerArea().H() - divider_size;
-      if (newheight > maxdiv) {newheight = maxdiv;}
-      if (wchildren[0] == widget) {
-         /// widget is on top
-         SetDividerPos(newheight);
-      }
-      else if (wchildren[1] == widget) {
-         /// widget is on bottom
-         SetDividerPos(InnerArea().H() - divider_size - newheight);
-      }
-   }
-   if (splitter_type == SPLITTER_VERTICAL) {
-      maxdiv = area.InnerArea().W() - divider_size;
-      if (newwidth > maxdiv) {newwidth = maxdiv;}
-      if (wchildren[0] == widget) {
-         /// widget is on left
-         SetDividerPos(newwidth);
-      }
-      else if (wchildren[1] == widget) {
-         /// widget is on right
-         SetDividerPos(InnerArea().W() - newwidth - divider_size);
-      }
-   }
-   if (!widget) {
-      return Rectangle();
-   }
-   return widget->OuterArea();
-//*/
 }
 
 

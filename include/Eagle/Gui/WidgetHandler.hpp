@@ -192,7 +192,7 @@ public :
    Layout* GetRootLayout() {return root_layout;}
    void SetRootLayout(Layout* l);
    
-   void AddWidget(WidgetBase* widget , bool delete_when_removed);
+   void AddWidget(WidgetBase* widget);
    WidgetHandler& operator<<(WidgetBase* widget);
    WidgetHandler& operator<<(WidgetBase& widget);
    void RemoveWidget(WidgetBase* widget);

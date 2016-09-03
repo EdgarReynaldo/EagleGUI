@@ -103,7 +103,7 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-Wno-div-by-zero" />
-			<Add option="-Wnarrowing" />
+			<Add option="-Werror=narrowing" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 		</Compiler>

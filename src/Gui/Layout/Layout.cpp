@@ -87,7 +87,7 @@ void Layout::ReserveSlots(int nslots) {
    
    if (nslots < 1) {
       nslots = 0;// don't crash resize below
-      ClearLayoutAndFreeWidgets();
+      ClearWidgets();
    }
    if (nslots < (int)wchildren.size()) {
       for (unsigned int i = nslots ; i < wchildren.size() ; ++i) {
@@ -168,35 +168,13 @@ void Layout::AdjustWidgetArea(WidgetBase* widget , int* newx , int* newy , int* 
 }
 
 
-/**
-void Layout::SetWidgetPos(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   EAGLE_ASSERT(widget);
-   
-   Rectangle w = widget->OuterArea();
-   
-   if ((newx != w.X()) || (newy != w.Y())) {
-      if ((newwidth != w.W()) || (newheight != w.H())) {
-         widget->SetWidgetArea(newx , newy , newwidth , newheight);
-      }
-      else {
-         widget->SetDrawPos(newx , newy);
-      }
-   }
-   else if ((newwidth != w.W()) || (newheight != w.H())) {
-      widget->SetDrawDimensions(newwidth , newheight);
-   }
-}
-//*/
-
 
 Layout::Layout() :
       WidgetBase(StringPrintF("Layout object at %p" , this)),
       attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
-      size_fixed(false),
       wchildren(),
-      delete_map(),
       whandler(0)
 {
    SetDisplayPriority(LOW_DISPLAY_PRIORITY);
@@ -209,9 +187,7 @@ Layout::Layout(std::string name) :
       attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
-      size_fixed(false),
       wchildren(),
-      delete_map(),
       whandler(0)
 {
    SetDisplayPriority(LOW_DISPLAY_PRIORITY);
@@ -291,104 +267,6 @@ void Layout::TakeOverLayoutFrom(Layout* l) {
 }
 //*/
 
-/* TODO : OLD : REMOVE
-Rectangle Layout::RequestPosition(WidgetBase* widget , int newx , int newy) {
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(WidgetIndex(widget) != -1);
-   
-   
-   Rectangle warea = widget->OuterArea();
-   
-   unsigned int wflags = widget->Flags();
-   
-   if (attributes & LAYOUT_ALLOWS_REPOSITION) {
-      if (wflags && MOVEABLE) {
-         warea.SetPos(newx , newy);
-      }
-   }
-   
-   return warea;
-}
-
-
-
-Rectangle Layout::RequestSize(WidgetBase* widget , int newwidth , int newheight) {
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(WidgetIndex(widget) != -1);
-   EAGLE_ASSERT(newwidth > 0);
-   EAGLE_ASSERT(newheight > 0);
-   
-   Rectangle warea = widget->OuterArea();
-   
-   int minwidth = widget->MinWidth();
-   int minheight = widget->MinHeight();
-   
-   if (newwidth < minwidth) {
-      newwidth = minwidth;
-   }
-   if (newheight < minheight) {
-      newheight = minheight;
-   }
-   
-   if (attributes & LAYOUT_ALLOWS_RESIZE) {
-      warea.SetDimensions(newwidth , newheight);
-   }
-   
-   return warea;
-}
-
-
-
-Rectangle Layout::RequestArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(WidgetIndex(widget) != -1);
-   EAGLE_ASSERT(newwidth > 0);
-   EAGLE_ASSERT(newheight > 0);
-   
-   Rectangle warea = widget->OuterArea();
-   
-   int minwidth = widget->MinWidth();
-   int minheight = widget->MinHeight();
-   unsigned int wflags = widget->Flags();
-
-   if (newwidth < minwidth) {
-      newwidth = minwidth;
-   }
-   if (newheight < minheight) {
-      newheight = minheight;
-   }
-   
-   if (attributes & LAYOUT_ALLOWS_RESIZE_AND_REPOSITION) {
-      if ((wflags & MOVEABLE) && (wflags & RESIZEABLE)) {
-         warea.SetWidgetArea(newx , newy , newwidth , newheight);
-      }
-      else if (wflags & MOVEABLE) {
-         warea.SetPos(newx , newy);
-      }
-      else if (wflags & RESIZEABLE) {
-         warea.SetDimensions(newwidth , newheight);
-      }
-   }
-   else if (attributes & LAYOUT_ALLOWS_RESIZE) {
-      if (wflags & RESIZEABLE) {
-         warea.SetDimensions(newwidth , newheight);
-      }
-   }
-   else if (attributes & LAYOUT_ALLOWS_REPOSITION) {
-      if (wflags & MOVEABLE) {
-         warea.SetPos(newx , newy);
-      }
-   }
-   return warea;
-}
-
-
-
-Rectangle Layout::RequestArea(WidgetBase* widget , Rectangle newarea) {
-   return RequestArea(widget , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
-}
-*/
-
 
 
 Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
@@ -396,8 +274,6 @@ Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , i
    EAGLE_ASSERT(WidgetIndex(widget) != -1);
    
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
-   
-///   SetWidgetPos(widget , newx , newy , newwidth , newheight);
    
    Rectangle newrect(newx , newy , newwidth , newheight);
    
@@ -412,46 +288,29 @@ Rectangle Layout::RequestWidgetArea(WidgetBase* widget , Rectangle newarea) {
 
 
 
-bool Layout::PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed) {
-   if ((slot < 0) || (slot >= (int)wchildren.size())) {
-      return false;
-   }
-
-   if (widget) {
-      delete_map[widget] = delete_when_removed;
-   }
+void Layout::PlaceWidget(WidgetBase* widget , int slot) {
+   /// widget may be NULL to remove a widget from a slot
+   EAGLE_ASSERT((slot >= 0) && (slot < (int)wchildren.size()));
 
    ReplaceWidget(widget , slot);
-   
-   return true;
 }
 
 
 
-bool Layout::AddWidget(WidgetBase* widget , bool delete_when_removed) {
+void Layout::AddWidget(WidgetBase* widget) {
    int slot = NextFreeSlot();
    if (slot == -1) {
-      if (!size_fixed) {
-         ReserveSlots((int)wchildren.size() + 1);
-         slot = (int)wchildren.size() - 1;
-      }
-      else {
-         return false;
-      }
+      ReserveSlots((int)wchildren.size() + 1);
+      slot = (int)wchildren.size() - 1;
    }
-   if (widget) {
-      delete_map[widget] = delete_when_removed;
-   }
-
    ReplaceWidget(widget , slot);
-   
-   return true;
 }
 
 
 
 void Layout::EmptySlot(int slot) {
-   PlaceWidget(0 , slot , false);
+   EAGLE_ASSERT(slot >= 0 && slot < (int)wchildren.size());
+   PlaceWidget(0 , slot);
 }
 
 
@@ -459,72 +318,41 @@ void Layout::EmptySlot(int slot) {
 void Layout::RemoveWidget(WidgetBase* widget) {
    EAGLE_ASSERT(widget);
    int index = WidgetIndex(widget);
+   EAGLE_ASSERT(index != -1);
    if (index != -1) {
-      PlaceWidget(0 , WidgetIndex(widget) , false);
+      PlaceWidget(0 , index);
    }
 }
 
 
 
 void Layout::ClearWidgets() {
-   /// Remove everything without freeing anything
+   
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
       WidgetBase* w = wchildren[i];
-      RemoveWidget(w);/// Calls PlaceWidget(0,w,false) which calls RemoveWidgetFromLayout without freeing it
+      RemoveWidget(w);/// Calls PlaceWidget(0,w) which calls ReplaceWidget which calls RemoveWidgetFromLayout
    }
    wchildren.clear();
-   delete_map.clear();
 }
 
 
 
 void Layout::RemoveWidgetFromLayout(WidgetBase* widget) {
-   if (!widget) {return;}
-   
-   std::map<WidgetBase* , bool>::iterator it = delete_map.find(widget);
-//   EAGLE_ASSERT(!(it == delete_map.end()));
-   EAGLE_ASSERT(it != delete_map.end());
+   if (!widget) {
+      return;
+   }
 
    if (whandler) {
       whandler->StopTrackingWidget(widget);
       widget->SetOwnerLayout(0);
    }
-
-   if (it->second) {
-      delete it->first;// this is the same thing as delete widget;
-   }
-   delete_map.erase(it);
-   
-}
-
-
-
-void Layout::ClearLayoutAndFreeWidgets() {
-   std::vector<WidgetBase*> children = WChildren();
-   for (unsigned int i = 0 ; i < children.size() ; ++i) {
-      WidgetBase* widget = children[i];
-      RemoveWidgetFromLayout(widget);
-   }
-   wchildren.clear();
-   delete_map.clear();
-
-   /// NOTE : IMPORTANT, we must tell our whandler we are going out of scope
-   /// NOTE : This is true, but clearing the layout shouldn't remove the layout from the gui
-   /// NOTE : That should be done in the destructor now
-   /**
-   if (whandler) {
-      whandler->StopTrackingWidget(this);
-      whandler = 0;
-   }
-   */
-   
 }
 
 
 
 void Layout::DetachFromGui() {
    if (whandler) {
-      whandler->StopTrackingWidget(this);
+      whandler->StopTrackingWidget(this);/// This will remove us and all of our widgets from the widgethandler's tracker mechanism
       whandler = 0;
    }
 }
@@ -540,7 +368,6 @@ void Layout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 
 void Layout::SetGuiHandler(WidgetHandler* handler) {
-   /// TODO : The widget handler needs to track the layouts themselves as well
    whandler = handler;
 }
 
@@ -548,6 +375,7 @@ void Layout::SetGuiHandler(WidgetHandler* handler) {
 
 std::vector<WidgetBase*> Layout::WChildren() {
    
+   /// Some widgets may be NULL so we can't just copy the vector
    std::vector<WidgetBase*> children;
    children.reserve(wchildren.size());
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {

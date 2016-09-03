@@ -417,7 +417,6 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
       int msx = ev.mouse.x;
       int msy = ev.mouse.y;
       if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-         EagleLog() << "SelectText::PrivateHandleEvent - mouse button down." << std::endl;
          if (InnerArea().Contains(msx,msy)) {
             retflags |= DIALOG_TAKE_FOCUS;
             if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
@@ -447,7 +446,6 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
       }
       if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
          if (drag) {
-            EagleLog() << "SelectText::PrivateHandleEvent - mouse axes event and drag begin." << std::endl;
             int newcaretpos = -1;
             int newcaretline = -1;
             FindCaretPos(msx , msy , &newcaretpos , &newcaretline);
@@ -456,7 +454,6 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
                caret_line = newcaretline;
             }
             RefreshSelection();
-            EagleLog() << "SelectText::PrivateHandleEvent - mouse axes event and drag finish." << std::endl;
          }
       }
       if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {

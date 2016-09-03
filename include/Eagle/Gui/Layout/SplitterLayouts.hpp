@@ -80,8 +80,8 @@ public :
    
    virtual ~TwoWaySplitter();
 
-   virtual bool PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed = false);
-   virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
+   virtual void PlaceWidget(WidgetBase* widget , int slot);
+   virtual void AddWidget(WidgetBase* widget);
 
    /// Layout and WidgetBase
    virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);

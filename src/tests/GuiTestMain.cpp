@@ -197,7 +197,7 @@ signal(SIGABRT, signal_handler);
       mpbtns[i].SetFont(verdana);
       mpbtns[i].SetLabel(StringPrintF("%d" , i));
       mpbtns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
-      grid.PlaceWidget(&mpbtns[i] , i , false);
+      grid.PlaceWidget(&mpbtns[i] , i);
    }
 
 
@@ -213,12 +213,12 @@ signal(SIGABRT, signal_handler);
 */   
    
    
-   hsp.PlaceWidget(&vsp1 , 0 , false);
-   hsp.PlaceWidget(&vsp2 , 1 , false);
-   vsp1.PlaceWidget(&testbtns[0] , 0 , false);
-   vsp1.PlaceWidget(&testbtns[1] , 1 , false);
-   vsp2.PlaceWidget(&testbtns[2] , 0 , false);
-   vsp2.PlaceWidget(&relative , 1 , false);
+   hsp.PlaceWidget(&vsp1 , 0);
+   hsp.PlaceWidget(&vsp2 , 1);
+   vsp1.PlaceWidget(&testbtns[0] , 0);
+   vsp1.PlaceWidget(&testbtns[1] , 1);
+   vsp2.PlaceWidget(&testbtns[2] , 0);
+   vsp2.PlaceWidget(&relative , 1);
    
 //   vsp2.PlaceWidget(&testbtns[3] , 1 , false);
    
@@ -275,7 +275,7 @@ signal(SIGABRT, signal_handler);
    hsp.SetMarginsContractFromOuter(25,25,25,25);
    hsp.SetBgDrawFunc(WidgetBorderPainterContrast);
    
-   rl.PlaceWidget(&hsp , 3 , false);
+   rl.PlaceWidget(&hsp , 3);
 ///   rl.RequestWidgetArea(&hsp , 100 , 100 , 600 , 375);/// This function call does nothing
    
 //   gui.AddWidget(&hsp , false);
@@ -680,7 +680,7 @@ int GuiTestMain(int argc , char** argv) {
    GuiButton* warray = new GuiButton[sz - 1];
    
    for (int i = 0 ; i < sz - 1 ; ++i) {
-      grid_layout->AddWidget(&warray[i] , false);
+      grid_layout->AddWidget(&warray[i]);
       warray[i].SetLabel("Grid Button");
       warray[i].SetFont(verdana);
    }
@@ -744,7 +744,7 @@ int GuiTestMain(int argc , char** argv) {
       warray2[i].SetBgDrawFunc(WidgetBorderPainterShadow);
       warray2[i].SetLabel("Relative Button");
       warray2[i].SetFont(consola);
-      relative_layout->Layout::PlaceWidget(&warray2[i] , i , false);
+      relative_layout->Layout::PlaceWidget(&warray2[i] , i);
 //      OutputLog() << "warray2[" << i << "].OuterArea() = " << warray2[i].OuterArea() << std::endl;
 //      OutputLog() << "warray2[" << i << "].InnerArea() = " << warray2[i].InnerArea() << std::endl;
 //      OutputLog() << "warray2[" << i << "].WCols()[SDCOL] = " << warray2[i].WCols()[SDCOL] << std::endl;

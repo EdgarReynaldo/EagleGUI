@@ -59,10 +59,11 @@ protected :
    HALIGNMENT halign;
    VALIGNMENT valign;
 
-   bool size_fixed;
+///   bool size_fixed;/// TODO : REMOVE : What purpose does this serve?
 
    std::vector<WidgetBase*> wchildren;
-   std::map<WidgetBase* , bool> delete_map;
+///   std::map<WidgetBase* , bool> delete_map;/// TODO : FIXME : REMOVE
+                                              /// - A layout should not be a widget memory manager, that was just a dumb idea
    
    WidgetHandler* whandler;
 
@@ -120,18 +121,14 @@ public :
    
    /// Widget may be null for PlaceWidget
    /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
-   /// Override if necessary, and use ReplaceWidget in your code
-   virtual bool PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed = false);/// Will free the old widget if specified previously
-   virtual bool AddWidget(WidgetBase* widget , bool delete_when_removed = false);
+   virtual void PlaceWidget(WidgetBase* widget , int slot);
+   virtual void AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary
 
-   void EmptySlot(int slot);/// Remove a widget from the layout without freeing it
-   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout without freeing it : TODO : This doesn't work as intended
-   void ClearWidgets();/// Remove all widgets from layout without freeing them
+   void EmptySlot(int slot);/// Remove a widget from the layout
+   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
+   void ClearWidgets();/// Remove all widgets from layout
    
-   void RemoveWidgetFromLayout(WidgetBase* widget);/// Optionally frees widget and places NULL in its slot
-
-   virtual void ClearLayoutAndFreeWidgets();/// Clears all widgets and frees the ones marked for deletion, 
-                                            /// call this in derived Layout destructors
+   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
 
    void DetachFromGui();/// Call this in Layout derived class's destructor
    

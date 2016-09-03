@@ -66,7 +66,6 @@ RelativeLayout::RelativeLayout(std::string name) :
 
 
 RelativeLayout::~RelativeLayout() {
-   ClearLayoutAndFreeWidgets();
    /// In case we go out of scope before our WidgetHandler
    DetachFromGui();
 }
@@ -91,32 +90,24 @@ Rectangle RelativeLayout::RequestWidgetArea(WidgetBase* widget , int newx , int 
 
 
 
-bool RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , bool delete_when_removed) {
-
+void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot) {
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
-      return PlaceWidget(widget , slot , lrect , delete_when_removed);
+      PlaceWidget(widget , slot , lrect);
+      return;
    }
-   else {
-      if (!Layout::PlaceWidget(widget , slot , delete_when_removed)) {
-         return false;
-      }
-   }
-
-   return true;
-///   return PlaceWidget(widget , slot , LayoutRectangle(InnerArea() , widget->OuterArea()) , delete_when_removed);
+   Layout::PlaceWidget(0 , slot);
 }
 
 
 
-bool RelativeLayout::AddWidget(WidgetBase* widget , bool delete_when_removed) {
-   
+void RelativeLayout::AddWidget(WidgetBase* widget) {
    if (widget) {
-         LayoutRectangle lrect(InnerArea() , widget->OuterArea());
-         return AddWidget(widget , lrect , delete_when_removed);
+      LayoutRectangle lrect(InnerArea() , widget->OuterArea());
+      AddWidget(widget , lrect);
+      return;
    }
-
-   return Layout::AddWidget(widget , delete_when_removed);
+   Layout::AddWidget(0);
 }
 
 
@@ -143,26 +134,20 @@ Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangl
 
 
 
-bool RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect , bool delete_when_removed) {
-   if (Layout::PlaceWidget(widget , slot , delete_when_removed)) {
-      if (widget) {
-         SetLayoutRectangle(widget , lrect);
-      }
-      return true;
+void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect) {
+   Layout::PlaceWidget(widget , slot);
+   if (widget) {
+      SetLayoutRectangle(widget , lrect);
    }
-   return false;
 }
 
 
 
-bool RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect , bool delete_when_removed) {
-   if (Layout::AddWidget(widget , delete_when_removed)) {
-      if (widget) {
-         SetLayoutRectangle(widget , lrect);
-      }
-      return true;
+void RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
+   Layout::AddWidget(widget);
+   if (widget) {
+      SetLayoutRectangle(widget , lrect);
    }
-   return false;
 }
 
 

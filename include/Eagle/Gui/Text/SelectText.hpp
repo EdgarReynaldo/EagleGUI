@@ -22,6 +22,7 @@ extern const int TEXT_COPIED;
 REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
 
 
+/// TODO : Cache string widths with current font and current string so they don't have to be measured over and over again
 
 class SelectText : public BasicText {
 
