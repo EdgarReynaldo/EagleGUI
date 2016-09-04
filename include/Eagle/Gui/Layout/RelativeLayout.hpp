@@ -37,16 +37,13 @@ protected :
    
    virtual void ReserveSlots(int nslots);
 
-   virtual void RepositionAllChildren();
-   virtual void RepositionChild(int slot);
-
 public :
    
    RelativeLayout();
    RelativeLayout(std::string name);
    ~RelativeLayout();
 
-   virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below
    ///        hide them so here we make them explicitly visible again :
@@ -54,14 +51,12 @@ public :
    virtual void AddWidget(WidgetBase* widget);
    
    /// Member funcs
-   Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
-   Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
-   
    void PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect);
    void AddWidget(WidgetBase* widget , LayoutRectangle lrect);
 
+   Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
+   Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
 
-   void Resize(unsigned int nsize);
 };
 
 

@@ -29,17 +29,11 @@
 
 class DumbLayout : public Layout {
 
-private :
-	
-   virtual void RepositionAllChildren();
-   virtual void RepositionChild(int slot);
-   
 public :
 	DumbLayout();
 	DumbLayout(std::string name);
 	~DumbLayout();
-	
-	
+
 };
 
 

@@ -33,26 +33,6 @@ void RelativeLayout::ReserveSlots(int nslots) {
 
 
 
-void RelativeLayout::RepositionAllChildren() {
-   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-      RepositionChild(i);
-   }
-}
-
-
-
-void RelativeLayout::RepositionChild(int slot) {
-   EAGLE_ASSERT(slot >= 0 && slot < (int)wchildren.size());
-   LayoutRectangle layout_rect = layout_rectangles[slot];
-   WidgetBase* widget = wchildren[slot];
-   if (widget) {
-      widget->SetWidgetArea(LayoutArea(area.InnerArea() , layout_rect) , false);
-   }
-}
-
-
-
-
 RelativeLayout::RelativeLayout() :
       Layout(StringPrintF("RelativeLayout object at %p" , this))
 {}
@@ -72,20 +52,22 @@ RelativeLayout::~RelativeLayout() {
 
 
 
-Rectangle RelativeLayout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(WidgetIndex(widget) != -1);
+Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    
-   AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
+   (void)newx;
+   (void)newy;
+   (void)newwidth;
+   (void)newheight;
    
-   Rectangle newrect(newx , newy , newwidth , newheight);
+   WidgetBase* widget = GetWidget(widget_slot);
    
-///   SetWidgetPos(widget , newx , newy , newwidth , newheight);/// NOTE : Causes endless loops
+   if (!widget) {
+      return Rectangle(-1,-1,-1,-1);
+   }
    
-   // need to reset layout rectangle for this widget
-///   layout_rectangles[WidgetIndex(widget)] = LayoutRectangle(InnerArea() , newrect);
-
-   return newrect;
+   LayoutRectangle layout_rect = layout_rectangles[widget_slot];
+   
+   return LayoutArea(area.InnerArea() , layout_rect);
 }
 
 
@@ -112,6 +94,24 @@ void RelativeLayout::AddWidget(WidgetBase* widget) {
 
 
 
+void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect) {
+   Layout::PlaceWidget(widget , slot);
+   if (widget) {
+      SetLayoutRectangle(widget , lrect);
+   }
+}
+
+
+
+void RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
+   Layout::AddWidget(widget);
+   if (widget) {
+      SetLayoutRectangle(widget , lrect);
+   }
+}
+
+
+
 Rectangle RelativeLayout::SetLayoutRectangle(int index , LayoutRectangle layout_rect) {
    EAGLE_ASSERT(index >= 0 && index < GetLayoutSize());
    layout_rectangles[index] = layout_rect;
@@ -134,27 +134,7 @@ Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangl
 
 
 
-void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect) {
-   Layout::PlaceWidget(widget , slot);
-   if (widget) {
-      SetLayoutRectangle(widget , lrect);
-   }
-}
 
-
-
-void RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
-   Layout::AddWidget(widget);
-   if (widget) {
-      SetLayoutRectangle(widget , lrect);
-   }
-}
-
-
-
-void RelativeLayout::Resize(unsigned int nsize) {
-   ReserveSlots((int)nsize);
-}
 
 
 

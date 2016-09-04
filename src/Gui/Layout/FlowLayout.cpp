@@ -26,8 +26,7 @@
 
 
 FlowLayout::~FlowLayout() {
-   /// In case we go out of scope before our WidgetHandler
-   DetachFromGui();
+   (void)0;
 }
 
 

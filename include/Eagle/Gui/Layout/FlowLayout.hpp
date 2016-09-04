@@ -41,23 +41,17 @@ enum FLOW_FAVORED_DIRECTION {
 };
 
 
-class FlowLayout : public Layout {
+class FlowLayout : public Layout {/// TODO : IMPLEMENT ME!
 
-private :
+protected :
 	
 	FLOW_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
 
-protected :
-   virtual void RepositionAllChildren() {}
-   virtual void RepositionChild(int slot) {(void)slot;}
-   
-
-
 public :
 
    virtual ~FlowLayout();
-	
+
 };
 
 

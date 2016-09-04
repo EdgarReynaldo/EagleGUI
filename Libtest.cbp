@@ -267,8 +267,6 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
-		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
-		<Unit filename="src/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />
 		<Unit filename="src/tests/DrawingTestMain.cpp" />

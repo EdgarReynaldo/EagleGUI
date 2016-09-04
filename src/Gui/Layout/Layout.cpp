@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -71,6 +71,15 @@ int Layout::WidgetIndex(WidgetBase* widget) {
 
 
 
+WidgetBase* Layout::GetWidget(int slot) {
+   if (slot < 0 || slot >= (int)wchildren.size()) {
+      return 0;
+   }
+   return wchildren[slot];
+}
+
+
+
 int Layout::NextFreeSlot() {
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
       if (wchildren[i] == 0) {
@@ -112,7 +121,7 @@ void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
 
 
 
-void Layout::AdjustWidgetArea(WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) {
+void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) {
    EAGLE_ASSERT(widget);
    EAGLE_ASSERT(newx);
    EAGLE_ASSERT(newy);
@@ -169,6 +178,28 @@ void Layout::AdjustWidgetArea(WidgetBase* widget , int* newx , int* newy , int* 
 
 
 
+
+void Layout::RepositionAllChildren() {
+   for (int slot = 0 ; slot < (int)wchildren.size() ; ++slot) {
+      RepositionChild(slot);
+   }
+}
+
+
+
+void Layout::RepositionChild(int slot) {
+   WidgetBase* widget = GetWidget(slot);
+   if (!widget) {
+      EAGLE_DEBUG(
+         EagleLog() << "INFO : Layout::RepositionChild - Attempt to reposition NULL widget" << std::endl;
+      );
+      return;
+   }
+   widget->SetWidgetArea(RequestWidgetArea(slot , INT_MAX , INT_MAX , INT_MAX , INT_MAX) , false);
+}
+
+
+
 Layout::Layout() :
       WidgetBase(StringPrintF("Layout object at %p" , this)),
       attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
@@ -196,9 +227,10 @@ Layout::Layout(std::string name) :
 
 
 Layout::~Layout() {
-   // Can't call clear layout in our destructor, as virtual methods are called :
-   // (ClearLayout calls RemoveWidget, PlaceWidget, ReplaceWidget , RemoveWidgetFromLayout)
-///   ClearLayout();
+   /// Okay to call detach and clear layout in our destructor, as no virtual methods are called :
+   /// (ClearLayout calls RemoveWidget, PlaceWidget, ReplaceWidget , RemoveWidgetFromLayout)
+   DetachFromGui();
+   ClearWidgets();
 }
 
 
@@ -269,21 +301,40 @@ void Layout::TakeOverLayoutFrom(Layout* l) {
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(WidgetIndex(widget) != -1);
+Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
+   
+   WidgetBase* widget = GetWidget(slot);
+   if (!widget) {
+      return Rectangle(-1,-1,-1,-1);
+   }
    
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
    
-   Rectangle newrect(newx , newy , newwidth , newheight);
-   
-   return newrect;
+   return Rectangle(newx , newy , newwidth , newheight);
+}
+
+
+
+Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
+   return RequestWidgetArea(WidgetIndex(widget) , newx , newy , newwidth , newheight);
+}
+
+
+
+Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) {
+   return RequestWidgetArea(widget_slot , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
 Rectangle Layout::RequestWidgetArea(WidgetBase* widget , Rectangle newarea) {
-   return RequestWidgetArea(widget , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
+   return RequestWidgetArea(WidgetIndex(widget) , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
+}
+
+
+
+void Layout::Resize(unsigned int nsize) {
+   ReserveSlots((int)nsize);
 }
 
 

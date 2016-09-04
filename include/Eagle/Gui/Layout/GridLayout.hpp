@@ -52,38 +52,32 @@ private :
 	GRID_OPTIONS options;
 	
 
-
+/**
    virtual void RepositionAllChildren();
    virtual void RepositionChild(int slot);
 	void RepositionChild(int cellx , int celly);
-
+//*/
 
 protected :
 	
    Rectangle RequestWidgetRectangle(WidgetBase* widget);
+   Rectangle RequestWidgetRectangle(int slot_index);
 
    void CalculateGrid();
-
-///	void ResizeCell(int cell_width , int cell_height);
 
 public :
 	GridLayout();
 	GridLayout(string name);
 	GridLayout(int numcolumns , int numrows);
 	virtual ~GridLayout();
-	
 
-/**
-	/// LayoutBase
-   virtual Rectangle RequestPosition   (WidgetBase* widget , int newx , int newy);
-   virtual Rectangle RequestSize       (WidgetBase* widget , int newwidth , int newheight);
-   virtual Rectangle RequestArea       (WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
-//*/
-   
    /// WidgetBase
    virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
-
+   /// LayoutBase
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   
+   /// GridLayout
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed
 
 	void SetPadding(unsigned int hpad , unsigned int vpad);

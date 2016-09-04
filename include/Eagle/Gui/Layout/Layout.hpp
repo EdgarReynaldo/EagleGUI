@@ -70,16 +70,18 @@ protected :
 
 
    int WidgetIndex(WidgetBase* widget);
+   WidgetBase* GetWidget(int slot);
    int NextFreeSlot();
 
+
    virtual void ReserveSlots(int nslots);
+
    void ReplaceWidget(WidgetBase* widget , int slot);
 
-   void AdjustWidgetArea(WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight);
-///   void SetWidgetPos(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+   void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight);
 
-   virtual void RepositionAllChildren()=0;
-   virtual void RepositionChild(int slot)=0;
+   void RepositionAllChildren();
+   void RepositionChild(int slot);
 
 
 public :
@@ -89,6 +91,7 @@ public :
    virtual ~Layout();
    
 	/// WIDGETBASE
+	
    virtual int PrivateHandleInputEvent(EagleEvent e);
    virtual int PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y);
@@ -102,25 +105,26 @@ public :
 	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
 
 
-   virtual bool AcceptsFocus() {return true;}
+   virtual bool AcceptsFocus() {return false;}
 
 
    /// LAYOUTBASE
-/**
-   virtual Rectangle RequestPosition   (WidgetBase* widget , int newx , int newy);
-   virtual Rectangle RequestSize       (WidgetBase* widget , int newwidth , int newheight);
-   virtual Rectangle RequestArea       (WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
-   Rectangle         RequestArea       (WidgetBase* widget , Rectangle newarea);
-//*/
-//**
+
    /// Pass INT_MAX for a parameter if you don't care about the position or size
-   /// NOTE : These two functions do NOT change the widget's area, they only return the area that the layout would give it
-   virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+   /// NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   
+   Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+
+   Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea);
+
    Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea);
-//*/
+
    
    /// Widget may be null for PlaceWidget
    /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
+   void Resize(unsigned int nsize);
+
    virtual void PlaceWidget(WidgetBase* widget , int slot);
    virtual void AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary
 
@@ -133,7 +137,7 @@ public :
    void DetachFromGui();/// Call this in Layout derived class's destructor
    
 
-   void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
+   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 
 protected :
    friend class WidgetHandler;

@@ -254,8 +254,8 @@ public :
 
    void SetDisplayPriority(int priority);
 
-   virtual int AbsMinWidth() {return 1;}
-   virtual int AbsMinHeight() {return 1;}
+   virtual int AbsMinWidth() const {return 1;}
+   virtual int AbsMinHeight() const {return 1;}
    
    virtual bool HasGui() {return false;}/// TODO : What is this function for again??? Oh right, it's for if the widget is a GUI
    virtual WidgetHandler* GetGui() {return 0;}/// TODO : What is this function for again??? Oh Right, it's for if the widget is a GUI

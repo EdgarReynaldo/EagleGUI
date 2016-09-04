@@ -28,23 +28,10 @@
 
 
 
-void DumbLayout::RepositionAllChildren() {
-	return;// DUH WERE DUMB REMEMBER
-}
-
-
-
-void DumbLayout::RepositionChild(int slot) {
-   (void)slot;
-   return;/// DUH WERE DUMB REMEMBER
-}
-
-
-
 DumbLayout::DumbLayout() : 
    Layout(StringPrintF("Dumb layout at %p" , this))
 {
-   
+   (void)0;
 }
 
 
@@ -52,14 +39,14 @@ DumbLayout::DumbLayout() :
 DumbLayout::DumbLayout(std::string name) : 
    Layout(name)
 {
-   
+   (void)0;
 }
 
 
 
-DumbLayout::~DumbLayout() {
-   /// In case we go out of scope before our WidgetHandler
-   DetachFromGui();
+DumbLayout::~DumbLayout()
+{
+   (void)0;
 }
 
 

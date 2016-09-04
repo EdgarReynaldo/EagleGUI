@@ -69,56 +69,30 @@ Rectangle TwoWaySplitter::GetHandleArea() {
 
 
 
-void TwoWaySplitter::RepositionAllChildren() {
-   RepositionChild(0);
-   RepositionChild(1);
+TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* window) : 
+      Layout(StringPrintF("TwoWaySplitter object at %p" , this)),
+      splitter_type(stype),
+      draw_func(DefaultSplitterDrawFunction),
+      divider_size(4),
+      divider_position(0),
+      divider_percent(0.5f),
+      drag(false),
+      olddrag(false),
+      dragxstart(0),
+      dragystart(0),
+      divposstart(0),
+      oldhover(false),
+      mouse_window(window),
+      owned_pointer_count(0)
+{
+   ReserveSlots(2);
 }
 
 
 
-void TwoWaySplitter::RepositionChild(int slot) {
-   EAGLE_ASSERT(slot >= 0 && slot < 2);
-   WidgetBase* widget = wchildren[slot];
-   if (!widget) {return;}
-   
-   widget->SetWidgetArea(RequestWidgetArea(widget , -1,-1,-1,-1) , false);
-/**
-   Rectangle r(area.InnerArea());
-   int x = r.X();
-   int y = r.Y();
-   int w = r.W();
-   int h = r.H();
-   switch (splitter_type) {
-   case SPLITTER_VERTICAL :
-      if (slot == 0) {
-         // left panel
-         x += 0;
-         w = divider_position;
-      }
-      else if (slot == 1) {
-         // right panel
-         x += divider_position + divider_size;
-         w = (r.W() - (divider_position + divider_size));
-      }
-      break;
-   case SPLITTER_HORIZONTAL :
-      if (slot == 0) {
-         // top panel
-         y += 0;
-         h = divider_position;
-      }
-      else if (slot == 1) {
-         // bottom panel
-         y += divider_position + divider_size;
-         h = (r.H() - (divider_position + divider_size));
-      }
-      break;
-   }
-   
-   widget->SetWidgetArea(x,y,w,h,false);
-//*/   
+TwoWaySplitter::~TwoWaySplitter() {
+   (void)0;
 }
-
 
 
 
@@ -224,55 +198,6 @@ void TwoWaySplitter::PrivateDisplay(EagleGraphicsContext* win , int xpos , int y
 
 
 
-
-TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* window) : 
-      Layout(StringPrintF("TwoWaySplitter object at %p" , this)),
-      splitter_type(stype),
-      draw_func(DefaultSplitterDrawFunction),
-      divider_size(4),
-      divider_position(0),
-      divider_percent(0.5f),
-      drag(false),
-      olddrag(false),
-      dragxstart(0),
-      dragystart(0),
-      divposstart(0),
-      oldhover(false),
-      mouse_window(window),
-      owned_pointer_count(0)
-{
-   ReserveSlots(2);
-}
-
-
-
-TwoWaySplitter::~TwoWaySplitter() {
-   /// In case we go out of scope before our WidgetHandler
-   DetachFromGui();
-}
-
-
-/**
-void TwoWaySplitter::SetWidgetArea(const Rectangle& r , bool notify_layout) {
-   WidgetBase::SetWidgetArea(r , notify_layout);
-}
-*/
-
-
-void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
-   EAGLE_ASSERT(slot == 0 || slot == 1);
-   Layout::PlaceWidget(widget , slot);
-}
-
-
-
-void TwoWaySplitter::AddWidget(WidgetBase* widget) {
-   EAGLE_ASSERT(NextFreeSlot() != -1);
-   Layout::AddWidget(widget);
-}
-
-
-
 void TwoWaySplitter::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
    WidgetBase::SetWidgetArea(xpos , ypos , width , height,notify_layout);
    SetDividerPercent(divider_percent);
@@ -296,6 +221,78 @@ int TwoWaySplitter::AbsMinHeight() {
    return WidgetBase::AbsMinHeight();
 }
    
+
+
+void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
+   if ((slot != 0) && (slot != 1)) {
+      throw EagleError(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , slot));
+   }
+   Layout::PlaceWidget(widget , slot);
+}
+
+
+
+void TwoWaySplitter::AddWidget(WidgetBase* widget) {
+   if (NextFreeSlot() == -1) {
+      throw EagleError("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
+   }
+   Layout::AddWidget(widget);
+}
+
+
+Rectangle TwoWaySplitter::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+   
+   (void)newx;
+   (void)newy;
+   (void)newwidth;
+   (void)newheight;
+   
+   if ((widget_slot != 0) && (widget_slot != 1)) {
+      throw EagleError(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , widget_slot));
+   }
+
+   WidgetBase* widget = GetWidget(widget_slot);
+   
+   if (!widget) {
+      return Rectangle(-1,-1,-1,-1);
+   }
+
+   Rectangle r(area.InnerArea());
+   int x = r.X();
+   int y = r.Y();
+   int w = r.W();
+   int h = r.H();
+   switch (splitter_type) {
+   case SPLITTER_VERTICAL :
+      if (widget_slot == 0) {
+         // left panel
+         x += 0;
+         w = divider_position;
+      }
+      else if (widget_slot == 1) {
+         // right panel
+         x += divider_position + divider_size;
+         w = (r.W() - (divider_position + divider_size));
+      }
+      break;
+   case SPLITTER_HORIZONTAL :
+      if (widget_slot == 0) {
+         // top panel
+         y += 0;
+         h = divider_position;
+      }
+      else if (widget_slot == 1) {
+         // bottom panel
+         y += divider_position + divider_size;
+         h = (r.H() - (divider_position + divider_size));
+      }
+      break;
+   }
+   
+   return Rectangle(x,y,w,h);
+}
+
+
 
 
 
@@ -330,57 +327,6 @@ void TwoWaySplitter::SetDividerPos(int divpos) {
    if (divpos > maxdiv) {divpos = maxdiv;}
    divider_percent = divider_position / (float)maxdiv;// |  x     |
    SetDividerPosActual(divpos);
-}
-
-
-
-Rectangle TwoWaySplitter::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   
-   (void)newx;
-   (void)newy;
-   (void)newwidth;
-   (void)newheight;
-   
-   if (!widget) {
-      return Rectangle();
-   }
-
-   int slot = WidgetIndex(widget);
-   EAGLE_ASSERT(slot >= 0);
-
-   Rectangle r(area.InnerArea());
-   int x = r.X();
-   int y = r.Y();
-   int w = r.W();
-   int h = r.H();
-   switch (splitter_type) {
-   case SPLITTER_VERTICAL :
-      if (slot == 0) {
-         // left panel
-         x += 0;
-         w = divider_position;
-      }
-      else if (slot == 1) {
-         // right panel
-         x += divider_position + divider_size;
-         w = (r.W() - (divider_position + divider_size));
-      }
-      break;
-   case SPLITTER_HORIZONTAL :
-      if (slot == 0) {
-         // top panel
-         y += 0;
-         h = divider_position;
-      }
-      else if (slot == 1) {
-         // bottom panel
-         y += divider_position + divider_size;
-         h = (r.H() - (divider_position + divider_size));
-      }
-      break;
-   }
-   
-   return Rectangle(x,y,w,h);
 }
 
 

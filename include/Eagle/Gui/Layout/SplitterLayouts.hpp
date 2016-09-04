@@ -63,37 +63,37 @@ private :
 public :
    Rectangle GetHandleArea();
 
-protected :
+   TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* mouse_window = 0);
    
-   /// LayoutBase
-   void RepositionAllChildren();
-   void RepositionChild(int slot);
-   
+   virtual ~TwoWaySplitter();
+
+
    /// WidgetBase
+
+protected :
    int PrivateHandleEvent(EagleEvent e);
    int PrivateCheckInputs();
    void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
 public :   
-   
-   TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* mouse_window = 0);
-   
-   virtual ~TwoWaySplitter();
+
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+
+   virtual int AbsMinWidth();
+   virtual int AbsMinHeight();
+
+   /// LayoutBase
 
    virtual void PlaceWidget(WidgetBase* widget , int slot);
    virtual void AddWidget(WidgetBase* widget);
 
-   /// Layout and WidgetBase
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
 
-
-   virtual Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
-
-   int AbsMinWidth();
-   int AbsMinHeight();
    
    /// Member functions
+protected:
    void SetDividerPosActual(int divpos);
+public :
    void SetDividerSize(int divsize);
    void SetDividerPos(int divpos);
    void SetDividerPercent(float percent);

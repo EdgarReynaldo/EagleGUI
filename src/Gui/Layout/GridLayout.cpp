@@ -30,7 +30,7 @@
 /** --------------------     Grid Layout     ------------------------- */
 
 
-
+/**
 void GridLayout::RepositionAllChildren() {
 	
 	for (int y = 0 ; y < nrows ; ++y) {
@@ -66,6 +66,9 @@ void GridLayout::RepositionChild(int cellx , int celly) {
    }
    
 }
+//*/
+
+
 /**
 
 	int basex = area.InnerArea().X();
@@ -121,9 +124,21 @@ void GridLayout::RepositionChild(int cellx , int celly) {
 Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) {
    EAGLE_ASSERT(widget);
    int index = WidgetIndex(widget);
-   EAGLE_ASSERT(index != -1);
-   int col = index % ncols;
-   int row = index / ncols;
+   return RequestWidgetRectangle(index);
+}
+
+
+Rectangle GridLayout::RequestWidgetRectangle(int slot_index) {
+
+   WidgetBase* widget = GetWidget(slot_index);
+
+   if (!widget) {
+      return Rectangle(-1,-1,-1,-1);
+   }
+
+   int col = slot_index % ncols;
+   int row = slot_index / ncols;
+
    int basex = area.InnerArea().X() + col*(colwidth + colhspace);
    int basey = area.InnerArea().Y() + row*(rowheight + rowvspace);
    
@@ -241,36 +256,9 @@ GridLayout::GridLayout(int numcolumns , int numrows) :
 
 
 GridLayout::~GridLayout() {
-   /// In case we go out of scope before our WidgetHandler
-   DetachFromGui();
+   (void)0;
 }
 
-
-/**
-Rectangle GridLayout::RequestPosition   (WidgetBase* widget , int newx , int newy) {
-   (void)newx;
-   (void)newy;
-   return RequestWidgetRectangle(widget);
-}
-
-
-
-Rectangle GridLayout::RequestSize       (WidgetBase* widget , int newwidth , int newheight) {
-   (void)newwidth;
-   (void)newheight;
-   return RequestWidgetRectangle(widget);
-}
-
-
-
-Rectangle GridLayout::RequestArea       (WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
-   (void)newx;
-   (void)newy;
-   (void)newwidth;
-   (void)newheight;
-   return RequestWidgetRectangle(widget);
-}
-//*/
 
 
 void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
@@ -281,7 +269,23 @@ void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bo
 
 
 
-/// Resize grid will keep all widgets that overlap the new grid, but all others will be removed and possibly freed
+Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+   WidgetBase* widget = GetWidget(widget_slot);
+   if (!widget) {
+      return Rectangle(-1,-1,-1,-1);
+   }
+   Rectangle cell_rect = RequestWidgetRectangle(widget_slot);
+   newx = cell_rect.X();
+   newy = cell_rect.Y();
+   newwidth = cell_rect.W();
+   newheight = cell_rect.H();
+   AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
+   return Rectangle(newx , newy , newwidth , newheight);
+}
+
+
+
+/// Resize grid will keep all widgets that overlap the new grid, but all others will be removed
 void GridLayout::ResizeGrid(int newcolumns , int newrows) {
    if (newcolumns < 0) {newcolumns = 0;}
    if (newrows < 0) {newrows = 0;}
