@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -148,40 +148,6 @@ void WidgetHandler::CheckRedraw() {
    /// TODO : From back to front? Or front to back?
    for (UINT i = 0 ; i < drawlist.size() ; ++i) {
       CheckRedraw(i);
-   }
-}
-
-
-
-void WidgetHandler::DrawFocus(EagleGraphicsContext* win) {
-   if (wfocus && OwnsWidget(wfocus)) {
-      Rectangle r = wfocus->InnerArea();
-      EagleColor color = wfocus->WCols()[HLCOL];
-      EagleColor sdcolor = wfocus->WCols()[SDCOL];
-      switch (focus_type) {
-         case FOCUS_INVISIBLE :
-            // do nothing
-            break;
-         case FOCUS_HIGHLIGHT_OUTLINE :
-            r.Draw(win , color);
-            break;
-         case FOCUS_HIGHLIGHT_THICK_OUTLINE :
-            r.Draw(win , color);
-            r.Shrink(1);
-            r.Draw(win , color);
-            break;
-         case FOCUS_HIGHLIGHT_DOTTED :
-            r.DottedOutline(win , color , true);
-            r.DottedOutline(win , sdcolor , false);
-            break;
-         case FOCUS_HIGHLIGHT_THICK_DOTTED :
-            r.DottedOutline(win , color , true);
-            r.DottedOutline(win , sdcolor , false);
-            r.Shrink(1);
-            r.DottedOutline(win , color , true);
-            r.DottedOutline(win , sdcolor , false);
-            break;
-      }
    }
 }
 
@@ -482,7 +448,6 @@ WidgetHandler::WidgetHandler() :
 		clear_background(true),
 		focus_cycle_forward(input_key_press(EAGLE_KEY_TAB) && input_key_held(EAGLE_KEY_NO_MOD)),
 		focus_cycle_backward(input_key_press(EAGLE_KEY_TAB) && input_key_held(EAGLE_KEY_ONLY_SHIFT)),
-		focus_type(FOCUS_INVISIBLE),
 		dbg_list()
 {
    SetRootLayout(&dumb_layout);
@@ -881,7 +846,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       msg = widget->HandleEvent(e);
 
       /// Warning - All messages not related to a dialog will be ignored.
-      /// Use QueueUserMessage for user notifications instead.
+      /// Use QueueUserMessage or RaiseEvent for user notifications instead.
       
       if (msg == DIALOG_OKAY)      {continue;}
       if (msg & DIALOG_CLOSE)      {return msg;}// Pass the CLOSE message up the chain and back to the user
@@ -965,7 +930,6 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
          if (w->Flags() & VISIBLE) {
 ///            Rectangle a = area.InnerArea();
             w->Display(win , 0 , 0);
-            if (wfocus == w) {DrawFocus(win);}
          }
       }
       clear_background = false;
@@ -992,7 +956,7 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
             if (wflags & VISIBLE) {
                some_drawn = true;
                w->Display(win , 0 , 0);
-               if (wfocus == w) {DrawFocus(win);}
+///               if (wfocus == w) {DrawFocus(win);}
             }
          }
       }
@@ -1022,7 +986,7 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
 
 
-int  WidgetHandler::PrivateUpdate(double tsec) {
+int WidgetHandler::PrivateUpdate(double tsec) {
 
    int msg = 0;
    int retmsg = DIALOG_OKAY;
@@ -1033,9 +997,9 @@ int  WidgetHandler::PrivateUpdate(double tsec) {
       
       if (msg == DIALOG_OKAY)      {continue;}
 
-      if (msg & DIALOG_CLOSE)      {return retmsg | DIALOG_CLOSE;}// Pass the CLOSE message up the chain and back to the user
+      if (msg & DIALOG_CLOSE)      {return retmsg | DIALOG_CLOSE;}/// Pass the CLOSE message up the chain and back to the user
 
-      //if (msg & DIALOG_DISABLED) {}// Ignore disabled dialogs
+      ///if (msg & DIALOG_DISABLED) {}/// Ignore disabled dialogs
 
       if (msg & DIALOG_REDRAW_ALL) {
          clear_background = true;
@@ -1043,7 +1007,7 @@ int  WidgetHandler::PrivateUpdate(double tsec) {
       }
 
       if (msg & DIALOG_TAKE_FOCUS) {
-         GiveWidgetFocus(widget);// This rearranges the widget lists!!! Stop processing them!
+         GiveWidgetFocus(widget);/// This rearranges the widget lists!!! Stop processing them!
          return retmsg;
       }
 
@@ -1417,28 +1381,57 @@ WidgetHandler* WidgetHandler::GetGui() {
 
 
 
-void WidgetHandler::SetFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis) {
-   focus_type = type;
-   if (wfocus) {wfocus->SetBgRedrawFlag();}
-   if (for_all_guis) {
-      for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
-         WidgetBase* w = wlist[i];
-         
-         WidgetHandler* wh = w->GetGui();
-         if (wh) {
-            wh->SetFocusDrawType(type,true);
-         }
-/*
-         TabGroup* tg = dynamic_cast<TabGroup*>(w);
-         if (tg) {
-            tg->SetFocusDrawType(type);
-         } else {
-            WidgetHandler* wh = w->GetGui();
-            if (wh) {
-               wh->SetFocusDrawType(type , true);
-            }
-         }
-//*/
+void WidgetHandler::SetGlobalBackgroundDrawType(BG_DRAW_TYPE type , bool for_all_guis) {
+   SetBackgroundDrawType(type);
+   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
+      WidgetBase* w = wlist[i];
+      w->SetBackgroundDrawType(type);
+      WidgetHandler* wh = w->GetGui();
+      if (wh && for_all_guis) {
+         wh->SetGlobalBackgroundDrawType(type , true);
+      }
+   }
+}
+
+
+
+void WidgetHandler::SetGlobalFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis) {
+   SetFocusDrawType(type);
+   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
+      WidgetBase* w = wlist[i];
+      w->SetFocusDrawType(type);
+      WidgetHandler* wh = w->GetGui();
+      if (wh && for_all_guis) {
+         wh->SetGlobalFocusDrawType(type , true);
+      }
+   }
+}
+
+
+
+void WidgetHandler::SetGlobalBackgroundPainter(BackgroundPainter* painter , bool for_all_guis) {
+   SetBackgroundPainter(painter);
+   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
+      WidgetBase* w = wlist[i];
+      w->SetBackgroundPainter(painter);
+      WidgetHandler* wh = w->GetGui();
+      if (wh && for_all_guis) {
+         wh->SetGlobalBackgroundPainter(painter , true);
+      }
+   }
+}
+
+
+
+
+void WidgetHandler::SetGlobalFocusPainter(FocusPainter* painter , bool for_all_guis) {
+   SetFocusPainter(painter);
+   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
+      WidgetBase* w = wlist[i];
+      w->SetFocusPainter(painter);
+      WidgetHandler* wh = w->GetGui();
+      if (wh && for_all_guis) {
+         wh->SetGlobalFocusPainter(painter , true);
       }
    }
 }

@@ -20,31 +20,11 @@
  */
 
 
-
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
+
+#include "Eagle/Gui/WidgetDrawFuncs.hpp"
+
 #include "Eagle/StringWork.hpp"
-
-
-
-void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , SPLITTER_TYPE type , const WidgetColorset& colors) {
-   float x = divider_rect.X();
-   float y = divider_rect.Y();
-   float w = divider_rect.W();
-   float h = divider_rect.H();
-   window->DrawFilledRectangle(x,y,w,h,colors[HLCOL]);
-//   EagleLog() << StringPrintF("DefaultSplitterDrawFunction x,y,w,h = %d,%d,%d x %d\n",
-//                              (int)x,(int)y,(int)w,(int)h);
-   if (type == SPLITTER_VERTICAL) {
-      // vertical bar
-      window->DrawFilledRectangle(x,y,w/4.0,h,colors[SDCOL]);
-      window->DrawFilledRectangle(x+3.0*w/4.0,y,w/4.0,h,colors[SDCOL]);
-   }
-   else if (type == SPLITTER_HORIZONTAL) {
-      // horizontal bar
-      window->DrawFilledRectangle(x,y,w,h/4.0,colors[SDCOL]);
-      window->DrawFilledRectangle(x,y+3.0*h/4.0,w,h/4.0,colors[SDCOL]);
-   }
-}
 
 
 

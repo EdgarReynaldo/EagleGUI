@@ -87,25 +87,10 @@ void WidgetBase::RaiseEvent(WidgetMsg msg) {
    EmitEvent(e);
    
    // tell our parent
-   if (wparent) {
-      wparent->QueueUserMessage(msg);
-   }
+   WidgetBase::QueueUserMessage(msg);
 }
 
 
-
-EagleEvent WidgetBase::MakeEagleEvent(WidgetMsg msg) {
-   EAGLE_ASSERT(eagle_system);
-   
-   EagleEvent e;
-   e.source = this;
-   e.timestamp = eagle_system->GetProgramTime();
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = msg.from;
-   e.widget.topic = msg.topic;
-   e.widget.msgs = msg.msgs;
-   return e;
-}
 
 
 
@@ -126,7 +111,12 @@ EagleEvent WidgetBase::MakeEagleEvent(WidgetMsg msg) {
    
    int display_priority;
    
-   WIDGET_DRAW_FUNC bg_draw_func;
+   BackgroundPainter* background_painter;
+   BG_DRAW_TYPE background_draw_type;
+   
+   FocusPainter* focus_painter;
+   FOCUS_DRAW_TYPE focus_draw_type;
+
 */
 WidgetBase::WidgetBase() :
       EagleObject(StringPrintF("WidgetBase object %p" , this)),
@@ -141,7 +131,10 @@ WidgetBase::WidgetBase() :
       minh(1),
       flags(DEFAULT_FLAGS),
       display_priority(MID_DISPLAY_PRIORITY),
-      bg_draw_func(0)
+      background_painter(&default_background_painter),
+      background_draw_type(BG_DRAW_BACKGROUND_EMPTY),
+      focus_painter(&default_focus_painter),
+      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE)
 {
    
 }
@@ -161,7 +154,10 @@ WidgetBase::WidgetBase(std::string name) :
       minh(1),
       flags(DEFAULT_FLAGS),
       display_priority(MID_DISPLAY_PRIORITY),
-      bg_draw_func(0)
+      background_painter(&default_background_painter),
+      background_draw_type(BG_DRAW_BACKGROUND_EMPTY),
+      focus_painter(&default_focus_painter),
+      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE)
 {
 	
 }
@@ -193,7 +189,6 @@ WidgetBase::~WidgetBase() {
 */
    wparent = 0;
    layout = 0;
-   bg_draw_func = 0;
 }
 
 
@@ -253,11 +248,14 @@ int WidgetBase::HandleEvent(EagleEvent e) {
    int ret = PrivateHandleEvent(e);
    
    /// TODO : Do we really want to call CheckInput every time we get an event? 
-   /// TODO : It makes BUTTON_HELD messages spam like crazy when the mouse drags over a button
-   if (!(ret & DIALOG_INPUT_USED)) {
-      ret = ret | PrivateCheckInputs();
+   /// TODO : It makes BUTTON_HELD messages spam like crazy when the mouse drags over a button - maybe that's a problem with Button class
+   /// TODO : FIX : Every non timer event is passed to check inputs
+   if (e.type != EAGLE_EVENT_TIMER) {
+      if (!(ret & DIALOG_INPUT_USED)) {
+         ret = ret | PrivateCheckInputs();
+      }
    }
-   
+         
    return ret;
 }
 
@@ -268,28 +266,20 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       return;
    }
    
-///   EAGLE_DEBUG(EagleLog() << "Displaying widget " << GetName() << std::endl;);
+   Clipper clip(win->GetDrawingTarget() , area.OuterArea());
    
-   /// TODO : 
-//   win->SetClippingRectangle(area.OuterArea());
-   if (area.HasImageAlpha()) {
-      win->SetPMAlphaBlender();
-   }
-   if (bg_draw_func) {
-      (*bg_draw_func)(win , area , WCols() , xpos , ypos);
-   }
-   if (area.HasImageAlpha()) {
-      win->RestoreLastBlendingState();
-   }
-   
+   background_painter->PaintBackground(win , this , xpos , ypos , background_draw_type);
+         
    PrivateDisplay(win , xpos , ypos);
 
+   if (flags & HASFOCUS) {
+      focus_painter->PaintFocus(win , this , xpos , ypos , focus_draw_type);
+   }
+   
    EAGLE_DEBUG(
       win->DrawRectangle(OuterArea() , 1.0 , WCols()[HLCOL]);
       win->DrawRectangle(InnerArea() , 1.0 , WCols()[HLCOL]);
    );
-   /// TODO : unset clipping rectangle 
-// win->ResetClippingRectangle
    
    ClearRedrawFlag();
 }
@@ -325,6 +315,42 @@ void WidgetBase::SetParent(WidgetBase* parent) {wparent = parent;}
 
 
 void WidgetBase::SetOwnerLayout(Layout* l) {layout = l;}
+
+
+
+void WidgetBase::SetBackgroundPainter(BackgroundPainter* painter) {
+   if (!painter) {
+      painter = &default_background_painter;
+   }
+   background_painter = painter;
+   SetBgRedrawFlag();
+}
+
+
+
+void WidgetBase::SetFocusPainter(FocusPainter* painter) {
+   if (!painter) {
+      painter = &default_focus_painter;
+   }
+   focus_painter = painter;
+   SetBgRedrawFlag();
+}
+
+
+
+void WidgetBase::SetBackgroundDrawType(BG_DRAW_TYPE draw_type) {
+   background_draw_type = draw_type;
+   SetBgRedrawFlag();
+}
+
+
+
+void WidgetBase::SetFocusDrawType(FOCUS_DRAW_TYPE draw_type) {
+   focus_draw_type = draw_type;
+   if (Flags() & HASFOCUS) {
+      SetBgRedrawFlag();
+   }
+}
 
 
 
@@ -583,13 +609,6 @@ bool WidgetBase::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
 
 
 
-void WidgetBase::SetBgDrawFunc(WIDGET_DRAW_FUNC draw_func) {
-   bg_draw_func = draw_func;
-   SetBgRedrawFlag();
-}
-
-
-
 void WidgetBase::SetBgImage(EagleImage* img , MARGIN_HCELL hcell , MARGIN_VCELL vcell) {
    area.SetImage(img , hcell , vcell);
 }
@@ -673,6 +692,9 @@ void WidgetBase::SetWidgetArea(int xpos , int ypos , int width , int height , bo
          SetBgRedrawFlag();
       }
    }
+   
+   /// Inner area needs to be refreshed
+   area.SetMarginsContractFromOuter(area.MLeft() , area.MRight() , area.MTop() , area.MBot());
 }
 
 
@@ -865,9 +887,29 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    wcols.DescribeTo(os , indent);
    os << indent << "privwcols :" << endl;
    privwcols.DescribeTo(os , indent);
-   os << indent << "Widget draw function : " << PrintWidgetDrawFunctionName(bg_draw_func) << endl;
+   
+   os << indent << "BgDrawType is " << BgDrawTypeString(background_draw_type) << " , FocusDrawType is " << FocusDrawTypeString(focus_draw_type) << endl;
+   os << indent << "BackgroundPainter class is " << background_painter->GetPainter(background_draw_type)->GetPainterName() << endl;
+   os << indent << "FocusPainter class is " << focus_painter->GetPainter(focus_draw_type)->GetPainterName() << endl;
+   
    --indent;
    return os;
+}
+
+
+
+
+EagleEvent MakeEagleEvent(WidgetMsg msg) {
+   EAGLE_ASSERT(eagle_system);
+   
+   EagleEvent e;
+   e.source = msg.From();
+   e.timestamp = eagle_system->GetProgramTime();
+   e.type = EAGLE_EVENT_WIDGET;
+   e.widget.from = msg.from;
+   e.widget.topic = msg.topic;
+   e.widget.msgs = msg.msgs;
+   return e;
 }
 
 

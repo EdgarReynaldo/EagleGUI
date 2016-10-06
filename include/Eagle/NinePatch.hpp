@@ -34,8 +34,8 @@ public :
    NinePatch(const NinePatch& np);
    NinePatch& operator=(const NinePatch& np);
    
-   EagleImage** operator[](int xindex);
-   EagleImage* const* operator[](int xindex) const;
+   EagleImage** operator[](int yindex);
+   EagleImage* const* operator[](int index) const;
 };
 
 NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , WidgetArea nparea);

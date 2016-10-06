@@ -113,9 +113,6 @@ protected :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int  PrivateUpdate(double tsec);
 
-   void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);
-
-
 public :
    
    BasicButton();
@@ -124,29 +121,29 @@ public :
    virtual ~BasicButton();
 
 
-   void SetButtonType(BUTTON_ACTION_TYPE type);
+   virtual void SetButtonType(BUTTON_ACTION_TYPE type);
    
-   void SetHoverState (bool state);
+   virtual void SetHoverState (bool state);
 
-   void SetSpringDuration(double duration);
-   void SetButtonUpState(bool button_up);
-   void ToggleButton();
-   void SetClickArea(AreaBase* new_click_area , bool delete_when_done);
+   virtual void SetSpringDuration(double duration);
+   virtual void SetButtonUpState(bool button_up);
+   virtual void ToggleButton();
+   virtual void SetClickArea(AreaBase* new_click_area , bool delete_when_done);
    
-   void SetButtonState(bool hover , bool up);
-   void SetInputGroup(InputGroup ig);
+   virtual void SetButtonState(bool hover , bool up);
+   virtual void SetInputGroup(InputGroup ig);
 
-   bool JustActivated();
+   virtual bool JustActivated();
    
-   void EnableHoverMessage(bool enabled);
+   virtual void EnableHoverMessage(bool enabled);
 
-   InputGroup InputKey();
-   BUTTON_STATE ButtonState();
+   virtual InputGroup InputKey();
+   virtual BUTTON_STATE ButtonState();
    
-   bool Up();
-   bool Hover();
+   virtual bool Up();
+   virtual bool Hover();
    
-   BUTTON_ACTION_TYPE ActionType() {return btn_action_type;}
+   virtual BUTTON_ACTION_TYPE ActionType() {return btn_action_type;}
 };
 
 

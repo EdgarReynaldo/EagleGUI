@@ -53,15 +53,6 @@ enum GUI_MSGS {
 REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);
 
 
-enum FOCUS_DRAW_TYPE {
-   FOCUS_INVISIBLE               = 0,
-   FOCUS_HIGHLIGHT_OUTLINE       = 1,
-   FOCUS_HIGHLIGHT_THICK_OUTLINE = 2,
-   FOCUS_HIGHLIGHT_DOTTED        = 3,
-   FOCUS_HIGHLIGHT_THICK_DOTTED  = 4
-// TODO : FOCUS_HIGHLIGHT_CUSTOM
-};
-
 
 
 class WidgetHandler : public WidgetBase {
@@ -74,8 +65,8 @@ protected :
    typedef std::list<WidgetMsg> MESSAGEQUEUE;
    typedef MESSAGEQUEUE::iterator MQIT;
 
-   typedef std::map<WidgetBase* , bool> MEMTRACKER;
-   typedef MEMTRACKER::iterator MTIT;
+///   typedef std::map<WidgetBase* , bool> MEMTRACKER;
+///   typedef MEMTRACKER::iterator MTIT;
 
 protected :
 
@@ -117,7 +108,7 @@ protected :
    InputGroup      focus_cycle_forward;
    InputGroup      focus_cycle_backward;
 
-   FOCUS_DRAW_TYPE focus_type;
+///   FOCUS_DRAW_TYPE focus_type;
 
    std::list<Rectangle> dbg_list;//dirty background rectangle list
    
@@ -132,8 +123,6 @@ private :
    /// TODO : for widgets in front of and behind each widget
    void CheckRedraw(UINT widget_index);
    void CheckRedraw();
-
-   void DrawFocus(EagleGraphicsContext* win);
 
    void SortDrawListByPriority();// sorts from least drawing priority to highest drawing priority
    
@@ -238,8 +227,11 @@ public :
    virtual WidgetHandler* GetGui();
 
 
-   void SetFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis = false);
-
+   void SetGlobalBackgroundDrawType(BG_DRAW_TYPE type , bool for_all_guis = true);
+   void SetGlobalFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis = true);
+   void SetGlobalBackgroundPainter(BackgroundPainter* painter , bool for_all_guis = true);
+   void SetGlobalFocusPainter(FocusPainter* painter , bool for_all_guis = true);
+   
    void MakeAreaDirty(Rectangle dirty_area);
 
 

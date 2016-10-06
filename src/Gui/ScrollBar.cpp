@@ -137,7 +137,7 @@ void BasicScrollBar::QueueUserMessage(const WidgetMsg& wmsg) {
        (wmsg == dr_button_msg_click) ||
        (wmsg == dr_button_msg_held)) {
       SetRedrawFlag();
-      QueueUserMessage(scrollbar_msg);
+      RaiseEvent(scrollbar_msg);
       return;
    }
    WidgetBase::QueueUserMessage(wmsg);

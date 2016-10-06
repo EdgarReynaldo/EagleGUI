@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2015+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -92,6 +92,13 @@ class WidgetHandler;
 
 
 
+
+
+
+/// TODO : If the WidgetBase API changes, make sure to update the WidgetDecorator API as well
+
+
+
 class WidgetBase : public EagleObject , public EagleEventSource {
 
 protected :
@@ -111,16 +118,18 @@ protected :
    
    int display_priority;
    
-   WIDGET_DRAW_FUNC bg_draw_func;
+   BackgroundPainter* background_painter;
+   BG_DRAW_TYPE background_draw_type;
    
-   
+   FocusPainter* focus_painter;
+   FOCUS_DRAW_TYPE focus_draw_type;
+
+
 
    virtual void PrivateRaiseEvent(WidgetMsg msg) {(void)msg;}
 
    void RaiseEvent(WidgetMsg msg);
    
-   EagleEvent MakeEagleEvent(WidgetMsg msg);
-
 public :
    
    WidgetBase();
@@ -151,26 +160,30 @@ protected :
    virtual int PrivateHandleEvent(EagleEvent e);// Only handle events not handled in CheckInputs here
 
    /// Only handle events not handled in PrivateHandleEvent here in CheckInputs, like state checks.
-   virtual int PrivateCheckInputs();// Called automatically by HandleEvent
-                                    // ?and by system during gui update.
-                                    // Redefine to check state machine, will be called once per system event if not
-                                    // handled directly by PrivateHandleEvent already as signaled by using
-                                    // the DIALOG_INPUT_USED flag
+   virtual int PrivateCheckInputs();/// Called automatically by HandleEvent
+                                    /// ?and by system during gui update.
+                                    /// Redefine to check state machine, will be called once per system event if not
+                                    /// handled directly by PrivateHandleEvent already as signaled by using
+                                    /// the DIALOG_INPUT_USED flag
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
    virtual int PrivateUpdate(double tsec);
 
 public :
 
+   /// HandleEvent, Display,, and Update are only virtual for certain classes like Decorator to function properly
+   /// Don't overload them normally, overload the Private versions instead
+
    /// TODO : Do we want to call CheckInputs every time a timer event is fired? Not sure.
    /// TODO : Right now it is called every time we get an event, which doesn't seem quite right.
-   int HandleEvent(EagleEvent e);
+   /// TODO : FIX : CheckInputs are only called on non-timer events
+   virtual int HandleEvent(EagleEvent e);
 
    
-   void Display(EagleGraphicsContext* win , int xpos , int ypos);// Drawing target will already be set for you
+   virtual void Display(EagleGraphicsContext* win , int xpos , int ypos);// Drawing target will already be set for you
                                                                  // But you can push and pop other drawing targets as well
 
-   int Update(double tsec);
+   virtual int Update(double tsec);
 
 
 
@@ -180,12 +193,20 @@ public :
                                                         /// Warning - if the widget has no parent, these messages just get lost,
                                                         /// and only in the case that the top level parent widget is a 
                                                         /// WidgetHandler do they get spooled for the user.
+                                                        /// Don't call QueueUserMessage directly, rather call RaiseEvent,
+                                                        /// which calls QueueUserMessage indirectly, that way listeners 
+                                                        /// and callbacks will work
    
-   virtual void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);// Shortcut to virtual Q.U.M.
+   void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);// Shortcut to virtual Q.U.M.
 
 	/// Setters
 	virtual void SetParent(WidgetBase* parent);
-	void         SetOwnerLayout(Layout* l);
+	virtual void         SetOwnerLayout(Layout* l);
+	
+	virtual void SetBackgroundPainter(BackgroundPainter* painter);
+	virtual void SetFocusPainter(FocusPainter* painter);
+	virtual void SetBackgroundDrawType(BG_DRAW_TYPE draw_type);
+	virtual void SetFocusDrawType(FOCUS_DRAW_TYPE draw_type);
    
    /// These only set the colorset, they don't determine which you are using, and public colors are
    /// set by default - call UseColorset if you wanna change the setting
@@ -227,14 +248,12 @@ public :
 ///   virtual bool GiveWidgetFocus(WidgetBase* widget);
    virtual bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);
 
-//   virtual void SetFont(FONT* textfont) {}
-
-   void         SetBgDrawFunc(WIDGET_DRAW_FUNC draw_func);
-   void         SetBgImage(EagleImage* img , MARGIN_HCELL hcell, MARGIN_VCELL vcell);
-   void         SetBgImages(EagleImage* imgs[3][3]);
-   void         SetImagesHaveAlpha(bool have_alpha);
+   virtual void         SetBgImage(EagleImage* img , MARGIN_HCELL hcell, MARGIN_VCELL vcell);
+   virtual void         SetBgImages(EagleImage* imgs[3][3]);
+   virtual void         SetImagesHaveAlpha(bool have_alpha);
    
    /// These 4 functions all pass the requested parameters to their layout owner for adjustment if necessary
+   /// All 4 call SetWidgetArea(x,y,w,h,notify) indirectly
    void SetWidgetPos(int xpos , int ypos , bool notify_layout = true);
    void SetWidgetCorners(int x1 , int y1 , int x2 , int y2 , bool notify_layout = true);
    void SetWidgetDimensions(int width , int height , bool notify_layout = true);
@@ -248,11 +267,11 @@ public :
 	/// Make room in outer area for inner area first!!!
 	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
 
-   void SetMinInnerWidth(int w);
-   void SetMinInnerHeight(int h);
-   void SetMinInnerDimensions(int w , int h);
+   virtual void SetMinInnerWidth(int w);
+   virtual void SetMinInnerHeight(int h);
+   virtual void SetMinInnerDimensions(int w , int h);
 
-   void SetDisplayPriority(int priority);
+   virtual void SetDisplayPriority(int priority);
 
    virtual int AbsMinWidth() const {return 1;}
    virtual int AbsMinHeight() const {return 1;}
@@ -260,34 +279,42 @@ public :
    virtual bool HasGui() {return false;}/// TODO : What is this function for again??? Oh right, it's for if the widget is a GUI
    virtual WidgetHandler* GetGui() {return 0;}/// TODO : What is this function for again??? Oh Right, it's for if the widget is a GUI
    
-   WidgetHandler* NearestParentGui();
-   WidgetBase*    Root();
-   WidgetHandler* RootGui();
+   virtual WidgetHandler* NearestParentGui();
+   virtual WidgetBase*    Root();
+   virtual WidgetHandler* RootGui();
 
    /// Getters , some references for direct modification
-   int                   AbsParentX() const ;
-   int                   AbsParentY() const ;
-   Pos2d                 GetParentOffset() const ;
+   virtual int                   AbsParentX() const ;
+   virtual int                   AbsParentY() const ;
+   virtual Pos2d                 GetParentOffset() const ;
    
-   WidgetBase*           Parent()          const {return wparent;}
-   WidgetColorset&       WCols();// SetRedrawFlag if you change the colors!
-   virtual WidgetArea    Area()      const {return area;}
-   virtual Rectangle     OuterArea()       const {return area.OuterArea();}
-   virtual Rectangle     InnerArea()       const {return area.InnerArea();}
-   int                   MinWidth()        const {return minw + area.MLeft() + area.MRight();}
-   int                   MinHeight()       const {return minh + area.MTop() + area.MBot();}
-   int                   MinInnerWidth()   const {return minw;}
-   int                   MinInnerHeight()  const {return minh;}
-   UINT                  Flags()           const {return flags;}
-   int                   DisplayPriority() const {return display_priority;}
+   virtual WidgetBase*           Parent()          const {return wparent;}
+   virtual WidgetColorset&       WCols();/// SetRedrawFlag if you change the colors!
+   virtual const WidgetColorset& WCols()           const {return WCols();}/// SetRedrawFlag if you change the colors!
+   virtual WidgetArea            Area()            const {return area;}
+   virtual Rectangle             OuterArea()       const {return area.OuterArea();}
+   virtual Rectangle             InnerArea()       const {return area.InnerArea();}
+   virtual int                   MinWidth()        const {return minw + area.MLeft() + area.MRight();}
+   virtual int                   MinHeight()       const {return minh + area.MTop() + area.MBot();}
+   virtual int                   MinInnerWidth()   const {return minw;}
+   virtual int                   MinInnerHeight()  const {return minh;}
+   virtual UINT                  Flags()           const {return flags;}
+   virtual int                   DisplayPriority() const {return display_priority;}
    
-   virtual std::string GetWidgetClassName() {return "WidgetBase object";}
+   virtual BackgroundPainter*    GetBackgroundPainter()  const {return background_painter;}
+   virtual BG_DRAW_TYPE          GetBackgroundDrawType() const {return background_draw_type;}
+   virtual FocusPainter*         GetFocusPainter()       const {return focus_painter;}
+   virtual FOCUS_DRAW_TYPE       GetFocusDrawType()      const {return focus_draw_type;}
+   
+///   virtual std::string GetWidgetClassName()=0;/// TODO : What is this for? ICR. See how many classes implement this.
+   virtual std::string GetWidgetClassName() {return "WidgetBase object";}/// TODO : What is this for? ICR.
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 
 
+EagleEvent MakeEagleEvent(WidgetMsg msg);
 
 bool DrawPriorityIsLess(WidgetBase* lhs , WidgetBase* rhs);
 

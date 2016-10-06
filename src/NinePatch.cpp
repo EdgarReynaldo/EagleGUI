@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -24,26 +24,29 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
+#include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
+
+
 
 NinePatch::NinePatch() : imgs() {
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
-         imgs[x][y] = 0;
+         imgs[y][x] = 0;
       }
    }
 }
 
 
 
-EagleImage** NinePatch::operator[](int xindex) {
-   return imgs[xindex];
+EagleImage** NinePatch::operator[](int yindex) {
+   return imgs[yindex];
 }
 
 
 
-EagleImage* const* NinePatch::operator[](int xindex) const{
-   return imgs[xindex];
+EagleImage* const* NinePatch::operator[](int index) const{
+   return imgs[index];
 }
 
 
@@ -57,7 +60,7 @@ NinePatch::NinePatch(const NinePatch& np) {
 NinePatch& NinePatch::operator=(const NinePatch& np) {
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
-         imgs[x][y] = np[x][y];
+         imgs[y][x] = np[y][x];
       }
    }
    return *this;
@@ -65,57 +68,63 @@ NinePatch& NinePatch::operator=(const NinePatch& np) {
 
 
 
-NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , WidgetArea nparea) {
+NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , WidgetArea src_area) {
    
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
    EAGLE_ASSERT(src_img);
    EAGLE_ASSERT(src_img->Valid());
    
-   EAGLE_ASSERT(nparea.InnerArea().W() < nparea.OuterArea().W() && nparea.InnerArea().W() > 0);
-   EAGLE_ASSERT(nparea.InnerArea().H() < nparea.OuterArea().H() && nparea.InnerArea().H() > 0);
+   Rectangle src_outer = src_area.OuterArea();
+   Rectangle src_inner = src_area.InnerArea();
+
+   Rectangle img_rect = Rectangle(0 , 0 , src_img->W() , src_img->H());
    
-   nparea.MoveBy(-(nparea.OuterArea().X()) , -(nparea.OuterArea().Y()));
-   WidgetArea imgarea;
+   if (!img_rect.Contains(src_outer) || !img_rect.Contains(src_inner)) {
+      throw EagleError("MakeNinePatch() - Source image area does not fully contain the nine patch area!");
+   }
    
-   imgarea.SetOuterArea(0 , 0 , src_img->W() , src_img->H());
+   /// Make sure inner area of source is smaller than outer area
+   EAGLE_ASSERT((src_inner().W() > 0) && (src_inner().W() < src_outer.W()));
+   EAGLE_ASSERT((src_inner().H() > 0) && (src_inner().H() < src_outer.H()));
+
+   /// Make sure the left and right and top and bottom margins are positive
+   EAGLE_ASSERT((src_area.MLeft() > 0) && (src_area.MRight() > 0));
+   EAGLE_ASSERT((src_area.MTop() > 0) && (src_area.MBot() > 0));
    
-   EAGLE_DEBUG(
-      if (!imgarea.OuterArea().Contains(nparea.OuterArea())) {
-///         EagleLog() << "MakeNinePatch() - Image area does not fully contain the nine patch area!" << std::endl;
-      }
-   );
+/// Don't uncomment following line : Users may want a different area, in case of sprite sheets
+///   src_area.MoveBy(-(src_area.OuterArea().X()) , -(src_area.OuterArea().Y()));
+
+///   WidgetArea img_area;
+   
+///   img_area.SetOuterArea(0 , 0 , src_img->W() , src_img->H());
+   
    
    /// Store relative positions in nplayout
-   LayoutRectangle nplayout(nparea.OuterArea() , nparea.InnerArea());
+   LayoutRectangle nplayout(src_outer , src_inner);
    
    /// Set the matching relative area on the image
-   imgarea.SetFractionalInnerArea(nplayout.fx , nplayout.fy , nplayout.fw , nplayout.fh);
+///   img_area.SetFractionalInnerArea(nplayout.fx , nplayout.fy , nplayout.fw , nplayout.fh);
    
-   EagleLog() << "NPAREA :" << std::endl;
-   EagleLog() << nparea << std::endl;
-   EagleLog() << "IMGREA :" << std::endl;
-   EagleLog() << imgarea << std::endl;
+   EagleLog() << "NinePatch source area : " << src_area << std::endl;
+///   EagleLog() << "IMGAREA :" << std::endl;
+///   EagleLog() << img_area << std::endl;
    
    win->SetCopyBlender();
    NinePatch np;
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
          np[y][x] = 0;
-         MARGIN_HCELL hcell = (MARGIN_HCELL)x;
          MARGIN_VCELL vcell = (MARGIN_VCELL)y;
-         Rectangle src = imgarea.GetCellRectangle(hcell , vcell);
-         Rectangle cell = nparea.GetCellRectangle(hcell , vcell);
-         Rectangle dest(0,0,cell.W(),cell.H());
-
-         EagleLog() << "Drawing Image :" << std::endl;
+         MARGIN_HCELL hcell = (MARGIN_HCELL)x;
+         Rectangle src = src_area.GetCellRectangle(hcell , vcell);
+         EagleLog() << StringPrintF("Drawing Image : [%d][%d]" , y , x) << std::endl;
          EagleLog() << "Src = [" << src << "]" << std::endl;
-         EagleLog() << "Dest = [" << dest << "]" << std::endl;
-         EagleImage* img = win->CreateImage(dest.W() , dest.H() , VIDEO_IMAGE);
+         EagleImage* img = win->CreateImage(src.W() , src.H() , VIDEO_IMAGE);
          EAGLE_ASSERT(img);
          EAGLE_ASSERT(img->Valid());
          win->PushDrawingTarget(img);
-         win->DrawStretchedRegion(src_img , src , dest , DRAW_NORMAL);
+         win->DrawRegion(src_img , src , 0.0 , 0.0 , DRAW_NORMAL);
          win->PopDrawingTarget();
          np[y][x] = img;
       }

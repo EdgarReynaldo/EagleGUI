@@ -76,8 +76,7 @@ protected :
    virtual int  PrivateUpdate(double tsec);
 
 public :
-   
-   virtual void QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages);
+
 
    // /* Does not set any redraw flag */ - OLD:Sets redraw flag and (false) sets bg redraw flag
 

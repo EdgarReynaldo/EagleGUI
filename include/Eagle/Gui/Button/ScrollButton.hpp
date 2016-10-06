@@ -34,7 +34,7 @@ protected :
    void Reset();
    void ResetTriangle();
    void SyncButtonArea();
-      
+
 public :
    
 ///   ScrollButton();

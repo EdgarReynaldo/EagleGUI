@@ -277,11 +277,16 @@
 		<Unit filename="src/tests/GuiTestMain.hpp" />
 		<Unit filename="src/tests/LayoutTestMain.cpp" />
 		<Unit filename="src/tests/LayoutTestMain.hpp" />
-		<Unit filename="src/tests/Libtest.cpp" />
+		<Unit filename="src/tests/Main.cpp" />
+		<Unit filename="src/tests/Menu.hpp" />
 		<Unit filename="src/tests/NewGuiTestMain.cpp" />
 		<Unit filename="src/tests/NewGuiTestMain.hpp" />
 		<Unit filename="src/tests/RecordInputTestMain.cpp" />
 		<Unit filename="src/tests/RecordInputTestMain.hpp" />
+		<Unit filename="src/tests/TestMenu.cpp" />
+		<Unit filename="src/tests/TestMenu.hpp" />
+		<Unit filename="src/tests/TestRegistry.cpp" />
+		<Unit filename="src/tests/TestRegistry.hpp" />
 		<Unit filename="src/tests/TextTestMain.cpp" />
 		<Unit filename="src/tests/TextTestMain.hpp" />
 		<Extensions>

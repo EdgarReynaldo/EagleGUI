@@ -154,7 +154,7 @@ int GuiButton::PrivateCheckInputs() {
          pointer_activated = false;
       } else {
          down_time_left = spring_duration;
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
       }
       return DIALOG_OKAY;
    }
@@ -269,15 +269,6 @@ int GuiButton::PrivateUpdate(double tsec) {
 }
 
 
-void GuiButton::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages) {
-/**
-   WidgetMsg msg(widget_address , widget_topic , messages);
-   EagleLog() << "Queueing user message [" << msg << "]. Widget state is currently :" << endl;
-   this->DescribeTo(EagleLog());
-   EagleLog() << endl;
-*/
-   WidgetBase::QueueUserMessage(widget_address , widget_topic , messages);
-}
 
 /* TODO OLD REMOVE
 WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position relative to it's drawing target,
@@ -313,14 +304,14 @@ WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position
          if (input_mouse_release(LMB)) {released = true;}
       }
       if (released) {
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
          user_activated = false;
          focuskey_activated = false;
          pointer_activated = false;
          retmsg |= DIALOG_REDRAW_ME;
          SetRedrawFlag();
       } else {
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
       }
       return WidgetMsg(this , TOPIC_DIALOG , DIALOG_OKAY);
    }
@@ -387,7 +378,7 @@ WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position
          case SPRING_BTN :
             if (up) {
                up = false;
-               QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
                if (WidgetBase::Flags() & ALLOW_CLOSE) {
                   retmsg |= DIALOG_CLOSE;
                }
@@ -395,7 +386,7 @@ WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position
             break;
          case TOGGLE_BTN :
             up = !up;
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED));
             if (WidgetBase::Flags() & ALLOW_CLOSE) {
                retmsg |= DIALOG_CLOSE;
             }
@@ -786,18 +777,18 @@ int GuiButtonBase::PrivateHandleEvent(EagleEvent e) {
 
 int GuiButtonBase::CheckInputs() {
    if (input_mouse_release(LMB) && down) {
-      QueueUserMessage(this , TOPIC_BUTTON , BUTTON_RELEASED);
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_RELEASED));
       down = false;
       SetRedrawFlag();
    }
    if (area.OuterArea().Contains(mouse_x , mouse_y)) {
        if (!hover) {
-         QueueUserMessage(this , TOPIC_BUTTON , BUTTON_HOVER);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_HOVER));
          SetRedrawFlag();
        }
        hover = true;
       if (input_mouse_press(LMB)) {
-         QueueUserMessage(this , TOPIC_BUTTON , BUTTON_CLICKED);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_CLICKED));
          down = true;
          SetRedrawFlag();
       }

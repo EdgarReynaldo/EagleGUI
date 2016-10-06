@@ -511,7 +511,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
                EAGLE_ASSERT(eagle_system->GetSystemClipboard());
                eagle_system->GetSystemClipboard()->CopyToClipboard(selected_text);
                EagleLog() << "Copying \"" << selected_text << "\" to clipboard." << std::endl;
-               QueueUserMessage(this , TOPIC_TEXT_WIDGET , TEXT_COPIED);
+               RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , TEXT_COPIED));
             }
          }
       }

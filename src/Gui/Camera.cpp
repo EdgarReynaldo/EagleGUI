@@ -68,7 +68,7 @@ void Camera::SetDestination(int xpos , int ypos) {
 
 void Camera::SetViewPos(int xpos , int ypos) {
    view_area.SetPos(xpos,ypos);
-   QueueUserMessage(this , TOPIC_CAMERA , CAMERA_VIEW_MOVED);
+   RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_MOVED));
    SetRedrawFlag();
 }
 
@@ -78,14 +78,14 @@ void Camera::PerformMove() {
    if (move_time > 0.0) {
       if (time_since_prev_pos >= move_time) {
          SetViewPos(dest_x , dest_y);
-         QueueUserMessage(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);
+         RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED));
          move_time = 0.0;
       } else {
          const double t = time_since_prev_pos;
          double curr_x = prev_x + xvel*t + (xacc/2.0)*(t*t);
          double curr_y = prev_y + yvel*t + (yacc/2.0)*(t*t);
          SetViewPos((int)curr_x , (int)curr_y);
-//         QueueUserMessage(this , TOPIC_CAMERA , CAMERA_VIEW_MOVED);// SetViewPos sends CAMERA_VIEW_MOVED already
+//         RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_MOVED));// SetViewPos sends CAMERA_VIEW_MOVED already
       }
    }
 }
@@ -249,7 +249,7 @@ void Camera::AccMoveViewTlxTo(int xpos , int ypos , double time) {
    if (time <= 0.0) {
       SetViewPos(dest_x,dest_y);
       move_time = 0.0;
-      QueueUserMessage(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);
+      RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED));
       return;
    }
    move_time = time;
@@ -284,7 +284,7 @@ void Camera::MoveViewTlxTo(int xpos , int ypos , double time) {
    if (time <= 0.0) {
       SetViewPos(dest_x,dest_y);
       move_time = 0.0;
-      QueueUserMessage(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);
+      RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED));
       return;
    }
    move_time = time;
@@ -457,7 +457,7 @@ void ZoomCamera::PerformZoom() {
          SetDestination(dvcx - dest_w/2 , dvcy - dest_h/2);
          SetViewPos(dest_x,dest_y);
          zoom_time = 0.0;
-         QueueUserMessage(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
+         RaiseEvent(WidgetMsg(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED));
       } else {
          const double t = time_since_prev_zoom;
          double curr_w = prev_w + wvel*t + (wacc/2.0)*(t*t);
@@ -467,7 +467,7 @@ void ZoomCamera::PerformZoom() {
          SetViewDimensions(cw,ch);
          SetDestination(dvcx - cw/2 , dvcy - ch/2);
          SetViewPos(dest_x,dest_y);
-         QueueUserMessage(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_CHANGED);
+         RaiseEvent(WidgetMsg(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_CHANGED));
       }
       ResetDisplayArea();
    }
@@ -750,7 +750,7 @@ void ZoomCamera::AccZoomTo(int width , int height , double time , int center_x ,
       SetViewPos(dest_x,dest_y);
       ResetDisplayArea();
       zoom_time = 0.0;
-      QueueUserMessage(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
+      RaiseEvent(WidgetMsg(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED));
       return;
    }
    zoom_time = time;
@@ -792,7 +792,7 @@ void ZoomCamera::MoveZoomTo(int width , int height , double time , int center_x 
       SetViewPos(dest_x,dest_y);
       ResetDisplayArea();
       zoom_time = 0.0;
-      QueueUserMessage(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
+      RaiseEvent(WidgetMsg(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED));
       return;
    }
    zoom_time = time;
@@ -827,7 +827,7 @@ void ZoomCamera::SetZoomCenter(int center_x , int center_y) {
    SetDestination(dvcx - view_area.W()/2 , dvcy - view_area.H()/2);
    SetViewPos(dest_x,dest_y);
    zoom_time = 0.0;
-   QueueUserMessage(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
+   RaiseEvent(WidgetMsg(this , TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED));
 }
 
 

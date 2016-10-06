@@ -139,7 +139,13 @@ void WidgetArea::PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MAR
 	Rectangle r = GetCellRectangle(hcell , vcell);
 	if (r.W() && r.H()) {
       if (img) {
+         if (has_image_alpha) {
+            win->SetPMAlphaBlender();
+         }
          win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
+         if (has_image_alpha) {
+            win->RestoreLastBlendingState();
+         }
       }
       ///win->DrawRectangle(r , 1.0 , EagleColor(0,255,0));
 	}
@@ -147,12 +153,25 @@ void WidgetArea::PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MAR
 
 
 
-void WidgetArea::PaintImages(EagleGraphicsContext* win , int x , int y) const {
+void WidgetArea::PaintImages(EagleGraphicsContext* win , int x , int y , int flags) const {
+   if (has_image_alpha) {
+      win->SetPMAlphaBlender();
+   }
 	for (int celly = 0 ; celly < 3 ; ++celly) {
 		for (int cellx = 0 ; cellx < 3 ; ++cellx ) {
-			PaintImage(win , (MARGIN_HCELL)cellx , (MARGIN_VCELL)celly , x , y , 0);
+         Rectangle r = GetCellRectangle((MARGIN_HCELL)cellx , (MARGIN_VCELL)celly);
+         if (r.W() && r.H()) {
+            EagleImage* img = GetCellImage((MARGIN_HCELL)cellx , (MARGIN_VCELL)celly);
+            if (img) {
+               win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
+            }
+            ///win->DrawRectangle(r , 1.0 , EagleColor(0,255,0));
+         }
 		}
 	}
+   if (has_image_alpha) {
+      win->RestoreLastBlendingState();
+   }
 }
 
 

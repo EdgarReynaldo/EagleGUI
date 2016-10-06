@@ -9,6 +9,10 @@ using std::ostringstream;
 #include <string>
 using std::string;
 
+
+DEFINE_TEST(RecordInputTestMain , "Recorded Input Test");
+
+
 int RecordInputTestMain(int argc , char** argv) {
    
    (void)argc;

@@ -80,10 +80,8 @@ public :
    WidgetArea& operator=(const WidgetArea& a);
 
    void MoveBy(int dx , int dy);
-	const Rectangle& OuterArea() const {return outer_area;}
-	const Rectangle& InnerArea() const {return inner_area;}
-///	Rectangle& OuterArea() {return outer_area;}
-///	Rectangle& InnerArea() {return inner_area;}
+	Rectangle OuterArea() const {return outer_area;}
+	Rectangle InnerArea() const {return inner_area;}
 	int       W() const {return outer_area.W();}
 	int       H() const {return outer_area.H();}
 	Rectangle   GetCellRectangle (MARGIN_CELL cell) const ;
@@ -93,7 +91,7 @@ public :
 	void Paint(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell, EagleColor col , int x , int y) const ;
 	void PaintAll(EagleGraphicsContext* win , EagleColor col , int x , int y) const;
 	void PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell , int x , int y , int flags) const;
-	void PaintImages(EagleGraphicsContext* win , int x , int y) const;
+	void PaintImages(EagleGraphicsContext* win , int x , int y , int flags) const;
 	void SetImage(EagleImage* img , MARGIN_HCELL hcell , MARGIN_VCELL vcell);
 	void SetImages(EagleImage* imgs[3][3]);
    void SetImagesHaveAlpha(bool has_alpha);

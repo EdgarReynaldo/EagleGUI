@@ -3,6 +3,11 @@ Notes for Eagle 5 development
 
 Major issues
 
+-2. GuiButton uses Area hit detection, but not well - it should use a single Area* that it checks for Contains(msx,msy)
+      Combine with BasicButton? BasicButton already does this. GuiButton should be simpler I think.
+
+-1. EagleSystem doesn't have functions to free resources early - it only releases them on destruction
+
 0. Building with MSVC
 
 1. EAGLE_LINK_TYPE (necessary for 0)
@@ -24,9 +29,11 @@ somewhere....
 
 3. Create a widget factory that tracks widgets and frees them so the gui and layouts don't have to?
  - Mostly complete
-
+ - Layouts no longer manage widget memory. Don't know what I was thinking with that one.
 
 TODO : Milestones necessary for development
+
+0. namespace EAGLE?
 
 1. Finish basic widget set
 
@@ -35,10 +42,13 @@ TODO : Milestones necessary for development
       b - Radio Button
       c - Menu, MenuItem, MenuBar
       d - WrapText , EditText
-      e - ScrollArea , ScrollBar(edit it to work as a standalone scroller if desired)
+      e - ScrollArea , ScrollBar(edit it to work as a standalone scroller if desired - wait, what does that mean? ICR)
       f - ZoomCamera (might want ScrollArea first)
       f - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
       g - PinLayout (use alignment) , NPLayout , MenuLayout (might want to use PinLayout)
+      h - Decorator , BorderDecorator
+      i - TextDecorator, TextButton??? Make BasicButton support text?
+      j - Slider, SliderKnob - DragButton
       
    COMPLETE : 
       A - BasicButton , GuiButton , IconButton , ScrollButton
@@ -58,3 +68,11 @@ TODO : Milestones necessary for development
    C - Premake http://premake.github.io/ (looks like it is under active development, with new features, and lots of compiler support)
    D - Autotools? You're kidding right?
 
+5- Backend support
+   A - SDL 2.0
+   B - SFML
+   C - ???
+
+6. Platform support - already mostly possible due to Allegro's multi platform support
+   A. OSX
+   B. Linux

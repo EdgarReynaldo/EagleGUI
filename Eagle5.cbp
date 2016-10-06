@@ -130,8 +130,10 @@
 		<Unit filename="include/Eagle/Gui/Button/IconButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/RadioButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/ScrollButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/TextButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Camera.hpp" />
 		<Unit filename="include/Eagle/Gui/Decorators/Decorator.hpp" />
+		<Unit filename="include/Eagle/Gui/Decorators/TextDecorator.hpp" />
 		<Unit filename="include/Eagle/Gui/Factory/WidgetFactory.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FlowLayout.hpp" />
@@ -194,8 +196,10 @@
 		<Unit filename="src/Gui/Button/IconButton.cpp" />
 		<Unit filename="src/Gui/Button/RadioButton.cpp" />
 		<Unit filename="src/Gui/Button/ScrollButton.cpp" />
+		<Unit filename="src/Gui/Button/TextButton.cpp" />
 		<Unit filename="src/Gui/Camera.cpp" />
 		<Unit filename="src/Gui/Decorator/Decorator.cpp" />
+		<Unit filename="src/Gui/Decorator/TextDecorator.cpp" />
 		<Unit filename="src/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />

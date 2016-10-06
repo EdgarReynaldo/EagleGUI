@@ -7,6 +7,9 @@
 
 #include "TextTestMain.hpp"
 
+DEFINE_TEST(TextTestMain , "Simple Text Test");
+
+
 
 int TextTestMain(int argc , char** argv) {
 

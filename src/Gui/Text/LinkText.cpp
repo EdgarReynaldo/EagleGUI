@@ -135,11 +135,12 @@ void LinkText::LaunchLink() {
       link = true;
    }
    if (link) {
+      /// TODO : Launching links only works on Windows, there is no code for other platforms yet
 #ifdef EAGLE_WIN32
       string s2 = string("start ") + s1;
       system(s2.c_str());
 #endif
-      QueueUserMessage(this , TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
+      RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , LINK_LAUNCHED));
    }
    
 }

@@ -32,7 +32,7 @@
 
 #include <iostream>
 #include <string>
-
+#include <climits>
 
 
 class WidgetHandler;
@@ -52,6 +52,8 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
 
 class Layout : public WidgetBase {
 
+   friend class Decorator;
+
 protected :
    
    LAYOUT_ATTRIBUTES attributes;
@@ -59,12 +61,8 @@ protected :
    HALIGNMENT halign;
    VALIGNMENT valign;
 
-///   bool size_fixed;/// TODO : REMOVE : What purpose does this serve?
-
    std::vector<WidgetBase*> wchildren;
-///   std::map<WidgetBase* , bool> delete_map;/// TODO : FIXME : REMOVE
-                                              /// - A layout should not be a widget memory manager, that was just a dumb idea
-   
+
    WidgetHandler* whandler;
 
 
@@ -121,10 +119,10 @@ public :
    Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea);
 
    
-   /// Widget may be null for PlaceWidget
-   /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
    void Resize(unsigned int nsize);
 
+   /// Widget may be null for PlaceWidget
+   /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
    virtual void PlaceWidget(WidgetBase* widget , int slot);
    virtual void AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary
 

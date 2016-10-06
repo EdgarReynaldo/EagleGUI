@@ -33,14 +33,13 @@ enum SPLITTER_TYPE {
    SPLITTER_HORIZONTAL = 1// splitter is horizontal (top and bottom areas)
 };
 
-typedef void (*SPLITTER_DRAW_FUNC) (EagleGraphicsContext* window , Rectangle divider_rect , SPLITTER_TYPE type , const WidgetColorset& colors);
+typedef void (*SPLITTER_DRAW_FUNC) (EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , const WidgetColorset& colors);
 
-void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , SPLITTER_TYPE type , const WidgetColorset& colors);
 
 
 class TwoWaySplitter : public Layout {
    
-private :
+protected :
    SPLITTER_TYPE splitter_type;
    SPLITTER_DRAW_FUNC draw_func;
    
@@ -59,6 +58,11 @@ private :
    EagleGraphicsContext* mouse_window;
    int owned_pointer_count;
    
+   
+   virtual void ReserveSlots(int nslots) {
+      (void)nslots;
+      Layout::ReserveSlots(2);
+   }
 
 public :
    Rectangle GetHandleArea();

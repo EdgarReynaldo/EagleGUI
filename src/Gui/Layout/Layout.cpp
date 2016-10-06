@@ -367,12 +367,10 @@ void Layout::EmptySlot(int slot) {
 
 
 void Layout::RemoveWidget(WidgetBase* widget) {
-   EAGLE_ASSERT(widget);
+   if (!widget) {return;}
    int index = WidgetIndex(widget);
-   EAGLE_ASSERT(index != -1);
-   if (index != -1) {
-      PlaceWidget(0 , index);
-   }
+   if (index == -1) {return;}
+   PlaceWidget(0 , index);
 }
 
 

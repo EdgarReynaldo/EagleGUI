@@ -126,7 +126,8 @@ int BasicScroller::PrivateCheckInputs() {
 
 void BasicScroller::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    ///void WidgetBorderPainterShadow(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
-   WidgetBorderPainterContrast(win , scroller_area , WCols() , xpos , ypos);
+   ContrastBorderBackgroundPainter painter;
+   painter.PaintBackground(win , scroller_area , WCols() , xpos , ypos);
    Rectangle r = scroller_area.InnerArea();
    r.MoveBy(xpos,ypos);
    win->DrawFilledRectangle(r , WCols()[SDCOL]);
@@ -149,7 +150,7 @@ int BasicScroller::PrivateUpdate(double tsec) {
          int num_repeat = dt/repeat_rate;
          for (int i = 0 ; i < num_repeat ; ++i) {
             ScrollBy(repeat_scroll_increment);
-///            QueueUserMessage(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
+///            RaiseEvent(WidgetMsg(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED));
          }
          repeat_previous += (double)num_repeat*repeat_rate;
          EAGLE_ASSERT(repeat_previous <= repeat_elapsed);
@@ -225,7 +226,7 @@ void BasicScroller::SetScrollPercent(float new_percent) {
    scroll_val = (int)(scroll_percent*scroll_max);
    ResetHandleArea();
    SetRedrawFlag();
-   QueueUserMessage(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
+   RaiseEvent(WidgetMsg(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED));
 }
 
 
@@ -237,7 +238,7 @@ void BasicScroller::SetScroll(int value) {
    scroll_percent = (float)scroll_val/scroll_max;
    ResetHandleArea();
    SetRedrawFlag();
-   QueueUserMessage(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
+   RaiseEvent(WidgetMsg(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED));
 }
 
 

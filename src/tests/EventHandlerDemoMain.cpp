@@ -10,6 +10,8 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "allegro5/allegro.h"
 
+DEFINE_TEST(EventHandlerDemoMain , "Event Handler monitor test");
+
 
 
 int EventHandlerDemoMain(int argc , char** argv) {
@@ -17,18 +19,18 @@ int EventHandlerDemoMain(int argc , char** argv) {
    (void)argc;
    (void)argv;
 
-   Allegro5System* sys = new Allegro5System();
    if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
       EagleLog() << "Failed to fully setup. " << std::endl;
       delete sys;
       return 2;
    }
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_OPENGL);
+   Allegro5GraphicsContext a5window(800,600,EAGLE_OPENGL);
+
+   EagleGraphicsContext* win = &a5window;
    
    if (!win) {
       EagleLog() << "Failed to create window." << std::endl;
-      delete sys;
       return 1;
    }
 
@@ -38,7 +40,6 @@ int EventHandlerDemoMain(int argc , char** argv) {
    EagleFont* font = win->LoadFont("Data/fonts/verdana.ttf" , 16 , 0);
    if (!font) {
       EagleLog() << "Failed to load font." << std::endl;
-      delete sys;
       return -1;
    }
 
@@ -80,15 +81,12 @@ int EventHandlerDemoMain(int argc , char** argv) {
          }
          if (ev.type == EAGLE_EVENT_TIMER) {
             redraw = true;
-            ++count;
          }
       } while (!sys->UpToDate());
       
       
       
    } while (!close);
-
-   delete sys;
 
    return 0;
 }

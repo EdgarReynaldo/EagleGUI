@@ -20,7 +20,7 @@ void BasicScrollButton::Reset() {
 
 void BasicScrollButton::ResetTriangle() {
    Triangle* t = &our_click_area;
-   const Rectangle* r = &area.InnerArea();
+   const Rectangle r = area.InnerArea();
    int x1 = 0;
    int y1 = 0;
    int x2 = 0;
@@ -30,11 +30,11 @@ void BasicScrollButton::ResetTriangle() {
    if (scroll_horizontal) {
       /// Left right scroller
       x1 = 0;
-      y1 = r->H()/2;
-      x2 = r->W();
+      y1 = r.H()/2;
+      x2 = r.W();
       x3 = x2;
       y2 = 0;
-      y3 = r->H();
+      y3 = r.H();
       if (scroll_up_or_left) {
          /// Scroll button points left
          /// Already set up for triangle facing left
@@ -42,18 +42,18 @@ void BasicScrollButton::ResetTriangle() {
       else {
          /// Scroll button points right
          /// Flip x coords
-         x1 = r->W();
-         x2 = r->W() - x2;
+         x1 = r.W();
+         x2 = r.W() - x2;
          x3 = x2;
       }
    }
    else {
       /// Up down scroller
-      x1 = r->W()/2;
+      x1 = r.W()/2;
       y1 = 0;
-      x2 = r->W();
+      x2 = r.W();
       x3 = 0;
-      y2 = r->H();
+      y2 = r.H();
       y3 = y2;
       if (scroll_up_or_left) {
          /// Scroll button points up
@@ -62,8 +62,8 @@ void BasicScrollButton::ResetTriangle() {
       else {
          /// Scroll button points down
          /// Flip y coords
-         y1 = r->H();
-         y2 = r->H() - y2;
+         y1 = r.H();
+         y2 = r.H() - y2;
          y3 = y2;
       }
    }
@@ -167,16 +167,29 @@ int BasicScrollButton::PrivateUpdate(double tsec) {
 
 
 void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
-   
+
    const WidgetMsg clickmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
    const WidgetMsg heldmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+
+   const WidgetMsg releasemessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
 
    if ((wmsg == clickmessage) || (wmsg == heldmessage)) {
       Scroll();
    }
+
+   if (wmsg == clickmessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
+   }
+   else if (wmsg == heldmessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
+   }
+   else if (wmsg == releasemessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
+   }
    WidgetBase::QueueUserMessage(wmsg);
 }
 
+      
 
 
 void BasicScrollButton::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {

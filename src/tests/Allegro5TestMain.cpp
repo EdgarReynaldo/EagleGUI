@@ -7,6 +7,9 @@
 
 #include <cstdio>
 
+DEFINE_TEST(Allegro5TestMain , "Simple Allegro 5 Graphics Test");
+
+
 int Allegro5TestMain(int argc , char** argv) {
 
    if (!al_init()) {return -1;}
@@ -41,7 +44,7 @@ int Allegro5TestMain(int argc , char** argv) {
    win->Clear(EagleColor(0,0,0));
 
    t1 = al_get_time();
-   EagleImage* splash_img = win->LoadImageFromFile("Data/jpgImages/GoodVsEvil.jpg" , VIDEO_IMAGE);
+   EagleImage* splash_img = win->LoadImageFromFile("Data/SquireImages/GoodVsEvil.jpg" , VIDEO_IMAGE);
    t2 = al_get_time();
    printf("win->LoadImageFromFile took %f seconds\n" , t2 - t1);
    
@@ -66,7 +69,7 @@ int Allegro5TestMain(int argc , char** argv) {
 
    win->Clear(EagleColor(0,0,0));
    
-   win->DrawTextString(font , "Hello consola.ttf!!!111~~~" , SCREEN_WIDTH/2 , SCREEN_HEIGHT/2 , EagleColor(255,127,255),
+   win->DrawTextString(font , "Hello verdana.ttf!!!111~~~" , SCREEN_WIDTH/2 , SCREEN_HEIGHT/2 , EagleColor(255,127,255),
                  HALIGN_CENTER , VALIGN_CENTER);
                  
    win->FlipDisplay();

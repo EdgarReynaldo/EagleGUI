@@ -49,7 +49,7 @@ int NewGuiTestMain(int argc , char** argv) {
       warea.SetImage(npimage2 , (MARGIN_HCELL)(i/3) , (MARGIN_VCELL)(i%3));
    }
    win->Clear(EagleColor(0,0,255));
-   warea.PaintImages(win , 0 , 0);
+   warea.PaintImages(win , 0 , 0 , DRAW_NORMAL);
    win->FlipDisplay();
    sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
 
@@ -58,7 +58,8 @@ int NewGuiTestMain(int argc , char** argv) {
    
    win->Clear(EagleColor(255,255,255));
    win->SetPMAlphaBlender();
-   WidgetNPPainter(win , warea , WidgetColorset() , 0 , 0);
+   NinePatchImageBackgroundPainter np_painter;
+   np_painter.PaintBackground(win , warea , WidgetColorset() , 0 , 0);
    win->RestoreLastBlendingState();
    win->FlipDisplay();
    sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
@@ -131,8 +132,7 @@ int NewGuiTestMain(int argc , char** argv) {
    text1.SetText("This Is A \nMultiline Text String\nDumb Text Test" , &bfont);
    text1.SetMarginsContractFromOuter(10,10,10,10);
    text1.SetBgImages(np.imgs);
-   text1.SetImagesHaveAlpha(true);
-   text1.SetBgDrawFunc(WidgetNPPainter);
+   text1.SetBackgroundDrawType(BG_DRAW_BACKGROUND_NINEPATCH);
 
    r.Resize(9);
    r.PlaceWidget(&b1 , 0 , LayoutRectangle(0.0,0.0,0.4,0.4));
@@ -152,7 +152,7 @@ int NewGuiTestMain(int argc , char** argv) {
    
    Layout* layout = gui.GetRootLayout();
    layout->SetMarginsContractFromOuter(20,20,20,20);
-   layout->SetBgDrawFunc(WidgetBorderPainterContrast);
+   layout->SetBackgroundDrawType(BG_DRAW_BACKGROUND_CONTRAST_BORDER);
    
    EagleLog() << text1 << std::endl;
 
@@ -186,6 +186,7 @@ int NewGuiTestMain(int argc , char** argv) {
             WidgetMsg wmsg = gui.TakeNextMessage();
             EagleLog() << wmsg << endl;
             if (wmsg.From() == &b1) {
+               /// Respond to widget message from b1 here
 ///               EagleLog() << b1 << endl;
             }
          }

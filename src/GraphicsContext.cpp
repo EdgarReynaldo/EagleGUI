@@ -24,7 +24,7 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/StringWork.hpp"
-#include "Eagle/Gui/Text.hpp"
+#include "Eagle/Gui/Text/GlobalText.hpp"
 
 #include <vector>
 using std::vector;

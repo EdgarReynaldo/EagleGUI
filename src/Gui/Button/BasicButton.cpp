@@ -152,9 +152,9 @@ int BasicButton::PrivateCheckInputs() {
          user_activated = false;
          focuskey_activated = false;
          pointer_activated = false;
-      } else {
+      } else {/// HELD
          down_time_left = spring_duration;
-///         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+///         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));/// Don't send HELD message - it just spams everything
       }
       return DIALOG_OKAY;
    }
@@ -280,7 +280,7 @@ int BasicButton::PrivateUpdate(double tsec) {
             double dt = repeat_elapsed - repeat_previous;
             int num_repeat = dt/repeat_rate;
             for (int i = 0 ; i < num_repeat ; ++i) {
-               QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
             }
             repeat_previous += (double)num_repeat*repeat_rate;
             EAGLE_ASSERT(repeat_previous <= repeat_elapsed);
@@ -297,12 +297,6 @@ int BasicButton::PrivateUpdate(double tsec) {
       }
    }
    return DIALOG_OKAY;
-}
-
-
-
-void BasicButton::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic , int messages) {
-   WidgetBase::QueueUserMessage(widget_address , widget_topic , messages);
 }
 
 
@@ -426,15 +420,15 @@ void BasicButton::SetButtonState(bool hover , bool up) {
    bool oldup = (btn_state % 2 == 0);
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
-          QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+          RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED));
       }
       else if (btn_action_type == SPRING_BTN) {
          if (!up) {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
             repeat_elapsed = repeat_previous = 0.0;
          }
          else {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
          }
       }
       SetBgRedrawFlag();
@@ -442,7 +436,7 @@ void BasicButton::SetButtonState(bool hover , bool up) {
 /** NOTE : THIS MAKES A BUTTON THAT IS DOWN SEND A HELD MESSAGE WHEN THE HOVER CHANGES - NOT USEFUL
    else {
       if (!up) {
-         QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
       }
    }
 //*/
@@ -450,10 +444,10 @@ void BasicButton::SetButtonState(bool hover , bool up) {
       WidgetBase::SetHoverState(hover);
       if (hover_message_enabled) {
          if (hover) {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER));
          }
          else {
-            QueueUserMessage(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER));
          }
       }
       if (btn_class == BUTTON_CLASS_HOVER) {
