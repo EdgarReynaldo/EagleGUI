@@ -1,5 +1,7 @@
 
 
+#include "Eagle/Gui/WidgetHandler.hpp"
+
 #include "Eagle/Gui/Decorators/Decorator.hpp"
 
 
@@ -24,8 +26,30 @@ void WidgetDecorator::PrivateRaiseEvent(WidgetMsg msg) {
 
 
    
+WidgetDecorator::WidgetDecorator() :
+      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
+      decorated_widget(0),
+      layout(&default_dumb_layout),
+      default_dumb_layout()
+{
+   
+}
+
+
+
+WidgetDecorator::WidgetDecorator(std::string name) :
+      WidgetBase(name),
+      decorated_widget(0),
+      layout(&default_dumb_layout),
+      default_dumb_layout()
+{
+   
+}
+
+
+
 WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate) :
-      WidgetBase(StringPrintF("WidgetDecoratorBase at %p" , this)),
+      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
       decorated_widget(0),
       layout(&default_dumb_layout),
       default_dumb_layout()
@@ -36,7 +60,7 @@ WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate) :
 
 
 WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate , Layout* widget_layout) :
-      WidgetBase(StringPrintF("WidgetDecoratorBase at %p" , this)),
+      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
       decorated_widget(0),
       layout(&default_dumb_layout),
       default_dumb_layout()
@@ -97,9 +121,21 @@ void WidgetDecorator::DecorateWidget(WidgetBase* widget_to_decorate) {
 
 
 void WidgetDecorator::SetLayout(Layout* new_layout) {
+
+   if (layout) {
+      layout->SetParent(0);
+   }
+
    WidgetBase* old_decorated_widget = decorated_widget;
    DecorateWidget(0);
-   layout = new_layout?new_layout:&default_dumb_layout;
+
+   if (!new_layout) {
+      new_layout = &default_dumb_layout;
+   }
+   layout = new_layout;
+   layout->SetParent(this);
+   layout->WidgetBase::SetWidgetArea(area.InnerArea() , false);
+   
    DecorateWidget(old_decorated_widget);
 }
    
@@ -206,9 +242,7 @@ void WidgetDecorator::SetWidgetArea(int xpos , int ypos , int width , int height
 
    WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    
-   if (decorated_widget) {
-      decorated_widget->SetWidgetArea(area.InnerArea() , false);
-   }
+   layout->WidgetBase::SetWidgetArea(area.InnerArea() , false);
 ///   EAGLE_ASSERT(decorated_widget);
 ///   decorated_widget->SetWidgetArea(xpos,ypos,width,height,notify_layout);
 
@@ -227,9 +261,7 @@ void WidgetDecorator::SetMarginsExpandFromInner(int left , int right , int top ,
 
    WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
 
-   if (decorated_widget) {
-      decorated_widget->SetWidgetArea(area.InnerArea() , false);
-   }
+   layout->WidgetBase::SetWidgetArea(area.InnerArea() , false);
 ///   EAGLE_ASSERT(decorated_widget);
 ///   decorated_widget->SetMarginsExpandFromInner(left,right,top,bottom);
 
@@ -248,9 +280,8 @@ void WidgetDecorator::SetMarginsContractFromOuter(int left , int right , int top
 
    WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
 
-   if (decorated_widget) {
-      decorated_widget->SetWidgetArea(area.InnerArea() , false);
-   }
+   layout->WidgetBase::SetWidgetArea(area.InnerArea() , false);
+
 ///   EAGLE_ASSERT(decorated_widget);
 ///   decorated_widget->SetMarginsContractFromOuter(left,right,top,bottom);
 
@@ -364,7 +395,7 @@ void WidgetDecorator::SetFlagStates(UINT FLAGS , bool state) {
 
 
 
-void WidgetDecorator::SetEnabledState      (bool state) {
+void WidgetDecorator::SetEnabledState(bool state) {
    WidgetBase::SetEnabledState(state);
    if (decorated_widget) {
       decorated_widget->SetEnabledState(state);
@@ -373,7 +404,7 @@ void WidgetDecorator::SetEnabledState      (bool state) {
 
 
 
-void WidgetDecorator::SetVisibilityState   (bool state) {
+void WidgetDecorator::SetVisibilityState(bool state) {
    WidgetBase::SetVisibilityState(state);
    if (decorated_widget) {
       decorated_widget->SetVisibilityState(state);
@@ -382,16 +413,35 @@ void WidgetDecorator::SetVisibilityState   (bool state) {
 
 
 
-void WidgetDecorator::SetHoverState        (bool state) {
-   WidgetBase::SetHoverState(state);
-   if (decorated_widget) {
-      decorated_widget->SetHoverState(state);
+void WidgetDecorator::SetHoverState(bool state) {
+   if (!state) {
+      if (decorated_widget) {
+         decorated_widget->SetHoverState(false);
+      }
+      WidgetBase::SetHoverState(false);
+      return;
+   }
+
+   WidgetBase::SetHoverState(true);
+
+   WidgetHandler* wh = NearestParentGui();
+   if (wh) {
+      int mx = wh->GetMouseX();
+      int my = wh->GetMouseY();
+      if (decorated_widget->OuterArea().Contains(mx,my)) {
+         decorated_widget->SetHoverState(true);
+      }
+   }
+   else {
+      if (decorated_widget) {
+         decorated_widget->SetHoverState(true);
+      }
    }
 }
 
 
 
-void WidgetDecorator::SetFocusState        (bool state) {
+void WidgetDecorator::SetFocusState(bool state) {
    WidgetBase::SetFocusState(state);
    if (decorated_widget) {
       decorated_widget->SetFocusState(state);
@@ -400,7 +450,7 @@ void WidgetDecorator::SetFocusState        (bool state) {
 
 
 
-void WidgetDecorator::SetMoveableState     (bool state) {
+void WidgetDecorator::SetMoveableState(bool state) {
    WidgetBase::SetMoveableState(state);
    if (decorated_widget) {
       decorated_widget->SetMoveableState(state);
@@ -409,7 +459,7 @@ void WidgetDecorator::SetMoveableState     (bool state) {
 
 
 
-void WidgetDecorator::SetResizeableState   (bool state) {
+void WidgetDecorator::SetResizeableState(bool state) {
    WidgetBase::SetResizeableState(state);
    if (decorated_widget) {
       decorated_widget->SetResizeableState(state);
@@ -418,7 +468,7 @@ void WidgetDecorator::SetResizeableState   (bool state) {
 
 
 
-void WidgetDecorator::SetNeedsRedrawState  (bool state) {
+void WidgetDecorator::SetNeedsRedrawState(bool state) {
    WidgetBase::SetNeedsRedrawState(state);
    if (decorated_widget) {
       decorated_widget->SetNeedsRedrawState(state);
@@ -436,7 +486,7 @@ void WidgetDecorator::SetNeedsBgRedrawState(bool state) {
 
 
 
-void WidgetDecorator::SetAllowCloseState   (bool state) {
+void WidgetDecorator::SetAllowCloseState(bool state) {
    WidgetBase::SetAllowCloseState(state);
    if (decorated_widget) {
       decorated_widget->SetAllowCloseState(state);
@@ -445,7 +495,7 @@ void WidgetDecorator::SetAllowCloseState   (bool state) {
 
 
 
-void WidgetDecorator::SetAllowOverlapState (bool state) {
+void WidgetDecorator::SetAllowOverlapState(bool state) {
    WidgetBase::SetAllowOverlapState(state);
    if (decorated_widget) {
       decorated_widget->SetAllowOverlapState(state);
@@ -453,6 +503,9 @@ void WidgetDecorator::SetAllowOverlapState (bool state) {
 }
 
 
+
+
+/**
 
 void WidgetDecorator::SetRedrawFlag() {
    WidgetBase::SetRedrawFlag();
@@ -515,7 +568,7 @@ void WidgetDecorator::ToggleWidgetVisibility() {
    }
 }
 
-
+//*/
 
 bool WidgetDecorator::AcceptsFocus() {
    if (decorated_widget) {

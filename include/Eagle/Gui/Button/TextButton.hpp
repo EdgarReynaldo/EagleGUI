@@ -6,6 +6,8 @@
 #define TextButton_HPP
 
 
+#include "Eagle/Gui/Decorators/TextDecorator.hpp"
+
 #include "Eagle/Gui/Button/BasicButton.hpp"
 
 
@@ -13,6 +15,17 @@
 
 
 
+class TextButton : public TextDecorator {
+   
+public :
+   
+   BasicButton default_button;
+   
+   BasicButton* our_button;
+   
+   
+   
+};
 
 
 

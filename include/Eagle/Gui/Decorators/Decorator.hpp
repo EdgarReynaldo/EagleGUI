@@ -29,6 +29,10 @@ protected :
 
 public :
    
+   WidgetDecorator();
+   WidgetDecorator(std::string name);
+
+   
    WidgetDecorator(WidgetBase* widget_to_decorate);
    WidgetDecorator(WidgetBase* widget_to_decorate , Layout* widget_layout);
    WidgetDecorator(std::string decorator_name , WidgetBase* widget_to_decorate);
@@ -40,8 +44,6 @@ public :
    void DecorateWidget(WidgetBase* widget_to_decorate);
    
    void SetLayout(Layout* new_layout);
-
-
 
    /// Forwarding functions inherited from WidgetBase
 
@@ -74,33 +76,35 @@ public :
    virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
    virtual void SetPrivateColorset(const WidgetColorset& colors);
 
-   virtual void UseColorset(bool use_public_colorset);// false means use private colorset
+   virtual void UseColorset(bool use_public_colorset);/// false means use private colorset
    virtual void UsePrivateColorset(bool use_priv_colorset);
 
    virtual void SetFlagStates(UINT FLAGS , bool state);/// (Which flags set to which state)
    
    /// Default behaviour for state setters          Behaviour regarding redraw state
-   virtual void SetEnabledState      (bool state);// Sets bg redraw flag
-   virtual void SetVisibilityState   (bool state);// Sets bg redraw flag
-   virtual void SetHoverState        (bool state);// /* Does not set any redraw flag */ - OLD:Sets redraw flag and (false) sets bg redraw flag
-   virtual void SetFocusState        (bool state);// Sets redraw flag and (false) sets bg redraw flag
-   virtual void SetMoveableState     (bool state);// Does not set redraw flag
-   virtual void SetResizeableState   (bool state);// Does not set redraw flag
+   virtual void SetEnabledState      (bool state);/// Sets bg redraw flag
+   virtual void SetVisibilityState   (bool state);/// Sets bg redraw flag
+   virtual void SetHoverState        (bool state);/// Does not set any redraw flag  - OLD:Sets redraw flag and (false) sets bg redraw flag
+   virtual void SetFocusState        (bool state);/// Sets redraw flag and (false) sets bg redraw flag
+   virtual void SetMoveableState     (bool state);/// Does not set redraw flag
+   virtual void SetResizeableState   (bool state);/// Does not set redraw flag
    virtual void SetNeedsRedrawState  (bool state);
-   virtual void SetNeedsBgRedrawState(bool state);// (true) sets redraw flag
-   virtual void SetAllowCloseState   (bool state);// Does not set redraw flag
-   virtual void SetAllowOverlapState (bool state);// Does not set redraw flag
+   virtual void SetNeedsBgRedrawState(bool state);/// (true) sets redraw flag
+   virtual void SetAllowCloseState   (bool state);/// Does not set redraw flag
+   virtual void SetAllowOverlapState (bool state);/// Does not set redraw flag
 
-   virtual void SetRedrawFlag();// Shortcut to SetNeedsRedrawState(true)
-   virtual void SetBgRedrawFlag();// Shortcut to SetNeedsBgRedrawState(true)
-   virtual void ClearRedrawFlag();// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
+/**
+   virtual void SetRedrawFlag();/// Shortcut to SetNeedsRedrawState(true)
+   virtual void SetBgRedrawFlag();/// Shortcut to SetNeedsBgRedrawState(true)
+   virtual void ClearRedrawFlag();/// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
 
-   virtual void SetRedrawAllFlag();// To tell parent widget handlers to redraw all widgets
+   virtual void SetRedrawAllFlag();/// To tell parent widget handlers to redraw all widgets
 
-   virtual void ShowWidget();// Makes the widget enabled and visible
-   virtual void HideWidget();// Makes the widget disabled and invisible
-   virtual void ToggleWidgetVisibility();// Toggles the enabled and visible state of the widget
-
+   virtual void ShowWidget();/// Makes the widget enabled and visible
+   virtual void HideWidget();/// Makes the widget disabled and invisible
+   virtual void ToggleWidgetVisibility();/// Toggles the enabled and visible state of the widget
+//*/
+   
    virtual bool AcceptsFocus();
    virtual bool IsMouseOver(int realmsx , int realmsy) const;
    

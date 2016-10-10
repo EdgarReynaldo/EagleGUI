@@ -1,37 +1,111 @@
 
 
 
-/**
+#include "Eagle/Gui/Text.hpp"
+
 #include "Eagle/Gui/Decorators/TextDecorator.hpp"
 
+#include "Eagle/Gui/WidgetHandler.hpp"
 
-
-
-
-
+#include "Eagle/StringWork.hpp"
 
 
 
 
 
 TextDecorator::TextDecorator() :
-      Decorator(StringPrintF("TextDecorator at %p" , this)),
-      text_widget(0),
+      WidgetDecorator(StringPrintF("TextDecorator at %p" , this)),
+      basic_text_widget(0),
+      default_text(),
       text_widget_layout(0),
-      dumb_text_layout(StringPrintF("TextDecorator's dumb_text_layout at %p" , &dumb_text_layout));
+      dumb_text_layout()
 {
    UseTextLayout(&dumb_text_layout);
+   UseTextWidget(&default_text);
 }
 
 
 
 TextDecorator::TextDecorator(std::string name) :
-      Decorator(name),
-      text_widget(0),
+      WidgetDecorator(name),
+      basic_text_widget(0),
+      default_text(),
       text_widget_layout(0),
-      dumb_text_layout(StringPrintF("%s's dumb_text_layout at %p" , name.c_str() , &dumb_text_layout));
+      dumb_text_layout()
 {
    UseTextLayout(&dumb_text_layout);
+   UseTextWidget(&default_text);
+}
+
+
+
+TextDecorator::TextDecorator(WidgetBase* widget_to_decorate , BasicText* basic_text) :
+      WidgetDecorator(StringPrintF("TextDecorator at %p" , this)),
+      basic_text_widget(0),
+      default_text(),
+      text_widget_layout(0),
+      dumb_text_layout()
+{
+   DecorateWidget(widget_to_decorate);
+   UseTextLayout(&dumb_text_layout);
+   UseTextWidget(basic_text);
+}
+
+
+
+TextDecorator::TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text) :
+      WidgetDecorator(name),
+      basic_text_widget(0),
+      text_widget_layout(0),
+      dumb_text_layout()
+{
+   DecorateWidget(widget_to_decorate);
+   UseTextLayout(&dumb_text_layout);
+   UseTextWidget(basic_text);
+}
+
+
+
+/// text_widget may be NULL to remove the text
+void TextDecorator::UseTextWidget(BasicText* text_widget) {
+   
+   /// Remove old widget from layout
+   if (basic_text_widget) {
+      text_widget_layout->RemoveWidget(basic_text_widget);
+      basic_text_widget->SetParent(0);
+      basic_text_widget = 0;
+   }
+   
+   if (!text_widget) {
+      text_widget = &default_text;
+   }
+   basic_text_widget = text_widget;
+   basic_text_widget->SetParent(this);
+   text_widget_layout->Resize(1);
+   text_widget_layout->PlaceWidget(basic_text_widget , 0);
+}
+
+
+
+/// layout may be NULL to use the default DumbLayout
+void TextDecorator::UseTextLayout(Layout* text_layout) {
+   
+   BasicText* old_text = basic_text_widget;
+   
+   UseTextWidget(0);
+   
+   text_widget_layout->SetParent(0);
+   
+   text_widget_layout = &dumb_text_layout;
+   if (text_layout) {
+      text_widget_layout = text_layout;
+   }
+
+   text_widget_layout->SetParent(this);
+   text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
+   
+   UseTextWidget(old_text);
+   
 }
 
 
@@ -39,12 +113,13 @@ TextDecorator::TextDecorator(std::string name) :
 int TextDecorator::PrivateHandleEvent(EagleEvent e) {
    int retmsg = DIALOG_OKAY;
    
-   retmsg |= text_widget->PrivateHandleEvent(e);
+   retmsg |= basic_text_widget->HandleEvent(e);
+
    if (!(retmsg & DIALOG_INPUT_USED)) {
-      retmsg |= text_widget_layout->PrivateHandleEvent(e);
+      retmsg |= text_widget_layout->HandleEvent(e);
    }
    if (!(retmsg & DIALOG_INPUT_USED)) {
-      retmsg |= Decorator::PrivateHandleEvent(e);
+      retmsg |= WidgetDecorator::HandleEvent(e);
    }
    return retmsg;
 }
@@ -53,25 +128,18 @@ int TextDecorator::PrivateHandleEvent(EagleEvent e) {
 
 int TextDecorator::PrivateCheckInputs() {
    int retmsg = DIALOG_OKAY;
-   
-   retmsg |= text_widget->PrivateCheckInputs();
-   if (!(retmsg & DIALOG_INPUT_USED)) {
-      retmsg |= text_widget_layout->PrivateCheckInputs();
-   }
-   if (!(retmsg & DIALOG_INPUT_USED)) {
-      retmsg |= Decorator::PrivateCheckInputs();
-   }
    return retmsg;
 }
 
 
 
 void TextDecorator::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   Decorator::PrivateDisplay(win,xpos,ypos);
-   text_widget_layout->PrivateDisplay(win,xpos,ypos);
-   if (text_widget) {
-      text_widget->PrivateDisplay(win,xpos,ypos);
-   }
+   WidgetDecorator::Display(win,xpos,ypos);
+
+   text_widget_layout->Display(win,xpos,ypos);
+
+   basic_text_widget->Display(win,xpos,ypos);
+
    ClearRedrawFlag();
 }
 
@@ -80,84 +148,168 @@ void TextDecorator::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 int TextDecorator::PrivateUpdate(double tsec) {
    int retmsg = DIALOG_OKAY;
    
-   retmsg |= Decorator::Update(tsec);
+   retmsg |= WidgetDecorator::Update(tsec);
    
    retmsg |= text_widget_layout->Update(tsec);
    
-   if (text_widget) {
-      retmsg |= text_widget->Update(tsec);
-   }
+   retmsg |= basic_text_widget->Update(tsec);
    
    return retmsg;
 }
 
 
 
-void TextDecorator::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true) {
-   Decorator::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   text_widget_layout->SetWidgetArea(InnerArea() , false);
+void TextDecorator::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetDecorator::SetWidgetArea(xpos,ypos,width,height,notify_layout);
+   text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
 }
 
 
 
-/// Changes position and outer area!!!
 void TextDecorator::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   Decorator::SetMarginsExpandFromInner(left,right,top,bottom);
-   text_widget_layout->SetWidgetArea(InnerArea() , false);
+   WidgetDecorator::SetMarginsExpandFromInner(left,right,top,bottom);
+   text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
 }
 
 
 
-// Make room in outer area for inner area first!!!
 void TextDecorator::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   Decorator::SetMarginsContractFromOuter(left,right,top,bottom);
-   text_widget_layout->SetWidgetArea(InnerArea() , false);
-}
-
-
-   
-/// layout may be NULL to use the default DumbLayout
-void TextDecorator::UseLayoutForText(Layout* text_layout) {
-   
-   /// Remove widget from old layout
-   if (text_widget_layout) {
-      text_widget_layout->PlaceWidget(0 , 0);
-   }
-   
-   if (!text_layout) {
-      text_layout = &dumb_text_layout;
-   }
-   
-   text_widget_layout = text_layout;
-   
-   text_widget_layout->SetParent(this);/// So QueueUserMessage works as expected
-   
-   text_widget_layout->SetWidgetArea(InnerArea() , false);
-   
-   text_widget_layout->Resize(1);
-   
-   text_widget_layout->PlaceWidget(text_widget , 0);/// text_widget may be NULL
-   
+   WidgetDecorator::SetMarginsContractFromOuter(left,right,top,bottom);
+   text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
 }
 
 
 
-/// text_widget may be NULL to remove the text
-void TextDecorator::UseTextWidget(BasicText* text_decorator_widget) {
-   
-   /// Remove old widget from layout
-   text_widget_layout->PlaceWidget(0 , 0);
-   
-   text_widget = text_decorator_widget;
-   
-   text_widget->SetParent(this);
-   
-   text_widget_layout->PlaceWidget(text_widget , 0);
-   
-}
 
 
+
+
+
+/**
+    void TextDecorator::SetEnabledState(bool state) {
+        SetFlagState(state , SetEnabledState);
+    }
 //*/
+
+
+
+void TextDecorator::SetEnabledState(bool state) {
+   WidgetDecorator::SetEnabledState(state);
+
+   text_widget_layout->SetEnabledState(state);
+
+   basic_text_widget->SetEnabledState(state);
+}
+
+
+
+void TextDecorator::SetVisibilityState(bool state) {
+   WidgetDecorator::SetVisibilityState(state);
+
+   text_widget_layout->SetVisibilityState(state);
+
+   basic_text_widget->SetVisibilityState(state);
+}
+
+
+
+void TextDecorator::SetHoverState(bool state) {
+
+   if (!state) {
+      basic_text_widget->SetHoverState(false);
+      text_widget_layout->SetHoverState(false);
+      WidgetDecorator::SetHoverState(false);
+      return;
+   }
+   
+   WidgetHandler* wh = NearestParentGui();
+   if (wh) {
+      int mx = wh->GetMouseX();
+      int my = wh->GetMouseY();
+
+      Rectangle r;
+
+      r = basic_text_widget->OuterArea();
+      if (r.Contains(mx,my)) {
+         basic_text_widget->SetHoverState(true);
+      }
+
+      r = text_widget_layout->OuterArea();
+      if (r.Contains(mx,my)) {
+         text_widget_layout->SetHoverState(true);
+      }
+      
+      r = OuterArea();
+      if (r.Contains(mx,my)) {
+         WidgetDecorator::SetHoverState(true);
+      }
+   }
+   else {
+      basic_text_widget->SetHoverState(true);
+      text_widget_layout->SetHoverState(true);
+      WidgetDecorator::SetHoverState(true);
+   }
+}
+
+
+
+void TextDecorator::SetFocusState(bool state) {
+   WidgetDecorator::SetFocusState(state);
+   text_widget_layout->SetFocusState(state);
+   basic_text_widget->SetFocusState(state);
+}
+
+
+
+void TextDecorator::SetMoveableState(bool state) {
+   WidgetDecorator::SetMoveableState(state);
+   text_widget_layout->SetMoveableState(state);
+   basic_text_widget->SetMoveableState(state);
+}
+
+
+
+void TextDecorator::SetResizeableState(bool state) {
+   WidgetDecorator::SetResizeableState(state);
+   text_widget_layout->SetResizeableState(state);
+   basic_text_widget->SetResizeableState(state);
+}
+
+
+
+void TextDecorator::SetNeedsRedrawState(bool state) {
+   WidgetDecorator::SetNeedsRedrawState(state);
+   text_widget_layout->SetNeedsRedrawState(state);
+   basic_text_widget->SetNeedsRedrawState(state);
+}
+
+
+
+void TextDecorator::SetNeedsBgRedrawState(bool state) {
+   WidgetDecorator::SetNeedsBgRedrawState(state);
+   text_widget_layout->SetNeedsBgRedrawState(state);
+   basic_text_widget->SetNeedsBgRedrawState(state);
+}
+
+
+
+void TextDecorator::SetAllowCloseState(bool state) {
+   WidgetDecorator::SetAllowCloseState(state);
+   text_widget_layout->SetAllowCloseState(state);
+   basic_text_widget->SetAllowCloseState(state);
+}
+
+
+
+void TextDecorator::SetAllowOverlapState(bool state) {
+   WidgetDecorator::SetAllowOverlapState(state);
+   text_widget_layout->SetAllowOverlapState(state);
+   basic_text_widget->SetAllowOverlapState(state);
+}
+
+
+
+
 
 
 

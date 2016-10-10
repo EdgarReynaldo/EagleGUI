@@ -49,7 +49,7 @@ string StringPrintF(const char* format_str , ...) {
    va_list args;
    va_start(args , format_str);
 ///int vsnprintf (char * s, size_t n, const char * format, va_list arg );
-   vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
+   _vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
    va_end(args);
    return std::string(buffer);
 }

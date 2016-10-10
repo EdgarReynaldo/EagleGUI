@@ -7,65 +7,57 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
-
 #include "Eagle/Gui/Decorators/Decorator.hpp"
+#include "Eagle/Gui/Layout/DumbLayout.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 
 
-
-class TextDecorator : public Decorator {
+class TextDecorator : public WidgetDecorator {
    
 protected :
-   BasicText* text_widget;
+   BasicText* basic_text_widget;
+   
+   BasicText default_text;
+   
    Layout* text_widget_layout;
    
    DumbLayout dumb_text_layout;
-   
-///   WidgetBase* dwidget;
-///   Layout* dwidget_layout;/// For controlling the decorated widget's position on our Decorator widget
-///   DumbLayout dumb_layout;
-   
+
+/**
+   void SetFlagState(bool state , void (WidgetBase::*StateSetter)(bool));
+
+    void TextDecorator::SetFlagState(bool state , void (WidgetBase::*StateSetter)(bool)) {
+        if (basic_text_widget) {
+           (basic_text_widget->WidgetBase::*StateSetter)(state);
+        }
+        (text_widget_layout->WidgetBase::->*StateSetter)(state);
+        (this->WidgetDecoratorBase::->*StateSetter)(state);
+    }
+//*/
    
 public :
    
    TextDecorator();
    TextDecorator(std::string name);
+   
+   TextDecorator(WidgetBase* widget_to_decorate , BasicText* basic_text);
+   TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text);
 
 
-   /// Overridden WidgetBase functions, overload and call the Decorator versions from your new decorator classes
+   /// TextDecorator member functions
+   
+   virtual void UseTextLayout(Layout* text_layout);/// layout may be NULL to use the default DumbLayout
+   
+   virtual void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to remove the text
+   
+   BasicText* TextInUse() {return basic_text_widget;}
+   WidgetBase* DecoratedWidget() {return decorated_widget;}
+   
+   
+   
+   /// Overridden WidgetBase functions
+   
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
@@ -73,13 +65,22 @@ public :
 
    virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
-	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
 
-	/// Make room in outer area for inner area first!!!
 	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
 
 
+
+   virtual void SetEnabledState      (bool state);
+   virtual void SetVisibilityState   (bool state);
+   virtual void SetHoverState        (bool state);
+   virtual void SetFocusState        (bool state);
+   virtual void SetMoveableState     (bool state);
+   virtual void SetResizeableState   (bool state);
+   virtual void SetNeedsRedrawState  (bool state);
+   virtual void SetNeedsBgRedrawState(bool state);
+   virtual void SetAllowCloseState   (bool state);
+   virtual void SetAllowOverlapState (bool state);
    
    
    /// Decorator member functions
@@ -88,14 +89,12 @@ public :
 
 ///   virtual void DecorateWidget(WidgetBase* widget);/// widget may be NULL to remove the decorated widget
    
-   /// TextDecorator member functions
-   
-   virtual void UseLayoutForText(Layout* text_layout);/// layout may be NULL to use the default DumbLayout
-   
-   virtual void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to remove the text
 
 };
-//*/
+
+
+
+   
 
 #endif // TextDecorator_HPP
 

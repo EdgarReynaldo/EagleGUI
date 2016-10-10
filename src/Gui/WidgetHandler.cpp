@@ -818,7 +818,8 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       WidgetBase* new_whover = 0;
       for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
          WidgetBase* w = drawlist[i];
-         bool hover = w->IsMouseOver(mouse_x , mouse_y);
+///         bool hover = w->IsMouseOver(mouse_x , mouse_y);
+         bool hover = w->OuterArea().Contains(mx,my);
          if (hover) {
             new_whover = w;
             break;
@@ -828,11 +829,18 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
          if (whover) {
             whover->SetHoverState(false);
          }
+         /**
          if (new_whover) {
             new_whover->SetHoverState(true);
          }
          whover = new_whover;
+         */
       }
+      /// Always set hover??? Need this to make some widgets work (like TextDecorator and Decorator)
+      if (new_whover) {
+         new_whover->SetHoverState(true);
+      }
+      whover = new_whover;
    }
    /**
       Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
