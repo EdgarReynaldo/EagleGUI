@@ -89,7 +89,7 @@ enum WIDGET_DISPLAY_PRIORITY {
 
 class Layout;
 class WidgetHandler;
-
+class WidgetDecorator;
 
 
 
@@ -124,6 +124,8 @@ protected :
    FocusPainter* focus_painter;
    FOCUS_DRAW_TYPE focus_draw_type;
 
+   WidgetDecorator* decorator_parent;
+   
 
 
    virtual void PrivateRaiseEvent(WidgetMsg msg) {(void)msg;}
@@ -201,6 +203,7 @@ public :
 
 	/// Setters
 	virtual void SetParent(WidgetBase* parent);
+	virtual void SetDecoratorParent(WidgetDecorator* decorator);
 	virtual void         SetOwnerLayout(Layout* l);
 	
 	virtual void SetBackgroundPainter(BackgroundPainter* painter);
@@ -306,9 +309,13 @@ public :
    virtual FocusPainter*         GetFocusPainter()       const {return focus_painter;}
    virtual FOCUS_DRAW_TYPE       GetFocusDrawType()      const {return focus_draw_type;}
    
+   virtual WidgetDecorator*      GetDecoratorParent() const {return decorator_parent;}
+
 ///   virtual std::string GetWidgetClassName()=0;/// TODO : What is this for? ICR. See how many classes implement this.
    virtual std::string GetWidgetClassName() {return "WidgetBase object";}/// TODO : What is this for? ICR.
 
+   
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 

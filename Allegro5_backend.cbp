@@ -105,6 +105,7 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 			<Add directory="Allegro5/include" />

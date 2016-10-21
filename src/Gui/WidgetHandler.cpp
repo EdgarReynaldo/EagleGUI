@@ -22,6 +22,7 @@
 
 
 #include "Eagle/Gui/WidgetHandler.hpp"
+#include "Eagle/Gui/Decorators/Decorator.hpp"
 
 #include "Eagle/Logging.hpp"
 #include "Eagle/InputHandler.hpp"
@@ -620,11 +621,14 @@ void WidgetHandler::ClearMessages() {
 void WidgetHandler::TrackWidget(WidgetBase* widget) {
    /// Only add unique widgets and never itself.
    /// widget may be a layout, in which case all of its children get tracked as well
-   EAGLE_ASSERT(widget);
-   EAGLE_ASSERT(widget != this);
-   
-   bool does_not_have_widget = !HasWidget(widget);
-   EAGLE_ASSERT(does_not_have_widget);
+
+   if (!widget) {return;}
+   if (widget == this) {return;}
+   if (HasWidget(widget)) {return;}
+
+   while (widget->GetDecoratorParent()) {
+      widget = widget->GetDecoratorParent();
+   }
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
    
@@ -638,25 +642,22 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
       widget_is_layout->SetGuiHandler(this);
    }
 
-   if (widget && (widget != this) && does_not_have_widget) {
-      wlist.push_back(widget);
-      inputlist.push_back(widget);
-      drawlist.insert(drawlist.begin() , widget);
-      /** First widget always has the focus */
-      if (wlist.size() == 1) {
-         GiveWidgetFocus(widget);
-      } else {
-         WidgetHandler* wh = widget->GetGui();
-         if (wh) {
-            wh->GiveWidgetFocus(0,false);
-         }
+   wlist.push_back(widget);
+   inputlist.push_back(widget);
+   drawlist.insert(drawlist.begin() , widget);
+   /** First widget always has the focus */
+   if (wlist.size() == 1) {
+      GiveWidgetFocus(widget);
+   } else {
+      WidgetHandler* wh = widget->GetGui();
+      if (wh) {
+         wh->GiveWidgetFocus(0,false);
       }
-      SortDrawListByPriority();
-      widget->SetParent(this);
-      widget->SetColorset(wcols , true);
-      widget->SetBgRedrawFlag();
-///      clear_background = true;
    }
+   SortDrawListByPriority();
+   widget->SetParent(this);
+   widget->SetColorset(wcols , true);
+   widget->SetBgRedrawFlag();
 }
 
 

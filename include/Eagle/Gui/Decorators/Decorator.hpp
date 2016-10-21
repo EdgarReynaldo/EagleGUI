@@ -24,30 +24,23 @@ protected :
    
    
 
-
    virtual void PrivateRaiseEvent(WidgetMsg msg);
 
 public :
-   
-   WidgetDecorator();
-   WidgetDecorator(std::string name);
-
-   
-   WidgetDecorator(WidgetBase* widget_to_decorate);
-   WidgetDecorator(WidgetBase* widget_to_decorate , Layout* widget_layout);
-   WidgetDecorator(std::string decorator_name , WidgetBase* widget_to_decorate);
-   WidgetDecorator(std::string decorator_name , WidgetBase* widget_to_decorate , Layout* widget_layout);
+      
+   WidgetDecorator(WidgetBase* widget_to_decorate = 0,
+                   Layout* widget_layout = 0,
+                   std::string decorator_name = "");
 
    virtual ~WidgetDecorator();
 
    
    void DecorateWidget(WidgetBase* widget_to_decorate);
    
-   void SetLayout(Layout* new_layout);
+   void UseLayout(Layout* new_layout);
 
    /// Forwarding functions inherited from WidgetBase
 
-   /// These 4 functions should never be called. All widget handling is done in HandleEvent, Display, and Update
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
@@ -93,7 +86,8 @@ public :
    virtual void SetAllowCloseState   (bool state);/// Does not set redraw flag
    virtual void SetAllowOverlapState (bool state);/// Does not set redraw flag
 
-/**
+/** We don't need to override these functions, they function properly on their own
+
    virtual void SetRedrawFlag();/// Shortcut to SetNeedsRedrawState(true)
    virtual void SetBgRedrawFlag();/// Shortcut to SetNeedsBgRedrawState(true)
    virtual void ClearRedrawFlag();/// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
@@ -103,6 +97,7 @@ public :
    virtual void ShowWidget();/// Makes the widget enabled and visible
    virtual void HideWidget();/// Makes the widget disabled and invisible
    virtual void ToggleWidgetVisibility();/// Toggles the enabled and visible state of the widget
+
 //*/
    
    virtual bool AcceptsFocus();

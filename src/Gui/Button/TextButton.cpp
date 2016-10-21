@@ -7,794 +7,856 @@
 
 #include "Eagle/Gui/WidgetDrawFuncs.hpp"
 
-/**
+#include "Eagle/StringWork.hpp"
+
+
+
+void TextButton::UseButton(BasicButton* button_to_use) {
+   if (!button_to_use) {
+      button_to_use = this;
+   }
+   real_button = button_to_use;
+   text_decorator.DecorateWidget(real_button);
+}
+
+
+
+void TextButton::UseButtonLayout(Layout* button_layout) {
+   text_decorator.UseLayout(button_layout);
+}
+
+
+
+
+/// TextButton functions forwarded from BasicButton base
+
+
+
+void TextButton::SetButtonType(BUTTON_ACTION_TYPE type) {
+   if (real_button == this) {
+      BasicButton::SetButtonType(type);
+      return;
+   }
+   real_button->SetButtonType(type);
+}
+
+
+
+void TextButton::SetHoverState (bool state) {
+   if (real_button == this) {
+      BasicButton::SetHoverState(state);
+      return;
+   }
+   real_button->SetHoverState(state);
+}
+
+
+
+void TextButton::SetSpringDuration(double duration) {
+   if (real_button == this) {
+      BasicButton::SetSpringDuration(duration);
+      return;
+   }
+   real_button->SetSpringDuration(duration);
+}
+
+
+
+void TextButton::SetButtonUpState(bool button_up) {
+   if (real_button == this) {
+      BasicButton::SetButtonUpState(button_up);
+      return;
+   }
+   real_button->SetButtonUpState(button_up);
+}
+
+
+
+void TextButton::ToggleButton() {
+   if (real_button == this) {
+      BasicButton::ToggleButton();
+      return;
+   }
+   real_button->ToggleButton();
+}
+
+
+
+void TextButton::SetClickArea(AreaBase* new_click_area , bool delete_when_done) {
+   if (real_button == this) {
+      BasicButton::SetClickArea(new_click_area , delete_when_done);
+      return;
+   }
+   real_button->SetClickArea(new_click_area , delete_when_done);
+}
+
+
+
+void TextButton::SetButtonState(bool hover , bool up) {
+   if (real_button == this) {
+      BasicButton::SetButtonState(hover , up);
+      return;
+   }
+   real_button->SetButtonState(hover , up);
+}
+
+
+
+void TextButton::SetInputGroup(InputGroup ig) {
+   if (real_button == this) {
+      BasicButton::SetInputGroup(ig);
+      return;
+   }
+   real_button->SetInputGroup(ig);
+}
+
+
+
+bool TextButton::JustActivated() {
+   if (real_button == this) {
+      return BasicButton::JustActivated();
+   }
+   return real_button->JustActivated();
+}
+
+
+
+void TextButton::EnableHoverMessage(bool enabled) {
+   if (real_button == this) {
+      BasicButton::EnableHoverMessage(enabled);
+      return;
+   }
+   real_button->EnableHoverMessage(enabled);
+}
+
+
+
+InputGroup TextButton::InputKey() {
+   if (real_button == this) {
+      return BasicButton::InputKey();
+   }
+   return real_button->InputKey();
+}
+
+
+
+BUTTON_STATE TextButton::ButtonState() {
+   if (real_button == this) {
+      return BasicButton::ButtonState();
+   }
+   return real_button->ButtonState();
+}
+
+
+
+bool TextButton::Up() {
+   if (real_button == this) {
+      return BasicButton::Up();
+   }
+   return real_button->Up();
+}
+
+
+
+bool TextButton::Hover() {
+   if (real_button == this) {
+      return BasicButton::Hover();
+   }
+   return real_button->Hover();
+}
+
+
+
+BUTTON_ACTION_TYPE TextButton::ActionType() {
+   if (real_button == this) {
+      return BasicButton::ActionType();
+   }
+   return real_button->ActionType();
+}
+
+
+
+/// TextButton functions forwarded from TextDecorator
+
+
+
+void TextButton::UseTextLayout(Layout* text_layout) {
+   text_decorator.UseTextLayout(text_layout);
+}
+
+
+
+void TextButton::CenterText(bool center_the_text) {
+   text_decorator.CenterText(center_the_text);
+}
+
+
+
+void TextButton::ReCenterText() {
+   text_decorator.ReCenterText();
+}
+
+
+
+void TextButton::UseTextWidget(BasicText* text_widget) {
+   text_decorator.UseTextWidget(text_widget);
+}
+
+
+
+BasicText* TextButton::GetTextWidget() {
+   return text_decorator.GetTextWidget();
+}
+
+
+
+/// TextButton functions forwarded from WidgetBase
+
+
 
 int TextButton::PrivateHandleEvent(EagleEvent e) {
-   int ret = DIALOG_OKAY;
-   ret |= our_text->PrivateHandleEvent(e);
-   if (!(ret & DIALOG_INPUT_USED)) {
-      if (our_button == dynamic_cast<BasicButton*>(this)) {
-         ret |= BasicButton::PrivateHandleEvent(e);
-      }
-      else {
-         ret |= our_button->PrivateHandleEvent(e);
-      }
+   if (real_button == this) {
+      return BasicButton::PrivateHandleEvent(e);
    }
+   return real_button->HandleEvent(e);
 }
 
 
 
+/** PrivateCheckInputs will be called by HandleEvent, no need to override
 int TextButton::PrivateCheckInputs() {
-   int ret = DIALOG_OKAY;
-   ret |= our_text->PrivateCheckInputs();
-   if (!(ret & DIALOG_INPUT_USED)) {
-      if (our_button == dynamic_cast<BasicButton*>(this)) {
-         ret |= BasicButton::PrivateCheckInputs();
-      }
-      else {
-         ret |= our_button->PrivateCheckInputs();
-      }
+   if (real_button == this) {
+      return BasicButton::PrivateCheckInputs();
    }
+   return real_button->PrivateCheckInputs();
 }
-
+//*/
 
 
 void TextButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::PrivateDisplay(win,xpos,ypos);
+      return;
    }
-   else {
-      our_button->PrivateDisplay(win,xpos,ypos);
-   }
-   our_text->PrivateDisplay(win,xpos,ypos);
+   real_button->Display(win,xpos,ypos);
 }
 
 
 
 int TextButton::PrivateUpdate(double tsec) {
-   int ret = DIALOG_OKAY;
-   ret |= our_text->PrivateUpdate(tsec);
-   if (!(ret & DIALOG_INPUT_USED)) {
-      if (our_button == dynamic_cast<BasicButton*>(this)) {
-         ret |= BasicButton::PrivateUpdate(tsec);
-      }
-      else {
-         ret |= our_button->PrivateUpdate(tsec);
-      }
+   if (real_button == this) {
+      return BasicButton::PrivateUpdate(tsec);
    }
+   return real_button->Update(tsec);
 }
 
 
 
-/// WidgetBase
 void TextButton::QueueUserMessage(const WidgetMsg& wmsg) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::QueueUserMessage(wmsg);  
-   }
-   else {
-      our_button->QueueUserMessage(wmsg);
-   }
-}
-
-
-
-/// Setters
-void TextButton::SetParent(WidgetBase* parent) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetParent(parent);
-   }
-   else {
-      our_button->SetParent(parent);
-   }
-}
-
-
-
-void TextButton::SetOwnerLayout(Layout* l) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetOwnerLayout(l);
-   }
-   else {
-      our_button->SetOwnerLayout(l);
-   }
-}
-
-
-
-void TextButton::SetBackgroundPainter(BackgroundPainter* painter) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetBackgroundPainter(painter);
-   }
-   else {
-      our_button->SetBackgroundPainter(painter);
-   }
-}
-
-
-
-void TextButton::SetFocusPainter(FocusPainter* painter) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetFocusPainter(painter);
-   }
-   else {
-      our_button->SetFocusPainter(painter);
-   }
-}
-
-
-
-void TextButton::SetBackgroundDrawType(BG_DRAW_TYPE draw_type) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetBackgroundDrawType(draw_type);
-   }
-   else {
-      our_button->SetBackgroundDrawType(draw_type);
-   }
-}
-
-
-
-void TextButton::SetFocusDrawType(FOCUS_DRAW_TYPE draw_type) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetFocusDrawType(draw_type);
-   }
-   else {
-      our_button->SetFocusDrawType(draw_type);
-   }
-}
-
-
-
-void TextButton::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetColorset(colors , set_descendants_colors);
-   }
-   else {
-      our_button->SetColorset(colors , set_descendants_colors);
-   }
-}
-
-
-
-void TextButton::SetPrivateColorset(const WidgetColorset& colors) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetPrivateColorset(colors);
-   }
-   else {
-      our_button->SetPrivateColorset(colors);
-   }
-}
-
-
-
-void TextButton::UseColorset(bool use_public_colorset) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::UseColorset(use_public_colorset);
-   }
-   else {
-      our_button->UseColorset(use_public_colorset);
-   }
-}
-
-
-
-void TextButton::UsePrivateColorset(bool use_priv_colorset) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::UsePrivateColorset(use_priv_colorset);
-   }
-   else {
-      our_button->UsePrivateColorset(use_priv_colorset);
-   }
-}
-
-
-
-void TextButton::SetFlagStates(UINT FLAGS , bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetFlagStates(FLAGS , state);
-   }
-   else {
-      our_button->SetFlagStates(FLAGS , state);
-   }
-}
-
-
-
-void TextButton::SetEnabledState      (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetEnabledState(state);
-   }
-   else {
-      our_button->SetEnabledState(state);
-   }
-}
-
-
-
-void TextButton::SetVisibilityState   (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetVisibilityState(state);
-   }
-   else {
-      our_button->SetVisibilityState(state);
-   }
-}
-
-
-
-void TextButton::SetHoverState        (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetHoverState(state);
-   }
-   else {
-      our_button->SetHoverState(state);
-   }
-}
-
-
-
-void TextButton::SetFocusState        (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetFocusState(state);
-   }
-   else {
-      our_button->SetFocusState(state);
-   }
-}
-
-
-
-void TextButton::SetMoveableState     (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetMoveableState(state);
-   }
-   else {
-      our_button->SetMoveableState(state);
-   }
-}
-
-
-
-void TextButton::SetResizeableState   (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetResizeableState(state);
-   }
-   else {
-      our_button->SetResizableState(state);
-   }
-}
-
-
-
-void TextButton::SetNeedsRedrawState  (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetNeedsRedrawState(state);
-   }
-   else {
-      our_button->SetNeedsRedrawState(state);
-   }
-}
-
-
-
-void TextButton::SetNeedsBgRedrawState(bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetNeedsBgRedrawState(state);
-   }
-   else {
-      our_button->SetNeedsBgRedrawState(state);
-   }
-}
-
-
-
-void TextButton::SetAllowCloseState   (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetAllowCloseState(state);
-   }
-   else {
-      our_button->SetAllowCloseState(state);
-   }
-}
-
-
-
-void TextButton::SetAllowOverlapState (bool state) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetAllowOverlapState(state);
-   }
-   else {
-      our_button->SetAllowOverlapState(state);
-   }
-}
-
-
-
-void TextButton::SetRedrawFlag() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetRedrawFlag();
-   }
-   else {
-      our_button->SetRedrawFlag();
-   }
-}
-
-
-
-void TextButton::SetBgRedrawFlag() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetBgRedrawFlag();
-   }
-   else {
-      our_button->SetBgRedrawFlag();
-   }
-}
-
-
-
-void TextButton::ClearRedrawFlag() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::ClearRedrawFlag();
-   }
-   else {
-      our_button->ClearRedrawFlag();
-   }
-}
-
-
-
-void TextButton::SetRedrawAllFlag() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetRedrawAllFlag();
-   }
-   else {
-      our_button->SetRedrawAllFlag();
-   }
-}
-
-
-
-void TextButton::ShowWidget() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::ShowWidget();
-   }
-   else {
-      our_button->ShowWidget();
-   }
-}
-
-
-
-void TextButton::HideWidget() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::HideWidget();
-   }
-   else {
-      our_button->HideWidget();
-   }
-}
-
-
-
-void TextButton::ToggleWidgetVisibility() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::ToggleWidgetVisibility();
-   }
-   else {
-      our_button->ToggleWidgetVisibility();
-   }
-}
-
-
-
-bool TextButton::AcceptsFocus() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      return BasicButton::AcceptsFocus();
-   }
-   else {
-      return our_button->AcceptsFocus();
-   }
-}
-
-
-
-bool TextButton::IsMouseOver(int realmsx , int realmsy) const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      return BasicButton::IsMouseOver(realmsx , realmsy);
-   }
-   else {
-      return our_button->IsMouseOver(realmsx , realmsy);
-   }
-}
-
-
-
-bool TextButton::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      return BasicButton::GiveWidgetFocus(widget , notify_parent);
-   }
-   else {
-      return our_button->GiveWidgetFocus(widget , notify_parent);
-   }
-}
-
-
-
-void TextButton::SetBgImage(EagleImage* img , MARGIN_HCELL hcell, MARGIN_VCELL vcell) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetBgImage(img , hcell , vcell);
-   }
-   else {
-      our_button->SetBgImage(img , hcell , vcell);
-   }
-}
-
-
-
-void TextButton::SetBgImages(EagleImage* imgs[3][3]) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetBgImages(imgs);
-   }
-   else {
-      our_button->SetBgImages(imgs);
-   }
-}
-
-
-
-void TextButton::SetImagesHaveAlpha(bool have_alpha) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      BasicButton::SetImagesHaveAlpha(have_alpha);
-   }
-   else {
-      our_button->SetImagesHaveAlpha(have_alpha);
-   }
+   if (real_button == this) {
+      BasicButton::QueueUserMessage(wmsg);
+      return;
+   }
+   real_button->QueueUserMessage(wmsg);
 }
 
 
 
 void TextButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetWidgetArea(xpos,ypos,width,height,notify_layout);
+      return;
    }
-   else {
-      our_button->SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   }
+   real_button->SetWidgetArea(xpos,ypos,width,height,notify_layout);
 }
 
 
 
 void TextButton::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetMarginsExpandFromInner(left,right,top,bottom);
+      return;
    }
-   else {
-      our_button->SetMarginsExpandFromInner(left,right,top,bottom);
-   }
+   real_button->SetMarginsExpandFromInner(left,right,top,bottom);
 }
 
 
 
 void TextButton::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetMarginsContractFromOuter(left,right,top,bottom);
+      return;
    }
-   else {
-      our_button->SetMarginsContractFromOuter(left,right,top,bottom);
+   real_button->SetMarginsContractFromOuter(left,right,top,bottom);
+}
+
+
+
+void TextButton::SetParent(WidgetBase* parent) {
+   if (real_button == this) {
+      BasicButton::SetParent(parent);
+      return;
    }
+   real_button->SetParent(parent);
+}
+
+
+
+void TextButton::SetOwnerLayout(Layout* l) {
+   if (real_button == this) {
+      BasicButton::SetOwnerLayout(l);
+      return;
+   }
+   real_button->SetOwnerLayout(l);
+}
+
+
+
+void TextButton::SetBackgroundPainter(BackgroundPainter* painter) {
+   if (real_button == this) {
+      BasicButton::SetBackgroundPainter(painter);
+      return;
+   }
+   real_button->SetBackgroundPainter(painter);
+}
+
+
+
+void TextButton::SetFocusPainter(FocusPainter* painter) {
+   if (real_button == this) {
+      BasicButton::SetFocusPainter(painter);
+      return;
+   }
+   real_button->SetFocusPainter(painter);
+}
+
+
+
+void TextButton::SetBackgroundDrawType(BG_DRAW_TYPE draw_type) {
+   if (real_button == this) {
+      BasicButton::SetBackgroundDrawType(draw_type);
+      return;
+   }
+   real_button->SetBackgroundDrawType(draw_type);
+}
+
+
+
+void TextButton::SetFocusDrawType(FOCUS_DRAW_TYPE draw_type) {
+   if (real_button == this) {
+      BasicButton::SetFocusDrawType(draw_type);
+      return;
+   }
+   real_button->SetFocusDrawType(draw_type);
+}
+
+
+
+void TextButton::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
+   if (real_button == this) {
+      BasicButton::SetColorset(colors , set_descendants_colors);
+      return;
+   }
+   real_button->SetColorset(colors , set_descendants_colors);
+}
+
+
+
+void TextButton::SetPrivateColorset(const WidgetColorset& colors) {
+   if (real_button == this) {
+      BasicButton::SetPrivateColorset(colors);
+      return;
+   }
+   real_button->SetPrivateColorset(colors);
+}
+
+
+
+void TextButton::UseColorset(bool use_public_colorset) {
+   if (real_button == this) {
+      BasicButton::UseColorset(use_public_colorset);
+      return;
+   }
+   real_button->UseColorset(use_public_colorset);
+}
+
+
+
+void TextButton::UsePrivateColorset(bool use_priv_colorset) {
+   if (real_button == this) {
+      BasicButton::UsePrivateColorset(use_priv_colorset);
+      return;
+   }
+   real_button->UsePrivateColorset(use_priv_colorset);
+}
+
+
+
+void TextButton::SetFlagStates(UINT FLAGS , bool state) {
+   if (real_button == this) {
+      BasicButton::SetFlagStates(FLAGS , state);
+      return;
+   }
+   real_button->SetFlagStates(FLAGS , state);
+}
+
+
+
+void TextButton::SetEnabledState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetEnabledState(state);
+      return;
+   }
+   real_button->SetEnabledState(state);
+}
+
+
+
+void TextButton::SetVisibilityState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetVisibilityState(state);
+      return;
+   }
+   real_button->SetVisibilityState(state);
+}
+
+
+
+void TextButton::SetFocusState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetFocusState(state);
+      return;
+   }
+   real_button->SetFocusState(state);
+}
+
+
+
+void TextButton::SetMoveableState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetMoveableState(state);
+      return;
+   }
+   real_button->SetMoveableState(state);
+}
+
+
+
+void TextButton::SetResizeableState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetResizeableState(state);
+      return;
+   }
+   real_button->SetResizeableState(state);
+}
+
+
+
+void TextButton::SetNeedsRedrawState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetNeedsRedrawState(state);
+      return;
+   }
+   real_button->SetNeedsRedrawState(state);
+}
+
+
+
+void TextButton::SetNeedsBgRedrawState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetNeedsBgRedrawState(state);
+      return;
+   }
+   real_button->SetNeedsBgRedrawState(state);
+}
+
+
+
+void TextButton::SetAllowCloseState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetAllowCloseState(state);
+      return;
+   }
+   real_button->SetAllowCloseState(state);
+}
+
+
+
+void TextButton::SetAllowOverlapState(bool state) {
+   if (real_button == this) {
+      BasicButton::SetAllowOverlapState(state);
+      return;
+   }
+   real_button->SetAllowOverlapState(state);
+}
+
+
+
+/** We don't need to override these functions, they function properly on their own
+
+virtual void SetRedrawFlag();/// Shortcut to SetNeedsRedrawState(true)
+virtual void SetBgRedrawFlag();/// Shortcut to SetNeedsBgRedrawState(true)
+virtual void ClearRedrawFlag();/// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
+
+virtual void SetRedrawAllFlag();/// To tell parent widget handlers to redraw all widgets
+
+virtual void ShowWidget();/// Makes the widget enabled and visible
+virtual void HideWidget();/// Makes the widget disabled and invisible
+virtual void ToggleWidgetVisibility();/// Toggles the enabled and visible state of the widget
+
+//*/
+
+
+
+bool TextButton::AcceptsFocus() {
+   if (real_button == this) {
+      return BasicButton::AcceptsFocus();
+   }
+   return real_button->AcceptsFocus();
+}
+
+
+
+bool TextButton::IsMouseOver(int realmsx , int realmsy) const {
+   if (real_button == this) {
+      return BasicButton::IsMouseOver(realmsx , realmsy);
+   }
+   return real_button->IsMouseOver(realmsx , realmsy);
+}
+
+
+
+bool TextButton::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
+   if (real_button == this) {
+      return BasicButton::GiveWidgetFocus(widget , notify_parent);
+   }
+   return real_button->GiveWidgetFocus(widget , notify_parent);
+}
+
+
+
+void TextButton::SetBgImage(EagleImage* img , MARGIN_HCELL hcell, MARGIN_VCELL vcell) {
+   if (real_button == this) {
+      BasicButton::SetBgImage(img , hcell , vcell);
+      return;
+   }
+   real_button->SetBgImage(img , hcell , vcell);
+}
+
+
+
+void TextButton::SetBgImages(EagleImage* imgs[3][3]) {
+   if (real_button == this) {
+      BasicButton::SetBgImages(imgs);
+      return;
+   }
+   real_button->SetBgImages(imgs);
+}
+
+
+
+void TextButton::SetImagesHaveAlpha(bool have_alpha) {
+   if (real_button == this) {
+      BasicButton::SetImagesHaveAlpha(have_alpha);
+      return;
+   }
+   real_button->SetImagesHaveAlpha(have_alpha);
 }
 
 
 
 void TextButton::SetMinInnerWidth(int w) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetMinInnerWidth(w);
+      return;
    }
-   else {
-      our_button->SetMinInnerWidth(w);
-   }
+   real_button->SetMinInnerWidth(w);
 }
 
 
 
 void TextButton::SetMinInnerHeight(int h) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetMinInnerHeight(h);
+      return;
    }
-   else {
-      our_button->SetMinInnerHeight(h);
-   }
+   real_button->SetMinInnerHeight(h);
 }
 
 
 
 void TextButton::SetMinInnerDimensions(int w , int h) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetMinInnerDimensions(w,h);
+      return;
    }
-   else {
-      our_button->SetMinInnerDimensions(w,h);
-   }
+   real_button->SetMinInnerDimensions(w,h);
 }
 
 
 
 void TextButton::SetDisplayPriority(int priority) {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       BasicButton::SetDisplayPriority(priority);
+      return;
    }
-   else {
-      our_button->SetDisplayPriority(priority);
-   }
+   real_button->SetDisplayPriority(priority);
 }
 
 
 
 int TextButton::AbsMinWidth() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::AbsMinWidth();
    }
-   else {
-      return our_button->AbsMinWidth();
-   }
+   return real_button->AbsMinWidth();
 }
 
 
 
 int TextButton::AbsMinHeight() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::AbsMinHeight();
    }
-   else {
-      return our_button->AbsMinHeight();
-   }
+   return real_button->AbsMinHeight();
 }
 
 
 
 bool TextButton::HasGui() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::HasGui();
    }
-   else {
-      return our_button->HasGui();
-   }
+   return real_button->HasGui();
 }
 
 
 
 WidgetHandler* TextButton::GetGui() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::GetGui();
    }
-   else {
-      return our_button->GetGui();
-   }
+   return real_button->GetGui();
 }
 
 
 
-
 WidgetHandler* TextButton::NearestParentGui() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::NearestParentGui();
    }
-   else {
-      return our_button->NearestParentGui();
-   }
+   return real_button->NearestParentGui();
 }
 
 
 
 WidgetBase* TextButton::Root() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::Root();
    }
-   else {
-      return our_button->Root();
-   }
+   return real_button->Root();
 }
 
 
 
 WidgetHandler* TextButton::RootGui() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::RootGui();
    }
-   else {
-      return our_button->RootGui();
-   }
+   return real_button->RootGui();
 }
 
 
 
 int TextButton::AbsParentX() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::AbsParentX();
    }
-   else {
-      return our_button->AbsParentX();
-   }
+   return real_button->AbsParentX();
 }
 
 
 
 int TextButton::AbsParentY() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::AbsParentY();
    }
-   else {
-      return our_button->AbsParentY();
-   }
+   return real_button->AbsParentY();
 }
 
 
 
 Pos2d TextButton::GetParentOffset() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::GetParentOffset();
    }
-   else {
-      return our_button->GetParentOffset();
-   }
+   return real_button->GetParentOffset();
 }
 
 
 
-WidgetBase* TextButton::Parent() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+WidgetBase* TextButton::Parent() const  {
+   if (real_button == this) {
       return BasicButton::Parent();
    }
-   else {
-      return our_button->Parent();
-   }
+   return real_button->Parent();
 }
 
 
 
 WidgetColorset& TextButton::WCols() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::WCols();
    }
-   else {
-      return our_button->WCols();
-   }
+   return real_button->WCols();
 }
 
 
 
 const WidgetColorset& TextButton::WCols() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::WCols();
    }
-   else {
-      return our_button->WCols();
-   }
+   return real_button->WCols();
 }
 
 
 
 WidgetArea TextButton::Area() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::Area();
    }
-   else {
-      return our_button->Area();
-   }
+   return real_button->Area();
 }
 
 
 
 Rectangle TextButton::OuterArea() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::OuterArea();
    }
-   else {
-      return our_button->OuterArea();
-   }
+   return real_button->OuterArea();
 }
 
 
 
 Rectangle TextButton::InnerArea() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::InnerArea();
    }
-   else {
-      return our_button->InnerArea();
-   }
+   return real_button->InnerArea();
 }
 
 
 
 int TextButton::MinWidth() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::MinWidth();
    }
-   else {
-      return our_button->MinWidth();
-   }
+   return real_button->MinWidth();
 }
 
 
 
 int TextButton::MinHeight() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::MinHeight();
    }
-   else {
-      return our_button->MinHeight();
-   }
+   return real_button->MinHeight();
 }
 
 
 
 int TextButton::MinInnerWidth() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::MinInnerWidth();
    }
-   else {
-      return our_button->MinInnerWidth();
-   }
+   return real_button->MinInnerWidth();
 }
 
 
 
 int TextButton::MinInnerHeight() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::MinInnerHeight();
    }
-   else {
-      return our_button->MinInnerHeight();
-   }
+   return real_button->MinInnerHeight();
 }
 
 
 
 UINT TextButton::Flags() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::Flags();
    }
-   else {
-      return our_button->Flags();
-   }
+   return real_button->Flags();
 }
 
 
 
 int TextButton::DisplayPriority() const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return BasicButton::DisplayPriority();
    }
-   else {
-      return our_button->DisplayPriority();
+   return real_button->DisplayPriority();
+}
+
+
+
+BackgroundPainter* TextButton::GetBackgroundPainter() const {
+   if (real_button == this) {
+      return BasicButton::GetBackgroundPainter();
    }
+   return real_button->GetBackgroundPainter();
+}
+
+
+
+BG_DRAW_TYPE TextButton::GetBackgroundDrawType() const {
+   if (real_button == this) {
+      return BasicButton::GetBackgroundDrawType();
+   }
+   return real_button->GetBackgroundDrawType();
+}
+
+
+
+FocusPainter* TextButton::GetFocusPainter() const {
+   if (real_button == this) {
+      return BasicButton::GetFocusPainter();
+   }
+   return real_button->GetFocusPainter();
+}
+
+
+
+FOCUS_DRAW_TYPE TextButton::GetFocusDrawType() const {
+   if (real_button == this) {
+      return BasicButton::GetFocusDrawType();
+   }
+   return real_button->GetFocusDrawType();
 }
 
 
 
 std::string TextButton::GetWidgetClassName() {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
+   if (real_button == this) {
       return "TextButton::BasicButton";
    }
-   else {
-      return our_button->GetWidgetClassName();
-   }
+   return StringPrintF("%s%s" , "TextButton::" , real_button->GetWidgetClassName());
 }
 
 
 
 std::ostream& TextButton::DescribeTo(std::ostream& os , Indenter indent) const {
-   if (our_button == dynamic_cast<BasicButton*>(this)) {
-      return BasicButton::DescribeTo(os,indent);
+   os << indent << "TextButton :" << std::endl;
+   if (real_button == this) {
+      BasicButton::DescribeTo(os,indent);
+      return os;
    }
-   else {
-      return our_button->DescribeTo(os,indent);
-   }
+   real_button->DescribeTo(os,indent);
+   return os;
 }
-
-//*/
-
 
 
 

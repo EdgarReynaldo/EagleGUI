@@ -25,71 +25,19 @@ void WidgetDecorator::PrivateRaiseEvent(WidgetMsg msg) {
 
 
 
-   
-WidgetDecorator::WidgetDecorator() :
-      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
-      decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
-{
-   
-}
-
-
-
-WidgetDecorator::WidgetDecorator(std::string name) :
-      WidgetBase(name),
-      decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
-{
-   
-}
-
-
-
-WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate) :
-      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
-      decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
-{
-   DecorateWidget(widget_to_decorate);
-}
-
-
-
-WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate , Layout* widget_layout) :
-      WidgetBase(StringPrintF("WidgetDecorator at %p" , this)),
-      decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
-{
-   DecorateWidget(widget_to_decorate);
-   SetLayout(widget_layout);
-}
-
-
-
-WidgetDecorator::WidgetDecorator(std::string decorator_name , WidgetBase* widget_to_decorate) :
+WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate,
+                                 Layout* widget_layout,
+                                 std::string decorator_name) :
       WidgetBase(decorator_name),
       decorated_widget(0),
       layout(&default_dumb_layout),
       default_dumb_layout()
 {
    DecorateWidget(widget_to_decorate);
-}
-
-
-
-WidgetDecorator::WidgetDecorator(std::string decorator_name , WidgetBase* widget_to_decorate , Layout* widget_layout) :
-      WidgetBase(decorator_name),
-      decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
-{
-   DecorateWidget(widget_to_decorate);
-   SetLayout(widget_layout);
+   UseLayout(widget_layout);
+   if (decorator_name.compare("") == 0) {
+      SetName(StringPrintF("WidgetDecorator at %p" , this));
+   }
 }
 
 
@@ -104,7 +52,8 @@ void WidgetDecorator::DecorateWidget(WidgetBase* widget_to_decorate) {
    
    if (decorated_widget) {
       layout->RemoveWidget(decorated_widget);
-      decorated_widget->SetParent(0);
+      decorated_widget->WidgetBase::SetParent(0);
+      decorated_widget->WidgetBase::SetDecoratorParent(0);
       decorated_widget = 0;
    }
    
@@ -112,15 +61,16 @@ void WidgetDecorator::DecorateWidget(WidgetBase* widget_to_decorate) {
       decorated_widget = widget_to_decorate;
       layout->Resize(1);
       layout->PlaceWidget(decorated_widget , 0);
-      decorated_widget->SetParent(this);
-      decorated_widget->SetFlagStates(Flags() , true);
-      decorated_widget->SetFlagStates(~Flags() , false);
+      decorated_widget->WidgetBase::SetParent(this);
+      decorated_widget->WidgetBase::SetDecoratorParent(this);
+      decorated_widget->WidgetBase::SetFlagStates(Flags() , true);
+      decorated_widget->WidgetBase::SetFlagStates(~Flags() , false);
    }
 }
 
 
 
-void WidgetDecorator::SetLayout(Layout* new_layout) {
+void WidgetDecorator::UseLayout(Layout* new_layout) {
 
    if (layout) {
       layout->SetParent(0);

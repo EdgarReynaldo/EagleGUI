@@ -28,6 +28,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Error.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Position.hpp"
 
 
 #include <iostream>
@@ -116,81 +117,6 @@ public :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
-
-
-/// -------------------------------------     Pos2d class     ------------------------------------------
-
-
-
-class Pos2d {
-protected :
-   int x;
-   int y;
-   
-public :
-   Pos2d() : x(0) , y(0) {}
-   Pos2d(int xpos , int ypos) : x(xpos) , y(ypos) {}
-   
-   inline bool operator==(const Pos2d& p) const ;
-   
-   inline void SetPos(int xpos , int ypos);
-   inline Pos2d& MoveBy(int dx , int dy);
-
-   void Draw(EagleGraphicsContext* win , EagleColor color) const;
-   void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const;
-   void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , double thickness , EagleColor color) const ;
-
-   inline double AngleToPoint(const Pos2d& p) const;
-   inline double AngleToPoint(int x , int y) const;
-
-   inline double DistanceToPoint(const Pos2d& p) const;
-   inline double DistanceToPoint(int xpos , int ypos) const;
-
-   int X() const {return x;}
-   int Y() const {return y;}
-   
-   friend std::ostream& operator<<(std::ostream& os , const Pos2d& p);
-};
-
-
-
-inline bool Pos2d::operator==(const Pos2d& p) const {
-   return ((x == p.x) && (y == p.y));
-}
-
-inline void Pos2d::SetPos(int xpos , int ypos) {
-   x = xpos;
-   y = ypos;
-}
-
-inline Pos2d& Pos2d::MoveBy(int dx , int dy) {
-   SetPos(x + dx , y + dy);
-   return *this;
-}
-
-inline double Pos2d::AngleToPoint(const Pos2d& p) const {
-   if (*this == p) {return 0.0;}// same point, no angle
-   return atan2(p.y - y , p.x - x);
-}
-
-inline double Pos2d::AngleToPoint(int xpos , int ypos) const {
-   return atan2(ypos - y , xpos - x);
-}
-
-inline double Pos2d::DistanceToPoint(const Pos2d& p) const {
-   int dx = p.x - x;
-   int dy = p.y - y;
-   return sqrt((double)(dx*dx + dy*dy));
-}
-
-inline double Pos2d::DistanceToPoint(int xpos , int ypos) const {
-   int dx = xpos - x;
-   int dy = ypos - y;
-   return sqrt((double)(dx*dx + dy*dy));
-}
-
-inline double AngleToP2(const Pos2d& p1 , const Pos2d& p2) {return p1.AngleToPoint(p2);}
-   
 
 
 

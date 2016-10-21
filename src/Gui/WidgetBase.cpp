@@ -134,7 +134,8 @@ WidgetBase::WidgetBase() :
       background_painter(&default_background_painter),
       background_draw_type(BG_DRAW_BACKGROUND_EMPTY),
       focus_painter(&default_focus_painter),
-      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE)
+      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE),
+      decorator_parent(0)
 {
    
 }
@@ -157,7 +158,8 @@ WidgetBase::WidgetBase(std::string name) :
       background_painter(&default_background_painter),
       background_draw_type(BG_DRAW_BACKGROUND_EMPTY),
       focus_painter(&default_focus_painter),
-      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE)
+      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE),
+      decorator_parent(0)
 {
 	
 }
@@ -310,11 +312,21 @@ void WidgetBase::QueueUserMessage(WidgetBase* widget_address , UINT widget_topic
 
 
 
-void WidgetBase::SetParent(WidgetBase* parent) {wparent = parent;}
+void WidgetBase::SetParent(WidgetBase* parent) {
+   wparent = parent;
+}
 
 
 
-void WidgetBase::SetOwnerLayout(Layout* l) {layout = l;}
+void WidgetBase::SetDecoratorParent(WidgetDecorator* decorator) {
+   decorator_parent = decorator;
+}
+
+
+
+void WidgetBase::SetOwnerLayout(Layout* l) {
+   layout = l;
+}
 
 
 

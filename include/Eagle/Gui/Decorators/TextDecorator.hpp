@@ -8,7 +8,7 @@
 
 
 #include "Eagle/Gui/Decorators/Decorator.hpp"
-#include "Eagle/Gui/Layout/DumbLayout.hpp"
+#include "Eagle/Gui/Layout/PinLayout.hpp"
 #include "Eagle/Gui/Text/BasicText.hpp"
 
 
@@ -22,8 +22,11 @@ protected :
    
    Layout* text_widget_layout;
    
-   DumbLayout dumb_text_layout;
+   PinLayout pin_layout;
 
+   bool center_text;
+   
+   
 /**
    void SetFlagState(bool state , void (WidgetBase::*StateSetter)(bool));
 
@@ -37,22 +40,39 @@ protected :
 //*/
    
 public :
-   
+/**   
    TextDecorator();
    TextDecorator(std::string name);
    
    TextDecorator(WidgetBase* widget_to_decorate , BasicText* basic_text);
    TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text);
-
-
+//*/
+   
+   TextDecorator(WidgetBase* widget_to_decorate = 0,
+                 BasicText* basic_text = 0,
+                 Layout* widget_layout = 0,
+                 Layout* text_layout = 0,
+                 std::string name = "");
+                 
+   
+   
    /// TextDecorator member functions
    
-   virtual void UseTextLayout(Layout* text_layout);/// layout may be NULL to use the default DumbLayout
+   void UseTextLayout(Layout* text_layout);/// layout may be NULL to use the default PinLayout
    
-   virtual void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to remove the text
-   
-   BasicText* TextInUse() {return basic_text_widget;}
+   void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to use the default text (which is blank until you set it)
+      
+   void CenterText(bool center_the_text);
+   void ReCenterText();
+
    WidgetBase* DecoratedWidget() {return decorated_widget;}
+   
+   BasicText* GetTextWidget() {return basic_text_widget;}
+   
+   
+///   operator BasicText*() {return basic_text_widget;}
+   
+   
    
    
    
