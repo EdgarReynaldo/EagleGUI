@@ -48,8 +48,11 @@ int main(int argc , char** argv) {
    
    EagleGraphicsContext* main_window = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED);
    
+   bool user_selected_branch = false;
+   
    const char* userbranch = default_branch;
    if (argc == 2) {
+      user_selected_branch = true;
       int branch = atoi(argv[1]);
       if (branch < 0) {branch = 0;}
       if (branch > test_registry.NumBranches() - 1) {branch = test_registry.NumBranches() - 1;}
@@ -58,13 +61,24 @@ int main(int argc , char** argv) {
    bool quit = false;
    while (!quit) {
    
-      int retval = 0;
-      try {
-         /// TODO : Set argc and argv
-         retval = test_registry.Run(userbranch , argc , argv);
+      if (user_selected_branch) {
+         int retval = 0;
+         try {
+            /// TODO : Set argc and argv
+            retval = test_registry.Run(userbranch , argc , argv);
+         }
+         catch (EagleError error) {
+            
+         }
       }
-      catch (EagleError error) {
-         
+      
+      TestMenu.Run();
+      
+      quit = test_menu.Quit();
+      
+      if (!quit) {
+         userbranch = test_menu.SelectedBranch();
+         user_selected_branch = true;
       }
    
    }

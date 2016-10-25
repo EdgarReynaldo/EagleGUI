@@ -9,7 +9,7 @@
 
 
 #include "Eagle/Gui/Layout/PinLayout.hpp"
-
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 
@@ -20,33 +20,54 @@ protected :
    Pos2d tail_pt1;
    Pos2d tail_pt2;
    
-   void ResetPositions() {
-      int sz = GetLayoutSize();
-      if (!sz) {return;}
-      if (sz == 1) {
-         SetPinPosition(0 , head_pt.X() , head_pt.Y());
-         return;
-      }
-      
-      Pos2d vec1 = head_pt - tail_pt1;
-      Pos2d vec2 = tail_pt2 - head_pt;
-      
-      int half = sz/2 + 1;
-      for (int i = 0 ; i < half ; ++i) {
-         double pct = i/(double)(half - 1);
-         
-      }
-      for (int i = half  ; i < sz ; ++i) {
-            
-      }
-      
-   }
+public :
+   
+   WedgeLayout() : PinLayout("Specialized Wedge Layout") {}
+   
+   void SetAnchors(Pos2d head , Pos2d tail1 , Pos2d tail2);
+   void ResetPositions();
+
       
    
 };
 
 
+#include <vector>
+using std::vector;
 
+
+class TestMenu {
+   
+protected :
+   WidgetHandler gui;
+   WedgeLayout wedge_layout;
+   
+   vector<BasicButton*> buttons;
+   
+   BasicButton* quit_button;
+   
+   bool quit;
+   const char* selected_user_branch;
+   
+   
+public :
+   TestMenu() :
+         gui(),
+         wedge_layout(),
+         buttons(),
+         quit_button(0),
+         quit(false),
+         selected_user_branch(0)
+   {
+      
+   }
+   
+   bool Quit() {return quit;}
+   
+}
+
+
+    
 
 #endif // TestMenu_HPP
 

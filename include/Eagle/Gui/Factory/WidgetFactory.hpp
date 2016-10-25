@@ -13,21 +13,37 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Error.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui/Factory/WidgetCreators.hpp"
 
 
-///class WidgetBase;
+
 class WidgetFactory;
 
 extern WidgetFactory eagle_widget_factory;
 
-///WidgetFactory eagle_widget_factory;
+extern const char* const DEFAULT_GROUP_NAME;
 
 
 class WidgetFactory {
    
-   std::map<std::string , WIDGET_CREATION_FUNCTION> widget_maker_map;
-   
+   typedef std::map<std::string , WIDGET_CREATION_FUNCTION> WIDGET_MAKER_MAP;
 
+   typedef std::map<EAGLE_ID , bool> WIDGET_FREED_MAP;
+   
+   typedef std::map<std::string , WIDGET_FREED_MAP> WIDGET_GROUP_MAP;
+   
+   WIDGET_MAKER_MAP widget_maker_map;
+   
+   WIDGET_FREED_MAP widget_freed_map;
+
+   WIDGET_GROUP_MAP widget_group_map;
+   
+   
+   void TrackWidget(EAGLE_ID eid , WIDGET_FREED_MAP& freed_map);
+   void TrackWidget(EAGLE_ID eid , std::string group_name = DEFAULT_GROUP_NAME);
+
+   bool FreeWidget(EAGLE_ID eid , WIDGET_FREED_MAP& freed_map);
+   
 public :
    
    void RegisterWidgetCreationFunction(string widget_class_name , WIDGET_CREATION_FUNCTION widget_creator);
@@ -39,9 +55,19 @@ public :
    WidgetBase* CreateWidgetBaseObject(string widget_class_name , string widget_parameters);
 
    
-   
-   
+   bool FreeWidget(EAGLE_ID eid);/// Search groups for widget
+   bool FreeWidget(EAGLE_ID eid , std::string group_name);
+   bool FreeWidgetGroup(std::string group_name = DEFAULT_GROUP_NAME);
+   void FreeAllWidgets();
+
 };
+
+
+bool FreeWidget(EAGLE_ID eid);
+bool FreeWidget(EAGLE_ID eid , std::string group_name);
+bool FreeWidgetGroup(std::string group_name = DEFAULT_GROUP_NAME);
+void FreeAllWidgets();
+
 
 
 
@@ -70,8 +96,6 @@ WIDGET_TYPE* CreateWidget(WIDGET_TYPE** pwidget_store , string widget_class_name
    }
    return pwidget;
 }
-
-
 
 
 #endif // WidgetFactory_HPP

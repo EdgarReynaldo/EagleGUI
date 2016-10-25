@@ -5,6 +5,9 @@
 #include "Eagle/Gui/Layout/PinLayout.hpp"
 
 
+#include "Eagle/StringWork.hpp"
+
+
 
 
 /// ---------------------------------     Pin     --------------------------------------------
@@ -62,6 +65,17 @@ Rectangle Pin::GetPinPosition(int width , int height) {
 
 
 /// ----------------------      PinLayout      ------------------------------------------
+
+
+
+PinLayout::PinLayout(std::string name) :
+      Layout(name),
+      pins()
+{
+   if (name.compare("") == 0) {
+      SetName(StringPrintF("PinLayout at %p" , this));
+   }
+}
 
 
 

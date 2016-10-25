@@ -136,10 +136,7 @@ class EagleObjectRegistry {
    static int destruct_count;
 
 
-   
 
-      
-   
    static void CheckIdRange(EAGLE_ID eid);
 
    static void RemoveNameEntry(EAGLE_ID eid);

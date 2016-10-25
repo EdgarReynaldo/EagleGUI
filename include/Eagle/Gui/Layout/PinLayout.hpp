@@ -41,6 +41,8 @@ protected :
 
 public :
 
+   PinLayout(std::string name="");
+
    /// LayoutBase
    
    /// Pass INT_MAX for a parameter if you don't care about the position or size
@@ -50,7 +52,9 @@ public :
 
    /// Member functions
    void SetPinPosition(int pin_slot , int newx , int newy);
+   
    void SetPinAlignment(int pin_slot , HALIGNMENT halignment , VALIGNMENT valignment);
+   
    void SetPinPosition(int pin_slot , int newx , int newy , HALIGNMENT halignment , VALIGNMENT valignment);
    
    virtual void SetAlignment(HALIGNMENT halignment , VALIGNMENT valignment);

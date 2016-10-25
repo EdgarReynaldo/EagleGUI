@@ -134,6 +134,7 @@
 		<Unit filename="include/Eagle/Gui/Camera.hpp" />
 		<Unit filename="include/Eagle/Gui/Decorators/Decorator.hpp" />
 		<Unit filename="include/Eagle/Gui/Decorators/TextDecorator.hpp" />
+		<Unit filename="include/Eagle/Gui/Factory/WidgetCreators.hpp" />
 		<Unit filename="include/Eagle/Gui/Factory/WidgetFactory.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FlowLayout.hpp" />
@@ -170,6 +171,7 @@
 		<Unit filename="include/Eagle/NinePatch.hpp" />
 		<Unit filename="include/Eagle/Object.hpp" />
 		<Unit filename="include/Eagle/Platform.hpp" />
+		<Unit filename="include/Eagle/Position.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/Threads.hpp" />
@@ -231,6 +233,7 @@
 		<Unit filename="src/NinePatch.cpp" />
 		<Unit filename="src/Object.cpp" />
 		<Unit filename="src/Platform.cpp" />
+		<Unit filename="src/Position.cpp" />
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />
