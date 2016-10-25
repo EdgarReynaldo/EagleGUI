@@ -46,16 +46,18 @@ TODO : Milestones necessary for development
       f - ZoomCamera (might want ScrollArea first)
       f - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
       g - PinLayout (use alignment) , NPLayout , MenuLayout (might want to use PinLayout)
-      h - Decorator , BorderDecorator
-      i - TextDecorator, TextButton??? Make BasicButton support text?
+      h - Decorator , BorderDecorator, ResizeDecorator
       j - Slider, SliderKnob - DragButton
+      k - Dial, Tooltip
+      l - GuiWindow
       
    COMPLETE : 
       A - BasicButton , GuiButton , IconButton , ScrollButton
       B - BasicText , SelectText , LinkText
       C - Scroller, ScrollBar
       D - Camera
-      C - DumbLayout , GridLayout , RelativeLayout , SplitterLayout
+      E - DumbLayout , GridLayout , RelativeLayout , SplitterLayout
+      F - TextDecorator, TextButton
 
 2. Create documentation - doxygen looks best for this
 
