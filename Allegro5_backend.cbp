@@ -128,6 +128,7 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5System.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Threads.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
 		<Unit filename="postbuildcopy_libraries_a5.bat" />
 		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
@@ -142,6 +143,7 @@
 		<Unit filename="src/backends/Allegro5/Allegro5System.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Threads.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Timer.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Transform.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

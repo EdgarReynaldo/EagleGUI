@@ -176,6 +176,7 @@
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/Threads.hpp" />
 		<Unit filename="include/Eagle/Timer.hpp" />
+		<Unit filename="include/Eagle/Transforms.hpp" />
 		<Unit filename="postbuildcopy_debug.bat" />
 		<Unit filename="postbuildcopy_debugstatic.bat" />
 		<Unit filename="postbuildcopy_libraries.bat" />
@@ -202,6 +203,7 @@
 		<Unit filename="src/Gui/Camera.cpp" />
 		<Unit filename="src/Gui/Decorator/Decorator.cpp" />
 		<Unit filename="src/Gui/Decorator/TextDecorator.cpp" />
+		<Unit filename="src/Gui/Factory/WidgetCreators.cpp" />
 		<Unit filename="src/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
@@ -238,6 +240,7 @@
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />
 		<Unit filename="src/Timer.cpp" />
+		<Unit filename="src/Transforms.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
