@@ -35,7 +35,7 @@
 #include "Eagle/Area.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/System.hpp"
-
+#include "Eagle/Transforms.hpp"
 
 
 /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
@@ -210,7 +210,6 @@ protected :
    float previoustime;
    float currenttime;
 
-
    virtual void PrivateFlipDisplay()=0;
 
 public :
@@ -362,6 +361,8 @@ public :
    // drawing target
    void PushDrawingTarget(EagleImage* img);
    void PopDrawingTarget();
+   
+   virtual Transformer* GetTransformer()=0;
    
    /// TODO : Move clipping support here, since it operates on a target bitmap
    

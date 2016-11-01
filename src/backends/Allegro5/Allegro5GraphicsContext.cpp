@@ -54,7 +54,8 @@ Allegro5GraphicsContext::Allegro5GraphicsContext() :
       blender_op(ALLEGRO_ADD),
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
-      blender_stack()
+      blender_stack(),
+      allegro5transformer()
 {}
 
 
@@ -66,7 +67,8 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
       blender_op(ALLEGRO_ADD),
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
-      blender_stack()
+      blender_stack(),
+      allegro5transformer()
 {
    Create(width , height , flags);
 }
@@ -672,4 +674,10 @@ void Allegro5GraphicsContext::RegisterDisplayInput(EagleEventHandler* eagle_hand
    if (display) {
       al_register_event_source(allegro_queue , al_get_display_event_source(display));
    }
+}
+
+
+
+Transformer* Allegro5GraphicsContext::GetTransformer() {
+   return &allegro5transformer;
 }

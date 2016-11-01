@@ -8,6 +8,7 @@
 #include "Eagle/GraphicsContext.hpp"
 
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
@@ -41,6 +42,9 @@ private :
 //   int old_blender_op;
 //   int old_blender_src;
 //   int old_blender_dest;
+
+
+   Allegro5Transformer allegro5transformer;
 
 
 
@@ -155,6 +159,7 @@ public :
 */
    virtual void RegisterDisplayInput(EagleEventHandler* eagle_handler);
    
+   Transformer* GetTransformer();
 };
 
 
