@@ -125,7 +125,10 @@ BasicText::BasicText() :
       totalheight(0),
       textx(0),
       texty(0),
-      widths_vector()
+      widths_vector(),
+      scale_to_fit(false),
+      scaling_transform(),
+      inverse_scaling_transform()
 {
    
 }
@@ -149,8 +152,10 @@ BasicText::BasicText(string name) :
       totalheight(0),
       textx(0),
       texty(0),
-      widths_vector()
-
+      widths_vector(),
+      scale_to_fit(false),
+      scaling_transform(),
+      inverse_scaling_transform()
 {
    
 }
@@ -163,6 +168,23 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    EAGLE_ASSERT(win->Valid());
 
    EAGLE_ASSERT(text_font && text_font->Valid());
+   
+   Transformer* transformer = win->GetTransformer();
+   
+   if (scale_to_fit) {
+      
+      scaling_transform = transformer->GetIdentityTransform();
+      
+      scaling_transform.Translate(-textx , -texty);
+      scaling_transform.Scale((float)InnerArea().W()/maxwidth , (float)InnerArea().H()/totalheight);
+      scaling_transform.Translate(InnerArea().X() , InnerArea().Y());
+      
+      scaling_transform *= transformer->GetViewTransform();
+      
+      transformer->PushViewTransform(scaling_transform);
+   }
+   
+   
    win->HoldDrawing();
    for (int i = 0 ; i < nlines ; ++i) {
       string s = lines[i];
@@ -170,6 +192,10 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
       win->DrawTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , HALIGN_LEFT , VALIGN_TOP);
    }
    win->ReleaseDrawing();
+   
+   if (scale_to_fit) {
+      win->GetTransformer()->PopViewTransform();
+   }
 ///   win->DrawMultiLineTextString(text_font , text , tx + xpos , ty + ypos , c , linespacing , halign , valign);
 }
 
@@ -182,7 +208,20 @@ void BasicText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout
 
 
 void BasicText::ShrinkWrap() {
-   WidgetBase::SetWidgetArea(textx,texty,maxwidth,totalheight,true);
+   
+   scale_to_fit = false;
+   
+   WidgetArea a = area;
+   a.SetInnerArea(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , maxheight + 2*vpadding);
+   
+   WidgetBase::SetWidgetArea(a.OuterArea());
+}
+
+
+
+void BasicText::ScaleToFit(bool scale) {
+   scale_to_fit = scale;
+   SetRedrawFlag();
 }
 
 

@@ -31,6 +31,10 @@ protected :
    int texty;
    std::vector<int> widths_vector;
 
+   bool scale_to_fit;
+   Transform scaling_transform;
+   Transform inverse_scaling_transform;
+   
    
    
    virtual void RefreshTextPosition();
@@ -53,6 +57,8 @@ public :
    /// Shrink wrap : Changes area so it exactly fits the text
    void ShrinkWrap();
 
+   void ScaleToFit(bool scale);
+   
    
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
