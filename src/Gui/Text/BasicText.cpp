@@ -212,7 +212,7 @@ void BasicText::ShrinkWrap() {
    scale_to_fit = false;
    
    WidgetArea a = area;
-   a.SetInnerArea(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , maxheight + 2*vpadding);
+   a.SetInnerArea(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , totalheight + 2*vpadding);
    
    WidgetBase::SetWidgetArea(a.OuterArea());
 }
