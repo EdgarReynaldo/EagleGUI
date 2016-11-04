@@ -102,7 +102,11 @@ public :
 	void SetOuterArea(Rectangle r);
 	void SetOuterArea(int xpos , int ypos , unsigned int width , unsigned int height);
 
+	
+	void SetInnerPos(int ixpos , int iypos);/// Changes absolute inner position, moves outer area, preserves margins
    void SetInnerDimensions(unsigned int width , unsigned int height);/// Changes outer area, preserves margins
+	void SetInnerArea(int ixpos , int iypos , unsigned int iwidth , unsigned int iheight);/// Changes inner and outer area, preserves margins
+	
 	
 	void SetRelativeInnerPosition(int xpos , int ypos);/// Changes margins, probably not very useful
 	void SetRelativeInnerDimensions(unsigned int width , unsigned int height);/// Changes margins, probably not very useful

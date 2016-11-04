@@ -233,8 +233,22 @@ void WidgetArea::SetOuterArea(int xpos , int ypos , unsigned int width , unsigne
 
 
 
+void WidgetArea::SetInnerPos(int ixpos , int iypos) {
+   inner_area.SetPos(ixpos,iypos);
+   outer_area.SetPos(ixpos - mleft , iypos - mtop);
+}
+
+
+
 void WidgetArea::SetInnerDimensions(unsigned int width , unsigned int height) {
    inner_area.SetDimensions(width , height);
+   SetMarginsExpandFromInner(mleft , mright , mtop , mbot);
+}
+
+
+
+void WidgetArea::SetInnerArea(int ixpos , int iypos , unsigned int iwidth , unsigned int iheight) {
+   inner_area.SetArea(ixpos , iypos , iwidth , iheight);
    SetMarginsExpandFromInner(mleft , mright , mtop , mbot);
 }
 
