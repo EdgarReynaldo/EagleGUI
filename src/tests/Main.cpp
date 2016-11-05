@@ -48,6 +48,9 @@ int main(int argc , char** argv) {
    
    EagleGraphicsContext* main_window = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED);
    
+   TestMenu menu(main_window);
+   
+   
    bool user_selected_branch = false;
    
    const char* userbranch = default_branch;
@@ -68,7 +71,7 @@ int main(int argc , char** argv) {
             retval = test_registry.Run(userbranch , argc , argv);
          }
          catch (EagleError error) {
-            
+            /// Ignore error and continue running test, it will be logged anyway
          }
       }
       

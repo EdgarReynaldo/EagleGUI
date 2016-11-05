@@ -67,6 +67,8 @@ public :
       return (*mainfunc)(argc , argv);
    }
    
+   int Size() {return test_map.size();}
+   
 };
 
 extern TestRegistry test_registry;
