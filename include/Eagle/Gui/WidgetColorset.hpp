@@ -29,6 +29,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Object.hpp"
 
+#include <map>
 
 
 /*
@@ -87,6 +88,38 @@ public :
 
 extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];
 
+
+
+/// Defined colors are clear, white, black, light gray, medium gray, dark gray,
+/// red, orange, yellow, lime-green , green, neon-green, cyan, sky-blue, blue, purple, magenta, and fuchsia
+
+
+class RegisteredColor {
+
+public :
+   RegisteredColor(std::string name , float red , float green , float blue, float alpha);
+   RegisteredColor(std::string name , int red , int green , int blue, int alpha);
+
+}
+
+
+
+REGISTER_COLOR(white , 1.0 , 1.0 , 1.0 , 1.0);
+   
+class ColorRegistry {
+   
+   std::map<std::string , EagleColor> named_colors;
+   
+public :
+   
+   EagleColor GetColorByName(std::string name);
+   
+   void RegisterColor(std::string name , EagleColor color);
+   
+}
+
+
+extern ColorRegistry color_registry;
 
 
 #endif // EagleGuiWidgetColorset_HPP

@@ -86,3 +86,70 @@ std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) con
 
 
 
+/// ------------------------   RegisteredColor    ----------------------------------
+
+
+
+RegisteredColor::RegisteredColor(std::string name , float red , float green , float blue, float alpha) {
+   color_registry.RegisterColor(name , EagleColor(red,green,blue,alpha));
+}
+
+
+
+RegisteredColor::RegisteredColor(std::string name , int red , int green , int blue, int alpha) {
+   color_registry.RegisterColor(name , EagleColor(red,green,blue,alpha));
+}
+   
+
+#define REGISTER_COLOR(name , red , green , blue , alpha) \
+   RegisteredColor registered_color_##name(name , red , green , blue , alpha);
+   
+REGISTER_COLOR("clear"       , 1.0  , 1.0  , 1.0  , 0.0);
+REGISTER_COLOR("white"       , 1.0  , 1.0  , 1.0  , 1.0);
+REGISTER_COLOR("black"       , 0.0  , 0.0  , 0.0  , 1.0);
+REGISTER_COLOR("light gray"  , 0.75 , 0.75 , 0.75 , 1.0);
+REGISTER_COLOR("medium gray" , 0.5  , 0.5  , 0.5  , 1.0);
+REGISTER_COLOR("dark gray"   , 0.25 , 0.25 , 0.25 , 1.0);
+
+REGISTER_COLOR("red"         , 1.0  , 0.0  , 0.0  , 1.0);
+REGISTER_COLOR("orange"      , 1.0  , 0.5  , 0.0  , 1.0);
+REGISTER_COLOR("yellow"      , 1.0  , 1.0  , 0.0  , 1.0);
+REGISTER_COLOR("lime-green"  , 0.5  , 1.0  , 0.0  , 1.0);
+REGISTER_COLOR("green"       , 0.0  , 1.0  , 0.0  , 1.0);
+REGISTER_COLOR("neon-green"  , 0.0  , 1.0  , 0.5  , 1.0);
+REGISTER_COLOR("cyan"        , 0.0  , 1.0  , 1.0  , 1.0);
+REGISTER_COLOR("sky-blue"    , 0.0  , 0.5  , 1.0  , 1.0);
+REGISTER_COLOR("blue"        , 0.0  , 0.0  , 1.0  , 1.0);
+REGISTER_COLOR("purple"      , 0.5  , 0.0  , 1.0  , 1.0);
+REGISTER_COLOR("magenta"     , 1.0  , 0.0  , 1.0  , 1.0);
+REGISTER_COLOR("fuchsia"     , 1.0  , 0.0  , 0.5  , 1.0);
+
+
+/// -------------------------     ColorRegistry     ---------------------------------
+
+
+
+ColorRegistry color_registry;
+
+
+
+EagleColor ColorRegistry::GetColorByName(std::string name) {
+   std::map<std::string , EagleColor>::iterator it = named_colors.find(name);
+   if (it != named_colors.end()) {
+      return it->second;
+   }
+   return EagleColor();
+}
+
+
+
+void ColorRegistry::RegisterColor(std::string name , EagleColor color) {
+   named_colors[name] = color;
+}
+
+
+
+
+
+
+
