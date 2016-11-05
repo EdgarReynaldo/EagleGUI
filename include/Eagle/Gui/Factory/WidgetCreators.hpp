@@ -41,6 +41,8 @@ WidgetBase* CreateGuiButtonWidget   (std::string widget_parameters);
 WidgetBase* CreateIconButtonWidget  (std::string widget_parameters);
 WidgetBase* CreateRadioButtonWidget (std::string widget_parameters);
 WidgetBase* CreateScrollButtonWidget(std::string widget_parameters);
+WidgetBase* CreateTextButtonWidget  (std::string widget_parameters);
+
 
 
 
@@ -52,6 +54,7 @@ REGISTER_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
 REGISTER_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
 REGISTER_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
 REGISTER_WIDGET_CREATOR(ScrollButton , CreateScrollButtonWidget);
+REGISTER_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
 std::map<std::string , std::string> ParseWidgetParameters(std::string widget_parameters);
 

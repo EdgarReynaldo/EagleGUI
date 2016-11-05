@@ -20,6 +20,7 @@
 #include "Eagle/Gui/Button/IconButton.hpp"
 #include "Eagle/Gui/Button/RadioButton.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
+#include "Eagle/Gui/Button/TextButton.hpp"
 
 #include "Eagle/StringWork.hpp"
 
@@ -46,6 +47,7 @@ REGISTERED_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
 REGISTERED_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
 REGISTERED_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
 REGISTERED_WIDGET_CREATOR(ScrollButton , CreateScrollButtonWidget);
+REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
 
 
@@ -64,6 +66,8 @@ WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
       }
    }
    
+   widget = new BasicText();
+   
    ApplyWidgetBaseAttributes(widget , att_map);
    
    ApplyTextAttributes(widget , att_map);
@@ -74,10 +78,11 @@ WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
 
 
 WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
+   WidgetBase* widget = new SelectText();
+
    ApplyWidgetBaseAttributes(widget , att_map);
    
    ApplyTextAttributes(widget , att_map);
@@ -88,10 +93,11 @@ WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
 
 
 WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
+   WidgetBase* widget = new LinkText();
+
    ApplyWidgetBaseAttributes(widget , att_map);
    
    ApplyTextAttributes(widget , att_map);
@@ -102,10 +108,11 @@ WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
 
 
 WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
+   WidgetBase* widget = new BasicButton();
+
    ApplyWidgetBaseAttributes(widget , att_map);
 
    return widget;
@@ -114,10 +121,11 @@ WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
 
 
 WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
+   WidgetBase* widget = new GuiButton();
+
    ApplyWidgetBaseAttributes(widget , att_map);
 
    return widget;
@@ -126,9 +134,10 @@ WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
 
 
 WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   
+   WidgetBase* widget = new IconButton();
    
    ApplyWidgetBaseAttributes(widget , att_map);
 
@@ -138,9 +147,11 @@ WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
 
 
 WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   
+   WidgetBase* widget = 0;///new RadioButton();
+   EAGLE_ASSERT(false);
    
    ApplyWidgetBaseAttributes(widget , att_map);
 
@@ -150,12 +161,36 @@ WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
 
 
 WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
-   WidgetBase* widget = 0;
    map<string , string> att_map = ParseWidgetParameters(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
+   WidgetBase* widget = new ScrollButton();
+   
    ApplyWidgetBaseAttributes(widget , att_map);
 
+   return widget;
+}
+
+
+
+WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
+   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string>::const_iterator cit = att_map.end();
+   
+   TextButton* widget = new TextButton();
+   
+   ApplyWidgetBaseAttributes(widget , att_map);
+   
+   if ((cit = att_map.find("TEXTNAME")) != att_map.end()) {
+      BasicText* text = dynamic_cast<BasicText*>(GetFirstObjectByName(cit->second));
+      EAGLE_ASSERT(text);
+      widget->GetTextDecorator()->UseTextWidget(text);
+   }
+   
+   WidgetBase* text_widget = widget->GetTextDecorator()->GetTextWidget();
+   
+   ApplyTextAttributes(text_widget , att_map);
+   
    return widget;
 }
 
@@ -200,7 +235,7 @@ map<string , string> ParseWidgetParameters(string widget_parameters) {
 
 
 
-/// Right now only POS, and DIM, and AREA are supported
+/// Right now only NAME , POS, DIM, and AREA are supported
 void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& attribute_map) {
    
    if (!widget) {
@@ -211,6 +246,10 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
    
    const char* cstr = 0;
       
+   if ((cit = attribute_map.find("NAME")) != attribute_map.end()) {
+      widget->SetName(cit->second);
+   }
+
    if ((cit = attribute_map.find("POS")) != attribute_map.end()) {
       cstr = cit->second.c_str();
       int x = 0 , y = 0;
