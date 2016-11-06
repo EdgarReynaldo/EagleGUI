@@ -56,7 +56,6 @@ REGISTER_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
 REGISTER_WIDGET_CREATOR(ScrollButton , CreateScrollButtonWidget);
 REGISTER_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
-std::map<std::string , std::string> ParseAttributeSet(std::string attribute_value_set);
 
 
 
