@@ -22,6 +22,8 @@
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 #include "Eagle/Gui/Button/TextButton.hpp"
 
+#include "Eagle/Gui/Scripting/Parsing.hpp"
+
 #include "Eagle/StringWork.hpp"
 
 using namespace std;
@@ -53,7 +55,7 @@ REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
 WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
    WidgetBase* widget = 0;
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    if ((cit = att_map.find("SUBCLASS")) != att_map.end()) {
@@ -78,7 +80,7 @@ WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
 
 
 WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new SelectText();
@@ -93,7 +95,7 @@ WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
 
 
 WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new LinkText();
@@ -108,7 +110,7 @@ WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
 
 
 WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new BasicButton();
@@ -121,7 +123,7 @@ WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
 
 
 WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new GuiButton();
@@ -134,7 +136,7 @@ WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
 
 
 WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new IconButton();
@@ -147,7 +149,7 @@ WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
 
 
 WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = 0;///new RadioButton();
@@ -161,7 +163,7 @@ WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
 
 
 WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    WidgetBase* widget = new ScrollButton();
@@ -174,7 +176,7 @@ WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
 
 
 WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
-   map<string , string> att_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
    TextButton* widget = new TextButton();
@@ -192,45 +194,6 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
    ApplyTextAttributes(text_widget , att_map);
    
    return widget;
-}
-
-
-
-/// Attributes are stored in semi-colon separated strings
-/// Specific attributes are stored in two colon separated strings
-/// Attributes and values may be surrounded by padding whitespace for readability
-/// IE. " SUBCLASS : RadioButton ; POS : 100,50 ; DIM : 200,100 ; SDCOL : 0,64,0 ;"
-
-map<string , string> ParseWidgetParameters(string widget_parameters) {
-   
-   map<string , string> attribute_map;
-   
-   vector<string> attributes = SplitByDelimiterString(widget_parameters , ";");
-   
-   for (size_t i = 0 ; i < attributes.size() ; ++i) {
-      string attribute_str = attributes[i];
-      vector<string> attribute_pair = SplitByDelimiterString(attribute_str , ":");
-      if (attribute_pair.size() != 2) {
-         throw EagleError(StringPrintF("ParseWidgetParameters : Illegal attribute pair (%s) of size %u found in attribute %u\n",
-                                       attribute_str.c_str() , attribute_pair.size() , i));
-      }
-      string attribute = attribute_pair[0];
-      string value = attribute_pair[1];
-      char* attstr = CStrDup(attribute.c_str());
-      char* valstr = CStrDup(value.c_str());
-      TrimTrailingWhiteSpace(attstr);
-      TrimTrailingWhiteSpace(valstr);
-      const char* attstr_start = SkipWhiteSpace(attstr);
-      const char* valstr_start = SkipWhiteSpace(valstr);
-      
-      attribute_map[attstr_start] = valstr_start;
-      
-      free(attstr);
-      free(valstr);
-      
-      
-   }
-   return attribute_map;
 }
 
 
@@ -315,7 +278,7 @@ void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std:
 
 
 void SetWidgetBaseParameters(WidgetBase* widget , string widget_parameters) {
-   map<string , string> attribute_map = ParseWidgetParameters(widget_parameters);
+   map<string , string> attribute_map = ParseAttributeSet(widget_parameters);
    ApplyWidgetBaseAttributes(widget , attribute_map);
 }
 
