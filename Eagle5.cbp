@@ -149,6 +149,7 @@
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
+		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/TestWidget.hpp" />
@@ -217,6 +218,9 @@
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Gui/Menu.cpp" />
 		<Unit filename="src/Gui/Scripting/GuiScript.cpp" />
+		<Unit filename="src/Gui/Scripting/Parsing.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Gui/Scroller.cpp" />
 		<Unit filename="src/Gui/TestWidget.cpp" />

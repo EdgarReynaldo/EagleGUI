@@ -107,9 +107,9 @@ RegisteredColor::RegisteredColor(std::string name , int red , int green , int bl
 REGISTER_COLOR("clear"       , 1.0  , 1.0  , 1.0  , 0.0);
 REGISTER_COLOR("white"       , 1.0  , 1.0  , 1.0  , 1.0);
 REGISTER_COLOR("black"       , 0.0  , 0.0  , 0.0  , 1.0);
-REGISTER_COLOR("light gray"  , 0.75 , 0.75 , 0.75 , 1.0);
-REGISTER_COLOR("medium gray" , 0.5  , 0.5  , 0.5  , 1.0);
-REGISTER_COLOR("dark gray"   , 0.25 , 0.25 , 0.25 , 1.0);
+REGISTER_COLOR("light-gray"  , 0.75 , 0.75 , 0.75 , 1.0);
+REGISTER_COLOR("medium-gray" , 0.5  , 0.5  , 0.5  , 1.0);
+REGISTER_COLOR("dark-gray"   , 0.25 , 0.25 , 0.25 , 1.0);
 
 REGISTER_COLOR("red"         , 1.0  , 0.0  , 0.0  , 1.0);
 REGISTER_COLOR("orange"      , 1.0  , 0.5  , 0.0  , 1.0);
@@ -133,6 +133,12 @@ ColorRegistry color_registry;
 
 
 
+bool ColorRegistry::HasColor(std::string name) {
+   return named_colors.find(name) != named_colors.end();
+}
+
+
+
 EagleColor ColorRegistry::GetColorByName(std::string name) {
    std::map<std::string , EagleColor>::iterator it = named_colors.find(name);
    if (it != named_colors.end()) {
@@ -145,6 +151,28 @@ EagleColor ColorRegistry::GetColorByName(std::string name) {
 
 void ColorRegistry::RegisterColor(std::string name , EagleColor color) {
    named_colors[name] = color;
+}
+
+
+
+/// --------------------------     Globals     ---------------------------------
+
+
+
+bool HasColor(std::string name) {
+   return color_registry.HasColor(name);
+}
+
+
+
+EagleColor GetColorByName(std::string name) {
+   return color_registry.GetColorByName(name);
+}
+
+
+
+void RegisterColor(std::string name , EagleColor color) {
+   color_registry.RegisterColor(name , color);
 }
 
 
