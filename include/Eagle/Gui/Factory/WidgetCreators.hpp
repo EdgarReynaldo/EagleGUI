@@ -46,15 +46,15 @@ WidgetBase* CreateTextButtonWidget  (std::string widget_parameters);
 
 
 
-REGISTER_WIDGET_CREATOR(BasicText ,    CreateBasicTextWidget);
-REGISTER_WIDGET_CREATOR(SelectText ,   CreateSelectTextWidget);
-REGISTER_WIDGET_CREATOR(LinkText ,     CreateLinkTextWidget);
-REGISTER_WIDGET_CREATOR(BasicButton ,  CreateBasicButtonWidget);
-REGISTER_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
-REGISTER_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
-REGISTER_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
-REGISTER_WIDGET_CREATOR(ScrollButton , CreateScrollButtonWidget);
-REGISTER_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
+REGISTER_WIDGET_CREATOR(BasicText         , CreateBasicTextWidget);
+REGISTER_WIDGET_CREATOR(SelectText        , CreateSelectTextWidget);
+REGISTER_WIDGET_CREATOR(LinkText          , CreateLinkTextWidget);
+REGISTER_WIDGET_CREATOR(BasicButton       , CreateBasicButtonWidget);
+REGISTER_WIDGET_CREATOR(GuiButton         , CreateGuiButtonWidget);
+REGISTER_WIDGET_CREATOR(IconButton        , CreateIconButtonWidget);
+REGISTER_WIDGET_CREATOR(RadioButton       , CreateRadioButtonWidget);
+REGISTER_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
+REGISTER_WIDGET_CREATOR(TextButton        , CreateTextButtonWidget);
 
 
 

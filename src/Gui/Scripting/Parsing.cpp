@@ -5,17 +5,19 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Scripting/Parsing.hpp"
 
+#include <cstdlib>
+#include <cstring>
 
 using namespace std;
 
 
 
-/// Attributes are stored in semi-colon separated strings
+/// Attribute value pairs are stored in semi-colon separated strings
 /// Specific attributes are stored in two colon separated strings
 /// Attributes and values may be surrounded by padding whitespace for readability
 /// IE. " SUBCLASS : RadioButton ; POS : 100,50 ; DIM : 200,100 ; SDCOL : 0,64,0 ;"
 
-map<string , string> ParseAttributeSet(string widget_parameters) throw EagleError {
+map<string , string> ParseAttributeSet(string widget_parameters) throw (EagleError) {
    
    map<string , string> attribute_map;
    
@@ -47,6 +49,164 @@ map<string , string> ParseAttributeSet(string widget_parameters) throw EagleErro
    return attribute_map;
 }
 
+
+
+
+
+EagleColor ParseColor(std::string color_dec) throw (EagleError) {
+   EagleColor c;
+   int r,g,b,a;
+   float fr,fg,fb,fa;
+   /// Declaration follows format [RGB | RGBA | FRGB | FRGBA](%n,%n,%n[,%n])
+   vector<string> args = SplitByDelimiterString(color_dec , "(");
+   
+   string val = args[1];
+   
+   char buf[256];
+   memset(buf , 0 , 256);
+   
+   if (1 != sscanf(args[0].c_str() , "%5s" , buf)) {
+      throw EagleError(StringPrintF("ParseEagleColor : Failed to read attribute name from string '%s'\n" , args[0].c_str()));
+   }
+   if (strncmp(buf , "FRGBA" , 5) == 0) {
+      if (4 == sscanf(val.c_str() , "%f,%f,%f,%f" , &fr , &fg , &fb , &fa)) {
+         c.SetFloatColor(fr,fg,fb,fa);
+      }
+      else {
+         throw EagleError(StringPrintF("ParseEagleColor : Failed to parse FRGBA from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if (strncmp(buf , "FRGB" , 4) == 0) {
+      if (3 == sscanf(val.c_str() , "%f,%f,%f" , &fr , &fg , &fb)) {
+         c.SetFloatColor(fr,fg,fb);
+      }
+      else {
+         throw EagleError(StringPrintF("ParseEagleColor : Failed to parse FRGB from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if (strncmp(buf , "RGBA" , 4) == 0) {
+      if (4 == sscanf(val.c_str() , "%d,%d,%d,%d" , &r , &g , &b , &a)) {
+         c.SetColor(r,g,b,a);
+      }
+      else {
+         throw EagleError(StringPrintF("ParseEagleColor : Failed to parse RGBA from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if (strncmp(buf , "RGB" , 3) == 0) {
+      if (3 == sscanf(val.c_str() , "%d,%d,%d" , &r , &g , &b)) {
+         c.SetColor(r,g,b);
+      }
+      else {
+         throw EagleError(StringPrintF("ParseEagleColor : Failed to parse RGB from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else {
+      throw EagleError("ParseEagleColor : Failed to parse valid attribute for EagleColor from value given.\n");
+   }
+   return c;
+}
+
+
+
+WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap) throw (EagleError) {
+   WidgetColorset wc;
+   for (ATTRIBUTE_VALUE_MAP::const_iterator it = avmap.begin() ; it != avmap.end() ; ++it) {
+      std::string att = it->first;
+      std::string val = it->second;
+      int color_index = -1;
+      if (strncmp(val.c_str() , "SDCOL" , 5) == 0) {
+         color_index = SDCOL;
+      }
+      else if (strncmp(val.c_str() , "BGCOL" , 5) == 0) {
+         color_index = BGCOL;
+      }
+      else if (strncmp(val.c_str() , "MGCOL" , 5) == 0) {
+         color_index = MGCOL;
+      }
+      else if (strncmp(val.c_str() , "FGCOL" , 5) == 0) {
+         color_index = FGCOL;
+      }
+      else if (strncmp(val.c_str() , "HLCOL" , 5) == 0) {
+         color_index = HLCOL;
+      }
+      else if (strncmp(val.c_str() , "TXTCOL" , 6) == 0) {
+         color_index = TXTCOL;
+      }
+      if (color_index != -1) {
+         EagleColor c;
+         try {
+            c = ParseColor(val);
+         }
+         catch (...) {
+            char color_name[256];
+            memset(color_name , 0 , 256);
+            if ((1 == sscanf(val.c_str() , "%255s" , color_name) && HasColor(color_name))) {
+               c = GetColorByName(color_name);
+            }
+            else {
+               throw EagleError(StringPrintF("ParseWidgetColorset : Failed to parse color for value '%s'\n" , val.c_str()));
+            }
+         }
+         wc[color_index] = c;
+      }
+      else {
+         /// No known attribute found
+         throw EagleError(StringPrintF("ParseWidgetColorset : Failed to parse attribute '%s' for colorset.\n" , att.c_str()));
+      }
+   }
+   return wc;
+}
+
+
+
+
+/**
+EagleColor ParseEagleColor(const ATTRIBUTE_VALUE_MAP& avmap) throw EagleError {
+   EagleColor c;
+   int r,g,b,a;
+   float fr,fg,fb,fa;
+   AVMIT it = avmap.end();
+   if ((it = avmap.find("RGB")) != avmap.end()) {
+      string val = it->second;
+      if (3 == sscanf(val.c_str() , "%d,%d,%d" , &r , &g , &b)) {
+         c.SetColor(r,g,b);
+      }
+      else {
+         throw EagleError(StringPrintF("Failed to parse RGB from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if ((it = avmap.find("RGBA")) != avmap.end()) {
+      string val = it->second;
+      if (4 == sscanf(val.c_str() , "%d,%d,%d,%d" , &r , &g , &b , &a)) {
+         c.SetColor(r,g,b,a);
+      }
+      else {
+         throw EagleError(StringPrintF("Failed to parse RGBA from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if ((it = avmap.find("FRGB")) != avmap.end()) {
+      string val = it->second;
+      if (3 == sscanf(val.c_str() , "%f,%f,%f" , &fr , &fg , &fb)) {
+         c.SetFloatColor(fr,fg,fb);
+      }
+      else {
+         throw EagleError(StringPrintF("Failed to parse FRGB from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else if ((it = avmap.find("FRGBA")) != avmap.end()) {
+      string val = it->second;
+      if (4 == sscanf(val.c_str() , "%f,%f,%f,%f" , &fr , &fg , &fb , &fa)) {
+         c.SetFloatColor(fr,fg,fb,fa);
+      }
+      else {
+         throw EagleError(StringPrintF("Failed to parse FRGB from value string '%s'\n" , val.c_str()));
+      }
+   }
+   else {
+      throw EagleError("Failed to parse valid attribute for EagleColor from value given.\n");
+   }
+}
+//*/
 
 
 

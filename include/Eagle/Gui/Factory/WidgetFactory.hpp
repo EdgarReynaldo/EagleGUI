@@ -83,7 +83,7 @@ WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , 
 /// Template functions
 
 template <class WIDGET_TYPE>
-WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , WIDGET_TYPE** pwidget_store = 0) {
+WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , WIDGET_TYPE** pwidget_store) {
    EAGLE_ASSERT(pwidget_store);
    WIDGET_TYPE* pwidget = 0;
    pwidget = dynamic_cast<WIDGET_TYPE*>(CreateWidgetObject(widget_class_name , widget_parameters));

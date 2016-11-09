@@ -28,6 +28,7 @@
 
 #include "Eagle/Color.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Error.hpp"
 
 #include <map>
 
@@ -66,11 +67,10 @@ enum WIDGETCOLOR {
 
 class WidgetColorset : public EagleObject {
 
-public :
-
+protected :
    EagleColor wcolorset[EAGLE_NUMCOLORS];
-   
 
+public :
 
    WidgetColorset();
    WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
@@ -81,6 +81,9 @@ public :
 
    EagleColor& operator[] (const WIDGETCOLOR& wc) {return wcolorset[wc];}
    const EagleColor& operator[] (const WIDGETCOLOR& wc) const {return wcolorset[wc];}
+
+   EagleColor& operator[] (int wc) {return wcolorset[wc];}
+   const EagleColor& operator[] (int wc) const {return wcolorset[wc];}
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
@@ -90,8 +93,8 @@ extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];
 
 
 
-/// Defined colors are clear, white, black, light-gray, medium-gray, dark-gray,
-/// red, orange, yellow, lime-green , green, neon-green, cyan, sky-blue, blue, purple, magenta, and fuchsia
+/// Defined colors are clear, white, black, light_gray, medium_gray, dark_gray,
+/// red, orange, yellow, lime_green , green, neon_green, cyan, sky_blue, blue, purple, magenta, and fuchsia
 
 
 class RegisteredColor {
@@ -100,32 +103,44 @@ public :
    RegisteredColor(std::string name , float red , float green , float blue, float alpha);
    RegisteredColor(std::string name , int red , int green , int blue, int alpha);
 
-}
+};
 
 
 
-REGISTER_COLOR(white , 1.0 , 1.0 , 1.0 , 1.0);
-   
 class ColorRegistry {
    
    std::map<std::string , EagleColor> named_colors;
+   std::map<std::string , WidgetColorset> named_colorsets;
    
 public :
    
+   /// EagleColors
    bool HasColor(std::string name);
-   
-   EagleColor GetColorByName(std::string name);
-   
-   void RegisterColor(std::string name , EagleColor color);
-   
-}
 
+   EagleColor& GetColorByName(std::string name);
+   const EagleColor& GetColorByName(std::string name) const throw (EagleError);
+
+   void RegisterColor(std::string name , const EagleColor& color);
+   
+   /// WidgetColorsets
+   bool HasColorset(std::string name);
+   
+   WidgetColorset& GetColorsetByName(std::string name);
+   const WidgetColorset& GetColorsetByName(std::string name) const throw (EagleError);
+   
+   void RegisterColorset(std::string name , const WidgetColorset& wc);
+   
+};
 
 extern ColorRegistry color_registry;
 
 bool HasColor(std::string name);
 EagleColor GetColorByName(std::string name);
-void RegisterColor(std::string name , EagleColor color);
+void RegisterColor(std::string name , const EagleColor& color);
+
+bool HasColorset(std::string name);
+WidgetColorset GetColorsetByName(std::string name);
+void RegisterColorset(std::string name , const WidgetColorset& wc);
 
 
 

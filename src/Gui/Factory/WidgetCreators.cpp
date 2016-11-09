@@ -48,7 +48,7 @@ REGISTERED_WIDGET_CREATOR(BasicButton ,  CreateBasicButtonWidget);
 REGISTERED_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
 REGISTERED_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
 REGISTERED_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
-REGISTERED_WIDGET_CREATOR(ScrollButton , CreateScrollButtonWidget);
+REGISTERED_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
 REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
 
@@ -166,7 +166,7 @@ WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
-   WidgetBase* widget = new ScrollButton();
+   WidgetBase* widget = new BasicScrollButton();
    
    ApplyWidgetBaseAttributes(widget , att_map);
 

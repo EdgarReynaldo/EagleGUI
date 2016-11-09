@@ -102,27 +102,27 @@ RegisteredColor::RegisteredColor(std::string name , int red , int green , int bl
    
 
 #define REGISTER_COLOR(name , red , green , blue , alpha) \
-   RegisteredColor registered_color_##name(name , red , green , blue , alpha);
+   RegisteredColor registered_color_##name(#name , red , green , blue , alpha);
    
-REGISTER_COLOR("clear"       , 1.0  , 1.0  , 1.0  , 0.0);
-REGISTER_COLOR("white"       , 1.0  , 1.0  , 1.0  , 1.0);
-REGISTER_COLOR("black"       , 0.0  , 0.0  , 0.0  , 1.0);
-REGISTER_COLOR("light-gray"  , 0.75 , 0.75 , 0.75 , 1.0);
-REGISTER_COLOR("medium-gray" , 0.5  , 0.5  , 0.5  , 1.0);
-REGISTER_COLOR("dark-gray"   , 0.25 , 0.25 , 0.25 , 1.0);
+REGISTER_COLOR(clear       , 1.0f  , 1.0f  , 1.0f  , 0.0f);
+REGISTER_COLOR(white       , 1.0f  , 1.0f  , 1.0f  , 1.0f);
+REGISTER_COLOR(black       , 0.0f  , 0.0f  , 0.0f  , 1.0f);
+REGISTER_COLOR(light_gray  , 0.75f , 0.75f , 0.75f , 1.0f);
+REGISTER_COLOR(medium_gray , 0.5f  , 0.5f  , 0.5f  , 1.0f);
+REGISTER_COLOR(dark_gray   , 0.25f , 0.25f , 0.25f , 1.0f);
 
-REGISTER_COLOR("red"         , 1.0  , 0.0  , 0.0  , 1.0);
-REGISTER_COLOR("orange"      , 1.0  , 0.5  , 0.0  , 1.0);
-REGISTER_COLOR("yellow"      , 1.0  , 1.0  , 0.0  , 1.0);
-REGISTER_COLOR("lime-green"  , 0.5  , 1.0  , 0.0  , 1.0);
-REGISTER_COLOR("green"       , 0.0  , 1.0  , 0.0  , 1.0);
-REGISTER_COLOR("neon-green"  , 0.0  , 1.0  , 0.5  , 1.0);
-REGISTER_COLOR("cyan"        , 0.0  , 1.0  , 1.0  , 1.0);
-REGISTER_COLOR("sky-blue"    , 0.0  , 0.5  , 1.0  , 1.0);
-REGISTER_COLOR("blue"        , 0.0  , 0.0  , 1.0  , 1.0);
-REGISTER_COLOR("purple"      , 0.5  , 0.0  , 1.0  , 1.0);
-REGISTER_COLOR("magenta"     , 1.0  , 0.0  , 1.0  , 1.0);
-REGISTER_COLOR("fuchsia"     , 1.0  , 0.0  , 0.5  , 1.0);
+REGISTER_COLOR(red         , 1.0f  , 0.0f  , 0.0f  , 1.0f);
+REGISTER_COLOR(orange      , 1.0f  , 0.5f  , 0.0f  , 1.0f);
+REGISTER_COLOR(yellow      , 1.0f  , 1.0f  , 0.0f  , 1.0f);
+REGISTER_COLOR(lime_green  , 0.5f  , 1.0f  , 0.0f  , 1.0f);
+REGISTER_COLOR(green       , 0.0f  , 1.0f  , 0.0f  , 1.0f);
+REGISTER_COLOR(neon_green  , 0.0f  , 1.0f  , 0.5f  , 1.0f);
+REGISTER_COLOR(cyan        , 0.0f  , 1.0f  , 1.0f  , 1.0f);
+REGISTER_COLOR(sky_blue    , 0.0f  , 0.5f  , 1.0f  , 1.0f);
+REGISTER_COLOR(blue        , 0.0f  , 0.0f  , 1.0f  , 1.0f);
+REGISTER_COLOR(purple      , 0.5f  , 0.0f  , 1.0f  , 1.0f);
+REGISTER_COLOR(magenta     , 1.0f  , 0.0f  , 1.0f  , 1.0f);
+REGISTER_COLOR(fuchsia     , 1.0f  , 0.0f  , 0.5f  , 1.0f);
 
 
 /// -------------------------     ColorRegistry     ---------------------------------
@@ -139,18 +139,52 @@ bool ColorRegistry::HasColor(std::string name) {
 
 
 
-EagleColor ColorRegistry::GetColorByName(std::string name) {
-   std::map<std::string , EagleColor>::iterator it = named_colors.find(name);
-   if (it != named_colors.end()) {
-      return it->second;
-   }
-   return EagleColor();
+EagleColor& ColorRegistry::GetColorByName(std::string name) {
+   return named_colors[name];
 }
 
 
 
-void ColorRegistry::RegisterColor(std::string name , EagleColor color) {
+const EagleColor& ColorRegistry::GetColorByName(std::string name) const throw (EagleError) {
+   std::map<std::string , EagleColor>::const_iterator it = named_colors.find(name);
+   if(it == named_colors.end()) {
+      throw EagleError(StringPrintF("Color '%s' not found in color registry.\n" , name.c_str()));
+   }
+   return it->second;
+}
+
+
+
+void ColorRegistry::RegisterColor(std::string name , const EagleColor& color) {
    named_colors[name] = color;
+}
+
+
+
+bool ColorRegistry::HasColorset(std::string name) {
+   return named_colorsets.find(name) != named_colorsets.end();
+}
+
+
+
+WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) {
+   return named_colorsets[name];
+}
+
+
+
+const WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) const throw (EagleError) {
+   std::map<std::string , WidgetColorset>::const_iterator it = named_colorsets.find(name);
+   if (it == named_colorsets.end()) {
+      throw EagleError(StringPrintF("WidgetColorset '%s' not found in color registry.\n" , name.c_str()));
+   }
+   return it->second;
+}
+
+
+
+void ColorRegistry::RegisterColorset(std::string name , const WidgetColorset& wc) {
+   named_colorsets[name] = wc;
 }
 
 
@@ -171,10 +205,27 @@ EagleColor GetColorByName(std::string name) {
 
 
 
-void RegisterColor(std::string name , EagleColor color) {
+void RegisterColor(std::string name , const EagleColor& color) {
    color_registry.RegisterColor(name , color);
 }
 
+
+
+bool HasColorset(std::string name) {
+   return color_registry.HasColorset(name);
+}
+
+
+
+WidgetColorset GetColorsetByName(std::string name) {
+   return color_registry.GetColorsetByName(name);
+}
+
+
+
+void RegisterColorset(std::string name , const WidgetColorset& wc) {
+   return color_registry.RegisterColorset(name , wc);
+}
 
 
 
