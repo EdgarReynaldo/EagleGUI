@@ -16,8 +16,6 @@ int TextTestMain(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
-   EagleSystem* sys = new Allegro5System();
-   
    
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       return 1;
@@ -44,7 +42,7 @@ int TextTestMain(int argc , char** argv) {
    gui->SetDrawWindow(win);
    gui->SetupBufferDimensions(ww , wh);
    gui->SetWidgetArea(0,0,ww,wh);
-   gui->SetFocusDrawType(FOCUS_HIGHLIGHT_THICK_DOTTED);
+   gui->SetFocusDrawType(FOCUS_DRAW_HIGHLIGHT_THICK_DOTTED);
    
    RelativeLayout rel;
    gui->SetRootLayout(&rel);

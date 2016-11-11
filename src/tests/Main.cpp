@@ -4,7 +4,7 @@
 
 
 #include "TestRegistry.hpp"
-
+#include "TestMenu.hpp"
 #include "Eagle/backends/Allegro5Backend.hpp"
 
 
@@ -28,7 +28,7 @@ inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, 
 }
 
 
-const char* default_branch = "TextTestMain";
+string default_branch = "TextTestMain";
 
 int main(int argc , char** argv) {
    
@@ -48,17 +48,17 @@ int main(int argc , char** argv) {
    
    EagleGraphicsContext* main_window = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED);
    
-   TestMenu menu(main_window);
+   TestMenu test_menu(main_window);
    
    
    bool user_selected_branch = false;
    
-   const char* userbranch = default_branch;
+   string userbranch = default_branch;
    if (argc == 2) {
       user_selected_branch = true;
       int branch = atoi(argv[1]);
       if (branch < 0) {branch = 0;}
-      if (branch > test_registry.NumBranches() - 1) {branch = test_registry.NumBranches() - 1;}
+      if (branch > test_registry.Size() - 1) {branch = test_registry.Size() - 1;}
    }
 
    bool quit = false;
@@ -68,14 +68,14 @@ int main(int argc , char** argv) {
          int retval = 0;
          try {
             /// TODO : Set argc and argv
-            retval = test_registry.Run(userbranch , argc , argv);
+            retval = test_registry.Run(userbranch.c_str() , argc , argv);
          }
          catch (EagleError error) {
             /// Ignore error and continue running test, it will be logged anyway
          }
       }
       
-      TestMenu.Run();
+      test_menu.Run();
       
       quit = test_menu.Quit();
       
@@ -91,4 +91,6 @@ int main(int argc , char** argv) {
    
    return 0;
 }
+
+
 

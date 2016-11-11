@@ -19,13 +19,11 @@ int Allegro5TestMain(int argc , char** argv) {
    (void)argc; 
    (void)argv;
    
-   Allegro5System sys;
-   
    int start_state = EAGLE_FULL_SETUP;
    t1 = al_get_time();
-   int run_state = sys.Initialize(start_state);
+   int run_state = sys->Initialize(start_state);
    t2 = al_get_time();
-   printf("sys.Initialize(EAGLE_FULL_SETUP) took %f seconds\n" , t2 - t1);
+   printf("sys->Initialize(EAGLE_FULL_SETUP) took %f seconds\n" , t2 - t1);
    
    if (run_state != start_state) {
       return -1;
@@ -34,9 +32,9 @@ int Allegro5TestMain(int argc , char** argv) {
    int SCREEN_WIDTH = 800;
    int SCREEN_HEIGHT = 600;
    t1 = al_get_time();
-   EagleGraphicsContext* win = sys.CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED);
    t2 = al_get_time();
-   printf("sys.CreateGraphicsContext(default window) took %f seconds\n" , t2 - t1);
+   printf("sys->CreateGraphicsContext(default window) took %f seconds\n" , t2 - t1);
    
    if (!win) {return -1;}
    if (!win->Valid()) {return -1;}

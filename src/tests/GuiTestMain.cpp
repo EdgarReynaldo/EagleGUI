@@ -13,13 +13,6 @@
 using std::endl;
 
 
-void shutdown_main() {
-   printf("shutdown_main called\n");
-//   al_uninstall_system();
-///   delete esys;
-   esys = 0;
-}
-
 ///ShutdownVar gui_global_shutdown_var = ShutdownVar("Main global variable");
 
 DEFINE_TEST(GuiTestMain , "Gui Test #1");
@@ -62,7 +55,8 @@ int GuiTestMain(int argc , char** argv) {
    
    if (!win->Valid()) {
       throw EagleError("GuiTestMain : Failed to create valid resizable opengl window");
-
+   }
+      
    al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP | ALLEGRO_MAG_LINEAR | ALLEGRO_MIN_LINEAR);
    
    /// Load resources
@@ -122,7 +116,7 @@ int GuiTestMain(int argc , char** argv) {
    }
 
    WidgetHandler wgui;
-   WidgetHandler* gui = &gui;
+   WidgetHandler* gui = &wgui;
    
 
    gui->SetDrawWindow(win);
@@ -233,7 +227,7 @@ int GuiTestMain(int argc , char** argv) {
       warray2[i].UseColorset(false);
       warray2[i].WCols()[SDCOL] = EagleColor(50*(i+1),50*(i+1),50*(i+1));
       warray2[i].SetMarginsExpandFromInner(2*(i+1) , 2*(i+1) , 2*(i+1) , 2*(i+1));
-      warray2[i].SetBgDrawFunc(WidgetBorderPainterShadow);
+      warray2[i].SetBackgroundDrawType(BG_DRAW_BACKGROUND_SOLID_SHADOW_BORDER);
       warray2[i].SetLabel("Relative Button");
       warray2[i].SetFont(consola);
       relative_layout->Layout::PlaceWidget(&warray2[i] , i);
@@ -330,11 +324,11 @@ int GuiTestMain(int argc , char** argv) {
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_W) {
             small_window = !small_window;
             if (small_window) {
-               al_resize_display(win->AllegroDisplay() , 400 , 300);
+               al_resize_display(a5window.AllegroDisplay() , 400 , 300);
                gui->SetWidgetDimensions(400,300);
             }
             else {
-               al_resize_display(win->AllegroDisplay() , 800 , 600);
+               al_resize_display(a5window.AllegroDisplay() , 800 , 600);
                gui->SetWidgetDimensions(800,600);
             }
             redraw = true;

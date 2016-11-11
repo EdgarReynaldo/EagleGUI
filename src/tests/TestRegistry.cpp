@@ -7,6 +7,13 @@
 
 
 
+EagleSystem* sys = 0;
+
+
+TestRegistry test_registry;
+
+
+
 Test::Test(string name_str , MAINFUNC pmain , string describe_str) :
       name(name_str),
       mainfunc(pmain),

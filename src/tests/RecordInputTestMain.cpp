@@ -19,16 +19,14 @@ int RecordInputTestMain(int argc , char** argv) {
    (void)argv;
 //   if (!SendOutputToFile("RecordInputTestMain.txt" , "Record input test\n\n" , false)) {return 1;}
 
-   Allegro5System sys;
-   
    int start_state = EAGLE_FULL_SETUP;
-   if (sys.Initialize(start_state) != start_state) {
+   if (sys->Initialize(start_state) != start_state) {
       return -1;
    }
 
    int SCREEN_WIDTH = 800;
    int SCREEN_HEIGHT = 600;
-   EagleGraphicsContext* win = sys.CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED | EAGLE_OPENGL);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED | EAGLE_OPENGL);
    
    if (!win->Valid()) {
       return -2;
@@ -52,7 +50,7 @@ int RecordInputTestMain(int argc , char** argv) {
    Input held;
    InputGroup ig;
    
-   sys.GetSystemTimer()->Start();
+   sys->GetSystemTimer()->Start();
 
    do {
 
@@ -73,7 +71,7 @@ int RecordInputTestMain(int argc , char** argv) {
       }
 
       do {
-         EagleEvent ee = sys.UpdateSystemState();
+         EagleEvent ee = sys->UpdateSystemState();
          
          if (AnyInputPressed(&press)) {
             if (ModifierHeld(&held)) {
@@ -85,7 +83,7 @@ int RecordInputTestMain(int argc , char** argv) {
             redraw = true;
          }
          
-         if (ee.type == EAGLE_EVENT_TIMER && true/*ee.timer.source == sys.GetSystemTimer()*/) {
+         if (ee.type == EAGLE_EVENT_TIMER && true/*ee.timer.source == sys->GetSystemTimer()*/) {
             count += 1;
             if (count == 60) {
                scount += 1;
@@ -107,7 +105,7 @@ int RecordInputTestMain(int argc , char** argv) {
             break;
          }
          
-      } while (!sys.UpToDate());
+      } while (!sys->UpToDate());
    } while (!quit);
 
 
