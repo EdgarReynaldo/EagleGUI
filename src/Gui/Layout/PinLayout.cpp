@@ -44,7 +44,7 @@ void Pin::SetPinPosition(int xpos , int ypos , HALIGNMENT halignment , VALIGNMEN
    
 
 
-Rectangle Pin::GetPinPosition(int width , int height) {
+Rectangle Pin::GetPinArea(int width , int height) {
    int x = px;
    int y = py;
    if (halign == HALIGN_CENTER) {
@@ -60,6 +60,12 @@ Rectangle Pin::GetPinPosition(int width , int height) {
       y -= height;
    }
    return Rectangle(x , y , width , height);
+}
+
+
+
+Pos2d Pin::GetPosition() {
+   return Pos2d(px,py);
 }
 
 
@@ -94,7 +100,7 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    
    Rectangle current = widget->OuterArea();
    
-   Pin pin = pins[widget_slot];
+   Pin& pin = pins[widget_slot];
 
    if (newx != INT_MAX) {
       pin.px = newx;
@@ -110,13 +116,13 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
       newheight = current.H();
    }
    
-   return pin.GetPinPosition(newwidth , newheight);
+   return pin.GetPinArea(newwidth , newheight);
 }
 
 
 
 void PinLayout::SetPinPosition(int pin_slot , int newx , int newy) {
-   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < pins.size()));
+   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < (int)pins.size()));
    Pin& p = pins[pin_slot];
    p.SetPinPosition(newx , newy);
    RepositionChild(pin_slot);
@@ -125,7 +131,7 @@ void PinLayout::SetPinPosition(int pin_slot , int newx , int newy) {
 
 
 void PinLayout::SetPinAlignment(int pin_slot , HALIGNMENT halignment , VALIGNMENT valignment) {
-   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < pins.size()));
+   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < (int)pins.size()));
    Pin& p = pins[pin_slot];
    p.SetPinAlignment(halignment , valignment);
    RepositionChild(pin_slot);
@@ -134,7 +140,7 @@ void PinLayout::SetPinAlignment(int pin_slot , HALIGNMENT halignment , VALIGNMEN
 
 
 void PinLayout::SetPinPosition(int pin_slot , int newx , int newy , HALIGNMENT halignment , VALIGNMENT valignment) {
-   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < pins.size()));
+   EAGLE_ASSERT((pin_slot >= 0) && (pin_slot < (int)pins.size()));
    Pin& p = pins[pin_slot];
    p.SetPinPosition(newx , newy , halignment , valignment);
    RepositionChild(pin_slot);
@@ -170,6 +176,13 @@ void PinLayout::CyclePins(bool cycle_forward) {
    }
 }
 
+
+
+Pin PinLayout::GetPin(int pin_slot) {
+   pin_slot %= pins.size();
+   if (pin_slot < 0) {pin_slot += pins.size();}
+   return pins[pin_slot];
+}
 
 
 

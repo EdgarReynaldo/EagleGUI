@@ -85,8 +85,8 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    }
    
    /// Make sure inner area of source is smaller than outer area
-   EAGLE_ASSERT((src_inner().W() > 0) && (src_inner().W() < src_outer.W()));
-   EAGLE_ASSERT((src_inner().H() > 0) && (src_inner().H() < src_outer.H()));
+   EAGLE_ASSERT((src_inner.W() > 0) && (src_inner.W() < src_outer.W()));
+   EAGLE_ASSERT((src_inner.H() > 0) && (src_inner.H() < src_outer.H()));
 
    /// Make sure the left and right and top and bottom margins are positive
    EAGLE_ASSERT((src_area.MLeft() > 0) && (src_area.MRight() > 0));

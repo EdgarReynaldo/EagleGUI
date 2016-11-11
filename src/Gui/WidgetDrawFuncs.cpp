@@ -468,7 +468,7 @@ BackgroundPainter::BackgroundPainter() :
 
 
 void BackgroundPainter::SetPainter(BG_DRAW_TYPE bg_draw_type , BackgroundPainterObject* bg_painter) {
-   EAGLE_ASSERT((bg_draw_type >= 0) && (bg_draw_type < NUM_BG_DRAW_TYPES));
+   EAGLE_ASSERT((bg_draw_type >= 0) && (bg_draw_type < NUM_BACKGROUND_DRAW_TYPES));
    if (bg_painter) {
       painters[bg_draw_type] = bg_painter;
    }
@@ -493,7 +493,7 @@ void BackgroundPainter::PaintBackground(EagleGraphicsContext* window , const Wid
 
 
 void BackgroundPainter::PaintBackground(EagleGraphicsContext* window , const WidgetArea& warea , const WidgetColorset& colors , int xpos , int ypos , BG_DRAW_TYPE bg_draw_type) {
-   EAGLE_ASSERT((bg_draw_type >= 0) && (bg_draw_type < NUM_BG_DRAW_TYPES));
+   EAGLE_ASSERT((bg_draw_type >= 0) && (bg_draw_type < NUM_BACKGROUND_DRAW_TYPES));
    painters[bg_draw_type]->PaintBackground(window , warea , colors , xpos , ypos);
 }
 

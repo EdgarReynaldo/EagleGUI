@@ -81,6 +81,14 @@ protected:
    BasicText* GetTextWidget();
    
    
+   /// Functions forwarded from BasicText
+   
+   void Realign(HALIGNMENT hal , VALIGNMENT val , int hpad = 0 , int vpad = 0);
+   void SetText(std::string text);
+   void SetFont(EagleFont* font);
+   
+   std::string GetText() {return GetTextWidget()->GetText();}
+   
    /// Functions forwarded from WidgetBase
    
 

@@ -27,16 +27,18 @@ public :
    void SetPinPosition(int xpos , int ypos , HALIGNMENT halignment , VALIGNMENT valignment);
 
 
-   Rectangle GetPinPosition(int width , int height);
+   Rectangle GetPinArea(int width , int height);
+   Pos2d GetPosition();
 };
 
 
 
 class PinLayout : public Layout {
    
+protected :
+
    std::vector<Pin> pins;
 
-protected :
    virtual void ReserveSlots(int nslots);
 
 public :
@@ -60,6 +62,10 @@ public :
    virtual void SetAlignment(HALIGNMENT halignment , VALIGNMENT valignment);
    
    void CyclePins(bool cycle_forward);
+   
+   Pin GetPin(int pin_slot);/// All values are valid, pins can cycle
+   
+   
 };
 
 

@@ -109,6 +109,12 @@ inline Pos2d operator*(const Pos2d& lhs , const double& factor) {
    return Pos2d((int)x , (int)y);
 }
 
+inline Pos2d operator*(const double& factor , const Pos2d& rhs) {
+   double x = factor*(double)rhs.X();
+   double y = factor*(double)rhs.Y();
+   return Pos2d((int)x , (int)y);
+}
+
 inline Pos2d operator+(const Pos2d& lhs , const Pos2d& rhs) {
    return Pos2d(lhs.X() + rhs.X() , lhs.Y() + rhs.Y());
 }

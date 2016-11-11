@@ -64,7 +64,7 @@ void AnimationBase::SetAnimationTime(double t) {
 
 
 
-void AnimationBase::Reset() {
+void AnimationBase::ResetAnimation() {
    SetAnimationTime(0.0);
 }
 

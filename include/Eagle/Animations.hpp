@@ -56,7 +56,7 @@ public :
    
    void AdvanceAnimationTime(double dt);
    void SetAnimationTime(double t);
-   void Reset();
+   void ResetAnimation();
 
    double GetAnimationPercent();
    double GetAnimationTime();

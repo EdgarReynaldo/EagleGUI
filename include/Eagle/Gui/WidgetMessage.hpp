@@ -111,6 +111,7 @@ typedef unsigned int UINT;
    
    inline WidgetBase* From()       const {return from;}
    inline UINT        Topic()      const {return topic;}
+   inline int         Message()   const  {return msgs;}
    inline int         Messages()   const {return msgs;}
    inline std::string      MessageStr() const {return GetMessageString(topic,msgs);}
    

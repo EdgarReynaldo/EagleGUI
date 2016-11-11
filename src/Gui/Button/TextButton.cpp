@@ -210,6 +210,24 @@ BasicText* TextButton::GetTextWidget() {
 
 
 
+void TextButton::Realign(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad) {
+   GetTextWidget()->Realign(hal , val , hpad , vpad);
+}
+
+
+
+void TextButton::SetText(std::string text) {
+   GetTextWidget()->SetText(text);
+}
+
+
+
+void TextButton::SetFont(EagleFont* font) {
+   GetTextWidget()->SetFont(font);
+}
+
+
+
 /// TextButton functions forwarded from WidgetBase
 
 

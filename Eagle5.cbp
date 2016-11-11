@@ -112,6 +112,7 @@
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="README.txt" />
 		<Unit filename="include/Eagle.hpp" />
+		<Unit filename="include/Eagle/Animations.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
@@ -186,6 +187,7 @@
 		<Unit filename="postbuildcopy_profilingstatic.bat" />
 		<Unit filename="postbuildcopy_release.bat" />
 		<Unit filename="postbuildcopy_releasestatic.bat" />
+		<Unit filename="src/Animations.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />

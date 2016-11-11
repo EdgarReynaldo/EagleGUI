@@ -302,7 +302,7 @@ class FocusPainterObject {
 public :
    virtual ~FocusPainterObject() {}
 
-   virtual void PaintFocus(EagleGraphicsContext* window , const WidgetArea& warea , const WidgetColorset& colors , int xpos , int ypos);
+   virtual void PaintFocus(EagleGraphicsContext* window , const WidgetArea& warea , const WidgetColorset& colors , int xpos , int ypos)=0;
    
    virtual std::string GetPainterName() {return "FocusPainterObject";}
 };
