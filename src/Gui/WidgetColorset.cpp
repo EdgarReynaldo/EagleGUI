@@ -101,6 +101,15 @@ RegisteredColor::RegisteredColor(std::string name , int red , int green , int bl
 }
    
 
+
+/// -------------------------     ColorRegistry     ---------------------------------
+
+
+
+ColorRegistry color_registry;
+
+
+
 #define REGISTER_COLOR(name , red , green , blue , alpha) \
    RegisteredColor registered_color_##name(#name , red , green , blue , alpha);
    
@@ -123,14 +132,6 @@ REGISTER_COLOR(blue        , 0.0f  , 0.0f  , 1.0f  , 1.0f);
 REGISTER_COLOR(purple      , 0.5f  , 0.0f  , 1.0f  , 1.0f);
 REGISTER_COLOR(magenta     , 1.0f  , 0.0f  , 1.0f  , 1.0f);
 REGISTER_COLOR(fuchsia     , 1.0f  , 0.0f  , 0.5f  , 1.0f);
-
-
-/// -------------------------     ColorRegistry     ---------------------------------
-
-
-
-ColorRegistry color_registry;
-
 
 
 bool ColorRegistry::HasColor(std::string name) {
