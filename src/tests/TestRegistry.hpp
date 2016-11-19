@@ -50,9 +50,11 @@ protected :
    
    TESTMAP test_map;
 
+   TestRegistry();
 public :
 
-   TestRegistry();
+   static TestRegistry& GetRegistryInstance();
+
    void RegisterTest(Test* t);
 
    std::vector<const Test*> GetRegisteredTests();
@@ -71,7 +73,6 @@ public :
    
 };
 
-extern TestRegistry test_registry;
 
 
 #endif // TestRegistry_HPP

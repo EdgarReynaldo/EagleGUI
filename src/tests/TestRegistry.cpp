@@ -10,7 +10,11 @@
 EagleSystem* sys = 0;
 
 
-TestRegistry test_registry;
+///TestRegistry test_registry;
+TestRegistry& TestRegistry::GetRegistryInstance() {
+   static TestRegistry tr;
+   return tr;
+}
 
 
 
@@ -19,7 +23,7 @@ Test::Test(string name_str , MAINFUNC pmain , string describe_str) :
       mainfunc(pmain),
       description(describe_str)
 {
-   test_registry.RegisterTest(this);
+   TestRegistry::GetRegistryInstance().RegisterTest(this);
 }
 
 
@@ -27,7 +31,8 @@ Test::Test(string name_str , MAINFUNC pmain , string describe_str) :
 
 
 
-TestRegistry::TestRegistry()
+TestRegistry::TestRegistry() :
+      test_map()
 {}
 
 
