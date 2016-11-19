@@ -500,10 +500,10 @@ void WidgetHandler::SetDrawWindow(EagleGraphicsContext* window) {
    gwindow = window;
    
    if (oldbuffer && oldbuffer->W() && oldbuffer->H()) {
-      SetupBufferDimensions(oldbuffer->W() , oldbuffer->H());
+      SetupBuffer(oldbuffer->W() , oldbuffer->H() , gwindow);
    }
 
-   if (oldwindow) {
+   if (oldwindow && oldbuffer && oldbackground) {
       oldwindow->FreeImage(oldbuffer);
       oldwindow->FreeImage(oldbackground);
    }
@@ -518,10 +518,16 @@ EagleGraphicsContext* WidgetHandler::GetDrawWindow() {
 
 
 
-bool WidgetHandler::SetupBufferDimensions(int w , int h) throw (EagleError) {
+bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleError) {
 	bool success = true;
 
-   if (!gwindow) {throw EagleError(StringPrintF("WidgetHandler::SetupBufferDimensions : graphics window not set!\n"));}
+	if (!window) {
+      window = gwindow;
+	}
+	
+	gwindow = window;
+	
+   if (!gwindow) {throw EagleError(StringPrintF("WidgetHandler::SetupBuffer : graphics window not set!\n"));}
 
 	if (w <= 0 || h <= 0) {
 		buffer->Free();
@@ -546,7 +552,7 @@ void WidgetHandler::SetBufferShrinkOnResize(bool buffer_shrink_on_resize) {
       if (buffer_shrink_on_resize) {
          Rectangle r = area.OuterArea();
          if ((buffer->W() > r.W()) || (buffer->H() > r.H())) {
-            SetupBufferDimensions(r.W() , r.H());
+            SetupBuffer(r.W() , r.H() , gwindow);
          }
       }
       shrink_buffer_on_resize = buffer_shrink_on_resize;
@@ -1144,7 +1150,7 @@ void WidgetHandler::SetWidgetArea(int xpos , int ypos , int width , int height ,
 
    if ((buffer->W() < r.W()) || (buffer->H() < r.H()) || shrink_buffer_on_resize) {
       // buffer is too small or we're set to shrink on resized area, so resize buffer
-      SetupBufferDimensions(r.W() , r.H());
+      SetupBuffer(r.W() , r.H() , gwindow);
    }
    else {
       // buffer has excess size but we don't shrink the buffer, so reset the camera to our area

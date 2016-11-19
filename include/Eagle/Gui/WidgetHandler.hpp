@@ -155,7 +155,8 @@ public :
 	void SetDrawWindow(EagleGraphicsContext* window);
 	EagleGraphicsContext* GetDrawWindow();
 	
-	bool SetupBufferDimensions(int w , int h) throw (EagleError);// set up draw window first please, and set up buffers before drawing please!
+	/// set up draw window first please, and set up buffers before drawing please!
+	bool SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleError);
 	void SetBufferShrinkOnResize(bool buffer_shrink_on_resize);// defaults to false
 	void UseBackgroundImage(EagleImage* bg , bool stretch);// pass null to turn off the background image
 	void UseBackgroundColor(EagleColor col);
