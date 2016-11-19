@@ -27,8 +27,9 @@
 #include "Eagle/StringWork.hpp"
 
 
-EagleImage::EagleImage() :
+EagleImage::EagleImage(EagleGraphicsContext* owner_context) :
       EagleObject(StringPrintF("EagleImage at %p" , this)),
+      parent_context(owner_context),
       w(0),
       h(0),
       image_type(MEMORY_IMAGE),
@@ -43,8 +44,9 @@ EagleImage::EagleImage() :
 
 
 
-EagleImage::EagleImage(std::string name) :
+EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string name) :
       EagleObject(name),
+      parent_context(owner_context),
       w(0),
       h(0),
       image_type(MEMORY_IMAGE),

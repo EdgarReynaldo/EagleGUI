@@ -5,6 +5,9 @@
 
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
+#include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
+
+
 
 
 ALLEGRO_BITMAP* GetAllegroBitmap(EagleImage* img) {
@@ -52,13 +55,13 @@ void Allegro5Image::ResetClippingRectangle() {
 
 
 Allegro5Image::Allegro5Image() :
-      EagleImage(StringPrintF("Allegro5Image at %p" , this)),
+      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
    
 }
 Allegro5Image::Allegro5Image(std::string name) :
-      EagleImage(name),
+      EagleImage((EagleGraphicsContext*)0 , name),
       bmp(0)
 {
    
@@ -67,14 +70,21 @@ Allegro5Image::Allegro5Image(std::string name) :
 
 
 Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
-      EagleImage(StringPrintF("Allegro5Image at %p" , this)),
+      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
+   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
    if (take_ownership) {
       image_source = OWNIT;
    }
    else {
       image_source = REFERENCE_ONLY;
+   }
+   if (bitmap) {
+      al_set_target_bitmap(bitmap);/// So we can call al_get_current_display
+      ALLEGRO_DISPLAY* display = al_get_current_display();
+      parent_context = GetAssociatedContext(display);\
+      al_set_target_bitmap(old_target);
    }
    bmp = bitmap;
 }
@@ -82,7 +92,7 @@ Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
 
 
 Allegro5Image::Allegro5Image(int width , int height , IMAGE_TYPE type) :
-      EagleImage(StringPrintF("Allegro5Image at %p" , this)),
+      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
    Allocate(width , height , type);
@@ -91,7 +101,7 @@ Allegro5Image::Allegro5Image(int width , int height , IMAGE_TYPE type) :
 
 
 Allegro5Image::Allegro5Image(std::string file , IMAGE_TYPE type) :
-      EagleImage(StringPrintF("Allegro5Image at %p" , this)),
+      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
    Load(file , type);
@@ -100,7 +110,7 @@ Allegro5Image::Allegro5Image(std::string file , IMAGE_TYPE type) :
 
 
 Allegro5Image::Allegro5Image(EagleImage* parent_bitmap , int x , int y , int width , int height) :
-      EagleImage(StringPrintF("Allegro5Image at %p" , this)),
+      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
    CreateSubBitmap(parent_bitmap , x , y , width , height);
@@ -110,26 +120,27 @@ Allegro5Image::Allegro5Image(EagleImage* parent_bitmap , int x , int y , int wid
 
 // creation
 
-EagleImage* Allegro5Image::Clone(EagleGraphicsContext* win) {
-   return Allegro5Image::Clone(win , this);
+EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window) {
+   return Allegro5Image::Clone(parent_window , this);
 }
 
 
 
-EagleImage* Allegro5Image::Clone(EagleGraphicsContext* win , EagleImage* a5img) {
+EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window , EagleImage* a5img) {
    /// TODO : Deep copy of base classes???
    bool ret = false;
-   EagleImage* newimg = win->EmptyImage();
+   EagleImage* newimg = parent_window->EmptyImage();
+   parent_window->DrawToBackBuffer();/// This sets the parent_window as the owning context for the call to Allocate
    if ((ret = newimg->Allocate(a5img->W() , a5img->H() , a5img->ImageType()))) {
-      win->PushDrawingTarget(newimg);
+      parent_window->PushDrawingTarget(newimg);
       /// TODO : Set overwrite blender
-      win->Draw(a5img , 0.0f , 0.0f , DRAW_NORMAL);
+      parent_window->Draw(a5img , 0.0f , 0.0f , DRAW_NORMAL);
       /// TODO : Unset overwrite blender
-      win->PopDrawingTarget();
+      parent_window->PopDrawingTarget();
       return newimg;
    }
    // else, fail
-   win->FreeImage(newimg);
+   parent_window->FreeImage(newimg);
    return 0;
 }
 
@@ -153,6 +164,7 @@ bool Allegro5Image::Allocate(int width , int height , IMAGE_TYPE type) {
       EagleLog() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
    }
    else {
+      parent_context = GetAssociatedContext(al_get_current_display());
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
    }
@@ -178,7 +190,8 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
    }
    else {
       source = file;
-//      SetName(file);
+      parent_context = GetAssociatedContext(al_get_current_display());
+///      SetName(file);
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
    }
@@ -197,6 +210,7 @@ bool Allegro5Image::CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , 
    
    bmp = al_create_sub_bitmap(allegro_bitmap , x , y , width , height);
    if (bmp) {
+      parent_context = parent_bitmap->ParentContext();
       parent_bitmap->AddChild(this);
       SetParent(parent_bitmap);
       w = al_get_bitmap_width(bmp);
@@ -213,6 +227,10 @@ bool Allegro5Image::CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , 
 void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
    Free();
    EAGLE_ASSERT(bitmap);
+   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
+   al_set_target_bitmap(bitmap);
+   parent_context = GetAssociatedContext(al_get_current_display());
+   al_set_target_bitmap(old_target);
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);
    h = al_get_bitmap_height(bmp);
@@ -230,6 +248,10 @@ void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
 void Allegro5Image::ReferenceBitmap(ALLEGRO_BITMAP* bitmap) {
    Free();
    EAGLE_ASSERT(bitmap);
+   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
+   al_set_target_bitmap(bitmap);
+   parent_context = GetAssociatedContext(al_get_current_display());
+   al_set_target_bitmap(old_target);
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);
    h = al_get_bitmap_height(bmp);
@@ -258,6 +280,7 @@ void Allegro5Image::Free() {
       h = 0;
       image_type = MEMORY_IMAGE;
       parent = 0;
+      parent_context = 0;
    }
 };
 

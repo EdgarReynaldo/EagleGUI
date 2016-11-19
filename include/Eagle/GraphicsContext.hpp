@@ -320,9 +320,8 @@ public :
    
    virtual void HoldDrawing()=0;
    virtual void ReleaseDrawing()=0;
-protected :
    virtual void SetDrawingTarget(EagleImage* dest)=0;
-public :
+
    void DrawToBackBuffer();
       
    // image creation / loading / sub division
@@ -366,7 +365,19 @@ public :
    
    /// TODO : Move clipping support here, since it operates on a target bitmap
    
+
+protected :
+   void SetCurrentDisplay(EagleGraphicsContext* current);
+
+public :
+   virtual void MakeDisplayCurrent()=0;
+
 };
+
+
+
+EagleGraphicsContext* GetCurrentDisplay();
+
 
 
 /// Simple class to automatically push and pop drawing targets onto the drawing target stack

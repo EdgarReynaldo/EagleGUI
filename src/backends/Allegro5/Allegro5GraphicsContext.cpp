@@ -32,6 +32,26 @@ ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float 
 
 
 
+
+std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*> display_context_map;
+
+
+
+
+EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display) {
+   std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
+   if (it != display_context_map.end()) {
+      return it->second;
+   }
+   return (EagleGraphicsContext*)0;
+}
+
+
+
+/// -------------------------------      Allegro5GraphicsContext      -----------------------------------
+
+
+
 void Allegro5GraphicsContext::ResetBackBuffer() {
    realbackbuffer.ReferenceBitmap(al_get_backbuffer(display));
    backbuffer = &realbackbuffer;
@@ -92,6 +112,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    scrw = width;
    scrh = height;
    
+   display_context_map[display] = this;
+   
    ResetBackBuffer();
 
    mp_manager = new Allegro5MousePointerManager(this);
@@ -116,6 +138,13 @@ void Allegro5GraphicsContext::Destroy() {
       mp_manager = 0;
    }
    if (display) {
+      std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
+      EAGLE_ASSERT(it != display_context_map.end());
+      if (it != display_context_map.end()) {display_context_map.erase(it);}
+      if (GetCurrentDisplay() == this) {
+         SetCurrentDisplay(0);
+      }
+         
       al_destroy_display(display);
       display = 0;
    }
@@ -602,8 +631,9 @@ void Allegro5GraphicsContext::SetDrawingTarget(EagleImage* dest) {
    ALLEGRO_BITMAP* a5bmp = a5img->AllegroBitmap();
    EAGLE_ASSERT(a5bmp);
    al_set_target_bitmap(a5bmp);
+   ALLEGRO_DISPLAY* current_a5_display = al_get_current_display();
+   SetCurrentDisplay(display_context_map[current_a5_display]);
    drawing_target = dest;
-   
 }
 
 
@@ -681,3 +711,12 @@ void Allegro5GraphicsContext::RegisterDisplayInput(EagleEventHandler* eagle_hand
 Transformer* Allegro5GraphicsContext::GetTransformer() {
    return &allegro5transformer;
 }
+
+
+
+void Allegro5GraphicsContext::MakeDisplayCurrent() {
+   ResetBackBuffer();
+}
+
+
+

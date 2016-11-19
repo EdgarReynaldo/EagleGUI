@@ -29,6 +29,10 @@ typedef struct BLENDER {
    int blender_dest;
 } BLENDER;
 
+
+EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display);
+
+
 class Allegro5GraphicsContext : public EagleGraphicsContext {
    
 private :
@@ -160,6 +164,8 @@ public :
    virtual void RegisterDisplayInput(EagleEventHandler* eagle_handler);
    
    Transformer* GetTransformer();
+
+   virtual void MakeDisplayCurrent();
 };
 
 

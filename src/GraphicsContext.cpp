@@ -30,6 +30,8 @@
 using std::vector;
 
 
+
+
 unsigned int GUI_TEXT_LINE_SPACING = 3;
 
 
@@ -365,7 +367,7 @@ void EagleGraphicsContext::FlipDisplay() {
 
 
 void EagleGraphicsContext::DrawToBackBuffer() {
-   PushDrawingTarget(GetBackBuffer());
+   SetDrawingTarget(GetBackBuffer());
 }
 
 
@@ -475,6 +477,23 @@ void EagleGraphicsContext::PopDrawingTarget() {
       SetDrawingTarget(back);
    }
 }
+
+
+
+EagleGraphicsContext* current_display_context = 0;
+
+
+
+void EagleGraphicsContext::SetCurrentDisplay(EagleGraphicsContext* current) {
+   current_display_context = current;
+}
+
+
+
+EagleGraphicsContext* GetCurrentDisplay() {
+   return current_display_context;
+}
+
 
 
 /// ------------------------     Drawing Targeter     ----------------------------------------

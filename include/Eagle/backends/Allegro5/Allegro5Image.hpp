@@ -45,8 +45,8 @@ public :
    ~Allegro5Image() {Free();}
    
    // creation
-   virtual EagleImage* Clone(EagleGraphicsContext* win);
-   virtual EagleImage* Clone(EagleGraphicsContext* win , EagleImage* a5img);
+   virtual EagleImage* Clone(EagleGraphicsContext* parent_window);
+   virtual EagleImage* Clone(EagleGraphicsContext* parent_window , EagleImage* a5img);
    virtual bool Allocate(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE);
    virtual bool Load(std::string file , IMAGE_TYPE = VIDEO_IMAGE);
    virtual bool CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , int width , int height);

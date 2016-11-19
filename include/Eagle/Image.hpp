@@ -57,6 +57,7 @@ EagleGraphicsContext* owner_window
 
 class EagleImage : public EagleObject {
 protected :
+   EagleGraphicsContext* parent_context;
    int w;
    int h;
    IMAGE_TYPE image_type;
@@ -76,8 +77,8 @@ protected :
 
 public :
 
-   EagleImage();
-   EagleImage(std::string name);
+   EagleImage(EagleGraphicsContext* owner_context);
+   EagleImage(EagleGraphicsContext* owner_context , std::string name);
    virtual ~EagleImage() {}
 
    /** SUGGESTED IMPLEMENTATIONS IN YOUR DERIVED CLASS CONSTRUCTORS
@@ -94,7 +95,7 @@ public :
    
    
    // creation
-   virtual EagleImage* Clone(EagleGraphicsContext* win)=0;
+   virtual EagleImage* Clone(EagleGraphicsContext* parent_window)=0;
    virtual bool Allocate(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    virtual bool Load(std::string file , IMAGE_TYPE = VIDEO_IMAGE)=0;
    virtual bool CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , int width , int height)=0;
@@ -108,7 +109,11 @@ public :
    // Getters
    int W() {return w;}
    int H() {return h;}
+   int Area() {return w*h;}
+   
    IMAGE_TYPE ImageType() {return image_type;}
+   
+   EagleGraphicsContext* ParentContext() {return parent_context;}
    
    // 
    void PushClippingRectangle(Rectangle new_clip);
