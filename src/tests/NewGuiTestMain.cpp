@@ -75,7 +75,7 @@ int NewGuiTestMain(int argc , char** argv) {
    gui.SetRootLayout(&r);
 
    gui.SetDrawWindow(win);
-   gui.SetupBufferDimensions(800,600);
+   gui.SetupBuffer(800,600 , win);
    gui.SetWidgetArea(0,0,800,600);
    
    GuiButton b1;

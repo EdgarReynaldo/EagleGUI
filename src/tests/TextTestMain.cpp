@@ -40,7 +40,7 @@ int TextTestMain(int argc , char** argv) {
 
    WidgetHandler* gui = new WidgetHandler();
    gui->SetDrawWindow(win);
-   gui->SetupBufferDimensions(ww , wh);
+   gui->SetupBuffer(ww , wh , win);
    gui->SetWidgetArea(0,0,ww,wh);
    gui->SetFocusDrawType(FOCUS_DRAW_HIGHLIGHT_THICK_DOTTED);
    

@@ -509,7 +509,7 @@ int GuiTestMain2(int argc , char** argv) {
 //   WidgetHandler gui;
    gui.SetDrawWindow(win);
    
-   gui.SetupBufferDimensions(800,600);
+   gui.SetupBuffer(800,600 , win);
    gui.WidgetBase::SetWidgetArea(Rectangle(0 , 0 , 800 , 600));
    
    gui.UseBackgroundImage(stallions2 , true);

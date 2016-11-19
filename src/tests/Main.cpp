@@ -58,7 +58,8 @@ int main(int argc , char** argv) {
       user_selected_branch = true;
       int branch = atoi(argv[1]);
       if (branch < 0) {branch = 0;}
-      if (branch > test_registry.Size() - 1) {branch = test_registry.Size() - 1;}
+      int sz = TestRegistry::GetRegistryInstance().Size();
+      if (branch >= sz) {branch = sz - 1;}
    }
 
    bool quit = false;
@@ -68,7 +69,7 @@ int main(int argc , char** argv) {
          int retval = 0;
          try {
             /// TODO : Set argc and argv
-            retval = test_registry.Run(userbranch.c_str() , argc , argv);
+            retval = TestRegistry::GetRegistryInstance().Run(userbranch.c_str() , argc , argv);
          }
          catch (EagleError error) {
             /// Ignore error and continue running test, it will be logged anyway

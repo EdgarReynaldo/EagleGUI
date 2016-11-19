@@ -155,7 +155,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       font(0),
       quit(false),
       selected(false),
-      selected_user_branch(0)
+      selected_user_branch("")
 {
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
@@ -168,13 +168,13 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    
    font->SetName("Verdana20");
    
-   gui.SetupBufferDimensions(w,h);
+   gui.SetupBuffer(w , h , win);
    gui.SetRootLayout(&relative_layout);
    
    relative_layout.AddWidget(quit_button , LayoutRectangle(0.1 , 0.4 , 0.4 , 0.2));
    relative_layout.AddWidget(&wedge_layout , LayoutRectangle(0.0 , 0.0 , 1.0 , 1.0));
    
-   vector<const Test*> tests = test_registry.GetRegisteredTests();
+   vector<const Test*> tests = TestRegistry::GetRegistryInstance().GetRegisteredTests();
    
    wedge_layout.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
    wedge_layout.SetAnchors(Pos2d(3*w/4 , h/2) , Pos2d(w/4 , h/4) , Pos2d(w/4 , 3*h/4));
