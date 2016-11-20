@@ -163,7 +163,7 @@ int TextDecorator::PrivateHandleEvent(EagleEvent e) {
       retmsg |= text_widget_layout->HandleEvent(e);
    }
    if (!(retmsg & DIALOG_INPUT_USED)) {
-      retmsg |= WidgetDecorator::HandleEvent(e);
+      retmsg |= WidgetDecorator::PrivateHandleEvent(e);
    }
    return retmsg;
 }
@@ -178,7 +178,7 @@ int TextDecorator::PrivateCheckInputs() {
 
 
 void TextDecorator::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   WidgetDecorator::Display(win,xpos,ypos);
+   WidgetDecorator::PrivateDisplay(win,xpos,ypos);
 
    text_widget_layout->Display(win,xpos,ypos);
 
@@ -192,7 +192,7 @@ void TextDecorator::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 int TextDecorator::PrivateUpdate(double tsec) {
    int retmsg = DIALOG_OKAY;
    
-   retmsg |= WidgetDecorator::Update(tsec);
+   retmsg |= WidgetDecorator::PrivateUpdate(tsec);
    
    retmsg |= text_widget_layout->Update(tsec);
    

@@ -883,6 +883,13 @@ WidgetColorset& WidgetBase::WCols() {
 
 
 
+const WidgetColorset& WidgetBase::WCols() const {
+   if (use_private_colorset) {return privwcols;}
+   return wcols;
+}
+
+
+
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    os << indent << "WidgetBase Info : " << endl;

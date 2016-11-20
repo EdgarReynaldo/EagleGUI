@@ -529,6 +529,14 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) th
 	
    if (!gwindow) {throw EagleError(StringPrintF("WidgetHandler::SetupBuffer : graphics window not set!\n"));}
 
+   if (!buffer) {
+      buffer = gwindow->EmptyImage();
+   }
+   if (!background) {
+      background = gwindow->EmptyImage();
+   }
+   
+   
 	if (w <= 0 || h <= 0) {
 		buffer->Free();
 		background->Free();

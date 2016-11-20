@@ -224,5 +224,8 @@ void TestMenu::Run() {
       } while (!sys->UpToDate());
       /// Display
       
+      gui.Display(win , 0 , 0);
+      win->FlipDisplay();
+      
    }
 }

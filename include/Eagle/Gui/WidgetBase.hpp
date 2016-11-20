@@ -293,7 +293,7 @@ public :
    
    virtual WidgetBase*           Parent()          const {return wparent;}
    virtual WidgetColorset&       WCols();/// SetRedrawFlag if you change the colors!
-   virtual const WidgetColorset& WCols()           const {return WCols();}/// SetRedrawFlag if you change the colors!
+   virtual const WidgetColorset& WCols() const ;
    virtual WidgetArea            Area()            const {return area;}
    virtual Rectangle             OuterArea()       const {return area.OuterArea();}
    virtual Rectangle             InnerArea()       const {return area.InnerArea();}
