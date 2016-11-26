@@ -29,16 +29,19 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <unordered_set>
 
 
-class FakeOstream {
+
+class FakeOstream : public std::ostream {
    
 public :
-   template <class Type>
-   FakeOstream& operator<<(Type t) {(void)t;return *this;}
-   
    /* CREDITS : A kind shout out to relpatseht who helped me get std::endl to work with the FakeOstream class */
-   FakeOstream& operator<<(std::ostream& (*)(std::ostream&)) { return *this; }   
+   FakeOstream& operator<<(std::ostream& (*manip)(std::ostream&)) {(void)manip;return *this;}   
+
+   template <class Type>
+   inline FakeOstream& operator<<(const Type& t) {(void)t;return *this;}
+   
 };
 
 
@@ -57,6 +60,76 @@ FakeOstream& FakeLog();/// Dummy ostream to turn the log off.
 /// These alter the destination of the output log returned by OutputLog()
 bool SendOutputToFile(const std::string& filepath , const std::string& header , bool append = true);
 void SendOutputTo(std::ostream& output_stream);
+
+
+
+
+enum EAGLE_LOGGING_LEVEL {
+   EAGLE_LOG_INFO = 0,
+   EAGLE_LOG_WARN = 1,
+   EAGLE_LOG_ERROR = 2,
+   EAGLE_LOG_CRITICAL = 3,
+   EAGLE_LOG_NONE = 4
+};
+
+
+
+
+class EagleLogger {
+   
+protected :
+   EAGLE_LOGGING_LEVEL global_log_level;
+   EAGLE_LOGGING_LEVEL old_global_log_level;
+   EAGLE_LOGGING_LEVEL local_log_level;
+
+   std::unordered_set<std::ostream*> outputs;
+   
+
+   void SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level);
+
+
+public :   
+
+   void SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level);
+
+   void TurnLogOff();
+   void TurnLogOn();
+   
+   typedef std::ostream&(*MANIP)(std::ostream&);
+
+   EagleLogger& operator<<(MANIP manip);
+
+   template<class Type>
+   EagleLogger& operator<<(const Type& t);
+   
+   
+};
+
+
+
+
+template<class Type>
+EagleLogger& EagleLogger::operator<<(const Type& t) {
+   if (local_log_level >= global_log_level) {
+      for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
+         std::ostream& os = *(*it);
+         os << t;
+      }
+   }
+   return *this;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

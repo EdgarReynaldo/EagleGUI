@@ -71,6 +71,52 @@ void SendOutputTo(std::ostream& output_stream) {
 
 
 
+/// -----------------------     EagleLogger class     ---------------------------------
+
+
+
+
+void EagleLogger::SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level) {
+   if (new_local_level == EAGLE_LOG_NONE) {
+      new_local_level = EAGLE_LOG_CRITICAL;
+   }
+   local_log_level = new_local_level;
+}
+
+
+
+void EagleLogger::SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level) {
+   global_log_level = new_global_level;
+}
+
+
+
+void EagleLogger::TurnLogOff() {
+   old_global_log_level = global_log_level;
+   SetGlobalLoggingLevel(EAGLE_LOG_NONE);
+}
+
+
+
+void EagleLogger::TurnLogOn() {
+   SetGlobalLoggingLevel(old_global_log_level);
+}
+
+
+
+EagleLogger& EagleLogger::operator<<(MANIP manip) {
+   if (local_log_level >= global_log_level) {
+      for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
+         std::ostream& os = *(*it);
+         os << manip;
+      }
+   }
+   return *this;
+}
+
+
+
+
 /** #################            Indenter class methods               ################# */
 
 
