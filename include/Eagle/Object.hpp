@@ -224,7 +224,7 @@ public :
    std::string GetName() const;
    void SetName(std::string newname);
 
-   EAGLE_ID GetEagleId() {return id;}
+   EAGLE_ID GetEagleId() const {return id;}
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };

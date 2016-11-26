@@ -847,12 +847,12 @@ std::ostream& WidgetDecorator::DescribeTo(std::ostream& os , Indenter indent) co
    WidgetBase::DescribeTo(os,indent);
    --indent;
 
-   os << StringPrintF("< WidgetDecoratorBase : Decorator layout %s at %p >" , layout->GetName().c_str() , layout) << endl;
+   os << indent << StringPrintF("< WidgetDecoratorBase : Decorator layout %s at %p >" , layout->GetName().c_str() , layout) << endl;
    ++indent;
    layout->DescribeTo(os,indent);
    --indent;
 
-   os << StringPrintF("< WidgetDecoratorBase : Decorated widget %s at %p >" , decorated_widget?decorated_widget->GetName().c_str():"None" , decorated_widget);
+   os << indent << StringPrintF("< WidgetDecoratorBase : Decorated widget %s at %p >" , decorated_widget?decorated_widget->GetName().c_str():"None" , decorated_widget);
    ++indent;
    decorated_widget?(void)decorated_widget->DescribeTo(os,indent):(void)0;
    --indent;

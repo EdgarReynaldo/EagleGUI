@@ -893,7 +893,7 @@ const WidgetColorset& WidgetBase::WCols() const {
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    os << indent << "WidgetBase Info : " << endl;
-   os << indent << StringPrintF("WidgetBase object at (%p) named '%s'" , this , GetName().c_str()) << endl;
+   os << indent << StringPrintF("WidgetBase object at (%p) named '%s' ID = %d" , this , GetName().c_str() , GetEagleId()) << endl;
    ++indent;
    os << indent << StringPrintF("Widget parent %p , layout %p" , wparent , layout) << endl;
    area.DescribeTo(os , indent);

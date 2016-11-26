@@ -101,13 +101,13 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wcast-align" />
 			<Add option="-Wall" />
-			<Add option="-std=c++11" />
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-Werror=narrowing" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="EagleCopyright.txt" />
+		<Unit filename="EagleFAQ.txt" />
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="README.txt" />
@@ -138,6 +138,7 @@
 		<Unit filename="include/Eagle/Gui/Factory/WidgetCreators.hpp" />
 		<Unit filename="include/Eagle/Gui/Factory/WidgetFactory.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/FillLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FlowLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/GridLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/Layout.hpp" />
@@ -210,6 +211,7 @@
 		<Unit filename="src/Gui/Factory/WidgetCreators.cpp" />
 		<Unit filename="src/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
+		<Unit filename="src/Gui/Layout/FillLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
 		<Unit filename="src/Gui/Layout/GridLayout.cpp" />
 		<Unit filename="src/Gui/Layout/Layout.cpp" />

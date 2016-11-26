@@ -252,6 +252,9 @@ int TextButton::PrivateCheckInputs() {
 
 
 void TextButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+
+///   text_decorator.Display(win , xpos , ypos);
+
    if (real_button == this) {
       BasicButton::PrivateDisplay(win,xpos,ypos);
       return;
@@ -262,6 +265,9 @@ void TextButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 int TextButton::PrivateUpdate(double tsec) {
+
+///   text_decorator.Update(tsec);
+
    if (real_button == this) {
       return BasicButton::PrivateUpdate(tsec);
    }
@@ -271,11 +277,13 @@ int TextButton::PrivateUpdate(double tsec) {
 
 
 void TextButton::QueueUserMessage(const WidgetMsg& wmsg) {
+   
    if (real_button == this) {
       BasicButton::QueueUserMessage(wmsg);
       return;
    }
    real_button->QueueUserMessage(wmsg);
+
 }
 
 

@@ -40,6 +40,8 @@ int main(int argc , char** argv) {
    // _set_purecall_handler( &terminator );
    // _set_invalid_parameter_handler( &invalid_parameter_handler );
     
+   SendOutputToFile("Libtest.txt" , "" , false);
+    
    sys = new Allegro5System();
    if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
       delete sys;

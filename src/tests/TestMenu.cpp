@@ -169,6 +169,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    font->SetName("Verdana20");
    
    gui.SetupBuffer(w , h , win);
+   gui.SetWidgetArea(0 , 0 , w , h , false);
    gui.SetRootLayout(&relative_layout);
    
    relative_layout.AddWidget(quit_button , LayoutRectangle(0.1 , 0.4 , 0.4 , 0.2));
@@ -186,6 +187,8 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       btn->SetText(tests[i]->Name());
       wedge_layout.PlaceWidget(btn , i);
    }
+   
+   EagleLog() << gui << std::endl << std::endl;
    
 }
 
