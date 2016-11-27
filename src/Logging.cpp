@@ -75,12 +75,32 @@ void SendOutputTo(std::ostream& output_stream) {
 
 
 
-
-void EagleLogger::SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level) {
+EagleLogger& EagleLogger::SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level) {
    if (new_local_level == EAGLE_LOG_NONE) {
       new_local_level = EAGLE_LOG_CRITICAL;
    }
    local_log_level = new_local_level;
+   return *this;
+}
+
+
+
+EagleLogger::EagleLogger() :
+      global_log_level(EAGLE_LOG_INFO),
+      old_global_log_level(EAGLE_LOG_INFO),
+      local_log_level(EAGLE_LOG_INFO),
+      outputs()
+{
+#ifndef EAGLE_LOG
+   TurnLogOff();
+#endif
+}
+
+
+
+static EagleLogger& EagleLogger::Instance() {
+   static EagleLogger logger;
+   return logger;
 }
 
 
@@ -104,6 +124,18 @@ void EagleLogger::TurnLogOn() {
 
 
 
+void EagleLogger::AddOutput(ostream& output) {
+   outputs.insert(&output);
+}
+
+
+
+void EagleLogger::RemoveOutput(ostream& output) {
+   outputs.erase(&output);
+}
+
+
+
 EagleLogger& EagleLogger::operator<<(MANIP manip) {
    if (local_log_level >= global_log_level) {
       for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
@@ -112,6 +144,41 @@ EagleLogger& EagleLogger::operator<<(MANIP manip) {
       }
    }
    return *this;
+}
+
+
+
+/// ------------------------     Global Eagle Log functions     -----------------------
+
+
+
+
+EagleLogger& EagleLog() {
+   return EagleInfo();
+}
+
+
+
+EagleLogger& EagleInfo() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_INFO);
+}
+
+
+
+EagleLogger& EagleWarn() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_WARN);
+}
+
+
+
+EagleLogger& EagleError() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_ERROR);
+}
+
+
+
+EagleLogger& EagleCritical() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_CRITICAL);
 }
 
 

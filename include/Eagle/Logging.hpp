@@ -73,10 +73,14 @@ enum EAGLE_LOGGING_LEVEL {
 };
 
 
-
-
 class EagleLogger {
    
+friend EagleLogger& EagleLog();
+friend EagleLogger& EagleInfo();
+friend EagleLogger& EagleWarn();
+friend EagleLogger& EagleError();
+friend EagleLogger& EagleCritical();
+
 protected :
    EAGLE_LOGGING_LEVEL global_log_level;
    EAGLE_LOGGING_LEVEL old_global_log_level;
@@ -85,16 +89,26 @@ protected :
    std::unordered_set<std::ostream*> outputs;
    
 
-   void SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level);
+   EagleLogger& SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level);
 
+
+   EagleLogger();
+   
 
 public :   
+
+   static EagleLogger& Instance();
 
    void SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level);
 
    void TurnLogOff();
    void TurnLogOn();
    
+   void AddOutput(ostream& output);
+   void RemoveOutput(ostream& output);
+   
+   /* CREDITS : A kind shout out to relpatseht who helped me get std::endl to work with my logging class */
+
    typedef std::ostream&(*MANIP)(std::ostream&);
 
    EagleLogger& operator<<(MANIP manip);
@@ -121,14 +135,17 @@ EagleLogger& EagleLogger::operator<<(const Type& t) {
 
 
 
+EagleLogger& EagleLog();
+EagleLogger& EagleInfo();
+EagleLogger& EagleWarn();
+EagleLogger& EagleError();
+EagleLogger& EagleCritical();
 
 
 
 
 
-
-
-
+/// ------------------------      Indenter class      --------------------------------
 
 
 
