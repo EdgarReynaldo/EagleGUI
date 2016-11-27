@@ -119,8 +119,8 @@
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
 		<Unit filename="include/Eagle/Container.hpp" />
-		<Unit filename="include/Eagle/Error.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
+		<Unit filename="include/Eagle/Exception.hpp" />
 		<Unit filename="include/Eagle/FileWork.hpp" />
 		<Unit filename="include/Eagle/Font.hpp" />
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
