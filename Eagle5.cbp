@@ -101,6 +101,7 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wcast-align" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-Werror=narrowing" />
 			<Add option="-DNOGDI" />
@@ -222,9 +223,7 @@
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Gui/Menu.cpp" />
 		<Unit filename="src/Gui/Scripting/GuiScript.cpp" />
-		<Unit filename="src/Gui/Scripting/Parsing.cpp">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="src/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Gui/Scroller.cpp" />
 		<Unit filename="src/Gui/TestWidget.cpp" />
