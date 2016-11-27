@@ -17,7 +17,7 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-DDEBUG" />
-					<Add option="-DLOG" />
+					<Add option="-DEAGLE_LOG" />
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 			</Target>
@@ -58,7 +58,7 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-DDEBUG" />
-					<Add option="-DLOG" />
+					<Add option="-DEAGLE_LOG" />
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 			</Target>
