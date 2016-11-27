@@ -109,7 +109,7 @@ int WidgetDecorator::PrivateHandleEvent(EagleEvent e) {
    }
    
    return ret;
-///   throw EagleError("WidgetDecorator::PrivateHandleEvent : This function should not be called!");
+///   throw EagleException("WidgetDecorator::PrivateHandleEvent : This function should not be called!");
 ///   return -1;
 }
 
@@ -119,7 +119,7 @@ int WidgetDecorator::PrivateCheckInputs() {
    
    return WidgetBase::PrivateCheckInputs();
    
-///   throw EagleError("WidgetDecorator::PrivateCheckInputs : This function should not be called!");
+///   throw EagleException("WidgetDecorator::PrivateCheckInputs : This function should not be called!");
 ///   return -1;
 
 ///   return DIALOG_OKAY;
@@ -136,7 +136,7 @@ void WidgetDecorator::PrivateDisplay(EagleGraphicsContext* win , int xpos , int 
    if (decorated_widget) {
       decorated_widget->Display(win , xpos , ypos);
    }
-///   throw EagleError("WidgetDecorator::PrivateHandleEvent : This function should not be called!");
+///   throw EagleException("WidgetDecorator::PrivateHandleEvent : This function should not be called!");
 }
 
 
@@ -149,7 +149,7 @@ int WidgetDecorator::PrivateUpdate(double tsec) {
       ret |= decorated_widget->Update(tsec);
    }
    return ret;
-///   throw EagleError("WidgetDecorator::PrivateUpdate : This function should not be called!");
+///   throw EagleException("WidgetDecorator::PrivateUpdate : This function should not be called!");
 ///   return -1;
 }
 

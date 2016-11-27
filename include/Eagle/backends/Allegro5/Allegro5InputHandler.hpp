@@ -5,7 +5,7 @@
 
 
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/InputHandler.hpp"
 
 

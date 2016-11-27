@@ -233,7 +233,7 @@ int BasicButton::PrivateCheckInputs() {
          case TOGGLE_BTN :
             up = !up;
             break;
-         default : throw EagleError("BasicButton::PrivateCheckInputs - btn_action_type unknown");break;
+         default : throw EagleException("BasicButton::PrivateCheckInputs - btn_action_type unknown");break;
       }
       SetButtonState(Flags() & HOVER , up);
       if (WidgetBase::Flags() & ALLOW_CLOSE) {

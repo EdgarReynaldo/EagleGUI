@@ -229,7 +229,7 @@ int GuiButton::PrivateCheckInputs() {
          case TOGGLE_BTN :
             up = !up;
             break;
-         default : throw EagleError("GuiButton::PrivateCheckInputs - btn_action_type unknown");break;
+         default : throw EagleException("GuiButton::PrivateCheckInputs - btn_action_type unknown");break;
       }
       SetButtonState(Flags() & HOVER , up);
       if (WidgetBase::Flags() & ALLOW_CLOSE) {
@@ -573,13 +573,13 @@ std::ostream& GuiButton::DescribeTo(std::ostream& os , Indenter indent) const {
 
 void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int y) {
    if (!btn && !win) {
-      throw EagleError("Null win and Null btn passed to DrawGuiButtonShape.\n");
+      throw EagleException("Null win and Null btn passed to DrawGuiButtonShape.\n");
    }
    else if (!btn) {
-      throw EagleError("Null btn passed to DrawGuiButtonShape.\n");
+      throw EagleException("Null btn passed to DrawGuiButtonShape.\n");
    }
    else if (!win) {
-      throw EagleError("Null win passed to DrawGuiButtonShape.\n");
+      throw EagleException("Null win passed to DrawGuiButtonShape.\n");
    }
    bool up = (btn->ButtonState()%2) == 0;
    int rad_a = btn->RadiusA();
@@ -615,13 +615,13 @@ void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int
 
 void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int y) {
    if (!btn || !win) {
-      throw EagleError("Null win and Null btn passed to DrawGuiButtonText.\n");
+      throw EagleException("Null win and Null btn passed to DrawGuiButtonText.\n");
    }
    else if (!btn) {
-      throw EagleError("Null btn passed to DrawGuiButtonText.\n");
+      throw EagleException("Null btn passed to DrawGuiButtonText.\n");
    }
    else if (!win) {
-      throw EagleError("Null win passed to DrawGuiButtonText.\n");
+      throw EagleException("Null win passed to DrawGuiButtonText.\n");
    }
    
    EagleFont* text_font = btn->Font();
@@ -630,7 +630,7 @@ void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int 
    if (text.length()) {
       EAGLE_ASSERT(text_font);
       if (!text_font) {
-         throw EagleError(StringPrintF("GuiButton object has text (\"%s\" but no associated font has been set!!!\n",text.c_str()));
+         throw EagleException(StringPrintF("GuiButton object has text (\"%s\" but no associated font has been set!!!\n",text.c_str()));
       }
       Rectangle r = btn->InnerArea();
       int tx = x + r.X() + r.W()/2;

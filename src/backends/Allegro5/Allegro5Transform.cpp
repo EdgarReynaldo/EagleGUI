@@ -4,7 +4,7 @@
 
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 
 
@@ -27,7 +27,7 @@ Allegro5TransformBase::Allegro5TransformBase(Allegro5TransformBase* a5trans) :
 
 TransformBase* Allegro5TransformBase::Copy(Allegro5TransformBase* transform_base) {
    if (!transform_base) {
-      throw EagleError("Allegro5TransformBase::Copy(Allegro5TransformBase*) : transform_base is NULL!\n");
+      throw EagleException("Allegro5TransformBase::Copy(Allegro5TransformBase*) : transform_base is NULL!\n");
    }
    al_copy_transform(&t , &(transform_base->t));
    return this;

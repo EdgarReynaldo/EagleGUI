@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -21,9 +21,7 @@
 
 
 
-/// TODO : cleanup this module's code, take out allegro
-
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Platform.hpp"
 #include "Eagle/StringWork.hpp"
 

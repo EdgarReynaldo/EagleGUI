@@ -54,7 +54,7 @@ int GuiTestMain(int argc , char** argv) {
    EagleGraphicsContext* win = &a5window;
    
    if (!win->Valid()) {
-      throw EagleError("GuiTestMain : Failed to create valid resizable opengl window");
+      throw EagleException("GuiTestMain : Failed to create valid resizable opengl window");
    }
       
    al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP | ALLEGRO_MAG_LINEAR | ALLEGRO_MIN_LINEAR);
@@ -231,9 +231,9 @@ int GuiTestMain(int argc , char** argv) {
       warray2[i].SetLabel("Relative Button");
       warray2[i].SetFont(consola);
       relative_layout->Layout::PlaceWidget(&warray2[i] , i);
-//      OutputLog() << "warray2[" << i << "].OuterArea() = " << warray2[i].OuterArea() << std::endl;
-//      OutputLog() << "warray2[" << i << "].InnerArea() = " << warray2[i].InnerArea() << std::endl;
-//      OutputLog() << "warray2[" << i << "].WCols()[SDCOL] = " << warray2[i].WCols()[SDCOL] << std::endl;
+//      EagleLog() << "warray2[" << i << "].OuterArea() = " << warray2[i].OuterArea() << std::endl;
+//      EagleLog() << "warray2[" << i << "].InnerArea() = " << warray2[i].InnerArea() << std::endl;
+//      EagleLog() << "warray2[" << i << "].WCols()[SDCOL] = " << warray2[i].WCols()[SDCOL] << std::endl;
    }
 //*/   
 
@@ -290,7 +290,7 @@ int GuiTestMain(int argc , char** argv) {
          if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             sys->Rest(0.5);
             std::vector<EagleEvent> resize_events = q->FilterEvents(EAGLE_EVENT_DISPLAY_RESIZE);
-            OutputLog() << resize_events.size() << " resize events." << std::endl;
+            EagleLog() << resize_events.size() << " resize events." << std::endl;
             e = resize_events[resize_events.size() - 1];
             win->AcknowledgeResize();
             gui->SetWidgetDimensions(e.display.width , e.display.height);
@@ -302,7 +302,7 @@ int GuiTestMain(int argc , char** argv) {
          e = sys->WaitForSystemEventAndUpdateState();
          
          if (input_mouse_press(LMB)) {
-            OutputLog() << StringPrintF("Main: Mouse x,y = %i,%i\n" , mouse_x , mouse_y);
+            EagleLog() << StringPrintF("Main: Mouse x,y = %i,%i\n" , mouse_x , mouse_y);
          }
          
          if (e.type == EAGLE_EVENT_TIMER) {
@@ -365,7 +365,7 @@ int GuiTestMain(int argc , char** argv) {
          
          while (gui->HasMessages()) {
             WidgetMsg wmsg = gui->TakeNextMessage();
-            OutputLog() << wmsg << std::endl;
+            EagleLog() << wmsg << std::endl;
             redraw = true;
          }
          
@@ -378,9 +378,9 @@ int GuiTestMain(int argc , char** argv) {
    delete relative_layout;
    delete grid_layout;
 
-   OutputLog() << "Current objects left after cleanup : " << LiveObjectCount() << std::endl;
+   EagleLog() << "Current objects left after cleanup : " << LiveObjectCount() << std::endl;
    OutputLiveObjectsBrief();
-   OutputLog() << std::endl;
+   EagleLog() << std::endl;
 
    return 0;
 }

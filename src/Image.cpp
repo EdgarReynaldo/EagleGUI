@@ -22,7 +22,7 @@
 
 
 #include "Eagle/Image.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 #include "Eagle/StringWork.hpp"
 

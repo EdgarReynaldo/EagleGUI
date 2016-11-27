@@ -205,7 +205,7 @@ int TwoWaySplitter::AbsMinHeight() {
 
 void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
    if ((slot != 0) && (slot != 1)) {
-      throw EagleError(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , slot));
+      throw EagleException(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , slot));
    }
    Layout::PlaceWidget(widget , slot);
 }
@@ -214,7 +214,7 @@ void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
 
 void TwoWaySplitter::AddWidget(WidgetBase* widget) {
    if (NextFreeSlot() == -1) {
-      throw EagleError("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
+      throw EagleException("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
    }
    Layout::AddWidget(widget);
 }
@@ -228,7 +228,7 @@ Rectangle TwoWaySplitter::RequestWidgetArea(int widget_slot , int newx , int new
    (void)newheight;
    
    if ((widget_slot != 0) && (widget_slot != 1)) {
-      throw EagleError(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , widget_slot));
+      throw EagleException(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , widget_slot));
    }
 
    WidgetBase* widget = GetWidget(widget_slot);

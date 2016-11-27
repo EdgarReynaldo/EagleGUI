@@ -84,19 +84,19 @@ void Allegro5InputHandler::GetJoystickStates() {
 
 
 void Allegro5InputHandler::GetKeyboardState() {
-   throw new EagleError("Sorry, not implemented yet. Keystates are up to date anyway, as long as you feed it your events");
+   throw EagleException("Sorry, not implemented yet. Keystates are up to date anyway, as long as you feed it your events");
 }
 
 
 
 void Allegro5InputHandler::GetMouseState() {
-   throw new EagleError("Sorry, not implemented yet. Mousestates are up to date anyway, as long as you feed it your events");
+   throw EagleException("Sorry, not implemented yet. Mousestates are up to date anyway, as long as you feed it your events");
 }
 
 
 
 void Allegro5InputHandler::GetTouchState() {
-   throw new EagleError("Sorry, not implemented yet.");
+   throw EagleException("Sorry, not implemented yet.");
 }
 
 

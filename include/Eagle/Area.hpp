@@ -26,7 +26,7 @@
 
 
 #include "Eagle/Color.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/Position.hpp"
 
@@ -92,7 +92,7 @@ public :
    
    AreaGroup& operator=(const AreaGroup& a) {
       (void)a;
-      throw EagleError("TODO : Implement copy constructor for AreaGroup class.");
+      throw EagleException("TODO : Implement copy constructor for AreaGroup class.");
    }
    
    /// Overloads from AreaBase

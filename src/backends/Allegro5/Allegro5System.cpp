@@ -148,7 +148,7 @@ EagleThread* Allegro5System::PrivateCreateThread(void* (*process)(EagleThread* ,
    EagleThread* ethread = new Allegro5Thread();
    if (!ethread->Create(process , data)) {
       delete ethread;
-      throw EagleError("Failed to create an Allegro 5 thread.");
+      throw EagleException("Failed to create an Allegro 5 thread.");
       return 0;
    }
    return ethread;
@@ -160,7 +160,7 @@ EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive) {
    Allegro5Mutex* mutex = new Allegro5Mutex();
    if (!mutex->Create(recursive)) {
       delete mutex;
-      throw EagleError(StringPrintF("Failed to create %sAllegro 5 mutex" , recursive?"recursive ":""));
+      throw EagleException(StringPrintF("Failed to create %sAllegro 5 mutex" , recursive?"recursive ":""));
       return 0;
    }
    return mutex;

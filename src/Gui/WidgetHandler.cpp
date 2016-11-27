@@ -518,7 +518,7 @@ EagleGraphicsContext* WidgetHandler::GetDrawWindow() {
 
 
 
-bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleError) {
+bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleException) {
 	bool success = true;
 
 	if (!window) {
@@ -527,7 +527,7 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) th
 	
 	gwindow = window;
 	
-   if (!gwindow) {throw EagleError(StringPrintF("WidgetHandler::SetupBuffer : graphics window not set!\n"));}
+   if (!gwindow) {throw EagleException(StringPrintF("WidgetHandler::SetupBuffer : graphics window not set!\n"));}
 
    if (!buffer) {
       buffer = gwindow->EmptyImage();
@@ -1035,7 +1035,7 @@ int WidgetHandler::PrivateUpdate(double tsec) {
       }
 
       if (msg & DIALOG_INPUT_USED) {
-         throw EagleError("Your widget's Update function should not be returning DIALOG_INPUT_USED.\n");
+         throw EagleException("Your widget's Update function should not be returning DIALOG_INPUT_USED.\n");
       }
       
       if (msg & DIALOG_REMOVE_ME) {

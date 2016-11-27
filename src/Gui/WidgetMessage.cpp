@@ -24,7 +24,7 @@
 #include "Eagle/Gui/WidgetMessage.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/StringWork.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 
 
@@ -73,7 +73,7 @@ RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , string _t
       init = 0;
    }
    if (message_map->find(MESSAGE_KEY(topic,message)) != message_map->end()) {
-      throw EagleError(StringPrintF("Message [%s] already registered!\n" , GetMessageString(topic,message).c_str()));
+      throw EagleException(StringPrintF("Message [%s] already registered!\n" , GetMessageString(topic,message).c_str()));
    }
    (*message_map)[MESSAGE_KEY(topic,message)] = MESSAGE_VALUE(topic_str , message_str);
 }

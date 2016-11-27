@@ -66,26 +66,26 @@ void EpicFail();
 
 
 
-class EagleError : public std::exception {
+class EagleException : public std::exception {
 
 protected :
    std::string error;
    
 public :
    
-   EagleError(const std::exception e) : error(e.what()) {
-      OutputLog() << e.what() << std::endl;
+   EagleException(const std::exception e) : error(e.what()) {
+      EagleError() << e.what() << std::endl;
       ASSERT_EXCEPTION();
    }
-   EagleError(const std::string& e) : error(e) {
-      OutputLog() << e << std::endl;
+   EagleException(const std::string& e) : error(e) {
+      EagleError() << e << std::endl;
       ASSERT_EXCEPTION();
    }
-   EagleError(const char* e) : error(e) {
-      OutputLog() << e << std::endl;
+   EagleException(const char* e) : error(e) {
+      EagleError() << e << std::endl;
       ASSERT_EXCEPTION();
    }
-   ~EagleError() throw () {}
+   ~EagleException() throw () {}
    
    const char* what() const throw() {return error.c_str();}
 };

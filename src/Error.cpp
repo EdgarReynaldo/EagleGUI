@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 #include <cassert>
 
@@ -29,7 +29,7 @@
 
 void LogFailedAssert(const char* exp , const char* file , int line) {
    // Use OutputLog below, not EagleLog
-   OutputLog() << "Assert(" << exp << ") failed at line " << line << " of " << file << std::endl;
+   EagleError() << "Assert(" << exp << ") failed at line " << line << " of " << file << std::endl;
 }
 
 

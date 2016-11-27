@@ -202,7 +202,7 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
 void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& attribute_map) {
    
    if (!widget) {
-      throw EagleError("ApplyWidgetBaseAtributes : widget is NULL.\n");
+      throw EagleException("ApplyWidgetBaseAtributes : widget is NULL.\n");
    }
    
    map<string , string>::const_iterator cit = attribute_map.end();
@@ -217,7 +217,7 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       cstr = cit->second.c_str();
       int x = 0 , y = 0;
       if (2 != sscanf(cstr , "%d,%d" , &x , &y)) {
-         throw EagleError(StringPrintF("ApplyWidgetBaseAtributes:: (POS) Failed to read x,y pair from (%s)\n" , cstr));
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (POS) Failed to read x,y pair from (%s)\n" , cstr));
       }
       widget->SetWidgetPos(x,y);
    }
@@ -225,7 +225,7 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       cstr = cit->second.c_str();
       int w = 0 , h = 0;
       if (2 != sscanf(cstr , "%d,%d" , &w , &h)) {
-         throw EagleError(StringPrintF("ApplyWidgetBaseAtributes:: (DIM) Failed to read w,h pair from (%s)\n" , cstr));
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (DIM) Failed to read w,h pair from (%s)\n" , cstr));
       }
       int x = widget->Area().OuterArea().X();
       int y = widget->Area().OuterArea().Y();
@@ -244,7 +244,7 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       cstr = cit->second.c_str();
       int x = 0 , y = 0 , w = 0 , h = 0;
       if (4 != sscanf(cstr , "%d,%d,%d,%d" , &x , &y , &w , &h)) {
-         throw EagleError(StringPrintF("ApplyWidgetBaseAtributes:: (AREA) Failed to read x,y,w,h set from (%s)\n" , cstr));
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (AREA) Failed to read x,y,w,h set from (%s)\n" , cstr));
       }
       widget->SetWidgetArea(x,y,w,h);
    }
@@ -257,7 +257,7 @@ void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std:
    
    BasicText* text_widget = dynamic_cast<BasicText*>(widget);
    if (!text_widget) {
-      throw EagleError(StringPrintF("ApplyTextAttributes - widget %p is not a BasicText widget!!!\n" , widget));
+      throw EagleException(StringPrintF("ApplyTextAttributes - widget %p is not a BasicText widget!!!\n" , widget));
    }
    
    map<string , string>::const_iterator cit = attribute_map.end();

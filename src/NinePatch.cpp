@@ -81,7 +81,7 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    Rectangle img_rect = Rectangle(0 , 0 , src_img->W() , src_img->H());
    
    if (!img_rect.Contains(src_outer) || !img_rect.Contains(src_inner)) {
-      throw EagleError("MakeNinePatch() - Source image area does not fully contain the nine patch area!");
+      throw EagleException("MakeNinePatch() - Source image area does not fully contain the nine patch area!");
    }
    
    /// Make sure inner area of source is smaller than outer area

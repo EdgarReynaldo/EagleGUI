@@ -22,7 +22,7 @@
 
 
 #include "Eagle/FileWork.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 #include <cstdlib>
 

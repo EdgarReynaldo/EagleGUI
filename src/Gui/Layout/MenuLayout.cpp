@@ -22,7 +22,7 @@ void MenuLayout::ResizeMenu(int new_menu_size) {
       ResizeGrid(1,new_menu_size);
       break;
    default :
-      throw EagleError("Unknown MENU_LAYOUT_DIRECTION");
+      throw EagleException("Unknown MENU_LAYOUT_DIRECTION");
    }
    
    menu_size = GridLayout::GetLayoutSize();

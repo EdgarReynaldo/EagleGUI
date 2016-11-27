@@ -30,7 +30,7 @@
 #include "Eagle/Area.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Container.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/FileWork.hpp"
 #include "Eagle/Font.hpp"

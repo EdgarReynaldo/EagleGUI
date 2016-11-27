@@ -28,7 +28,7 @@
 
 #include "Eagle/Color.hpp"
 #include "Eagle/Object.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 #include <map>
 
@@ -118,7 +118,7 @@ public :
    bool HasColor(std::string name);
 
    EagleColor& GetColorByName(std::string name);
-   const EagleColor& GetColorByName(std::string name) const throw (EagleError);
+   const EagleColor& GetColorByName(std::string name) const throw (EagleException);
 
    void RegisterColor(std::string name , const EagleColor& color);
    
@@ -126,7 +126,7 @@ public :
    bool HasColorset(std::string name);
    
    WidgetColorset& GetColorsetByName(std::string name);
-   const WidgetColorset& GetColorsetByName(std::string name) const throw (EagleError);
+   const WidgetColorset& GetColorsetByName(std::string name) const throw (EagleException);
    
    void RegisterColorset(std::string name , const WidgetColorset& wc);
    

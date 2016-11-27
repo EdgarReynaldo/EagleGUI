@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/GraphicsContext.hpp"

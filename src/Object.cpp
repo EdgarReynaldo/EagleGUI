@@ -23,7 +23,7 @@
 
 #include "Eagle/Object.hpp"
 #include "Eagle/StringWork.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 #include <iostream>
 #include <ostream>
@@ -141,7 +141,7 @@ void EagleObjectRegistry::CheckIdRange(EAGLE_ID eid) {
    (
       bool valid = (eid >= start_id) && (eid < stop_id);
       if (!valid) {
-         throw EagleError
+         throw EagleException
          (StringPrintF("EagleObjectRegistry::CheckIdRange : EAGLE_ID %d out of range [%d,%d)" , eid , start_id , stop_id));
       }
    );
@@ -366,7 +366,7 @@ const EagleObjectInfo& EagleObjectRegistry::FindInfoByAddress(EagleObject* objec
    ADDRESSMAP& addrmap = *AddressMap();
    ADDRESSMAP::iterator mit = addrmap.find(object);
    if (mit == addrmap.end()) {
-      throw EagleError(StringPrintF("EagleObjectRegistry::FindInfoByAddress : Could not find info for object %p" , object));
+      throw EagleException(StringPrintF("EagleObjectRegistry::FindInfoByAddress : Could not find info for object %p" , object));
    }
    return eobinfo[mit->second];/// Access the object info using the EAGLE_ID key value stored in the address map
 }
@@ -454,8 +454,8 @@ void EagleObjectRegistry::OutputLiveObjectsFull() {
 
       if (info.destroyed) {continue;}
       
-      OutputLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname.c_str()) << std::endl;
-      OutputLog() << *(info.object) << std::endl;
+      EagleLog() << StringPrintF("EagleObject at %p named '%s'" , info.object , info.wname.c_str()) << std::endl;
+      EagleLog() << *(info.object) << std::endl;
    }
 }
 

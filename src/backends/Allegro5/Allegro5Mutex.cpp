@@ -20,7 +20,7 @@
  */
 
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 
 

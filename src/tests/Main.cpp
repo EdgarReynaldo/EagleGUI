@@ -73,7 +73,7 @@ int main(int argc , char** argv) {
             /// TODO : Set argc and argv
             retval = TestRegistry::GetRegistryInstance().Run(userbranch.c_str() , argc , argv);
          }
-         catch (EagleError error) {
+         catch (EagleException error) {
             /// Ignore error and continue running test, it will be logged anyway
          }
       }

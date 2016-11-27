@@ -30,7 +30,7 @@
 #include "Eagle/Gui/Layout/DumbLayout.hpp"
 #include "Eagle/Gui/Camera.hpp"
 
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
 
@@ -156,7 +156,7 @@ public :
 	EagleGraphicsContext* GetDrawWindow();
 	
 	/// set up draw window first please, and set up buffers before drawing please!
-	bool SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleError);
+	bool SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleException);
 	void SetBufferShrinkOnResize(bool buffer_shrink_on_resize);// defaults to false
 	void UseBackgroundImage(EagleImage* bg , bool stretch);// pass null to turn off the background image
 	void UseBackgroundColor(EagleColor col);

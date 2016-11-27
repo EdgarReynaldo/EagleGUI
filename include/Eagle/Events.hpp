@@ -32,7 +32,7 @@
 #include "Eagle/Gui/WidgetMessage.hpp"
 
 #include "Eagle/Mutexes.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 
 

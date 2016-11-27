@@ -23,7 +23,7 @@
 
 #include "Eagle/Events.hpp"
 #include "Eagle/StringWork.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 
 /// ------------------     GLOBALS     ----------------------------

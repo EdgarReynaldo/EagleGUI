@@ -49,7 +49,7 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
       case LAYOUT_ALLOWS_RESIZE_AND_REPOSITION :
          ss << "LAYOUT_ALLOWS_RESIZE_AND_REPOSITION";
          break;
-      default : throw EagleError(StringPrintF("Unknown layout attributes value (%d)\n",(int)attributes));break;
+      default : throw EagleException(StringPrintF("Unknown layout attributes value (%d)\n",(int)attributes));break;
    }
    return ss.str();
 }

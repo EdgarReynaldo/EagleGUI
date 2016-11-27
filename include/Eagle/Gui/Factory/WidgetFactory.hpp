@@ -11,7 +11,7 @@
 #include <string>
 
 #include "Eagle/StringWork.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
 
@@ -87,7 +87,7 @@ WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , 
    WIDGET_TYPE* pwidget = 0;
    pwidget = dynamic_cast<WIDGET_TYPE*>(CreateWidgetObject(widget_class_name , widget_parameters));
    if (!pwidget) {
-      throw EagleError(StringPrintF("Failed to create %s class widget with specified parameters (%s)\n" ,
+      throw EagleException(StringPrintF("Failed to create %s class widget with specified parameters (%s)\n" ,
                                     widget_class_name.c_str() , widget_parameters.c_str()));
    }
    if (pwidget_store) {

@@ -34,41 +34,33 @@ using std::cout;
 using std::endl;
 
 
-ofstream logfile;
+class LogFile {
+public :
+   ofstream log_file;
+   ~LogFile();
+   
+};
 
-ostream* ostr = &cout;
+LogFile::~LogFile() {
+   log_file.close();
+}
 
-FakeOstream fakelog;
-
-
-
-ostream& OutputLog() {return *ostr;}
-
-FakeOstream& FakeLog() {return fakelog;}
-
-
-
+LogFile log_file;
 
 bool SendOutputToFile(const std::string& filepath , const std::string& header , bool append) {
-   logfile.close();
-   logfile.clear();
+   EagleLogger::Instance().RemoveOutput(log_file.log_file);
+   log_file.log_file.close();
+   log_file.log_file.clear();
    ios::openmode mode = ios::out;
    if (append) {mode |= ios::app;}
-   logfile.open(filepath.c_str() , mode);
-   bool success = logfile.good();
+   log_file.log_file.open(filepath.c_str() , mode);
+   bool success = log_file.log_file.good();
    if (success) {
-      SendOutputTo(logfile);
-      logfile << header.c_str() << endl;
+      EagleLogger::Instance().AddOutput(log_file.log_file);
+      log_file.log_file << header.c_str() << endl;
    }
    return success;
 }
-
-
-
-void SendOutputTo(std::ostream& output_stream) {
-   ostr = &output_stream;
-}
-
 
 
 /// -----------------------     EagleLogger class     ---------------------------------
@@ -98,7 +90,7 @@ EagleLogger::EagleLogger() :
 
 
 
-static EagleLogger& EagleLogger::Instance() {
+EagleLogger& EagleLogger::Instance() {
    static EagleLogger logger;
    return logger;
 }
@@ -269,54 +261,6 @@ ostream& operator<<(ostream& os , const Indenter& i) {
    return os;
 }
 
-
-
-/** ##############         Logger class methods           ################# */
-
-/** TODO : FIXME?
-   Not working correctly, see the header.
-
-void Logger::SetMaxLoggingLevel(LogLevel m) {
-   if (m < LOG_RESTORE) {
-      max = m;
-      enabled = (current <= max);
-   }
-}
-
-
-
-void Logger::SetLoggingLevel(LogLevel ll) {
-   if (ll == LOG_RESTORE) {
-      SetLoggingLevel(previous);
-   } else {
-//   if (ll < LOG_RESTORE) {
-      previous = current;
-      current = ll;
-      enabled = (current <= max);
-   }
-}
-
-
-
-bool Logger::SendOutputToFile(const std::string& filepath , const std::string& header , bool append) {
-   logfile.close();
-   logfile.clear();
-   ios::openmode mode = ios::out;
-   if (append) {mode |= ios::app;}
-   logfile.open(filepath.c_str() , mode);
-   bool success = logfile.good();
-   if (success) {
-      SendOutputTo(logfile);
-      logfile << header.c_str() << endl;
-   }
-   return success;
-}
-
-
-
-Logger OutputLog;
-
-*/
 
 
 

@@ -33,34 +33,9 @@
 
 
 
-class FakeOstream : public std::ostream {
-   
-public :
-   /* CREDITS : A kind shout out to relpatseht who helped me get std::endl to work with the FakeOstream class */
-   FakeOstream& operator<<(std::ostream& (*manip)(std::ostream&)) {(void)manip;return *this;}   
-
-   template <class Type>
-   inline FakeOstream& operator<<(const Type& t) {(void)t;return *this;}
-   
-};
 
 
-std::ostream& OutputLog();/// Returns a single global output destination for logging
-
-FakeOstream& FakeLog();/// Dummy ostream to turn the log off.
-
-#ifdef LOG
-   #define EagleLog() OutputLog()
-#else
-   #define EagleLog() FakeLog()
-#endif
-
-
-
-/// These alter the destination of the output log returned by OutputLog()
 bool SendOutputToFile(const std::string& filepath , const std::string& header , bool append = true);
-void SendOutputTo(std::ostream& output_stream);
-
 
 
 
@@ -104,8 +79,8 @@ public :
    void TurnLogOff();
    void TurnLogOn();
    
-   void AddOutput(ostream& output);
-   void RemoveOutput(ostream& output);
+   void AddOutput(std::ostream& output);
+   void RemoveOutput(std::ostream& output);
    
    /* CREDITS : A kind shout out to relpatseht who helped me get std::endl to work with my logging class */
 

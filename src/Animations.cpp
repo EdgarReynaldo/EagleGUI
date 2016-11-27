@@ -1,7 +1,7 @@
 
 
 #include "Eagle/Animations.hpp"
-#include "Eagle/Error.hpp"
+#include "Eagle/Exception.hpp"
 
 
 

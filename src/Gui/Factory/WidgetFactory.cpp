@@ -63,12 +63,12 @@ void WidgetFactory::RegisterWidgetCreationFunction(string widget_class_name , WI
 
 WidgetBase* WidgetFactory::CreateWidgetBaseObject(string widget_class_name , string widget_parameters) {
    if (widget_maker_map.find(widget_class_name) == widget_maker_map.end()) {
-      throw EagleError(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Could not find a creation function registered for %s class widgets.\n",
+      throw EagleException(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Could not find a creation function registered for %s class widgets.\n",
                                     widget_class_name.c_str()));
    }
    WIDGET_CREATION_FUNCTION CreatorFunc = widget_maker_map[widget_class_name];
    if (!CreatorFunc) {
-      throw EagleError(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Creation function for %s class widgets is NULL!\n",
+      throw EagleException(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Creation function for %s class widgets is NULL!\n",
                        widget_class_name.c_str()));
    }
    WidgetBase* new_widget = CreatorFunc(widget_parameters);

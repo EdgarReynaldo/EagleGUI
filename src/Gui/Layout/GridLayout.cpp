@@ -51,11 +51,11 @@ void GridLayout::RepositionChild(int slot) {
 void GridLayout::RepositionChild(int cellx , int celly) {
 	
 	if (cellx < 0 || cellx > ncols) {
-      throw EagleError(StringPrintF("GridLayout::RepositionChild(%d,%d) : cellx (%d) is out of bounds [%d,%d)",
+      throw EagleException(StringPrintF("GridLayout::RepositionChild(%d,%d) : cellx (%d) is out of bounds [%d,%d)",
                                     cellx , celly , cellx , 0 , ncols));
 	}
 	if (celly < 0 || celly > nrows) {
-      throw EagleError(StringPrintF("GridLayout::RepositionChild(%d,%d) : celly (%d) is out of bounds [%d,%d)",
+      throw EagleException(StringPrintF("GridLayout::RepositionChild(%d,%d) : celly (%d) is out of bounds [%d,%d)",
                                     celly , celly , celly , 0 , nrows));
 	}
 	
