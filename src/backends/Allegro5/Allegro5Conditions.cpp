@@ -47,10 +47,10 @@ bool Allegro5ConditionVar::Create() {
    
    if (!mutex || !cond) {
       if (!mutex) {
-         EagleLog() << "Failed to create allegro 5 mutex." << std::endl;
+         EagleError() << "Failed to create allegro 5 mutex." << std::endl;
       }
       if (!cond) {
-         EagleLog() << "Failed to create allegro 5 condition variable." << std::endl;
+         EagleError() << "Failed to create allegro 5 condition variable." << std::endl;
       }
       Destroy();
       return false;

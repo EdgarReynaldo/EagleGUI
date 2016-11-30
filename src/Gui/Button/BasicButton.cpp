@@ -175,7 +175,7 @@ int BasicButton::PrivateCheckInputs() {
       if (click_area) {
          if (click_area->Contains(msx - area.InnerArea().X() , msy - area.InnerArea().Y())) {
             activated = true;
-            EagleLog() <<  "Click area activated." << std::endl;
+            EagleInfo() <<  "Click area activated." << std::endl;
             if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
          }
       }

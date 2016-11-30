@@ -682,7 +682,7 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(w);
    if (!GetValidByAddress(w)) {
       /// TODO : This widget has already been destroyed somehow - note it and move on - figure it out later
-      EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
+      EagleError() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
@@ -690,10 +690,10 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    }
    
    /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
-   EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget - w->GetName() = (%s)\n" , w->GetName().c_str());
+   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget - w->GetName() = (%s)\n" , w->GetName().c_str());
    
    if (!OwnsWidget(w)) {
-      EagleLog() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->GetName().c_str());
+      EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->GetName().c_str());
       return;
    }
    EAGLE_ASSERT(OwnsWidget(w));
@@ -1216,7 +1216,7 @@ void WidgetHandler::SetFocusState(bool state) {
 ///      and draw backwards from the end to the focused widget.
 
 bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget) {
-//   EagleLog() << "Giving widget focus to " << widget << endl;
+//   EagleInfo() << "Giving widget focus to " << widget << endl;
    if (parent) {
       return parent->GiveWidgetFocus(widget);
    }
@@ -1310,7 +1310,7 @@ void WidgetHandler::SetFocusState(bool state) {
 ///      and draw backwards from the end to the focused widget.
 
 bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
-//   EagleLog() << "Giving widget focus to " << widget << endl;
+//   EagleInfo() << "Giving widget focus to " << widget << endl;
    if (wparent && notify_parent) {
       return wparent->GiveWidgetFocus(widget , true);
    }

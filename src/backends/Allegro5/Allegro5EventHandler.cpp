@@ -146,7 +146,7 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
                   close = true;
                   break;
                default :
-                  EagleLog() << "Event not recognized by event thread process." << std::endl;
+                  EagleWarn() << "Event not recognized by event thread process." << std::endl;
                   break;
                
             }

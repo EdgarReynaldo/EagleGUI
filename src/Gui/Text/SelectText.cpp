@@ -168,8 +168,8 @@ void SelectText::RefreshSelection() {
    EAGLE_ASSERT(select_left >= 0 && select_left <= (int)lines[select_line_start].size());
    EAGLE_ASSERT(select_right >= 0 && select_right <= (int)lines[select_line_close].size());
    
-///   EagleLog() << StringPrintF("LineStart = %d , LineClose = %d , Nlines = %d" , select_line_start , select_line_close , nlines) << std::endl;
-///   EagleLog() << StringPrintF("Left = %d , size() = %d , Right = %d , size() = %d", 
+///   EagleInfo() << StringPrintF("LineStart = %d , LineClose = %d , Nlines = %d" , select_line_start , select_line_close , nlines) << std::endl;
+///   EagleInfo() << StringPrintF("Left = %d , size() = %d , Right = %d , size() = %d", 
 ///                              select_left , (int)lines[select_line_start].size() , select_right , (int)lines[select_line_close].size()) << std::endl;
                               
    if (select_line_start == select_line_close) {
@@ -472,7 +472,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
    }
    if (Flags() & HASFOCUS) {
       if (ev.type == EAGLE_EVENT_KEY_CHAR) {
-         EagleLog() << "Key down event detected in SelectText::HandleEvent - key " <<
+         EagleInfo() << "Key down event detected in SelectText::HandleEvent - key " <<
                         ev.keyboard.keycode << " was pressed." << std::endl;
 
          if (ev.keyboard.keycode == EAGLE_KEY_DOWN || ev.keyboard.keycode == EAGLE_KEY_UP) {
@@ -510,7 +510,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
                EAGLE_ASSERT(eagle_system);
                EAGLE_ASSERT(eagle_system->GetSystemClipboard());
                eagle_system->GetSystemClipboard()->CopyToClipboard(selected_text);
-               EagleLog() << "Copying \"" << selected_text << "\" to clipboard." << std::endl;
+               EagleInfo() << "Copying \"" << selected_text << "\" to clipboard." << std::endl;
                RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , TEXT_COPIED));
             }
          }
@@ -530,7 +530,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    EAGLE_ASSERT(text_font->Valid());
    if (!nlines) {return;}
 
-///   EagleLog() << "SelectText::PrivateDisplay - begin" << std::endl;
+///   EagleInfo() << "SelectText::PrivateDisplay - begin" << std::endl;
    for (int i = 0 ; i < nlines ; ++i) {
       Rectangle r = lineareas[i];
       if (i >= select_line_start && i <= select_line_close) {
@@ -543,9 +543,9 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    
    
    /// Draw selection background first
-///   EagleLog() << StringPrintF("start = %d , close = %d , nlines = %d , left = %d , right = %d" ,
+///   EagleInfo() << StringPrintF("start = %d , close = %d , nlines = %d , left = %d , right = %d" ,
 ///                              select_line_start , select_line_close , nlines , select_left , select_right) << std::endl;
-///   EagleLog() << StringPrintF("lines[start].size() = %d , lines[close].size() = %d" ,
+///   EagleInfo() << StringPrintF("lines[start].size() = %d , lines[close].size() = %d" ,
 ///                               (int)lines[select_line_start].size() , (int)lines[select_line_close].size()) << std::endl;
    if (select_line_start > -1) {
       if (select_line_start == select_line_close) {
@@ -565,7 +565,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
          }
       }
    }
-///   EagleLog() << "SelectText::PrivateDisplay - background drawn" << std::endl;
+///   EagleInfo() << "SelectText::PrivateDisplay - background drawn" << std::endl;
 
    DrawText(win , xpos , ypos , WCols()[TXTCOL]);
 
@@ -607,7 +607,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    );
 //*/
    ClearRedrawFlag();
-///   EagleLog() << "SelectText::PrivateDisplay - finish" << std::endl;
+///   EagleInfo() << "SelectText::PrivateDisplay - finish" << std::endl;
 
 }
 

@@ -110,7 +110,7 @@ EagleSystem::EagleSystem(std::string name) :
 
 void EagleSystem::Shutdown() {
    
-   EagleLog() << "EagleSystem::Shutdown called" << std::endl;
+   EagleInfo() << "EagleSystem::Shutdown called" << std::endl;
    
    timers.FreeAll();
    inputs.FreeAll();
@@ -149,15 +149,15 @@ int EagleSystem::Initialize(int state) {
 bool EagleSystem::InitializeSystem() {
 
 ///   int success = (atexit(EagleShutdown) == 0);
-///   EagleLog() << StringPrintF("EagleSystem::InitializeSystem - atexit ptr is %p and atexit(EagleShutdown) returned %d\n" ,
+///   EagleInfo() << StringPrintF("EagleSystem::InitializeSystem - atexit ptr is %p and atexit(EagleShutdown) returned %d\n" ,
 ///                              atexit , success);
 
    system_up = PrivateInitializeSystem();
    if (!system_up) {
-      EagleLog() << "Eagle : Failed to initialize the system." << std::endl;
+      EagleError() << "Eagle : Failed to initialize the system." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized system." << std::endl;
+      EagleInfo() << "Eagle : Initialized system." << std::endl;
    }
    
    if (!input_handler)    {input_handler    = CreateInputHandler();}
@@ -178,11 +178,11 @@ bool EagleSystem::InitializeSystem() {
       }
    }
    if (system_up) {
-      EagleLog() << "Eagle : Initialized the system state." << std::endl;
+      EagleInfo() << "Eagle : Initialized the system state." << std::endl;
 //      register_system_shutdown_function();
    }
    else {
-      EagleLog() << "Eagle : System state not fully initialized." << std::endl;
+      EagleError() << "Eagle : System state not fully initialized." << std::endl;
    }
    
    return system_up;
@@ -193,10 +193,10 @@ bool EagleSystem::InitializeSystem() {
 bool EagleSystem::InitializeImages() {
    images_up = PrivateInitializeImages();
    if (!images_up) {
-      EagleLog() << "Eagle : Failed to initialize images." << std::endl;
+      EagleError() << "Eagle : Failed to initialize images." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized images." << std::endl;
+      EagleInfo() << "Eagle : Initialized images." << std::endl;
    }
    return images_up;
 }
@@ -206,10 +206,10 @@ bool EagleSystem::InitializeImages() {
 bool EagleSystem::InitializeFonts() {
    fonts_up = PrivateInitializeFonts();
    if (!fonts_up) {
-      EagleLog() << "Eagle : Failed to initialize fonts." << std::endl;
+      EagleError() << "Eagle : Failed to initialize fonts." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized fonts." << std::endl;
+      EagleInfo() << "Eagle : Initialized fonts." << std::endl;
    }
    return fonts_up;
 }
@@ -219,10 +219,10 @@ bool EagleSystem::InitializeFonts() {
 bool EagleSystem::InitializeTTFFonts() {
    ttf_fonts_up = PrivateInitializeTTFFonts();
    if (!ttf_fonts_up) {
-      EagleLog() << "Eagle : Failed to initialize ttf fonts." << std::endl;
+      EagleError() << "Eagle : Failed to initialize ttf fonts." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized TTF fonts." << std::endl;
+      EagleInfo() << "Eagle : Initialized TTF fonts." << std::endl;
    }
    return ttf_fonts_up;
 }
@@ -232,10 +232,10 @@ bool EagleSystem::InitializeTTFFonts() {
 bool EagleSystem::InitializeAudio() {
    audio_up = PrivateInitializeAudio();
    if (!audio_up) {
-      EagleLog() << "Eagle : Failed to initialize audio." << std::endl;
+      EagleError() << "Eagle : Failed to initialize audio." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized audio." << std::endl;
+      EagleInfo() << "Eagle : Initialized audio." << std::endl;
    }
    return audio_up;
 }
@@ -245,10 +245,10 @@ bool EagleSystem::InitializeAudio() {
 bool EagleSystem::InitializeShaders() {
    shaders_up = PrivateInitializeShaders();
    if (!shaders_up) {
-      EagleLog() << "Eagle : Failed to initialize shaders." << std::endl;
+      EagleError() << "Eagle : Failed to initialize shaders." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized shaders." << std::endl;
+      EagleInfo() << "Eagle : Initialized shaders." << std::endl;
    }
    return shaders_up;
 }
@@ -258,10 +258,10 @@ bool EagleSystem::InitializeShaders() {
 bool EagleSystem::InitializePrimitives() {
    primitives_up = PrivateInitializePrimitives();
    if (!primitives_up) {
-      EagleLog() << "Eagle : Failed to initilialize primitives." << std::endl;
+      EagleError() << "Eagle : Failed to initilialize primitives." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Initialized primitives." << std::endl;
+      EagleInfo() << "Eagle : Initialized primitives." << std::endl;
    }
    return primitives_up;
 }
@@ -271,10 +271,10 @@ bool EagleSystem::InitializePrimitives() {
 bool EagleSystem::InstallKeyboard() {
    keyboard_running = PrivateInstallKeyboard();
    if (!keyboard_running) {
-      EagleLog() << "Eagle : Failed to install keyboard." << std::endl;
+      EagleError() << "Eagle : Failed to install keyboard." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Installed keyboard." << std::endl;
+      EagleInfo() << "Eagle : Installed keyboard." << std::endl;
    	EagleInputHandler* input = GetInputHandler();
       EagleEventHandler* queue = GetSystemQueue();
    	if (input) {
@@ -285,10 +285,10 @@ bool EagleSystem::InstallKeyboard() {
    	}
    	if (!input || !queue) {
          if (!input) {
-            EagleLog() << "EagleSystem::InstallKeyboard : Failed to retrieve input handler." << std::endl;
+            EagleError() << "EagleSystem::InstallKeyboard : Failed to retrieve input handler." << std::endl;
          }
          if (!queue) {
-            EagleLog() << "EagleSystem::InstallKeyboard : Failed to retrieve system queue." << std::endl;
+            EagleError() << "EagleSystem::InstallKeyboard : Failed to retrieve system queue." << std::endl;
          }
    	}
    }
@@ -300,10 +300,10 @@ bool EagleSystem::InstallKeyboard() {
 bool EagleSystem::InstallMouse() {
    mouse_running = PrivateInstallMouse();
    if (!mouse_running) {
-      EagleLog() << "Eagle : Failed to install mouse." << std::endl;
+      EagleError() << "Eagle : Failed to install mouse." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Installed mouse." << std::endl;
+      EagleInfo() << "Eagle : Installed mouse." << std::endl;
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeMouseInput();
@@ -321,10 +321,10 @@ bool EagleSystem::InstallMouse() {
 bool EagleSystem::InstallJoystick() {
    joystick_running = PrivateInstallJoystick();
    if (!joystick_running) {
-      EagleLog() << "Eagle : Failed to install joystick." << std::endl;
+      EagleError() << "Eagle : Failed to install joystick." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Installed joystick." << std::endl;
+      EagleInfo() << "Eagle : Installed joystick." << std::endl;
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeJoystickInput();
@@ -342,10 +342,10 @@ bool EagleSystem::InstallJoystick() {
 bool EagleSystem::InstallTouch() {
    touch_running = PrivateInstallTouch();
    if (!touch_running) {
-      EagleLog() << "Eagle : Failed to install touch input." << std::endl;
+      EagleError() << "Eagle : Failed to install touch input." << std::endl;
    }
    else {
-      EagleLog() << "Eagle : Installed touch input." << std::endl;
+      EagleInfo() << "Eagle : Installed touch input." << std::endl;
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeTouchInput();
@@ -425,7 +425,7 @@ EagleInputHandler* EagleSystem::GetInputHandler() {
    if (!input_handler) {
       input_handler = CreateInputHandler();
       if (!input_handler) {
-         EagleLog() << "Failed to retrieve input handler." << std::endl;
+         EagleError() << "Failed to retrieve input handler." << std::endl;
       }
    }
    return input_handler;
@@ -437,7 +437,7 @@ EagleEventHandler* EagleSystem::GetSystemQueue() {
 	if (!system_queue) {
 		system_queue = CreateEventHandler(false);
 		if (!system_queue) {
-		   EagleLog() << "Failed to retrieve system event handler." << std::endl;
+		   EagleError() << "Failed to retrieve system event handler." << std::endl;
 		}
 	}
 	return system_queue;
@@ -452,7 +452,7 @@ EagleTimer* EagleSystem::GetSystemTimer() {
 			system_timer->Create(system_timer_rate);
 		}
 		else {
-         EagleLog() << "Failed to retrieve system timer." << std::endl;
+         EagleError() << "Failed to retrieve system timer." << std::endl;
 		}
 	}
 	return system_timer;

@@ -200,7 +200,6 @@ void BasicScrollBar::SetScroll(int value) {
 
 void BasicScrollBar::ScrollBy(int amt) {
    scroller->ScrollBy(amt);
-   EagleLog() << "Scrolling by " << amt << std::endl;
    SetRedrawFlag();
 }
 

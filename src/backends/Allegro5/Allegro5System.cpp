@@ -29,7 +29,7 @@ bool Allegro5System::PrivateInitializeSystem() {
 ///   bool ret = al_init();
 ///   bool ret = al_install_system(ALLEGRO_VERSION_INT  , atexit);
    bool ret = al_install_system(ALLEGRO_VERSION_INT  , NULL);// this means we have to shutdown allegro
-   if (!ret) {EagleLog() << "Allegro failed to initialize." << std::endl;}
+   if (!ret) {EagleCritical() << "Allegro failed to initialize." << std::endl;}
    return ret;
 }
 
@@ -37,7 +37,7 @@ bool Allegro5System::PrivateInitializeSystem() {
 
 bool Allegro5System::PrivateInitializeImages() {
    bool ret = al_init_image_addon();
-   if (!ret) {EagleLog() << "Allegro failed to initialize image addon." << std::endl;}
+   if (!ret) {EagleError() << "Allegro failed to initialize image addon." << std::endl;}
    return ret;
 }
 
@@ -52,7 +52,7 @@ bool Allegro5System::PrivateInitializeFonts() {
 
 bool Allegro5System::PrivateInitializeTTFFonts() {
    bool ret = al_init_ttf_addon();
-   if (!ret) {EagleLog() << "Allegro failed to initialize ttf font addon." << std::endl;}
+   if (!ret) {EagleError() << "Allegro failed to initialize ttf font addon." << std::endl;}
    return ret;
 }
 
@@ -61,7 +61,7 @@ bool Allegro5System::PrivateInitializeTTFFonts() {
 bool Allegro5System::PrivateInitializeAudio() {
    bool ret = al_install_audio();
    ret = ret && al_init_acodec_addon();
-   if (!ret) {EagleLog() << "Allegro failed to initialize audio addon." << std::endl;}
+   if (!ret) {EagleError() << "Allegro failed to initialize audio addon." << std::endl;}
    return ret;
 }
 
@@ -69,7 +69,7 @@ bool Allegro5System::PrivateInitializeAudio() {
 
 bool Allegro5System::PrivateInitializeShaders() {
    bool ret = true;///NOT NECESSARY CURRENTLY - // al_init_shader_addon(); // TODO : What?
-   if (!ret) {EagleLog() << "Allegro failed to initialize shader addon." << std::endl;}
+   if (!ret) {EagleError() << "Allegro failed to initialize shader addon." << std::endl;}
    return ret;
 }
 
@@ -77,7 +77,7 @@ bool Allegro5System::PrivateInitializeShaders() {
 
 bool Allegro5System::PrivateInitializePrimitives() {
    bool ret = al_init_primitives_addon();
-   if (!ret) {EagleLog() << "Allegro 5 failed to initialize primitives addon." << std::endl;}
+   if (!ret) {EagleError() << "Allegro 5 failed to initialize primitives addon." << std::endl;}
    return ret;
 }
 
@@ -85,7 +85,7 @@ bool Allegro5System::PrivateInitializePrimitives() {
 
 bool Allegro5System::PrivateInstallKeyboard() {
    bool ret = al_install_keyboard();
-   if (!ret) {EagleLog() << "Allegro 5 failed to install keyboard." << std::endl;}
+   if (!ret) {EagleError() << "Allegro 5 failed to install keyboard." << std::endl;}
    return ret;
 }
 
@@ -93,7 +93,7 @@ bool Allegro5System::PrivateInstallKeyboard() {
 
 bool Allegro5System::PrivateInstallMouse() {
    bool ret = al_install_mouse();
-   if (!ret) {EagleLog() << "Allegro 5 failed to install mouse." << std::endl;}
+   if (!ret) {EagleError() << "Allegro 5 failed to install mouse." << std::endl;}
    return ret;
 }
 
@@ -101,7 +101,7 @@ bool Allegro5System::PrivateInstallMouse() {
 
 bool Allegro5System::PrivateInstallJoystick() {
    bool ret = al_install_joystick();
-   if (!ret) {EagleLog() << "Allegro 5 failed to install joystick." << std::endl;}
+   if (!ret) {EagleError() << "Allegro 5 failed to install joystick." << std::endl;}
    return ret;
 }
 
@@ -109,7 +109,7 @@ bool Allegro5System::PrivateInstallJoystick() {
 
 bool Allegro5System::PrivateInstallTouch() {
    bool ret = al_install_touch_input();
-   if (!ret) {EagleLog() << "Allegro 5 failed to install touch." << std::endl;}
+   if (!ret) {EagleError() << "Allegro 5 failed to install touch." << std::endl;}
    return ret;
 }
 

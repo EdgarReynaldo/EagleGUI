@@ -28,7 +28,6 @@
 
 
 void LogFailedAssert(const char* exp , const char* file , int line) {
-   // Use OutputLog below, not EagleLog
    EagleError() << "Assert(" << exp << ") failed at line " << line << " of " << file << std::endl;
 }
 

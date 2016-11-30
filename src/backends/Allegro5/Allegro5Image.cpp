@@ -161,7 +161,7 @@ bool Allegro5Image::Allocate(int width , int height , IMAGE_TYPE type) {
    }
    bmp = al_create_bitmap(width , height);
    if (!bmp) {
-      EagleLog() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
+      EagleError() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
    }
    else {
       parent_context = GetAssociatedContext(al_get_current_display());
@@ -185,7 +185,7 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
    }
    bmp = al_load_bitmap(file.c_str());
    if (!bmp) {
-      EagleLog() << "Failed to load " << file << " from disk." << std::endl;
+      EagleError() << "Failed to load " << file << " from disk." << std::endl;
       EAGLE_ASSERT(0);
    }
    else {
@@ -217,7 +217,7 @@ bool Allegro5Image::CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , 
       h = al_get_bitmap_height(bmp);
    }
    else {
-      EagleLog() << "Failed to create sub bitmap from " << parent_bitmap << std::endl;
+      EagleError() << "Failed to create sub bitmap from " << parent_bitmap << std::endl;
    }
    return bmp;
 }
@@ -273,7 +273,7 @@ void Allegro5Image::Free() {
          img->Free();
       }
       children.RemoveAll();
-      EagleLog() << "Destroying allegro bitmap at " << bmp << std::endl;
+      EagleInfo() << "Destroying allegro bitmap at " << bmp << std::endl;
       al_destroy_bitmap(bmp);
       bmp = 0;
       w = 0;

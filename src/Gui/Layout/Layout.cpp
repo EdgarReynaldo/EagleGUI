@@ -191,7 +191,7 @@ void Layout::RepositionChild(int slot) {
    WidgetBase* widget = GetWidget(slot);
    if (!widget) {
       EAGLE_DEBUG(
-         EagleLog() << "INFO : Layout::RepositionChild - Attempt to reposition NULL widget" << std::endl;
+         EagleInfo() << "INFO : Layout::RepositionChild - Attempt to reposition NULL widget" << std::endl;
       );
       return;
    }

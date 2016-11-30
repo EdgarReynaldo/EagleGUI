@@ -132,7 +132,7 @@ void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
       int ox = (r.W() - view_area.W())/2;
       int oy = (r.H() - view_area.H())/2;
       
-//      EagleLog() << "View area = " << view_area << std::endl;
+//      EagleInfo() << "View area = " << view_area << std::endl;
       
       win->DrawRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy);
    }

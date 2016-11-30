@@ -35,28 +35,28 @@ void* TimerProcess(EagleThread* ethread , void* etimer) {
    while (!ethread->ShouldStop() && !close) {
       ALLEGRO_EVENT ev;
       al_wait_for_event(queue , &ev);
-//      EagleLog() << "Event " << ev.type << std::endl;
+//      EagleInfo() << "Event " << ev.type << std::endl;
       if (ev.type == ALLEGRO_EVENT_TIMER && ev.timer.source == (ALLEGRO_TIMER*)eagle_a5_timer->Source()) {
-//         EagleLog() << "TIMER_EVENT received" << std::endl;
+//         EagleInfo() << "TIMER_EVENT received" << std::endl;
          ++counter;
          eagle_a5_timer->Tick(ev.any.timestamp);///al_get_time());
       }
       else if (ev.type == EAGLE_EVENT_USER_START) {
          switch (ev.user.data1) {
             case EAGLE_MESSAGE_CREATE_TIMER :
-//               EagleLog() << "EAGLE_MESSAGE_CREATE_TIMER received." << std::endl;
+//               EagleInfo() << "EAGLE_MESSAGE_CREATE_TIMER received." << std::endl;
                break;
             case EAGLE_MESSAGE_START_TIMER :
                al_start_timer(timer);
-//               EagleLog() << "EAGLE_MESSAGE_START_TIMER received." << std::endl;
+//               EagleInfo() << "EAGLE_MESSAGE_START_TIMER received." << std::endl;
                break;
             case EAGLE_MESSAGE_STOP_TIMER :
                al_stop_timer(timer);
-//               EagleLog() << "EAGLE_MESSAGE_STOP_TIMER received." << std::endl;
+//               EagleInfo() << "EAGLE_MESSAGE_STOP_TIMER received." << std::endl;
                break;
             case EAGLE_MESSAGE_CLOSE_TIMER :
                close = true;
-//               EagleLog() << "EAGLE_MESSAGE_CLOSE_TIMER received." << std::endl;
+//               EagleInfo() << "EAGLE_MESSAGE_CLOSE_TIMER received." << std::endl;
                break;
             default : EAGLE_ASSERT(0);
                break;
@@ -108,7 +108,7 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
 
    Destroy();
    
-   EagleLog() << "Allegro5Timer::Create this=" << this << std::endl;
+   EagleInfo() << "Allegro5Timer::Create this=" << this << std::endl;
 
    timer = al_create_timer(seconds_per_tick);
    timer_queue = al_create_event_queue();
@@ -150,16 +150,16 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
    }
 
    if (!timer_queue) {
-      EagleLog() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create timer_queue." << std::endl;
+      EagleError() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create timer_queue." << std::endl;
    }
    if (!process_queue) {
-      EagleLog() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create process_queue." << std::endl;
+      EagleError() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create process_queue." << std::endl;
    }
    if (!timer) {
-      EagleLog() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create an ALLEGRO_TIMER." << std::endl;
+      EagleError() << "Allegro5Timer::Create - Could not create an Allegro 5 Timer - Couldn't create an ALLEGRO_TIMER." << std::endl;
    }
    if (!ethread->Valid()) {
-      EagleLog() << "Allegro5Timer::Create - ethread is not valid." << std::endl;
+      EagleError() << "Allegro5Timer::Create - ethread is not valid." << std::endl;
    }
 
    // The queue or the timer failed to be created
@@ -170,7 +170,7 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
 
 
 void Allegro5Timer::Destroy() {
-   EagleLog() << "Allegro5Timer::Destroy this=" << this << std::endl;
+   EagleInfo() << "Allegro5Timer::Destroy this=" << this << std::endl;
    
    Close();
    

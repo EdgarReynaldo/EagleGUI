@@ -170,7 +170,7 @@ void TwoWaySplitter::PrivateDisplay(EagleGraphicsContext* win , int xpos , int y
 
    handle.MoveBy(Pos2d(xpos,ypos));
 
-//   EagleLog() << StringPrintF("TwoWaySplitter::PrivateDisplay handle x,y,w,h = %d , %d , %d x %d , xpos,ypos = %d , %d\n" ,
+//   EagleInfo() << StringPrintF("TwoWaySplitter::PrivateDisplay handle x,y,w,h = %d , %d , %d x %d , xpos,ypos = %d , %d\n" ,
 //                              handle.X(),handle.Y(),handle.W(),handle.H(),xpos,ypos);
    (*draw_func)(win , handle , splitter_type , WCols());
    ClearRedrawFlag();

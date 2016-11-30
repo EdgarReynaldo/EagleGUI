@@ -49,7 +49,7 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
    /// Read file into 'script'
    FILE* file = fopen(script_file_name.c_str() , "r");
    if (!file) {
-      EagleLog() << StringPrintF("EagleGuiScript::ReadScriptFile : Could not open file %s for reading.\n" , script_file_name.c_str());
+      EagleError() << StringPrintF("EagleGuiScript::ReadScriptFile : Could not open file %s for reading.\n" , script_file_name.c_str());
       return false;
    }
    
@@ -60,7 +60,7 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
       ++count;
    }
    if (ferror(file)) {
-      EagleLog() << "EagleGuiScript::ReadScriptFile : error reading file size" << endl;
+      EagleError() << "EagleGuiScript::ReadScriptFile : error reading file size" << endl;
       fclose(file);
       return false;
    }
@@ -74,12 +74,12 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
       script[count++] = fgetc(file);
    }
    if (ferror(file)) {
-      EagleLog() << "EagleGuiScript::ReadScriptFile : error reading file" << endl;
+      EagleError() << "EagleGuiScript::ReadScriptFile : error reading file" << endl;
       fclose(file);
       return false;
    }
    if (oldcount != count) {
-      EagleLog() << "EagleGuiScript::ReadScriptFile : Did not fully read file" << endl;
+      EagleError() << "EagleGuiScript::ReadScriptFile : Did not fully read file" << endl;
       fclose(file);
       return false;
    }
@@ -116,7 +116,7 @@ bool EagleGuiScript::ReadSections() {
             decs.push_back(egs_dec);
          }
          if (in_functions && in_function) {
-            EagleLog() << "EagleGuiScript::ReadSections : Not pushing back function. Implement me." << endl;
+            EagleError() << "EagleGuiScript::ReadSections : Not pushing back function. Implement me." << endl;
          }
          /// A newline ends a declaration or a function
          in_declaration = false;
@@ -138,7 +138,7 @@ bool EagleGuiScript::ReadSections() {
                in_declaration = true;
 
                if ((int)lines[i].find_last_of('=') != equals_index) {
-                  EagleLog() << "EagleGuiScript::ReadSections - declaration line contains multiple = operators!" << endl;
+                  EagleError() << "EagleGuiScript::ReadSections - declaration line contains multiple = operators!" << endl;
                   return false;
                }
                egs_dec.Clear();
@@ -154,7 +154,7 @@ bool EagleGuiScript::ReadSections() {
                memset(object_buf , 0 , 1024);
                
                if (2 != sscanf(dec.c_str() , "%s%s" , class_buf , object_buf)) {
-                  EagleLog() << StringPrintF("Failed to read class and object name from declaration string '%s'" , dec.c_str()) << endl;
+                  EagleError() << StringPrintF("Failed to read class and object name from declaration string '%s'" , dec.c_str()) << endl;
                   return false;
                }
                
@@ -178,7 +178,7 @@ bool EagleGuiScript::ReadSections() {
             }
          }
          else if (in_functions) {
-            EagleLog() << "EagleGuiScript::ReadSections : Function line ignored. Implement me." << endl;
+            EagleWarn() << "EagleGuiScript::ReadSections : Function line ignored. Implement me." << endl;
          }
       }
    }
@@ -248,7 +248,7 @@ bool EagleGuiScript::LoadWidgets() {
       EGSDeclaration* egs_dec = it->second;
       WidgetBase* w = CreateWidget<WidgetBase>(class_name , egs_dec->attribute_value_set);
       if (!w) {
-         EagleLog() << StringPrintF("EagleGuiScript::LoadWidgets : Failed to load widget '%s' with attributes '%s'" ,
+         EagleError() << StringPrintF("EagleGuiScript::LoadWidgets : Failed to load widget '%s' with attributes '%s'" ,
                                     class_name.c_str() , egs_dec->attribute_value_set.c_str()) << endl;
          ret = false;
       }
@@ -266,29 +266,29 @@ bool EagleGuiScript::LoadScript(std::string script_file_name) {
    ClearScript();
    
    if (!ReadScriptFile(script_file_name)) {
-      EagleLog() << "EagleGuiScript::LoadScript : Failed to read script file." << endl;
+      EagleError() << "EagleGuiScript::LoadScript : Failed to read script file." << endl;
       return false;
    }
    
    lines = SplitByDelimiterString(script , "\n");
    
    if (!ReadSections()) {
-      EagleLog() << "EagleGuiScript::LoadScript : Failed to read sections from script file." << endl;
+      EagleError() << "EagleGuiScript::LoadScript : Failed to read sections from script file." << endl;
       return false;
    }
    
    MapClasses();
    
    if (!RegisterColors()) {
-      EagleLog() << "EagleGuiScript::LoadScript : Failed to register EagleColors." << endl;
+      EagleError() << "EagleGuiScript::LoadScript : Failed to register EagleColors." << endl;
       return false;
    }
    if (!RegisterColorsets()) {
-      EagleLog() << "EagleGuiScript::LoadScript : Failed to register WidgetColorsets." << endl;
+      EagleError() << "EagleGuiScript::LoadScript : Failed to register WidgetColorsets." << endl;
       return false;
    }
    if (!LoadWidgets()) {
-      EagleLog() << "EagleGuiScript::LoadScript : Failed to load widgets." << endl;
+      EagleError() << "EagleGuiScript::LoadScript : Failed to load widgets." << endl;
       return false;
    }
    

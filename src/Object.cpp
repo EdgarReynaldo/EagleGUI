@@ -533,7 +533,7 @@ EagleObject::EagleObject(std::string name) :
 EagleObject::EagleObject(const EagleObject& rhs) :
    id(EAGLE_ID_UNASSIGNED)
 {
-   EagleLog() << "WARNING : EagleObject copy constructor called. RHS Object name will be duplicated." << std::endl;
+   EagleWarn() << "WARNING : EagleObject copy constructor called. RHS Object name will be duplicated." << std::endl;
    Register(this , rhs.GetName() , id);
 }
 
