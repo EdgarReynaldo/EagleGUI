@@ -11,6 +11,10 @@
 #include <signal.h>
 #include <cstdlib>
 
+
+using namespace std;
+
+
 inline void crash() 
 {
    int x = 1/0;
@@ -41,7 +45,16 @@ int main(int argc , char** argv) {
    // _set_invalid_parameter_handler( &invalid_parameter_handler );
     
    SendOutputToFile("Libtest.txt" , "" , false);
-    
+   
+/**
+   vector<string> strs = SplitByDelimiterString("DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit" , ";");
+   EagleLog() << strs.size() << endl;
+   for (int i = 0 ; i < (int)strs.size() ; ++i) {
+      EagleLog() << strs[i] << endl;
+   }
+   return 0;
+*/   
+   
    sys = new Allegro5System();
    if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
       delete sys;

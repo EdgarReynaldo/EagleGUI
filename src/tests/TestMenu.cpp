@@ -172,6 +172,9 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    gui.SetWidgetArea(0 , 0 , w , h , false);
    gui.SetRootLayout(&relative_layout);
    
+   quit_button = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit");
+   EAGLE_ASSERT(quit_button);
+
    relative_layout.AddWidget(quit_button , LayoutRectangle(0.1 , 0.4 , 0.4 , 0.2));
    relative_layout.AddWidget(&wedge_layout , LayoutRectangle(0.0 , 0.0 , 1.0 , 1.0));
    
@@ -187,6 +190,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       btn->SetText(tests[i]->Name());
       wedge_layout.PlaceWidget(btn , i);
    }
+   
    
    EagleLog() << gui << std::endl << std::endl;
    
