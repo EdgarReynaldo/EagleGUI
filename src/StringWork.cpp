@@ -91,7 +91,7 @@ vector<string> SplitByNewLines(std::string s) {
 
 
 
-std::vector<std::string> SplitByDelimiterString(std::string string_to_split , std::string token) {
+std::vector<std::string> SplitByDelimiterString(std::string string_to_split , const std::string token) {
 
    std::vector<std::string> tokens;
    size_t start_index = 0;
@@ -108,7 +108,7 @@ std::vector<std::string> SplitByDelimiterString(std::string string_to_split , st
       if (stop_index == string::npos) {
          stop_index = string_to_split.size();
       }
-      string sub = string_to_split.substr(start_index , stop_index);
+      string sub = string_to_split.substr(start_index , stop_index - start_index);
       tokens.push_back(sub);
       start_index = stop_index + token.size();
    }

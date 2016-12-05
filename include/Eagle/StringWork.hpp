@@ -37,7 +37,7 @@ std::string StringPrintF(const char* format_str , ...);/// 1024 character limit!
 
 std::vector<std::string> SplitByNewLines(std::string s);
 
-std::vector<std::string> SplitByDelimiterString(std::string string_to_split , std::string token);
+std::vector<std::string> SplitByDelimiterString(std::string string_to_split , const std::string token);
 
 // returns pointer to one past end of quoted string, returns null on failure
 const char* CopyQuotedString(const char* start_quote , std::string& s);
