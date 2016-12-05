@@ -43,13 +43,13 @@ TODO : Milestones necessary for development
       c - Menu, MenuItem, MenuBar
       d - WrapText , EditText
       e - ScrollArea , ScrollBar(edit it to work as a standalone scroller if desired - wait, what does that mean? ICR)
-      f - ZoomCamera (might want ScrollArea first)
       f - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
       g - PinLayout (use alignment) , NPLayout , MenuLayout (might want to use PinLayout)
       h - Decorator , BorderDecorator, ResizeDecorator
       j - Slider, SliderKnob - DragButton
       k - Dial, Tooltip
       l - GuiWindow
+      f - ZoomCamera (might want ScrollArea first)
       
    COMPLETE : 
       A - BasicButton , GuiButton , IconButton , ScrollButton
@@ -78,3 +78,5 @@ TODO : Milestones necessary for development
 6. Platform support - already mostly possible due to Allegro's multi platform support
    A. OSX
    B. Linux
+   C. Android
+   D. iOS

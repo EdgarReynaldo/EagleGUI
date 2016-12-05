@@ -14,8 +14,8 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-O0" />
+					<Add option="-ggdb3" />
 					<Add option="-DDEBUG" />
 					<Add option="-DEAGLE_LOG" />
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
@@ -65,8 +65,8 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-O0" />
+					<Add option="-ggdb3" />
 					<Add option="-DALLEGRO_STATICLINK" />
 					<Add option="-DDEBUG" />
 					<Add option="-DEAGLE_LOG" />
