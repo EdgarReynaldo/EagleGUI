@@ -83,6 +83,9 @@ EagleLogger::EagleLogger() :
       local_log_level(EAGLE_LOG_INFO),
       outputs()
 {
+
+   AddOutput(cout);
+
 #ifndef EAGLE_LOG
    TurnLogOff();
 #endif
