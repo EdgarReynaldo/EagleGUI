@@ -38,3 +38,31 @@ void EpicFail() {
    (void)i;
    assert(0);
 }
+
+
+
+/// -------------------------      EagleException      ----------------------------
+
+
+
+EagleException::EagleException(const std::exception e) : error(e.what()) {
+   EagleError() << e.what() << std::endl;
+   ASSERT_EXCEPTION();
+}
+
+
+
+EagleException::EagleException(const std::string& e) : error(e) {
+   EagleError() << e << std::endl;
+   ASSERT_EXCEPTION();
+}
+
+
+
+EagleException::EagleException(const char* e) : error(e) {
+   EagleError() << e << std::endl;
+   ASSERT_EXCEPTION();
+}
+
+
+

@@ -73,18 +73,10 @@ protected :
    
 public :
    
-   EagleException(const std::exception e) : error(e.what()) {
-      EagleError() << e.what() << std::endl;
-      ASSERT_EXCEPTION();
-   }
-   EagleException(const std::string& e) : error(e) {
-      EagleError() << e << std::endl;
-      ASSERT_EXCEPTION();
-   }
-   EagleException(const char* e) : error(e) {
-      EagleError() << e << std::endl;
-      ASSERT_EXCEPTION();
-   }
+   EagleException(const std::exception e);
+   EagleException(const std::string& e);
+   EagleException(const char* e);
+
    ~EagleException() throw () {}
    
    const char* what() const throw() {return error.c_str();}
