@@ -27,8 +27,15 @@
 
 
 
-void LogFailedAssert(const char* exp , const char* file , int line) {
-   EagleError() << "Assert(" << exp << ") failed at line " << line << " of " << file << std::endl;
+void LogFailedAssert(const char* exp , const char* file , int line , const char* func) {
+   EagleError() << "Assert(" << exp << ") failed at line " << line << " of " << file << " in function " << func << "." << std::endl;
+}
+
+
+
+void LogFailedAssertAndFail(const char* exp , const char* file , int line , const char* func) {
+   LogFailedAssert(exp , file , line , func);
+   ASSERT_EXCEPTION();
 }
 
 

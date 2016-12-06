@@ -32,7 +32,9 @@
 
 
 
-void LogFailedAssert(const char* exp , const char* file , int line);
+void LogFailedAssert(const char* exp , const char* file , int line , const char* func);
+void LogFailedAssertAndFail(const char* exp , const char* file , int line , const char* func);
+
 void EpicFail();
 
 
@@ -46,11 +48,11 @@ void EpicFail();
 
 /** CREDITS : Thanks to Per Larsson on allegro.cc for this do while trick in the macros */
 #ifdef DEBUG
-   #define EAGLE_ASSERT(exp) do {                                                \
-                                if (!(exp)) {                                    \
-                                   LogFailedAssert(# exp , __FILE__ , __LINE__); \
-                                   ASSERT_EXCEPTION();                           \
-                                }                                                \
+   #define EAGLE_ASSERT(exp) do {                                                           \
+                                if (!(exp)) {                                               \
+                                   LogFailedAssert(# exp , __FILE__ , __LINE__ , __func__); \
+                                   ASSERT_EXCEPTION();                                      \
+                                }                                                           \
                               } while (false)
 
    #define EAGLE_DEBUG(exp) do {                \
