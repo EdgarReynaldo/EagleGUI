@@ -172,9 +172,10 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    gui.SetWidgetArea(0 , 0 , w , h , false);
    gui.SetRootLayout(&relative_layout);
    
-   quit_button = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit");
+   quit_button = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit ; NAME:QuitButton");
    EAGLE_ASSERT(quit_button);
 
+   
    relative_layout.AddWidget(quit_button , LayoutRectangle(0.1 , 0.4 , 0.4 , 0.2));
    relative_layout.AddWidget(&wedge_layout , LayoutRectangle(0.0 , 0.0 , 1.0 , 1.0));
    
@@ -188,7 +189,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
       EAGLE_ASSERT(btn);
       btn->SetText(tests[i]->Name());
-      wedge_layout.PlaceWidget(btn , i);
+///      wedge_layout.PlaceWidget(btn , i);
    }
    
    
@@ -203,6 +204,12 @@ void TestMenu::Run() {
    sys->GetSystemTimer()->Start();
    selected = false;
    while (!quit) {
+      /// Display
+      
+      gui.Display(win , 0 , 0);
+      win->FlipDisplay();
+
+      /// Handle events
       do {
          
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
@@ -229,10 +236,6 @@ void TestMenu::Run() {
             }
          }
       } while (!sys->UpToDate());
-      /// Display
-      
-      gui.Display(win , 0 , 0);
-      win->FlipDisplay();
       
    }
 }

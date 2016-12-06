@@ -100,6 +100,10 @@ public :
    
    string SelectedBranch() {return selected_user_branch;}
    
+   
+   void PrintQuitButton() {EagleLog() << *quit_button << std::endl;}
+   void PrintGui() {EagleLog() << gui << std::endl;}
+   
 };
 
 
