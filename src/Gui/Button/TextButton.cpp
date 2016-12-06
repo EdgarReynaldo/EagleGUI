@@ -11,6 +11,16 @@
 
 
 
+TextButton::TextButton() :
+      BasicButton(StringPrintF("TextButton at %p" , this)),
+      real_button(0),
+      text_decorator(StringPrintF("TextButton::TextDecorator at %p" , &text_decorator))
+{
+   UseButton(this);
+}
+
+
+
 void TextButton::UseButton(BasicButton* button_to_use) {
    if (!button_to_use) {
       button_to_use = this;

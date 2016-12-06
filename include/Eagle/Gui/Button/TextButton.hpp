@@ -20,28 +20,22 @@
 
 class TextButton : public BasicButton {
 protected:
+   BasicButton* real_button;
+
    TextDecorator text_decorator;
 
-   BasicButton* real_button;
 
    public :
 
-//   TextButton();
-   TextButton() :
-         BasicButton(),
-         real_button(0)
-   {
-      text_decorator.SetParent(this);
-      UseButton(this);
-   }
+   TextButton();
 
+   
+   /// TextButton functions
+   
    void UseButton(BasicButton* button_to_use);
    void UseButtonLayout(Layout* button_layout);
    
    TextDecorator* GetTextDecorator() {return &text_decorator;}/// Use this to set the position of the whole object
-   
-///   BasicButton* GetButtonInUse() {return real_button;}
-   
    
    /// Functions forwarded from BasicButton base
    
