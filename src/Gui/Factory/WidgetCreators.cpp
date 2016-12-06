@@ -181,7 +181,7 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
    
    TextButton* widget = new TextButton();
    
-   ApplyWidgetBaseAttributes(widget , att_map);
+   ApplyWidgetBaseAttributes(widget->GetTextDecorator() , att_map);
    
    if ((cit = att_map.find("TEXTNAME")) != att_map.end()) {
       BasicText* text = dynamic_cast<BasicText*>(GetFirstObjectByName(cit->second));
