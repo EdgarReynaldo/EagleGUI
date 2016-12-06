@@ -25,13 +25,13 @@ void WidgetDecorator::PrivateRaiseEvent(WidgetMsg msg) {
 
 
 
-WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate,
-                                 Layout* widget_layout,
-                                 std::string decorator_name) :
+WidgetDecorator::WidgetDecorator(std::string decorator_name,
+                                 WidgetBase* widget_to_decorate,
+                                 Layout* widget_layout) :
       WidgetBase(decorator_name),
       decorated_widget(0),
-      layout(&default_dumb_layout),
-      default_dumb_layout()
+      layout(&default_fill_layout),
+      default_fill_layout()
 {
    DecorateWidget(widget_to_decorate);
    UseLayout(widget_layout);
@@ -80,7 +80,7 @@ void WidgetDecorator::UseLayout(Layout* new_layout) {
    DecorateWidget(0);
 
    if (!new_layout) {
-      new_layout = &default_dumb_layout;
+      new_layout = &default_fill_layout;
    }
    layout = new_layout;
    layout->SetParent(this);
@@ -842,7 +842,7 @@ std::string WidgetDecorator::GetWidgetClassName() {
 using std::endl;
 std::ostream& WidgetDecorator::DescribeTo(std::ostream& os , Indenter indent) const {
 
-   os << indent << StringPrintF("< WidgetDecoratorBase %s at %p >" , GetName() , this) << endl;
+   os << indent << StringPrintF("< WidgetDecoratorBase %s at %p >" , GetName().c_str() , this) << endl;
    ++indent;
    WidgetBase::DescribeTo(os,indent);
    --indent;

@@ -73,12 +73,12 @@ TextDecorator::TextDecorator(std::string name , WidgetBase* widget_to_decorate ,
 
 
 //*/
-TextDecorator::TextDecorator(WidgetBase* widget_to_decorate,
+TextDecorator::TextDecorator(std::string name,
+                             WidgetBase* widget_to_decorate,
                              BasicText* basic_text,
                              Layout* widget_layout,
-                             Layout* text_layout,
-                             std::string name) :
-      WidgetDecorator(widget_to_decorate , widget_layout , name),
+                             Layout* text_layout) :
+      WidgetDecorator(name , widget_to_decorate , widget_layout),
       basic_text_widget(0),
       text_widget_layout(&pin_layout),
       pin_layout(),

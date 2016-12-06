@@ -8,7 +8,7 @@
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
-#include "Eagle/Gui/Layout/DumbLayout.hpp"
+#include "Eagle/Gui/Layout/FillLayout.hpp"
 
 
 
@@ -20,7 +20,7 @@ protected :
    
    Layout* layout;
    
-   DumbLayout default_dumb_layout;
+   FillLayout default_fill_layout;
    
    
 
@@ -28,9 +28,10 @@ protected :
 
 public :
       
-   WidgetDecorator(WidgetBase* widget_to_decorate = 0,
-                   Layout* widget_layout = 0,
-                   std::string decorator_name = "");
+   WidgetDecorator(std::string decorator_name = "",
+                   WidgetBase* widget_to_decorate = 0,
+                   Layout* widget_layout = 0
+                   );
 
    virtual ~WidgetDecorator();
 

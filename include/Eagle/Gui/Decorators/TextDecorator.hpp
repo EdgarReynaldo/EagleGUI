@@ -48,11 +48,12 @@ public :
    TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text);
 //*/
    
-   TextDecorator(WidgetBase* widget_to_decorate = 0,
+   TextDecorator(std::string name = "",
+                 WidgetBase* widget_to_decorate = 0,
                  BasicText* basic_text = 0,
                  Layout* widget_layout = 0,
-                 Layout* text_layout = 0,
-                 std::string name = "");
+                 Layout* text_layout = 0
+                 );
                  
    
    
