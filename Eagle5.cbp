@@ -194,8 +194,8 @@
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />
-		<Unit filename="src/Error.cpp" />
 		<Unit filename="src/Events.cpp" />
+		<Unit filename="src/Exception.cpp" />
 		<Unit filename="src/FileWork.cpp" />
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
