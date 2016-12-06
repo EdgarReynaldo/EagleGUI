@@ -29,7 +29,12 @@ bool Allegro5System::PrivateInitializeSystem() {
 ///   bool ret = al_init();
 ///   bool ret = al_install_system(ALLEGRO_VERSION_INT  , atexit);
    bool ret = al_install_system(ALLEGRO_VERSION_INT  , NULL);// this means we have to shutdown allegro
-   if (!ret) {EagleCritical() << "Allegro failed to initialize." << std::endl;}
+   if (!ret) {
+      EagleCritical() << "Allegro failed to initialize." << std::endl;
+   }
+   else {
+      al_register_assert_handler(LogFailedAssertAndFail);
+   }
    return ret;
 }
 
