@@ -120,6 +120,11 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="CopySantaHackLibs.bat" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="CopySantaHackLibs.bat" />
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
@@ -135,7 +140,6 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Threads.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
-		<Unit filename="postbuildcopy_libraries_a5.bat" />
 		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Conditions.cpp" />

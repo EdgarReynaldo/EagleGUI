@@ -18,3 +18,12 @@ EAGLE FAQ :
    A2. Have you called EagleGraphicsContext::FlipDisplay() after drawing your scene? If not, it won't show up.
    A3. Are you using a DumbLayout? DumbLayout's are dumb. They don't do anything with the area or position of the widgets
          that they hold. If you haven't given their widgets a position and area, they will default to 0x0 at 0,0.
+
+2. My decorated class widgets are all screwed up when I add them to a layout. Why?
+   A1. You need to add the outermost decoration of the widget to the layout, not the widget itself. A GUI is smart enough to add
+         the most decorated layer of the widget, but not a Layout. This is by design. Sometimes you want to add a widget that is decorated
+         to a layout without tracking the decoration itself. This is useful for decorator widgets to have their own inner layouts
+         for a widget. When adding Decorated widgets to a layout, use Widget->GetDecoratorRoot() instead of Widget. GUIs will take
+         care of this for you, as you don't add Decorator sub components to a GUI.
+         
+3. 

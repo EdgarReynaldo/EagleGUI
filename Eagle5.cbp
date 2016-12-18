@@ -126,6 +126,7 @@
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
 		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
+		<Unit filename="include/Eagle/Gui/BasicIcon.hpp" />
 		<Unit filename="include/Eagle/Gui/Button.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/BasicButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/GuiButton.hpp" />
@@ -182,13 +183,6 @@
 		<Unit filename="include/Eagle/Threads.hpp" />
 		<Unit filename="include/Eagle/Timer.hpp" />
 		<Unit filename="include/Eagle/Transforms.hpp" />
-		<Unit filename="postbuildcopy_debug.bat" />
-		<Unit filename="postbuildcopy_debugstatic.bat" />
-		<Unit filename="postbuildcopy_libraries.bat" />
-		<Unit filename="postbuildcopy_profiling.bat" />
-		<Unit filename="postbuildcopy_profilingstatic.bat" />
-		<Unit filename="postbuildcopy_release.bat" />
-		<Unit filename="postbuildcopy_releasestatic.bat" />
 		<Unit filename="src/Animations.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
@@ -200,6 +194,7 @@
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
 		<Unit filename="src/Gui/Alignment.cpp" />
+		<Unit filename="src/Gui/BasicIcon.cpp" />
 		<Unit filename="src/Gui/Button/BasicButton.cpp" />
 		<Unit filename="src/Gui/Button/GuiButton.cpp" />
 		<Unit filename="src/Gui/Button/IconButton.cpp" />

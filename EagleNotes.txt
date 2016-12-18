@@ -1,7 +1,11 @@
 
 Notes for Eagle 5 development
 
-Major issues
+Issues
+
+-4. WidgetHandler should be able to draw without a buffer. Separate buffer out.
+
+-3. Layouts should all use AdjustWidgetArea in RequestWidgetRectangle. This is not the case yet.
 
 -2. GuiButton uses Area hit detection, but not well - it should use a single Area* that it checks for Contains(msx,msy)
       Combine with BasicButton? BasicButton already does this. GuiButton should be simpler I think.
