@@ -102,21 +102,36 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    
    Pin& pin = pins[widget_slot];
 
-   if (newx != INT_MAX) {
-      pin.px = newx;
-   }
-   if (newy != INT_MAX) {
-      pin.py = newy;
-   }
-   
    if (newwidth == INT_MAX) {
       newwidth = current.W();
    }
    if (newheight == INT_MAX) {
       newheight = current.H();
    }
+
+   if (newx != INT_MAX) {
+      pin.px = newx;
+      if (pin.halign == HALIGN_CENTER) {
+         pin.px += newwidth/2;
+      }
+      else if (pin.halign == HALIGN_RIGHT) {
+         pin.px += newwidth;
+      }
+   }
+   if (newy != INT_MAX) {
+      pin.py = newy;
+      if (pin.valign == VALIGN_CENTER) {
+         pin.py += newheight/2;
+      }
+      else if (pin.valign == VALIGN_BOTTOM) {
+         pin.py += newheight;
+      }
+   }
    
-   return pin.GetPinArea(newwidth , newheight);
+   Rectangle pin_local_rect = pin.GetPinArea(newwidth , newheight);
+   pin_local_rect.MoveBy(InnerArea().X() , InnerArea().Y());
+   return pin_local_rect;
+///   return pin.GetPinArea(newwidth , newheight);
 }
 
 

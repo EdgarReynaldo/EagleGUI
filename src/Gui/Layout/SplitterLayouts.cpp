@@ -212,11 +212,11 @@ void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
 
 
 
-void TwoWaySplitter::AddWidget(WidgetBase* widget) {
+int TwoWaySplitter::AddWidget(WidgetBase* widget) {
    if (NextFreeSlot() == -1) {
       throw EagleException("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
    }
-   Layout::AddWidget(widget);
+   return Layout::AddWidget(widget);
 }
 
 

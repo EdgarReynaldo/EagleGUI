@@ -11,68 +11,6 @@
 
 
 
-
-/**
-TextDecorator::TextDecorator() :
-      WidgetDecorator(StringPrintF("TextDecorator at %p" , this)),
-      basic_text_widget(0),
-      default_text(),
-      text_widget_layout(0),
-      pin_layout(),
-      center_text(true)
-{
-   UseTextLayout(&pin_layout);
-   UseTextWidget(&default_text);
-}
-
-
-
-TextDecorator::TextDecorator(std::string name) :
-      WidgetDecorator(name),
-      basic_text_widget(0),
-      default_text(),
-      text_widget_layout(0),
-      pin_layout(),
-      center_text(true)
-{
-   UseTextLayout(&pin_layout);
-   UseTextWidget(&default_text);
-}
-
-
-
-TextDecorator::TextDecorator(WidgetBase* widget_to_decorate , BasicText* basic_text) :
-      WidgetDecorator(StringPrintF("TextDecorator at %p" , this)),
-      basic_text_widget(0),
-      default_text(),
-      text_widget_layout(0),
-      pin_layout(),
-      center_text(true)
-{
-   DecorateWidget(widget_to_decorate);
-   UseTextLayout(&pin_layout);
-   UseTextWidget(basic_text);
-}
-
-
-
-
-
-TextDecorator::TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text,
-                             Layout* widget_layout , Layout* text_layout) :
-      WidgetDecorator(name),
-      basic_text_widget(0),
-      text_widget_layout(0),
-      pin_layout(),
-      center_text(true)
-{
-   DecorateWidget(widget_to_decorate);
-   UseTextLayout(&pin_layout);
-   UseTextWidget(basic_text);
-}
-
-
-//*/
 TextDecorator::TextDecorator(std::string name,
                              WidgetBase* widget_to_decorate,
                              BasicText* basic_text,
@@ -80,14 +18,14 @@ TextDecorator::TextDecorator(std::string name,
                              Layout* text_layout) :
       WidgetDecorator(name , widget_to_decorate , widget_layout),
       basic_text_widget(0),
-      text_widget_layout(&pin_layout),
+      text_widget_layout(0),
       pin_layout(),
       center_text(true)
 {
    DecorateWidget(widget_to_decorate);
    UseLayout(widget_layout);
+   UseTextLayout(text_layout);/// Must come before UseTextWidget to setup layout for text
    UseTextWidget(basic_text);
-   UseTextLayout(text_layout);
    if (name.compare("") == 0) {
       SetName(StringPrintF("TextDecorator at %p" , this));
    }
@@ -95,18 +33,22 @@ TextDecorator::TextDecorator(std::string name,
 
 
 
-/// layout may be NULL to use the default DumbLayout
+/// layout may be NULL to use the default PinLayout
 void TextDecorator::UseTextLayout(Layout* text_layout) {
-   
-   BasicText* old_text = basic_text_widget;
-   
-   UseTextWidget(0);
-   
-   text_widget_layout->SetParent(0);
    
    if (!text_layout) {
       text_layout = &pin_layout;
    }
+
+   if (text_layout == text_widget_layout) {return;}
+   
+   BasicText* old_text = basic_text_widget;
+
+   if (text_widget_layout) {
+      UseTextWidget(0);
+      text_widget_layout->SetParent(0);
+   }
+   
    text_widget_layout = text_layout;
 
    text_widget_layout->SetParent(this);
@@ -120,6 +62,11 @@ void TextDecorator::UseTextLayout(Layout* text_layout) {
 /// text_widget may be NULL to use the default text (which is blank until you set it)
 void TextDecorator::UseTextWidget(BasicText* text_widget) {
    
+   if (!text_widget) {
+      text_widget = &default_text;
+   }
+   if (text_widget == basic_text_widget) {return;}
+   
    /// Remove old widget from layout
    if (basic_text_widget) {
       text_widget_layout->RemoveWidget(basic_text_widget);
@@ -127,14 +74,13 @@ void TextDecorator::UseTextWidget(BasicText* text_widget) {
       basic_text_widget = 0;
    }
    
-   if (!text_widget) {
-      text_widget = &default_text;
-   }
    basic_text_widget = text_widget;
    basic_text_widget->SetParent(this);
+   basic_text_widget->SetDecoratorParent(this);
    text_widget_layout->Resize(1);
-   text_widget_layout->PlaceWidget(basic_text_widget , 0);
    ReCenterText();
+   text_widget_layout->PlaceWidget(basic_text_widget , 0);
+   text_widget_layout->SetWidgetDimensions(InnerArea().W() , InnerArea().H());
 }
 
 
@@ -148,7 +94,7 @@ void TextDecorator::CenterText(bool center_the_text) {
 
 void TextDecorator::ReCenterText() {
    if (center_text) {
-      pin_layout.SetPinPosition(0 , InnerArea().CX() , InnerArea().CY() , HALIGN_CENTER , VALIGN_CENTER);
+      pin_layout.SetPinPosition(0 , InnerArea().W()/2 , InnerArea().H()/2 , HALIGN_CENTER , VALIGN_CENTER);
    }
 }
 
@@ -225,18 +171,6 @@ void TextDecorator::SetMarginsContractFromOuter(int left , int right , int top ,
    ReCenterText();
 }
 
-
-
-
-
-
-
-
-/**
-    void TextDecorator::SetEnabledState(bool state) {
-        SetFlagState(state , SetEnabledState);
-    }
-//*/
 
 
 
@@ -356,6 +290,28 @@ void TextDecorator::SetAllowOverlapState(bool state) {
 
 
 
+std::ostream& TextDecorator::DescribeTo(std::ostream& os , Indenter indent) const {
+   using std::endl;
+   
+   os << indent << StringPrintF("<TextDecorator %s at %p (center_text = %s)>" , GetName().c_str() , this , center_text?"true":"false") << endl;
+   ++indent;
+   os << indent << StringPrintF("<TextDecorator : text_widget_layout %s at %p>" ,
+                                text_widget_layout?text_widget_layout->GetName().c_str():"NULL" , text_widget_layout) << endl;
+   ++indent;
+   text_widget_layout?(void)text_widget_layout->DescribeTo(os , indent):(void)0;
+   --indent;
+   os << indent << StringPrintF("<TextDecorator : basic_text_widget %s at %p>" ,
+                                basic_text_widget?basic_text_widget->GetName().c_str():"NULL" , basic_text_widget) << endl;
+   ++indent;
+   basic_text_widget?(void)basic_text_widget->DescribeTo(os , indent):(void)0;
+   --indent;
+   
+   WidgetDecorator::DescribeTo(os , indent);
+   
+   --indent;
+   
+   return os;
+}
 
 
 

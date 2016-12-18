@@ -27,8 +27,6 @@
 
 
 
-EagleFont* default_font = 0;
-
 
 EagleFont::EagleFont() :
       EagleObject(StringPrintF("EagleFont object at %p" , this)),
@@ -62,5 +60,59 @@ EagleFont* GetFont(std::string font_name) {
    EagleFont* font = dynamic_cast<EagleFont*>(GetFirstObjectByName(font_name));
    return font;
 }
+
+
+
+std::string default_font_path = "data/fonts/verdana.ttf";
+
+
+
+int default_font_size = -20;
+
+
+
+int default_font_flags = 0;
+
+
+
+void SetDefaultFontPath(std::string path) {
+   default_font_path = path;
+}
+
+
+
+void SetDefaultFontSize(int size) {
+   default_font_size = size;
+}
+
+
+
+void SetDefaultFontFlags(int flags) {
+   default_font_flags = flags;
+}
+
+
+
+std::string DefaultFontPath() {
+   return default_font_path;
+}
+
+
+
+int DefaultFontSize() {
+   return default_font_size;
+}
+
+
+
+int DefaultFontFlags() {
+   return default_font_flags;
+}
+
+
+
+
+
+
 
 

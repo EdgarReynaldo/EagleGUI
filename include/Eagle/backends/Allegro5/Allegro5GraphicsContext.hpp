@@ -43,10 +43,6 @@ private :
    int blender_src;
    int blender_dest;
    std::vector<BLENDER> blender_stack;
-//   int old_blender_op;
-//   int old_blender_src;
-//   int old_blender_dest;
-
 
    Allegro5Transformer allegro5transformer;
 
@@ -63,16 +59,19 @@ public :
    ~Allegro5GraphicsContext();
 
 
-   // creation/destruction
+   /// creation/destruction
    virtual bool Create(int width , int height , int flags);
    virtual bool Valid();
    virtual void Destroy();
    virtual void AcknowledgeResize();
 
-   // clears target bitmap
+   /// Load Default font
+   void LoadDefaultFont();
+
+   /// clears target bitmap
    virtual void Clear(EagleColor c);
    
-   // Blender setting functions
+   /// Blender setting functions
    void SetCopyBlender();
    void SetPMAlphaBlender();
    void SetNoPMAlphaBlender();
@@ -84,7 +83,7 @@ protected:
 public :
 
 
-   // basic drawing operations
+   /// basic drawing operations
    virtual void PutPixel(int x , int y , EagleColor c);
    virtual void DrawLine(int x1 , int y1 , int x2 , int y2 , EagleColor c);
    virtual void DrawRectangle(int x , int y , int w , int h , int thickness , EagleColor c);
@@ -98,7 +97,7 @@ public :
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c);
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c);
    
-   // precise drawing operations
+   /// precise drawing operations
    virtual void PutPixel(float x , float y , EagleColor c);
    virtual void DrawLine(float x1 , float y1 , float x2 , float y2 , float thickness , EagleColor c);
    virtual void DrawRectangle(float x , float y , float w , float h , float thickness , EagleColor c);
@@ -117,7 +116,7 @@ public :
 										 float x3 , float y3 , EagleColor c3 , 
 										 float x4 , float y4 , EagleColor c4);
 
-   // image drawing operations
+   /// image drawing operations
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL);
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL);
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
@@ -126,7 +125,7 @@ public :
 ///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 /// TODO ADD   virtual void Draw(EagleImage* src , EagleDrawingInfo info);
 
-   // text drawing operations
+   /// text drawing operations
 ///#ifdef DrawText
 ///   #warning "DrawText defined as " ## DrawText
 ///#endif
@@ -135,24 +134,26 @@ public :
                                VALIGNMENT valign = VALIGN_TOP);
 
 
-   // getters
+   /// getters
    virtual EagleImage* GetBackBuffer();
    virtual EagleImage* GetScreen();
    virtual EagleImage* GetDrawingTarget();
    
-   // utilities
+   /// utilities
    virtual void HoldDrawing();
    virtual void ReleaseDrawing();
    virtual void SetDrawingTarget(EagleImage* dest);
    
-   // image creation / loading / sub division
+   /// image creation / loading / sub division
    EagleImage* EmptyImage();
+   EagleImage* AdoptImage(ALLEGRO_BITMAP* img);
+   EagleImage* ReferenceImage(ALLEGRO_BITMAP* img);
    EagleImage* CloneImage(EagleImage* img);
    EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE);
    EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE);
    EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height);
 
-   // font loading
+   /// font loading
    EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE);
 
    ALLEGRO_DISPLAY* AllegroDisplay() {return display;}

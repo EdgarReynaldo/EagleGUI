@@ -50,7 +50,7 @@ public :
    /// Pass INT_MAX for a parameter if you don't care about the position or size
    /// If you don't specify a position, it will use the current pins position
    /// NOTE : This function does NOT change the widget's area, it only returns the area that the layout would give it
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);/// Will move pins accordingly
 
    /// Member functions
    void SetPinPosition(int pin_slot , int newx , int newy);

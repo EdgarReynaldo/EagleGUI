@@ -26,7 +26,7 @@
 
 #include "Eagle/Area.hpp"
 
-
+#include <iostream>
 
 /*
    Think of this class as a percentage rectangle ie. it stores the relative position and scale
@@ -34,26 +34,33 @@
  */
 class LayoutRectangle {
 
-private :
+protected :
    
-public :
-   
-   LayoutRectangle(float x , float y , float w , float h);
-   LayoutRectangle(Rectangle outer_area , Rectangle layout_area);
+   friend Rectangle LayoutArea(Rectangle outer_area , LayoutRectangle layout_area);
    
    float fx,fy,fw,fh;
    
-   float LX() {return fx;}
-   float TY() {return fy;}
-   float RX() {return fx + fw;}
-   float BY() {return fy + fh;}
-   float CX() {return fx + fw/2.0f;}
-   float CY() {return fy + fh/2.0f;}
+public :
+
+   LayoutRectangle(float x , float y , float w , float h);
+   LayoutRectangle(Rectangle outer_area , Rectangle layout_area);
+
+   void SetLayoutRectangle(float x , float y , float w , float h);
+   void SetLayoutRectangle(Rectangle outer_area , Rectangle layout_area);
+
+   float LX() const {return fx;}
+   float TY() const {return fy;}
+   float RX() const {return fx + fw;}
+   float BY() const {return fy + fh;}
+   float CX() const {return fx + fw/2.0f;}
+   float CY() const {return fy + fh/2.0f;}
+   float W()  const {return fw;}
+   float H()  const {return fh;}
 };
 
 Rectangle LayoutArea(Rectangle outer_area , LayoutRectangle layout_area);
 
-
+std::ostream& operator<<(std::ostream& os , const LayoutRectangle& lr);
 
 #endif // LayoutRectangle_HPP
 

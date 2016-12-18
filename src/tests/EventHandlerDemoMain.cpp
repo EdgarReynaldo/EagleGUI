@@ -49,7 +49,7 @@ int EventHandlerDemoMain(int argc , char** argv) {
    
    bool close = false;
    bool redraw = true;
-   int count = 0;
+///   int count = 0;
    
    do {
       if (redraw) {

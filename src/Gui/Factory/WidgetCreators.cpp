@@ -181,17 +181,22 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
    
    TextButton* widget = new TextButton();
    
-   ApplyWidgetBaseAttributes(widget->GetTextDecorator() , att_map);
-   
    if ((cit = att_map.find("TEXTNAME")) != att_map.end()) {
-      BasicText* text = dynamic_cast<BasicText*>(GetFirstObjectByName(cit->second));
-      EAGLE_ASSERT(text);
+      EagleObject* text_obj = GetFirstObjectByName(cit->second);
+      BasicText* text = dynamic_cast<BasicText*>(text_obj);
+      if (!text) {
+         throw EagleException(StringPrintF("Failed to retrieve TEXTNAME object by name '%s'\n" , cit->second.c_str()));
+      }
       widget->GetTextDecorator()->UseTextWidget(text);
    }
    
    WidgetBase* text_widget = widget->GetTextDecorator()->GetTextWidget();
-   
+
    ApplyTextAttributes(text_widget , att_map);
+   
+   ApplyWidgetBaseAttributes(widget->GetDecoratorRoot() , att_map);
+
+   
    
    return widget;
 }
@@ -204,6 +209,8 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
    if (!widget) {
       throw EagleException("ApplyWidgetBaseAtributes : widget is NULL.\n");
    }
+   
+   widget = widget->GetDecoratorRoot();
    
    map<string , string>::const_iterator cit = attribute_map.end();
    
@@ -229,15 +236,17 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       }
       int x = widget->Area().OuterArea().X();
       int y = widget->Area().OuterArea().Y();
-      if (w < 0) {
-         w = abs(w);
-         x = x - w;
+      if (w < 0 || h < 0) {
+         if (w < 0) {
+            w = abs(w);
+            x = x - w;
+         }
+         if (h < 0) {
+            h = abs(h);
+            y = y - h;
+         }
+         widget->SetWidgetPos(x,y);
       }
-      if (h < 0) {
-         h = abs(h);
-         y = y - h;
-      }
-      widget->SetWidgetPos(x,y);
       widget->SetWidgetDimensions(w,h);
    }
    if ((cit = attribute_map.find("AREA")) != attribute_map.end()) {

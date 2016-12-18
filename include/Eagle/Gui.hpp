@@ -27,6 +27,7 @@
 
 
 #include "Gui/Alignment.hpp"
+#include "Gui/BasicIcon.hpp"
 #include "Gui/Button.hpp"
 #include "Gui/Camera.hpp"
 #include "Gui/Layouts.hpp"

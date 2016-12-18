@@ -21,6 +21,8 @@
 
 
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 
 LayoutRectangle::LayoutRectangle(float x , float y , float w , float h) :
@@ -38,6 +40,21 @@ LayoutRectangle::LayoutRectangle(Rectangle outer_area , Rectangle layout_area) :
    fw(1.0),
    fh(1.0)
 {
+   SetLayoutRectangle(outer_area , layout_area);
+}
+
+
+
+void LayoutRectangle::SetLayoutRectangle(float x , float y , float w , float h) {
+   fx = x;
+   fy = y;
+   fw = w;
+   fh = h;
+}
+
+
+
+void LayoutRectangle::SetLayoutRectangle(Rectangle outer_area , Rectangle layout_area) {
    EAGLE_ASSERT(outer_area.W());
    EAGLE_ASSERT(outer_area.H());
    
@@ -82,6 +99,14 @@ Rectangle LayoutArea(Rectangle outer_area , LayoutRectangle layout_area) {
    int nht = (int)(floor(nh));
    
    return Rectangle(nxpos , nypos , nwid , nht);
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const LayoutRectangle& lr) {
+   os << "LayoutRectangle (lx,ty,rx,by,w,h) = " << StringPrintF("(%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f)" ,
+                                                                 lr.LX() , lr.TY() , lr.RX() , lr.BY() , lr.W() , lr.H());
+   return os;
 }
 
 

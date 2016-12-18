@@ -147,7 +147,7 @@ public :
 
 
    /// Constructors
-   WidgetHandler();
+   WidgetHandler(EagleGraphicsContext* window);
    
    ~WidgetHandler();
 
@@ -192,9 +192,16 @@ public :
 protected :
    virtual int  PrivateHandleEvent(EagleEvent e);// Only handle events not handled in CheckInputs here
    virtual int  PrivateCheckInputs();// Called automatically by HandleEvent and? by system during gui update.
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int  PrivateUpdate(double tsec);
 
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+
+   /// Helper functions
+   void PerformFullRedraw(EagleGraphicsContext* win);
+   void PerformPartialRedraw(EagleGraphicsContext* win);
+   void DrawBuffer(EagleGraphicsContext* win);
+   void DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos);
+
+   virtual int  PrivateUpdate(double tsec);
 
 public :
    virtual void QueueUserMessage(const WidgetMsg& wmsg);// For the top level WidgetHandlers to store messages to the user from 
@@ -215,8 +222,7 @@ public :
 
 
    virtual void SetRedrawFlag();/// TODO : SetBgRedrawFlag() when necessary
-   void SetFullRedraw() {SetRedrawFlag();clear_background = true;}
-
+   void SetFullRedraw();
 
    virtual void SetFocusState(bool state);
 

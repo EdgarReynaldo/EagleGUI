@@ -38,7 +38,7 @@ int TextTestMain(int argc , char** argv) {
    EAGLE_ASSERT(textfont3.Valid());
    
 
-   WidgetHandler* gui = new WidgetHandler();
+   WidgetHandler* gui = new WidgetHandler(win);
    gui->SetDrawWindow(win);
    gui->SetupBuffer(ww , wh , win);
    gui->SetWidgetArea(0,0,ww,wh);

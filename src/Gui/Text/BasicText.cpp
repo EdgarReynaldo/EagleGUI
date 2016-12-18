@@ -342,11 +342,11 @@ std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
       text_font->DescribeTo(os , indent);
    }
    os << endl;
-   os << StringPrintF("There %s %d line%s of text." , (nlines==1)?"is":"are" , nlines , (nlines==1)?"":"s") << endl;
+   os << indent << StringPrintF("There %s %d line%s of text." , (nlines==1)?"is":"are" , nlines , (nlines==1)?"":"s") << endl;
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       string s = lines[i];
       Rectangle r = lineareas[i];
-      os << "Text line " << i + 1 << " is \"" << lines[i] << "\" at ";
+      os << indent << "Text line " << i + 1 << " is \"" << lines[i] << "\" at ";
       r.DescribeTo(os);
       os << endl;
    }

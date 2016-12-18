@@ -44,13 +44,15 @@ void FillLayout::PlaceWidget(WidgetBase* widget , int slot) {
 
 
 
-void FillLayout::AddWidget(WidgetBase* widget) {
+int FillLayout::AddWidget(WidgetBase* widget) {
    if (NextFreeSlot() == -1) {
       throw EagleException("FillLayout::AddWidget : FillLayout already full!\n");
    }
    else {
       Layout::PlaceWidget(widget , 0);
+      return 0;
    }
+   return -1;/// Invalid slot
 }
 
 

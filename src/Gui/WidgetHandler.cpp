@@ -423,9 +423,9 @@ void WidgetHandler::CycleFocusBackward() {
    std::list<Rectangle> dbg_list;//dirty background rectangle list
 
 */
-WidgetHandler::WidgetHandler() :
+WidgetHandler::WidgetHandler(EagleGraphicsContext* window) :
 		WidgetBase(StringPrintF("WidgetHandler object at %p" , this)),
-		gwindow(),
+		gwindow(window),
 		buffer(0),
 		background(0),
 		user_bg_ptr(0),
@@ -594,8 +594,6 @@ void WidgetHandler::UseBackgroundColor(EagleColor col) {
 
 void WidgetHandler::FreeImageBuffers() {
    
-   EAGLE_ASSERT(gwindow);
-   
    if (gwindow) {
       gwindow->FreeImage(buffer);
       gwindow->FreeImage(background);
@@ -640,9 +638,7 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    if (widget == this) {return;}
    if (HasWidget(widget)) {return;}
 
-   while (widget->GetDecoratorParent()) {
-      widget = widget->GetDecoratorParent();
-   }
+   widget = widget->GetDecoratorRoot();
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
    
@@ -833,8 +829,8 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       WidgetBase* new_whover = 0;
       for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
          WidgetBase* w = drawlist[i];
-///         bool hover = w->IsMouseOver(mouse_x , mouse_y);
-         bool hover = w->OuterArea().Contains(mx,my);
+         bool hover = w->IsMouseOver(mouse_x , mouse_y);
+///         bool hover = w->OuterArea().Contains(mx,my);
          if (hover) {
             new_whover = w;
             break;
@@ -925,40 +921,39 @@ int  WidgetHandler::PrivateCheckInputs() {
 
 void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    EAGLE_ASSERT(win);
-   EAGLE_ASSERT(buffer);
-   EAGLE_ASSERT(background);
+   EAGLE_ASSERT(win->Valid());
 
-   RemoveOldWidgets();
-
-///   if (!(WidgetBase::flags & NEEDS_REDRAW)) {return;}
-
-   cam.SetRedrawFlag();
+   DrawBuffer(win);
    
-   win->PushDrawingTarget(buffer);
-   
-///   clear_background = true;
-   if (clear_background) {
-      // WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
-      // of the state of their NEEDS_REDRAW flag.
-      win->SetCopyBlender();
-      
-      win->Draw(background , 0 , 0);
+   DrawToWindow(win , xpos , ypos);
+}
 
-      win->RestoreLastBlendingState();
+
+
+
+void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
+   /// WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
+   /// of the state of their NEEDS_REDRAW flag.
+   win->SetCopyBlender();
+   
+   win->Draw(background , 0 , 0);
+
+   win->RestoreLastBlendingState();
 //      blit(background , buffer , 0 , 0 , 0 , 0 , background.W() , background.H());
-      
-      dbg_list.clear();
-      for (UINT i = 0 ; i < drawlist.size() ; ++i) {
-         WidgetBase* w = drawlist[i];
-         if (w->Flags() & VISIBLE) {
+   
+   dbg_list.clear();
+   for (UINT i = 0 ; i < drawlist.size() ; ++i) {
+      WidgetBase* w = drawlist[i];
+      if (w->Flags() & VISIBLE) {
 ///            Rectangle a = area.InnerArea();
-            w->Display(win , 0 , 0);
-         }
+         w->Display(win , 0 , 0);
       }
-      clear_background = false;
-      
-   } else {
-      
+   }
+}
+
+
+
+void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
       /** Draw dirty backgrounds first */
       dbg_list = ConsolidateRectangles(dbg_list);
       
@@ -983,13 +978,44 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
             }
          }
       }
+}
+
+
+
+void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
+   EAGLE_ASSERT(win);
+   EAGLE_ASSERT(win->Valid());
+   EAGLE_ASSERT(buffer);
+   EAGLE_ASSERT(buffer->Valid());
+   EAGLE_ASSERT(background);
+   EAGLE_ASSERT(background->Valid());
+
+   RemoveOldWidgets();
+
+///   if (!(WidgetBase::flags & NEEDS_REDRAW)) {return;}
+
+   win->PushDrawingTarget(buffer);
+   
+   if (clear_background) {
+      PerformFullRedraw(win);
+      clear_background = false;
+   } else {
+      PerformPartialRedraw(win);
+   
    }
-   win->RestoreLastBlendingState();
 
    win->PopDrawingTarget();
 
+}
+
+
+
+void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos) {
+   
    if (flags & VISIBLE) {
          
+      cam.SetRedrawFlag();
+   
 ///      win->DrawRegion(buffer , Rectangle(0,0,buffer->W(),buffer->H()) , xpos , ypos);
       //** TODO : IMPORTANT : FIX CAMERA CODE FOR WIDGETHANDLER
 ///      win->SetPMAlphaBlender();
@@ -1000,8 +1026,6 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
       cam.Display(win , xpos , ypos);
       win->RestoreLastBlendingState();
       
-///      win->RestoreLastBlendingState();
-      //*/
    }
    
    ClearRedrawFlag();
@@ -1156,8 +1180,7 @@ void WidgetHandler::SetWidgetArea(int xpos , int ypos , int width , int height ,
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
    cam.SetWidgetArea(0,0 , r.W(), r.H());
 
-   if ((buffer->W() < r.W()) || (buffer->H() < r.H()) || shrink_buffer_on_resize) {
-      // buffer is too small or we're set to shrink on resized area, so resize buffer
+   if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
       SetupBuffer(r.W() , r.H() , gwindow);
    }
    else {
@@ -1182,6 +1205,15 @@ void WidgetHandler::SetMarginsExpandFromInner(int left , int right , int top , i
 void WidgetHandler::SetRedrawFlag() {
    SetBgRedrawFlag();
 }
+
+
+
+void WidgetHandler::SetFullRedraw() {
+   SetRedrawFlag();
+   clear_background = true; 
+}
+
+
 
 
 /** Revised but buggy SetFocusState and GiveWidgetFocus
@@ -1681,7 +1713,7 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    unsigned int nwidgets = wlist.size();
    for (unsigned int i = 0 ; i < nwidgets ; ++i) {
       os << indent << "Widget # " << i << endl;
-      (*(wlist[i])).DescribeTo(os , indent);
+      wlist[i]->DescribeTo(os , indent);
    }
    --indent;
    os << indent << "}" << endl;

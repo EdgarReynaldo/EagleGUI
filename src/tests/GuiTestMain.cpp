@@ -77,6 +77,7 @@ int GuiTestMain(int argc , char** argv) {
 //*   
    /// GUI setup
    
+/**
    EagleImage* np2[3][3];
    np2[MARGIN_VCELL_TOP][MARGIN_HCELL_LEFT] = win->LoadImageFromFile("Data/ninePatch/CyanBevel_TL.png" , VIDEO_IMAGE);
    np2[MARGIN_VCELL_TOP][MARGIN_HCELL_CENTER] = win->LoadImageFromFile("Data/ninePatch/CyanBevel_T.png" , VIDEO_IMAGE);
@@ -87,7 +88,7 @@ int GuiTestMain(int argc , char** argv) {
    np2[MARGIN_VCELL_BOTTOM][MARGIN_HCELL_LEFT] = win->LoadImageFromFile("Data/ninePatch/CyanBevel_BL.png" , VIDEO_IMAGE);
    np2[MARGIN_VCELL_BOTTOM][MARGIN_HCELL_CENTER] = win->LoadImageFromFile("Data/ninePatch/CyanBevel_B.png" , VIDEO_IMAGE);
    np2[MARGIN_VCELL_BOTTOM][MARGIN_HCELL_RIGHT] = win->LoadImageFromFile("Data/ninePatch/CyanBevel_BR.png" , VIDEO_IMAGE);
-
+*/
 //   EagleImage* np3img = win->LoadImageFromFile("Data/ninePatch/OrangeYellowNP.png");
    EagleImage* np3img = win->LoadImageFromFile("Data/ninePatch/BlackAlphaGradient.png");
    WidgetArea nparea;
@@ -115,7 +116,7 @@ int GuiTestMain(int argc , char** argv) {
       sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
    }
 
-   WidgetHandler wgui;
+   WidgetHandler wgui(win);
    WidgetHandler* gui = &wgui;
    
 
@@ -432,7 +433,7 @@ int GuiTestMain2(int argc , char** argv) {
    
    sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
    
-   WidgetHandler gui;/// TEST : All other widgets will get destroyed first, make sure we don't call any methods on
+   WidgetHandler gui(win);/// TEST : All other widgets will get destroyed first, make sure we don't call any methods on
                      /// a destroyed object
 
 
@@ -518,8 +519,8 @@ int GuiTestMain2(int argc , char** argv) {
    RelativeLayout rl(StringPrintF("RelativeLayout rl at %p" , &rl));;
    rl.Resize(5);
    
-   EagleFont* font1 = win->LoadFont("Data/fonts/English.ttf" , -40 , DRAW_NORMAL);
-   EagleFont* font2 = win->LoadFont("Data/fonts/EnglishCn.ttf" , -40 , DRAW_NORMAL);
+///   EagleFont* font1 = win->LoadFont("Data/fonts/English.ttf" , -40 , DRAW_NORMAL);
+///   EagleFont* font2 = win->LoadFont("Data/fonts/EnglishCn.ttf" , -40 , DRAW_NORMAL);
    EagleFont* font3 = win->LoadFont("Data/fonts/EnglishBold.ttf" , -40 , DRAW_NORMAL);
    EagleFont* font4 = win->LoadFont("Data/fonts/consola.ttf" , -40 , DRAW_NORMAL);
    EagleFont* font5 = win->LoadFont("Data/fonts/AlexBrush.ttf" , -40 , DRAW_NORMAL);
@@ -622,7 +623,7 @@ int GuiTestMain2(int argc , char** argv) {
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
          double et = sys->GetProgramTime();
-         double elapsed = et - etime;
+///         double elapsed = et - etime;
          etime = et;
 ///         EagleLog() << StringPrintF("ev.type = %s , ev.timestamp = %f , sys->GetProgramTime() = %f , since event was queued = %f , since last event = %f\n" ,
 ///                                     EagleEventName(ev.type).c_str() , ev.timestamp , etime , etime - ev.timestamp , elapsed);

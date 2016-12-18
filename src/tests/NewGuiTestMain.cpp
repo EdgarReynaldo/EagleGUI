@@ -71,7 +71,7 @@ int NewGuiTestMain(int argc , char** argv) {
       
    RelativeLayout r;
    
-   WidgetHandler gui;
+   WidgetHandler gui(win);
    gui.SetRootLayout(&r);
 
    gui.SetDrawWindow(win);

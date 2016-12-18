@@ -213,15 +213,19 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       images(true),
       fonts(true),
       mp_manager(0),
-      default_font(0),
       maxframes(60),
       numframes(0.0f),
       total_frame_time(0.0f),
       frame_times(),
       previoustime(0.0f),
-      currenttime(0.0f)
+      currenttime(0.0f),
+      default_font(0),
+      default_font_path(""),
+      default_font_size(0),
+      default_font_flags(0)
 {
    /// NOTE: derived class needs to instantiate mp_manager
+   /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
 }
 
 
@@ -384,6 +388,30 @@ void EagleGraphicsContext::FreeFont(EagleFont* font) {
    if (font) {
       fonts.Free(font);
    }
+}
+
+
+
+EagleFont* EagleGraphicsContext::DefaultFont() {
+   return default_font;
+}
+
+
+
+string EagleGraphicsContext::DefaultFontPath() {
+   return default_font_path;
+}
+
+
+
+int EagleGraphicsContext::DefaultFontSize() {
+   return default_font_size;
+}
+
+
+
+int EagleGraphicsContext::DefaultFontFlags() {
+   return default_font_flags;
 }
 
 

@@ -34,13 +34,15 @@ void RelativeLayout::ReserveSlots(int nslots) {
 
 
 RelativeLayout::RelativeLayout() :
-      Layout(StringPrintF("RelativeLayout object at %p" , this))
+      Layout(StringPrintF("RelativeLayout object at %p" , this)),
+      layout_rectangles()
 {}
 
 
 
 RelativeLayout::RelativeLayout(std::string name) :
-      Layout(name)
+      Layout(name),
+      layout_rectangles()
 {}
 
 
@@ -73,41 +75,43 @@ Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int new
 
 
 void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot) {
+   Layout::PlaceWidget(0 , slot);
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
       PlaceWidget(widget , slot , lrect);
-      return;
    }
-   Layout::PlaceWidget(0 , slot);
 }
 
 
 
-void RelativeLayout::AddWidget(WidgetBase* widget) {
+int RelativeLayout::AddWidget(WidgetBase* widget) {
+   int new_slot = Layout::AddWidget(0);
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
-      AddWidget(widget , lrect);
-      return;
+      PlaceWidget(widget , new_slot , lrect);
    }
-   Layout::AddWidget(0);
+   return new_slot;
 }
 
 
 
 void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect) {
+   EAGLE_ASSERT(slot >= 0 && slot < GetLayoutSize());
+   layout_rectangles[slot] = lrect;
+
    Layout::PlaceWidget(widget , slot);
-   if (widget) {
-      SetLayoutRectangle(widget , lrect);
-   }
 }
 
 
 
-void RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
-   Layout::AddWidget(widget);
+int RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
+   int new_slot = Layout::AddWidget(0);
    if (widget) {
-      SetLayoutRectangle(widget , lrect);
+      EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
+      layout_rectangles[new_slot] = lrect;
+      PlaceWidget(widget , new_slot , lrect);
    }
+   return new_slot;
 }
 
 

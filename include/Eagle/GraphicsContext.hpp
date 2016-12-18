@@ -201,8 +201,6 @@ protected :
    
    MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    // cannot be called in a base class constructor
-   EagleFont* default_font;
-                                      
    float maxframes;
    float numframes;
    float total_frame_time;
@@ -210,6 +208,14 @@ protected :
    float previoustime;
    float currenttime;
 
+   EagleFont* default_font;
+   std::string default_font_path;
+   int default_font_size;
+   int default_font_flags;
+   
+   
+   
+   
    virtual void PrivateFlipDisplay()=0;
 
 public :
@@ -219,26 +225,26 @@ public :
 
    float GetFPS();
 
-   // creation/destruction
-   virtual bool Create(int width , int height , int flags)=0;
+   /// creation/destruction
+   virtual bool Create(int width , int height , int flags)=0;/// Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;
    virtual void Destroy()=0;
    virtual void AcknowledgeResize()=0;
 
-   // clears target bitmap
+   /// clears target bitmap
    virtual void Clear(EagleColor c)=0;
    
-   // Query
+   /// Query
    float Width() {return scrw;}
    float Height() {return scrh;}
    
-   // Blender setting functions
+   /// Blender setting functions
    virtual void SetCopyBlender()=0;
    virtual void SetPMAlphaBlender()=0;
    virtual void SetNoPMAlphaBlender()=0;
    virtual void RestoreLastBlendingState()=0;
    
-   // basic drawing operations
+   /// basic drawing operations
    virtual void PutPixel(int x , int y , EagleColor c)=0;
    
    virtual void DrawLine(int x1 , int y1 , int x2 , int y2 , EagleColor c)=0;
@@ -295,7 +301,7 @@ public :
 
 /// TODO? : virtual void Draw(EagleImage* src , EagleDrawingInfo info = EagleDrawingInfo())=0;
 
-   // text drawing operations
+   /// text drawing operations
    virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                                HALIGNMENT halign = HALIGN_LEFT ,
                                VALIGNMENT valign = VALIGN_TOP)=0;
@@ -310,12 +316,12 @@ public :
                           VALIGNMENT valign = VALIGN_TOP);
 
 
-   // getters
+   /// getters
    virtual EagleImage* GetBackBuffer()=0;
    virtual EagleImage* GetScreen()=0;
    virtual EagleImage* GetDrawingTarget()=0;
    
-   // utilities
+   /// utilities
    void FlipDisplay();/// Overload PrivateFlipDisplay to affect this
    
    virtual void HoldDrawing()=0;
@@ -324,7 +330,7 @@ public :
 
    void DrawToBackBuffer();
       
-   // image creation / loading / sub division
+   /// image creation / loading / sub division
    virtual EagleImage* EmptyImage()=0;
    virtual EagleImage* CloneImage(EagleImage* clone)=0;
    virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE)=0;
@@ -332,17 +338,21 @@ public :
    virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height)=0;
    void                FreeImage(EagleImage* img);
    
-   // font loading
+   /// font loading
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    void               FreeFont(EagleFont* font);
    
-   EagleFont* DefaultFont() {return default_font;}
+   EagleFont* DefaultFont();
    
-   // event handler registration
+   std::string DefaultFontPath();
+   int DefaultFontSize();
+   int DefaultFontFlags();
+   
+   /// event handler registration
    virtual void RegisterDisplayInput(EagleEventHandler* queue)=0;
    
-   // mouse control
-//   MousePointerManager* GetMousePointerManager() {return mp_manager;}
+   /// mouse control
+///   MousePointerManager* GetMousePointerManager() {return mp_manager;}
    
    void ShowMouse();
    void HideMouse();
@@ -352,7 +362,7 @@ public :
    void ReAcquireMouse();// call when window loses and regains focus if there is more than one, as the mp is shared
    
    bool SetCustomPointer(MousePointerInfo info);
-//   void SetCustomPointerSet(MousePointerSet* pointer_set);
+///   void SetCustomPointerSet(MousePointerSet* pointer_set);
    
    void SetMousePosition(int mousex , int mousey);
    

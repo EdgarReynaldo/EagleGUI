@@ -48,11 +48,11 @@ public :
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below
    ///        hide them so here we make them explicitly visible again :
    virtual void PlaceWidget(WidgetBase* widget , int slot);
-   virtual void AddWidget(WidgetBase* widget);
+   virtual int AddWidget(WidgetBase* widget);
    
    /// Member funcs
    void PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect);
-   void AddWidget(WidgetBase* widget , LayoutRectangle lrect);
+   int AddWidget(WidgetBase* widget , LayoutRectangle lrect);
 
    Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
    Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);

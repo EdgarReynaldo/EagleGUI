@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -28,7 +28,7 @@
 #include "Eagle/Gui/Layout/Layout.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
-
+#include "Eagle/Gui/Decorators/Decorator.hpp"
 
 
 
@@ -75,6 +75,11 @@ string PrintFlags(UINT flags) {
 
 
 /// -----------------------      WidgetBase      -----------------------------------
+
+
+
+
+bool WidgetBase::clip_widgets = true;
 
 
 
@@ -242,6 +247,12 @@ int WidgetBase::PrivateUpdate(double tsec) {
 
 
 
+void WidgetBase::ClipWidgets(bool clip) {
+   clip_widgets = clip;
+}
+
+
+
 int WidgetBase::HandleEvent(EagleEvent e) {
    if (!(Flags() & ENABLED)) {
       return DIALOG_DISABLED;
@@ -268,7 +279,11 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       return;
    }
    
-   Clipper clip(win->GetDrawingTarget() , area.OuterArea());
+   EagleImage* dest = win->GetDrawingTarget();
+   EAGLE_ASSERT(dest);
+   if (clip_widgets) {
+      dest->PushClippingRectangle(area.OuterArea());
+   }
    
    background_painter->PaintBackground(win , this , xpos , ypos , background_draw_type);
          
@@ -278,9 +293,13 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       focus_painter->PaintFocus(win , this , xpos , ypos , focus_draw_type);
    }
    
+   if (clip_widgets) {
+      dest->PopClippingRectangle();
+   }
+   
    EAGLE_DEBUG(
-      win->DrawRectangle(OuterArea() , 1.0 , WCols()[HLCOL]);
-      win->DrawRectangle(InnerArea() , 1.0 , WCols()[HLCOL]);
+      win->DrawRectangle(OuterArea() , 1.0 , EagleColor(255,255,255));
+      win->DrawRectangle(InnerArea() , 1.0 , EagleColor(0,255,0));
    );
    
    ClearRedrawFlag();
@@ -639,7 +658,7 @@ void WidgetBase::WidgetBase::SetImagesHaveAlpha(bool have_alpha) {
 
 
 void WidgetBase::SetWidgetPos(int xpos , int ypos , bool notify_layout) {
-   SetWidgetArea(xpos , ypos , OuterArea().W() , OuterArea().H() , notify_layout);
+   SetWidgetArea(xpos , ypos , INT_MAX , INT_MAX , notify_layout);
 }
 
 
@@ -655,7 +674,7 @@ void WidgetBase::SetWidgetCorners(int x1 , int y1 , int x2 , int y2 , bool notif
 
 
 void WidgetBase::SetWidgetDimensions(int width , int height , bool notify_layout) {
-   SetWidgetArea(OuterArea().X() , OuterArea().Y() , width , height , notify_layout);
+   SetWidgetArea(INT_MAX , INT_MAX , width , height , notify_layout);
 }
 
 
@@ -679,6 +698,22 @@ void WidgetBase::SetWidgetArea(int xpos , int ypos , int width , int height , bo
 	}
    
    Rectangle r = OuterArea();
+   
+   if (!layout || !notify_layout) {
+      if (xpos == INT_MAX) {
+         xpos = r.X();
+      }
+      if (ypos == INT_MAX) {
+         ypos = r.Y();
+      }
+      if (width == INT_MAX) {
+         width = r.W();
+      }
+      if (height == INT_MAX) {
+         height = r.H();
+      }
+   }
+   
    
    if (layout && notify_layout) {
       if (flags & VISIBLE) {
@@ -890,12 +925,36 @@ const WidgetColorset& WidgetBase::WCols() const {
 
 
 
+WidgetBase* WidgetBase::GetDecoratorRoot() {
+   
+   WidgetBase* root = this;
+   while (root->GetDecoratorParent()) {
+      root = root->GetDecoratorParent();
+   }
+   return root;
+}
+
+
+/**
+const WidgetBase* WidgetBase::GetDecoratorRoot() const {
+   
+   const WidgetBase* root = this;
+   while (root->GetDecoratorParent()) {
+      root = root->GetDecoratorParent();
+   }
+   return root;
+}
+*/
+
+
+
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    os << indent << "WidgetBase Info : " << endl;
    os << indent << StringPrintF("WidgetBase object at (%p) named '%s' ID = %d" , this , GetName().c_str() , GetEagleId()) << endl;
    ++indent;
-   os << indent << StringPrintF("Widget parent %p , layout %p" , wparent , layout) << endl;
+   os << indent << StringPrintF("Widget parent %p (%s) , layout %p (%s)" ,
+                                wparent , wparent?wparent->GetName().c_str():"NULL", layout , layout?layout->GetName().c_str():"NULL") << endl;
    area.DescribeTo(os , indent);
    os << indent << StringPrintF("Min WxH = %i x %i" , minw , minh) << endl;
    os << indent << PrintFlags(flags);
@@ -918,6 +977,11 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
+/// ---------------------------      Global functions     -------------------------------
+
+
+
+
 EagleEvent MakeEagleEvent(WidgetMsg msg) {
    EAGLE_ASSERT(eagle_system);
    
@@ -935,6 +999,12 @@ EagleEvent MakeEagleEvent(WidgetMsg msg) {
 
 bool DrawPriorityIsLess(WidgetBase* lhs , WidgetBase* rhs) {
    return lhs->DisplayPriority()<rhs->DisplayPriority();
+}
+
+
+
+void PrintWidget(WidgetBase* widget) {
+   EagleInfo() << *widget << std::endl;
 }
 
 

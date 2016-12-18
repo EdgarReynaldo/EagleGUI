@@ -15,20 +15,14 @@
 using namespace std;
 
 
-inline void crash() 
-{
-   int x = 1/0;
-   (void)x;
-}
-
 inline void signal_handler(int)
 {
-    crash();
+    EpicFail();
 }
 
 inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t)
 {
-   crash();
+   EpicFail();
 }
 
 
@@ -39,8 +33,8 @@ int main(int argc , char** argv) {
    signal(SIGABRT, signal_handler);
    // _set_abort_behavior(0, _WRITE_ABORT_MSG|_CALL_REPORTFAULT);
 
-    std::set_terminate( crash );
-    std::set_unexpected( crash );
+    std::set_terminate(EpicFail );
+    std::set_unexpected(EpicFail );
    // _set_purecall_handler( &terminator );
    // _set_invalid_parameter_handler( &invalid_parameter_handler );
     
@@ -88,6 +82,7 @@ int main(int argc , char** argv) {
          }
          catch (EagleException error) {
             /// Ignore error and continue running test, it will be logged anyway
+            EagleError() << StringPrintF("Test::Run returned %d\n" , retval) << std::endl;
          }
       }
       

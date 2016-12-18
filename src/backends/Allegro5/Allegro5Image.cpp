@@ -73,6 +73,18 @@ Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
       EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
       bmp(0)
 {
+   EAGLE_ASSERT(bitmap);
+   if (take_ownership) {
+      AdoptBitmap(bitmap);
+   }
+   else {
+      ReferenceBitmap(bitmap);
+   }
+/*   
+   
+   
+   
+   
    ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
    if (take_ownership) {
       image_source = OWNIT;
@@ -87,6 +99,7 @@ Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
       al_set_target_bitmap(old_target);
    }
    bmp = bitmap;
+   */
 }
 
 

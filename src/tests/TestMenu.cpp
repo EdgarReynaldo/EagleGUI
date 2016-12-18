@@ -101,7 +101,9 @@ Rectangle AnimatedWedgeLayout::RequestWidgetArea(int widget_slot , int newx , in
          Rectangle newrect(newpos.X() , newpos.Y() , current.W() , current.H());
          return newrect;
       }
-      return pin.GetPinArea(newwidth , newheight);
+      Rectangle r = pin.GetPinArea(newwidth , newheight);
+      r.MoveBy(InnerArea().X() , InnerArea().Y());
+      return r;
    }
    else {
       return PinLayout::RequestWidgetArea(widget_slot , newx , newy , newwidth , newheight);
@@ -147,7 +149,7 @@ int AnimatedWedgeLayout::Update(double tsec) {
 
 TestMenu::TestMenu(EagleGraphicsContext* window) :
       win(window),
-      gui(),
+      gui(window),
       wedge_layout(),
       relative_layout(),
       buttons(),
@@ -163,7 +165,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    int w = win->Width();
    int h = win->Height();
    
-   font = win->LoadFont("Verdana.ttf" , -20);
+   font = win->LoadFont("Verdana.ttf" , -20 , LOAD_FONT_MONOCHROME);
    EAGLE_ASSERT(font->Valid());
    
    font->SetName("Verdana20");
@@ -176,7 +178,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    EAGLE_ASSERT(quit_button);
 
    
-   relative_layout.AddWidget(quit_button , LayoutRectangle(0.1 , 0.4 , 0.4 , 0.2));
+   relative_layout.AddWidget(quit_button->GetDecoratorRoot() , LayoutRectangle(0.1 , 0.4 , 0.3 , 0.2));
    relative_layout.AddWidget(&wedge_layout , LayoutRectangle(0.0 , 0.0 , 1.0 , 1.0));
    
    vector<const Test*> tests = TestRegistry::GetRegistryInstance().GetRegisteredTests();
@@ -186,9 +188,9 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    wedge_layout.Resize(tests.size());
    buttons.resize(tests.size());
    for (int i = 0 ; i < (int)tests.size() ; ++i) {
-      TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
-      EAGLE_ASSERT(btn);
-      btn->SetText(tests[i]->Name());
+///      TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
+///      EAGLE_ASSERT(btn);
+///      btn->SetText(tests[i]->Name());
 ///      wedge_layout.PlaceWidget(btn , i);
    }
    
@@ -203,11 +205,22 @@ void TestMenu::Run() {
    sys->GetSystemQueue()->Clear();
    sys->GetSystemTimer()->Start();
    selected = false;
+   bool redraw = true;
+   bool clip = true;
    while (!quit) {
       /// Display
       
-      gui.Display(win , 0 , 0);
-      win->FlipDisplay();
+      if (redraw) {
+         gui.Display(win , 0 , 0);
+         
+         if (gui.CurrentHover()) {
+            win->DrawTextString(font , StringPrintF("Hover is %p (%s)" , gui.CurrentHover() , gui.CurrentHover()->GetName().c_str()),
+                                win->Width() - 10 , 10 , EagleColor(255,255,255) , HALIGN_RIGHT);
+         }
+         
+         win->FlipDisplay();
+         redraw = false;
+      }
 
       /// Handle events
       do {
@@ -215,9 +228,15 @@ void TestMenu::Run() {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
          if (ev.type == EAGLE_EVENT_TIMER) {
             gui.Update(sys->GetSystemTimer()->SPT());
+            redraw = true;
          }
          else if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE || (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE)) {
             quit = true;
+         }
+         else if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_C) {
+            WidgetBase::ClipWidgets((clip = !clip));
+            gui.SetFullRedraw();
+            redraw = true;
          }
          else {
             gui.HandleEvent(ev);

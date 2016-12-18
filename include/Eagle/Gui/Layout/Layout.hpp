@@ -124,7 +124,7 @@ public :
    /// Widget may be null for PlaceWidget
    /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
    virtual void PlaceWidget(WidgetBase* widget , int slot);
-   virtual void AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary
+   virtual int AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
 
    void EmptySlot(int slot);/// Remove a widget from the layout
    void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
@@ -144,14 +144,15 @@ protected :
 
 public :   
    // Getters
-   std::vector<WidgetBase*> WChildren();
-   std::vector<WidgetBase*> Descendants();
+   std::vector<WidgetBase*> WChildren() const ;
+   std::vector<WidgetBase*> Descendants() const ;
    
    Layout* RootLayout();
-   bool IsRootLayout();
-   WidgetHandler* WHandler();
+   const Layout* RootLayout() const ;
+   bool IsRootLayout() const ;
+   WidgetHandler* WHandler() const ;
 
-   int GetLayoutSize();
+   int GetLayoutSize() const ;
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };

@@ -23,7 +23,7 @@ public :
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
    virtual void PlaceWidget(WidgetBase* widget , int slot);/// Only valid slot is zero
-   virtual void AddWidget(WidgetBase* widget);/// Will only add a widget to an empty layout
+   virtual int AddWidget(WidgetBase* widget);/// Will only add a widget to an empty layout
 
 
 

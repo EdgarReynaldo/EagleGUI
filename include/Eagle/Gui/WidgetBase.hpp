@@ -103,6 +103,9 @@ class WidgetBase : public EagleObject , public EagleEventSource {
 
 protected :
    
+   static bool clip_widgets;
+   
+   
    WidgetBase* wparent;
    Layout* layout;
    
@@ -172,6 +175,8 @@ protected :
    virtual int PrivateUpdate(double tsec);
 
 public :
+
+   static void ClipWidgets(bool clip);/// If you change this setting, tell your GUI to perform a full redraw (WidgetHandler::SetFullRedraw)
 
    /// HandleEvent, Display,, and Update are only virtual for certain classes like Decorator to function properly
    /// Don't overload them normally, overload the Private versions instead
@@ -262,7 +267,7 @@ public :
    void SetWidgetDimensions(int width , int height , bool notify_layout = true);
    void SetWidgetArea(Rectangle outer , bool notify_layout = true);
    
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);/// Pass INT_MAX if you don't care
 
 	/// Changes position and outer area!!!
 	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
@@ -310,6 +315,8 @@ public :
    virtual FOCUS_DRAW_TYPE       GetFocusDrawType()      const {return focus_draw_type;}
    
    virtual WidgetDecorator*      GetDecoratorParent() const {return decorator_parent;}
+   WidgetBase*                   GetDecoratorRoot();
+///   const WidgetBase*             GetDecoratorRoot() const ;
 
 ///   virtual std::string GetWidgetClassName()=0;/// TODO : What is this for? ICR. See how many classes implement this.
    virtual std::string GetWidgetClassName() {return "WidgetBase object";}/// TODO : What is this for? ICR.
@@ -325,7 +332,7 @@ EagleEvent MakeEagleEvent(WidgetMsg msg);
 
 bool DrawPriorityIsLess(WidgetBase* lhs , WidgetBase* rhs);
 
-
+void PrintWidget(WidgetBase* widget);
 
 
 #endif // EagleGuiWidgetBase_HPP

@@ -110,6 +110,7 @@ public :
 
 ///   virtual void DecorateWidget(WidgetBase* widget);/// widget may be NULL to remove the decorated widget
    
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 
 };
 

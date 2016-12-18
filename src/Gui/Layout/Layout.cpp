@@ -113,8 +113,10 @@ void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
    wchildren[slot] = widget;
    RepositionChild(slot);
 
-   if (whandler && widget) {
-      whandler->TrackWidget(widget);
+   if (widget) {
+      if (whandler) {
+         whandler->TrackWidget(widget);
+      }
       widget->SetOwnerLayout(this);
    }
 }
@@ -348,13 +350,14 @@ void Layout::PlaceWidget(WidgetBase* widget , int slot) {
 
 
 
-void Layout::AddWidget(WidgetBase* widget) {
+int Layout::AddWidget(WidgetBase* widget) {
    int slot = NextFreeSlot();
    if (slot == -1) {
       ReserveSlots((int)wchildren.size() + 1);
       slot = (int)wchildren.size() - 1;
    }
    ReplaceWidget(widget , slot);
+   return slot;
 }
 
 
@@ -422,7 +425,7 @@ void Layout::SetGuiHandler(WidgetHandler* handler) {
 
 
 
-std::vector<WidgetBase*> Layout::WChildren() {
+std::vector<WidgetBase*> Layout::WChildren() const {
    
    /// Some widgets may be NULL so we can't just copy the vector
    std::vector<WidgetBase*> children;
@@ -437,7 +440,7 @@ std::vector<WidgetBase*> Layout::WChildren() {
 
 
 
-std::vector<WidgetBase*> Layout::Descendants() {
+std::vector<WidgetBase*> Layout::Descendants() const {
 	std::vector<WidgetBase*> descendants;
 	for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
 		WidgetBase* widget = wchildren[i];
@@ -466,26 +469,35 @@ Layout* Layout::RootLayout() {
 
 
 
-bool Layout::IsRootLayout() {
+const Layout* Layout::RootLayout() const {
+   if (layout) {
+      return layout->RootLayout();
+   }
+   return this;
+}
+
+
+
+bool Layout::IsRootLayout() const {
    return layout == 0;
 }
 
 
 
-WidgetHandler* Layout::WHandler() {
+WidgetHandler* Layout::WHandler() const {
    return whandler;
 }
 
 
 
-int Layout::GetLayoutSize() {
+int Layout::GetLayoutSize() const {
    return (int)wchildren.size();
 }
 
 
 
 std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << StringPrintF("Layout object at %p named %s :",this,GetName().c_str()) << std::endl;
+   os << indent << StringPrintF("Layout object at %p named %s (size %d):",this,GetName().c_str() , (int)GetLayoutSize()) << std::endl;
    ++indent;
    os << indent << PrintLayoutAttributes(attributes) << std::endl;
    os << indent << PrintAlignment(halign , valign) << std::endl;

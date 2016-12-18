@@ -117,8 +117,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ResetBackBuffer();
 
    mp_manager = new Allegro5MousePointerManager(this);
-   default_font = LoadFont("Verdana.ttf" , -30 , 0 , VIDEO_IMAGE);
-   EAGLE_ASSERT(default_font->Valid());
+   
+   LoadDefaultFont();
    
    return true;
 }
@@ -157,6 +157,37 @@ void Allegro5GraphicsContext::AcknowledgeResize() {
    al_acknowledge_resize(display);
    scrw = al_get_display_width(display);
    scrh = al_get_display_height(display);
+}
+
+
+
+void Allegro5GraphicsContext::LoadDefaultFont() {
+   if (default_font) {
+      FreeFont(default_font);
+      default_font = 0;
+   }
+   default_font_path = DefaultFontPath();
+   default_font_size = DefaultFontSize();
+   default_font_flags = DefaultFontFlags();
+   
+   default_font = LoadFont(default_font_path.c_str() , default_font_size , default_font_flags , VIDEO_IMAGE);
+
+   if (!default_font || !default_font->Valid()) {
+      EagleWarn() << StringPrintF("Failed to load default font %s at size %d with flags %d" ,
+                                   default_font_path.c_str() , default_font_size , default_font_flags) << std::endl;
+      FreeFont(default_font);
+      default_font = new Allegro5Font(al_create_builtin_font());
+      if (!default_font->Valid()) {
+         delete default_font;
+         default_font = 0;
+      }
+      else {
+         EagleWarn() << "Using allegro's built in font for default font" << std::endl;
+         fonts.Add(default_font);
+      }
+   }
+   EagleInfo() << StringPrintF("Allegro5GraphicsContext::LoadDefaultFont : Default font is %s , size %d\n" ,
+                              (default_font && default_font->Valid())?"Valid":"Invalid" , default_font->Height()) << std::endl;
 }
 
 
@@ -642,6 +673,22 @@ EagleImage* Allegro5GraphicsContext::EmptyImage() {
    EagleImage* img = new Allegro5Image();
    images.Add(img);
    return img;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::AdoptImage(ALLEGRO_BITMAP* img) {
+   EagleImage* eagle_image = new Allegro5Image(img , true);
+   images.Add(eagle_image);
+   return eagle_image;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::ReferenceImage(ALLEGRO_BITMAP* img) {
+   EagleImage* eagle_image = new Allegro5Image(img , false);
+   images.Add(eagle_image);
+   return eagle_image;
 }
 
 

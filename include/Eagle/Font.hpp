@@ -68,6 +68,14 @@ public :
 EagleFont* GetFont(std::string font_name);
 
 
+void SetDefaultFontPath(std::string path);
+void SetDefaultFontSize(int size);
+void SetDefaultFontFlags(int flags);
+
+std::string DefaultFontPath();
+int DefaultFontSize();
+int DefaultFontFlags();
+
 
 
 #endif // EagleFont_HPP
