@@ -232,7 +232,7 @@ public :
    virtual void AcknowledgeResize()=0;
 
    /// clears target bitmap
-   virtual void Clear(EagleColor c)=0;
+   virtual void Clear(EagleColor c = EagleColor(0,0,0))=0;
    
    /// Query
    float Width() {return scrw;}
@@ -288,7 +288,6 @@ public :
 										 float x4 , float y4 , EagleColor c4)=0;
 
    /// image drawing operations
-
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
    void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
 
@@ -296,6 +295,7 @@ public :
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
    void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
+   virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
 
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
 

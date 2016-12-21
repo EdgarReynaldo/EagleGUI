@@ -198,9 +198,14 @@ protected :
    /// Helper functions
    void PerformFullRedraw(EagleGraphicsContext* win);
    void PerformPartialRedraw(EagleGraphicsContext* win);
+
+public :
+
    void DrawBuffer(EagleGraphicsContext* win);
    void DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos);
 
+protected :
+   
    virtual int  PrivateUpdate(double tsec);
 
 public :

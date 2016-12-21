@@ -55,6 +55,7 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
       allegro_font = al_load_font(file.c_str() , size , flags);
    }
    if (allegro_font) {
+      EagleInfo() << StringPrintF("Loaded font %s from disk." , file.c_str()) << std::endl;
       height = size;
       srcfile = file;
    }

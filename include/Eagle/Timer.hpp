@@ -81,6 +81,8 @@ public :
    int    TakeAllTicks();
    double TakeAllTime();
    
+   void ClearTicks() {(void)TakeAllTicks();}
+   
    virtual bool Valid()=0;
    virtual bool Running() {return running;}
    

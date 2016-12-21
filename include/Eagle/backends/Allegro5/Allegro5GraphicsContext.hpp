@@ -69,7 +69,7 @@ public :
    void LoadDefaultFont();
 
    /// clears target bitmap
-   virtual void Clear(EagleColor c);
+   virtual void Clear(EagleColor c = EagleColor(0,0,0));
    
    /// Blender setting functions
    void SetCopyBlender();
@@ -121,6 +121,8 @@ public :
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL);
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL);
+   virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255));
+
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color);
 ///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 /// TODO ADD   virtual void Draw(EagleImage* src , EagleDrawingInfo info);

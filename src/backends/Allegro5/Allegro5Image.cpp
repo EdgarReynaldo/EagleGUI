@@ -207,6 +207,7 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
 ///      SetName(file);
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
+      EagleInfo() << StringPrintF("Loaded image %s from file at size %d x %d." , file.c_str() , w , h) << std::endl;
    }
    return bmp;
 }

@@ -247,6 +247,7 @@ void WidgetHandler::RedrawBackgroundBuffer() {
    if(!(background->W() && background->H())) {return;}
    
    gwindow->PushDrawingTarget(background);
+   gwindow->SetCopyBlender();
    gwindow->Clear(bg_col);
    if (user_bg_ptr) {
       if (stretch_bg) {
@@ -261,6 +262,7 @@ void WidgetHandler::RedrawBackgroundBuffer() {
          gwindow->Draw(user_bg_ptr , (background->W() - user_bg_ptr->W())/2 , (background->H() - user_bg_ptr->H())/2 , DRAW_NORMAL);
       }
    }
+   gwindow->RestoreLastBlendingState();
    gwindow->PopDrawingTarget();
 }
 
@@ -1022,7 +1024,7 @@ void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos
 ///      Rectangle a = area.InnerArea();
 ///      cam.Display(win , xpos + a.X() , ypos + a.Y());
 
-      win->SetCopyBlender();
+      win->SetPMAlphaBlender();
       cam.Display(win , xpos , ypos);
       win->RestoreLastBlendingState();
       
