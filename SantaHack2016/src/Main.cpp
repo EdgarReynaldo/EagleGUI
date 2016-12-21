@@ -9,6 +9,8 @@
 
 #include "Avatars.hpp"
 
+#include "SceneManager.hpp"
+
 using namespace std;
 
 int main(int argc , char** argv) {
@@ -30,7 +32,13 @@ int main(int argc , char** argv) {
       EagleInfo() << "Failed to populate avatars." << endl;
    }
    
-
+   SceneManager sm;
+   
+   sm.Init(win);
+   
+   sm.Run();
+   
+/**
    WidgetHandler gui(win);
 
    RelativeLayout relative;
@@ -159,5 +167,8 @@ int main(int argc , char** argv) {
       } while (!sys->UpToDate());
 
    }
+
+//*/
+
    return 0;
 }

@@ -13,8 +13,8 @@
 
 enum SCENE_STATE {
    
-   SCENE_RUNNING = 0,
-   SCENE_COMPLETE = 1
+   STATE_RUNNING = 0,
+   STATE_COMPLETE = 1
    
 };
 
@@ -24,12 +24,13 @@ protected :
    
 public :
    
-   virtual ~Scene() {}
+   virtual ~Scene();
    
    virtual bool Init(EagleGraphicsContext* window)=0;
+   virtual void Free(EagleGraphicsContext* window)=0;
    
-   virtual void Display(EagleGraphicsContext* win)=0;
-   virtual int HandleEvent()=0;
+   virtual void Display(EagleGraphicsContext* window)=0;
+   virtual int HandleEvent(EagleEvent ev)=0;
    virtual int Update(double tsec)=0;
    
 };
