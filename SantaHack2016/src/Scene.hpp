@@ -14,8 +14,8 @@
 enum SCENE_STATE {
    
    STATE_RUNNING = 0,
-   STATE_COMPLETE = 1
-   
+   STATE_COMPLETE = 1,
+   STATE_QUIT = 2
 };
 
 class Scene {

@@ -1,13 +1,17 @@
 
 
-
+#include "PresentationScene.hpp"
 #include "TitleScene.hpp"
+#include "Lol.hpp"
+
 #include "SceneManager.hpp"
+
 
 TitleScene title_scene;
 
+PresentationScene presentation_scene;
 
-
+LolMaker lol_maker;
 
 Scene* SceneManager::NextScene(Scene* current) {
    Scene* next_scene = 0;
@@ -15,9 +19,16 @@ Scene* SceneManager::NextScene(Scene* current) {
       current->Free(current_window);
    }
    if (!current) {
+      next_scene = &presentation_scene;
+///      next_scene = &title_scene;
+   }
+   if (current == &presentation_scene) {
       next_scene = &title_scene;
    }
    if (current == &title_scene) {
+      next_scene = &lol_maker;
+   }
+   if (current == &lol_maker) {
       next_scene = 0;
    }
    if (next_scene) {
@@ -62,6 +73,9 @@ int SceneManager::HandleEvent(EagleEvent ev) {
          return STATE_COMPLETE;
       }
    }
+   else if (state == STATE_QUIT) {
+      return STATE_QUIT;
+   }
    return state;
 }
 
@@ -76,6 +90,9 @@ int SceneManager::Update(double tsec) {
          return STATE_COMPLETE;
       }
    }
+   else if (state == STATE_QUIT) {
+      return STATE_QUIT;
+   }
    return STATE_RUNNING;
 }
 
@@ -83,52 +100,66 @@ int SceneManager::Update(double tsec) {
 
 
 void SceneManager::Run() {
-   eagle_system->GetSystemQueue()->Clear();
-   eagle_system->GetSystemTimer()->Start();
-   while (1) {
-      SceneManager* sm = dynamic_cast<SceneManager*>(current_scene);
-      if (!sm) {
-         break;
+   while (!quit) {
+
+      eagle_system->GetSystemQueue()->Clear();
+      eagle_system->GetSystemTimer()->Start();
+
+      while (!quit) {
+         SceneManager* sm = dynamic_cast<SceneManager*>(current_scene);
+         if (!sm) {
+            break;
+         }
+         sm->Run();
+         current_scene = NextScene(current_scene);
+         if (!current_scene) {
+            return;
+         }
+         continue;
       }
-      sm->Run();
-      current_scene = NextScene(current_scene);
-      if (!current_scene) {
-         return;
-      }
-      continue;
-   }
-   bool next = false;
-   while (!next) {
-   
-      current_scene->Display(current_window);
-      do {
-         EagleEvent ev;
-         ev = eagle_system->WaitForSystemEventAndUpdateState();
-         if (ev.type == EAGLE_EVENT_TIMER && ev.timer.eagle_timer_source == eagle_system->GetSystemTimer()) {
-            if (current_scene->Update(ev.timer.eagle_timer_source->SPT()) == STATE_COMPLETE) {
-               current_scene = NextScene(current_scene);
-               if (!current_scene) {
-                  return;
+
+      bool next = false;
+      while (!next && !quit) {
+      
+         int state = STATE_RUNNING;
+         current_scene->Display(current_window);
+         do {
+            EagleEvent ev;
+            ev = eagle_system->WaitForSystemEventAndUpdateState();
+            if (ev.type == EAGLE_EVENT_TIMER && ev.timer.eagle_timer_source == eagle_system->GetSystemTimer()) {
+               int state = current_scene->Update(ev.timer.eagle_timer_source->SPT());
+               if (state == STATE_COMPLETE) {
+                  current_scene = NextScene(current_scene);
+                  if (!current_scene) {
+                     return;
+                  }
+                  else {
+                     next = true;
+                     break;
+                  }
                }
-               else {
-                  next = true;
-                  break;
+               else if (state == STATE_QUIT) {
+                  quit = true;
                }
             }
-         }
-         else {
-            if (current_scene->HandleEvent(ev) == STATE_COMPLETE) {
-               current_scene = NextScene(current_scene);
-               if (!current_scene) {
-                  return;
+            else {
+               state = current_scene->HandleEvent(ev);
+               if (state == STATE_COMPLETE) {
+                  current_scene = NextScene(current_scene);
+                  if (!current_scene) {
+                     return;
+                  }
+                  else {
+                     next = true;
+                     break;
+                  }
                }
-               else {
-                  next = true;
-                  break;
+               else if (state == STATE_QUIT) {
+                  quit = true;
                }
             }
-         }
-      } while (!eagle_system->UpToDate());
+         } while (!eagle_system->UpToDate());
+      }
    }
 }
 

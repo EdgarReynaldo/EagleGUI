@@ -21,14 +21,15 @@ protected :
    EagleGraphicsContext* current_window;
    Scene* current_scene;
    
-   
+   bool quit;
    
 public :
    
 ///   SceneManager();
    SceneManager() :
          current_window(0),
-         current_scene(0)
+         current_scene(0),
+         quit(false)
    {}
    
    virtual ~SceneManager() {}

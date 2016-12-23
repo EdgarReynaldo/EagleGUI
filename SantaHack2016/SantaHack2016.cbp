@@ -14,6 +14,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
 					<Add library="../cbbuild/lib/libeagle_debug.dll.a" />
@@ -53,6 +55,8 @@
 		<Unit filename="src/Lol.cpp" />
 		<Unit filename="src/Lol.hpp" />
 		<Unit filename="src/Main.cpp" />
+		<Unit filename="src/PresentationScene.cpp" />
+		<Unit filename="src/PresentationScene.hpp" />
 		<Unit filename="src/Scene.cpp" />
 		<Unit filename="src/Scene.hpp" />
 		<Unit filename="src/SceneManager.cpp" />
