@@ -51,6 +51,9 @@ public :
    virtual bool Load(std::string file , IMAGE_TYPE = VIDEO_IMAGE);
    virtual bool CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , int width , int height);
 
+   virtual bool Save(std::string filepath , std::string extension);
+   
+   
    void AdoptBitmap(ALLEGRO_BITMAP* bmp);
    void ReferenceBitmap(ALLEGRO_BITMAP* bmp);
 

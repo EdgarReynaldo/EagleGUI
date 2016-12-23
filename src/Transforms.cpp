@@ -153,7 +153,11 @@ Transform& Transform::GetProjectionMatrix() {
 Transformer::Transformer() :
       view_stack(),
       proj_stack()
-{}
+{
+   /** These functions CAN'T be called from here. Initialize the stacks in your derived class Transformers.*/
+///   PushViewTransform(GetIdentityTransform());
+///   PushProjectionTransform(GetIdentityTransform());
+}
 
 
 Transform Transformer::GetIdentityTransform() {
@@ -207,7 +211,12 @@ void Transformer::PushProjectionTransform(const Transform& t) {
 void Transformer::PopViewTransform() {
    if (!view_stack.empty()) {
       view_stack.pop();
-      SetViewTransform(GetTransformBase(view_stack.top()));
+      if (view_stack.empty()) {
+         PushViewTransform(GetIdentityTransform());
+      }
+      else {
+         SetViewTransform(GetTransformBase(view_stack.top()));
+      }
    }
 }
 
@@ -216,7 +225,12 @@ void Transformer::PopViewTransform() {
 void Transformer::PopProjectionTransform() {
    if (!proj_stack.empty()) {
       proj_stack.pop();
-      SetProjectionTransform(GetTransformBase(proj_stack.top()));
+      if (proj_stack.empty()) {
+         PushProjectionTransform(GetIdentityTransform());
+      }
+      else {
+         SetProjectionTransform(GetTransformBase(proj_stack.top()));
+      }
    }
 }
 

@@ -100,6 +100,8 @@ public :
    virtual bool Load(std::string file , IMAGE_TYPE = VIDEO_IMAGE)=0;
    virtual bool CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , int width , int height)=0;
    
+   virtual bool Save(std::string filepath , std::string extension)=0;
+   
    virtual bool Valid()=0;
    virtual void Free()=0;
 

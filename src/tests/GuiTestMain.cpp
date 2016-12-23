@@ -593,7 +593,7 @@ int GuiTestMain2(int argc , char** argv) {
 
    sys->GetSystemTimer()->Start();
    
-   double etime = sys->GetProgramTime();
+///   double etime = sys->GetProgramTime();
    bool redraw = true;
    bool quit = false;
    
@@ -622,9 +622,9 @@ int GuiTestMain2(int argc , char** argv) {
       
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
-         double et = sys->GetProgramTime();
+///         double et = sys->GetProgramTime();
 ///         double elapsed = et - etime;
-         etime = et;
+///         etime = et;
 ///         EagleLog() << StringPrintF("ev.type = %s , ev.timestamp = %f , sys->GetProgramTime() = %f , since event was queued = %f , since last event = %f\n" ,
 ///                                     EagleEventName(ev.type).c_str() , ev.timestamp , etime , etime - ev.timestamp , elapsed);
          if (ev.type == EAGLE_EVENT_DISPLAY_RESIZE) {

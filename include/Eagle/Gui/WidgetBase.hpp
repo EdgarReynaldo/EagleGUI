@@ -104,7 +104,7 @@ class WidgetBase : public EagleObject , public EagleEventSource {
 protected :
    
    static bool clip_widgets;
-   
+   static bool display_widget_area;
    
    WidgetBase* wparent;
    Layout* layout;
@@ -177,7 +177,8 @@ protected :
 public :
 
    static void ClipWidgets(bool clip);/// If you change this setting, tell your GUI to perform a full redraw (WidgetHandler::SetFullRedraw)
-
+   static void DisplayWidgetArea(bool display);/// If you change this setting, tell your GUI to perform a full redraw
+   
    /// HandleEvent, Display,, and Update are only virtual for certain classes like Decorator to function properly
    /// Don't overload them normally, overload the Private versions instead
 

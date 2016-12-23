@@ -82,6 +82,8 @@ string PrintFlags(UINT flags) {
 bool WidgetBase::clip_widgets = true;
 
 
+bool WidgetBase::display_widget_area = false;
+
 
 void WidgetBase::RaiseEvent(WidgetMsg msg) {
    // signal your slots
@@ -253,6 +255,12 @@ void WidgetBase::ClipWidgets(bool clip) {
 
 
 
+void WidgetBase::DisplayWidgetArea(bool display) {
+   display_widget_area = display;
+}
+
+
+
 int WidgetBase::HandleEvent(EagleEvent e) {
    if (!(Flags() & ENABLED)) {
       return DIALOG_DISABLED;
@@ -297,10 +305,10 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       dest->PopClippingRectangle();
    }
    
-   EAGLE_DEBUG(
+   if (display_widget_area) {
       win->DrawRectangle(OuterArea() , 1.0 , EagleColor(255,255,255));
       win->DrawRectangle(InnerArea() , 1.0 , EagleColor(0,255,0));
-   );
+   }
    
    ClearRedrawFlag();
 }

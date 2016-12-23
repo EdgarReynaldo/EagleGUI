@@ -55,6 +55,8 @@ public :
 class Allegro5Transformer : public Transformer {
    
 protected :
+   
+   
    virtual TransformBase* CreateIdentityTransform();
    virtual TransformBase* CreateViewTransform();
    virtual TransformBase* CreateProjectionTransform();
@@ -64,6 +66,8 @@ protected :
 
 public :
    
+   Allegro5Transformer();
+
    /// See Transformer base class for member functions
    
 };
