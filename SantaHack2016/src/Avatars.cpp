@@ -18,7 +18,7 @@ const char* avatar_names[NUM_AVATARS] = {
    "8643_Vanneto_avatar",
    "1146_MarkOates_avatar",
    "14841_EricJohnson_avatar",
-   "16609_TakaakiFurukawa_avatar"
+   "16609_TakaakiFuruKawa_avatar"
 };
 
 
