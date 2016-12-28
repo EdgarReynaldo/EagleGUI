@@ -45,6 +45,7 @@ bool CreateAvatarAtlas(ALLEGRO_BITMAP*& atlas , int w , int h , const char* dire
    if (atlas) {
       if (!al_is_sub_bitmap(atlas)) {
          al_destroy_bitmap(atlas);
+         atlas = 0;
       }
    }
    

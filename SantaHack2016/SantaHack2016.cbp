@@ -52,6 +52,8 @@
 		</Linker>
 		<Unit filename="src/Avatars.cpp" />
 		<Unit filename="src/Avatars.hpp" />
+		<Unit filename="src/Characters.cpp" />
+		<Unit filename="src/Characters.hpp" />
 		<Unit filename="src/Lol.cpp" />
 		<Unit filename="src/Lol.hpp" />
 		<Unit filename="src/Main.cpp" />
@@ -61,6 +63,8 @@
 		<Unit filename="src/Scene.hpp" />
 		<Unit filename="src/SceneManager.cpp" />
 		<Unit filename="src/SceneManager.hpp" />
+		<Unit filename="src/Tiles.cpp" />
+		<Unit filename="src/Tiles.hpp" />
 		<Unit filename="src/TitleScene.cpp" />
 		<Unit filename="src/TitleScene.hpp" />
 		<Unit filename="src/avatar_list.txt" />
