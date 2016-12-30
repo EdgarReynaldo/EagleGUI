@@ -86,7 +86,7 @@ public :
          bunny_logo("Bunny_Logo" , lolbunnylogo , 384 , 128),
          bunny_sig ("Bunny_Sig"  , lolbunnysig  , 384 , 64),
          lol_bunny ("LOL_Bunny"  , lolbunny     , 64  , 64),
-         fat_bunny ("Fat_Bunny"  , fatbunny     , 128  , 128),
+         fat_bunny ("Fat_Bunny"  , fatbunny     , 64  , 64),
          cute_bunny("Cute_Bunny" , cutebunny    , 64  , 64),
          lol_byte  ("LOL_Bytes"  , lolbytes     , 64  , 64),
          buf_map()

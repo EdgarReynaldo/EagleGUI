@@ -6,14 +6,7 @@
 #define Characters_HPP
 
 
-
-
-class Item {
-   
-   
-   
-}
-
+#include "Eagle.hpp"
 
 
 
@@ -47,7 +40,7 @@ class Character {
    EagleImage* image_160;
    EagleImage* image_64;
    
-   Inventory items;
+///   Inventory items;
    
 public :
       

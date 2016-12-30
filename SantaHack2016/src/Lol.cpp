@@ -20,6 +20,13 @@ const char* lolbunny =
 ;
    
 const char* fatbunny = 
+"\\\\ //\n"
+" o o\n"
+"( * )\n"
+;
+
+/**
+const char* fatbunny = 
 "\\'\\/'/\n"
 " \\\\//\n"
 "  oo\n"
@@ -27,6 +34,7 @@ const char* fatbunny =
 "( v v )\n"
 "  M M\n"
 ;
+//*/
 
 const char* cutebunny =
 "() ()\n"

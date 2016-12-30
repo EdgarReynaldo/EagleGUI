@@ -9,7 +9,7 @@
 
 
 
-void SetDirection(DIRECTION d) {
+void Character::SetDirection(DIRECTION d) {
    int ydir = 0;
    if ((int)d < 3) {ydir = -1;}
    else if ((int)d > 5) {ydir = 1;}
@@ -21,7 +21,7 @@ void SetDirection(DIRECTION d) {
 
 
 
-virtual void Character::TryToMove(int xdir , int ydir , double dt) {
+void Character::TryToMove(int xdir , int ydir , double dt) {
    if (xdir < 0) {xdir = -1;}
    if (xdir > 0) {xdir = 1;}
    if (ydir < 0) {ydir = -1;}

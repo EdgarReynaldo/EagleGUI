@@ -19,6 +19,7 @@ protected :
 
    EagleImage* buffer;
    EagleImage* landscape;
+   EagleImage* lolbunnylogo_image;
    EagleFont* krampus_font;
    
    WidgetHandler gui;
@@ -28,6 +29,13 @@ protected :
    double hold_time;
    double fade_time;
    double scene_time;
+   double lol_move_in_time;
+   double lol_stay_time;
+   double lol_move_right_time;
+   double lol_finish_time;
+   
+   double lol_dest_x;
+   
    double time_elapsed;
    
    
@@ -44,6 +52,10 @@ public :
          hold_time(0.0),
          fade_time(0.0),
          scene_time(0.0),
+         lol_move_in_time(0.0),
+         lol_stay_time(0.0),
+         lol_move_right_time(0.0),
+         lol_dest_x(0.0),
          time_elapsed(0.0)
    {}
    
@@ -56,7 +68,7 @@ public :
    virtual int HandleEvent(EagleEvent ev);
    virtual int Update(double tsec);
 
-   
+   void ResetText();
 };
 
 

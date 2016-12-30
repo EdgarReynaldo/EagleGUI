@@ -54,6 +54,8 @@
 		<Unit filename="src/Avatars.hpp" />
 		<Unit filename="src/Characters.cpp" />
 		<Unit filename="src/Characters.hpp" />
+		<Unit filename="src/GameMap.cpp" />
+		<Unit filename="src/GameMap.hpp" />
 		<Unit filename="src/Lol.cpp" />
 		<Unit filename="src/Lol.hpp" />
 		<Unit filename="src/Main.cpp" />

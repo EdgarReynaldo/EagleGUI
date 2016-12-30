@@ -26,11 +26,12 @@ Scene* SceneManager::NextScene(Scene* current) {
       next_scene = &title_scene;
    }
    if (current == &title_scene) {
-      next_scene = &lol_maker;
-   }
-   if (current == &lol_maker) {
       next_scene = 0;
+///      next_scene = &lol_maker;
    }
+///   if (current == &lol_maker) {
+///      next_scene = 0;
+///   }
    if (next_scene) {
       next_scene->Init(current_window);
    }

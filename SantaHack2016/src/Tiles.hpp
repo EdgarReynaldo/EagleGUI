@@ -6,12 +6,20 @@
 #define Tiles_HPP
 
 
+
+#include "Eagle.hpp"
+
+#include <vector>
+#include <list>
+using namespace std;
+
+
 extern const int TILE_WIDTH;
 extern const int TILE_HEIGHT;
 
 
 
-enum MOVE_FLAGS = {
+enum MOVE_FLAGS {
    IMPASSABLE = 0,
    PASSABLE_HUMAN = 1,
    PASSABLE_BUNNY = 2,
@@ -27,7 +35,7 @@ enum MOVE_FLAGS = {
 #define TILE_MAP_NUM_TILES_WIDE 6
 #define TILE_MAP_NUM_TILES_TALL 5
 
-enum TILE_TYPE = {
+enum TILE_TYPE  {
    TILE_EMPTY = -1,
    SNOWY = 0,
    GRASS = 1,
@@ -68,7 +76,7 @@ protected :
    
    EagleImage* tile_image;
 
-   TILE_TYPE type;
+   TILE_TYPE tile_type;
       
    int move_flags;
    
@@ -76,6 +84,8 @@ protected :
 public :
    
    TileBase(EagleImage* image , TILE_TYPE type);
+   virtual ~TileBase() {}
+   
    
    virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
    
@@ -96,39 +106,57 @@ class BambooGateTile : public TileBase {
    
    TileBase gate_open_tile;
    TileBase gate_closed_tile;
+
+public :
    
-   TILE_TYPE gate_type1;
-   TILE_TYPE gate_type2;
+   virtual ~BambooGateTile() {}
+   
+   BambooGateTile(bool open , bool horizontal , TileBase* open_tile , TileBase* closed_tile);
+   virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual TILE_TYPE GetTileType();
+
+
+};
+
+
+
+class SwitchTile : public TileBase {
+   
+protected :
+   bool switch_on;
+
+   TileBase switch_on_tile;
+   TileBase switch_off_tile;
    
 public :
    
-   BambooGateTile(bool open , bool horizontal , TileBase* open_tile , TileBase* closed_tile);
-   BambooGateTile(bool open , bool horizontal , TileBase* open_tile , TileBase* closed_tile) :
-         gate_open(open),
-         gate_horizontal(horizontal),
-         gate_open_tile(*open_tile),
-         gate_closed_tile(*closed_tile)
-   {
-      
-   }
+   SwitchTile(bool on , TileBase* on_tile , TileBase* off_tile);
+   SwitchTile(bool on , TileBase* on_tile , TileBase* off_tile) :
+      switch_on(on),
+      switch_on_tile(*on_tile),
+      switch_off_tile(*off_tile)
+   {}
    
-   
-   virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos) {
-      if (gate_open) {
-         gate_open_tile.Draw(win , xpos , ypos);
+   void Toggle();
+   void Toggle() {
+      switch_on = !switch_on;
+      if (switch_on) {
+         TurnOn();
       }
       else {
-         gate_closed_tile.Draw(win , xpos , ypos);
+         TurnOff();
       }
    }
+   virtual void TurnOn()=0;
+   virtual void TurnOff()=0;
+   
+   virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual TILE_TYPE GetTileType();
    
 }
 
 
-
 ///void SetTileFlags();/// Not public
-
-
 
 bool CreateTiles(EagleGraphicsContext* win);
 void FreeTiles(EagleGraphicsContext* win);
@@ -136,36 +164,69 @@ void FreeTiles(EagleGraphicsContext* win);
 
 
 
-class TileLayerBase {
-   
-   virtual int GetTileAt(int tx , int ty);
-}
+/// ------------------------------      TileLayer       -----------------------------
+
+
+
 
 class TileTerrainLayer {
 
-   vector<vector<Tile*> > tile_array;
-
+   vector<vector<TileBase*> > tile_array;
+   
+   int ncols;
+   int nrows;
+   
+   /// placement on screen
+   int mapx;
+   int mapy;
+   
 public :
    
    void Resize(int cols , int rows);
-   void Resize(int cols , int rows) {
-      tile_array.resize(cols , vector<Tile*>(rows , 0));
-   }
-   void Read(istream& in);
-   void Read(istream& in) {
-      int cols = 0;
-      int rows = 0;
-      in >> cols >> rows;
-      Resize(cols,rows);
-      for (int y = 0 ; y < rows ; ++y) {
-         for (int x = 0 ; x < cols ; ++x) {
-            int tile_num = -1;
-            in >> tile_num;/// -1 marks empty tile
-            tile_array[y][x] = tile_type_map[tile_num];
+   
+   int Read(const char* map_string);
+   
+   int Read(istream& in);
+
+   void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height);
+   void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height) {
+      
+      EagleImage* dest = win->GetDrawingTarget();
+      
+      dest->PushClippingRectangle(Rectangle(viewx , viewy , width , height));
+      
+      for (int y = 0 ; y < nrows , ++y) {
+         if ((y + 1)*TILE_HEIGHT + mapy) < viewy) {continue;}
+         if ((y*TILE_HEIGHT + mapy) >= viewy + height) {break}
+         for (int x = 0 ; x < ncols ; ++x) {
+            TileBase* tile = tile_array[y][x];
+            tile->Draw(win , x*TILE_WIDTH + mapx , y*TILE_HEIGHT + mapy);
          }
       }
+      
+      
+      dest->PopClippingRectangle();
    }
+   
+   
+   int GetTileAt(int tx , int ty);
+   
 };
+
+
+class TileObjectLayer {
+
+   vector<vector<list<TileBase*> > > object_array;
+   
+   
+   
+};
+
+
+
+
+
+
 
 
 
