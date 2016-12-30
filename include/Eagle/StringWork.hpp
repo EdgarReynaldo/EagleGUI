@@ -45,6 +45,8 @@ const char* CopyQuotedString(const char* start_quote , std::string& s);
 const char* SkipWhiteSpace(const char* str);
 void TrimTrailingWhiteSpace(char* str);
 
+std::string Replace(std::string str , const char* exp , const char* rep);
+
 char* CStrDup(const char* str);
 
 

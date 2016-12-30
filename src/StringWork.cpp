@@ -169,6 +169,20 @@ void TrimTrailingWhiteSpace(char* str) {
 
 
 
+std::string Replace(std::string str , const char* exp , const char* rep) {
+   std::string replace_str = str;
+   int start = 0;
+   int explen = strlen(exp);
+   int replen = strlen(rep);
+   while ((start = replace_str.find_first_of(exp , start)) != (int)std::string::npos) {
+      replace_str.replace(start , explen , rep);
+      start += replen;
+   }
+   return replace_str;
+}
+
+
+
 char* CStrDup(const char* str) {
    int sz = strlen(str);
    char* dup = (char*)malloc(sizeof(char)*(sz + 1));

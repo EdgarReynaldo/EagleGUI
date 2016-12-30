@@ -3,6 +3,8 @@ Notes for Eagle 5 development
 
 Issues
 
+-5. BasicText::ShrinkWrap needs some work? Margins are super large for large text. Not sure why.
+
 -4. WidgetHandler should be able to draw without a buffer. Separate buffer out.
 
 -3. Layouts should all use AdjustWidgetArea in RequestWidgetRectangle. This is not the case yet.
