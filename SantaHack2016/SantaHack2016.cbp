@@ -59,6 +59,8 @@
 		<Unit filename="src/Lol.cpp" />
 		<Unit filename="src/Lol.hpp" />
 		<Unit filename="src/Main.cpp" />
+		<Unit filename="src/MapScene.cpp" />
+		<Unit filename="src/MapScene.hpp" />
 		<Unit filename="src/PresentationScene.cpp" />
 		<Unit filename="src/PresentationScene.hpp" />
 		<Unit filename="src/Scene.cpp" />

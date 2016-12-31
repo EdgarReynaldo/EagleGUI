@@ -131,29 +131,15 @@ protected :
 public :
    
    SwitchTile(bool on , TileBase* on_tile , TileBase* off_tile);
-   SwitchTile(bool on , TileBase* on_tile , TileBase* off_tile) :
-      switch_on(on),
-      switch_on_tile(*on_tile),
-      switch_off_tile(*off_tile)
-   {}
-   
    void Toggle();
-   void Toggle() {
-      switch_on = !switch_on;
-      if (switch_on) {
-         TurnOn();
-      }
-      else {
-         TurnOff();
-      }
-   }
+
    virtual void TurnOn()=0;
    virtual void TurnOff()=0;
    
    virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
    virtual TILE_TYPE GetTileType();
    
-}
+};
 
 
 ///void SetTileFlags();/// Not public
@@ -164,13 +150,13 @@ void FreeTiles(EagleGraphicsContext* win);
 
 
 
+
 /// ------------------------------      TileLayer       -----------------------------
 
 
 
 
-class TileTerrainLayer {
-
+class TileBaseLayer {
    vector<vector<TileBase*> > tile_array;
    
    int ncols;
@@ -179,47 +165,87 @@ class TileTerrainLayer {
    /// placement on screen
    int mapx;
    int mapy;
-   
+
 public :
-   
    void Resize(int cols , int rows);
    
    int Read(const char* map_string);
    
    int Read(istream& in);
 
-   void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height);
-   void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height) {
-      
-      EagleImage* dest = win->GetDrawingTarget();
-      
-      dest->PushClippingRectangle(Rectangle(viewx , viewy , width , height));
-      
-      for (int y = 0 ; y < nrows , ++y) {
-         if ((y + 1)*TILE_HEIGHT + mapy) < viewy) {continue;}
-         if ((y*TILE_HEIGHT + mapy) >= viewy + height) {break}
-         for (int x = 0 ; x < ncols ; ++x) {
-            TileBase* tile = tile_array[y][x];
-            tile->Draw(win , x*TILE_WIDTH + mapx , y*TILE_HEIGHT + mapy);
-         }
-      }
-      
-      
-      dest->PopClippingRectangle();
-   }
-   
+   virtual void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height);
    
    int GetTileAt(int tx , int ty);
    
+   TileBase* CreateTile(TILE_TYPE tt);
+   TileBase* CreateTile(TILE_TYPE tt) {
+      switch (tt) {
+/**
+   BAMBOO_GATE_HORIZ_CLOSED = 15,
+   BAMBOO_GATE_VERT_CLOSED = 16,
+   BAMBOO_GATE_HORIZ_OPEN = 21,
+   BAMBOO_GATE_VERT_OPEN = 22,
+   SWITCH_OFF = 18,
+   SWITCH_ON = 19,
+   DOOR_CLOSED = 28,
+   DOOR_OPEN = 29
+   PCB_DIRTY = 25,
+   PCB_CLEAN = 26,
+*/
+      case BAMBOO_GATE_HORIZ_CLOSED :
+         return new BambooGateTile(false , true , tile_type_map[BAMBOO_GATE_HORIZ_OPEN] , tile_type_map[BAMBOO_GATE_HORIZ_CLOSED]);
+         break;
+      case BAMBOO_GATE_HORIZ_OPEN :
+         return new BambooGateTile(true , true , tile_type_map[BAMBOO_GATE_HORIZ_OPEN] , tile_type_map[BAMBOO_GATE_HORIZ_CLOSED]);
+         break;
+      case BAMBOO_GATE_VERT_CLOSED :
+         return new BambooGateTile(false , false , tile_type_map[BAMBOO_GATE_VERT_OPEN] , tile_type_map[BAMBOO_GATE_VERT_CLOSED]);
+         break;
+      case BAMBOO_GATE_VERT_OPEN :
+         return new BambooGateTile(true , false , tile_type_map[BAMBOO_GATE_VERT_OPEN] , tile_type_map[BAMBOO_GATE_VERT_CLOSED]);
+         break;
+      case :
+         
+         break;
+      case :
+         
+         break;
+      case :
+         
+         break;
+      case :
+         
+         break;
+         
+      }
+   }
+};
+
+
+class TileTerrainLayer : public TileBaseLayer {
+
+public :
+   
+   TileTerrainLayer();
+   
+   virtual void Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height);
+   
+   int GetTileAt(int tx , int ty);
 };
 
 
 class TileObjectLayer {
 
-   vector<vector<list<TileBase*> > > object_array;
+   vector<vector<TileBase* > > object_array;
    
+   list<Item*> item_list;
+
+public :
+      
+   TileObjectLayer();
    
-   
+
+
 };
 
 

@@ -3,6 +3,8 @@
 #include "PresentationScene.hpp"
 #include "TitleScene.hpp"
 #include "Lol.hpp"
+#include "MapScene.hpp"
+
 
 #include "SceneManager.hpp"
 
@@ -12,6 +14,8 @@ TitleScene title_scene;
 PresentationScene presentation_scene;
 
 LolMaker lol_maker;
+
+MapScene map_scene;
 
 Scene* SceneManager::NextScene(Scene* current) {
    Scene* next_scene = 0;
@@ -26,8 +30,11 @@ Scene* SceneManager::NextScene(Scene* current) {
       next_scene = &title_scene;
    }
    if (current == &title_scene) {
-      next_scene = 0;
+      next_scene = &map_scene;
 ///      next_scene = &lol_maker;
+   }
+   if (current == &map_scene) {
+      next_scene = 0;
    }
 ///   if (current == &lol_maker) {
 ///      next_scene = 0;

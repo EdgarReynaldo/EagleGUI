@@ -5,6 +5,11 @@
 #include "Tiles.hpp"
 
 
+#include <sstream>
+#include <string>
+using namespace std;
+
+
 const int TILE_WIDTH = 64;
 const int TILE_HEIGHT = 64;
 
@@ -59,6 +64,10 @@ bool CreateTiles(EagleGraphicsContext* win) {
    tile_map_image = win->LoadImageFromFile("data/tilesets/tile_map.png");
    if (!tile_map_image) {return false;}
    if (!tile_map_image->Valid()) {return false;}
+
+
+   tile_type_map[TILE_EMPTY] = new TileBase(0 , TILE_EMPTY);
+
    bool success = true;
    int ypos = 0;
    for (int y = 0 ; y < TILE_MAP_NUM_TILES_TALL ; ++y) {
@@ -115,7 +124,13 @@ TileBase::TileBase(EagleImage* image , TILE_TYPE type) :
 
 
 void TileBase::Draw(EagleGraphicsContext* win , int xpos , int ypos) {
-   win->Draw(tile_image , xpos , ypos);
+   if (!tile_image) {
+      EAGLE_ASSERT(this->tile_type == TILE_EMPTY);
+      win->DrawFilledRectangle(xpos , ypos , TILE_WIDTH , TILE_HEIGHT , EagleColor(0,0,0));
+   }
+   else {
+      win->Draw(tile_image , xpos , ypos);
+   }
 }
 
 
@@ -191,6 +206,53 @@ TILE_TYPE BambooGateTile::GetTileType() {
 
 
 
+/// -------------------------     Switch Tile    --------------------------------
+
+
+
+
+SwitchTile::SwitchTile(bool on , TileBase* on_tile , TileBase* off_tile) :
+   TileBase(0 , TILE_EMPTY),
+   switch_on(on),
+   switch_on_tile(*on_tile),
+   switch_off_tile(*off_tile)
+{}
+
+
+
+
+void SwitchTile::Toggle() {
+   switch_on = !switch_on;
+   if (switch_on) {
+      TurnOn();
+   }
+   else {
+      TurnOff();
+   }
+}
+
+
+
+void SwitchTile::Draw(EagleGraphicsContext* win , int xpos , int ypos) {
+   if (switch_on) {
+      switch_on_tile.Draw(win,xpos,ypos);
+   }
+   else {
+      switch_off_tile.Draw(win,xpos,ypos);
+   }
+}
+
+
+
+TILE_TYPE SwitchTile::GetTileType() {
+   if (switch_on) {
+      return SWITCH_ON;
+   }
+   else {
+      return SWITCH_OFF;
+   }
+   return TILE_EMPTY;
+}
 
 
 /// -------------------------    TileLayerBase     -------------------------------
@@ -199,13 +261,25 @@ TILE_TYPE BambooGateTile::GetTileType() {
 
 
 
-void TileTerrainLayer::Resize(int cols , int rows) {
-   tile_array.resize(cols , vector<TileBase*>(rows , 0));
+TileBaseLayer::TileBaseLayer() :
+      tile_array(),
+      ncols(0),
+      nrows(0),
+      mapx(0),
+      mapy(0)
+{}
+
+
+
+void TileBaseLayer::Resize(int cols , int rows) {
+   tile_array.resize(rows , vector<TileBase*>(cols , 0));
+   ncols = cols;
+   nrows = rows;
 }
 
 
 
-int TileTerrainLayer::Read(const char* map_string) {
+int TileBaseLayer::Read(const char* map_string) {
    stringstream ss;
    string s = map_string;
    s = Replace(s , "," , " ");
@@ -215,7 +289,7 @@ int TileTerrainLayer::Read(const char* map_string) {
 
 
 
-int TileTerrainLayer::Read(istream& in) {
+int TileBaseLayer::Read(istream& in) {
    int cols = 0;
    int rows = 0;
    if (!in.good()) {
@@ -239,8 +313,10 @@ int TileTerrainLayer::Read(istream& in) {
                return -1;
             }
          }
-         EAGLE_ASSERT(tile_num >= 0 && tile_num <= BRICK);/// Terrain tiles only
-         tile_array[y][x] = tile_type_map[tile_num];
+         EAGLE_ASSERT(tile_num >= TILE_EMPTY && tile_num <= BRICK);/// Terrain tiles only
+         TileBase* tile = tile_type_map[tile_num];
+         EAGLE_ASSERT(tile);
+         tile_array[y][x] = tile;
       }
    }
    return cols*rows;
@@ -248,7 +324,41 @@ int TileTerrainLayer::Read(istream& in) {
 
 
 
-int TileTerrainLayer::GetTileAt(int tx , int ty) {
+void TileBaseLayer::Draw(EagleGraphicsContext* win , int viewx , int viewy , int width , int height) {
+   
+   EagleImage* dest = win->GetDrawingTarget();
+   
+   dest->PushClippingRectangle(Rectangle(viewx , viewy , width , height));
+   
+   int ystart = (viewy - mapy)/TILE_HEIGHT - 1;
+   int ystop = (viewy + height - mapy)/TILE_HEIGHT;
+   
+   int xstart = (viewx - mapx)/TILE_WIDTH - 1;
+   int xstop = (viewx + width - mapx)/TILE_WIDTH;
+
+   if (ystart < 0) {ystart = 0;}
+   if (xstart < 0) {xstart = 0;}
+   
+   if (ystop > nrows) {ystop = nrows;}
+   if (xstop > ncols) {xstop = ncols;}
+
+
+   for (int y = ystart ; y < nrows && y < ystop ; ++y) {
+      for (int x = xstart ; x < ncols && x < xstop ; ++x) {
+///         if (((x + 1)*TILE_WIDTH + mapx) < viewx) {continue;}
+///         if ((x*TILE_WIDTH) + mapx > (viewx + width)) {break;}
+         TileBase* tile = tile_array[y][x];
+         tile->Draw(win , x*TILE_WIDTH + mapx , y*TILE_HEIGHT + mapy);
+      }
+   }
+   
+   
+   dest->PopClippingRectangle();
+}
+
+
+
+int TileBaseLayer::GetTileAt(int tx , int ty) {
    TileBase* t = tile_array[ty][tx];
    return t->GetTileType();
 }
