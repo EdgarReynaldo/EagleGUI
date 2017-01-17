@@ -24,6 +24,11 @@ class GameMap {
    
 public :
    
+///   GameMap();
+   GameMap() :
+         terrain_layer()
+   {}
+   
    void Draw(EagleGraphicsContext* win , int xpos , int ypos , int width , int height);
    
    void Load(const char* terrain_map);

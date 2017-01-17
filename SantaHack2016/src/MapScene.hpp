@@ -27,9 +27,11 @@ class MapScene : public Scene {
    
 public :
    
-   MapScene();
+///   MapScene();
    MapScene() :
-         our_window
+         our_window(0),
+         game_map(),
+         time_elapsed(0.0)
    {}
    
    

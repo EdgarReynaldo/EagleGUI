@@ -99,7 +99,21 @@ public :
 
 
 
-class BambooGateTile : public TileBase {
+class StateToggler {
+
+protected:
+   bool state_on;
+   
+public :   
+   void ToggleState();
+   
+   virtual void Activate()=0;
+   virtual void Deactivate()=0;
+};
+
+
+
+class BambooGateTile : public TileBase  , public StateToggler {
    
    bool gate_open;
    bool gate_horizontal;
@@ -109,9 +123,10 @@ class BambooGateTile : public TileBase {
 
 public :
    
+   BambooGateTile(bool open , bool horizontal , TileBase* open_tile , TileBase* closed_tile);
+
    virtual ~BambooGateTile() {}
    
-   BambooGateTile(bool open , bool horizontal , TileBase* open_tile , TileBase* closed_tile);
    virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
    virtual TILE_TYPE GetTileType();
 
@@ -119,12 +134,9 @@ public :
 };
 
 
-
-class SwitchTile : public TileBase {
+class SwitchTile : public TileBase , StateToggler {
    
 protected :
-   bool switch_on;
-
    TileBase switch_on_tile;
    TileBase switch_off_tile;
    
@@ -138,6 +150,22 @@ public :
    
    virtual void Draw(EagleGraphicsContext* win , int xpos , int ypos);
    virtual TILE_TYPE GetTileType();
+   
+};
+
+
+
+class DoorTile : public TileBase {
+
+protected :
+   bool door_open;
+   
+public :
+   
+   void OpenDoor();
+   void CloseDoor();
+   
+   
    
 };
 
@@ -204,11 +232,11 @@ public :
       case BAMBOO_GATE_VERT_OPEN :
          return new BambooGateTile(true , false , tile_type_map[BAMBOO_GATE_VERT_OPEN] , tile_type_map[BAMBOO_GATE_VERT_CLOSED]);
          break;
-      case :
-         
+      case SWITCH_ON :
+         return new SwitchTile(true , tile_type_map[SWITCH_ON] , tile_type_map[SWITCH_OFF]);
          break;
-      case :
-         
+      case SWITCH_OFF :
+         return new SwitchTile(false , tile_type_map[SWITCH_ON] , tile_type_map[SWITCH_OFF]);
          break;
       case :
          

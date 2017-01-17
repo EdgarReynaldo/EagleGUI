@@ -155,6 +155,22 @@ TILE_TYPE TileBase::GetTileType() {
 
 
 
+/// ------------------------      StateToggler      --------------------------
+
+
+
+void StateToggler::ToggleState() {
+   state_on = !state_on;
+   if (state_on) {
+      Activate();
+   }
+   else {
+      Deactivate();
+   }
+}
+
+
+
 /// ------------------------     BambooGate      --------------------------
 
 
