@@ -11,6 +11,8 @@
 
 
 
+
+
 TextDecorator::TextDecorator(std::string name,
                              WidgetBase* widget_to_decorate,
                              BasicText* basic_text,
@@ -78,25 +80,34 @@ void TextDecorator::UseTextWidget(BasicText* text_widget) {
    basic_text_widget->SetParent(this);
    basic_text_widget->SetDecoratorParent(this);
    text_widget_layout->Resize(1);
-   ReCenterText();
    text_widget_layout->PlaceWidget(basic_text_widget , 0);
-   text_widget_layout->SetWidgetDimensions(InnerArea().W() , InnerArea().H());
+   RepositionText();
 }
 
 
 
 void TextDecorator::CenterText(bool center_the_text) {
    center_text = center_the_text;
-   ReCenterText();
+   RepositionText();
 }
 
 
 
-void TextDecorator::ReCenterText() {
+void TextDecorator::RepositionText() {
    if (center_text) {
       pin_layout.SetPinPosition(0 , InnerArea().W()/2 , InnerArea().H()/2 , HALIGN_CENTER , VALIGN_CENTER);
+      basic_text_widget->SetWidgetDimensions(InnerArea().W() , InnerArea().H() , true);
+      basic_text_widget->Realign(HALIGN_CENTER , VALIGN_CENTER);
    }
 }
+
+
+
+void TextDecorator::SetText(std::string new_text) {
+   basic_text_widget->SetText(new_text);
+   RepositionText();
+}
+
 
 
 
@@ -152,7 +163,7 @@ int TextDecorator::PrivateUpdate(double tsec) {
 void TextDecorator::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
    WidgetDecorator::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
-   ReCenterText();
+   RepositionText();
 }
 
 
@@ -160,7 +171,7 @@ void TextDecorator::SetWidgetArea(int xpos , int ypos , int width , int height ,
 void TextDecorator::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
    WidgetDecorator::SetMarginsExpandFromInner(left,right,top,bottom);
    text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
-   ReCenterText();
+   RepositionText();
 }
 
 
@@ -168,7 +179,7 @@ void TextDecorator::SetMarginsExpandFromInner(int left , int right , int top , i
 void TextDecorator::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
    WidgetDecorator::SetMarginsContractFromOuter(left,right,top,bottom);
    text_widget_layout->WidgetBase::SetWidgetArea(InnerArea() , false);
-   ReCenterText();
+   RepositionText();
 }
 
 

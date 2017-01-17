@@ -241,7 +241,7 @@ bool Allegro5Image::CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , 
 bool Allegro5Image::Save(std::string filepath , std::string extension) {
    std::string path = filepath;
    path += extension;
-   al_save_bitmap(path.c_str() , bmp);
+   return al_save_bitmap(path.c_str() , bmp);
 }
 
 

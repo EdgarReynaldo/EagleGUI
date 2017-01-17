@@ -8,35 +8,17 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 
 
-#include <signal.h>
 #include <cstdlib>
 
 
 using namespace std;
 
 
-inline void signal_handler(int)
-{
-    EpicFail();
-}
-
-inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t)
-{
-   EpicFail();
-}
-
 
 string default_branch = "TextTestMain";
 
 int main(int argc , char** argv) {
    
-   signal(SIGABRT, signal_handler);
-   // _set_abort_behavior(0, _WRITE_ABORT_MSG|_CALL_REPORTFAULT);
-
-    std::set_terminate(EpicFail );
-    std::set_unexpected(EpicFail );
-   // _set_purecall_handler( &terminator );
-   // _set_invalid_parameter_handler( &invalid_parameter_handler );
     
    SendOutputToFile("Libtest.txt" , "" , false);
    
@@ -79,10 +61,11 @@ int main(int argc , char** argv) {
          try {
             /// TODO : Set argc and argv
             retval = TestRegistry::GetRegistryInstance().Run(userbranch.c_str() , argc , argv);
+            EagleLog() << StringPrintF("Test::Run returned %d\n" , retval) << std::endl;
          }
          catch (EagleException error) {
             /// Ignore error and continue running test, it will be logged anyway
-            EagleError() << StringPrintF("Test::Run returned %d\n" , retval) << std::endl;
+            test_menu.SetStatusMessage(error.what());
          }
       }
       

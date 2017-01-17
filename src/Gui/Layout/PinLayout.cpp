@@ -70,6 +70,13 @@ Pos2d Pin::GetPosition() {
 
 
 
+std::ostream& operator<<(std::ostream& os , const Pin& pin) {
+   os << "(PX,PY) = (" << pin.px << "," << pin.py << ") " << PrintAlignment(pin.halign , pin.valign);
+   return os; 
+}
+
+
+
 /// ----------------------      PinLayout      ------------------------------------------
 
 
@@ -92,7 +99,12 @@ void PinLayout::ReserveSlots(int nslots) {
 
 
 
-Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+/// newx and newy are always ignored. You must set the pin position yourself. The position returned depends solely on
+/// the new width and height and the old pin position.
+Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
+   (void)newx;
+   (void)newy;
+   
    WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
       return Rectangle(-1,-1,-1,-1);
@@ -100,7 +112,7 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    
    Rectangle current = widget->OuterArea();
    
-   Pin& pin = pins[widget_slot];
+   Pin pin = pins[widget_slot];
 
    if (newwidth == INT_MAX) {
       newwidth = current.W();
@@ -109,6 +121,8 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
       newheight = current.H();
    }
 
+   /// newx and newy are always ignored. YOu must set the pin position yourself.
+/**   
    if (newx != INT_MAX) {
       pin.px = newx;
       if (pin.halign == HALIGN_CENTER) {
@@ -127,7 +141,7 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
          pin.py += newheight;
       }
    }
-   
+//*/
    Rectangle pin_local_rect = pin.GetPinArea(newwidth , newheight);
    pin_local_rect.MoveBy(InnerArea().X() , InnerArea().Y());
    return pin_local_rect;
@@ -200,6 +214,19 @@ Pin PinLayout::GetPin(int pin_slot) {
 }
 
 
+
+std::ostream& PinLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << StringPrintF("PinLayout object at %p named %s (size %d):",
+                                this , GetName().c_str() , (int)GetLayoutSize()) << std::endl;
+   os << indent << "Pins (" << pins.size() << ") : " << std::endl;
+   ++indent;
+   for (int i = 0 ; i < (int)pins.size() ; ++i) {
+      os << indent << "Pin #" << i << "[" << pins[i] << "]" << std::endl;
+   }
+   --indent;
+   Layout::DescribeTo(os , indent);
+   return os;
+}
 
 
 

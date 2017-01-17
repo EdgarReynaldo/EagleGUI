@@ -190,13 +190,15 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
       widget->GetTextDecorator()->UseTextWidget(text);
    }
    
-   WidgetBase* text_widget = widget->GetTextDecorator()->GetTextWidget();
+   TextDecorator* text_decorator = widget->GetTextDecorator();
+   
+   WidgetBase* text_widget = text_decorator->GetTextWidget();
 
    ApplyTextAttributes(text_widget , att_map);
    
-   ApplyWidgetBaseAttributes(widget->GetDecoratorRoot() , att_map);
+   ApplyWidgetBaseAttributes(widget->GetTextDecorator() , att_map);
 
-   
+///   text_decorator->RepositionText();
    
    return widget;
 }
@@ -265,6 +267,7 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
 void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std::string>& attribute_map) {
    
    BasicText* text_widget = dynamic_cast<BasicText*>(widget);
+   
    if (!text_widget) {
       throw EagleException(StringPrintF("ApplyTextAttributes - widget %p is not a BasicText widget!!!\n" , widget));
    }

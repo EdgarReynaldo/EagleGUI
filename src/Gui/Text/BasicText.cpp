@@ -19,7 +19,7 @@ using namespace std;
 
 #include "Eagle/StringWork.hpp"
 
-
+#include "Eagle/Gui/Decorators/TextDecorator.hpp"
 
 #include <cstdlib>
 
@@ -257,20 +257,6 @@ void BasicText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad 
 
 void BasicText::SetText(std::string textstr , EagleFont* font) {
    text = textstr;
-   SetFont(font);
-   Refresh();
-}
-
-
-
-void BasicText::SetText(std::string textstr) {
-   text = textstr;
-   Refresh();
-}
-
-
-
-void BasicText::SetFont(EagleFont* font) {
    text_font = font;
    if (text_font) {
       fontheight = text_font->Height();
@@ -279,6 +265,24 @@ void BasicText::SetFont(EagleFont* font) {
       fontheight = 0;
    }
    Refresh();
+   
+   TextDecorator* text_decorator = dynamic_cast<TextDecorator*>(GetDecoratorParent());
+   
+   if (text_decorator) {
+      text_decorator->RepositionText();
+   }
+}
+
+
+
+void BasicText::SetText(std::string textstr) {
+   SetText(textstr , text_font);
+}
+
+
+
+void BasicText::SetFont(EagleFont* font) {
+   SetText(text , font);
 }
 
 
@@ -287,9 +291,9 @@ void BasicText::Refresh() {
    if (text_font) {
       RefreshTextPosition();
    }
-   else {
-      EagleInfo() << StringPrintF("INFO : BasicText::Refresh called on object %s without an active text_font.\n" , GetName().c_str());
-   }
+///   else {
+///      EagleInfo() << StringPrintF("INFO : BasicText::Refresh called on object %s without an active text_font.\n" , GetName().c_str());
+///   }
 }
 
 

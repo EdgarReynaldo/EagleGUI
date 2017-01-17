@@ -73,7 +73,7 @@ void BasicScrollButton::ResetTriangle() {
 
 
 void BasicScrollButton::SyncButtonArea() {
-   scroll_button->SetWidgetArea(InnerArea() , false);
+   scroll_button->WidgetBase::SetWidgetArea(InnerArea() , false);
    if (scroll_button == &our_basic_button) {
       ResetTriangle();
    }

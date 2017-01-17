@@ -43,7 +43,7 @@ public :
    RelativeLayout(std::string name);
    ~RelativeLayout();
 
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
    
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below
    ///        hide them so here we make them explicitly visible again :

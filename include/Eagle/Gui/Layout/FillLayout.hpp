@@ -20,7 +20,7 @@ public :
    FillLayout();
    
    
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
    
    virtual void PlaceWidget(WidgetBase* widget , int slot);/// Only valid slot is zero
    virtual int AddWidget(WidgetBase* widget);/// Will only add a widget to an empty layout

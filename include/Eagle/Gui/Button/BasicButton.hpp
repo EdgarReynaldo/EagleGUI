@@ -88,6 +88,10 @@ protected :
    
    AreaBase* click_area;
    bool delete_area_ptr;
+   bool use_default_click_area;
+   
+   
+   
    InputGroup input_group;// For holding a key / mouse / jstk button combo to activate the button
    bool pointer_input;
 
@@ -129,6 +133,8 @@ public :
    virtual void SetButtonUpState(bool button_up);
    virtual void ToggleButton();
    virtual void SetClickArea(AreaBase* new_click_area , bool delete_when_done);
+   void UseDefaultClickArea(bool use_default);
+   
    
    virtual void SetButtonState(bool hover , bool up);
    virtual void SetInputGroup(InputGroup ig);
@@ -144,6 +150,12 @@ public :
    virtual bool Hover();
    
    virtual BUTTON_ACTION_TYPE ActionType() {return btn_action_type;}
+   
+   /// Functions forwarded from WidgetBase
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);/// Pass INT_MAX if you don't care
+	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
+	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
+   
 };
 
 

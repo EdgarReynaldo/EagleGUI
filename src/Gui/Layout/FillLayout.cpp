@@ -22,7 +22,7 @@ FillLayout::FillLayout() :
 
 
 
-Rectangle FillLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+Rectangle FillLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
    (void)widget_slot;
    (void)newx;
    (void)newy;

@@ -59,7 +59,7 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
 /// ------------------------------------     Layout     ------------------------------------------
 
 
-int Layout::WidgetIndex(WidgetBase* widget) {
+int Layout::WidgetIndex(WidgetBase* widget) const {
    if (!widget) {return -1;}
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
       if (widget == wchildren[i]) {
@@ -71,7 +71,7 @@ int Layout::WidgetIndex(WidgetBase* widget) {
 
 
 
-WidgetBase* Layout::GetWidget(int slot) {
+WidgetBase* Layout::GetWidget(int slot)  const {
    if (slot < 0 || slot >= (int)wchildren.size()) {
       return 0;
    }
@@ -109,6 +109,12 @@ void Layout::ReserveSlots(int nslots) {
 
 
 void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
+   
+/** NOTE : This will not work right, and will prevent decorators from working properly.
+   while (widget->GetDecoratorParent()) {
+      widget = widget->GetDecoratorParent();
+   }
+*/   
    RemoveWidgetFromLayout(wchildren[slot]);
    wchildren[slot] = widget;
    RepositionChild(slot);
@@ -123,7 +129,7 @@ void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
 
 
 
-void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) {
+void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) const {
    EAGLE_ASSERT(widget);
    EAGLE_ASSERT(newx);
    EAGLE_ASSERT(newy);
@@ -303,7 +309,7 @@ void Layout::TakeOverLayoutFrom(Layout* l) {
 
 
 
-Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
+Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) const {
    
    WidgetBase* widget = GetWidget(slot);
    if (!widget) {
@@ -317,20 +323,26 @@ Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidt
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
+Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const {
    return RequestWidgetArea(WidgetIndex(widget) , newx , newy , newwidth , newheight);
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) {
+Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) const {
    return RequestWidgetArea(widget_slot , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget , Rectangle newarea) {
+Rectangle Layout::RequestWidgetArea(WidgetBase* widget , Rectangle newarea) const {
    return RequestWidgetArea(WidgetIndex(widget) , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
+}
+
+
+
+Rectangle Layout::RequestWidgetArea(WidgetBase* widget) const {
+   return RequestWidgetArea(WidgetIndex(widget) , INT_MAX , INT_MAX , INT_MAX , INT_MAX);
 }
 
 
@@ -501,6 +513,16 @@ std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
    ++indent;
    os << indent << PrintLayoutAttributes(attributes) << std::endl;
    os << indent << PrintAlignment(halign , valign) << std::endl;
+   os << indent << StringPrintF("WChildren (%d) : " , (int)wchildren.size()) << std::endl;
+   ++indent;
+   for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (w) {
+         os << indent << StringPrintF("#%d (%s) " , i , w->GetName().c_str());
+         os << "Requested Area = " << RequestWidgetArea(w) << std::endl;
+      }
+   }
+   --indent;
    WidgetBase::DescribeTo(os,indent);
    --indent;
    os << std::endl;

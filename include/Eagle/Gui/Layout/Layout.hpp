@@ -67,8 +67,8 @@ protected :
 
 
 
-   int WidgetIndex(WidgetBase* widget);
-   WidgetBase* GetWidget(int slot);
+   int WidgetIndex(WidgetBase* widget) const;
+   WidgetBase* GetWidget(int slot) const;
    int NextFreeSlot();
 
 
@@ -76,7 +76,7 @@ protected :
 
    void ReplaceWidget(WidgetBase* widget , int slot);
 
-   void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight);
+   void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) const;
 
    void RepositionAllChildren();
    void RepositionChild(int slot);
@@ -110,14 +110,16 @@ public :
 
    /// Pass INT_MAX for a parameter if you don't care about the position or size
    /// NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
    
-   Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
+   Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const;
 
-   Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea);
+   Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea) const;
 
-   Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea);
+   Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea) const;
 
+   Rectangle RequestWidgetArea(WidgetBase* widget) const;
+   
    
    void Resize(unsigned int nsize);
 

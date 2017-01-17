@@ -30,14 +30,14 @@
 
 
 
-Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) {
+Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) const {
    EAGLE_ASSERT(widget);
    int index = WidgetIndex(widget);
    return RequestWidgetRectangle(index);
 }
 
 
-Rectangle GridLayout::RequestWidgetRectangle(int slot_index) {
+Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
 
    WidgetBase* widget = GetWidget(slot_index);
 
@@ -178,7 +178,7 @@ void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bo
 
 
 
-Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
    WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
       return Rectangle(-1,-1,-1,-1);

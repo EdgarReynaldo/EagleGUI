@@ -27,26 +27,7 @@ protected :
    bool center_text;
    
    
-/**
-   void SetFlagState(bool state , void (WidgetBase::*StateSetter)(bool));
-
-    void TextDecorator::SetFlagState(bool state , void (WidgetBase::*StateSetter)(bool)) {
-        if (basic_text_widget) {
-           (basic_text_widget->WidgetBase::*StateSetter)(state);
-        }
-        (text_widget_layout->WidgetBase::->*StateSetter)(state);
-        (this->WidgetDecoratorBase::->*StateSetter)(state);
-    }
-//*/
-   
 public :
-/**   
-   TextDecorator();
-   TextDecorator(std::string name);
-   
-   TextDecorator(WidgetBase* widget_to_decorate , BasicText* basic_text);
-   TextDecorator(std::string name , WidgetBase* widget_to_decorate , BasicText* basic_text);
-//*/
    
    TextDecorator(std::string name = "",
                  WidgetBase* widget_to_decorate = 0,
@@ -64,11 +45,15 @@ public :
    void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to use the default text (which is blank until you set it)
       
    void CenterText(bool center_the_text);
-   void ReCenterText();
+   
+   void RepositionText();
 
    WidgetBase* DecoratedWidget() {return decorated_widget;}
    
    BasicText* GetTextWidget() {return basic_text_widget;}
+   
+   
+   void SetText(std::string new_text);
    
    
 ///   operator BasicText*() {return basic_text_widget;}

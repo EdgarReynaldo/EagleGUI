@@ -68,7 +68,7 @@ protected:
    void UseTextLayout(Layout* text_layout);/// layout may be NULL to use the default PinLayout
    
    void CenterText(bool center_the_text);
-   void ReCenterText();
+   void RepositionText();
 
    void UseTextWidget(BasicText* text_widget);/// text_widget may be NULL to remove the text
    

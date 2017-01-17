@@ -23,7 +23,9 @@
 
 #include "Eagle/System.hpp"
 #include "Eagle/Logging.hpp"
+#include "Eagle/Exception.hpp"
 
+#include <signal.h>
 
 
 
@@ -59,6 +61,16 @@ int register_system_shutdown_function() {
 
 
 
+
+inline void signal_handler(int)
+{
+    EpicFail();
+}
+
+inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t)
+{
+   EpicFail();
+}
 
 
 
@@ -151,6 +163,16 @@ bool EagleSystem::InitializeSystem() {
 ///   int success = (atexit(EagleShutdown) == 0);
 ///   EagleInfo() << StringPrintF("EagleSystem::InitializeSystem - atexit ptr is %p and atexit(EagleShutdown) returned %d\n" ,
 ///                              atexit , success);
+
+   signal(SIGABRT, signal_handler);
+   // _set_abort_behavior(0, _WRITE_ABORT_MSG|_CALL_REPORTFAULT);
+
+    std::set_terminate(EpicFail );
+    std::set_unexpected(EpicFail );
+   // _set_purecall_handler( &terminator );
+   // _set_invalid_parameter_handler( &invalid_parameter_handler );
+
+
 
    system_up = PrivateInitializeSystem();
    if (!system_up) {

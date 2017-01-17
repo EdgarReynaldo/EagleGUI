@@ -60,8 +60,8 @@ private :
 
 protected :
 	
-   Rectangle RequestWidgetRectangle(WidgetBase* widget);
-   Rectangle RequestWidgetRectangle(int slot_index);
+   Rectangle RequestWidgetRectangle(WidgetBase* widget) const;
+   Rectangle RequestWidgetRectangle(int slot_index) const;
 
    void CalculateGrid();
 
@@ -75,7 +75,7 @@ public :
    virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
    /// LayoutBase
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
    
    /// GridLayout
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed

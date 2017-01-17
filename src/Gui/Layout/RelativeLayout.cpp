@@ -54,7 +54,7 @@ RelativeLayout::~RelativeLayout() {
 
 
 
-Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
    
    (void)newx;
    (void)newy;

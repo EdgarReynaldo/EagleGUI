@@ -252,12 +252,12 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
       int yoffset = InnerArea().Y() + ypos;
       click_area->MoveBy(xoffset , yoffset);
       if (Up()) {
-         click_area->Fill(win , WCols()[FGCOL]);
-         click_area->Draw(win , WCols()[HLCOL]);
-      }
-      else {
          click_area->Fill(win , WCols()[MGCOL]);
          click_area->Draw(win , WCols()[FGCOL]);
+      }
+      else {
+         click_area->Fill(win , WCols()[BGCOL]);
+         click_area->Draw(win , WCols()[MGCOL]);
       }
       click_area->MoveBy(-xoffset , -yoffset);
    }
@@ -335,6 +335,7 @@ BasicButton::BasicButton(string name) :
       btn_state(BUTTON_UP),
       click_area(0),
       delete_area_ptr(false),
+      use_default_click_area(true),
       input_group(),
       pointer_input(false),
       spring_duration(SPRING_BTN_DURATION),
@@ -350,7 +351,7 @@ BasicButton::BasicButton(string name) :
       hover_message_enabled(false),
       held_message_enabled(false)
 {
-   
+   UseDefaultClickArea(true);
 }
 
 
@@ -411,6 +412,15 @@ void BasicButton::SetClickArea(AreaBase* new_click_area , bool delete_when_done)
    /// To clone or not to clone
 ///   click_area = new_click_area->Clone();
    delete_area_ptr = delete_when_done;
+}
+
+
+
+void BasicButton::UseDefaultClickArea(bool use_default) {
+   use_default_click_area = use_default;
+   if (use_default_click_area) {
+      SetClickArea(new Rectangle(area.MLeft() , area.MTop() , InnerArea().W() , InnerArea().H()) , true);
+   }
 }
 
 
@@ -501,6 +511,27 @@ bool BasicButton::Up() {
 
 bool BasicButton::Hover() {
    return ButtonHover(btn_state);
+}
+
+
+
+void BasicButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
+   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
+   UseDefaultClickArea(use_default_click_area);
+}
+
+
+
+void BasicButton::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
+   WidgetBase::SetMarginsExpandFromInner(left , right , top , bottom);
+   UseDefaultClickArea(use_default_click_area);
+}
+
+
+
+void BasicButton::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
+   WidgetBase::SetMarginsContractFromOuter(left , right , top , bottom);
+   UseDefaultClickArea(use_default_click_area);
 }
 
 

@@ -220,7 +220,7 @@ int TwoWaySplitter::AddWidget(WidgetBase* widget) {
 }
 
 
-Rectangle TwoWaySplitter::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+Rectangle TwoWaySplitter::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
    
    (void)newx;
    (void)newy;

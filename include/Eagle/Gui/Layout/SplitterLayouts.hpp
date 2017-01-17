@@ -91,7 +91,7 @@ public :
    virtual void PlaceWidget(WidgetBase* widget , int slot);
    virtual int AddWidget(WidgetBase* widget);
 
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
 
    
    /// Member functions

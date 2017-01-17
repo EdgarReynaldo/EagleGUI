@@ -202,8 +202,8 @@ void TextButton::CenterText(bool center_the_text) {
 
 
 
-void TextButton::ReCenterText() {
-   text_decorator.ReCenterText();
+void TextButton::RepositionText() {
+   text_decorator.RepositionText();
 }
 
 
