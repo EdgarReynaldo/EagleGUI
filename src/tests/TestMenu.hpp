@@ -34,8 +34,6 @@ protected :
    
    TextButton* quit_button;
    
-   BasicButton* basic_button;
-   
    EagleFont* font;
    
    bool quit;

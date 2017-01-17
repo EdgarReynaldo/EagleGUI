@@ -23,11 +23,16 @@ protected :
    double move_percent;
    
    
+   /// From AnimationBase
    virtual void OnSetAnimationPercent();
 
    virtual void OnLoopComplete();
    virtual void OnComplete();
 
+   /// From Layout
+   virtual void ReserveSlots(int nslots);
+
+   
 
 
 public :

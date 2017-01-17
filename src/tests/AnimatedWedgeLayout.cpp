@@ -29,6 +29,14 @@ void AnimatedWedgeLayout::OnComplete() {
 }
 
 
+
+void AnimatedWedgeLayout::ReserveSlots(int nslots) {
+   PinLayout::ReserveSlots(nslots);
+   ResetPositions();
+}
+
+
+
 void AnimatedWedgeLayout::SetAnchors(Pos2d head , Pos2d tail1 , Pos2d tail2) {
    head_pt = head;
    tail_pt1 = tail1;

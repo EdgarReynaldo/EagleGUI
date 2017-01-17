@@ -19,7 +19,6 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       relative_layout(),
       buttons(),
       quit_button(0),
-      basic_button(0),
       font(0),
       quit(false),
       selected(false),
@@ -51,10 +50,12 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    
    vector<const Test*> tests = TestRegistry::GetRegistryInstance().GetRegisteredTests();
    
+   wedge_layout.Resize(tests.size());
    wedge_layout.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
    wedge_layout.SetAnchors(Pos2d(3*w/4 , h/2) , Pos2d(w/4 , h/4) , Pos2d(w/4 , 3*h/4));
-   wedge_layout.Resize(tests.size());
+
    buttons.resize(tests.size());
+
    for (int i = 0 ; i < (int)tests.size() ; ++i) {
       TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
       EAGLE_ASSERT(btn);
