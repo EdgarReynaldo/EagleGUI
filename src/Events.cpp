@@ -31,10 +31,12 @@
 
 std::string EagleEventName(int event_num) {
 
+   /// TODO : Rework to use an array or a map or something faster
+
    int n = event_num;
    std::string s;
 
-   if (n >= 512) {s += StringPrintF("EAGLE_EVENT_USER_START + %d" , event_num - 512);}
+   if (n >= EAGLE_EVENT_USER_START) {s += StringPrintF("EAGLE_EVENT_USER_START + %d" , event_num - (int)EAGLE_EVENT_USER_START);}
    else if (n == EAGLE_EVENT_NONE)                   {s = "EAGLE_EVENT_NONE";}
    else if (n == EAGLE_EVENT_JOYSTICK_AXIS)          {s = "EAGLE_EVENT_JOYSTICK_AXIS";}
    else if (n == EAGLE_EVENT_JOYSTICK_BUTTON_DOWN)   {s = "EAGLE_EVENT_JOYSTICK_BUTTON_DOWN";}
@@ -50,6 +52,8 @@ std::string EagleEventName(int event_num) {
    else if (n == EAGLE_EVENT_MOUSE_LEAVE_DISPLAY)    {s = "EAGLE_EVENT_MOUSE_LEAVE_DISPLAY";}
    else if (n == EAGLE_EVENT_MOUSE_WARPED)           {s = "EAGLE_EVENT_MOUSE_WARPED";}
    else if (n == EAGLE_EVENT_TIMER)                  {s = "EAGLE_EVENT_TIMER";}
+   else if (n == EAGLE_EVENT_DISPLAY_CREATE)         {s = "EAGLE_EVENT_DISPLAY_CREATE";}
+   else if (n == EAGLE_EVENT_DISPLAY_DESTROY)        {s = "EAGLE_EVENT_DISPLAY_DESTROY";}
    else if (n == EAGLE_EVENT_DISPLAY_EXPOSE)         {s = "EAGLE_EVENT_DISPLAY_EXPOSE";}
    else if (n == EAGLE_EVENT_DISPLAY_RESIZE)         {s = "EAGLE_EVENT_DISPLAY_RESIZE";}
    else if (n == EAGLE_EVENT_DISPLAY_CLOSE)          {s = "EAGLE_EVENT_DISPLAY_CLOSE";}
@@ -81,56 +85,72 @@ int NextFreeEagleEventId() {
 
 
 bool IsMouseEvent(EagleEvent e) {
-   return (e.type == EAGLE_EVENT_MOUSE_AXES ||
-           e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN ||
-           e.type == EAGLE_EVENT_MOUSE_BUTTON_UP ||
-           e.type == EAGLE_EVENT_MOUSE_ENTER_DISPLAY ||
-           e.type == EAGLE_EVENT_MOUSE_LEAVE_DISPLAY ||
-           e.type == EAGLE_EVENT_MOUSE_WARPED);
+   return (e.type >= EAGLE_EVENT_MOUSE_EVENT_START && e.type <= EAGLE_EVENT_MOUSE_EVENT_STOP);
 }
 
 
 
 bool IsKeyboardEvent(EagleEvent e) {
-   return (e.type == EAGLE_EVENT_KEY_DOWN ||
-           e.type == EAGLE_EVENT_KEY_UP ||
-           e.type == EAGLE_EVENT_KEY_CHAR);
+   return (e.type >= EAGLE_EVENT_KEYBOARD_EVENT_START && e.type <= EAGLE_EVENT_KEYBOARD_EVENT_STOP);
 }
 
 
 
 bool IsJoystickEvent(EagleEvent e) {
-
-   return (e.type == EAGLE_EVENT_JOYSTICK_AXIS ||
-           e.type == EAGLE_EVENT_JOYSTICK_BUTTON_DOWN ||
-           e.type == EAGLE_EVENT_JOYSTICK_BUTTON_UP ||
-           e.type == EAGLE_EVENT_JOYSTICK_CONFIGURATION);
-   
+   return (e.type >= EAGLE_EVENT_JOYSTICK_EVENT_START && e.type <= EAGLE_EVENT_JOYSTICK_EVENT_STOP);   
 }
 
 
 
 bool IsTouchEvent(EagleEvent e) {
-   return (e.type == EAGLE_EVENT_TOUCH_BEGIN ||
-           e.type == EAGLE_EVENT_TOUCH_END ||
-           e.type == EAGLE_EVENT_TOUCH_MOVE ||
-           e.type == EAGLE_EVENT_TOUCH_CANCEL);
+   return (e.type >= EAGLE_EVENT_TOUCH_EVENT_START && e.type <= EAGLE_EVENT_TOUCH_EVENT_STOP);   
 }
 
 
 
 bool IsDisplayEvent(EagleEvent e) {
+   return (e.type >= EAGLE_EVENT_DISPLAY_EVENT_START && e.type <= EAGLE_EVENT_DISPLAY_EVENT_STOP);   
+}
 
-   return (e.type == EAGLE_EVENT_DISPLAY_EXPOSE ||
-           e.type == EAGLE_EVENT_DISPLAY_RESIZE ||
-           e.type == EAGLE_EVENT_DISPLAY_CLOSE ||
-           e.type == EAGLE_EVENT_DISPLAY_LOST ||
-           e.type == EAGLE_EVENT_DISPLAY_FOUND ||
-           e.type == EAGLE_EVENT_DISPLAY_SWITCH_IN ||
-           e.type == EAGLE_EVENT_DISPLAY_SWITCH_OUT ||
-           e.type == EAGLE_EVENT_DISPLAY_ORIENTATION ||
-           e.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING ||
-           e.type == EAGLE_EVENT_DISPLAY_RESUME_DRAWING);
+
+
+bool IsWidgetEvent(EagleEvent e) {
+   return (e.type >= EAGLE_EVENT_WIDGET_EVENT_START && e.type <= EAGLE_EVENT_WIDGET_EVENT_STOP);
+}
+
+
+
+bool IsSystemEvent(EagleEvent e) {
+   return (e.type >= EAGLE_EVENT_NONE && e.type < EAGLE_EVENT_USER_START);
+}
+
+
+
+bool IsUserEvent(EagleEvent e) {
+   return (e.type >= EAGLE_EVENT_USER_START);
+}
+
+
+
+int EagleEventGroupType(EagleEvent e) {
+   if (e.type == EAGLE_EVENT_NONE) {
+      return EAGLE_EVENT_TYPE_NONE;
+   }
+   int type =( (IsMouseEvent(e)?EAGLE_MOUSE_EVENT_TYPE:0) |
+               (IsKeyboardEvent(e)?EAGLE_KEYBOARD_EVENT_TYPE:0) |
+               (IsJoystickEvent(e)?EAGLE_JOYSTICK_EVENT_TYPE:0) |
+               (IsTouchEvent(e)?EAGLE_TOUCH_EVENT_TYPE:0) |
+               (IsDisplayEvent(e)?EAGLE_DISPLAY_EVENT_TYPE:0) |
+               (IsWidgetEvent(e)?EAGLE_WIDGET_EVENT_TYPE:0) |
+               (IsSystemEvent(e)?EAGLE_SYSTEM_EVENT_TYPE:0) |
+               (IsUserEvent(e)?EAGLE_USER_EVENT_TYPE:0) );
+   if (type) {
+      type |= EAGLE_ANY_EVENT_TYPE;
+   }
+   else {
+      type = EAGLE_UNDEFINED_EVENT_TYPE;
+   }
+   return type;
 }
 
 
@@ -150,20 +170,20 @@ bool EagleEventSource::OnList(EagleEventListener* l) {
 
 
 
-EagleEventSource::~EagleEventSource() {
-   for (std::vector<EagleEventListener*>::iterator it = listeners.begin() ; it != listeners.end() ; ) {
-      EagleEventListener* l = *it;
-      it = listeners.erase(it);
-      l->StopListeningTo(this);
+void EagleEventSource::EmitEvent(EagleEvent e) {
+   for (unsigned int n = 0 ; n < listeners.size(); ++n) {
+      EagleEventListener* l = listeners[n];
+      l->RespondToEvent(e);
    }
 }
 
 
 
-void EagleEventSource::EmitEvent(EagleEvent e) {
-   for (unsigned int n = 0 ; n < listeners.size(); ++n) {
-      EagleEventListener* l = listeners[n];
-      l->RespondToEvent(e);
+EagleEventSource::~EagleEventSource() {
+   for (std::vector<EagleEventListener*>::iterator it = listeners.begin() ; it != listeners.end() ; ) {
+      EagleEventListener* l = *it;
+      it = listeners.erase(it);
+      l->StopListeningTo(this);
    }
 }
 
@@ -188,6 +208,12 @@ void EagleEventSource::UnsubscribeListener(EagleEventListener* l) {
          ++it;
       }
    }
+}
+
+
+
+std::vector<EagleEventListener*> EagleEventSource::Listeners() {
+   return listeners;
 }
 
 
@@ -240,13 +266,13 @@ void EagleEventListener::StopListeningTo(EagleEventSource* s) {
 }
 
 
-
+/**
 void EagleEventListener::CheckSources() {
    for (unsigned int i = 0 ; i < sources.size() ; ++i) {
       sources[i]->ReadEvents();
    }
 }
-
+//*/
 
 
 /// ---------------------     EagleEventHandler     -------------------------------
@@ -258,30 +284,37 @@ EagleEventHandler::EagleEventHandler(bool delay_emitted_events) :
       EagleEventSource(),
       queue(),
       mutex(0),
+      cond_var(0),
       emitter_delay(delay_emitted_events)
 {}
-
-
-
-void EagleEventHandler::ReadEvents() {
-   RefreshQueue();
-}
 
 
 
 void EagleEventHandler::RespondToEvent(EagleEvent e) {
    
    EAGLE_ASSERT(mutex);
-   
-   
-   if (!emitter_delay && HasListeners()) {
-      EmitEvent(e);// notify our listeners to deal with it...
-   }
-   
+
+   /// Store the event   
    mutex->Lock();
-   queue.push_back(e);// and store the event ourselves...
+   queue.push_back(e);
    mutex->Unlock();
    
+   /// Wake any threads waiting on us
+   cond_var->SignalCondition();
+   
+   /// Notify our listeners
+   if (!emitter_delay && HasListeners()) {
+      EmitEvent(e);
+   }
+}
+
+
+
+void EagleEventHandler::Clear() {
+   EAGLE_ASSERT(mutex);
+   mutex->Lock();
+   queue.clear();
+   mutex->Unlock();
 }
 
 
@@ -295,8 +328,6 @@ void EagleEventHandler::PushEvent(EagleEvent e) {
 bool EagleEventHandler::HasEvent() {
    EAGLE_ASSERT(Valid());
    
-   RefreshQueue();
-   
    bool has_event = false;
    mutex->Lock();
    has_event = !queue.empty();
@@ -309,8 +340,6 @@ bool EagleEventHandler::HasEvent() {
 
 EagleEvent EagleEventHandler::TakeNextEvent() {
    EAGLE_ASSERT(Valid());
-   
-   RefreshQueue();
    
    EagleEvent e;
    
@@ -331,8 +360,6 @@ EagleEvent EagleEventHandler::TakeNextEvent() {
 EagleEvent EagleEventHandler::PeekNextEvent() {
    EAGLE_ASSERT(Valid());
    
-   RefreshQueue();
-   
    EagleEvent e;
    mutex->Lock();
    if (!queue.empty()) {e = queue.front();}
@@ -342,10 +369,19 @@ EagleEvent EagleEventHandler::PeekNextEvent() {
 
 
 
+void EagleEventHandler::InsertEventFront(EagleEvent e) {
+   EAGLE_ASSERT(mutex);
+   mutex->Lock();
+   queue.push_front(e);
+   mutex->Unlock();
+}
+
+
+
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype) {
    std::vector<EagleEvent> events;
    mutex->Lock();
-   for (std::list<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
+   for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.type == etype) {
          events.push_back(e);
@@ -364,7 +400,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype) 
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc) {
    std::vector<EagleEvent> events;
    mutex->Lock();
-   for (std::list<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
+   for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.source == esrc) {
          events.push_back(e);
@@ -383,7 +419,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc) 
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype , EagleEventSource* esrc) {
    std::vector<EagleEvent> events;
    mutex->Lock();
-   for (std::list<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
+   for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.type == etype && e.source == esrc) {
          events.push_back(e);
@@ -402,8 +438,6 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
 EagleEvent EagleEventHandler::WaitForEvent() {
    EAGLE_ASSERT(Valid());
    
-   RefreshQueue();
-   
    EagleEvent e;
    mutex->Lock();
    if (!queue.empty()) {
@@ -417,8 +451,10 @@ EagleEvent EagleEventHandler::WaitForEvent() {
       return e;
    }
    mutex->Unlock();
-   // wait for event from event thread saying there is a message in the queue
-   e = PrivateWaitForEvent();
+   /// wait for event from event thread saying there is a message in the queue
+   cond_var->WaitForCondition();
+   e = TakeNextEvent();
+
    if (emitter_delay) {
       EmitEvent(e);
    }
@@ -429,8 +465,6 @@ EagleEvent EagleEventHandler::WaitForEvent() {
 
 EagleEvent EagleEventHandler::WaitForEvent(double timeout) {
    EAGLE_ASSERT(Valid());
-   
-   RefreshQueue();
    
    EagleEvent e;
    mutex->Lock();
@@ -443,7 +477,14 @@ EagleEvent EagleEventHandler::WaitForEvent(double timeout) {
    }
    mutex->Unlock();
    // wait for event from event thread saying there is a message in the queue
-   return PrivateWaitForEvent(timeout);
+   int ret = 0;
+   ret = cond_var->WaitForConditionUntil(timeout);
+   if (!ret) {
+      /// signalled - there is an event now
+      return TakeNextEvent();
+   }
+   /// timed out, return default event
+   return e;
 }
 
 
@@ -458,10 +499,25 @@ EagleEvent EagleEventHandler::WaitForEvent(EAGLE_EVENT_TYPE t) {
 
 
 
-void EagleEventHandler::RefreshQueue() {
-   PrivateRefreshQueue();
-   CheckSources();
+/**
+EagleEventHandler* EagleEventHandler::CloneEventHandler() {
+   EAGLE_ASSERT(mutex);
+   EagleEventHandler* new_queue = new EagleEventHandler();
+   if (!new_queue->Create() || (new_queue && !new_queue->Valid())) {
+      delete new_queue;
+      return 0;
+   }
+   
+   mutex->Lock();
+   new_queue->queue = queue;
+   for (int i = 0 ; i < (int)sources.size() ; ++i) {
+      new_queue->ListenTo(sources[i]);
+   }
+   mutex->Unlock();
+   
+   return new_queue;
 }
+//*/
 
 
 

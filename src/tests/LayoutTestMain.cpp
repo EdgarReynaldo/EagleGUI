@@ -6,23 +6,16 @@
 #include "Eagle.hpp"
 #include "Eagle/backends/Allegro5backend.hpp"
 
-
+#include "TestRegistry.hpp"
 
 int LayoutTestMain(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
    
-   Allegro5System* sys = new Allegro5System();
-   if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
-      delete sys;
-      return 1;
-   }
-   
    EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,0);
    if (!win) {
-      delete sys;
-      return 2;
+      return 1;
    }
    
    win->Clear(EagleColor(0,127,255));
@@ -77,16 +70,6 @@ int LayoutTestMain(int argc , char** argv) {
       } while (!sys->UpToDate());
          
    } while (!close);
-   
-   
-   
-   
-   
-   
-   
-   delete sys;
-   
-   al_uninstall_system();
    
    return 0;
 }

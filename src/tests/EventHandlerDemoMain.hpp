@@ -7,7 +7,7 @@
 
 #include "TestRegistry.hpp"
 
-int EventHandlerDemoMain(int argc , char** argv);
+int EventHandlerDemoMain(int argc , char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(EventHandlerDemoMain);
 

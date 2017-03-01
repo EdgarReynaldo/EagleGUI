@@ -11,14 +11,19 @@
 
 
 
+
 EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
    EagleEvent ee;
 
-   ee.type = (EAGLE_EVENT_TYPE)(int)ev.type;
+   ee.type = (EAGLE_EVENT_TYPE)(int)ev.type;/// TODO : Translate allegro events into eagle events once they are actually different
    ee.timestamp = ev.any.timestamp;
 /*
    EAGLE_EVENT_TYPE type;
+
    EagleEventSource* source;
+
+   EagleGraphicsContext* window;
+   
    double timestamp;// In seconds since program started
    union {
       KEYBOARD_EVENT_DATA keyboard;// keycode display unicode modifiers repeat
@@ -30,11 +35,9 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       WIDGET_EVENT_DATA widget;
       USER_EVENT_DATA data;
    };
+
 */
 
-   Allegro5System* a5sys = dynamic_cast<Allegro5System*>(eagle_system);
-   EAGLE_ASSERT(a5sys);
-   
    switch (ev.type) {
       case ALLEGRO_EVENT_JOYSTICK_AXIS :
       case ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN :
@@ -59,7 +62,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
          ee.keyboard.unicode = ev.keyboard.unichar;
          ee.keyboard.modifiers = ev.keyboard.modifiers;
          ee.keyboard.repeat = ev.keyboard.repeat;
-         ee.keyboard.display = a5sys->GetGraphicsContext(ev.keyboard.display);
          break;
       case ALLEGRO_EVENT_MOUSE_AXES :
       case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN :
@@ -76,7 +78,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
          ee.mouse.dz = ev.mouse.dz;
          ee.mouse.dw = ev.mouse.dw;
          ee.mouse.button = ev.mouse.button;
-         ee.mouse.display = a5sys->GetGraphicsContext(ev.mouse.display);
          break;
       case ALLEGRO_EVENT_TIMER :
          ee.timer.eagle_timer_source = 0;// did not come from an Eagletimer
@@ -93,7 +94,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_DISPLAY_ORIENTATION :
       case ALLEGRO_EVENT_DISPLAY_HALT_DRAWING :
       case ALLEGRO_EVENT_DISPLAY_RESUME_DRAWING :
-         ee.display.source = a5sys->GetGraphicsContext(ev.display.source);
          ee.display.x = ev.display.x;
          ee.display.y = ev.display.y;
          ee.display.width = ev.display.width;
@@ -105,7 +105,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_TOUCH_END :
       case ALLEGRO_EVENT_TOUCH_MOVE :
       case ALLEGRO_EVENT_TOUCH_CANCEL :
-         ee.touch.display = a5sys->GetGraphicsContext(ev.touch.display);
          ee.touch.id = ev.touch.id;
          ee.touch.x = ev.touch.x;
          ee.touch.y = ev.touch.y;
@@ -120,8 +119,9 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
 
 
 
-
 void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
+   
+   /// TODO : Rework this to use the Allegro5EventHandler's waitforevent function
    
    
 //   Allegro5EventHandler* a5_event_handler = dynamic_cast<Allegro5EventHandler*>(event_handler);
@@ -153,7 +153,7 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
          }
       }
       else {
-         a5_event_handler->RespondToEvent(GetEagleEvent(ev));
+         a5_event_handler->PushEvent(GetEagleEvent(ev));
          cond_var->BroadcastCondition();// alert any thread waiting on the condition (an event)
       }
    }
@@ -172,42 +172,11 @@ bool Allegro5EventHandler::Running() {
 
 
 
-EagleEvent Allegro5EventHandler::PrivateWaitForEvent() {
-   // we need to wait for the event thread to signal there is a message in the queue
-   // parent has already determined there is no event in the queue, so we wait
-   cond_var->WaitForCondition();
-   return TakeNextEvent();
-}
-
-
-
-EagleEvent Allegro5EventHandler::PrivateWaitForEvent(double timeout) {
-
-   int ret = 0;
-   ret = cond_var->WaitForConditionUntil(timeout);
-   EagleEvent e;
-   if (!ret) {
-      // signalled - there is an event now
-      return TakeNextEvent();
-   }
-   // timed out, return default event
-   return e;
-}
-
-
-
-void Allegro5EventHandler::PrivateRefreshQueue() {
-   // Do nothing, event thread is already waiting on events for us
-}
-
-
-
 Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events) :
       EagleEventHandler(delay_emitted_events),
       event_queue(0),
       main_source(),
-      event_thread(0),
-      cond_var(0)
+      event_thread(0)
 {
    al_init_user_event_source(&main_source);
 }
@@ -233,13 +202,26 @@ bool Allegro5EventHandler::Create() {
    
    cond_var = new Allegro5ConditionVar();
    
-   // don't call create on thread until queue, mutex, and condvar are in place
+   /// don't call create on thread until queue, mutex, and condvar are in place
    if (!event_queue || 
        !mutex->Create(false) || 
        !cond_var->Create() ||
        !event_thread->Create(Allegro5EventThreadProcess , this)
       )
    {
+      if (!event_queue) {
+         EagleError() << "Allegro5EventHandler::Create : Failed to create event_queue." << std::endl;
+      }
+      else if (!mutex->Valid()) {
+         EagleError() << "Allegro5EventHandler::Create : Failed to create valid mutex." << std::endl;
+      }
+      else if (!cond_var->Valid()) {
+         EagleError() << "Allegro5EventHandler::Create : Failed to create valid condition variable." << std::endl;
+      }
+      else {
+         EagleError() << "Allegro5EventHandler::Create : Failed to create Allegro5EventThreadProcess thread." << std::endl;
+      }
+      
       Destroy();
       return false;
    }
@@ -291,10 +273,10 @@ bool Allegro5EventHandler::Valid() {
    return (event_queue && 
            mutex && 
            mutex->Valid() && 
-           event_thread && 
-           event_thread->Valid() && 
            cond_var && 
-           cond_var->Valid()
+           cond_var->Valid() &&
+           event_thread && 
+           event_thread->Valid()
          );
 }
 
@@ -302,7 +284,7 @@ bool Allegro5EventHandler::Valid() {
 
 void Allegro5EventHandler::RespondToEvent(EagleEvent ee) {
    EagleEventHandler::RespondToEvent(ee);// emits and queues message
-   // now wake any threads waiting on us
+   /// now wake any threads waiting on us
    cond_var->BroadcastCondition();
 }
 

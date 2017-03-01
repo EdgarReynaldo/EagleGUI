@@ -15,11 +15,12 @@
 #include "allegro5/allegro.h"
 
 
-EagleEvent GetEagleEvent(ALLEGRO_EVENT ev);
-
 enum EVENT_THREAD_MESSAGES {
    CLOSE_EVENT_THREAD = 0
 };
+
+EagleEvent GetEagleEvent(ALLEGRO_EVENT ev);
+
 
 void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler);
 
@@ -35,17 +36,8 @@ private :
    
    Allegro5Thread* event_thread;
    
-   Allegro5ConditionVar* cond_var;
-
-   bool emitter_delay;
-
 
    bool Running();
-
-   virtual EagleEvent PrivateWaitForEvent();
-   virtual EagleEvent PrivateWaitForEvent(double timeout);
-   
-   virtual void PrivateRefreshQueue();
 
 public :
 

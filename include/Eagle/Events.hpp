@@ -25,6 +25,7 @@
 #define EagleEvents_HPP
 
 #include <list>
+#include <deque>
 #include <vector>
 #include <string>
 
@@ -33,7 +34,7 @@
 
 #include "Eagle/Mutexes.hpp"
 #include "Eagle/Exception.hpp"
-
+#include "Eagle/Conditions.hpp"
 
 
 
@@ -42,14 +43,24 @@ class EagleGraphicsContext;
 enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_NONE                        =  0,
    
+   EAGLE_EVENT_JOYSTICK_EVENT_START        =  1,
+
    EAGLE_EVENT_JOYSTICK_AXIS               =  1,
    EAGLE_EVENT_JOYSTICK_BUTTON_DOWN        =  2,
    EAGLE_EVENT_JOYSTICK_BUTTON_UP          =  3,
    EAGLE_EVENT_JOYSTICK_CONFIGURATION      =  4,
 
+   EAGLE_EVENT_JOYSTICK_EVENT_STOP         =  4,
+
+   EAGLE_EVENT_KEYBOARD_EVENT_START        = 10,
+
    EAGLE_EVENT_KEY_DOWN                    = 10,
    EAGLE_EVENT_KEY_CHAR                    = 11,
    EAGLE_EVENT_KEY_UP                      = 12,
+
+   EAGLE_EVENT_KEYBOARD_EVENT_STOP         = 12,
+
+   EAGLE_EVENT_MOUSE_EVENT_START           = 20,
 
    EAGLE_EVENT_MOUSE_AXES                  = 20,
    EAGLE_EVENT_MOUSE_BUTTON_DOWN           = 21,
@@ -58,8 +69,19 @@ enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_MOUSE_LEAVE_DISPLAY         = 24,
    EAGLE_EVENT_MOUSE_WARPED                = 25,
 
+   EAGLE_EVENT_MOUSE_EVENT_STOP            = 25,
+
+   EAGLE_EVENT_TIMER_EVENT_START           = 30,
+
    EAGLE_EVENT_TIMER                       = 30,
 
+   EAGLE_EVENT_TIMER_EVENT_STOP            = 30,
+
+   EAGLE_EVENT_DISPLAY_EVENT_START         = 38,
+
+   EAGLE_EVENT_DISPLAY_CREATE              = 38,/// No matching allegro event
+   EAGLE_EVENT_DISPLAY_DESTROY             = 39,/// No matching allegro event
+   
    EAGLE_EVENT_DISPLAY_EXPOSE              = 40,
    EAGLE_EVENT_DISPLAY_RESIZE              = 41,
    EAGLE_EVENT_DISPLAY_CLOSE               = 42,
@@ -71,15 +93,23 @@ enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_DISPLAY_HALT_DRAWING        = 48,
    EAGLE_EVENT_DISPLAY_RESUME_DRAWING      = 49,
 
+   EAGLE_EVENT_DISPLAY_EVENT_STOP          = 49,
+
+   EAGLE_EVENT_TOUCH_EVENT_START           = 50,
+
    EAGLE_EVENT_TOUCH_BEGIN                 = 50,
    EAGLE_EVENT_TOUCH_END                   = 51,
    EAGLE_EVENT_TOUCH_MOVE                  = 52,
    EAGLE_EVENT_TOUCH_CANCEL                = 53,
 
+   EAGLE_EVENT_TOUCH_EVENT_STOP            = 53,
+   
+   
+   EAGLE_EVENT_WIDGET_EVENT_START          = 60,
    EAGLE_EVENT_WIDGET                      = 60,
+   EAGLE_EVENT_WIDGET_EVENT_STOP           = 60,
 
    EAGLE_EVENT_USER_START                  = 1024
-
 };
 
 
@@ -92,11 +122,16 @@ int NextFreeEagleEventId();
 
 struct KEYBOARD_EVENT_DATA {
    int keycode;
-   EagleGraphicsContext* display;
    int unicode;
    int modifiers;
    bool repeat;
    
+   KEYBOARD_EVENT_DATA() :
+         keycode(-1),
+         unicode(-1),
+         modifiers(-1),
+         repeat(false)
+   {}
 };
 
 struct MOUSE_EVENT_DATA {
@@ -109,7 +144,18 @@ struct MOUSE_EVENT_DATA {
    int dz;
    int dw;
    unsigned int button;// numbers from 1,2,3...
-   EagleGraphicsContext* display;
+   
+   MOUSE_EVENT_DATA() :
+         x(-1),
+         y(-1),
+         z(-1),
+         w(-1),
+         dx(0),
+         dy(0),
+         dz(0),
+         dw(0),
+         button(-1)
+   {}
 };
 
 class EagleJoystickData;
@@ -121,16 +167,33 @@ struct JOYSTICK_EVENT_DATA {
    int axis;
    int button;
    float pos;
+   
+   JOYSTICK_EVENT_DATA() :
+         id(0),
+         nid(-1),
+         stick(-1),
+         axis(-1),
+         button(-1),
+         pos(-1.0f)
+   {}
 };
 
 struct TOUCH_EVENT_DATA {
-   EagleGraphicsContext* display;
    int id;
    float x;
    float y;
    float dx;
    float dy;
    bool primary;
+   
+   TOUCH_EVENT_DATA() :
+         id(-1),
+         x(-1.0f),
+         y(-1.0f),
+         dx(0.0f),
+         dy(0.0f),
+         primary(false)
+   {}
 };
 
 class EagleTimer;
@@ -139,6 +202,12 @@ struct TIMER_EVENT_DATA {
    EagleTimer* eagle_timer_source;
    void* raw_source;
    long long int count;
+   
+   TIMER_EVENT_DATA() :
+         eagle_timer_source(0),
+         raw_source(0),
+         count(-1)
+   {}
 };
 
 enum EAGLE_DISPLAY_ORIENTATION {
@@ -151,23 +220,59 @@ enum EAGLE_DISPLAY_ORIENTATION {
 };
 
 struct DISPLAY_EVENT_DATA {
-   EagleGraphicsContext* source;
    int x;
    int y;
    int width;
    int height;
    int orientation;// an EAGLE_DISPLAY_ORIENTATION
+   
+   DISPLAY_EVENT_DATA() :
+         x(-1),
+         y(-1),
+         width(0),
+         height(0),
+         orientation(EAGLE_DISPLAY_ORIENTATION_0_DEGREES)
+   {}
+};
+
+enum AVSTATE {
+   
+};
+
+class EagleAudio;
+
+struct AUDIO_EVENT_DATA {
+   EagleAudio* audio_source;
+   AVSTATE avstate;
+};
+
+class EagleVideo;
+
+struct VIDEO_EVENT_DATA {
+   EagleVideo* video_source;
+   AVSTATE avstate;
 };
 
 struct WIDGET_EVENT_DATA {
    WidgetBase* from;
    unsigned int topic;
    int msgs;
+   
+   WIDGET_EVENT_DATA() :
+         from(0),
+         topic(TOPIC_NONE),
+         msgs(0)
+   {}
 };
 
 struct USER_EVENT_DATA {
    int type;
    void* userdata;
+   
+   USER_EVENT_DATA() :
+         type(EAGLE_EVENT_USER_START),
+         userdata(0)
+   {}
 };
 
 
@@ -178,7 +283,11 @@ class EagleEvent {
 public :
 
    EAGLE_EVENT_TYPE type;
+
    EagleEventSource* source;
+
+   EagleGraphicsContext* window;
+   
    double timestamp;// In seconds since program started
    union {
       KEYBOARD_EVENT_DATA keyboard;// keycode display unicode modifiers repeat
@@ -187,6 +296,8 @@ public :
       TOUCH_EVENT_DATA touch;// display id x y dx dy primary
       TIMER_EVENT_DATA timer;// source count
       DISPLAY_EVENT_DATA display;// source x y width height orientation
+      AUDIO_EVENT_DATA audio;
+      VIDEO_EVENT_DATA video;
       WIDGET_EVENT_DATA widget;
       USER_EVENT_DATA data;
    };
@@ -195,10 +306,29 @@ public :
    EagleEvent() : 
          type(EAGLE_EVENT_NONE),
          source(0),
+         window(0),
          timestamp(-1.0)
    {}
 
 };
+
+
+
+/// Bitfield describing event type
+enum EAGLE_EVENT_GROUP_TYPE {
+   EAGLE_EVENT_TYPE_NONE      = 0,
+   EAGLE_MOUSE_EVENT_TYPE     = 1 << 0,
+   EAGLE_KEYBOARD_EVENT_TYPE  = 1 << 1,
+   EAGLE_JOYSTICK_EVENT_TYPE  = 1 << 2,
+   EAGLE_TOUCH_EVENT_TYPE     = 1 << 3,
+   EAGLE_DISPLAY_EVENT_TYPE   = 1 << 4,
+   EAGLE_WIDGET_EVENT_TYPE    = 1 << 5,
+   EAGLE_SYSTEM_EVENT_TYPE    = 1 << 6,
+   EAGLE_USER_EVENT_TYPE      = 1 << 7,
+   EAGLE_ANY_EVENT_TYPE       = 1 << 8,
+   EAGLE_UNDEFINED_EVENT_TYPE = 1 << 9
+};
+
 
 
 bool IsMouseEvent(EagleEvent e);
@@ -206,7 +336,24 @@ bool IsKeyboardEvent(EagleEvent e);
 bool IsJoystickEvent(EagleEvent e);
 bool IsTouchEvent(EagleEvent e);
 bool IsDisplayEvent(EagleEvent e);
+bool IsWidgetEvent(EagleEvent e);
 
+bool IsSystemEvent(EagleEvent e);
+bool IsUserEvent(EagleEvent e);
+
+
+
+int EagleEventGroupType(EagleEvent e);
+
+
+
+class EagleEventFilter {
+   int types_to_keep;
+   int types_to_filter;
+   
+   EagleGraphicsContext* windows_to_keep;
+   
+};
 
 
 
@@ -222,16 +369,18 @@ private :
    bool OnList(EagleEventListener* l);
 
 public :
+
+   void EmitEvent(EagleEvent e);
+   
    EagleEventSource() : listeners() {}
    virtual ~EagleEventSource();
-   
-   void EmitEvent(EagleEvent e);
    
    void SubscribeListener(EagleEventListener* l);
    void UnsubscribeListener(EagleEventListener* l);
    bool HasListeners() {return !listeners.empty();}
    
-   virtual void ReadEvents()=0;/// TODO : Has this been implemented in any subclasses? What was it for again? Polling?
+   std::vector<EagleEventListener*> Listeners();
+
 };
 
 
@@ -252,22 +401,18 @@ public :
    void StopListeningTo(EagleEventSource* s);
    
    bool HasSources() {return !sources.empty();}
-   void CheckSources();
+///   void CheckSources();
 };
-
 
 
 /// Abstract base class!
 class EagleEventHandler : public EagleEventListener , public EagleEventSource {
 protected :
-   std::list<EagleEvent> queue;
+   std::deque<EagleEvent> queue;
    EagleMutex* mutex;
-   bool emitter_delay;
-
-   virtual EagleEvent PrivateWaitForEvent()=0;
-   virtual EagleEvent PrivateWaitForEvent(double timeout)=0;
-   virtual void PrivateRefreshQueue()=0;
-
+   EagleConditionVar* cond_var;
+   bool emitter_delay;/// To decide whether events are emitted immediately upon receipt,
+                      /// or whether they are emitted as they are taken off the queue
 
 public :
    EagleEventHandler(bool delay_emitted_events = true);
@@ -277,25 +422,19 @@ public :
    virtual void Destroy()=0;
    virtual bool Valid()=0;
 
-   /// EagleEventSource
-   void ReadEvents();
-
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e);
    
-///   void Clear();
-   void Clear() {
-      EAGLE_ASSERT(mutex);
-      mutex->Lock();
-      queue.clear();
-      mutex->Unlock();
-   }
+   void Clear();
 
    void PushEvent(EagleEvent e);
 
    bool HasEvent();
    EagleEvent TakeNextEvent();
    EagleEvent PeekNextEvent();
+   
+   void InsertEventFront(EagleEvent e);/// Does not EmitEvent...merely adds the event to the front of the queue
+                                       /// Allows you to 'put back' an event
    
    std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype);
    std::vector<EagleEvent> FilterEvents(EagleEventSource* esrc);
@@ -305,9 +444,9 @@ public :
    EagleEvent WaitForEvent(double timeout);
    EagleEvent WaitForEvent(EAGLE_EVENT_TYPE t);
 
-   void RefreshQueue();
-
-
+///   EagleEventHandler* CloneEventHandler();TODO : Make this abstract and virtual and move it to Allegro5EventHandler
+   
+   
 ///   virtual void SubscribeToAllAvailableSources()=0;/// Should be system function
 };
 

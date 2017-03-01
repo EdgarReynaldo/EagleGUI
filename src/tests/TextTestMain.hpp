@@ -8,7 +8,7 @@
 
 #include "TestRegistry.hpp"
 
-int TextTestMain(int argc , char** argv);
+int TextTestMain(int argc , char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(TextTestMain);
 

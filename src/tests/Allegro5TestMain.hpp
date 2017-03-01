@@ -6,7 +6,7 @@
 #include "TestRegistry.hpp"
 
 
-int Allegro5TestMain(int argc , char** argv);
+int Allegro5TestMain(int argc , char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(Allegro5TestMain);
 

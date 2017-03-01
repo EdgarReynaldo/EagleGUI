@@ -45,7 +45,7 @@ inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, 
 
 
 
-int GuiTestMain(int argc , char** argv) {
+int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
@@ -256,6 +256,10 @@ int GuiTestMain(int argc , char** argv) {
    
    do {
       
+      if (test_runner->ShouldStop()) {
+         break;
+      }
+      
       if (redraw) {
          
 //         win->Clear(EagleColor(rand()%255 , rand()%255 , rand() % 255));
@@ -392,26 +396,11 @@ int GuiTestMain(int argc , char** argv) {
 
 
 
-int GuiTestMain2(int argc , char** argv) {
+int GuiTestMain2(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
-   
-   signal(SIGABRT, signal_handler);
-// _set_abort_behavior(0, _WRITE_ABORT_MSG|_CALL_REPORTFAULT);
 
-   std::set_terminate( &terminator );
-   std::set_unexpected( &terminator );
-// _set_purecall_handler( &terminator );
-// _set_invalid_parameter_handler( &invalid_parameter_handler );
- 
- 
- /*
-   printf("Registering 'shutdown_main' with atexit. Atexit ptr is %p\n" , (void*)atexit);
-   printf("atexit(shutdown_main) returned %d\n" , atexit(shutdown_main));
-   
-   register_object_shutdown_function();
-*/   
    al_set_new_window_position(112,84);
    al_set_new_window_title("Eagle 5 dynamic layout test ");
 
@@ -620,6 +609,10 @@ int GuiTestMain2(int argc , char** argv) {
    
    while (!quit) {
       
+      if (test_runner->ShouldStop()) {
+         break;
+      }
+      
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
 ///         double et = sys->GetProgramTime();
@@ -820,10 +813,12 @@ int GuiTestMain2(int argc , char** argv) {
 
 
 
-int GuiTestMain3(int argc , char** argv) {
+int GuiTestMain3(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
+   
+   (void)test_runner;
    
    Allegro5GraphicsContext a5window(800,600 , EAGLE_WINDOWED);
 

@@ -7,7 +7,6 @@
 
 #include "Eagle/Gui/Factory/WidgetFactory.hpp"
 
-
 /// --------------------------     TestMenu     ----------------------------------
 
 
@@ -52,7 +51,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    
    wedge_layout.Resize(tests.size());
    wedge_layout.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
-   wedge_layout.SetAnchors(Pos2d(3*w/4 , h/2) , Pos2d(w/4 , h/4) , Pos2d(w/4 , 3*h/4));
+   wedge_layout.SetAnchors(Pos2d(3*w/4 , h/2) , Pos2d(w/2 , h/8) , Pos2d(w/2 , 7*h/8));
 
    buttons.resize(tests.size());
 
@@ -60,7 +59,8 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
       TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
       EAGLE_ASSERT(btn);
       btn->SetText(tests[i]->Name());
-      wedge_layout.PlaceWidget(btn , i);
+      btn->SetMarginsContractFromOuter(5,5,5,5);
+      wedge_layout.PlaceWidget(btn->GetTextDecorator() , i);
    }
    
    
@@ -71,13 +71,22 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
 
 
 void TestMenu::Run() {
-   sys->GetSystemQueue()->Clear();
+   
+   EagleEventHandler* test_queue = sys->CreateEventHandler(false);
+   test_queue->ListenTo(sys->GetInputHandler());
+   test_queue->ListenTo(sys->GetSystemTimer());
+   test_queue->ListenTo(win);
+   
+   
    sys->GetSystemTimer()->Start();
    selected = false;
    bool redraw = true;
    bool clip = true;
    bool debug_draw = true;
    WidgetBase::DisplayWidgetArea(debug_draw);
+
+   vector<TestRunner*> running_tests;
+   
    while (!quit) {
       /// Display
       
@@ -91,6 +100,9 @@ void TestMenu::Run() {
          
          win->DrawTextString(font , status_message.c_str() , win->Width()/2 , win->Height() - font->Height() - 10 ,
                              EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
+                             
+         win->DrawTextString(font , StringPrintF("active_window = %p (win = %p)" , win->GetActiveWindow() , win).c_str() ,
+                             win->Width()/2 , 10 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
          
          win->FlipDisplay();
          redraw = false;
@@ -99,7 +111,21 @@ void TestMenu::Run() {
       /// Handle events
       do {
          
-         EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
+         EagleEvent ev = test_queue->WaitForEvent();
+         
+         if (ev.type != EAGLE_EVENT_TIMER) {
+            EagleLog() << StringPrintF("Received event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
+         }
+         if (ev.window == win) {
+            if (ev.type != EAGLE_EVENT_TIMER) {
+               EagleLog() << StringPrintF("Handling event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
+            }
+            HandleInputEvent(ev);
+         }
+         else {
+            continue;
+         }
+         
          if (ev.type == EAGLE_EVENT_TIMER) {
             gui.Update(sys->GetSystemTimer()->SPT());
             redraw = true;
@@ -133,16 +159,23 @@ void TestMenu::Run() {
                      /// One of our buttons was clicked
                      selected = true;
                      selected_user_branch = dynamic_cast<TextButton*>(msg.From())->GetText();
+                     Test* t = TestRegistry::GetRegistryInstance().GetTest(selected_user_branch);
+                     if (t) {
+                        TestRunner* runner = new TestRunner(win , t->MainFunc());
+                        running_tests.push_back(runner);
+                     }
                   }
                }
             }
          }
-      } while (!sys->UpToDate());
-      if (selected) {
-         break;
-      }
-      
+      } while (test_queue->HasEvent());
    }
+   
+   for (int i = 0 ; i < (int)running_tests.size() ; ++i) {
+      delete running_tests[i];
+   }
+   
+   
 }
 
 

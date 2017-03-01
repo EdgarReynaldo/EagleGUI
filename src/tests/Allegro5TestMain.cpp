@@ -10,7 +10,9 @@
 DEFINE_TEST(Allegro5TestMain , "Simple Allegro 5 Graphics Test");
 
 
-int Allegro5TestMain(int argc , char** argv) {
+int Allegro5TestMain(int argc , char** argv , TestRunner* test_runner) {
+
+   (void)test_runner;
 
    if (!al_init()) {return -1;}
    
@@ -19,16 +21,6 @@ int Allegro5TestMain(int argc , char** argv) {
    (void)argc; 
    (void)argv;
    
-   int start_state = EAGLE_FULL_SETUP;
-   t1 = al_get_time();
-   int run_state = sys->Initialize(start_state);
-   t2 = al_get_time();
-   printf("sys->Initialize(EAGLE_FULL_SETUP) took %f seconds\n" , t2 - t1);
-   
-   if (run_state != start_state) {
-      return -1;
-   }
-
    int SCREEN_WIDTH = 800;
    int SCREEN_HEIGHT = 600;
    t1 = al_get_time();

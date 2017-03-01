@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -27,7 +27,8 @@
 
 #include <signal.h>
 
-
+#include <string>
+#include <sstream>
 
 /// Temporary functions
 /*
@@ -74,14 +75,90 @@ inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, 
 
 
 
+const char* const eagle_init_state_strs[12] = {
+   "EAGLE_NOT_INSTALLED",
+   "EAGLE_SYSTEM",
+   "EAGLE_IMAGES",
+   "EAGLE_FONTS",
+   "EAGLE_TTF_FONTS",
+   "EAGLE_AUDIO",
+   "EAGLE_SHADERS",
+   "EAGLE_PRIMITIVES",
+   "EAGLE_KEYBOARD",
+   "EAGLE_MOUSE",
+   "EAGLE_JOYSTICK",
+   "EAGLE_TOUCH"
+};
+
+
+
+std::string PrintEagleInitState(int state) {
+   std::stringstream ss;
+   if (state) {
+      for (int bitshift = 0 ; bitshift < 11 ; ++bitshift) {
+         int flag = 1 << bitshift;
+         ss << ((state & flag)?"+":"-");
+         ss << eagle_init_state_strs[bitshift + 1];
+         state &= ~flag;
+         if (state) {
+            ss << " | ";
+         }
+      }
+      return ss.str();
+   }
+   return eagle_init_state_strs[0];
+}
+
+
+
+std::string PrintFailedEagleInitStates(int desired_state , int actual_state) {
+   std::stringstream ss;
+   if (desired_state) {
+      
+      if (actual_state & ~desired_state) {
+         ss << "EXTRA STATES TURNED ON!";
+      }
+      
+      if (desired_state & ~actual_state) {
+         ss << "FAILED STATES = ";
+      }
+      else {
+         return "ALL DESIRED STATES SUCCEEDED TO INITIALIZE";
+      }
+         
+      for (int bitshift = 0 ; bitshift < 11 ; ++bitshift) {
+         int flag = 1 << bitshift;
+
+         if ((desired_state & flag) && !(actual_state & flag)) {
+            ss << "-" << eagle_init_state_strs[bitshift + 1] << "-";
+         }
+         desired_state &= ~flag;
+         actual_state &= ~flag;
+
+         if (desired_state ^ actual_state) {
+            ss << " | ";
+         }
+      }
+      return ss.str();
+   }
+   return eagle_init_state_strs[0];
+}
+
+
+
 EagleSystem* eagle_system = 0;
+
+
 
 EagleEvent most_recent_system_event = EagleEvent();
 
-const int EAGLE_STANDARD_INPUT = EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK;
+
+
+const int EAGLE_STANDARD_INPUT = EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK | EAGLE_TOUCH;
 const int EAGLE_STANDARD_SYSTEM = EAGLE_SYSTEM | EAGLE_IMAGES | EAGLE_FONTS | EAGLE_TTF_FONTS | EAGLE_AUDIO;
 const int EAGLE_GENERAL_SETUP = EAGLE_STANDARD_INPUT | EAGLE_STANDARD_SYSTEM;
 const int EAGLE_FULL_SETUP = EAGLE_GENERAL_SETUP | EAGLE_SHADERS | EAGLE_PRIMITIVES;
+
 
 
 float EagleSystem::system_timer_rate = 1.0f/60.0f;
@@ -123,14 +200,15 @@ EagleSystem::EagleSystem(std::string name) :
 void EagleSystem::Shutdown() {
    
    EagleInfo() << "EagleSystem::Shutdown called" << std::endl;
-   
-   timers.FreeAll();
-   inputs.FreeAll();
+
+   /// TODO : Manage destruction order carefully...   
    windows.FreeAll();
+   inputs.FreeAll();
    queues.FreeAll();
+   clipboards.FreeAll();
+   timers.FreeAll();
    threads.FreeAll();
    mutexes.FreeAll();
-   clipboards.FreeAll();
    
    /// TODO : Keep list of eagle systems
    if (eagle_system && eagle_system == this) {
@@ -141,6 +219,8 @@ void EagleSystem::Shutdown() {
 
 
 int EagleSystem::Initialize(int state) {
+   state |= EAGLE_SYSTEM;/// System is non-optional
+   
    if (state & EAGLE_SYSTEM)     {InitializeSystem();}
    if (state & EAGLE_IMAGES)     {InitializeImages();}
    if (state & EAGLE_FONTS)      {InitializeFonts();}
@@ -148,11 +228,16 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_AUDIO)      {InitializeAudio();}
    if (state & EAGLE_SHADERS)    {InitializeShaders();}
    if (state & EAGLE_PRIMITIVES) {InitializePrimitives();}
+
+   state |= EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK | EAGLE_TOUCH;/// Kludge making them non-optional TODO : DO something about it
+
    if (state & EAGLE_KEYBOARD)   {InstallKeyboard();}
    if (state & EAGLE_MOUSE)      {InstallMouse();}
    if (state & EAGLE_JOYSTICK)   {InstallJoystick();}
    if (state & EAGLE_TOUCH)      {InstallTouch();}
-   
+
+   FinalizeSystem();
+      
    return EagleInitState();
 }
 
@@ -182,6 +267,12 @@ bool EagleSystem::InitializeSystem() {
       EagleInfo() << "Eagle : Initialized system." << std::endl;
    }
    
+   return system_up;
+}
+
+
+   
+bool EagleSystem::FinalizeSystem() {
    if (!input_handler)    {input_handler    = CreateInputHandler();}
    if (!system_timer)     {system_timer     = CreateTimer();}
    if (!system_queue)     {system_queue     = CreateEventHandler(false);}
@@ -200,11 +291,11 @@ bool EagleSystem::InitializeSystem() {
       }
    }
    if (system_up) {
-      EagleInfo() << "Eagle : Initialized the system state." << std::endl;
+      EagleInfo() << "Eagle : Finalized the system state." << std::endl;
 //      register_system_shutdown_function();
    }
    else {
-      EagleError() << "Eagle : System state not fully initialized." << std::endl;
+      EagleError() << "Eagle : System state not finalized." << std::endl;
    }
    
    return system_up;
@@ -509,6 +600,16 @@ EagleEventHandler* EagleSystem::CreateEventHandler(bool delay_events) {
 }
 
 
+/**
+EagleEventHandler* EagleSystem::CreateEventHandlerDuplicate(EagleEventHandler* handler) {
+   EagleEventHandler* clone = handler->CloneEventHandler();
+   if (clone) {
+      queues.Add(clone);
+   }
+   return clone;
+}
+//*/
+
 
 EagleTimer* EagleSystem::CreateTimer() {
    EAGLE_ASSERT(system_up);
@@ -526,7 +627,8 @@ EagleGraphicsContext* EagleSystem::CreateGraphicsContext(int width , int height 
    EagleGraphicsContext* win = PrivateCreateGraphicsContext(width,height,flags);
    if (win) {
       if (system_queue) {
-         win->RegisterDisplayInput(system_queue);
+         system_queue->ListenTo(win);
+///         win->RegisterDisplayInput(system_queue);
       }
       windows.Add(win);
    }
@@ -564,6 +666,48 @@ EagleClipboard* EagleSystem::CreateClipboard() {
       clipboards.Add(cb);
    }
    return cb;
+}
+
+
+
+void EagleSystem::FreeInputHandler(EagleInputHandler* handler) {
+   inputs.Free(handler);
+}
+
+
+
+void EagleSystem::FreeEventHandler(EagleEventHandler* event_handler) {
+   queues.Free(event_handler);
+}
+
+
+
+void EagleSystem::FreeTimer(EagleTimer* timer) {
+   timers.Free(timer);
+}
+
+
+
+void EagleSystem::FreeGraphicsContext(EagleGraphicsContext* window) {
+   windows.Free(window);
+}
+
+
+
+void EagleSystem::FreeThread(EagleThread* thread) {
+   threads.Free(thread);
+}
+
+
+
+void EagleSystem::FreeMutex(EagleMutex* mutex) {
+   mutexes.Free(mutex);
+}
+
+
+
+void EagleSystem::FreeClipboard(EagleClipboard* clipboard) {
+   clipboards.Free(clipboard);
 }
 
 
@@ -608,7 +752,8 @@ void EagleSystem::RegisterInputs(EagleEventHandler* queue) {
 	EagleInputHandler* input = GetInputHandler();
 	EAGLE_ASSERT(input);
 	if (input) {
-		input->RegisterInputs(queue);
+		queue->ListenTo(input);
+///		input->RegisterInputs(queue);
 	}
 }
 
@@ -630,11 +775,6 @@ EagleEvent EagleSystem::UpdateSystemState() {
       EagleEvent e = system_queue->TakeNextEvent();
       most_recent_system_event = e;
       HandleInputEvent(e);
-//
-//      eagle_gui_ptr->CheckInputs();
-//      if (e.type == ALLEGRO_EVENT_TIMER && e.timer.source == system_timer) {
-//         eagle_gui_ptr->Update(system_timer->SecondsPerTick());
-//      }
       return e;
    }
    else {
@@ -650,10 +790,6 @@ EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
    EagleEvent e = system_queue->WaitForEvent();
    most_recent_system_event = e;
    HandleInputEvent(e);
-//   eagle_gui_ptr->CheckInputs();
-//   if (e.type == ALLEGRO_EVENT_TIMER && e.timer.source == system_timer) {
-//      eagle_gui_ptr->Update(system_timer->SecondsPerTick());
-//   }
    return e;
 }
 
@@ -666,10 +802,6 @@ EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
    if (e.type == EAGLE_EVENT_NONE) {return e;}
    most_recent_system_event = e;
    HandleInputEvent(e);
-//   eagle_gui_ptr->CheckInputs();
-//   if (e.type == ALLEGRO_EVENT_TIMER && e.timer.source == system_timer) {
-//      eagle_gui_ptr->Update(system_timer->SecondsPerTick());
-//   }
    return e;
 }
 

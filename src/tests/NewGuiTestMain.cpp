@@ -10,17 +10,10 @@ using std::endl;
 
 
 
-int NewGuiTestMain(int argc , char** argv) {
+int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
-   
-   EagleSystem* sys = new Allegro5System();
-   
-   
-   if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
-      return 1;
-   }
    
    EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
@@ -163,6 +156,10 @@ int NewGuiTestMain(int argc , char** argv) {
    sys->GetSystemTimer()->Start();
    
    do {
+      if (test_runner->ShouldStop()) {
+         break;
+      }
+         
       if (redraw) {
 ///         win->Clear(EagleColor(0,255,0));
 ///         win->FlipDisplay();

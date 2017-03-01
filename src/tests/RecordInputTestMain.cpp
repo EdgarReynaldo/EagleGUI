@@ -13,7 +13,7 @@ using std::string;
 DEFINE_TEST(RecordInputTestMain , "Recorded Input Test");
 
 
-int RecordInputTestMain(int argc , char** argv) {
+int RecordInputTestMain(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
@@ -53,6 +53,10 @@ int RecordInputTestMain(int argc , char** argv) {
    sys->GetSystemTimer()->Start();
 
    do {
+
+      if (test_runner->ShouldStop()) {
+         break;
+      }
 
       if (redraw) {
          

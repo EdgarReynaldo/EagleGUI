@@ -6,9 +6,9 @@
 
 #include "TestRegistry.hpp"
 
-int GuiTestMain(int argc, char** argv);
-int GuiTestMain2(int argc, char** argv);
-int GuiTestMain3(int argc, char** argv);
+int GuiTestMain(int argc, char** argv , TestRunner* test_runner);
+int GuiTestMain2(int argc, char** argv , TestRunner* test_runner);
+int GuiTestMain3(int argc, char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(GuiTestMain);
 DECLARE_TEST(GuiTestMain2);

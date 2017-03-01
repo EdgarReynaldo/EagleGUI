@@ -32,53 +32,40 @@ int main(int argc , char** argv) {
 */   
    
    sys = new Allegro5System();
-   if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
+   int state = 0;
+   if ((state = sys->Initialize(EAGLE_FULL_SETUP)) != EAGLE_FULL_SETUP) {
+      EagleLog() << PrintFailedEagleInitStates(EAGLE_FULL_SETUP , state) << std::endl;
       delete sys;
       return 1;
    }
    
-   EagleGraphicsContext* main_window = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED);
-   
-   TestMenu test_menu(main_window);
-   
-   
-   bool user_selected_branch = false;
-   
-   string userbranch = default_branch;
    if (argc == 2) {
-      user_selected_branch = true;
       int branch = atoi(argv[1]);
       if (branch < 0) {branch = 0;}
       int sz = TestRegistry::GetRegistryInstance().Size();
       if (branch >= sz) {branch = sz - 1;}
+      vector<const Test*> tests = TestRegistry::GetRegistryInstance().GetRegisteredTests();
+      
+      MAINFUNC main_func = tests[branch]->MainFunc();
+      
+      TestRunner* runner = new TestRunner(0 , main_func);
+      
+      while (runner->Running()) {
+         sys->Rest(0.001);
+      }
+      int ret = runner->return_value;
+      if (ret == -1) {
+         EagleLog() << runner->error_message << std::endl;
+      }
+      delete runner;
+      return ret;
    }
 
-   bool quit = false;
-   while (!quit) {
+   EagleGraphicsContext* main_window = sys->CreateGraphicsContext(800,600,EAGLE_WINDOWED);
    
-      if (user_selected_branch) {
-         int retval = 0;
-         try {
-            /// TODO : Set argc and argv
-            retval = TestRegistry::GetRegistryInstance().Run(userbranch.c_str() , argc , argv);
-            EagleLog() << StringPrintF("Test::Run returned %d\n" , retval) << std::endl;
-         }
-         catch (EagleException error) {
-            /// Ignore error and continue running test, it will be logged anyway
-            test_menu.SetStatusMessage(error.what());
-         }
-      }
-      
-      test_menu.Run();
-      
-      quit = test_menu.Quit();
-      
-      if (!quit) {
-         userbranch = test_menu.SelectedBranch();
-         user_selected_branch = true;
-      }
-   
-   }
+   TestMenu test_menu(main_window);
+
+   test_menu.Run();
    
    delete sys;
    sys = 0;

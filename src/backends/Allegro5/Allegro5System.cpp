@@ -185,7 +185,9 @@ Allegro5System::Allegro5System() :
 
 
 
-Allegro5System::~Allegro5System() {Shutdown();}
+Allegro5System::~Allegro5System() {
+   Shutdown();
+}
 
 
 

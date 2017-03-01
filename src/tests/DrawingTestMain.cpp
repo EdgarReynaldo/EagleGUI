@@ -12,10 +12,11 @@
 DEFINE_TEST(DrawingTestMain , "Drawing Test (incomplete)");
 
 
-int DrawingTestMain(int argc , char** argv) {
+int DrawingTestMain(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
+   (void)test_runner;
    
    Allegro5GraphicsContext a5window(800,600,EAGLE_WINDOWED);
    EagleGraphicsContext* win = &a5window;

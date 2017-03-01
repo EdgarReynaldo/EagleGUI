@@ -241,6 +241,16 @@ int num_joysticks = 0;
 
 
 
+/// ----------------------     EagleInputHandler     --------------------------
+
+
+
+EagleInputHandler::EagleInputHandler() :
+      EagleEventSource()
+{}
+
+
+
 void EagleInputHandler::InitializeInput() {
    InitializeKeyboardInput();
    InitializeJoystickInput();
@@ -299,10 +309,10 @@ void EagleInputHandler::ClearKeyState() {
 
 
 
-void EagleInputHandler::RegisterInputs(EagleEventHandler* queue) {
+void EagleInputHandler::RegisterAllInput(EagleEventHandler* queue) {
 	RegisterKeyboardInput(queue);
-	RegisterMouseInput(queue);
 	RegisterJoystickInput(queue);
+	RegisterMouseInput(queue);
 	RegisterTouchInput(queue);
 }
 
@@ -347,7 +357,7 @@ int mouse_dz = 0;
 
 EagleTimer* input_timer = 0;
 
-EagleGraphicsContext* last_display_read = 0;
+///EagleGraphicsContext* last_display_read = 0;
 
 
 
@@ -385,12 +395,12 @@ void HandleInputEvent(EagleEvent ev) {
    
    if (ev.type == EAGLE_EVENT_NONE) {return;}
    
-   EagleGraphicsContext* old_display = last_display_read;
+///   EagleGraphicsContext* old_display = last_display_read;
    mouse_dx = 0;
    mouse_dy = 0;
    mouse_dw = 0;
    mouse_dz = 0;
-   last_display_read = 0;
+///   last_display_read = 0;
    
 
    for (int i = 0 ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
@@ -490,7 +500,6 @@ x    * EAGLE_EVENT_TIMER
       mouse_dy = ev.mouse.dy;
       mouse_dw = ev.mouse.dw;
       mouse_dz = ev.mouse.dz;
-      last_display_read = ev.mouse.display;
    }
    else if (ev.type == EAGLE_EVENT_JOYSTICK_AXIS) {
 /*
@@ -534,7 +543,7 @@ x    * EAGLE_EVENT_TIMER
       mouse_open &= ~flag;
       mouse_release &= ~flag;
       mouse_down |= flag;
-      last_display_read = ev.mouse.display;
+///      last_display_read = ev.mouse.display;
    }
    else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
       mouse_x = ev.mouse.x;
@@ -547,7 +556,7 @@ x    * EAGLE_EVENT_TIMER
       mouse_held &= ~flag;
       mouse_down &= ~flag;
       mouse_dblclick &= ~flag;
-      last_display_read = ev.mouse.display;
+///      last_display_read = ev.mouse.display;
    }
    else if (ev.type == EAGLE_EVENT_JOYSTICK_BUTTON_DOWN) {
 /**
@@ -614,7 +623,7 @@ x    * EAGLE_EVENT_TIMER
       mouse_dy = ev.mouse.dy;
       mouse_dw = ev.mouse.dw;
       mouse_dz = ev.mouse.dz;
-      last_display_read = ev.mouse.display;
+///      last_display_read = ev.mouse.display;
    }
    else if (ev.type == EAGLE_EVENT_MOUSE_ENTER_DISPLAY) {
       mouse_on = true;
@@ -622,7 +631,7 @@ x    * EAGLE_EVENT_TIMER
       mouse_y = ev.mouse.y;
       mouse_z = ev.mouse.z;
       mouse_w = ev.mouse.w;
-      last_display_read = old_display;
+///      last_display_read = old_display;
    }
    else if (ev.type == EAGLE_EVENT_MOUSE_LEAVE_DISPLAY) {
       mouse_on = false;
@@ -630,7 +639,7 @@ x    * EAGLE_EVENT_TIMER
       mouse_y = ev.mouse.y;
       mouse_z = ev.mouse.z;
       mouse_w = ev.mouse.w;
-      last_display_read = old_display;
+///      last_display_read = old_display;
    }
 }
 

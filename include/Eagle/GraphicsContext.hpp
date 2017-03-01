@@ -65,25 +65,9 @@ enum IMAGE_DRAWING_FLAGS {
 
 #include "Eagle/Gui/Alignment.hpp"
 
-
-/*
-enum TEXT_HDRAWING_FLAGS {
-   DRAW_TEXT_LEFT = 0,
-   DRAW_TEXT_CENTER = 1,
-   DRAW_TEXT_RIGHT = 2
-};
-
-enum TEXT_VDRAWING_FLAGS {
-   DRAW_TEXT_TOP = 0,
-   DRAW_TEXT_VCENTER = 1,
-   DRAW_TEXT_BOTTOM = 2
-};
-
-*/
-
 extern unsigned int GUI_TEXT_LINE_SPACING;
 
-
+/**
 class REGION_INFO {
    
 public :
@@ -179,15 +163,18 @@ public :
    void ClearSettings();
 };
 
+//*/
+
+///class Rectangle;
 
 
-class Rectangle;
 
-
-
-class EagleGraphicsContext : public EagleObject {
+class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
+
+   
+
    int scrw;
    int scrh;
    
@@ -214,15 +201,23 @@ protected :
    int default_font_flags;
    
    
-   
-   
    virtual void PrivateFlipDisplay()=0;
 
+protected :
+   static EagleGraphicsContext* active_window;
+
+   static EagleMutex* pmutex;/// Driver needs to instantiate this in constructor
+
+   static void SetActiveWindow(EagleGraphicsContext* new_active_window);
+
 public :
+   
    EagleGraphicsContext(std::string name);
    
    virtual ~EagleGraphicsContext() {}
 
+   static EagleGraphicsContext* GetActiveWindow();
+   
    float GetFPS();
 
    /// creation/destruction
@@ -231,12 +226,14 @@ public :
    virtual void Destroy()=0;
    virtual void AcknowledgeResize()=0;
 
+   /// Query
+   int Width() {return scrw;}
+   int Height() {return scrh;}
+   virtual int XPos()=0;
+   virtual int YPos()=0;
+
    /// clears target bitmap
    virtual void Clear(EagleColor c = EagleColor(0,0,0))=0;
-   
-   /// Query
-   float Width() {return scrw;}
-   float Height() {return scrh;}
    
    /// Blender setting functions
    virtual void SetCopyBlender()=0;
@@ -347,9 +344,6 @@ public :
    std::string DefaultFontPath();
    int DefaultFontSize();
    int DefaultFontFlags();
-   
-   /// event handler registration
-   virtual void RegisterDisplayInput(EagleEventHandler* queue)=0;
    
    /// mouse control
 ///   MousePointerManager* GetMousePointerManager() {return mp_manager;}

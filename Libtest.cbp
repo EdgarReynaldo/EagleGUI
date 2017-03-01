@@ -225,6 +225,7 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
+		<Unit filename="../../../GoogleInterview/test.cpp" />
 		<Unit filename="cbbuild/bin/Libtest.txt" />
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />

@@ -9,6 +9,9 @@
 
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
@@ -23,6 +26,7 @@
 ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float v , ALLEGRO_COLOR ac);
 
 
+
 typedef struct BLENDER {
    int blender_op;
    int blender_src;
@@ -30,12 +34,22 @@ typedef struct BLENDER {
 } BLENDER;
 
 
+
 EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display);
+
+
+EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);
+
+
+void* A5WindowProcess(EagleThread* thread , void* context);
+
+
 
 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
    
 private :
+   
    ALLEGRO_DISPLAY* display;
    Allegro5Image realbackbuffer;
    
@@ -47,6 +61,18 @@ private :
    Allegro5Transformer allegro5transformer;
 
 
+   Allegro5Thread window_thread;
+
+   friend void* A5WindowProcess(EagleThread* thread , void* context);
+
+   ALLEGRO_EVENT_SOURCE window_event_source;
+   ALLEGRO_EVENT_QUEUE* window_queue;
+   
+   static Allegro5Mutex window_mutex;/// For access to EagleGraphicsContext::active_window
+   
+   
+   
+   void Init();
 
    void ResetBackBuffer();
    virtual void PrivateFlipDisplay();
@@ -58,12 +84,16 @@ public :
 
    ~Allegro5GraphicsContext();
 
+   
 
    /// creation/destruction
    virtual bool Create(int width , int height , int flags);
    virtual bool Valid();
    virtual void Destroy();
    virtual void AcknowledgeResize();
+
+   virtual int XPos();
+   virtual int YPos();
 
    /// Load Default font
    void LoadDefaultFont();
@@ -164,8 +194,6 @@ public :
    /// Allegro event source
    void ReadEvents();
 */
-   virtual void RegisterDisplayInput(EagleEventHandler* eagle_handler);
-   
    Transformer* GetTransformer();
 
    virtual void MakeDisplayCurrent();

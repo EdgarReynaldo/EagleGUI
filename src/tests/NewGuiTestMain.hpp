@@ -7,9 +7,9 @@
 
 #include "Eagle.hpp"
 
+#include "TestRegistry.hpp"
 
-
-int NewGuiTestMain(int argc , char** argv);
+int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner);
 
 
 

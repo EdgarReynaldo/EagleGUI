@@ -14,17 +14,13 @@ DEFINE_TEST(EventHandlerDemoMain , "Event Handler monitor test");
 
 
 
-int EventHandlerDemoMain(int argc , char** argv) {
+int EventHandlerDemoMain(int argc , char** argv , TestRunner* test_runner) {
    
    (void)argc;
    (void)argv;
 
-   if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
-      EagleLog() << "Failed to fully setup. " << std::endl;
-      delete sys;
-      return 2;
-   }
-   
+
+
    Allegro5GraphicsContext a5window(800,600,EAGLE_OPENGL);
 
    EagleGraphicsContext* win = &a5window;
@@ -52,6 +48,10 @@ int EventHandlerDemoMain(int argc , char** argv) {
 ///   int count = 0;
    
    do {
+      if (test_runner->ShouldStop()) {
+         break;
+      }
+         
       if (redraw) {
          win->Clear(EagleColor(0,0,0));
          int n = 0;

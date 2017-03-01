@@ -304,7 +304,7 @@ public :
 
 
 
-class EagleInputHandler {
+class EagleInputHandler : public EagleEventSource {
 private :
    
    virtual void PrivateInitializeJoystickInput()=0;// called by initializejoysticksinput
@@ -313,7 +313,7 @@ private :
    virtual void PrivateInitializeTouchInput()=0;// called by initializekeyboardinput
 
 public :
-   EagleInputHandler() {}
+   EagleInputHandler();
    virtual ~EagleInputHandler() {}
    
    void InitializeInput();
@@ -337,7 +337,7 @@ public :
 	virtual void RegisterJoystickInput(EagleEventHandler* queue)=0;
 	virtual void RegisterTouchInput   (EagleEventHandler* queue)=0;
 	
-	void RegisterInputs(EagleEventHandler* queue);
+	void RegisterAllInput(EagleEventHandler* queue);
 
 };
 

@@ -113,6 +113,7 @@
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="README.txt" />
 		<Unit filename="include/Eagle.hpp" />
+		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/Animations.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
@@ -183,6 +184,7 @@
 		<Unit filename="include/Eagle/Threads.hpp" />
 		<Unit filename="include/Eagle/Timer.hpp" />
 		<Unit filename="include/Eagle/Transforms.hpp" />
+		<Unit filename="src/AVHandler.cpp" />
 		<Unit filename="src/Animations.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/Clipboard.cpp" />

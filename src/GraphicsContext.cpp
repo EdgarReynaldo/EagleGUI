@@ -35,7 +35,7 @@ using std::vector;
 unsigned int GUI_TEXT_LINE_SPACING = 3;
 
 
-
+/**
 REGION_INFO::REGION_INFO() : sx(0.0f) , sy(0.0f) , sw(0.0f) , sh(0.0f) {}
 
 
@@ -83,7 +83,6 @@ ROTATE_INFO::ROTATE_INFO(float pivotx , float pivoty , float destx , float desty
       dy(desty),
       angle(theta)
 {}
-
 
 
 void EagleDrawingInfo::CheckUse() {
@@ -197,6 +196,7 @@ void EagleDrawingInfo::ClearSettings() {
    use_rotate = false;
    use_tint = false;
 }
+//*/
 
 
 
@@ -204,8 +204,25 @@ void EagleDrawingInfo::ClearSettings() {
 
 
 
+EagleGraphicsContext* EagleGraphicsContext::active_window = 0;
+
+
+
+EagleMutex* EagleGraphicsContext::pmutex = 0;
+
+
+
+void EagleGraphicsContext::SetActiveWindow(EagleGraphicsContext* new_active_window) {
+   pmutex->Lock();
+   active_window = new_active_window;
+   pmutex->Unlock();
+}
+   
+
+
 EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       EagleObject(name),
+      EagleEventSource(),
       scrw(0),
       scrh(0),
       backbuffer(0),
@@ -226,14 +243,17 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
 {
    /// NOTE: derived class needs to instantiate mp_manager
    /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
+   /// NOTE : derived class needs to instantiate pmutex
 }
 
 
-///float EagleGraphicsContext::Width() {return scrw;}
-
-
-
-///float EagleGraphicsContext::Height() {return scrh;}
+EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
+   EAGLE_ASSERT(pmutex && pmutex->Valid());
+   pmutex->Lock();
+   EagleGraphicsContext* win = active_window;
+   pmutex->Unlock();
+   return win;
+}
 
 
 

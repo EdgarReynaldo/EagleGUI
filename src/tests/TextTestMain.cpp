@@ -11,18 +11,15 @@ DEFINE_TEST(TextTestMain , "Simple Text Test");
 
 
 
-int TextTestMain(int argc , char** argv) {
+int TextTestMain(int argc , char** argv , TestRunner* test_runner) {
 
    (void)argc;
    (void)argv;
    
    
-   if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
-      return 1;
-   }
-   
    int ww = 800;
    int wh = 600;
+
    EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
 ///   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
@@ -160,6 +157,10 @@ int TextTestMain(int argc , char** argv) {
    bool update_fps = true;
    
    do {
+      if (test_runner->ShouldStop()) {
+         break;
+      }
+         
       redraw = true;
       if (redraw) {
 
@@ -261,7 +262,6 @@ int TextTestMain(int argc , char** argv) {
    EagleLog() << std::endl;
    
    delete gui;
-   delete sys;
 
    return 0;
 }

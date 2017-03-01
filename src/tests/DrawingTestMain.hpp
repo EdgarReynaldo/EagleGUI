@@ -7,7 +7,7 @@
 
 #include "TestRegistry.hpp"
 
-int DrawingTestMain(int argc , char** argv);
+int DrawingTestMain(int argc , char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(DrawingTestMain);
 

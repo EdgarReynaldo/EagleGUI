@@ -5,7 +5,7 @@
 
 #include "TestRegistry.hpp"
 
-int RecordInputTestMain(int argc , char** argv);
+int RecordInputTestMain(int argc , char** argv , TestRunner* test_runner);
 
 DECLARE_TEST(RecordInputTestMain);
 

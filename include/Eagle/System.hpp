@@ -36,6 +36,7 @@
 
 
 enum EAGLE_INIT_STATE {
+   EAGLE_NOT_INSTALLED =   0,
    EAGLE_SYSTEM =     1 << 0,
    EAGLE_IMAGES =     1 << 1,
    EAGLE_FONTS =      1 << 2,
@@ -49,6 +50,12 @@ enum EAGLE_INIT_STATE {
    EAGLE_TOUCH =      1 << 10
 };
 
+
+
+extern const char* const eagle_init_state_strs[12];
+
+
+
 class EagleSystem;
 
 extern EagleSystem* eagle_system;
@@ -58,8 +65,10 @@ extern EagleEvent most_recent_system_event;
 extern const int EAGLE_STANDARD_INPUT;// keyboard mouse joystick
 extern const int EAGLE_STANDARD_SYSTEM;// system images fonts ttf fonts audio
 extern const int EAGLE_GENERAL_SETUP;// standard system and input together
-extern const int EAGLE_FULL_SETUP;// all bits on muthafucka!
+extern const int EAGLE_FULL_SETUP;// all bits on!
 
+std::string PrintEagleInitState(int state);
+std::string PrintFailedEagleInitStates(int desired_state , int actual_state);
 
 
 
@@ -89,6 +98,7 @@ protected :
    PointerManager<EagleThread> threads;
    PointerManager<EagleMutex> mutexes;
    PointerManager<EagleClipboard> clipboards;
+
 
    EagleInputHandler* input_handler;
    EagleTimer* system_timer;
@@ -133,7 +143,7 @@ protected :
    virtual EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags)=0;
    virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
    virtual EagleMutex*           PrivateCreateMutex(bool recursive)=0;
-   virtual EagleClipboard*            PrivateCreateClipboard()=0;
+   virtual EagleClipboard*       PrivateCreateClipboard()=0;
 
 public :
 
@@ -146,7 +156,8 @@ public :
 
    virtual int Initialize(int state);
    
-   virtual bool InitializeSystem();
+   bool InitializeSystem();
+   bool FinalizeSystem();
 
    bool InitializeImages();
    bool InitializeFonts();
@@ -190,11 +201,20 @@ public :
 
 	EagleInputHandler*    CreateInputHandler();
 	EagleEventHandler*    CreateEventHandler(bool delay_events);
+///	EagleEventHandler*    CreateEventHandlerDuplicate(EagleEventHandler* handler);
 	EagleTimer*           CreateTimer();
    EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
    EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           CreateMutex(bool recursive);
    EagleClipboard*            CreateClipboard();
+
+   void FreeInputHandler(EagleInputHandler* handler);
+   void FreeEventHandler(EagleEventHandler* event_handler);
+   void FreeTimer(EagleTimer* timer);
+   void FreeGraphicsContext(EagleGraphicsContext* window);
+   void FreeThread(EagleThread* thread);
+   void FreeMutex(EagleMutex* mutex);
+   void FreeClipboard(EagleClipboard* clipboard);
 
 	void RegisterKeyboardInput(EagleEventHandler* queue);
 	void RegisterMouseInput   (EagleEventHandler* queue);

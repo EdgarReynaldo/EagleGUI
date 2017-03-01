@@ -12,7 +12,37 @@
 #include <string>
 
 
-typedef int (*MAINFUNC)(int , char**);
+class TestRunner;
+
+typedef int (*MAINFUNC)(int , char** , TestRunner*);
+
+
+
+class TestRunner {
+
+public :
+   
+   TestRunner(EagleGraphicsContext* window , MAINFUNC mainfunc);/* , int _argc , char** _argv */
+   ~TestRunner();
+
+
+   EagleGraphicsContext* main_window;
+   EagleThread* our_thread;
+   
+   int argc;
+   char** argv;
+   
+   int return_value;
+   
+   string error_message;
+   
+   int (*main_function) (int argc , char** argv , TestRunner* our_test_runner);
+   
+   bool ShouldStop();
+   bool Running();
+};
+
+void* TestRunnerThread(EagleThread* thread , void* test_runner);
 
 #define DECLARE_TEST(mainfunc) \
    extern Test test_##mainfunc;
@@ -59,16 +89,8 @@ public :
 
    std::vector<const Test*> GetRegisteredTests();
 
-///   int Run(const char* test_branch , int argc , char** argv);
-   int Run(const char* test_branch , int argc , char** argv) {
-      TMIT it = test_map.find(test_branch);
-      if (it == test_map.end()) {
-         return -1;
-      }
-      MAINFUNC mainfunc = test_map[test_branch]->MainFunc();
-      return (*mainfunc)(argc , argv);
-   }
-   
+   Test* GetTest(std::string test_name);
+      
    int Size() {return test_map.size();}
    
 };
