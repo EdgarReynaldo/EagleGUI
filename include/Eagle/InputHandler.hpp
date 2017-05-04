@@ -304,7 +304,7 @@ public :
 
 
 
-class EagleInputHandler : public EagleEventSource {
+class EagleInputHandler : public EagleEventSource , public EagleEventListener {
 private :
    
    virtual void PrivateInitializeJoystickInput()=0;// called by initializejoysticksinput

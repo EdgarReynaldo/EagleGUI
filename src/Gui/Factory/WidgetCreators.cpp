@@ -36,7 +36,7 @@ using namespace std;
 
 
 RegisteredWidgetCreator::RegisteredWidgetCreator(string widget_class , WIDGET_CREATION_FUNCTION widget_creator_func) {
-   eagle_widget_factory.RegisterWidgetCreationFunction(widget_class , widget_creator_func);
+   EagleWidgetFactory().RegisterWidgetCreationFunction(widget_class , widget_creator_func);
 }
 
 

@@ -7,7 +7,18 @@
 #include "Eagle/StringWork.hpp"
 
 
-WidgetFactory eagle_widget_factory;
+WidgetFactory* eagle_widget_factory = 0;
+
+WidgetFactory& EagleWidgetFactory() {
+   static int create = 1;
+   if (create) {
+      eagle_widget_factory = new WidgetFactory;
+      create = 0;
+   }
+   /** TODO : Destroy eagle_widget_factory */
+   return *eagle_widget_factory;
+}
+
 
 const char* const DEFAULT_GROUP_NAME = "__DEFAULT_GROUP_NAME";
 
@@ -158,31 +169,31 @@ void WidgetFactory::FreeAllWidgets() {
 
 
 bool FreeWidget(EAGLE_ID eid) {
-   return eagle_widget_factory.FreeWidget(eid);
+   return EagleWidgetFactory().FreeWidget(eid);
 }
 
 
 
 bool FreeWidget(EAGLE_ID eid , std::string group_name) {
-   return eagle_widget_factory.FreeWidget(eid , group_name);
+   return EagleWidgetFactory().FreeWidget(eid , group_name);
 }
 
 
 
 bool FreeWidgetGroup(std::string group_name) {
-   return eagle_widget_factory.FreeWidgetGroup(group_name);
+   return EagleWidgetFactory().FreeWidgetGroup(group_name);
 }
 
 
 
 void FreeAllWidgets() {
-   eagle_widget_factory.FreeAllWidgets();
+   EagleWidgetFactory().FreeAllWidgets();
 }
 
 
 
 WidgetBase* CreateWidgetObject(string widget_class_name , string widget_parameters) {
-   return eagle_widget_factory.CreateWidgetBaseObject(widget_class_name , widget_parameters);
+   return EagleWidgetFactory().CreateWidgetBaseObject(widget_class_name , widget_parameters);
 }
 
 

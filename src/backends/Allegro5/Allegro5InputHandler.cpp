@@ -202,6 +202,7 @@ void Allegro5InputHandler::PrivateInitializeTouchInput() {
 
 
 Allegro5InputHandler::Allegro5InputHandler() :
+      EagleInputHandler(),
       input_extra_event_source(),
       input_queue(0),
       input_thread(),
@@ -210,6 +211,13 @@ Allegro5InputHandler::Allegro5InputHandler() :
       mouse_event_handler(false),
       touch_event_handler(false)
 {
+   
+   this->ListenTo(&keyboard_event_handler);
+   this->ListenTo(&mouse_event_handler);
+   this->ListenTo(&joystick_event_handler);
+   this->ListenTo(&touch_event_handler);
+   
+   
    if (!input_thread.Create(A5InputThreadProcess , this)) {
       throw EagleException("Allegro5InputHandler::Allegro5InputHandler : Failed to create input thread.");
    }
@@ -241,6 +249,12 @@ Allegro5InputHandler::~Allegro5InputHandler() {
    
    al_destroy_event_queue(input_queue);
    al_destroy_user_event_source(&input_extra_event_source);
+}
+
+
+
+void Allegro5InputHandler::RespondToEvent(EagleEvent e) {
+   EmitEvent(e);
 }
 
 

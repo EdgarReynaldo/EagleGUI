@@ -19,7 +19,7 @@
 
 class WidgetFactory;
 
-extern WidgetFactory eagle_widget_factory;
+WidgetFactory& EagleWidgetFactory();
 
 extern const char* const DEFAULT_GROUP_NAME;
 

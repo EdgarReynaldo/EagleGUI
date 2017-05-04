@@ -204,10 +204,10 @@ void EagleSystem::Shutdown() {
    /// TODO : Manage destruction order carefully...   
    windows.FreeAll();
    inputs.FreeAll();
-   queues.FreeAll();
    clipboards.FreeAll();
    timers.FreeAll();
    threads.FreeAll();
+   queues.FreeAll();
    mutexes.FreeAll();
    
    /// TODO : Keep list of eagle systems

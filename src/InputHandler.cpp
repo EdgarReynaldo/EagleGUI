@@ -246,7 +246,8 @@ int num_joysticks = 0;
 
 
 EagleInputHandler::EagleInputHandler() :
-      EagleEventSource()
+      EagleEventSource(),
+      EagleEventListener()
 {}
 
 

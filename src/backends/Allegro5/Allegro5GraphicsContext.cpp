@@ -252,7 +252,7 @@ Allegro5GraphicsContext::~Allegro5GraphicsContext() {
 }
 
 
-
+/*
 EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
    EagleGraphicsContext* win = 0;
    pmutex->Lock();
@@ -260,7 +260,7 @@ EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
    pmutex->Unlock();
    return win;
 }
-
+//*/
 
 
 // creation/destruction
