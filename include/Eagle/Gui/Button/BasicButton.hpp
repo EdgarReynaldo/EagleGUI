@@ -9,6 +9,8 @@
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/InputHandler.hpp"
+
 
 #include <string>
 
@@ -120,7 +122,7 @@ protected :
 public :
    
    BasicButton();
-   BasicButton(string name);
+   BasicButton(std::string name);
    
    virtual ~BasicButton();
 

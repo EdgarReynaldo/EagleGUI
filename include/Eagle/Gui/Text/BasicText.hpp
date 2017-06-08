@@ -17,7 +17,7 @@ protected :
    HALIGNMENT halign;
    VALIGNMENT valign;
    EagleFont* text_font;
-   string text;
+   std::string text;
    std::vector<std::string> lines;
    std::vector<Rectangle> lineareas;
    int nlines;
@@ -47,7 +47,7 @@ protected :
    
 public :
    BasicText();
-   BasicText(string name);
+   BasicText(std::string name);
    virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);
@@ -83,7 +83,7 @@ public :
    virtual void Refresh();
 
    
-   string GetText() {return text;}
+   std::string GetText() {return text;}
    
    Rectangle TextArea() {return Rectangle(textx , texty , maxwidth , totalheight);}
    
@@ -91,7 +91,7 @@ public :
 
    Rectangle LineArea(int linenum);
    
-   string LineString(int linenum);
+   std::string LineString(int linenum);
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 

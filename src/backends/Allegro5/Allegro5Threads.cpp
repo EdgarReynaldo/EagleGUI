@@ -20,6 +20,13 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
    ethread->running = true;
    void* process_result = thread_process(ethread , data);
    ethread->running = false;
+
+   al_lock_mutex(ethread->finish_mutex);
+
+   al_signal_cond(ethread->finish_condition_var);
+
+   al_unlock_mutex(ethread->finish_mutex);
+   
    return process_result;
    
 }
@@ -32,7 +39,9 @@ Allegro5Thread::Allegro5Thread() :
       data(0),
       process(0),
       return_value(0),
-      running(false)
+      running(false),
+      finish_condition_var(0),
+      finish_mutex(0)
 {
    
 }
@@ -55,20 +64,41 @@ bool Allegro5Thread::Create(void* (*process_to_run)(EagleThread* , void*) , void
    data = arg;
    
    a5thread = al_create_thread(A5ThreadWrapperProcess , this);
+   finish_condition_var = al_create_cond();
+   finish_mutex = al_create_mutex();
    
-   return (bool)a5thread;
+   if (!a5thread || !finish_condition_var || !finish_mutex) {
+      if (!a5thread) {
+         throw EagleException("Allegro5Thread::Create - failed to create a5thread.");
+      }
+      if (!finish_condition_var) {
+         throw EagleException("Allegro5Thread::Create - failed to create finish_condition_var.");
+      }
+      if (!finish_mutex) {
+         throw EagleException("Allegro5Thread::Create - failed to create finish_mutex.");
+      }
+   }
+   
+   return a5thread && finish_condition_var && finish_mutex;
 }
 
 
 
 void Allegro5Thread::Destroy() {
-   if (a5thread && running) {
-      // TODO Join thread? Kill thread?
-      al_join_thread(a5thread , 0);
-   }
+
+   FinishThread();
+
    if (a5thread) {
       al_destroy_thread(a5thread);
       a5thread = 0;
+   }
+   if (finish_condition_var) {
+      al_destroy_cond(finish_condition_var);
+      finish_condition_var = 0;
+   }
+   if (finish_mutex) {
+      al_destroy_mutex(finish_mutex);
+      finish_mutex = 0;
    }
 }
 
@@ -82,16 +112,39 @@ void Allegro5Thread::Start() {
 
 
 void Allegro5Thread::SignalToStop() {
-   EAGLE_ASSERT(a5thread);
+   if (!a5thread) {return;}
+   
    al_set_thread_should_stop(a5thread);
 }
 
 
 
 void* Allegro5Thread::Join() {
-   EAGLE_ASSERT(a5thread);
+   SignalToStop();
+   return FinishThread();
+}
+
+
+
+void* Allegro5Thread::FinishThread() {
+   if (!a5thread) {
+      return (void*)-1;
+   }
+   EAGLE_ASSERT(finish_condition_var);
+   EAGLE_ASSERT(finish_mutex);
+
    return_value = 0;
-   al_join_thread(a5thread , &return_value);
+   if (Running()) {
+
+      al_lock_mutex(finish_mutex);
+
+      al_wait_cond(finish_condition_var , finish_mutex);
+
+      al_unlock_mutex(finish_mutex);
+      
+      al_join_thread(a5thread , &return_value);
+   }
+   
    return return_value;
 }
 
@@ -99,6 +152,7 @@ void* Allegro5Thread::Join() {
 
 bool Allegro5Thread::ShouldStop() {
    EAGLE_ASSERT(a5thread);
+   
    return al_get_thread_should_stop(a5thread);
 }
 

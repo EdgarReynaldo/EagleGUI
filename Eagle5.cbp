@@ -105,6 +105,7 @@
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-Werror=narrowing" />
 			<Add option="-DNOGDI" />
+			<Add option="-DEAGLE_WIN32" />
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="EagleCopyright.txt" />
@@ -171,6 +172,7 @@
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
 		<Unit filename="include/Eagle/Image.hpp" />
 		<Unit filename="include/Eagle/InputHandler.hpp" />
+		<Unit filename="include/Eagle/Lib.hpp" />
 		<Unit filename="include/Eagle/Logging.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
 		<Unit filename="include/Eagle/MousePointer.hpp" />
@@ -182,8 +184,10 @@
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/Threads.hpp" />
+		<Unit filename="include/Eagle/Time.hpp" />
 		<Unit filename="include/Eagle/Timer.hpp" />
 		<Unit filename="include/Eagle/Transforms.hpp" />
+		<Unit filename="include/Eagle/WindowManager.hpp" />
 		<Unit filename="src/AVHandler.cpp" />
 		<Unit filename="src/Animations.cpp" />
 		<Unit filename="src/Area.cpp" />
@@ -236,6 +240,7 @@
 		<Unit filename="src/Gui/WidgetMessage.cpp" />
 		<Unit filename="src/Image.cpp" />
 		<Unit filename="src/InputHandler.cpp" />
+		<Unit filename="src/Lib.cpp" />
 		<Unit filename="src/Logging.cpp" />
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/NinePatch.cpp" />
@@ -245,8 +250,10 @@
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />
+		<Unit filename="src/Time.cpp" />
 		<Unit filename="src/Timer.cpp" />
 		<Unit filename="src/Transforms.cpp" />
+		<Unit filename="src/WindowManager.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

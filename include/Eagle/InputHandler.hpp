@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -304,6 +304,11 @@ public :
 
 
 
+class Input;
+class InputGroup;
+
+
+
 class EagleInputHandler : public EagleEventSource , public EagleEventListener {
 private :
    
@@ -332,12 +337,19 @@ public :
    virtual void GetJoystickStates()=0;
    virtual void GetTouchState()=0;
 
-	virtual void RegisterKeyboardInput(EagleEventHandler* queue)=0;
-	virtual void RegisterMouseInput   (EagleEventHandler* queue)=0;
-	virtual void RegisterJoystickInput(EagleEventHandler* queue)=0;
-	virtual void RegisterTouchInput   (EagleEventHandler* queue)=0;
-	
-	void RegisterAllInput(EagleEventHandler* queue);
+   virtual void StartKeyboardEventHandler()=0;
+   virtual void StartJoystickEventHandler()=0;
+   virtual void StartMouseEventHandler()=0;
+   virtual void StartTouchEventHandler()=0;
+
+
+
+   void HandleInputEvent(EagleEvent ev);
+
+   /** Input recording functions for setting Inputs and InputGroups to key/mouse/joystick input */
+   /** These are both blocking calls - they will wait forever until there is input */
+   void RecordInputPress(EagleEventHandler* queue , Input* input);// records first key press, blocks
+   void RecordInputGroup(EagleEventHandler* queue , InputGroup* input_group);// records first key press along with any modifiers
 
 };
 
@@ -400,7 +412,7 @@ extern EagleGraphicsContext* last_display_read;
 
 
 void SetInputTimer(EagleTimer* timer);
-void HandleInputEvent(EagleEvent ev);
+///void HandleInputEvent(EagleEvent ev);
 int ReadKey(EagleEventHandler* queue);
 
 bool kb_press(int key);
@@ -667,10 +679,6 @@ bool NonModInputPressed(Input* store);
 bool ModifierHeld(Input* store);
 
 
-/** Input recording functions for setting Inputs and InputGroups to key/mouse/joystick input */
-/** These are both blocking calls - they will wait forever until there is input */
-void RecordInputPress(EagleEventHandler* queue , Input* input);// records first key press, blocks
-void RecordInputGroup(EagleEventHandler* queue , InputGroup* input_group);// records first key press along with any modifiers
 
 
 

@@ -132,7 +132,7 @@ GridLayout::GridLayout() :
 
 
 
-GridLayout::GridLayout(string name) :
+GridLayout::GridLayout(std::string name) :
       Layout(name),
 		ncols(0),
 		nrows(0),

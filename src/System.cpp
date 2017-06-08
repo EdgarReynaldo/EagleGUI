@@ -24,6 +24,7 @@
 #include "Eagle/System.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/Time.hpp"
 
 #include <signal.h>
 
@@ -167,7 +168,6 @@ float EagleSystem::system_timer_rate = 1.0f/60.0f;
 
 EagleSystem::EagleSystem(std::string name) :
    EagleObject(name),
-   windows(true),
    queues(true),
    inputs(true),
    timers(true),
@@ -178,6 +178,7 @@ EagleSystem::EagleSystem(std::string name) :
    system_timer(0),
    system_queue(0),
    system_clipboard(0),
+   window_manager(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -190,9 +191,7 @@ EagleSystem::EagleSystem(std::string name) :
    joystick_running(false),
    touch_running(false)
 {
-   if (!eagle_system) {
-      eagle_system = this;
-   }
+   
 }
 
 
@@ -201,19 +200,18 @@ void EagleSystem::Shutdown() {
    
    EagleInfo() << "EagleSystem::Shutdown called" << std::endl;
 
+   if (window_manager) {
+      delete window_manager;
+      window_manager = 0;
+   }
+   
    /// TODO : Manage destruction order carefully...   
-   windows.FreeAll();
    inputs.FreeAll();
    clipboards.FreeAll();
    timers.FreeAll();
    threads.FreeAll();
    queues.FreeAll();
    mutexes.FreeAll();
-   
-   /// TODO : Keep list of eagle systems
-   if (eagle_system && eagle_system == this) {
-		eagle_system = 0;
-   }
 }
 
 
@@ -277,8 +275,9 @@ bool EagleSystem::FinalizeSystem() {
    if (!system_timer)     {system_timer     = CreateTimer();}
    if (!system_queue)     {system_queue     = CreateEventHandler(false);}
    if (!system_clipboard) {system_clipboard = CreateClipboard();}
-
-   system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard);
+   if (!window_manager)   {window_manager   = CreateWindowManager();}
+   
+   system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
    if (system_timer) {
       bool created_system_timer = system_timer->Create(system_timer_rate);
@@ -390,20 +389,14 @@ bool EagleSystem::InstallKeyboard() {
       EagleInfo() << "Eagle : Installed keyboard." << std::endl;
    	EagleInputHandler* input = GetInputHandler();
       EagleEventHandler* queue = GetSystemQueue();
+
    	if (input) {
    		input->InitializeKeyboardInput();
-   		if (queue) {
-				input->RegisterKeyboardInput(queue);
-   		}
+   		input->StartKeyboardEventHandler();
    	}
-   	if (!input || !queue) {
-         if (!input) {
-            EagleError() << "EagleSystem::InstallKeyboard : Failed to retrieve input handler." << std::endl;
-         }
-         if (!queue) {
-            EagleError() << "EagleSystem::InstallKeyboard : Failed to retrieve system queue." << std::endl;
-         }
-   	}
+      if (queue) {
+         queue->ListenTo(input);
+      }
    }
    return keyboard_running;
 }
@@ -420,9 +413,10 @@ bool EagleSystem::InstallMouse() {
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeMouseInput();
-   		EagleEventHandler* queue = GetSystemQueue();
+   		input->StartMouseEventHandler();
+         EagleEventHandler* queue = GetSystemQueue();
    		if (queue) {
-				input->RegisterMouseInput(queue);
+				queue->ListenTo(input);
    		}
    	}
    }
@@ -441,9 +435,10 @@ bool EagleSystem::InstallJoystick() {
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeJoystickInput();
+   		input->StartJoystickEventHandler();
    		EagleEventHandler* queue = GetSystemQueue();
    		if (queue) {
-				input->RegisterJoystickInput(queue);
+				queue->ListenTo(input);
    		}
    	}
    }
@@ -462,9 +457,10 @@ bool EagleSystem::InstallTouch() {
    	EagleInputHandler* input = GetInputHandler();
    	if (input) {
    		input->InitializeTouchInput();
+   		input->StartTouchEventHandler();
    		EagleEventHandler* queue = GetSystemQueue();
    		if (queue) {
-				input->RegisterTouchInput(queue);
+				queue->ListenTo(input);
    		}
    	}
    }
@@ -524,21 +520,13 @@ int EagleSystem::EagleInitState() {
 /// TODO,DESIGN : This applies to GetInputHandler, GetSystemQueue , and GetSystemTimer
 /// TODO,DESIGN : As well as the Create functions
 
-EagleGraphicsContext* EagleSystem::GetWindow(int index) {
-   if (index < 0 || index >= (int)windows.size()) {
-      EAGLE_ASSERT(0);
-      return 0;
-   }
-   return windows[index];
-}
-
 
 
 EagleInputHandler* EagleSystem::GetInputHandler() {
    if (!input_handler) {
       input_handler = CreateInputHandler();
       if (!input_handler) {
-         EagleError() << "Failed to retrieve input handler." << std::endl;
+         throw EagleException("Failed to retrieve input handler.");
       }
    }
    return input_handler;
@@ -550,7 +538,7 @@ EagleEventHandler* EagleSystem::GetSystemQueue() {
 	if (!system_queue) {
 		system_queue = CreateEventHandler(false);
 		if (!system_queue) {
-		   EagleError() << "Failed to retrieve system event handler." << std::endl;
+		   throw EagleException("Failed to retrieve system event handler.");
 		}
 	}
 	return system_queue;
@@ -565,7 +553,7 @@ EagleTimer* EagleSystem::GetSystemTimer() {
 			system_timer->Create(system_timer_rate);
 		}
 		else {
-         EagleError() << "Failed to retrieve system timer." << std::endl;
+         throw EagleException("EagleSystem::GetSystemTimer - Failed to retrieve system timer.");
 		}
 	}
 	return system_timer;
@@ -575,6 +563,12 @@ EagleTimer* EagleSystem::GetSystemTimer() {
 
 EagleClipboard* EagleSystem::GetSystemClipboard() {
    return system_clipboard;
+}
+
+
+
+EagleWindowManager* EagleSystem::GetWindowManager() {
+   return window_manager;
 }
 
 
@@ -630,7 +624,6 @@ EagleGraphicsContext* EagleSystem::CreateGraphicsContext(int width , int height 
          system_queue->ListenTo(win);
 ///         win->RegisterDisplayInput(system_queue);
       }
-      windows.Add(win);
    }
    return win;
 }
@@ -689,7 +682,7 @@ void EagleSystem::FreeTimer(EagleTimer* timer) {
 
 
 void EagleSystem::FreeGraphicsContext(EagleGraphicsContext* window) {
-   windows.Free(window);
+   window_manager->DestroyWindow(window->GetEagleId());
 }
 
 
@@ -711,7 +704,7 @@ void EagleSystem::FreeClipboard(EagleClipboard* clipboard) {
 }
 
 
-
+/*
 void EagleSystem::RegisterKeyboardInput(EagleEventHandler* queue) {
 	EagleInputHandler* input = GetInputHandler();
 	if (input) {
@@ -757,7 +750,7 @@ void EagleSystem::RegisterInputs(EagleEventHandler* queue) {
 	}
 }
 
-
+*/
 
 bool EagleSystem::UpToDate() {
    EAGLE_ASSERT(system_up);
@@ -774,7 +767,7 @@ EagleEvent EagleSystem::UpdateSystemState() {
    if (!UpToDate()) {
       EagleEvent e = system_queue->TakeNextEvent();
       most_recent_system_event = e;
-      HandleInputEvent(e);
+      input_handler->HandleInputEvent(e);
       return e;
    }
    else {
@@ -789,7 +782,7 @@ EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
    EAGLE_ASSERT(system_queue);
    EagleEvent e = system_queue->WaitForEvent();
    most_recent_system_event = e;
-   HandleInputEvent(e);
+   input_handler->HandleInputEvent(e);
    return e;
 }
 
@@ -801,12 +794,21 @@ EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
    EagleEvent e = system_queue->WaitForEvent(timeout);
    if (e.type == EAGLE_EVENT_NONE) {return e;}
    most_recent_system_event = e;
-   HandleInputEvent(e);
+   input_handler->HandleInputEvent(e);
    return e;
 }
 
 
 
+double EagleSystem::GetProgramTime() {
+   return ProgramTime::Now() - ProgramTime::ProgramStart();
+}
+
+
+
+EagleGraphicsContext* EagleSystem::GetActiveWindow() {
+   return window_manager->GetActiveWindow();
+}
 
 
 

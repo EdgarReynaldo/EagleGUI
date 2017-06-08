@@ -10,6 +10,8 @@
 
 
 struct ALLEGRO_THREAD;
+struct ALLEGRO_COND;
+struct ALLEGRO_MUTEX;
 
 
 void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument);
@@ -26,6 +28,10 @@ private :
    void* return_value;
    bool running;
    
+   ALLEGRO_COND* finish_condition_var;
+   ALLEGRO_MUTEX* finish_mutex;
+   
+   
    
    friend void* A5ThreadWrapperProcess(ALLEGRO_THREAD* , void*);
    
@@ -41,8 +47,10 @@ public :
    void Destroy();
    void Start();
    void SignalToStop();
-   void* Join();
    
+   void* Join();/// Implicitly signal stop
+   void* FinishThread();/// Wait for thread to complete
+
    bool ShouldStop();
    bool Running();
    bool Valid();

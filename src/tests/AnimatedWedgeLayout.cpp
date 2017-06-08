@@ -124,13 +124,13 @@ int AnimatedWedgeLayout::PrivateHandleEvent(EagleEvent e) {
    /// If key down or key up, start animation
    if (!animation_running) {
       if (e.type == EAGLE_EVENT_KEY_DOWN) {
-         if (e.keyboard.keycode == EAGLE_KEY_UP || e.keyboard.keycode == EAGLE_KEY_DOWN) {
+         if (e.keyboard.keycode == EAGLE_EVENT_KEY_UP || e.keyboard.keycode == EAGLE_EVENT_KEY_DOWN) {
             ResetAnimation();
             animation_running = true;
-            if (e.keyboard.keycode == EAGLE_KEY_UP) {
+            if (e.keyboard.keycode == EAGLE_EVENT_KEY_UP) {
                direction_forward = false;
             }
-            if (e.keyboard.keycode == EAGLE_KEY_DOWN) {
+            if (e.keyboard.keycode == EAGLE_EVENT_KEY_DOWN) {
                direction_forward = true;
             }
             return DIALOG_INPUT_USED;

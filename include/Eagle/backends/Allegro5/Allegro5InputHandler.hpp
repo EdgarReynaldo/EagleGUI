@@ -62,11 +62,18 @@ public :
    virtual void GetMouseState();
    virtual void GetTouchState();
 
+   
+   virtual void StartKeyboardEventHandler();
+   virtual void StartJoystickEventHandler();
+   virtual void StartMouseEventHandler();
+   virtual void StartTouchEventHandler();
+/*   
+   
 	virtual void RegisterKeyboardInput(EagleEventHandler* queue);
 	virtual void RegisterMouseInput(EagleEventHandler* queue);
 	virtual void RegisterJoystickInput(EagleEventHandler* queue);
 	virtual void RegisterTouchInput(EagleEventHandler* queue);
-	
+*/
 };
 
 

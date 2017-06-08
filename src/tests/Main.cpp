@@ -31,11 +31,13 @@ int main(int argc , char** argv) {
    return 0;
 */   
    
-   sys = new Allegro5System();
+   sys = GetAllegro5System();
+   
+   atexit(Eagle::EagleLibrary::ShutdownEagle);
+   
    int state = 0;
    if ((state = sys->Initialize(EAGLE_FULL_SETUP)) != EAGLE_FULL_SETUP) {
       EagleLog() << PrintFailedEagleInitStates(EAGLE_FULL_SETUP , state) << std::endl;
-      delete sys;
       return 1;
    }
    
@@ -66,9 +68,6 @@ int main(int argc , char** argv) {
    TestMenu test_menu(main_window);
 
    test_menu.Run();
-   
-   delete sys;
-   sys = 0;
    
    return 0;
 }

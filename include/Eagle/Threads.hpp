@@ -27,8 +27,10 @@ public :
    virtual void Destroy()=0;
    virtual void Start()=0;
    virtual void SignalToStop()=0;
-   virtual void* Join()=0;
-   
+
+   virtual void* Join()=0;/// Implicitly signal stop
+   virtual void* FinishThread()=0;/// Wait for thread to complete
+
    virtual bool ShouldStop()=0;
    virtual bool Running()=0;
    virtual bool Valid()=0;

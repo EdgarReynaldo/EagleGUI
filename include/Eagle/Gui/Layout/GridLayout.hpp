@@ -67,7 +67,7 @@ protected :
 
 public :
 	GridLayout();
-	GridLayout(string name);
+	GridLayout(std::string name);
 	GridLayout(int numcolumns , int numrows);
 	virtual ~GridLayout();
 

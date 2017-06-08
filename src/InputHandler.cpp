@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -27,6 +27,8 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/System.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 #include <sstream>
 
@@ -241,83 +243,6 @@ int num_joysticks = 0;
 
 
 
-/// ----------------------     EagleInputHandler     --------------------------
-
-
-
-EagleInputHandler::EagleInputHandler() :
-      EagleEventSource(),
-      EagleEventListener()
-{}
-
-
-
-void EagleInputHandler::InitializeInput() {
-   InitializeKeyboardInput();
-   InitializeJoystickInput();
-   InitializeMouseInput();
-   InitializeTouchInput();
-}
-
-
-
-void EagleInputHandler::InitializeKeyboardInput() {
-   // reserved to change at any time
-   ClearKeyState();
-   
-   // This will always be called
-   PrivateInitializeKeyboardInput();
-}
-
-
-
-void EagleInputHandler::InitializeJoystickInput() {
-   // reserved to change at any time
-   
-   // This will always be called
-   PrivateInitializeJoystickInput();
-}
-
-
-
-void EagleInputHandler::InitializeMouseInput() {
-   // reserved to change at any time
-   
-   // This will always be called
-   PrivateInitializeMouseInput();
-}
-
-
-
-void EagleInputHandler::InitializeTouchInput() {
-   // reserved to change at any time
-   
-   // This will always be called
-   PrivateInitializeTouchInput();
-}
-
-
-
-void EagleInputHandler::ClearKeyState() {
-   for (int i = 0 ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
-      keystates[i] = OPEN;
-   }
-   for (int i = 0 ; i < EAGLE_KEY_MAX ; ++i) {
-      keydown[i] = 0;
-      key_held_duration[i] = 0.0f;
-   }
-}
-
-
-
-void EagleInputHandler::RegisterAllInput(EagleEventHandler* queue) {
-	RegisterKeyboardInput(queue);
-	RegisterJoystickInput(queue);
-	RegisterMouseInput(queue);
-	RegisterTouchInput(queue);
-}
-
-
 
 /// -----------------------------    globals    --------------------------------------------
 
@@ -389,261 +314,6 @@ void UpdateModKeys() {
 void SetInputTimer(EagleTimer* timer) {
    input_timer = timer;
 }
-
-
-
-void HandleInputEvent(EagleEvent ev) {
-   
-   if (ev.type == EAGLE_EVENT_NONE) {return;}
-   
-///   EagleGraphicsContext* old_display = last_display_read;
-   mouse_dx = 0;
-   mouse_dy = 0;
-   mouse_dw = 0;
-   mouse_dz = 0;
-///   last_display_read = 0;
-   
-
-   for (int i = 0 ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
-      if (keystates[i] & (PRESS | DBLCLICK)) {keystates[i] = HELD;}
-      else if (keystates[i] == RELEASE) {keystates[i] = OPEN;}
-   }
-   for (int i = 0 ; i < MS_MAX_NUM_BUTTONS ; ++i) {
-      int flag = 1 << i;
-      if (mouse_press & flag) {
-         mouse_press &= ~flag;
-         mouse_held |= flag;
-      }
-      else if (mouse_dblclick & flag) {
-         mouse_dblclick &= ~flag;
-         mouse_held |= flag;
-      }
-      else if (mouse_release & (flag)) {
-         mouse_release &= ~flag;
-         mouse_open |= flag;
-      }
-   }
-   for (int i = 0 ; i < num_joysticks ; ++i) {
-      EagleJoystickData& joy = joysticks[i];
-      if (joy.pluggedin) {
-         for (int b = 0 ; b < joy.num_buttons ; ++b) {
-            if (joy.buttonstates[b] & (PRESS | DBLCLICK)) {joy.buttonstates[b] = HELD;}
-            else if (joy.buttonstates[b] == RELEASE) {joy.buttonstates[b] = OPEN;}
-         }
-      }
-   }
-/*
-x    * EAGLE_EVENT_JOYSTICK_AXIS
-x    * EAGLE_EVENT_JOYSTICK_BUTTON_DOWN
-x    * EAGLE_EVENT_JOYSTICK_BUTTON_UP
-x    * EAGLE_EVENT_JOYSTICK_CONFIGURATION
-x    * EAGLE_EVENT_KEY_DOWN
-x    * EAGLE_EVENT_KEY_UP
--    * EAGLE_EVENT_KEY_CHAR
-x    * EAGLE_EVENT_MOUSE_AXES
-x    * EAGLE_EVENT_MOUSE_BUTTON_DOWN
-x    * EAGLE_EVENT_MOUSE_BUTTON_UP
-x    * EAGLE_EVENT_MOUSE_WARPED
-x    * EAGLE_EVENT_MOUSE_ENTER_DISPLAY
-x    * EAGLE_EVENT_MOUSE_LEAVE_DISPLAY
-x    * EAGLE_EVENT_TIMER
- * EAGLE_EVENT_DISPLAY_EXPOSE
- * EAGLE_EVENT_DISPLAY_RESIZE
- * EAGLE_EVENT_DISPLAY_CLOSE
- * EAGLE_EVENT_DISPLAY_LOST
- * EAGLE_EVENT_DISPLAY_FOUND
- * EAGLE_EVENT_DISPLAY_SWITCH_OUT
- * EAGLE_EVENT_DISPLAY_SWITCH_IN
- * EAGLE_EVENT_DISPLAY_ORIENTATION
-*/
-   if (ev.type == EAGLE_EVENT_TIMER) {
-      if (input_timer && (ev.timer.raw_source == input_timer->Source())) {
-// since_last_jspress
-// since_last_keypress
-// since_last_mspress
-         float dt = input_timer->SecondsPerTick();
-         for (int i = 0 ; i < EAGLE_KEY_MAX ; ++i) {
-            if (keystates[i] == HELD) {
-               key_held_duration[i] += dt;
-            }
-            since_last_keypress[i] += dt;
-         }
-         for (int i = EAGLE_KEY_MAX ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
-            if (keystates[i] == HELD) {
-               key_held_duration[i] += dt;
-            }
-         }
-         for (int i = 0 ; i < MS_MAX_NUM_BUTTONS ; ++i) {
-            if (mouse_held & (1 << i)) {
-               msbtn_held_duration[i] += dt;
-            }
-            since_last_mspress[i] += dt;
-         }
-         for (int i = 0 ; i < num_joysticks ; ++i) {
-            EagleJoystickData& joy = joysticks[i];
-            if (joy.pluggedin) {
-               for (int b = 0 ; b < joy.num_buttons ; ++b) {
-                  if (joy.buttonstates[b] == HELD) {
-                     joy.button_held_duration[b] += dt;
-                  }
-                  joy.since_last_jspress[b] += dt;
-               }
-            }
-         }
-      }
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_w = ev.mouse.w;
-      mouse_z = ev.mouse.z;
-      mouse_dx = ev.mouse.dx;
-      mouse_dy = ev.mouse.dy;
-      mouse_dw = ev.mouse.dw;
-      mouse_dz = ev.mouse.dz;
-   }
-   else if (ev.type == EAGLE_EVENT_JOYSTICK_AXIS) {
-/*
-      int index = -1;
-      for (int i = 0 ; i < num_joysticks ; ++i) {
-         if (ev.joystick.id == joysticks[i].joystick) {index = i;}
-      }
-      if (index != -1) {
-         joysticks[index].axes[ev.joystick.stick][ev.joystick.axis] = ev.joystick.pos;
-      }
-*/
-      joysticks[ev.joystick.nid].axes[ev.joystick.stick][ev.joystick.axis] = ev.joystick.pos;
-   }
-   else if (ev.type == EAGLE_EVENT_KEY_DOWN) {
-      if (since_last_keypress[ev.keyboard.keycode] < double_click_duration) {
-         keystates[ev.keyboard.keycode] = DBLCLICK;
-      }
-      else {
-         keystates[ev.keyboard.keycode] = PRESS;
-      }
-      since_last_keypress[ev.keyboard.keycode] = 0.0f;
-      keydown[ev.keyboard.keycode] = true;
-      UpdateModKeys();
-   }
-   else if (ev.type == EAGLE_EVENT_KEY_UP) {
-      keystates[ev.keyboard.keycode] = RELEASE;
-      keydown[ev.keyboard.keycode] = false;
-      UpdateModKeys();
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_w = ev.mouse.w;
-      mouse_z = ev.mouse.z;
-      int flag = 1 << (ev.mouse.button - 1);
-      mouse_press |= flag;
-      if (since_last_mspress[ev.mouse.button] < double_click_duration) {
-         mouse_dblclick |= flag;
-      }
-      since_last_mspress[ev.mouse.button] = 0.0f;
-      mouse_open &= ~flag;
-      mouse_release &= ~flag;
-      mouse_down |= flag;
-///      last_display_read = ev.mouse.display;
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_w = ev.mouse.w;
-      mouse_z = ev.mouse.z;
-      int flag = 1 << (ev.mouse.button - 1);
-      mouse_release |= flag;
-      mouse_press &= ~flag;
-      mouse_held &= ~flag;
-      mouse_down &= ~flag;
-      mouse_dblclick &= ~flag;
-///      last_display_read = ev.mouse.display;
-   }
-   else if (ev.type == EAGLE_EVENT_JOYSTICK_BUTTON_DOWN) {
-/**
-      int index = -1;
-      for (int i = 0 ; i < num_joysticks ; ++i) {
-         /// joysticks[i] = EagleJoystickData
-         /// joysticks[i].joystick = void* to joystick source
-         /// ev.joystick.id = EagleJoystickData*
-         if (joysticks[i].joystick == ev.joystick.id) {
-            index = i;
-         }
-      }
-      if (index != -1) {
-         if (joysticks[index].since_last_jspress[ev.joystick.button] < double_click_duration) {
-            joysticks[index].buttonstates[ev.joystick.button] = DBLCLICK;
-         }
-         else {
-            joysticks[index].buttonstates[ev.joystick.button] = PRESS;
-         }
-         joysticks[index].since_last_jspress[ev.joystick.button] = 0.0f;
-      }
-*/
-      int index = ev.joystick.nid;
-      if (joysticks[index].since_last_jspress[ev.joystick.button] < double_click_duration) {
-         joysticks[index].buttonstates[ev.joystick.button] = DBLCLICK;
-      }
-      else {
-         joysticks[index].buttonstates[ev.joystick.button] = PRESS;
-      }
-      joysticks[index].since_last_jspress[ev.joystick.button] = 0.0f;
-   }
-   else if (ev.type == EAGLE_EVENT_JOYSTICK_BUTTON_UP) {
-/*
-      int index = -1;
-      for (int i = 0 ; i < num_joysticks ; ++i) {
-         if (joysticks[i].joystick == ev.joystick.id) {
-            index = i;
-         }
-      }
-      if (index != -1) {
-         joysticks[index].buttonstates[ev.joystick.button] = RELEASE;
-      }
-*/
-      joysticks[ev.joystick.nid].buttonstates[ev.joystick.button] = RELEASE;
-   }
-   else if (ev.type == EAGLE_EVENT_JOYSTICK_CONFIGURATION) {
-/*
-      if (al_reconfigure_joysticks()) {
-         InitializeJoysticks();
-      }
-*/
-      EAGLE_ASSERT(eagle_system);
-      EagleInputHandler* input = eagle_system->GetInputHandler();
-      if (input) {
-         input->InitializeJoystickInput();
-      }
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_WARPED) {
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_w = ev.mouse.w;
-      mouse_z = ev.mouse.z;
-      mouse_dx = ev.mouse.dx;
-      mouse_dy = ev.mouse.dy;
-      mouse_dw = ev.mouse.dw;
-      mouse_dz = ev.mouse.dz;
-///      last_display_read = ev.mouse.display;
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_ENTER_DISPLAY) {
-      mouse_on = true;
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_z = ev.mouse.z;
-      mouse_w = ev.mouse.w;
-///      last_display_read = old_display;
-   }
-   else if (ev.type == EAGLE_EVENT_MOUSE_LEAVE_DISPLAY) {
-      mouse_on = false;
-      mouse_x = ev.mouse.x;
-      mouse_y = ev.mouse.y;
-      mouse_z = ev.mouse.z;
-      mouse_w = ev.mouse.w;
-///      last_display_read = old_display;
-   }
-}
-
 
 
 
@@ -873,6 +543,366 @@ const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES] = {
    { "js7_press" , "js7_release" , "js7_held" , "js7_open" , "js7_dblclick" } ,
    { "js8_press" , "js8_release" , "js8_held" , "js8_open" , "js8_dblclick" }
 };
+
+
+
+/// ----------------------     EagleInputHandler     --------------------------
+
+
+
+EagleInputHandler::EagleInputHandler() :
+      EagleEventSource(),
+      EagleEventListener()
+{}
+
+
+
+void EagleInputHandler::InitializeInput() {
+   InitializeKeyboardInput();
+   InitializeJoystickInput();
+   InitializeMouseInput();
+   InitializeTouchInput();
+}
+
+
+
+void EagleInputHandler::InitializeKeyboardInput() {
+   // reserved to change at any time
+   ClearKeyState();
+   
+   // This will always be called
+   PrivateInitializeKeyboardInput();
+}
+
+
+
+void EagleInputHandler::InitializeJoystickInput() {
+   // reserved to change at any time
+   
+   // This will always be called
+   PrivateInitializeJoystickInput();
+}
+
+
+
+void EagleInputHandler::InitializeMouseInput() {
+   // reserved to change at any time
+   
+   // This will always be called
+   PrivateInitializeMouseInput();
+}
+
+
+
+void EagleInputHandler::InitializeTouchInput() {
+   // reserved to change at any time
+   
+   // This will always be called
+   PrivateInitializeTouchInput();
+}
+
+
+
+void EagleInputHandler::ClearKeyState() {
+   for (int i = 0 ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
+      keystates[i] = OPEN;
+   }
+   for (int i = 0 ; i < EAGLE_KEY_MAX ; ++i) {
+      keydown[i] = 0;
+      key_held_duration[i] = 0.0f;
+   }
+}
+
+
+
+void EagleInputHandler::HandleInputEvent(EagleEvent ev) {
+   
+   if (ev.type == EAGLE_EVENT_NONE) {return;}
+   
+///   EagleGraphicsContext* old_display = last_display_read;
+   mouse_dx = 0;
+   mouse_dy = 0;
+   mouse_dw = 0;
+   mouse_dz = 0;
+///   last_display_read = 0;
+   
+
+   for (int i = 0 ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
+      if (keystates[i] & (PRESS | DBLCLICK)) {keystates[i] = HELD;}
+      else if (keystates[i] == RELEASE) {keystates[i] = OPEN;}
+   }
+   for (int i = 0 ; i < MS_MAX_NUM_BUTTONS ; ++i) {
+      int flag = 1 << i;
+      if (mouse_press & flag) {
+         mouse_press &= ~flag;
+         mouse_held |= flag;
+      }
+      else if (mouse_dblclick & flag) {
+         mouse_dblclick &= ~flag;
+         mouse_held |= flag;
+      }
+      else if (mouse_release & (flag)) {
+         mouse_release &= ~flag;
+         mouse_open |= flag;
+      }
+   }
+   for (int i = 0 ; i < num_joysticks ; ++i) {
+      EagleJoystickData& joy = joysticks[i];
+      if (joy.pluggedin) {
+         for (int b = 0 ; b < joy.num_buttons ; ++b) {
+            if (joy.buttonstates[b] & (PRESS | DBLCLICK)) {joy.buttonstates[b] = HELD;}
+            else if (joy.buttonstates[b] == RELEASE) {joy.buttonstates[b] = OPEN;}
+         }
+      }
+   }
+/*
+x    * EAGLE_EVENT_JOYSTICK_AXIS
+x    * EAGLE_EVENT_JOYSTICK_BUTTON_DOWN
+x    * EAGLE_EVENT_JOYSTICK_BUTTON_UP
+x    * EAGLE_EVENT_JOYSTICK_CONFIGURATION
+x    * EAGLE_EVENT_KEY_DOWN
+x    * EAGLE_EVENT_KEY_UP
+-    * EAGLE_EVENT_KEY_CHAR
+x    * EAGLE_EVENT_MOUSE_AXES
+x    * EAGLE_EVENT_MOUSE_BUTTON_DOWN
+x    * EAGLE_EVENT_MOUSE_BUTTON_UP
+x    * EAGLE_EVENT_MOUSE_WARPED
+x    * EAGLE_EVENT_MOUSE_ENTER_DISPLAY
+x    * EAGLE_EVENT_MOUSE_LEAVE_DISPLAY
+x    * EAGLE_EVENT_TIMER
+ * EAGLE_EVENT_DISPLAY_EXPOSE
+ * EAGLE_EVENT_DISPLAY_RESIZE
+ * EAGLE_EVENT_DISPLAY_CLOSE
+ * EAGLE_EVENT_DISPLAY_LOST
+ * EAGLE_EVENT_DISPLAY_FOUND
+ * EAGLE_EVENT_DISPLAY_SWITCH_OUT
+ * EAGLE_EVENT_DISPLAY_SWITCH_IN
+ * EAGLE_EVENT_DISPLAY_ORIENTATION
+*/
+   if (ev.type == EAGLE_EVENT_TIMER) {
+      if (input_timer && (ev.timer.raw_source == input_timer->Source())) {
+// since_last_jspress
+// since_last_keypress
+// since_last_mspress
+         float dt = input_timer->SecondsPerTick();
+         for (int i = 0 ; i < EAGLE_KEY_MAX ; ++i) {
+            if (keystates[i] == HELD) {
+               key_held_duration[i] += dt;
+            }
+            since_last_keypress[i] += dt;
+         }
+         for (int i = EAGLE_KEY_MAX ; i < EAGLE_KEY_STATE_EXTENDED_MAX ; ++i) {
+            if (keystates[i] == HELD) {
+               key_held_duration[i] += dt;
+            }
+         }
+         for (int i = 0 ; i < MS_MAX_NUM_BUTTONS ; ++i) {
+            if (mouse_held & (1 << i)) {
+               msbtn_held_duration[i] += dt;
+            }
+            since_last_mspress[i] += dt;
+         }
+         for (int i = 0 ; i < num_joysticks ; ++i) {
+            EagleJoystickData& joy = joysticks[i];
+            if (joy.pluggedin) {
+               for (int b = 0 ; b < joy.num_buttons ; ++b) {
+                  if (joy.buttonstates[b] == HELD) {
+                     joy.button_held_duration[b] += dt;
+                  }
+                  joy.since_last_jspress[b] += dt;
+               }
+            }
+         }
+      }
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_w = ev.mouse.w;
+      mouse_z = ev.mouse.z;
+      mouse_dx = ev.mouse.dx;
+      mouse_dy = ev.mouse.dy;
+      mouse_dw = ev.mouse.dw;
+      mouse_dz = ev.mouse.dz;
+   }
+   else if (ev.type == EAGLE_EVENT_JOYSTICK_AXIS) {
+/*
+      int index = -1;
+      for (int i = 0 ; i < num_joysticks ; ++i) {
+         if (ev.joystick.id == joysticks[i].joystick) {index = i;}
+      }
+      if (index != -1) {
+         joysticks[index].axes[ev.joystick.stick][ev.joystick.axis] = ev.joystick.pos;
+      }
+*/
+      joysticks[ev.joystick.nid].axes[ev.joystick.stick][ev.joystick.axis] = ev.joystick.pos;
+   }
+   else if (ev.type == EAGLE_EVENT_KEY_DOWN) {
+      if (since_last_keypress[ev.keyboard.keycode] < double_click_duration) {
+         keystates[ev.keyboard.keycode] = DBLCLICK;
+      }
+      else {
+         keystates[ev.keyboard.keycode] = PRESS;
+      }
+      since_last_keypress[ev.keyboard.keycode] = 0.0f;
+      keydown[ev.keyboard.keycode] = true;
+      UpdateModKeys();
+   }
+   else if (ev.type == EAGLE_EVENT_KEY_UP) {
+      keystates[ev.keyboard.keycode] = RELEASE;
+      keydown[ev.keyboard.keycode] = false;
+      UpdateModKeys();
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_w = ev.mouse.w;
+      mouse_z = ev.mouse.z;
+      int flag = 1 << (ev.mouse.button - 1);
+      mouse_press |= flag;
+      if (since_last_mspress[ev.mouse.button] < double_click_duration) {
+         mouse_dblclick |= flag;
+      }
+      since_last_mspress[ev.mouse.button] = 0.0f;
+      mouse_open &= ~flag;
+      mouse_release &= ~flag;
+      mouse_down |= flag;
+///      last_display_read = ev.mouse.display;
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_w = ev.mouse.w;
+      mouse_z = ev.mouse.z;
+      int flag = 1 << (ev.mouse.button - 1);
+      mouse_release |= flag;
+      mouse_press &= ~flag;
+      mouse_held &= ~flag;
+      mouse_down &= ~flag;
+      mouse_dblclick &= ~flag;
+///      last_display_read = ev.mouse.display;
+   }
+   else if (ev.type == EAGLE_EVENT_JOYSTICK_BUTTON_DOWN) {
+/**
+      int index = -1;
+      for (int i = 0 ; i < num_joysticks ; ++i) {
+         /// joysticks[i] = EagleJoystickData
+         /// joysticks[i].joystick = void* to joystick source
+         /// ev.joystick.id = EagleJoystickData*
+         if (joysticks[i].joystick == ev.joystick.id) {
+            index = i;
+         }
+      }
+      if (index != -1) {
+         if (joysticks[index].since_last_jspress[ev.joystick.button] < double_click_duration) {
+            joysticks[index].buttonstates[ev.joystick.button] = DBLCLICK;
+         }
+         else {
+            joysticks[index].buttonstates[ev.joystick.button] = PRESS;
+         }
+         joysticks[index].since_last_jspress[ev.joystick.button] = 0.0f;
+      }
+*/
+      int index = ev.joystick.nid;
+      if (joysticks[index].since_last_jspress[ev.joystick.button] < double_click_duration) {
+         joysticks[index].buttonstates[ev.joystick.button] = DBLCLICK;
+      }
+      else {
+         joysticks[index].buttonstates[ev.joystick.button] = PRESS;
+      }
+      joysticks[index].since_last_jspress[ev.joystick.button] = 0.0f;
+   }
+   else if (ev.type == EAGLE_EVENT_JOYSTICK_BUTTON_UP) {
+/*
+      int index = -1;
+      for (int i = 0 ; i < num_joysticks ; ++i) {
+         if (joysticks[i].joystick == ev.joystick.id) {
+            index = i;
+         }
+      }
+      if (index != -1) {
+         joysticks[index].buttonstates[ev.joystick.button] = RELEASE;
+      }
+*/
+      joysticks[ev.joystick.nid].buttonstates[ev.joystick.button] = RELEASE;
+   }
+   else if (ev.type == EAGLE_EVENT_JOYSTICK_CONFIGURATION) {
+/*
+      if (al_reconfigure_joysticks()) {
+         InitializeJoysticks();
+      }
+*/
+
+      InitializeJoystickInput();
+
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_WARPED) {
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_w = ev.mouse.w;
+      mouse_z = ev.mouse.z;
+      mouse_dx = ev.mouse.dx;
+      mouse_dy = ev.mouse.dy;
+      mouse_dw = ev.mouse.dw;
+      mouse_dz = ev.mouse.dz;
+///      last_display_read = ev.mouse.display;
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_ENTER_DISPLAY) {
+      mouse_on = true;
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_z = ev.mouse.z;
+      mouse_w = ev.mouse.w;
+///      last_display_read = old_display;
+   }
+   else if (ev.type == EAGLE_EVENT_MOUSE_LEAVE_DISPLAY) {
+      mouse_on = false;
+      mouse_x = ev.mouse.x;
+      mouse_y = ev.mouse.y;
+      mouse_z = ev.mouse.z;
+      mouse_w = ev.mouse.w;
+///      last_display_read = old_display;
+   }
+}
+
+
+
+void EagleInputHandler::RecordInputPress(EagleEventHandler* queue , Input* input) {
+   EAGLE_ASSERT(queue);
+   EAGLE_ASSERT(input);
+//   al_flush_event_queue(queue);
+   while (1) {
+      EagleEvent ev;
+      ev = queue->WaitForEvent();
+      HandleInputEvent(ev);
+      Input i;
+      if (AnyInputPressed(&i)) {
+         *input = i;
+         break;
+      }
+   }
+}
+
+
+
+void EagleInputHandler::RecordInputGroup(EagleEventHandler* queue , InputGroup* input_group) {
+   EAGLE_ASSERT(queue);
+   EAGLE_ASSERT(input_group);
+   
+   Input press;
+   Input held;
+   
+   RecordInputPress(queue , &press);
+   if (ModifierHeld(&held)) {
+      *input_group = press && held;
+      return;
+   }
+   *input_group = InputGroup(press);
+}
+
+
+
+/// ---------------------------     Input class     ------------------------------
 
 
 
@@ -1396,41 +1426,6 @@ bool ModifierHeld(Input* store) {
 
 
 
-void RecordInputPress(EagleEventHandler* queue , Input* input) {
-   EAGLE_ASSERT(queue);
-   EAGLE_ASSERT(input);
-//   al_flush_event_queue(queue);
-   while (1) {
-      EagleEvent ev;
-      ev = queue->WaitForEvent();
-      HandleInputEvent(ev);
-      Input i;
-      if (AnyInputPressed(&i)) {
-         *input = i;
-         break;
-      }
-   }
-}
-
-
-
-void RecordInputGroup(EagleEventHandler* queue , InputGroup* input_group) {
-   EAGLE_ASSERT(queue);
-   EAGLE_ASSERT(input_group);
-   
-   Input press;
-   Input held;
-   
-   RecordInputPress(queue , &press);
-   if (ModifierHeld(&held)) {
-      *input_group = press && held;
-      return;
-   }
-   *input_group = InputGroup(press);
-}
-
-
-
 
 
 /// ---------------------------------- InputAssignments class ------------------------------------------
@@ -1444,6 +1439,10 @@ void InputAssignment::clear() {
 
 
 InputGroup& InputAssignment::operator[](const string& str) {
+   TIMIT timit = task_input_map.find(str);
+   if (timit == task_input_map.end()) {
+      throw EagleException(StringPrintF("Failed to find %s in input map." , str.c_str()));
+   }
    return task_input_map[str];
 }
 

@@ -991,11 +991,9 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 EagleEvent MakeEagleEvent(WidgetMsg msg) {
-   EAGLE_ASSERT(eagle_system);
-   
    EagleEvent e;
    e.source = msg.From();
-   e.timestamp = eagle_system->GetProgramTime();
+   e.timestamp = EagleSystem::GetProgramTime();
    e.type = EAGLE_EVENT_WIDGET;
    e.widget.from = msg.from;
    e.widget.topic = msg.topic;

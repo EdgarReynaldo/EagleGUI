@@ -46,13 +46,13 @@ class WidgetFactory {
    
 public :
    
-   void RegisterWidgetCreationFunction(string widget_class_name , WIDGET_CREATION_FUNCTION widget_creator);
+   void RegisterWidgetCreationFunction(std::string widget_class_name , WIDGET_CREATION_FUNCTION widget_creator);
 
    int RegisterBasicWidgetCreator(WIDGET_CREATION_FUNCTION widget_creator);
    int RegisterBasicTextWidgetCreator(WIDGET_CREATION_FUNCTION widget_creator);
    int RegisterBasicButtonWidgetCreator(WIDGET_CREATION_FUNCTION widget_creator);
    
-   WidgetBase* CreateWidgetBaseObject(string widget_class_name , string widget_parameters);
+   WidgetBase* CreateWidgetBaseObject(std::string widget_class_name , std::string widget_parameters);
 
    
    bool FreeWidget(EAGLE_ID eid);/// Search groups for widget
@@ -71,19 +71,19 @@ void FreeAllWidgets();
 
 
 
-WidgetBase* CreateWidgetObject(string widget_class_name , string widget_parameters);
+WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string widget_parameters);
 
 
 
 template <class WIDGET_TYPE>
-WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , WIDGET_TYPE** pwidget_store = 0);
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string widget_parameters , WIDGET_TYPE** pwidget_store = 0);
 
 
 
 /// Template functions
 
 template <class WIDGET_TYPE>
-WIDGET_TYPE* CreateWidget(string widget_class_name , string widget_parameters , WIDGET_TYPE** pwidget_store) {
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string widget_parameters , WIDGET_TYPE** pwidget_store) {
    WIDGET_TYPE* pwidget = 0;
    pwidget = dynamic_cast<WIDGET_TYPE*>(CreateWidgetObject(widget_class_name , widget_parameters));
    if (!pwidget) {

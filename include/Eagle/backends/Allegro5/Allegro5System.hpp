@@ -33,11 +33,16 @@ private :
    EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags);
    EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           PrivateCreateMutex(bool recursive);
-   EagleClipboard*            PrivateCreateClipboard();
+   EagleClipboard*       PrivateCreateClipboard();
+   EagleWindowManager*   PrivateCreateWindowManager();
+
+   friend class EagleLibrary;
+
+   static EagleSystem* CreateAllegro5System();
+   
+   Allegro5System();
 
 public :
-
-   Allegro5System();
    ~Allegro5System();
    
    void Shutdown();
@@ -45,9 +50,14 @@ public :
    double GetProgramTime();
    void Rest(double time);
 
-   
    EagleGraphicsContext* GetGraphicsContext(ALLEGRO_DISPLAY* allegro_display);
+
+   static int RegisterSystem();
 };
+
+///EagleSystem* CreateA5System();
+
+Allegro5System* GetAllegro5System();
 
 #endif // Allegro5_System_HPP
 

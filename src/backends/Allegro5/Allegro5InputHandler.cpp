@@ -1,6 +1,8 @@
 
 
 
+#include "Eagle/Lib.hpp"
+
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
@@ -136,8 +138,10 @@ void* A5InputThreadProcess(EagleThread* thread , void* input_handler) {
       }
       EagleEvent ee = GetEagleInputEvent(ev);
 
-      ee.window = Allegro5GraphicsContext::GetActiveWindow();
+      ee.window = Eagle::EagleLibrary::System("Allegro5")->GetWindowManager()->GetActiveWindow();///Allegro5GraphicsContext::GetActiveWindow();
       ee.source = a5_input_handler;
+      
+      EagleInfo() << "Input Event #" << ee.type << " received." << std::endl;
       
       if (IsKeyboardEvent(ee)) {
          handler->EmitEvent(ee);
@@ -212,11 +216,16 @@ Allegro5InputHandler::Allegro5InputHandler() :
       touch_event_handler(false)
 {
    
+   keyboard_event_handler.Create();
+   joystick_event_handler.Create();
+   mouse_event_handler.Create();
+   touch_event_handler.Create();
+   
+   
    this->ListenTo(&keyboard_event_handler);
    this->ListenTo(&mouse_event_handler);
    this->ListenTo(&joystick_event_handler);
-   this->ListenTo(&touch_event_handler);
-   
+   this->ListenTo(&touch_event_handler);   
    
    if (!input_thread.Create(A5InputThreadProcess , this)) {
       throw EagleException("Allegro5InputHandler::Allegro5InputHandler : Failed to create input thread.");
@@ -245,7 +254,7 @@ Allegro5InputHandler::~Allegro5InputHandler() {
    ev.user.data1 = A5INPUT_THREAD_SHOULD_STOP;
    al_emit_user_event(&input_extra_event_source , &ev , 0);
    
-   input_thread.Join();
+   input_thread.FinishThread();
    
    al_destroy_event_queue(input_queue);
    al_destroy_user_event_source(&input_extra_event_source);
@@ -320,7 +329,30 @@ void Allegro5InputHandler::GetTouchState() {
 
 
 
+void Allegro5InputHandler::StartKeyboardEventHandler() {
+   al_register_event_source(keyboard_event_handler.AllegroQueue() , al_get_keyboard_event_source());
+}
 
+
+
+void Allegro5InputHandler::StartJoystickEventHandler() {
+   al_register_event_source(joystick_event_handler.AllegroQueue() , al_get_joystick_event_source());
+}
+
+
+
+void Allegro5InputHandler::StartMouseEventHandler() {
+   al_register_event_source(mouse_event_handler.AllegroQueue() , al_get_mouse_event_source());
+}
+
+
+
+void Allegro5InputHandler::StartTouchEventHandler() {
+   al_register_event_source(touch_event_handler.AllegroQueue() , al_get_touch_input_event_source());
+}
+
+
+/** 
 void Allegro5InputHandler::RegisterKeyboardInput(EagleEventHandler* queue) {
 
    queue->ListenTo(&keyboard_event_handler);
@@ -367,7 +399,7 @@ void Allegro5InputHandler::RegisterTouchInput(EagleEventHandler* queue) {
 		al_register_event_source(a5queue , al_get_touch_input_event_source());
 	}
 }
-
+//*/
 
 
 /**

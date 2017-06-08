@@ -1,0 +1,876 @@
+# depslib dependency file v1.0
+1485752579 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\allegro5testmain.cpp
+	"Allegro5TestMain.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
+	<cstdio>
+
+1484872615 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\allegro5testmain.hpp
+	"TestRegistry.hpp"
+
+1485752038 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\testregistry.hpp
+	"Eagle/System.hpp"
+	<map>
+	<vector>
+	<string>
+
+1496781359 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\system.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/Mutexes.hpp"
+	"Eagle/Clipboard.hpp"
+	"Eagle/WindowManager.hpp"
+
+1404870182 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\color.hpp
+	<iostream>
+
+1488337100 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\events.hpp
+	<list>
+	<deque>
+	<vector>
+	<string>
+	"Eagle/Gui/WidgetMessage.hpp"
+	"Eagle/Mutexes.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Conditions.hpp"
+
+1478894852 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgetmessage.hpp
+	<iostream>
+	<string>
+	<map>
+	<utility>
+
+1389697078 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\mutexes.hpp
+
+1480989991 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\exception.hpp
+	<string>
+	<cassert>
+	"Eagle/Logging.hpp"
+
+1480284214 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\logging.hpp
+	<string>
+	<iostream>
+	<fstream>
+	<unordered_set>
+
+1496767578 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\graphicscontext.hpp
+	<list>
+	<string>
+	<map>
+	"Eagle/Color.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Font.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Area.hpp"
+	"Eagle/MousePointer.hpp"
+	"Eagle/Transforms.hpp"
+	"Eagle/Gui/Alignment.hpp"
+
+1482453873 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\image.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Color.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Object.hpp"
+	<string>
+	<vector>
+
+1480280336 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\area.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/Position.hpp"
+	<iostream>
+	<list>
+	<vector>
+	<map>
+	<cmath>
+
+1479615350 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\object.hpp
+	"Eagle/Logging.hpp"
+	<string>
+	<map>
+	<vector>
+	<utility>
+	<iostream>
+	<string>
+
+1478893717 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position.hpp
+	<iostream>
+	<cmath>
+	"Eagle/Color.hpp"
+
+1376370712 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\container.hpp
+	<vector>
+
+1482027739 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\font.hpp
+	<string>
+	"Eagle/Image.hpp"
+	"Eagle/Object.hpp"
+
+1428122290 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\mousepointer.hpp
+	<list>
+
+1477889767 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\transforms.hpp
+	<memory>
+	<stack>
+
+1461675036 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\alignment.hpp
+	<string>
+
+1495890349 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\inputhandler.hpp
+	<iostream>
+	<string>
+	<map>
+	<vector>
+	"Eagle/Events.hpp"
+	"Eagle/Timer.hpp"
+
+1482100548 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\timer.hpp
+	"Eagle/Events.hpp"
+	"Eagle/Object.hpp"
+
+1496867573 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\threads.hpp
+
+1462223976 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\clipboard.hpp
+	<string>
+
+1496791659 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5backend.hpp
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
+	"Eagle/backends/Allegro5/Allegro5Color.hpp"
+	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5Font.hpp"
+	"Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
+	"Eagle/backends/Allegro5/Allegro5Image.hpp"
+	"Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5System.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Timer.hpp"
+	"Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
+
+1376813254 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5color.hpp
+	"Eagle/Color.hpp"
+	"allegro5/allegro.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro.h
+	"allegro5/base.h"
+	"allegro5/altime.h"
+	"allegro5/bitmap.h"
+	"allegro5/bitmap_draw.h"
+	"allegro5/bitmap_io.h"
+	"allegro5/bitmap_lock.h"
+	"allegro5/blender.h"
+	"allegro5/clipboard.h"
+	"allegro5/color.h"
+	"allegro5/config.h"
+	"allegro5/cpu.h"
+	"allegro5/debug.h"
+	"allegro5/display.h"
+	"allegro5/drawing.h"
+	"allegro5/error.h"
+	"allegro5/events.h"
+	"allegro5/file.h"
+	"allegro5/fixed.h"
+	"allegro5/fmaths.h"
+	"allegro5/fshook.h"
+	"allegro5/fullscreen_mode.h"
+	"allegro5/haptic.h"
+	"allegro5/joystick.h"
+	"allegro5/keyboard.h"
+	"allegro5/memory.h"
+	"allegro5/monitor.h"
+	"allegro5/mouse.h"
+	"allegro5/mouse_cursor.h"
+	"allegro5/path.h"
+	"allegro5/render_state.h"
+	"allegro5/shader.h"
+	"allegro5/system.h"
+	"allegro5/threads.h"
+	"allegro5/timer.h"
+	"allegro5/tls.h"
+	"allegro5/touch_input.h"
+	"allegro5/transformations.h"
+	"allegro5/utf8.h"
+	"allegro5/alcompat.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\base.h
+	<errno.h>
+	<limits.h>
+	<limits.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<sys/types.h>
+	<fortify/fortify.h>
+	<dmalloc.h>
+	"allegro5/internal/alconfig.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\internal\alconfig.h
+	"allegro5/platform/alplatf.h"
+	"allegro5/platform/alwatcom.h"
+	"allegro5/platform/almngw32.h"
+	"allegro5/platform/albcc32.h"
+	"allegro5/platform/almsvc.h"
+	"allegro5/platform/aliphonecfg.h"
+	"allegro5/platform/alosxcfg.h"
+	"allegro5/platform/alandroidcfg.h"
+	"allegro5/platform/alraspberrypicfg.h"
+	"allegro5/platform/alucfg.h"
+	"allegro5/platform/allegro_sdl_config.h"
+	"allegro5/platform/astdint.h"
+	"allegro5/platform/astdbool.h"
+
+1496634649 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alplatf.h
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alwatcom.h
+	<io.h>
+	<i86.h>
+	<conio.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almngw32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\albcc32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almsvc.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\aliphonecfg.h
+	<fcntl.h>
+	<unistd.h>
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alosxcfg.h
+	"allegro5/platform/alplatf.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alandroidcfg.h
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alraspberrypicfg.h
+	<fcntl.h>
+	<unistd.h>
+	<sys/types.h>
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alucfg.h
+	<fcntl.h>
+	<unistd.h>
+	"alunix.h"
+	"allegro5/platform/alplatf.h"
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alunix.h
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\allegro_sdl_config.h
+	<fcntl.h>
+	<unistd.h>
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdint.h
+	<inttypes.h>
+	<stdint.h>
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdbool.h
+	<stdbool.h>
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\altime.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap.h
+	"allegro5/color.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\color.h
+	"allegro5/base.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_draw.h
+	"allegro5/bitmap.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_io.h
+	"allegro5/bitmap.h"
+	"allegro5/file.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\file.h
+	"allegro5/base.h"
+	"allegro5/path.h"
+	"allegro5/utf8.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\path.h
+	"allegro5/base.h"
+	"allegro5/utf8.h"
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\utf8.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_lock.h
+	"allegro5/bitmap.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\blender.h
+	"allegro5/base.h"
+	"allegro5/color.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\clipboard.h
+	"allegro5/base.h"
+	"allegro5/display.h"
+	"allegro5/utf8.h"
+
+1496617676 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\display.h
+	"allegro5/bitmap.h"
+	"allegro5/color.h"
+	"allegro5/events.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\events.h
+	"allegro5/altime.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\config.h
+	"allegro5/file.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\cpu.h
+	"allegro5/base.h"
+
+1496617676 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\debug.h
+	<assert.h>
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\drawing.h
+	"allegro5/color.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\error.h
+	"allegro5/base.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fixed.h
+	"allegro5/base.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fmaths.h
+	"allegro5/base.h"
+	"allegro5/fixed.h"
+	"allegro5/inline/fmaths.inl"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\inline\fmaths.inl
+	"allegro5/error.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fshook.h
+	"allegro5/base.h"
+	"allegro5/file.h"
+	"allegro5/path.h"
+	<sys/types.h>
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fullscreen_mode.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\haptic.h
+	"allegro5/base.h"
+	"allegro5/display.h"
+	"allegro5/events.h"
+	"allegro5/joystick.h"
+	"allegro5/keyboard.h"
+	"allegro5/mouse.h"
+	"allegro5/touch_input.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\joystick.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keyboard.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+	"allegro5/keycodes.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keycodes.h
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\touch_input.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\memory.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\monitor.h
+	"allegro5/base.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse_cursor.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\render_state.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\shader.h
+	"allegro5/base.h"
+	"allegro5/transformations.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\transformations.h
+	"allegro5/display.h"
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\system.h
+	"allegro5/config.h"
+	"allegro5/path.h"
+
+1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\threads.h
+	"allegro5/altime.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\timer.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\tls.h
+	"allegro5/base.h"
+
+1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\alcompat.h
+
+1485742397 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5eventhandler.hpp
+	"Eagle/Events.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Conditions.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"allegro5/allegro.h"
+
+1389695750 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5conditions.hpp
+	"Eagle/Conditions.hpp"
+	"allegro5/allegro.h"
+
+1389695502 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\conditions.hpp
+
+1496869237 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5threads.hpp
+	"Eagle/Threads.hpp"
+
+1401053820 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5font.hpp
+	"Eagle/Font.hpp"
+	"allegro5/allegro_font.h"
+	"allegro5/allegro_ttf.h"
+
+1496617670 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_font.h
+	"allegro5/allegro.h"
+
+1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_ttf.h
+	"allegro5/allegro.h"
+	"allegro5/allegro_font.h"
+
+1496800292 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5graphicscontext.hpp
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/backends/Allegro5/Allegro5Image.hpp"
+	"Eagle/backends/Allegro5/Allegro5Transform.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+	"allegro5/allegro.h"
+	"allegro5/allegro_primitives.h"
+	<vector>
+
+1482453863 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5image.hpp
+	"Eagle/Image.hpp"
+	"allegro5/allegro.h"
+
+1482447003 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5transform.hpp
+	"Eagle/Transforms.hpp"
+	"allegro5/allegro.h"
+
+1496617670 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_primitives.h
+	<allegro5/allegro.h>
+
+1494213975 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5inputhandler.hpp
+	"Eagle/Exception.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
+	"allegro5/allegro.h"
+
+1496781487 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5system.hpp
+	"Eagle/System.hpp"
+	"allegro5/allegro.h"
+
+1389698218 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5timer.hpp
+	"Eagle.hpp"
+	"allegro5/allegro.h"
+
+1495245328 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle.hpp
+	"Eagle/Platform.hpp"
+	"Eagle/Area.hpp"
+	"Eagle/Color.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/FileWork.hpp"
+	"Eagle/Font.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Gui.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/Lib.hpp"
+	"Eagle/Logging.hpp"
+	"Eagle/MemberFunctors.hpp"
+	"Eagle/MousePointer.hpp"
+	"Eagle/NinePatch.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/StringWork.hpp"
+	"Eagle/System.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/Timer.hpp"
+
+1472755886 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\platform.hpp
+
+1461484326 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\filework.hpp
+	<string>
+	<cstdio>
+	<iostream>
+
+1482021127 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui.hpp
+	"Gui/Alignment.hpp"
+	"Gui/BasicIcon.hpp"
+	"Gui/Button.hpp"
+	"Gui/Camera.hpp"
+	"Gui/Layouts.hpp"
+	"Gui/Menu.hpp"
+	"Gui/ScrollBar.hpp"
+	"Gui/Scroller.hpp"
+	"Gui/TestWidget.hpp"
+	"Gui/Text.hpp"
+	"Gui/WidgetArea.hpp"
+	"Gui/WidgetBase.hpp"
+	"Gui/WidgetColorset.hpp"
+	"Gui/WidgetDrawFuncs.hpp"
+	"Gui/WidgetHandler.hpp"
+	"Gui/WidgetMessage.hpp"
+
+1482051339 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\basicicon.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+
+1482451693 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgetbase.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Gui/WidgetArea.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	"Eagle/Gui/WidgetDrawFuncs.hpp"
+	"Eagle/Gui/WidgetMessage.hpp"
+
+1478211579 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgetarea.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Gui/Layout/LayoutRectangle.hpp"
+
+1481246831 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\layoutrectangle.hpp
+	"Eagle/Area.hpp"
+	<iostream>
+
+1480282029 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgetcolorset.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/Exception.hpp"
+	<map>
+
+1478896216 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgetdrawfuncs.hpp
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Gui/WidgetArea.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	<string>
+
+1469574739 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button.hpp
+	"Button/BasicButton.hpp"
+	"Button/GuiButton.hpp"
+	"Button/IconButton.hpp"
+	"Button/RadioButton.hpp"
+	"Button/ScrollButton.hpp"
+
+1495822134 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\basicbutton.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/InputHandler.hpp"
+	<string>
+
+1473034528 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\guibutton.hpp
+	"Eagle/InputHandler.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+	<string>
+
+1465508497 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\iconbutton.hpp
+	"Eagle/Gui/Button/GuiButton.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/StringWork.hpp"
+
+1483042808 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\stringwork.hpp
+	<vector>
+	<string>
+	<list>
+
+1469577933 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\radiobutton.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+
+1484609880 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\layout.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/LayoutRectangle.hpp"
+	"Eagle/Gui/Alignment.hpp"
+	<iostream>
+	<string>
+	<climits>
+
+1473106067 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\scrollbutton.hpp
+	"Eagle/Gui/Button/BasicButton.hpp"
+	"Eagle/StringWork.hpp"
+
+1462943393 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\camera.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Image.hpp"
+
+1428189536 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layouts.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	"Eagle/Gui/Layout/FlowLayout.hpp"
+	"Eagle/Gui/Layout/GridLayout.hpp"
+	"Eagle/Gui/Layout/RelativeLayout.hpp"
+	"Eagle/Gui/Layout/SplitterLayouts.hpp"
+	"Eagle/Gui/Decorators/Decorator.hpp"
+
+1472961323 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\dumblayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1472953686 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\flowlayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1495818459 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\gridlayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1484610027 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\relativelayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1484610035 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\splitterlayouts.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1481055410 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\decorators\decorator.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/FillLayout.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	<string>
+
+1484609931 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\filllayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1472061905 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\menu.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+
+1495818451 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\text\basictext.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+
+1469571684 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\text\globaltext.hpp
+	<vector>
+	<string>
+
+1472857082 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\scrollbar.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Scroller.hpp"
+	"Eagle/Gui/Button/ScrollButton.hpp"
+
+1472874236 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\scroller.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	<string>
+
+1407369750 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\testwidget.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Color.hpp"
+
+1469571440 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\text.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+	"Eagle/Gui/Text/SelectText.hpp"
+	"Eagle/Gui/Text/LinkText.hpp"
+
+1495818407 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\text\selecttext.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+
+1472412121 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\text\linktext.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/SelectText.hpp"
+	"Eagle/StringWork.hpp"
+
+1482274687 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\widgethandler.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	"Eagle/Gui/Camera.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/InputHandler.hpp"
+	<vector>
+	<list>
+	<map>
+
+1389916616 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\memberfunctors.hpp
+	"Container.hpp"
+
+1475721688 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\ninepatch.hpp
+	"Eagle/Gui/WidgetArea.hpp"
+
+1462226063 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5clipboard.hpp
+	"Eagle/Clipboard.hpp"
+	<string>
+
+1496800463 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\drawingtestmain.cpp
+	"DrawingTestMain.hpp"
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5backend.hpp"
+
+1484872613 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\drawingtestmain.hpp
+	"TestRegistry.hpp"
+
+1496800514 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\eventhandlerdemomain.cpp
+	<cstdlib>
+	"EventHandlerDemoMain.hpp"
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
+	"allegro5/allegro.h"
+
+1484872610 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\eventhandlerdemomain.hpp
+	"TestRegistry.hpp"
+
+1496800609 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\guitestmain.cpp
+	"GuiTestMain.hpp"
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5backend.hpp"
+	<sstream>
+	<cstdlib>
+	<signal.h>
+	<cstdlib>
+
+1484872571 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\guitestmain.hpp
+	"TestRegistry.hpp"
+
+1484710941 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\layouttestmain.cpp
+	"LayoutTestMain.hpp"
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5backend.hpp"
+	"TestRegistry.hpp"
+
+1389834844 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\layouttestmain.hpp
+
+1496874979 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\main.cpp
+	<cstdlib>
+	"TestRegistry.hpp"
+	"TestMenu.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
+	<cstdlib>
+
+1484632706 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\testmenu.hpp
+	"TestRegistry.hpp"
+	"Eagle/Gui/Layout/RelativeLayout.hpp"
+	"Eagle/Gui/WidgetHandler.hpp"
+	"Eagle/Gui/Button/TextButton.hpp"
+	"Eagle/Animations.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"TestRegistry.hpp"
+	"AnimatedWedgeLayout.hpp"
+	<vector>
+
+1484626269 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\layout\pinlayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1484624204 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\button\textbutton.hpp
+	"Eagle/Gui/Decorators/TextDecorator.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+
+1484624278 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\decorators\textdecorator.hpp
+	"Eagle/Gui/Decorators/Decorator.hpp"
+	"Eagle/Gui/Layout/PinLayout.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+
+1478806730 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\animations.hpp
+	"Eagle/Gui/WidgetMessage.hpp"
+
+1485752833 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\newguitestmain.cpp
+	"NewGuiTestMain.hpp"
+	"Eagle\backends\Allegro5Backend.hpp"
+
+1484872663 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\newguitestmain.hpp
+	"Eagle.hpp"
+	"TestRegistry.hpp"
+
+1485752831 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\recordinputtestmain.cpp
+	"RecordInputTestMain.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
+	<sstream>
+	<string>
+
+1484872785 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\recordinputtestmain.hpp
+	"TestRegistry.hpp"
+
+1496772403 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\testmenu.cpp
+	"TestMenu.hpp"
+	"Eagle/Gui/Factory/WidgetFactory.hpp"
+
+1495820267 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\factory\widgetfactory.hpp
+	<map>
+	<string>
+	"Eagle/StringWork.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Factory/WidgetCreators.hpp"
+
+1478651378 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\gui\factory\widgetcreators.hpp
+	<string>
+	<map>
+
+1485752820 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\testregistry.cpp
+	"TestRegistry.hpp"
+
+1485751495 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\texttestmain.cpp
+	"Eagle\backends\Allegro5Backend.hpp"
+	"Eagle.hpp"
+	"TextTestMain.hpp"
+
+1484872740 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\texttestmain.hpp
+	"TestRegistry.hpp"
+
+1496772254 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\animatedwedgelayout.cpp
+	"AnimatedWedgeLayout.hpp"
+
+1484632895 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\src\tests\animatedwedgelayout.hpp
+	"Eagle/Position.hpp"
+	"Eagle/Animations.hpp"
+	"Eagle/Gui/Layout/PinLayout.hpp"
+
+1389696778 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5mutex.hpp
+	"Eagle/Mutexes.hpp"
+	"allegro5/allegro.h"
+
+1485900063 source:c:\googleinterview\test.cpp
+	<iostream>
+	<string>
+	<cstdio>
+
+1496865939 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\windowmanager.hpp
+	<map>
+
+1496785582 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\lib.hpp
+	"Eagle/System.hpp"
+
+1496864614 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5windowmanager.hpp
+	"Eagle/WindowManager.hpp"
+	"Eagle/Events.hpp"
+	"allegro5/allegro.h"
+

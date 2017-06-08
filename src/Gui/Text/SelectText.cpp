@@ -507,10 +507,21 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
          if (ev.keyboard.keycode == EAGLE_KEY_C) {
             if (input_key_held(EAGLE_KEY_LCTRL) || input_key_held(EAGLE_KEY_RCTRL)) {
                /// CTRL + C - copy to clipboard
-               EAGLE_ASSERT(eagle_system);
-               EAGLE_ASSERT(eagle_system->GetSystemClipboard());
-               eagle_system->GetSystemClipboard()->CopyToClipboard(selected_text);
+               
+               /// TODO : This won't work for stand alone widgets - it depends on the root gui's drawing window
+               EagleGraphicsContext* win = GetDrawWindow();
+               EAGLE_ASSERT(win);
+
+               EagleSystem* sys = win->GetSystem();
+               EAGLE_ASSERT(sys);
+
+               EagleClipboard* cb = sys->GetSystemClipboard();
+               EAGLE_ASSERT(cb);
+               
+               cb->CopyToClipboard(selected_text);
+               
                EagleInfo() << "Copying \"" << selected_text << "\" to clipboard." << std::endl;
+
                RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , TEXT_COPIED));
             }
          }

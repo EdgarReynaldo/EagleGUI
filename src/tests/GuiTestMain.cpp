@@ -50,9 +50,8 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    (void)argc;
    (void)argv;
    
-   Allegro5GraphicsContext a5window(800,600,EAGLE_RESIZABLE | EAGLE_OPENGL);
-   EagleGraphicsContext* win = &a5window;
-   
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+
    if (!win->Valid()) {
       throw EagleException("GuiTestMain : Failed to create valid resizable opengl window");
    }
@@ -329,11 +328,11 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_W) {
             small_window = !small_window;
             if (small_window) {
-               al_resize_display(a5window.AllegroDisplay() , 400 , 300);
+               al_resize_display(win->AllegroDisplay() , 400 , 300);
                gui->SetWidgetDimensions(400,300);
             }
             else {
-               al_resize_display(a5window.AllegroDisplay() , 800 , 600);
+               al_resize_display(win->AllegroDisplay() , 800 , 600);
                gui->SetWidgetDimensions(800,600);
             }
             redraw = true;
@@ -404,9 +403,8 @@ int GuiTestMain2(int argc , char** argv , TestRunner* test_runner) {
    al_set_new_window_position(112,84);
    al_set_new_window_title("Eagle 5 dynamic layout test ");
 
-   Allegro5GraphicsContext a5window(800,600,EAGLE_WINDOWED | EAGLE_RESIZABLE);
-   EagleGraphicsContext* win = &a5window;
-   
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+
    EagleFont* verdana = win->LoadFont("verdana.ttf" , -40 , LOAD_FONT_MONOCHROME);
    
 //   EagleImage* stallions = win->LoadImageFromFile("Data/jpgImages/Stallions.jpg");
@@ -820,9 +818,8 @@ int GuiTestMain3(int argc , char** argv , TestRunner* test_runner) {
    
    (void)test_runner;
    
-   Allegro5GraphicsContext a5window(800,600 , EAGLE_WINDOWED);
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
 
-   EagleGraphicsContext* win = &a5window;
    EAGLE_ASSERT(win);
    
    Allegro5Font verdana("Data/fonts/verdana.ttf" , -20 , 0);

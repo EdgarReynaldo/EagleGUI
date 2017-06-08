@@ -64,7 +64,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    }
    
    
-   EagleLog() << gui << std::endl << std::endl;
+///   EagleLog() << gui << std::endl << std::endl;
    
 }
 
@@ -101,7 +101,7 @@ void TestMenu::Run() {
          win->DrawTextString(font , status_message.c_str() , win->Width()/2 , win->Height() - font->Height() - 10 ,
                              EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
                              
-         win->DrawTextString(font , StringPrintF("active_window = %p (win = %p)" , win->GetActiveWindow() , win).c_str() ,
+         win->DrawTextString(font , StringPrintF("active_window = %p (win = %p)" , sys->GetActiveWindow() , win).c_str() ,
                              win->Width()/2 , 10 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
          
          win->FlipDisplay();
@@ -114,13 +114,14 @@ void TestMenu::Run() {
          EagleEvent ev = test_queue->WaitForEvent();
          
          if (ev.type != EAGLE_EVENT_TIMER) {
-            EagleLog() << StringPrintF("Received event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
+            EagleLog() << StringPrintF("Received event %d (%s) on window %p" ,
+                                        ev.type , EagleEventName(ev.type).c_str() , ev.window).c_str() << std::endl;
          }
          if (ev.window == win) {
             if (ev.type != EAGLE_EVENT_TIMER) {
                EagleLog() << StringPrintF("Handling event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
             }
-            HandleInputEvent(ev);
+            sys->GetInputHandler()->HandleInputEvent(ev);
          }
          else {
             continue;

@@ -38,6 +38,7 @@
 #include "Eagle/Gui.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/Lib.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/MemberFunctors.hpp"
 #include "Eagle/MousePointer.hpp"

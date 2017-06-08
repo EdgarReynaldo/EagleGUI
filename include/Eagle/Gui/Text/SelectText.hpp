@@ -40,7 +40,7 @@ protected :
    int select_left;
    int select_right;
    bool drag;
-   string selected_text;
+   std::string selected_text;
 
    bool deselect_on_lost_focus;
    
@@ -66,7 +66,7 @@ public :
 public :
 
    SelectText();
-   SelectText(string name);
+   SelectText(std::string name);
    virtual ~SelectText() {}
    
    Rectangle GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey);

@@ -41,7 +41,7 @@ EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display);
 EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);
 
 
-void* A5WindowProcess(EagleThread* thread , void* context);
+///void* A5WindowProcess(EagleThread* thread , void* context);
 
 
 
@@ -61,29 +61,30 @@ private :
    Allegro5Transformer allegro5transformer;
 
 
-   Allegro5Thread window_thread;
+///   Allegro5Thread window_thread;
 
-   friend void* A5WindowProcess(EagleThread* thread , void* context);
+///   friend void* A5WindowProcess(EagleThread* thread , void* context);
 
-   ALLEGRO_EVENT_SOURCE window_event_source;
-   ALLEGRO_EVENT_QUEUE* window_queue;
-   
-   static Allegro5Mutex window_mutex;/// For access to EagleGraphicsContext::active_window
-   
-   
+///   ALLEGRO_EVENT_SOURCE window_event_source;
+///   ALLEGRO_EVENT_QUEUE* window_queue;
+
    
    void Init();
 
    void ResetBackBuffer();
    virtual void PrivateFlipDisplay();
 
-public :
+   friend class Allegro5WindowManager;
 
    Allegro5GraphicsContext();
    Allegro5GraphicsContext(int width , int height , int flags);
 
+public :
+
+
    ~Allegro5GraphicsContext();
 
+   virtual EagleSystem* GetSystem();
    
 
    /// creation/destruction

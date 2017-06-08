@@ -1,13 +1,14 @@
 
 
-
+#include "Eagle/Lib.hpp"
 #include "Eagle/Logging.hpp"
 
+#include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
-
+#include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 
 
@@ -17,6 +18,10 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
 
    ee.type = (EAGLE_EVENT_TYPE)(int)ev.type;/// TODO : Translate allegro events into eagle events once they are actually different
    ee.timestamp = ev.any.timestamp;
+
+   ee.window = GetAllegro5WindowManager()->GetActiveWindow();
+
+
 /*
    EAGLE_EVENT_TYPE type;
 
@@ -58,6 +63,7 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_KEY_DOWN :
       case ALLEGRO_EVENT_KEY_UP :
       case ALLEGRO_EVENT_KEY_CHAR :
+         ee.window = GetAllegro5WindowManager()->GetAssociatedContext(ev.keyboard.display);
          ee.keyboard.keycode = ev.keyboard.keycode;
          ee.keyboard.unicode = ev.keyboard.unichar;
          ee.keyboard.modifiers = ev.keyboard.modifiers;
@@ -69,6 +75,7 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_MOUSE_WARPED :
       case ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY :
       case ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY :
+         ee.window = GetAllegro5WindowManager()->GetAssociatedContext(ev.mouse.display);
          ee.mouse.x = ev.mouse.x;
          ee.mouse.y = ev.mouse.y;
          ee.mouse.z = ev.mouse.z;
@@ -94,6 +101,7 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_DISPLAY_ORIENTATION :
       case ALLEGRO_EVENT_DISPLAY_HALT_DRAWING :
       case ALLEGRO_EVENT_DISPLAY_RESUME_DRAWING :
+         ee.window = GetAllegro5WindowManager()->GetAssociatedContext(ev.display.source);
          ee.display.x = ev.display.x;
          ee.display.y = ev.display.y;
          ee.display.width = ev.display.width;
@@ -105,6 +113,7 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
       case ALLEGRO_EVENT_TOUCH_END :
       case ALLEGRO_EVENT_TOUCH_MOVE :
       case ALLEGRO_EVENT_TOUCH_CANCEL :
+         ee.window = GetAllegro5WindowManager()->GetAssociatedContext(ev.touch.display);
          ee.touch.id = ev.touch.id;
          ee.touch.x = ev.touch.x;
          ee.touch.y = ev.touch.y;
@@ -121,10 +130,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
 
 void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
    
-   /// TODO : Rework this to use the Allegro5EventHandler's waitforevent function
-   
-   
-//   Allegro5EventHandler* a5_event_handler = dynamic_cast<Allegro5EventHandler*>(event_handler);
    Allegro5EventHandler* a5_event_handler = dynamic_cast<Allegro5EventHandler*>((EagleEventHandler*)event_handler);
    EAGLE_ASSERT(a5_event_handler);
    EAGLE_ASSERT(a5_event_handler->Valid());
@@ -153,7 +158,9 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
          }
       }
       else {
-         a5_event_handler->PushEvent(GetEagleEvent(ev));
+         EagleEvent ee = GetEagleEvent(ev);
+         ee.source = a5_event_handler;
+         a5_event_handler->PushEvent(ee);
          cond_var->BroadcastCondition();// alert any thread waiting on the condition (an event)
       }
    }
@@ -190,7 +197,7 @@ Allegro5EventHandler::~Allegro5EventHandler() {
 
 
 bool Allegro5EventHandler::Create() {
-   EAGLE_ASSERT(eagle_system);// System must be initialized and running
+   EAGLE_ASSERT(Eagle::EagleLibrary::Eagle()->System("Allegro5"));// System must be initialized and running
    Destroy();
    
    event_queue = al_create_event_queue();
@@ -245,7 +252,7 @@ void Allegro5EventHandler::Destroy() {
       ev.user.source = &main_source;
       ev.user.data1 = CLOSE_EVENT_THREAD;
       al_emit_user_event(&main_source , &ev , NULL);// tell event thread to close
-      event_thread->Join();
+      event_thread->FinishThread();
    }
    
    if (event_thread) {

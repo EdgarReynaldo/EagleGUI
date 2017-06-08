@@ -25,6 +25,7 @@
 #include "Eagle/Area.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Text/GlobalText.hpp"
+#include "Eagle/System.hpp"
 
 #include <vector>
 using std::vector;
@@ -203,21 +204,21 @@ void EagleDrawingInfo::ClearSettings() {
 /// ------------------------------     EagleGraphicsContext     -------------------------------------------
 
 
-
+/*
 EagleGraphicsContext* EagleGraphicsContext::active_window = 0;
 
 
 
-EagleMutex* EagleGraphicsContext::pmutex = 0;
+EagleMutex* EagleGraphicsContext::window_mutex = 0;
 
 
 
 void EagleGraphicsContext::SetActiveWindow(EagleGraphicsContext* new_active_window) {
-   pmutex->Lock();
+   window_mutex->Lock();
    active_window = new_active_window;
-   pmutex->Unlock();
+   window_mutex->Unlock();
 }
-   
+*/   
 
 
 EagleGraphicsContext::EagleGraphicsContext(std::string name) :
@@ -243,18 +244,18 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
 {
    /// NOTE: derived class needs to instantiate mp_manager
    /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
-   /// NOTE : derived class needs to instantiate pmutex
+   /// NOTE : derived class needs to instantiate window_mutex
 }
 
-
+/*
 EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
-   EAGLE_ASSERT(pmutex && pmutex->Valid());
-   pmutex->Lock();
+   EAGLE_ASSERT(window_mutex && window_mutex->Valid());
+   window_mutex->Lock();
    EagleGraphicsContext* win = active_window;
-   pmutex->Unlock();
+   window_mutex->Unlock();
    return win;
 }
-
+*/
 
 
 float EagleGraphicsContext::GetFPS() {
@@ -371,7 +372,7 @@ void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str ,
 void EagleGraphicsContext::FlipDisplay() {
    
    previoustime = currenttime;
-   currenttime = eagle_system->GetProgramTime();
+   currenttime = GetSystem()->GetProgramTime();
    float deltatime = currenttime - previoustime;
    total_frame_time += deltatime;
    
@@ -433,14 +434,6 @@ int EagleGraphicsContext::DefaultFontSize() {
 int EagleGraphicsContext::DefaultFontFlags() {
    return default_font_flags;
 }
-
-
-
-/// For when gc is an event source
-//void RegisterDisplayInput(EagleEventHandler* queue) {
-//   PrivateRegisterDisplayInput(queue);
-//   queue->ListenTo(this);
-//}
 
 
 
@@ -524,22 +517,6 @@ void EagleGraphicsContext::PopDrawingTarget() {
    if (drawing_target != back) {
       SetDrawingTarget(back);
    }
-}
-
-
-
-EagleGraphicsContext* current_display_context = 0;
-
-
-
-void EagleGraphicsContext::SetCurrentDisplay(EagleGraphicsContext* current) {
-   current_display_context = current;
-}
-
-
-
-EagleGraphicsContext* GetCurrentDisplay() {
-   return current_display_context;
 }
 
 

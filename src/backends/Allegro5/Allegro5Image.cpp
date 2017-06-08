@@ -6,6 +6,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
+#include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 
 
@@ -80,26 +81,6 @@ Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
    else {
       ReferenceBitmap(bitmap);
    }
-/*   
-   
-   
-   
-   
-   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
-   if (take_ownership) {
-      image_source = OWNIT;
-   }
-   else {
-      image_source = REFERENCE_ONLY;
-   }
-   if (bitmap) {
-      al_set_target_bitmap(bitmap);/// So we can call al_get_current_display
-      ALLEGRO_DISPLAY* display = al_get_current_display();
-      parent_context = GetAssociatedContext(display);\
-      al_set_target_bitmap(old_target);
-   }
-   bmp = bitmap;
-   */
 }
 
 
@@ -177,7 +158,7 @@ bool Allegro5Image::Allocate(int width , int height , IMAGE_TYPE type) {
       EagleError() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
    }
    else {
-      parent_context = GetAssociatedContext(al_get_current_display());
+      parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
    }
@@ -203,7 +184,7 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
    }
    else {
       source = file;
-      parent_context = GetAssociatedContext(al_get_current_display());
+      parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
 ///      SetName(file);
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
@@ -251,7 +232,7 @@ void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
    EAGLE_ASSERT(bitmap);
    ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
    al_set_target_bitmap(bitmap);
-   parent_context = GetAssociatedContext(al_get_current_display());
+   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
    al_set_target_bitmap(old_target);
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);
@@ -272,7 +253,7 @@ void Allegro5Image::ReferenceBitmap(ALLEGRO_BITMAP* bitmap) {
    EAGLE_ASSERT(bitmap);
    ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
    al_set_target_bitmap(bitmap);
-   parent_context = GetAssociatedContext(al_get_current_display());
+   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
    al_set_target_bitmap(old_target);
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);

@@ -231,7 +231,7 @@ void Allegro5Timer::Close() {
       al_wait_for_event(timer_queue , &ev);
    } while (!((ev.type == EAGLE_EVENT_USER_START) && (ev.user.data1 == EAGLE_MESSAGE_CLOSE_TIMER)));
    
-   ethread->Join();
+   ethread->FinishThread();
 }
 
 

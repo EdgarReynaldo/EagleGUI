@@ -33,6 +33,8 @@
 #include "Eagle/Threads.hpp"
 #include "Eagle/Mutexes.hpp"
 #include "Eagle/Clipboard.hpp"
+#include "Eagle/WindowManager.hpp"
+
 
 
 enum EAGLE_INIT_STATE {
@@ -58,7 +60,9 @@ extern const char* const eagle_init_state_strs[12];
 
 class EagleSystem;
 
-extern EagleSystem* eagle_system;
+
+
+///extern EagleSystem* eagle_system;
 
 extern EagleEvent most_recent_system_event;
 
@@ -72,26 +76,10 @@ std::string PrintFailedEagleInitStates(int desired_state , int actual_state);
 
 
 
-
-/// Temporary functions
-
-///void EagleShutdown();
-
-//void system_shutdown_function();
-
-//int register_system_shutdown_function();
-
-
-
-
-
-
-
 class EagleSystem : public EagleObject {
 
 protected :
 
-   PointerManager<EagleGraphicsContext> windows;
    PointerManager<EagleEventHandler> queues;
    PointerManager<EagleInputHandler> inputs;
    PointerManager<EagleTimer> timers;
@@ -108,6 +96,8 @@ protected :
    
    EagleClipboard* system_clipboard;
    
+   EagleWindowManager* window_manager;
+
    bool system_up;
    bool images_up;
    bool fonts_up;
@@ -144,7 +134,10 @@ protected :
    virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
    virtual EagleMutex*           PrivateCreateMutex(bool recursive)=0;
    virtual EagleClipboard*       PrivateCreateClipboard()=0;
-
+   virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
+   
+   EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
+   
 public :
 
    EagleSystem(std::string name);
@@ -191,22 +184,20 @@ public :
 
    int EagleInitState();
 
-///   virtual EagleGraphicsContext* MakeGraphicsContext(int width , int height , int flags)=0;
-
-   EagleGraphicsContext* GetWindow(int index);
-   EagleInputHandler* GetInputHandler();
-   EagleEventHandler* GetSystemQueue();
-   EagleTimer*        GetSystemTimer();
-   EagleClipboard*    GetSystemClipboard();
+   EagleInputHandler*  GetInputHandler();
+   EagleEventHandler*  GetSystemQueue();
+   EagleTimer*         GetSystemTimer();
+   EagleClipboard*     GetSystemClipboard();
+   EagleWindowManager* GetWindowManager();
 
 	EagleInputHandler*    CreateInputHandler();
 	EagleEventHandler*    CreateEventHandler(bool delay_events);
-///	EagleEventHandler*    CreateEventHandlerDuplicate(EagleEventHandler* handler);
+
 	EagleTimer*           CreateTimer();
    EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
    EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           CreateMutex(bool recursive);
-   EagleClipboard*            CreateClipboard();
+   EagleClipboard*       CreateClipboard();
 
    void FreeInputHandler(EagleInputHandler* handler);
    void FreeEventHandler(EagleEventHandler* event_handler);
@@ -216,6 +207,7 @@ public :
    void FreeMutex(EagleMutex* mutex);
    void FreeClipboard(EagleClipboard* clipboard);
 
+/*
 	void RegisterKeyboardInput(EagleEventHandler* queue);
 	void RegisterMouseInput   (EagleEventHandler* queue);
 	void RegisterJoystickInput(EagleEventHandler* queue);
@@ -223,7 +215,7 @@ public :
 	
    void RegisterInputs(EagleEventHandler* queue);
    
-
+*/
 
    bool UpToDate();
    EagleEvent UpdateSystemState();/// Keep calling this until UpToDate() returns true!
@@ -231,9 +223,11 @@ public :
                                                     /// WaitForSystemEventAndUpdateState might never return
    EagleEvent TimedWaitForSystemEventAndUpdateState(double timeout);
 
-	virtual double GetProgramTime()=0;// Seconds since system initialization
+	static double GetProgramTime();// Seconds since system initialization
+
 	virtual void Rest(double time)=0;// Rest for time seconds
 	
+	EagleGraphicsContext* GetActiveWindow();
 };
 
 

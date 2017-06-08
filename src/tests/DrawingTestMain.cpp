@@ -18,8 +18,11 @@ int DrawingTestMain(int argc , char** argv , TestRunner* test_runner) {
    (void)argv;
    (void)test_runner;
    
-   Allegro5GraphicsContext a5window(800,600,EAGLE_WINDOWED);
-   EagleGraphicsContext* win = &a5window;
+///   Allegro5GraphicsContext a5window(800,600,EAGLE_WINDOWED);
+///   EagleGraphicsContext* win = &a5window;
+   
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+   
    if (!win->Valid()) {
       return 2;
    }

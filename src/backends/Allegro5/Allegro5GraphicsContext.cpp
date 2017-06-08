@@ -1,5 +1,7 @@
 
 
+#include "Eagle/Lib.hpp"
+
 #include "Eagle/Exception.hpp"
 #include "Eagle/StringWork.hpp"
 
@@ -9,6 +11,7 @@
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5MousePointer.hpp"
+#include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
@@ -32,164 +35,22 @@ ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float 
 
 
 
-
-std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*> display_context_map;
-
-
-
-
-EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display) {
-   std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
-   if (it != display_context_map.end()) {
-      return it->second;
-   }
-   return (EagleGraphicsContext*)0;
-}
-
-
-
-EagleEvent GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
-   EagleEvent ee;
-   
-   Allegro5GraphicsContext* a5win = 0;
-
-   if (ev.type == EAGLE_EVENT_DISPLAY_CREATE || ev.type == EAGLE_EVENT_DISPLAY_DESTROY) {
-      a5win = (Allegro5GraphicsContext*)ev.user.data1;
-   
-      ee.display.x = a5win->XPos();
-      ee.display.y = a5win->YPos();
-      ee.display.width = a5win->Width();
-      ee.display.height = a5win->Height();
-      ee.display.orientation = EAGLE_DISPLAY_ORIENTATION_0_DEGREES;
-   }
-   else {
-      a5win = dynamic_cast<Allegro5GraphicsContext*>(GetAssociatedContext(ev.display.source));
-
-      ee.display.x = ev.display.x;
-      ee.display.y = ev.display.y;
-      ee.display.width = ev.display.width;
-      ee.display.height = ev.display.height;
-      ee.display.orientation = ev.display.orientation;
-   }
-
-   EAGLE_ASSERT(a5win);
-      
-   ee.source = a5win;
-   ee.window = a5win;
-
-
-   switch(ev.type) {
-   case EAGLE_EVENT_DISPLAY_CREATE :
-      ee.type = EAGLE_EVENT_DISPLAY_CREATE;
-      break;
-   case EAGLE_EVENT_DISPLAY_DESTROY :
-      ee.type = EAGLE_EVENT_DISPLAY_DESTROY;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_EXPOSE :
-      ee.type = EAGLE_EVENT_DISPLAY_EXPOSE;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_RESIZE :
-      ee.type = EAGLE_EVENT_DISPLAY_RESIZE;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_CLOSE :
-      ee.type = EAGLE_EVENT_DISPLAY_CLOSE;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_LOST :
-      ee.type = EAGLE_EVENT_DISPLAY_LOST;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_FOUND :
-      ee.type = EAGLE_EVENT_DISPLAY_FOUND;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT :
-      ee.type = EAGLE_EVENT_DISPLAY_SWITCH_OUT;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_SWITCH_IN :
-      ee.type = EAGLE_EVENT_DISPLAY_SWITCH_IN;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_ORIENTATION :
-      ee.type = EAGLE_EVENT_DISPLAY_ORIENTATION;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_HALT_DRAWING :
-      ee.type = EAGLE_EVENT_DISPLAY_HALT_DRAWING;
-      break;
-   case ALLEGRO_EVENT_DISPLAY_RESUME_DRAWING :
-      ee.type = EAGLE_EVENT_DISPLAY_RESUME_DRAWING;
-      break;
-      
-   default :
-      throw EagleException(StringPrintF("A5WindowProcess : We don't monitor this kind of event (%d)." , ev.type));
-   }
-   return ee;
-}
-
-
-
-void* A5WindowProcess(EagleThread* thread , void* context) {
-   
-   /// This thread monitors display events only
-   
-   EagleGraphicsContext* window = (EagleGraphicsContext*)context;
-   Allegro5GraphicsContext* a5win = dynamic_cast<Allegro5GraphicsContext*>(window);
-   
-   if (!a5win) {
-      throw EagleException("A5WindowProcess : context is invalid!");
-   }
-   
-///   ALLEGRO_EVENT_SOURCE* window_event_source = &(a5win->window_event_source);
-   ALLEGRO_EVENT_QUEUE* window_queue = (a5win->window_queue);
-   
-   while(!thread->ShouldStop()) {
-      ALLEGRO_EVENT ev;
-      al_wait_for_event(window_queue , &ev);
-      
-      EagleEvent ee = GetEagleDisplayEvent(ev);
-      
-      if (ev.type == EAGLE_EVENT_DISPLAY_CREATE) {
-         a5win->SetActiveWindow(a5win);
-      }
-      else if (ev.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT) {
-         EAGLE_ASSERT(a5win->GetActiveWindow() == a5win);
-         a5win->SetActiveWindow(0);
-      }
-      else if (ev.type == ALLEGRO_EVENT_DISPLAY_SWITCH_IN) {
-         a5win->SetActiveWindow(a5win);
-      }
-      
-      a5win->EmitEvent(ee);
-      
-      if (ev.type == EAGLE_EVENT_DISPLAY_DESTROY) {
-         break;
-      }
-   }
-   return context;
-}
-
-
-
 /// -------------------------------      Allegro5GraphicsContext      -----------------------------------
 
 
 
-Allegro5Mutex Allegro5GraphicsContext::window_mutex;
-
-
-
+/**
 void Allegro5GraphicsContext::Init() {
    window_queue = al_create_event_queue();
    EAGLE_ASSERT(window_queue);
    al_init_user_event_source(&window_event_source);
    al_register_event_source(window_queue , &window_event_source);
-   
-   if (!window_mutex.Create(false)) {
-      throw EagleException("Allegro5GraphicsContext::Init : Failed to create window mutex.");
-   }
-   pmutex = &window_mutex;
 
    if (!window_thread.Create(A5WindowProcess , this)) {
       throw EagleException("Allegro5GraphicsContext::Init : Failed to create window process thread.");
    }
 }
-
+*/
 
 
 void Allegro5GraphicsContext::ResetBackBuffer() {
@@ -215,12 +76,12 @@ Allegro5GraphicsContext::Allegro5GraphicsContext() :
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
       blender_stack(),
-      allegro5transformer(),
-      window_thread(),
-      window_event_source(),
-      window_queue(0)
+      allegro5transformer()
+//      window_thread(),
+//      window_event_source(),
+//      window_queue(0)
 {
-   Init();
+///   Init();
 }
 
 
@@ -233,12 +94,12 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
       blender_stack(),
-      allegro5transformer(),
-      window_thread(),
-      window_event_source(),
-      window_queue(0)
+      allegro5transformer()
+///      window_thread(),
+///      window_event_source(),
+///      window_queue(0)
 {
-   Init();
+///   Init();
    Create(width , height , flags);
 }
 
@@ -252,18 +113,13 @@ Allegro5GraphicsContext::~Allegro5GraphicsContext() {
 }
 
 
-/*
-EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
-   EagleGraphicsContext* win = 0;
-   pmutex->Lock();
-   win = active_window;
-   pmutex->Unlock();
-   return win;
+
+EagleSystem* Allegro5GraphicsContext::GetSystem() {
+   return Eagle::EagleLibrary::System("Allegro5");
 }
-//*/
 
 
-// creation/destruction
+
 bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    Destroy();
    
@@ -276,24 +132,24 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    scrw = width;
    scrh = height;
    
-   display_context_map[display] = this;
-   
+   GetAllegro5WindowManager()->AddDisplay(this , display);
+
    ResetBackBuffer();
 
    mp_manager = new Allegro5MousePointerManager(this);
    
    LoadDefaultFont();
    
-   ALLEGRO_EVENT ev;
-   ev.type = EAGLE_EVENT_DISPLAY_CREATE;
-   ev.user.data1 = (intptr_t)(this);
+///   ALLEGRO_EVENT ev;
+///   ev.type = EAGLE_EVENT_DISPLAY_CREATE;
+///   ev.user.data1 = (intptr_t)(this);
    
    
-   window_thread.Start();
+///   window_thread.Start();
    
-   al_emit_user_event(&window_event_source , &ev , 0);
+///   al_emit_user_event(&window_event_source , &ev , 0);
 
-   al_register_event_source(window_queue , al_get_display_event_source(display));
+///   al_register_event_source(window_queue , al_get_display_event_source(display));
    
    return true;
 }
@@ -307,32 +163,24 @@ bool Allegro5GraphicsContext::Valid() {
 
 
 void Allegro5GraphicsContext::Destroy() {
+
    images.FreeAll();
+
+   if (display) {
+      GetAllegro5WindowManager()->SignalClose(this);
+
+      al_destroy_display(display);
+
+      GetAllegro5WindowManager()->RemoveDisplay(display);
+
+      display = 0;
+   }
+
    if (mp_manager) {
       delete mp_manager;
       mp_manager = 0;
    }
-   if (display) {
-      std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
-      EAGLE_ASSERT(it != display_context_map.end());
-      if (it != display_context_map.end()) {display_context_map.erase(it);}
-      if (GetCurrentDisplay() == this) {
-         SetCurrentDisplay(0);
-      }
-         
-      ALLEGRO_EVENT ev;
-      ev.type = EAGLE_EVENT_DISPLAY_DESTROY;
-      ev.user.data1 = (intptr_t)this;      
-      
-      al_emit_user_event(&window_event_source , &ev , 0);
-      
-      window_thread.Join();
-      
-      al_unregister_event_source(window_queue , al_get_display_event_source(display));
-      
-      al_destroy_display(display);
-      display = 0;
-   }
+
 }
 
 
@@ -880,8 +728,8 @@ void Allegro5GraphicsContext::SetDrawingTarget(EagleImage* dest) {
    ALLEGRO_BITMAP* a5bmp = a5img->AllegroBitmap();
    EAGLE_ASSERT(a5bmp);
    al_set_target_bitmap(a5bmp);
-   ALLEGRO_DISPLAY* current_a5_display = al_get_current_display();
-   SetCurrentDisplay(display_context_map[current_a5_display]);
+///   ALLEGRO_DISPLAY* current_a5_display = al_get_current_display();
+///   SetCurrentDisplay(display_context_map[current_a5_display]);
    drawing_target = dest;
 }
 
@@ -959,18 +807,6 @@ EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int
    return eagle_font;
 }
 
-
-/**
-void Allegro5GraphicsContext::RegisterDisplayInput(EagleEventHandler* eagle_handler) {
-   EAGLE_ASSERT(eagle_handler);
-   Allegro5EventHandler* allegro_handler = dynamic_cast<Allegro5EventHandler*>(eagle_handler);
-   EAGLE_ASSERT(allegro_handler);
-   ALLEGRO_EVENT_QUEUE* allegro_queue = allegro_handler->AllegroQueue();
-   if (display) {
-      al_register_event_source(allegro_queue , al_get_display_event_source(display));
-   }
-}
-//*/
 
 
 Transformer* Allegro5GraphicsContext::GetTransformer() {

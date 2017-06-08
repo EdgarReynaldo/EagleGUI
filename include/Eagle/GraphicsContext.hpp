@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -26,6 +26,7 @@
 
 #include <list>
 #include <string>
+#include <map>
 
 #include "Eagle/Color.hpp"
 #include "Eagle/Events.hpp"
@@ -34,7 +35,7 @@
 #include "Eagle/Container.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/MousePointer.hpp"
-#include "Eagle/System.hpp"
+///#include "Eagle/System.hpp"
 #include "Eagle/Transforms.hpp"
 
 
@@ -165,7 +166,7 @@ public :
 
 //*/
 
-///class Rectangle;
+class EagleSystem;
 
 
 
@@ -204,11 +205,11 @@ protected :
    virtual void PrivateFlipDisplay()=0;
 
 protected :
-   static EagleGraphicsContext* active_window;
+   
+///   typedef std::map<EagleGraphicsContext* , bool> WINMAP;
+///   typedef WINMAP::iterator WMIT;
 
-   static EagleMutex* pmutex;/// Driver needs to instantiate this in constructor
-
-   static void SetActiveWindow(EagleGraphicsContext* new_active_window);
+///   EagleMutex* window_mutex;
 
 public :
    
@@ -216,10 +217,12 @@ public :
    
    virtual ~EagleGraphicsContext() {}
 
-   static EagleGraphicsContext* GetActiveWindow();
+///   static EagleGraphicsContext* GetActiveWindow();
    
    float GetFPS();
 
+   virtual EagleSystem* GetSystem()=0;
+   
    /// creation/destruction
    virtual bool Create(int width , int height , int flags)=0;/// Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;
@@ -366,21 +369,11 @@ public :
    void PopDrawingTarget();
    
    virtual Transformer* GetTransformer()=0;
-   
-   /// TODO : Move clipping support here, since it operates on a target bitmap
-   
-
-protected :
-   void SetCurrentDisplay(EagleGraphicsContext* current);
 
 public :
    virtual void MakeDisplayCurrent()=0;
 
 };
-
-
-
-EagleGraphicsContext* GetCurrentDisplay();
 
 
 

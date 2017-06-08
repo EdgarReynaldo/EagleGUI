@@ -3,14 +3,16 @@
 
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/Lib.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
+
+
 
 void Allegro5Clipboard::CopyToClipboard(string str) {
    EagleClipboard::CopyToClipboard(str);
    /// Allegro 5 stuff here
-   EAGLE_ASSERT(eagle_system);
-   EagleGraphicsContext* win = eagle_system->GetWindow(0);
+   EagleGraphicsContext* win = Eagle::EagleLibrary::System("Allegro5")->GetWindowManager()->GetActiveWindow();
    EAGLE_ASSERT(win);
    Allegro5GraphicsContext* awin = dynamic_cast<Allegro5GraphicsContext*>(win);
    EAGLE_ASSERT(awin);
@@ -24,12 +26,11 @@ void Allegro5Clipboard::CopyToClipboard(string str) {
 
 string Allegro5Clipboard::GetClipboardString() {
    /// Allegro 5 stuff here
-   EAGLE_ASSERT(eagle_system);
-   EagleGraphicsContext* win = eagle_system->GetWindow(0);
+   EagleGraphicsContext* win = Eagle::EagleLibrary::System("Allegro5")->GetWindowManager()->GetActiveWindow();
    EAGLE_ASSERT(win);
-   Allegro5GraphicsContext* awin = dynamic_cast<Allegro5GraphicsContext*>(win);
-   EAGLE_ASSERT(awin);
-   ALLEGRO_DISPLAY* display = awin->AllegroDisplay();
+   Allegro5GraphicsContext* a5win = dynamic_cast<Allegro5GraphicsContext*>(win);
+   EAGLE_ASSERT(a5win);
+   ALLEGRO_DISPLAY* display = a5win->AllegroDisplay();
    EAGLE_ASSERT(display);
    char* allegro_text = al_get_clipboard_text(display);
    clipboard_string = allegro_text;

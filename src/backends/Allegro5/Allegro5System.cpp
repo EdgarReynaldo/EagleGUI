@@ -10,7 +10,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
-
+#include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
@@ -144,7 +144,7 @@ EagleTimer* Allegro5System::PrivateCreateTimer() {
 
 
 EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(int width , int height , int flags) {
-   return new Allegro5GraphicsContext(width , height , flags);
+   return window_manager->CreateWindow(width , height , flags);
 }
 
 
@@ -179,9 +179,23 @@ EagleClipboard* Allegro5System::PrivateCreateClipboard() {
 
 
 
+EagleWindowManager* Allegro5System::PrivateCreateWindowManager() {
+   return new Allegro5WindowManager(this);
+}
+
+
+
+EagleSystem* Allegro5System::CreateAllegro5System() {
+   return new Allegro5System();
+}
+
+
+
 Allegro5System::Allegro5System() :
       EagleSystem(StringPrintF("Allegro5System at %p" , this))
-{}
+{
+   
+}
 
 
 
@@ -211,16 +225,23 @@ void Allegro5System::Rest(double time) {
 
 
 EagleGraphicsContext* Allegro5System::GetGraphicsContext(ALLEGRO_DISPLAY* allegro_display) {
-   EagleGraphicsContext* context = 0;
-   for (unsigned int i = 0 ; i < windows.size() ; ++i) {
-      context = windows[i];
-      Allegro5GraphicsContext* a5context = dynamic_cast<Allegro5GraphicsContext*>(context);
-      EAGLE_ASSERT(a5context);
-      if (a5context->AllegroDisplay() == allegro_display) {
-         return context;
-      }
-   }
-   return 0;
+   return dynamic_cast<Allegro5WindowManager*>(window_manager)->GetAssociatedContext(allegro_display);
+}
+
+
+
+int Allegro5System::RegisterSystem() {
+   return Eagle::EagleLibrary::RegisterSystemCreator("Allegro5" , Allegro5System::CreateAllegro5System);
+}
+
+
+
+const int ALLEGRO5_REGISTERED = Allegro5System::RegisterSystem();
+
+
+
+Allegro5System* GetAllegro5System() {
+   return dynamic_cast<Allegro5System*>(Eagle::EagleLibrary::System("Allegro5"));
 }
 
 
