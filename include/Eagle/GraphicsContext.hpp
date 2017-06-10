@@ -66,7 +66,17 @@ enum IMAGE_DRAWING_FLAGS {
 
 #include "Eagle/Gui/Alignment.hpp"
 
-extern unsigned int GUI_TEXT_LINE_SPACING;
+extern unsigned int GUI_TEXT_LINE_SPACING;/// TODO : Find better alternative
+
+
+
+extern const char* eagle_default_font_path;
+
+extern int eagle_default_font_size;
+
+extern int eagle_default_font_flags;
+
+
 
 /**
 class REGION_INFO {

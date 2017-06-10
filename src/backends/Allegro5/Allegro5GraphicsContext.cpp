@@ -1,7 +1,7 @@
 
 
 #include "Eagle/Lib.hpp"
-
+#include "Eagle/Events.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/StringWork.hpp"
 
@@ -140,16 +140,12 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    
    LoadDefaultFont();
    
-///   ALLEGRO_EVENT ev;
-///   ev.type = EAGLE_EVENT_DISPLAY_CREATE;
-///   ev.user.data1 = (intptr_t)(this);
+   EagleEvent ee;
+   ee.type = EAGLE_EVENT_DISPLAY_CREATE;
+   ee.window = this;
+   ee.display = DISPLAY_EVENT_DATA();
    
-   
-///   window_thread.Start();
-   
-///   al_emit_user_event(&window_event_source , &ev , 0);
-
-///   al_register_event_source(window_queue , al_get_display_event_source(display));
+   EmitEvent(ee);
    
    return true;
 }
@@ -163,6 +159,13 @@ bool Allegro5GraphicsContext::Valid() {
 
 
 void Allegro5GraphicsContext::Destroy() {
+
+   EagleEvent ee;
+   ee.type = EAGLE_EVENT_DISPLAY_DESTROY;
+   ee.window = this;
+   ee.display = DISPLAY_EVENT_DATA();
+   
+   EmitEvent(ee);
 
    images.FreeAll();
 

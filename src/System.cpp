@@ -20,7 +20,6 @@
  */
 
 
-
 #include "Eagle/System.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/Exception.hpp"
@@ -30,6 +29,14 @@
 
 #include <string>
 #include <sstream>
+
+
+void shutdown_dll() {
+   EagleInfo() << "EAGLE INFO : Shutting down Eagle DLL during atexit." << std::endl;
+   return;
+}
+
+
 
 /// Temporary functions
 /*
@@ -191,7 +198,7 @@ EagleSystem::EagleSystem(std::string name) :
    joystick_running(false),
    touch_running(false)
 {
-   
+   atexit(shutdown_dll);
 }
 
 

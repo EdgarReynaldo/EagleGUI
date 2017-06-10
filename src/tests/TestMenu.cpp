@@ -113,12 +113,12 @@ void TestMenu::Run() {
          
          EagleEvent ev = test_queue->WaitForEvent();
          
-         if (ev.type != EAGLE_EVENT_TIMER) {
+         if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
             EagleLog() << StringPrintF("Received event %d (%s) on window %p" ,
                                         ev.type , EagleEventName(ev.type).c_str() , ev.window).c_str() << std::endl;
          }
          if (ev.window == win) {
-            if (ev.type != EAGLE_EVENT_TIMER) {
+            if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
                EagleLog() << StringPrintF("Handling event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
             }
             sys->GetInputHandler()->HandleInputEvent(ev);

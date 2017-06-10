@@ -24,7 +24,11 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
    
    ALLEGRO_EVENT_QUEUE* window_queue = a5man->window_queue;
    
-   while (!thread->ShouldStop()) {
+   while (1) {
+      if (thread->ShouldStop()) {
+         EagleInfo() << "A5WindowManagerProcess - thread has been signaled to stop." << std::endl;
+         break;
+      }
       ALLEGRO_EVENT ev;
       al_wait_for_event(window_queue , &ev);
       

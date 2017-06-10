@@ -2,35 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="src\backends\Allegro5\Allegro5Image.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Eagle\backends\Allegro5\Allegro5Transform.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7395" topLine="264" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5InputHandler.cpp" open="0" top="0" tabpos="3" split="1" active="1" splitpos="430" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4933" topLine="131" />
-			<Cursor2 position="12685" topLine="391" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5Transform.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2437" topLine="102" />
-		</Cursor>
-	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Timer.hpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="58" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5System.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5922" topLine="218" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5Timer.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6095" topLine="215" />
+			<Cursor1 position="1808" topLine="55" />
 		</Cursor>
 	</File>
 	<File name="include\Eagle\backends\Allegro5\Allegro5Mutex.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -38,14 +12,9 @@
 			<Cursor1 position="0" topLine="20" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Image.hpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5WindowManager.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="449" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1378" topLine="40" />
-		</Cursor>
-	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Transform.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1808" topLine="55" />
+			<Cursor1 position="9468" topLine="293" />
 		</Cursor>
 	</File>
 	<File name="include\Eagle\backends\Allegro5\Allegro5EventHandler.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -53,44 +22,24 @@
 			<Cursor1 position="256" topLine="9" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Color.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Eagle\backends\Allegro5\Allegro5System.hpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="90" topLine="0" />
+			<Cursor1 position="1578" topLine="31" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5InputHandler.hpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5System.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="905" topLine="26" />
+			<Cursor1 position="5765" topLine="193" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5WindowManager.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Eagle\backends\Allegro5Backend.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="792" topLine="17" />
+			<Cursor1 position="88" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="CopySantaHackLibs.bat" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5GraphicsContext.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="327" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="134" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5System.hpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1376" topLine="36" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5Clipboard.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="924" topLine="8" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5EventHandler.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4381" topLine="104" />
-		</Cursor>
-	</File>
-	<File name="src\backends\Allegro5\Allegro5Font.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1511" topLine="47" />
+			<Cursor1 position="3793" topLine="162" />
 		</Cursor>
 	</File>
 	<File name="src\backends\Allegro5\Allegro5Mutex.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -98,24 +47,34 @@
 			<Cursor1 position="666" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\backends\Allegro5\Allegro5Threads.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5InputHandler.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="430" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="920" topLine="36" />
+			<Cursor1 position="8572" topLine="245" />
 		</Cursor>
 	</File>
-	<File name="src\backends\Allegro5\Allegro5WindowManager.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Eagle\backends\Allegro5\Allegro5Conditions.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2129" topLine="64" />
+			<Cursor1 position="0" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="src\backends\Allegro5\Allegro5EventHandler.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8441" topLine="129" />
 		</Cursor>
 	</File>
 	<File name="include\Eagle\backends\Allegro5\Allegro5GraphicsContext.hpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7493" topLine="162" />
+			<Cursor1 position="7486" topLine="45" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Threads.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5Font.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="10" />
+			<Cursor1 position="1511" topLine="47" />
+		</Cursor>
+	</File>
+	<File name="include\Eagle\backends\Allegro5\Allegro5Timer.hpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="58" />
 		</Cursor>
 	</File>
 	<File name="src\backends\Allegro5\Allegro5Conditions.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -123,14 +82,59 @@
 			<Cursor1 position="1225" topLine="41" />
 		</Cursor>
 	</File>
-	<File name="src\backends\Allegro5\Allegro5GraphicsContext.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="327" zoom_1="0" zoom_2="0">
+	<File name="src\backends\Allegro5\Allegro5Image.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="506" topLine="120" />
+			<Cursor1 position="1804" topLine="76" />
 		</Cursor>
 	</File>
-	<File name="include\Eagle\backends\Allegro5\Allegro5Conditions.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Eagle\backends\Allegro5\Allegro5WindowManager.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="18" />
+			<Cursor1 position="726" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="src\backends\Allegro5\Allegro5Clipboard.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="924" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="include\Eagle\backends\Allegro5\Allegro5Color.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="90" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Eagle\backends\Allegro5\Allegro5Threads.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="173" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="include\Eagle\backends\Allegro5\Allegro5InputHandler.hpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="905" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="CopySantaHackLibs.bat" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="134" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Eagle\backends\Allegro5\Allegro5Image.hpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1378" topLine="40" />
+		</Cursor>
+	</File>
+	<File name="src\backends\Allegro5\Allegro5Transform.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2437" topLine="102" />
+		</Cursor>
+	</File>
+	<File name="src\backends\Allegro5\Allegro5Threads.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3311" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\backends\Allegro5\Allegro5Timer.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7152" topLine="215" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -151,6 +151,7 @@ EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(int width , i
 
 EagleThread* Allegro5System::PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data) {
    EagleThread* ethread = new Allegro5Thread();
+   if (!process) {return ethread;}
    if (!ethread->Create(process , data)) {
       delete ethread;
       throw EagleException("Failed to create an Allegro 5 thread.");

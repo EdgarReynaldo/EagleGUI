@@ -36,6 +36,14 @@ using std::vector;
 unsigned int GUI_TEXT_LINE_SPACING = 3;
 
 
+
+const char* eagle_default_font_path = "Verdana.ttf";
+
+int eagle_default_font_size = -16;
+
+int eagle_default_font_flags = LOAD_FONT_MONOCHROME;
+
+
 /**
 REGION_INFO::REGION_INFO() : sx(0.0f) , sy(0.0f) , sw(0.0f) , sh(0.0f) {}
 
@@ -238,9 +246,9 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       previoustime(0.0f),
       currenttime(0.0f),
       default_font(0),
-      default_font_path(""),
-      default_font_size(0),
-      default_font_flags(0)
+      default_font_path(eagle_default_font_path),
+      default_font_size(eagle_default_font_size),
+      default_font_flags(eagle_default_font_flags)
 {
    /// NOTE: derived class needs to instantiate mp_manager
    /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create

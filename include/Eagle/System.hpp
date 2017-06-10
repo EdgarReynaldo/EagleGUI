@@ -195,7 +195,7 @@ public :
 
 	EagleTimer*           CreateTimer();
    EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
-   EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) , void* data);
+   EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
    EagleMutex*           CreateMutex(bool recursive);
    EagleClipboard*       CreateClipboard();
 
