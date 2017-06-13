@@ -23,6 +23,8 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
 
    al_lock_mutex(ethread->finish_mutex);
 
+   ethread->finished_bool = true;
+   
    al_signal_cond(ethread->finish_condition_var);
 
    al_unlock_mutex(ethread->finish_mutex);
@@ -66,6 +68,7 @@ bool Allegro5Thread::Create(void* (*process_to_run)(EagleThread* , void*) , void
    a5thread = al_create_thread(A5ThreadWrapperProcess , this);
    finish_condition_var = al_create_cond();
    finish_mutex = al_create_mutex();
+   finished_bool = false;
    
    if (!a5thread || !finish_condition_var || !finish_mutex) {
       if (!a5thread) {
@@ -100,21 +103,25 @@ void Allegro5Thread::Destroy() {
       al_destroy_mutex(finish_mutex);
       finish_mutex = 0;
    }
+   finished_bool = false;
 }
 
 
 
 void Allegro5Thread::Start() {
    EAGLE_ASSERT(a5thread);
-   al_start_thread(a5thread);
+   if (!Running()) {
+      al_start_thread(a5thread);
+   }
 }
 
 
 
 void Allegro5Thread::SignalToStop() {
    if (!a5thread) {return;}
-   
-   al_set_thread_should_stop(a5thread);
+   if (!Running()) {
+      al_set_thread_should_stop(a5thread);
+   }
 }
 
 
@@ -138,7 +145,9 @@ void* Allegro5Thread::FinishThread() {
 
       al_lock_mutex(finish_mutex);
 
-      al_wait_cond(finish_condition_var , finish_mutex);
+      while (!finished_bool) {
+         al_wait_cond(finish_condition_var , finish_mutex);
+      }
 
       al_unlock_mutex(finish_mutex);
       

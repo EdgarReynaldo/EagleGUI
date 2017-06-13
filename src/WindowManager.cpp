@@ -76,41 +76,17 @@ void EagleWindowManager::CloseWindows() {
       if (it->second != 0) {
          EAGLE_ASSERT(GetValidById(it->first));
          EagleLog() << StringPrintF("EagleWindowManager::CloseWindows - About to close window %s." , it->second->GetName().c_str()) << std::endl;
+         manager_mutex->Unlock();
+         DestroyWindow(it->first);
+         manager_mutex->Lock();
       }
    }
-   
-
-   manager_mutex->Unlock();
-
-
-   for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
-      DestroyWindow(it->first);
-   }
-
-   manager_mutex->Lock();
-   
    window_map.clear();
    active_window = 0;
    
    manager_mutex->Unlock();
    
    EAGLE_ASSERT(window_count == 0);
-   
-/**
-   EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->Lock();
-   for (WMIT it = window_map.begin() ; it != window_map.end() ; ++it) {
-      EagleGraphicsContext* win = it->second;
-      if (win) {delete win;}
-   }
-   window_map.clear();
-   active_window = 0;
-   window_count = 0;
-   manager_mutex->Unlock();
-//*/
-
-
-
 }
 
 

@@ -28,6 +28,7 @@ private :
    void* return_value;
    bool running;
    
+   bool finished_bool;
    ALLEGRO_COND* finish_condition_var;
    ALLEGRO_MUTEX* finish_mutex;
    

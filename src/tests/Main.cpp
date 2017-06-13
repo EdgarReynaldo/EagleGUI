@@ -16,7 +16,9 @@ using namespace std;
 
 void* bad_thread(EagleThread* t , void* data) {
 
-   EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(120 , 90 , EAGLE_WINDOWED);
+   void* ret = (void*)-1;
+
+   EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(240 , 180 , EAGLE_WINDOWED);
    EagleEventHandler* q = GetAllegro5System()->CreateEventHandler(false);
    
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
@@ -25,11 +27,15 @@ void* bad_thread(EagleThread* t , void* data) {
    while (!a5thread->ShouldStop()) {
       EagleEvent ee = q->WaitForEvent(1.0);
       if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
-         return (void*)1;
+         ret = (void*)0;
          break;
       }
    }
-   return (void*)2;
+   
+   GetAllegro5System()->FreeEventHandler(q);
+   GetAllegro5System()->FreeGraphicsContext(new_win);
+   
+   return ret;
 }
 
 
@@ -69,6 +75,7 @@ int main(int argc , char** argv) {
       
       if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
          if (ee.window == win1) {
+            EagleInfo() << "Close display receieved by main display." << std::endl;
             break;
          }
          a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
