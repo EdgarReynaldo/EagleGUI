@@ -47,7 +47,7 @@ string StringPrintF(const char* format_str , ...) {
    va_list args;
    va_start(args , format_str);
 ///int vsnprintf (char * s, size_t n, const char * format, va_list arg );
-   _vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
+   vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
    va_end(args);
    return std::string(buffer);
 }
@@ -57,20 +57,20 @@ string StringPrintF(const char* format_str , ...) {
 
 vector<string> SplitByNewLines(std::string s) {
    vector<string> lines;
-   
+
    if (s.length() == 0) {
       lines.push_back("");
       return lines;
    }
-   
+
    string line;
    for (unsigned int i = 0 ; i < s.length() ; ) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
-         
+
          lines.push_back(line);
          line = "";
-      
+
          unsigned int i2 = i + 1;
          char c2 = (i2 < s.length())?s[i2]:'\0';
          if (c == '\r' && c2 == '\n') {
@@ -85,7 +85,7 @@ vector<string> SplitByNewLines(std::string s) {
          lines.push_back(line);
       }
    }
-   
+
    return lines;
 }
 
@@ -96,13 +96,13 @@ std::vector<std::string> SplitByDelimiterString(std::string string_to_split , co
    std::vector<std::string> tokens;
    size_t start_index = 0;
    size_t stop_index = 0;
-   
+
    if (string_to_split.size() == 0) {
       return tokens;
    }
-   
+
    const size_t split_string_size = string_to_split.size();
-   
+
    while (stop_index <= split_string_size && start_index < split_string_size) {
       stop_index = string_to_split.find_first_of(token , start_index);
       if (stop_index == string::npos) {
@@ -121,9 +121,9 @@ std::vector<std::string> SplitByDelimiterString(std::string string_to_split , co
 const char* CopyQuotedString(const char* start_quote , string& s) {
    s = "";
    const char* c = start_quote + 1;
-   
+
    if (*start_quote != '\"') {return 0;}// ensure string starts with double quote
-   
+
    while (*c != '\"') {
       if (*c == '\0') {
          return 0;
@@ -197,7 +197,7 @@ std::string GetGuiText(std::string gui_text) {
    std::string stripped_text;
    const char amp = '&';
    for (unsigned int i = 0 ; i < gui_text.size() ; ++i) {
-      
+
       if (gui_text[i] == amp) {
       // Leading ampersand
          if ((i + 1) < gui_text.size()) {
@@ -214,7 +214,7 @@ std::string GetGuiText(std::string gui_text) {
          }
          else {
             // i + 1 >= gui_text.size(), no character after ampersand
-            
+
             // ignore for now
          }
       }
@@ -478,9 +478,9 @@ std::string FormatDoubleString(string str) {
    }
    // 12345e2 12345. e2
    if (decimal_point == -1) {decimal_point = (int)strlen(numerals.c_str());}
-   
+
 ///   printf("After reading string, formatted double is : '%s'\n" , MakeDoubleString(is_negative , numerals , decimal_point , exponent).c_str());
-   
+
    // strip trailing zeros
    // 12300.00 -> 12300
    int index = -1;
@@ -500,9 +500,9 @@ std::string FormatDoubleString(string str) {
       numerals.erase(index);
       cstr = numerals.c_str();
    }
-   
+
 ///   printf("After stripping trailing zeros, formatted double is : '%s'\n" , MakeDoubleString(is_negative , numerals , decimal_point , exponent).c_str());
-   
+
    // strip leading zeros 0.000123 -> 0000123 1 , 0 -> 000123 1 -1 -> 00123 1 -2 -> 0123 1 -3 -> 123 1 -4
    int zerocount = 0;
    for (i = 0 ; i < (int)strlen(cstr) ; ++i) {
@@ -517,12 +517,12 @@ std::string FormatDoubleString(string str) {
       numerals.erase(0 , zerocount);
       cstr = numerals.c_str();
    }
-   
+
 ///   printf("After stripping leading zeros , formatted double is : '%s'\n" , MakeDoubleString(is_negative , numerals , decimal_point , exponent).c_str());
-   
-   
+
+
    // 0.00000123 - 000000123
-   
+
    // 123 2 -5 -> 123 1 -4
    // shift decimal point so that it is at index 1 - One numeral followed by decimal point followed by rest of numerals and then exponent
    if (decimal_point != -1) {
@@ -535,7 +535,7 @@ std::string FormatDoubleString(string str) {
       if ((exponent > 0) && (exponent < 3)) {
          decimal_point += exponent;
          exponent = 0;
-         
+
          // add trailing zeros if necessary
          // 123. 3 0 -> 123 , 12 4 0 -> 1200
          int length = (int)strlen(numerals.c_str());
@@ -554,12 +554,12 @@ std::string FormatDoubleString(string str) {
          cstr = numerals.c_str();
       }
    }
-   
+
    // render string
    string output = MakeDoubleString(is_negative , numerals , decimal_point , exponent);
-   
+
 ///   printf("After formatting double, string is : '%s'\n" , output.c_str());
-   
+
    return output;
 }
 

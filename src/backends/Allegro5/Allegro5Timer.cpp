@@ -25,7 +25,7 @@ void* TimerProcess(EagleThread* ethread , void* etimer) {
    ALLEGRO_TIMER* timer = eagle_a5_timer->AllegroTimer();
    ALLEGRO_EVENT_QUEUE* queue = eagle_a5_timer->AllegroEventQueue();
    ALLEGRO_EVENT_SOURCE* event_source = eagle_a5_timer->AllegroEventSource();
-   
+
    EAGLE_ASSERT(timer);
    EAGLE_ASSERT(queue);
    EAGLE_ASSERT(event_source);
@@ -64,7 +64,7 @@ void* TimerProcess(EagleThread* ethread , void* etimer) {
          al_emit_user_event(event_source , &ev , 0);// bounce message back to synchronize states
       }
    }
-   return (void*)counter;
+   return (void*)(long)counter;
 }
 
 
@@ -107,13 +107,13 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
    EAGLE_ASSERT(seconds_per_tick > 0.0);
 
    Destroy();
-   
+
    EagleInfo() << "Allegro5Timer::Create this=" << this << std::endl;
 
    timer = al_create_timer(seconds_per_tick);
    timer_queue = al_create_event_queue();
    process_queue = al_create_event_queue();
-   
+
    ethread = new Allegro5Thread();
 
    EAGLE_ASSERT(timer);
@@ -128,23 +128,23 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
       al_register_event_source(timer_queue , &process_event_source);
       /// MUST create TimerProcess thread AFTER registering event sources or it will wait forever
       ethread->Create(TimerProcess , this);
-      
+
       // wait for thread to synchronize
-      
+
       if (ethread->Valid()) {
          ethread->Start();
-         
+
          // send out create message to thread process
          ALLEGRO_EVENT ev;
          ev.type = EAGLE_EVENT_USER_START;
          ev.user.data1 = EAGLE_MESSAGE_CREATE_TIMER;
          al_emit_user_event(&timer_event_source , &ev , 0);
-         
+
          // wait for return message
          do {
             al_wait_for_event(timer_queue , &ev);
          } while (!((ev.type == EAGLE_EVENT_USER_START) && (ev.user.data1 == EAGLE_MESSAGE_CREATE_TIMER)));
-      
+
          return true;
       }
    }
@@ -171,9 +171,9 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
 
 void Allegro5Timer::Destroy() {
    EagleInfo() << "Allegro5Timer::Destroy this=" << this << std::endl;
-   
+
    Close();
-   
+
    if (timer_queue) {
       al_unregister_event_source(timer_queue , &process_event_source);
       al_unregister_event_source(timer_queue , al_get_timer_event_source(timer));
@@ -222,7 +222,7 @@ void Allegro5Timer::Stop() {
 
 void Allegro5Timer::Close() {
    if (!ethread || (ethread && !ethread->Running())) {return;}
-   
+
    SendTimerProcessMessage(EAGLE_MESSAGE_CLOSE_TIMER);
 
    // wait for message to be bounced back
@@ -230,7 +230,7 @@ void Allegro5Timer::Close() {
    do {
       al_wait_for_event(timer_queue , &ev);
    } while (!((ev.type == EAGLE_EVENT_USER_START) && (ev.user.data1 == EAGLE_MESSAGE_CLOSE_TIMER)));
-   
+
    ethread->FinishThread();
 }
 

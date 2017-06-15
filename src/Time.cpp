@@ -1,11 +1,17 @@
 
 
+#include "Eagle/Platform.hpp"
 #include "Eagle/Time.hpp"
 
 
 
-#ifdef EAGLE_WIN32
+#if defined EAGLE_WIN32
    #include "windows.h"
+#elif defined EAGLE_LINUX
+    #include <ctime>
+    #include <cmath>
+#else
+    #error "Eagle/Time.hpp does not support this platform."
 #endif
 
 
@@ -56,12 +62,19 @@ ProgramTime::operator double() const {
 
 
 ProgramTime ProgramTime::Now() {
-#ifdef EAGLE_WIN32
+#if defined EAGLE_WIN32
    LARGE_INTEGER qpf;
    LARGE_INTEGER qpc;
    QueryPerformanceFrequency(&qpf);
    QueryPerformanceCounter(&qpc);
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
+#elif defined EAGLE_LINUX
+    timespec ts;
+    clock_gettime(CLOCK_REALTIME , &ts);
+    double rt = (double)ts.tv_sec + (double)ts.tv_nsec / pow(10 , 9);
+    return ProgramTime(rt);
+#else
+    #error "ProgramTime::Now() is not implemented on this platform"
 #endif
 }
 

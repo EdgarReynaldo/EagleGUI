@@ -4,35 +4,35 @@
 #include "NewGuiTestMain.hpp"
 
 
-#include "Eagle\backends\Allegro5Backend.hpp"
+#include "Eagle/backends/Allegro5Backend.hpp"
 
 using std::endl;
 
 
 
 int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
-   
+
    (void)argc;
    (void)argv;
-   
+
    EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
       return 2;
    }
-   
+
 
    Allegro5Font bfont("Verdana.ttf" , 20 , LOAD_FONT_MONOCHROME);
    Allegro5Font bfont2("Consola.ttf" , 20 , LOAD_FONT_MONOCHROME);
-   
+
    EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder.png");
    EagleImage* npimage2 = win->LoadImageFromFile("Data/ninePatch/OrangeYellowNP.png");
 ///   EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder2.bmp");
 ///   EagleImage* npimage = win->LoadImageFromFile("Data/ninePatch/NPBlueBorder.tga");
-   
+
    EAGLE_ASSERT(npimage->Valid());
-   
-   
-   
+
+
+
    WidgetArea warea;
    warea.SetOuterArea(Rectangle(0,0,800,600));///npimage->W(),npimage->H()));
    EagleLog() << warea;
@@ -48,7 +48,7 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
 
    NinePatch np = MakeNinePatch(win , npimage , warea);
    warea.SetImages(np.imgs);
-   
+
    win->Clear(EagleColor(255,255,255));
    win->SetPMAlphaBlender();
    NinePatchImageBackgroundPainter np_painter;
@@ -56,21 +56,21 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    win->RestoreLastBlendingState();
    win->FlipDisplay();
    sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
-   
+
    win->Clear(EagleColor(0,0,0));
    win->Draw(npimage , 0 , 0);
    win->FlipDisplay();
    sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
-      
+
    RelativeLayout r;
-   
+
    WidgetHandler gui(win);
    gui.SetRootLayout(&r);
 
    gui.SetDrawWindow(win);
    gui.SetupBuffer(800,600 , win);
    gui.SetWidgetArea(0,0,800,600);
-   
+
    GuiButton b1;
    b1.SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
    b1.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_1));
@@ -94,7 +94,7 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    b4.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_4));
    b4.SetLabel("Spring Button &4");
    b4.SetFont(&bfont);
-   
+
    GuiButton b5;
    b5.SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_PLAIN);
    b5.SetInputGroup(Input(KB,PRESS,EAGLE_KEY_5));
@@ -132,34 +132,34 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    r.PlaceWidget(&b2 , 1 , LayoutRectangle(0.0,0.6,0.4,0.4));
    r.PlaceWidget(&b3 , 2 , LayoutRectangle(0.6,0.0,0.4,0.4));
    r.PlaceWidget(&b4 , 3 , LayoutRectangle(0.6,0.6,0.4,0.4));
-   
+
    r.PlaceWidget(&b5 , 4 , LayoutRectangle(0.0,0.4,0.4,0.2));
    r.PlaceWidget(&b6 , 5 , LayoutRectangle(0.4,0.6,0.2,0.4));
    r.PlaceWidget(&b7 , 6 , LayoutRectangle(0.4,0.0,0.2,0.4));
    r.PlaceWidget(&b8 , 7 , LayoutRectangle(0.6,0.4,0.4,0.2));
-   
+
    r.PlaceWidget(&text1 , 8 , LayoutRectangle(0.4 , 0.4 , 0.2 , 0.2));
-   
+
    EagleLog() << "Text widget 1 is :" << endl;
    EagleLog() << text1 << endl;
-   
+
    Layout* layout = gui.GetRootLayout();
    layout->SetMarginsContractFromOuter(20,20,20,20);
    layout->SetBackgroundDrawType(BG_DRAW_BACKGROUND_CONTRAST_BORDER);
-   
+
    EagleLog() << text1 << std::endl;
 
    bool quit = false;
    bool redraw = true;
-   
+
 ///   sys->GetSystemTimer()->Create(0.5);
    sys->GetSystemTimer()->Start();
-   
+
    do {
       if (test_runner->ShouldStop()) {
          break;
       }
-         
+
       if (redraw) {
 ///         win->Clear(EagleColor(0,255,0));
 ///         win->FlipDisplay();
@@ -167,11 +167,11 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
          win->FlipDisplay();
          redraw = false;
       }
-      
+
       do {
          EagleEvent ee;
          ee = sys->WaitForSystemEventAndUpdateState();
-         
+
          if (ee.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             win->AcknowledgeResize();
             gui.SetWidgetArea(0 , 0 , win->Width() , win->Height());
@@ -196,10 +196,10 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
          if (ee.type == EAGLE_EVENT_TIMER) {
             redraw = true;
          }
-         
+
       } while(!sys->UpToDate());
    } while (!quit);
-   
+
    return 0;
 };
 
