@@ -1,0 +1,645 @@
+# depslib dependency file v1.0
+1497582697 source:/home/marc/PROJECTS/Eagle/EagleGUI/Test.cpp
+	"Eagle.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle.hpp
+	"Eagle/Platform.hpp"
+	"Eagle/Area.hpp"
+	"Eagle/Color.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/FileWork.hpp"
+	"Eagle/Font.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Gui.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/Lib.hpp"
+	"Eagle/Logging.hpp"
+	"Eagle/MemberFunctors.hpp"
+	"Eagle/MousePointer.hpp"
+	"Eagle/NinePatch.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/StringWork.hpp"
+	"Eagle/System.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/Timer.hpp"
+
+1497561139 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Area.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/Position.hpp"
+	<iostream>
+	<list>
+	<vector>
+	<map>
+	<cmath>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Color.hpp
+	<iostream>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Exception.hpp
+	<string>
+	<cassert>
+	"Eagle/Logging.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Logging.hpp
+	<string>
+	<iostream>
+	<fstream>
+	<unordered_set>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Object.hpp
+	"Eagle/Logging.hpp"
+	<string>
+	<map>
+	<vector>
+	<utility>
+	<iostream>
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Position.hpp
+	<iostream>
+	<cmath>
+	"Eagle/Color.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Container.hpp
+	<vector>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Events.hpp
+	<list>
+	<deque>
+	<vector>
+	<string>
+	"Eagle/Gui/WidgetMessage.hpp"
+	"Eagle/Mutexes.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/Conditions.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetMessage.hpp
+	<iostream>
+	<string>
+	<map>
+	<utility>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Conditions.hpp
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/FileWork.hpp
+	<string>
+	<cstdio>
+	<iostream>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Font.hpp
+	<string>
+	"Eagle/Image.hpp"
+	"Eagle/Object.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Image.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Color.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Object.hpp"
+	<string>
+	<vector>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/GraphicsContext.hpp
+	<list>
+	<string>
+	<map>
+	"Eagle/Color.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Font.hpp"
+	"Eagle/Container.hpp"
+	"Eagle/Area.hpp"
+	"Eagle/MousePointer.hpp"
+	"Eagle/Transforms.hpp"
+	"Eagle/Gui/Alignment.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/MousePointer.hpp
+	<list>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Transforms.hpp
+	<memory>
+	<stack>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Alignment.hpp
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui.hpp
+	"Gui/Alignment.hpp"
+	"Gui/BasicIcon.hpp"
+	"Gui/Button.hpp"
+	"Gui/Camera.hpp"
+	"Gui/Layouts.hpp"
+	"Gui/Menu.hpp"
+	"Gui/ScrollBar.hpp"
+	"Gui/Scroller.hpp"
+	"Gui/TestWidget.hpp"
+	"Gui/Text.hpp"
+	"Gui/WidgetArea.hpp"
+	"Gui/WidgetBase.hpp"
+	"Gui/WidgetColorset.hpp"
+	"Gui/WidgetDrawFuncs.hpp"
+	"Gui/WidgetHandler.hpp"
+	"Gui/WidgetMessage.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/BasicIcon.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetBase.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Gui/WidgetArea.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	"Eagle/Gui/WidgetDrawFuncs.hpp"
+	"Eagle/Gui/WidgetMessage.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetArea.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/Gui/Layout/LayoutRectangle.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/LayoutRectangle.hpp
+	"Eagle/Area.hpp"
+	<iostream>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetColorset.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Object.hpp"
+	"Eagle/Exception.hpp"
+	<map>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetDrawFuncs.hpp
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Gui/WidgetArea.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button.hpp
+	"Button/BasicButton.hpp"
+	"Button/GuiButton.hpp"
+	"Button/IconButton.hpp"
+	"Button/RadioButton.hpp"
+	"Button/ScrollButton.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/BasicButton.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/InputHandler.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/InputHandler.hpp
+	<iostream>
+	<string>
+	<map>
+	<vector>
+	"Eagle/Events.hpp"
+	"Eagle/Timer.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Timer.hpp
+	"Eagle/Events.hpp"
+	"Eagle/Object.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/GuiButton.hpp
+	"Eagle/InputHandler.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/IconButton.hpp
+	"Eagle/Gui/Button/GuiButton.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/StringWork.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/StringWork.hpp
+	<vector>
+	<string>
+	<list>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/RadioButton.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/Layout.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/LayoutRectangle.hpp"
+	"Eagle/Gui/Alignment.hpp"
+	<iostream>
+	<string>
+	<climits>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/ScrollButton.hpp
+	"Eagle/Gui/Button/BasicButton.hpp"
+	"Eagle/StringWork.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Camera.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Image.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layouts.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	"Eagle/Gui/Layout/FlowLayout.hpp"
+	"Eagle/Gui/Layout/GridLayout.hpp"
+	"Eagle/Gui/Layout/RelativeLayout.hpp"
+	"Eagle/Gui/Layout/SplitterLayouts.hpp"
+	"Eagle/Gui/Decorators/Decorator.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/DumbLayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/FlowLayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/GridLayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/RelativeLayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/SplitterLayouts.hpp
+	"Eagle/Area.hpp"
+	"Eagle/Gui/WidgetColorset.hpp"
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Decorators/Decorator.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/FillLayout.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/FillLayout.hpp
+	"Eagle/Gui/Layout/Layout.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Menu.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Button/BasicButton.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/BasicText.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/GlobalText.hpp
+	<vector>
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/ScrollBar.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Scroller.hpp"
+	"Eagle/Gui/Button/ScrollButton.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Scroller.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/TestWidget.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Color.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+	"Eagle/Gui/Text/SelectText.hpp"
+	"Eagle/Gui/Text/LinkText.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/SelectText.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+	"Eagle/Gui/Text/BasicText.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/LinkText.hpp
+	"Eagle/Gui/Text/GlobalText.hpp"
+	"Eagle/Gui/Text/SelectText.hpp"
+	"Eagle/StringWork.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetHandler.hpp
+	"Eagle/Gui/WidgetBase.hpp"
+	"Eagle/Gui/Layout/Layout.hpp"
+	"Eagle/Gui/Layout/DumbLayout.hpp"
+	"Eagle/Gui/Camera.hpp"
+	"Eagle/Exception.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/InputHandler.hpp"
+	<vector>
+	<list>
+	<map>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Lib.hpp
+	"Eagle/System.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
+	"Eagle/Color.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Image.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/Mutexes.hpp"
+	"Eagle/Clipboard.hpp"
+	"Eagle/WindowManager.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Threads.hpp
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Clipboard.hpp
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/WindowManager.hpp
+	<map>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/MemberFunctors.hpp
+	"Container.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/NinePatch.hpp
+	"Eagle/Gui/WidgetArea.hpp"
+
+1497465608 /usr/local/include/allegro5/allegro.h
+	"allegro5/base.h"
+	"allegro5/altime.h"
+	"allegro5/bitmap.h"
+	"allegro5/bitmap_draw.h"
+	"allegro5/bitmap_io.h"
+	"allegro5/bitmap_lock.h"
+	"allegro5/blender.h"
+	"allegro5/clipboard.h"
+	"allegro5/color.h"
+	"allegro5/config.h"
+	"allegro5/cpu.h"
+	"allegro5/debug.h"
+	"allegro5/display.h"
+	"allegro5/drawing.h"
+	"allegro5/error.h"
+	"allegro5/events.h"
+	"allegro5/file.h"
+	"allegro5/fixed.h"
+	"allegro5/fmaths.h"
+	"allegro5/fshook.h"
+	"allegro5/fullscreen_mode.h"
+	"allegro5/haptic.h"
+	"allegro5/joystick.h"
+	"allegro5/keyboard.h"
+	"allegro5/memory.h"
+	"allegro5/monitor.h"
+	"allegro5/mouse.h"
+	"allegro5/mouse_cursor.h"
+	"allegro5/path.h"
+	"allegro5/render_state.h"
+	"allegro5/shader.h"
+	"allegro5/system.h"
+	"allegro5/threads.h"
+	"allegro5/timer.h"
+	"allegro5/tls.h"
+	"allegro5/touch_input.h"
+	"allegro5/transformations.h"
+	"allegro5/utf8.h"
+	"allegro5/alcompat.h"
+
+1497465608 /usr/local/include/allegro5/base.h
+	<errno.h>
+	<limits.h>
+	<limits.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<sys/types.h>
+	<fortify/fortify.h>
+	<dmalloc.h>
+	"allegro5/internal/alconfig.h"
+
+1497465608 /usr/local/include/allegro5/internal/alconfig.h
+	"allegro5/platform/alplatf.h"
+	"allegro5/platform/alwatcom.h"
+	"allegro5/platform/almngw32.h"
+	"allegro5/platform/albcc32.h"
+	"allegro5/platform/almsvc.h"
+	"allegro5/platform/aliphonecfg.h"
+	"allegro5/platform/alosxcfg.h"
+	"allegro5/platform/alandroidcfg.h"
+	"allegro5/platform/alraspberrypicfg.h"
+	"allegro5/platform/alucfg.h"
+	"allegro5/platform/allegro_sdl_config.h"
+	"allegro5/platform/astdint.h"
+	"allegro5/platform/astdbool.h"
+
+1497467199 /usr/local/include/allegro5/platform/alplatf.h
+
+1497465608 /usr/local/include/allegro5/platform/alwatcom.h
+	<io.h>
+	<i86.h>
+	<conio.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+
+1497465608 /usr/local/include/allegro5/platform/almngw32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
+
+1497465608 /usr/local/include/allegro5/platform/albcc32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+
+1497465608 /usr/local/include/allegro5/platform/almsvc.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
+
+1497465608 /usr/local/include/allegro5/platform/aliphonecfg.h
+	<fcntl.h>
+	<unistd.h>
+
+1497465608 /usr/local/include/allegro5/platform/alosxcfg.h
+	"allegro5/platform/alplatf.h"
+
+1497465608 /usr/local/include/allegro5/platform/alandroidcfg.h
+
+1497465608 /usr/local/include/allegro5/platform/alraspberrypicfg.h
+	<fcntl.h>
+	<unistd.h>
+	<sys/types.h>
+
+1497465608 /usr/local/include/allegro5/platform/alucfg.h
+	<fcntl.h>
+	<unistd.h>
+	"alunix.h"
+	"allegro5/platform/alplatf.h"
+
+1497465608 /usr/local/include/allegro5/platform/alunix.h
+
+1497465608 /usr/local/include/allegro5/platform/allegro_sdl_config.h
+	<fcntl.h>
+	<unistd.h>
+
+1497465608 /usr/local/include/allegro5/platform/astdint.h
+	<inttypes.h>
+	<stdint.h>
+
+1497465608 /usr/local/include/allegro5/platform/astdbool.h
+	<stdbool.h>
+
+1497465608 /usr/local/include/allegro5/altime.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/bitmap.h
+	"allegro5/color.h"
+
+1497465608 /usr/local/include/allegro5/color.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/bitmap_draw.h
+	"allegro5/bitmap.h"
+
+1497465608 /usr/local/include/allegro5/bitmap_io.h
+	"allegro5/bitmap.h"
+	"allegro5/file.h"
+
+1497465608 /usr/local/include/allegro5/file.h
+	"allegro5/base.h"
+	"allegro5/path.h"
+	"allegro5/utf8.h"
+
+1497465608 /usr/local/include/allegro5/path.h
+	"allegro5/base.h"
+	"allegro5/utf8.h"
+
+1497465608 /usr/local/include/allegro5/utf8.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/bitmap_lock.h
+	"allegro5/bitmap.h"
+
+1497465608 /usr/local/include/allegro5/blender.h
+	"allegro5/base.h"
+	"allegro5/color.h"
+
+1497465608 /usr/local/include/allegro5/clipboard.h
+	"allegro5/base.h"
+	"allegro5/display.h"
+	"allegro5/utf8.h"
+
+1497465608 /usr/local/include/allegro5/display.h
+	"allegro5/bitmap.h"
+	"allegro5/color.h"
+	"allegro5/events.h"
+
+1497465608 /usr/local/include/allegro5/events.h
+	"allegro5/altime.h"
+
+1497465608 /usr/local/include/allegro5/config.h
+	"allegro5/file.h"
+
+1497465608 /usr/local/include/allegro5/cpu.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/debug.h
+	<assert.h>
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/drawing.h
+	"allegro5/color.h"
+
+1497465608 /usr/local/include/allegro5/error.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/fixed.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/fmaths.h
+	"allegro5/base.h"
+	"allegro5/fixed.h"
+	"allegro5/inline/fmaths.inl"
+
+1497465608 /usr/local/include/allegro5/inline/fmaths.inl
+	"allegro5/error.h"
+
+1497465608 /usr/local/include/allegro5/fshook.h
+	"allegro5/base.h"
+	"allegro5/file.h"
+	"allegro5/path.h"
+	<sys/types.h>
+
+1497465608 /usr/local/include/allegro5/fullscreen_mode.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/haptic.h
+	"allegro5/base.h"
+	"allegro5/display.h"
+	"allegro5/events.h"
+	"allegro5/joystick.h"
+	"allegro5/keyboard.h"
+	"allegro5/mouse.h"
+	"allegro5/touch_input.h"
+
+1497465608 /usr/local/include/allegro5/joystick.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1497465608 /usr/local/include/allegro5/keyboard.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+	"allegro5/keycodes.h"
+
+1497465608 /usr/local/include/allegro5/keycodes.h
+
+1497465608 /usr/local/include/allegro5/mouse.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1497465608 /usr/local/include/allegro5/touch_input.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1497465608 /usr/local/include/allegro5/memory.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/monitor.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/mouse_cursor.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/render_state.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/shader.h
+	"allegro5/base.h"
+	"allegro5/transformations.h"
+
+1497465608 /usr/local/include/allegro5/transformations.h
+	"allegro5/display.h"
+
+1497465608 /usr/local/include/allegro5/system.h
+	"allegro5/config.h"
+	"allegro5/path.h"
+
+1497465608 /usr/local/include/allegro5/threads.h
+	"allegro5/altime.h"
+
+1497465608 /usr/local/include/allegro5/timer.h
+	"allegro5/base.h"
+	"allegro5/events.h"
+
+1497465608 /usr/local/include/allegro5/tls.h
+	"allegro5/base.h"
+
+1497465608 /usr/local/include/allegro5/alcompat.h
+
