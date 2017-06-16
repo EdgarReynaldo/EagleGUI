@@ -75,12 +75,12 @@ inline void signal_handler(int)
 {
     EpicFail();
 }
-
+/**
 inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t)
 {
    EpicFail();
 }
-
+//*/
 
 
 const char* const eagle_init_state_strs[12] = {
@@ -122,18 +122,18 @@ std::string PrintEagleInitState(int state) {
 std::string PrintFailedEagleInitStates(int desired_state , int actual_state) {
    std::stringstream ss;
    if (desired_state) {
-      
+
       if (actual_state & ~desired_state) {
          ss << "EXTRA STATES TURNED ON!";
       }
-      
+
       if (desired_state & ~actual_state) {
          ss << "FAILED STATES = ";
       }
       else {
          return "ALL DESIRED STATES SUCCEEDED TO INITIALIZE";
       }
-         
+
       for (int bitshift = 0 ; bitshift < 11 ; ++bitshift) {
          int flag = 1 << bitshift;
 
@@ -204,15 +204,15 @@ EagleSystem::EagleSystem(std::string name) :
 
 
 void EagleSystem::Shutdown() {
-   
+
    EagleInfo() << "EagleSystem::Shutdown called" << std::endl;
 
    if (window_manager) {
       delete window_manager;
       window_manager = 0;
    }
-   
-   /// TODO : Manage destruction order carefully...   
+
+   /// TODO : Manage destruction order carefully...
    inputs.FreeAll();
    clipboards.FreeAll();
    timers.FreeAll();
@@ -225,7 +225,7 @@ void EagleSystem::Shutdown() {
 
 int EagleSystem::Initialize(int state) {
    state |= EAGLE_SYSTEM;/// System is non-optional
-   
+
    if (state & EAGLE_SYSTEM)     {InitializeSystem();}
    if (state & EAGLE_IMAGES)     {InitializeImages();}
    if (state & EAGLE_FONTS)      {InitializeFonts();}
@@ -242,7 +242,7 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_TOUCH)      {InstallTouch();}
 
    FinalizeSystem();
-      
+
    return EagleInitState();
 }
 
@@ -271,19 +271,19 @@ bool EagleSystem::InitializeSystem() {
    else {
       EagleInfo() << "Eagle : Initialized system." << std::endl;
    }
-   
+
    return system_up;
 }
 
 
-   
+
 bool EagleSystem::FinalizeSystem() {
    if (!input_handler)    {input_handler    = CreateInputHandler();}
    if (!system_timer)     {system_timer     = CreateTimer();}
    if (!system_queue)     {system_queue     = CreateEventHandler(false);}
    if (!system_clipboard) {system_clipboard = CreateClipboard();}
    if (!window_manager)   {window_manager   = CreateWindowManager();}
-   
+
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
    if (system_timer) {
@@ -303,7 +303,7 @@ bool EagleSystem::FinalizeSystem() {
    else {
       EagleError() << "Eagle : System state not finalized." << std::endl;
    }
-   
+
    return system_up;
 }
 
@@ -747,7 +747,7 @@ void EagleSystem::RegisterTouchInput   (EagleEventHandler* queue) {
 }
 
 
-	
+
 void EagleSystem::RegisterInputs(EagleEventHandler* queue) {
 	EagleInputHandler* input = GetInputHandler();
 	EAGLE_ASSERT(input);
@@ -770,7 +770,7 @@ bool EagleSystem::UpToDate() {
 EagleEvent EagleSystem::UpdateSystemState() {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   
+
    if (!UpToDate()) {
       EagleEvent e = system_queue->TakeNextEvent();
       most_recent_system_event = e;

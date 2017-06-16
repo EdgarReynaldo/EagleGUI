@@ -32,7 +32,7 @@
       #if !defined (EAGLE_STATIC_LINK)
          #define EAGLE_LINK_TYPE __declspec__(dllexport)
       #endif
-   
+
    #elif def __APPLE__
 
    #elif def __unix__ || def __linux__
@@ -50,11 +50,11 @@
       #endif
 
    #elif defined __APPLE__
-   
+
    #elif defined __unix__ || defined __linux__
-   
+
    #else
-   
+
    #endif
 
 
@@ -92,6 +92,8 @@
    #define EAGLE_UNIX
 #elif defined __APPLE__
    #define EAGLE_APPLE
+#else
+    #error "Unknown platform detected"
 #endif
 
 
