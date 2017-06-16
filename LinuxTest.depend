@@ -1,7 +1,10 @@
 # depslib dependency file v1.0
-1497582697 source:/home/marc/PROJECTS/Eagle/EagleGUI/Test.cpp
+1497628593 source:/home/marc/PROJECTS/Eagle/EagleGUI/Test.cpp
 	"Eagle.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
 	"allegro5/allegro.h"
+	"allegro5/allegro_font.h"
+	<cstdio>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle.hpp
 	"Eagle/Platform.hpp"
@@ -87,7 +90,8 @@
 	<map>
 	<utility>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+1497649024 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+	<thread>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Conditions.hpp
 
@@ -642,4 +646,97 @@
 	"allegro5/base.h"
 
 1497465608 /usr/local/include/allegro5/alcompat.h
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5Backend.hpp
+	"Eagle.hpp"
+	"Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
+	"Eagle/backends/Allegro5/Allegro5Color.hpp"
+	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5Font.hpp"
+	"Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
+	"Eagle/backends/Allegro5/Allegro5Image.hpp"
+	"Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5System.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Timer.hpp"
+	"Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp
+	"Eagle/Clipboard.hpp"
+	<string>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Color.hpp
+	"Eagle/Color.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5EventHandler.hpp
+	"Eagle/Events.hpp"
+	"Eagle/Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Conditions.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Conditions.hpp
+	"Eagle/Conditions.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Threads.hpp
+	"Eagle/Threads.hpp"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Font.hpp
+	"Eagle/Font.hpp"
+	"allegro5/allegro_font.h"
+	"allegro5/allegro_ttf.h"
+
+1497465608 /usr/local/include/allegro5/allegro_font.h
+	"allegro5/allegro.h"
+
+1497465608 /usr/local/include/allegro5/allegro_ttf.h
+	"allegro5/allegro.h"
+	"allegro5/allegro_font.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/backends/Allegro5/Allegro5Image.hpp"
+	"Eagle/backends/Allegro5/Allegro5Transform.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+	"allegro5/allegro.h"
+	"allegro5/allegro_primitives.h"
+	<vector>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Image.hpp
+	"Eagle/Image.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Transform.hpp
+	"Eagle/Transforms.hpp"
+	"allegro5/allegro.h"
+
+1497640958 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Mutex.hpp
+	"Eagle/Mutexes.hpp"
+	"allegro5/allegro.h"
+
+1497465608 /usr/local/include/allegro5/allegro_primitives.h
+	<allegro5/allegro.h>
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp
+	"Eagle/Exception.hpp"
+	"Eagle/InputHandler.hpp"
+	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
+	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5System.hpp
+	"Eagle/System.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Timer.hpp
+	"Eagle.hpp"
+	"allegro5/allegro.h"
+
+1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp
+	"Eagle/WindowManager.hpp"
+	"Eagle/Events.hpp"
+	"allegro5/allegro.h"
 

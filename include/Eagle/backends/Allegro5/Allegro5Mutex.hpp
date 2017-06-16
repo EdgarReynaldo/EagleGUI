@@ -34,22 +34,23 @@
 class Allegro5Mutex : public EagleMutex {
 
 private :
-   
+
    ALLEGRO_MUTEX* mutex;
-   
+
+   virtual void PrivateLock();
+   virtual void PrivateUnlock();
+
 public :
-   
+
    Allegro5Mutex() : EagleMutex() , mutex(0) {}
    ~Allegro5Mutex() {Destroy();}
-   
+
    virtual bool Create(bool recursive);
    virtual void Destroy();
    virtual bool Valid();
-   
-   virtual void Lock();
-   virtual void Unlock();
 
-   
+   /// void Lock()
+   /// void Unlock()
 };
 
 

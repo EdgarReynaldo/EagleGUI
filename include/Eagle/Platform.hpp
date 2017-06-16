@@ -82,6 +82,15 @@
    #define EAGLE_OTHER_PATH_SEP '\\'
 #endif
 
+#if defined _MSC_VER
+   #if !defined __FUNCSIG__
+      #error "__FUNCSIG__ is not defined"
+   #endif
+   #define EAGLE__FUNC __FUNCSIG__
+#else
+   #include <cassert>
+   #define EAGLE__FUNC __PRETTY_FUNCTION__
+#endif //
 
 /// Eagle platform definitions
 #if defined _WIN32

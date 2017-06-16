@@ -25,9 +25,23 @@
 
 
 
+void Allegro5Mutex::PrivateLock() {
+   EAGLE_ASSERT(mutex);
+   al_lock_mutex(mutex);
+}
+
+
+
+void Allegro5Mutex::PrivateUnlock() {
+   EAGLE_ASSERT(mutex);
+   al_unlock_mutex(mutex);
+}
+
+
+
 bool Allegro5Mutex::Create(bool multi_lockable) {
    Destroy();
-   
+
    if (multi_lockable) {
       mutex = al_create_mutex_recursive();
    }
@@ -56,15 +70,4 @@ bool Allegro5Mutex::Valid() {
 
 
 
-void Allegro5Mutex::Lock() {
-   EAGLE_ASSERT(mutex);
-   al_lock_mutex(mutex);
-}
-
-
-
-void Allegro5Mutex::Unlock() {
-   EAGLE_ASSERT(mutex);
-   al_unlock_mutex(mutex);
-}
 
