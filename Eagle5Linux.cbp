@@ -8,12 +8,11 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/eagle_debug" imp_lib="cbbuild/lib/libeagle_debug.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle_debug" imp_lib="cbbuild/lib/libeagle_debug.so" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
-				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O0" />
 					<Add option="-ggdb3" />
@@ -24,24 +23,22 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/eagle" imp_lib="cbbuild/lib/libeagle.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle" imp_lib="cbbuild/lib/libeagle.so.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Release" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
-				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-fPIC" />
 				</Compiler>
 			</Target>
 			<Target title="Profile">
-				<Option output="cbbuild/bin/eagle_profile" imp_lib="cbbuild/lib/libeagle_profile.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle_profile" imp_lib="cbbuild/lib/libeagle_profile.so.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
-				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-pg" />

@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/eagle_a5_debug" imp_lib="cbbuild/lib/libeagle_a5_debug.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle_a5_debug" imp_lib="cbbuild/lib/libeagle_a5_debug.so.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug" />
-				<Option external_deps="cbbuild/lib/libeagle_debug.dll.a;" />
+				<Option external_deps="cbbuild/bin/libeagle_debug.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -17,45 +17,52 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-ggdb3" />
+					<Add option="-fPIC" />
+					<Add option="`pkg-config --cflags allegro_monolith-debug-5`" />
 					<Add option="-DDEBUG" />
 					<Add option="-DEAGLE_LOG" />
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-leagle_debug.dll" />
-					<Add option="-lallegro_monolith-debug.dll" />
+					<Add option="-shared" />
+					<Add option="-leagle_debug" />
+					<Add option="`pkg-config --libs allegro_monolith-debug-5`" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/eagle_a5" imp_lib="cbbuild/lib/libeagle_a5.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle_a5" imp_lib="cbbuild/lib/libeagle_a5.so.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Release" />
-				<Option external_deps="cbbuild/lib/libeagle.dll.a;" />
+				<Option external_deps="cbbuild/bin/libeagle.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-fPIC" />
+					<Add option="`pkg-config --cflags allegro_monolith-5`" />
 				</Compiler>
 				<Linker>
-					<Add option="-leagle.dll" />
-					<Add option="-lallegro_monolith.dll" />
+					<Add option="-leagle" />
+					<Add option="`pkg-config --libs allegro_monolith-5`" />
 				</Linker>
 			</Target>
 			<Target title="Profiling">
-				<Option output="cbbuild/bin/eagle_a5_profile" imp_lib="cbbuild/lib/libeagle_a5_profile.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/eagle_a5_profile" imp_lib="cbbuild/lib/libeagle_a5_profile.so.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
 				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
-				<Option external_deps="cbbuild/lib/libeagle_profile.dll.a;" />
+				<Option external_deps="cbbuild/bin/libeagle_profile.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-pg" />
 					<Add option="-g" />
+					<Add option="`pkg-config --cflags allegro_monolith-debug-5`" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg" />
 					<Add option="-pg -lgmon" />
-					<Add option="-leagle_profile.dll" />
-					<Add option="-lallegro_monolith" />
+					<Add option="-leagle_profile" />
+					<Add option="`pkg-config --libs allegro_monolith-debug-5`" />
 				</Linker>
 			</Target>
 			<Target title="DebugStatic">
@@ -69,6 +76,7 @@
 					<Add option="-g" />
 					<Add option="-O0" />
 					<Add option="-ggdb3" />
+					<Add option="`pkg-config --cflags allegro_monolith-debug-5`" />
 					<Add option="-DALLEGRO_STATICLINK" />
 					<Add option="-DDEBUG" />
 					<Add option="-DEAGLE_LOG" />
@@ -84,6 +92,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="`pkg-config --cflags allegro_monolith-5`" />
 					<Add option="-DALLEGRO_STATICLINK" />
 				</Compiler>
 			</Target>
@@ -97,9 +106,11 @@
 				<Compiler>
 					<Add option="-pg" />
 					<Add option="-g" />
+					<Add option="`pkg-config --cflags allegro_monolith-debug-5`" />
 					<Add option="-DALLEGRO_STATICLINK" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg" />
 					<Add option="-pg -lgmon" />
 				</Linker>
 			</Target>
@@ -118,13 +129,9 @@
 			<Add directory="/usr/local/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="cbbuild/lib" />
+			<Add directory="cbbuild/bin" />
 			<Add directory="/usr/local/lib" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="CopySantaHackLibs.bat" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="CopySantaHackLibs.bat" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
