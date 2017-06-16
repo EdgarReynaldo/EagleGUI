@@ -46,12 +46,12 @@ void shutdown_main() {
 }
 
 
-int main(int argc , char** argv) {
+int main2(int argc , char** argv) {
    return 0;
 
 }
 
-int main2(int argc , char** argv) {
+int main(int argc , char** argv) {
 
    atexit(shutdown_main);
 
@@ -59,9 +59,7 @@ int main2(int argc , char** argv) {
 
    Allegro5System* a5sys = GetAllegro5System();//Eagle::EagleLibrary::System("Allegro5");
 
-   if (a5sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
-      return 1;
-   }
+   a5sys->Initialize(EAGLE_FULL_SETUP);
 
    EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
    EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);

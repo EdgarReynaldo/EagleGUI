@@ -25,7 +25,7 @@ void EagleWindowManager::SwitchIn(EagleGraphicsContext* window) {
 void EagleWindowManager::SwitchOut(EagleGraphicsContext* window) {
    EAGLE_ASSERT(window);
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   
+
    manager_mutex->Lock();
 
    EAGLE_ASSERT(window_map.find(window->GetEagleId()) != window_map.end());
@@ -65,27 +65,28 @@ void EagleWindowManager::CloseWindows() {
    }
 
    WINMAP winmap;
-   
+
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
    manager_mutex->Lock();
-
    winmap = window_map;
-   
+   manager_mutex->Unlock();
+
    for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
       if (it->second != 0) {
          EAGLE_ASSERT(GetValidById(it->first));
          EagleLog() << StringPrintF("EagleWindowManager::CloseWindows - About to close window %s." , it->second->GetName().c_str()) << std::endl;
-         manager_mutex->Unlock();
+///         manager_mutex->Unlock();
          DestroyWindow(it->first);
-         manager_mutex->Lock();
+///         manager_mutex->Lock();
       }
    }
+
+   manager_mutex->Lock();
    window_map.clear();
    active_window = 0;
-   
    manager_mutex->Unlock();
-   
+
    EAGLE_ASSERT(window_count == 0);
 }
 
@@ -97,14 +98,14 @@ EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , 
       if (!window->Valid()) {
          throw EagleException("EagleWindowManager::CreateWindow - Failed to create valid window!");
       }
-      
+
       EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
       manager_mutex->Lock();
       window_map[window->GetEagleId()] = window;
       ++window_count;
       active_window = window;
       manager_mutex->Unlock();
-      
+
       return window;
    }
    return 0;
@@ -117,7 +118,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
    WMIT it = window_map.find(window_eid);
    if (it == window_map.end()) {return;}
    if (it->second == (EagleGraphicsContext*)0) {return;}
-   
+
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
    manager_mutex->Lock();
@@ -127,7 +128,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
    EAGLE_ASSERT(window);
 
    EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying window %p with eid %d" , window , window_eid) << std::endl;
-   
+
    delete window;
 
    window_map[window_eid] = 0;/// mark destroyed windows as null
@@ -135,7 +136,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
    --window_count;
 
    manager_mutex->Unlock();
-   
+
 }
 
 

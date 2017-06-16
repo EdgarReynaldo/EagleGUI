@@ -18,12 +18,12 @@ static const unsigned int EAGLE_EVENT_WM_DESTROY = NextFreeEagleEventId();
 
 
 void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
-   
+
    Allegro5WindowManager* a5man = dynamic_cast<Allegro5WindowManager*>((EagleWindowManager*)manager);
    EAGLE_ASSERT(a5man);
-   
+
    ALLEGRO_EVENT_QUEUE* window_queue = a5man->window_queue;
-   
+
    while (1) {
       if (thread->ShouldStop()) {
          EagleInfo() << "A5WindowManagerProcess - thread has been signaled to stop." << std::endl;
@@ -31,48 +31,49 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
       }
       ALLEGRO_EVENT ev;
       al_wait_for_event(window_queue , &ev);
-      
+
       if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
-            
+
          EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
-            
+
          Allegro5GraphicsContext* window = (Allegro5GraphicsContext*)ev.user.data1;
          EAGLE_ASSERT(window);
          al_unregister_event_source(window_queue , al_get_display_event_source(window->AllegroDisplay()));
-         
+
          ALLEGRO_EVENT_SOURCE* response_event_source = &(a5man->response_event_source);
 
          ALLEGRO_EVENT ev2;
          ev2.type = EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED;
          ev2.user.data1 = (intptr_t)window;
          al_emit_user_event(response_event_source , &ev2 , 0);
-         
+
          continue;
       }
-      
+
       if (ev.type == EAGLE_EVENT_WM_DESTROY) {
 
          EAGLE_ASSERT(a5man->WindowCount() == 0);
-      
+
          EagleInfo() << "EAGLE_EVENT_WM_DESTROY received by A5WindowManagerProcess" << std::endl;
-         
+
          if (ev.user.data1 == -1) {
             /// Received signal to close, stop listening
             break;
          }
       }
-      
+
       EagleEvent ee = a5man->GetEagleDisplayEvent(ev);
-      
+      EagleInfo() << "Allegro5WindowManagerProcess received event " << EagleEventName(ee.type) << std::endl;
+
       if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_IN) {
          a5man->SwitchIn(ee.window);
       }
       else if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_OUT) {
          a5man->SwitchOut(ee.window);
       }
-      
+
       ee.window->EmitEvent(ee);
-      
+
    }
    return 0;
 }
@@ -121,11 +122,11 @@ void Allegro5WindowManager::SignalClose(Allegro5GraphicsContext* window) {
    ev.type = EAGLE_EVENT_WM_CLOSE_WINDOW;
    ev.user.data1 = (intptr_t)window;/// TODO : Not safe for 64 bit pointers
    al_emit_user_event(&window_event_source , &ev , 0);
-   
+
    al_wait_for_event(response_queue , &ev);
    EAGLE_ASSERT(ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED);
    EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);
-   
+
    EagleInfo() << StringPrintF("SignalClose acknowledged for window %p" , window) << std::endl;
 }
 
@@ -133,7 +134,7 @@ void Allegro5WindowManager::SignalClose(Allegro5GraphicsContext* window) {
 
 EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
    EagleEvent ee;
-   
+
    Allegro5GraphicsContext* a5win = 0;
 
    a5win = dynamic_cast<Allegro5GraphicsContext*>(GetAssociatedContext(ev.display.source));
@@ -145,7 +146,7 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
    ee.display.orientation = ev.display.orientation;
 
    EAGLE_ASSERT(a5win);
-      
+
    ee.source = a5win;
    ee.window = a5win;
 
@@ -189,7 +190,7 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
    case ALLEGRO_EVENT_DISPLAY_RESUME_DRAWING :
       ee.type = EAGLE_EVENT_DISPLAY_RESUME_DRAWING;
       break;
-      
+
    default :
       throw EagleException(StringPrintF("A5WindowProcess : We don't monitor this kind of event (%d)." , ev.type));
    }
@@ -246,58 +247,58 @@ Allegro5WindowManager::~Allegro5WindowManager() {
 
 
 bool Allegro5WindowManager::Create() {
-   
+
    Destroy();
-   
+
    al_init_user_event_source(&window_event_source);
    al_init_user_event_source(&response_event_source);
-   
+
    window_queue = al_create_event_queue();
    response_queue = al_create_event_queue();
-   
+
    if (!window_queue) {
       throw EagleException("Allegro5WindowManager::Create - Failed to create allegro event queue.");
    }
    if (!response_queue) {
       throw EagleException("Allegro5WindowManager::Create - Failed to create allegro event queue.");
    }
-   
+
    al_register_event_source(window_queue , &window_event_source);
    al_register_event_source(response_queue , &response_event_source);
-   
+
    manager_mutex = new Allegro5Mutex();
-   
+
    manager_thread = new Allegro5Thread();
-   
+
    if (!manager_mutex->Create(false)) {
       throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create a mutex.");
    }
-   
+
    if (!manager_thread->Create(A5WindowManagerProcess , this)) {
       throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create the window manager thread.");
    }
-   
+
    manager_thread->Start();
-   
+
    return window_queue && manager_mutex && manager_mutex->Valid() && manager_thread && manager_thread->Running();
 }
 
 
 
 void Allegro5WindowManager::Destroy() {
-   
+
    CloseWindows();
-   
+
    ALLEGRO_EVENT ev;
    ev.type = EAGLE_EVENT_WM_DESTROY;
    ev.user.data1 = -1;
-   
+
    al_emit_user_event(&window_event_source , &ev , 0);
-   
+
    if (manager_thread && manager_thread->Running()) {
       manager_thread->FinishThread();
    }
-   
+
    if (window_queue) {
       al_destroy_event_queue(window_queue);
       window_queue = 0;
@@ -319,13 +320,13 @@ void Allegro5WindowManager::Destroy() {
 
 
 EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLAY* display) {
-   
+
    EagleGraphicsContext* window = 0;
-   
+
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   
+
    manager_mutex->Lock();
-   
+
    std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
    if (it != display_context_map.end()) {
       window = it->second;
@@ -333,9 +334,9 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
    else {
       EagleWarn() << StringPrintF("Failed to retrieve window for ALLEGRO_DISPLAY* %p.\n" , display);
    }
-   
+
    manager_mutex->Unlock();
-   
+
    return window;
 }
 
