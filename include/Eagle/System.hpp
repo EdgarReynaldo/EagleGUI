@@ -91,11 +91,11 @@ protected :
    EagleInputHandler* input_handler;
    EagleTimer* system_timer;
    static float system_timer_rate;
-   
+
    EagleEventHandler* system_queue;
-   
+
    EagleClipboard* system_clipboard;
-   
+
    EagleWindowManager* window_manager;
 
    bool system_up;
@@ -105,12 +105,12 @@ protected :
    bool audio_up;
    bool shaders_up;
    bool primitives_up;
-   
+
    bool keyboard_running;
    bool mouse_running;
    bool joystick_running;
    bool touch_running;
-   
+
 
 
    virtual bool PrivateInitializeSystem()=0;
@@ -135,9 +135,9 @@ protected :
    virtual EagleMutex*           PrivateCreateMutex(bool recursive)=0;
    virtual EagleClipboard*       PrivateCreateClipboard()=0;
    virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
-   
+
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
-   
+
 public :
 
    EagleSystem(std::string name);
@@ -148,7 +148,7 @@ public :
 
 
    virtual int Initialize(int state);
-   
+
    bool InitializeSystem();
    bool FinalizeSystem();
 
@@ -160,14 +160,14 @@ public :
    bool InitializePrimitives();
 
    virtual bool InitializeAll();// call this in overridden method calls
-   
+
    bool InstallKeyboard();
    bool InstallMouse();
    bool InstallJoystick();
    bool InstallTouch();
 
    virtual bool InstallAll();// call this in overridden method calls
-   
+
 
    bool SystemUp()        {return system_up;}
    bool ImagesUp()        {return images_up;}
@@ -212,9 +212,9 @@ public :
 	void RegisterMouseInput   (EagleEventHandler* queue);
 	void RegisterJoystickInput(EagleEventHandler* queue);
 	void RegisterTouchInput   (EagleEventHandler* queue);
-	
+
    void RegisterInputs(EagleEventHandler* queue);
-   
+
 */
 
    bool UpToDate();
@@ -226,7 +226,7 @@ public :
 	static double GetProgramTime();// Seconds since system initialization
 
 	virtual void Rest(double time)=0;// Rest for time seconds
-	
+
 	EagleGraphicsContext* GetActiveWindow();
 };
 

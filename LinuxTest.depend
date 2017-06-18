@@ -30,7 +30,8 @@
 	"Eagle/Threads.hpp"
 	"Eagle/Timer.hpp"
 
-1497561139 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
+1497653509 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
+	<cassert>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Area.hpp
 	"Eagle/Color.hpp"
@@ -90,8 +91,10 @@
 	<map>
 	<utility>
 
-1497649024 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+1497654812 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
 	<thread>
+	<string>
+	"Eagle/Platform.hpp"
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Conditions.hpp
 

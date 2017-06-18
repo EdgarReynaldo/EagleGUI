@@ -270,8 +270,8 @@ bool Allegro5WindowManager::Create() {
 
    manager_thread = new Allegro5Thread();
 
-   if (!manager_mutex->Create(false)) {
-      throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create a mutex.");
+   if (!manager_mutex->Create(true)) {
+      throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create the window manager mutex.");
    }
 
    if (!manager_thread->Create(A5WindowManagerProcess , this)) {

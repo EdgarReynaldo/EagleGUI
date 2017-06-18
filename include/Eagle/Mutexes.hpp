@@ -41,6 +41,7 @@ protected :
    virtual void PrivateLock()=0;
    virtual void PrivateUnlock()=0;
 
+
 public :
 
    EagleMutex();
@@ -53,8 +54,8 @@ public :
    /// void Lock();/// There is a macro for Lock() that calls Lock(__function__) in your code
    /// void Unlock();/// There is a macro for Unlock() that calls Unlock(__function__) in your code
 
-   void Lock(std::string calling_function);
-   void Unlock(std::string calling_function);
+   void DoLock(std::string calling_function);
+   void DoUnlock(std::string calling_function);
 
    bool Locked();/// TODO : NOTE : Not reliable yet
 };
@@ -62,8 +63,8 @@ public :
 
 #include "Eagle/Platform.hpp"
 
-#define Lock() Lock(EAGLE__FUNC)
-#define Unlock() Unlock(EAGLE__FUNC)
+#define Lock() DoLock(EAGLE__FUNC)
+#define Unlock() DoUnlock(EAGLE__FUNC)
 
 
 
