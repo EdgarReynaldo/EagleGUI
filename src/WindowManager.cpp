@@ -115,19 +115,27 @@ EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , 
 
 void EagleWindowManager::DestroyWindow(int window_eid) {
 
-   WMIT it = window_map.find(window_eid);
-   if (it == window_map.end()) {return;}
-   if (it->second == (EagleGraphicsContext*)0) {return;}
-
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
    manager_mutex->Lock();
 
+   WMIT it = window_map.find(window_eid);
+   if (it == window_map.end()) {
+      EagleWarn() << "EagleWindowManager::DestroyWindow - attempting to destroy an unregistered window. Ignored." << std::endl;
+      manager_mutex->Unlock();
+      return;
+   }
+   if (it->second == (EagleGraphicsContext*)0) {
+      EagleWarn() << "EagleWindowManager::DestroyWindow - attempting to destroy null window. Ignored." << std::endl;
+      manager_mutex->Unlock();
+      return;
+   }
+
    EagleGraphicsContext* window = window_map[window_eid];
 
-   EAGLE_ASSERT(window);
-
    EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying window %p with eid %d" , window , window_eid) << std::endl;
+
+   EAGLE_ASSERT(window);
 
    delete window;
 

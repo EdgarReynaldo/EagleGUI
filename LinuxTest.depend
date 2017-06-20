@@ -91,7 +91,7 @@
 	<map>
 	<utility>
 
-1497654812 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+1497669452 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
 	<thread>
 	<string>
 	"Eagle/Platform.hpp"
@@ -345,7 +345,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Lib.hpp
 	"Eagle/System.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
+1497706239 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
 	"Eagle/Color.hpp"
 	"Eagle/Events.hpp"
 	"Eagle/GraphicsContext.hpp"
