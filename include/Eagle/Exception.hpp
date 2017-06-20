@@ -27,6 +27,7 @@
 #include <string>
 #include <cassert>
 
+#include "Eagle/Platform.hpp"
 #include "Eagle/Logging.hpp"
 //#include "Eagle/StringWork.hpp"
 
@@ -48,11 +49,11 @@ void EpicFail();
 
 /** CREDITS : Thanks to Per Larsson on allegro.cc for this do while trick in the macros */
 #ifdef DEBUG
-   #define EAGLE_ASSERT(exp) do {                                                           \
-                                if (!(exp)) {                                               \
-                                   LogFailedAssert(# exp , __FILE__ , __LINE__ , __func__); \
-                                   ASSERT_EXCEPTION();                                      \
-                                }                                                           \
+   #define EAGLE_ASSERT(exp) do {                                                              \
+                                if (!(exp)) {                                                  \
+                                   LogFailedAssert(# exp , __FILE__ , __LINE__ , EAGLE__FUNC); \
+                                   ASSERT_EXCEPTION();                                         \
+                                }                                                              \
                               } while (false)
 
    #define EAGLE_DEBUG(exp) do {                \

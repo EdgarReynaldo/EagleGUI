@@ -25,7 +25,11 @@ EAGLE_STATIC_LINK
 
 EAGLE_LIBRARY_BUILD
  - Turn on to enable building of the shared library
- 
+
+EAGLE_DEBUG_MUTEX_LOCKS
+ - Turn on to enable debugging statements for eagle mutexes
+ - Only useful when building the library
+
 Macros
 --------------------------------
 EAGLE_ASSERT(exp);

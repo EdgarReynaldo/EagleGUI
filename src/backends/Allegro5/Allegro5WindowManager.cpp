@@ -1,9 +1,11 @@
 
 
+
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 #include "Eagle/Lib.hpp"
 #include "Eagle/StringWork.hpp"
+
 
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
@@ -208,23 +210,6 @@ EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int
 
 
 
-int Allegro5WindowManager::PrivateGiveWindowFocus(int window_eid) {
-   EagleGraphicsContext* win = 0;
-   EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->Lock();
-   win = window_map[window_eid];
-   manager_mutex->Unlock();
-   Allegro5GraphicsContext* a5win = dynamic_cast<Allegro5GraphicsContext*>(win);
-   if (!a5win) {
-      return -1;
-   }
-#ifdef EAGLE_WIN32
-   HWND hwnd = al_win_get_window_handle(a5win->AllegroDisplay());
-   SetFocus(hwnd);
-#endif
-   return -1;
-}
-
 
 
 Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys) :
@@ -345,6 +330,38 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
 Allegro5WindowManager* GetAllegro5WindowManager() {
    return dynamic_cast<Allegro5WindowManager*>(Eagle::EagleLibrary::System("Allegro5")->GetWindowManager());
 }
+
+
+#undef Lock
+#undef Unlock
+
+#include "Eagle/Platform.hpp"
+
+#ifdef EAGLE_WIN32
+   #include "allegro5/allegro_windows.h"
+///   #include "windows.h"
+#endif
+
+
+
+
+int Allegro5WindowManager::PrivateGiveWindowFocus(int window_eid) {
+   EagleGraphicsContext* win = 0;
+   EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
+   manager_mutex->DoLock(EAGLE__FUNC);
+   win = window_map[window_eid];
+   manager_mutex->DoUnlock(EAGLE__FUNC);
+   Allegro5GraphicsContext* a5win = dynamic_cast<Allegro5GraphicsContext*>(win);
+   if (!a5win) {
+      return -1;
+   }
+#ifdef EAGLE_WIN32
+   HWND hwnd = al_get_win_window_handle(a5win->AllegroDisplay());
+   SetFocus(hwnd);
+#endif
+   return -1;
+}
+
 
 
 

@@ -105,9 +105,9 @@
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-Werror=narrowing" />
 			<Add option="-DNOGDI" />
-			<Add option="-DEAGLE_WIN32" />
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename=".gitignore" />
 		<Unit filename="EagleCopyright.txt" />
 		<Unit filename="EagleFAQ.txt" />
 		<Unit filename="EagleLicense.txt" />
@@ -243,6 +243,7 @@
 		<Unit filename="src/Lib.cpp" />
 		<Unit filename="src/Logging.cpp" />
 		<Unit filename="src/MousePointer.cpp" />
+		<Unit filename="src/Mutexes.cpp" />
 		<Unit filename="src/NinePatch.cpp" />
 		<Unit filename="src/Object.cpp" />
 		<Unit filename="src/Platform.cpp" />
