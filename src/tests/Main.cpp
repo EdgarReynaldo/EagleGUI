@@ -102,7 +102,7 @@ int main(int argc , char** argv) {
 
    for (int i = 0 ; i < (int)thread_list.size() ; ++i) {
       EagleThread* t = thread_list[i];
-      t->FinishThread();
+      t->Join();
    }
 
    Eagle::EagleLibrary::ShutdownEagle();

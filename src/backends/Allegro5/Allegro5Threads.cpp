@@ -119,7 +119,7 @@ void Allegro5Thread::Start() {
 
 void Allegro5Thread::SignalToStop() {
    if (!a5thread) {return;}
-   if (!Running()) {
+   if (Running()) {
       al_set_thread_should_stop(a5thread);
    }
 }
