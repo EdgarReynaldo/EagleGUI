@@ -2,11 +2,12 @@
 
 #include "Eagle/Lib.hpp"
 #include "Eagle/Logging.hpp"
+#include "Eagle/StringWork.hpp"
+#include "Eagle/CXX11Mutexes.hpp"
 
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
-#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
@@ -28,7 +29,7 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
    EagleEventSource* source;
 
    EagleGraphicsContext* window;
-   
+
    double timestamp;// In seconds since program started
    union {
       KEYBOARD_EVENT_DATA keyboard;// keycode display unicode modifiers repeat
@@ -129,31 +130,32 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
 
 
 void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
-   
+
    Allegro5EventHandler* a5_event_handler = dynamic_cast<Allegro5EventHandler*>((EagleEventHandler*)event_handler);
    EAGLE_ASSERT(a5_event_handler);
    EAGLE_ASSERT(a5_event_handler->Valid());
-   
+
    ALLEGRO_EVENT_QUEUE* queue = a5_event_handler->event_queue;
    ALLEGRO_EVENT_SOURCE* main_source = &(a5_event_handler->main_source);
    EagleConditionVar* cond_var = a5_event_handler->cond_var;
-   
+
    bool close = false;
    while (!thread->ShouldStop() && !close) {
       ALLEGRO_EVENT ev;
       al_wait_for_event(queue , &ev);
-      
+
 //      EagleLog() << "Event #" << ev.type << " received." << std::endl;
       if (ev.type == EAGLE_EVENT_USER_START) {
          if (ev.user.source == main_source) {// signalled through queue by another thread
             switch (ev.user.data1) {
                case CLOSE_EVENT_THREAD :
+                  EagleInfo() << StringPrintF("Allegro5EventThreadProcess signaled to close thread %p." , thread) << std::endl;
                   close = true;
                   break;
                default :
                   EagleWarn() << "Event not recognized by event thread process." << std::endl;
                   break;
-               
+
             }
          }
       }
@@ -164,7 +166,7 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
          cond_var->BroadcastCondition();// alert any thread waiting on the condition (an event)
       }
    }
-   
+
    return event_handler;
 }
 
@@ -199,19 +201,19 @@ Allegro5EventHandler::~Allegro5EventHandler() {
 bool Allegro5EventHandler::Create() {
    EAGLE_ASSERT(Eagle::EagleLibrary::Eagle()->System("Allegro5"));// System must be initialized and running
    Destroy();
-   
+
    event_queue = al_create_event_queue();
    al_register_event_source(event_queue , &main_source);
-   
-   mutex = new Allegro5Mutex();
-   
+
+   mutex = new CXX11Mutex();
+
    event_thread = new Allegro5Thread();
-   
+
    cond_var = new Allegro5ConditionVar();
-   
+
    /// don't call create on thread until queue, mutex, and condvar are in place
-   if (!event_queue || 
-       !mutex->Create(false) || 
+   if (!event_queue ||
+       !mutex->Create(false , false) ||
        !cond_var->Create() ||
        !event_thread->Create(Allegro5EventThreadProcess , this)
       )
@@ -228,13 +230,13 @@ bool Allegro5EventHandler::Create() {
       else {
          EagleError() << "Allegro5EventHandler::Create : Failed to create Allegro5EventThreadProcess thread." << std::endl;
       }
-      
+
       Destroy();
       return false;
    }
-   
+
    event_thread->Start();
-   
+
    return true;
 }
 
@@ -242,7 +244,7 @@ bool Allegro5EventHandler::Create() {
 
 
 void Allegro5EventHandler::Destroy() {
-   
+
    /// MUST STOP PROCESS FIRST
    if (Running()) {
       ALLEGRO_EVENT ev;
@@ -251,10 +253,11 @@ void Allegro5EventHandler::Destroy() {
       ev.any.timestamp = al_get_time();
       ev.user.source = &main_source;
       ev.user.data1 = CLOSE_EVENT_THREAD;
+      EagleInfo() << "Allegro5EventHandler::Destroy - emitting close event" << std::endl;
       al_emit_user_event(&main_source , &ev , NULL);// tell event thread to close
       event_thread->FinishThread();
    }
-   
+
    if (event_thread) {
       delete event_thread;
       event_thread = 0;
@@ -271,18 +274,18 @@ void Allegro5EventHandler::Destroy() {
       al_destroy_event_queue(event_queue);
       event_queue = 0;
    }
-   
+
 }
 
 
 
 bool Allegro5EventHandler::Valid() {
-   return (event_queue && 
-           mutex && 
-           mutex->Valid() && 
-           cond_var && 
+   return (event_queue &&
+           mutex &&
+           mutex->Valid() &&
+           cond_var &&
            cond_var->Valid() &&
-           event_thread && 
+           event_thread &&
            event_thread->Valid()
          );
 }

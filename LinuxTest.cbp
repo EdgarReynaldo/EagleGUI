@@ -7,17 +7,22 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/LinuxTest" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="cbbuild/bin/LinuxTestDebug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Debug" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="-leagle_debug" />
+					<Add option="-leagle_a5_debug" />
+					<Add option="`pkg-config --libs allegro_monolith-debug-5`" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/LinuxTest" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="cbbuild/bin/LinuxTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -25,12 +30,23 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-leagle" />
+					<Add option="-leagle_a5" />
+					<Add option="`pkg-config --libs allegro_monolith-5`" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="`pkg-config --cflags allegro_monolith-5`" />
+			<Add directory="include" />
 		</Compiler>
+		<Linker>
+			<Add directory="cbbuild/bin" />
+		</Linker>
+		<Unit filename="Test.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

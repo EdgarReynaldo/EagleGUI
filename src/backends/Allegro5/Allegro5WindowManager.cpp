@@ -4,11 +4,13 @@
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 #include "Eagle/Lib.hpp"
+#include "Eagle/Events.hpp"
+#include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/StringWork.hpp"
 
 
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
-#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+///#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 
 
@@ -120,14 +122,34 @@ void Allegro5WindowManager::RemoveDisplay(ALLEGRO_DISPLAY* display) {
 
 
 void Allegro5WindowManager::SignalClose(Allegro5GraphicsContext* window) {
+
+
    ALLEGRO_EVENT ev;
+
+/**
+   EagleEvent ee;
+
+   ee.type = EAGLE_EVENT_DISPLAY_HALT_DRAWING;
+   ee.window = window;
+   ee.display = DISPLAY_EVENT_DATA();
+
+   window->EmitEvent(ee);
+
+   do {
+      al_wait_for_event(response_queue , &ev);
+   } while (ev.type != EAGLE_EVENT_DISPLAY_HALT_DRAWING_ACKNOWLEDGED);
+   EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);/// TODO : Not safe for 64 bit pointers
+
+//*/
+
    ev.type = EAGLE_EVENT_WM_CLOSE_WINDOW;
    ev.user.data1 = (intptr_t)window;/// TODO : Not safe for 64 bit pointers
    al_emit_user_event(&window_event_source , &ev , 0);
 
-   al_wait_for_event(response_queue , &ev);
-   EAGLE_ASSERT(ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED);
-   EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);
+   do {
+      al_wait_for_event(response_queue , &ev);
+   } while (ev.type != EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED);
+   EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);/// TODO : Not safe for 64 bit pointers
 
    EagleInfo() << StringPrintF("SignalClose acknowledged for window %p" , window) << std::endl;
 }
@@ -251,11 +273,11 @@ bool Allegro5WindowManager::Create() {
    al_register_event_source(window_queue , &window_event_source);
    al_register_event_source(response_queue , &response_event_source);
 
-   manager_mutex = new Allegro5Mutex();
+   manager_mutex = new CXX11Mutex();
 
    manager_thread = new Allegro5Thread();
 
-   if (!manager_mutex->Create(true)) {
+   if (!manager_mutex->Create(true , false)) {
       throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create the window manager mutex.");
    }
 
@@ -325,6 +347,15 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
    return window;
 }
 
+
+/**
+void Allegro5WindowManager::AcknowledgeDrawingHalt(EagleGraphicsContext* window) {
+   ALLEGRO_EVENT ev;
+   ev.type = EAGLE_EVENT_DISPLAY_HALT_DRAWING_ACKNOWLEDGED;
+   ev.user.data1 = (intptr_t)window;/// TODO : Not safe for 64 bit pointers
+   al_emit_user_event(&response_event_source , &ev , 0);
+}
+//*/
 
 
 Allegro5WindowManager* GetAllegro5WindowManager() {

@@ -6,8 +6,31 @@
 
 #include <cstdio>
 
-
+void* test_thread(ALLEGRO_THREAD* t , void* d) {
+   (void)t;
+   (void)d;
+   int j = 0;
+   al_rest(2.0);
+   return (void*)(int)al_get_time();
+}
 int main(int argc , char** argv) {
+
+   if (!al_init()) {
+      return 1;
+   }
+   ALLEGRO_THREAD* thread = al_create_thread(test_thread , 0);
+   al_start_thread(thread);
+   al_rest(1.0);
+   al_join_thread(thread , 0);
+   al_destroy_thread(thread);
+
+   return 0;
+
+}
+
+
+
+int main2(int argc , char** argv) {
 
    EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
 //**
@@ -56,7 +79,7 @@ int main(int argc , char** argv) {
 
 
 
-int main2(int argc , char** argv) {
+int main3(int argc , char** argv) {
 
 ///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
 ///   sys->Initialize(EAGLE_FULL_SETUP);

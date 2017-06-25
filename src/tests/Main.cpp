@@ -23,13 +23,69 @@ void* bad_thread(EagleThread* t , void* data) {
 
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
 
+   EagleFont* dfont = new_win->DefaultFont();
+   EAGLE_ASSERT(dfont);
+
+///   q->ListenTo(GetAllegro5System()->GetInputHandler());
    q->ListenTo(new_win);
-   while (!a5thread->ShouldStop()) {
-      EagleEvent ee = q->WaitForEvent(1.0);
-      if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
-         ret = (void*)0;
-         break;
+   q->ListenTo(GetAllegro5System()->GetSystemTimer());
+
+   double pt = 0.0;
+   double hrs = 0.0;
+   double mins = 0.0;
+   double secs = 0.0;
+   bool redraw = true;
+   bool quit = true;
+
+   while (!quit && !a5thread->ShouldStop()) {
+
+
+      if (redraw && new_win->StartDrawing()) {
+
+         new_win->DrawToBackBuffer();
+         EagleColor cc = EagleColor(0,0,0);
+         if (GetAllegro5System()->GetActiveWindow() == new_win) {
+            cc = EagleColor(0,255,0);
+         }
+         new_win->Clear(cc);
+         new_win->DrawTextString(dfont , StringPrintF("ID : %d" , new_win->GetEagleId()) , 10 , 10 , EagleColor(255,255,255));
+         new_win->DrawTextString(dfont , StringPrintF("%4.5lf" , pt) , 10 , new_win->Height() - 40 , EagleColor(255,255,255));
+         new_win->DrawTextString(dfont , StringPrintF("%d:%d:%2.5lf" , (int)hrs , (int)mins , secs) , 10 , new_win->Height() - 20 , EagleColor(255,255,255));
+         new_win->FlipDisplay();
+
+         redraw = false;
+         new_win->CompleteDrawing();
       }
+
+      do {
+
+         EagleEvent ee = q->WaitForEvent(1.0);
+         if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            ret = (void*)0;
+            quit = true;
+            break;
+         }
+/**
+         else if (ee.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING) {
+            if (ee.window == new_win) {
+               GetAllegro5System()->GetWindowManager()->AcknowledgeDrawingHalt(new_win);
+               ret = (void*)0;
+               break;
+            }
+         }
+//*/
+         if (ee.type == EAGLE_EVENT_TIMER) {
+            pt = GetAllegro5System()->GetProgramTime();
+///            pt = al_get_time();
+            hrs = pt/3600;
+            mins = hrs - (int)hrs;
+            mins *= 60.0;
+            secs = mins - (int)mins;
+            mins = (int)mins;
+            secs*= 60.0;
+            redraw = true;
+         }
+      } while (q->HasEvent());
    }
 
    GetAllegro5System()->FreeEventHandler(q);
@@ -70,6 +126,8 @@ int main(int argc , char** argv) {
 
    std::vector<EagleThread*> thread_list;
 
+   a5sys->GetSystemTimer()->Start();
+
    while (1) {
       EagleEvent ee = queue->WaitForEvent();
 
@@ -88,6 +146,9 @@ int main(int argc , char** argv) {
             break;
          }
       }
+///      if (ee.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING) {
+///         a5sys->GetWindowManager()->AcknowledgeDrawingHalt(ee.window);
+///      }
       if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
          break;
       }

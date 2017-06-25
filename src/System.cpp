@@ -648,9 +648,9 @@ EagleThread* EagleSystem::CreateThread(void* (*process)(EagleThread* , void*) , 
 
 
 
-EagleMutex* EagleSystem::CreateMutex(bool recursive) {
+EagleMutex* EagleSystem::CreateMutex(bool recursive , bool timed) {
    EAGLE_ASSERT(system_up);
-   EagleMutex* emutex = PrivateCreateMutex(recursive);
+   EagleMutex* emutex = PrivateCreateMutex(recursive , timed);
    if (emutex) {
       mutexes.Add(emutex);
    }

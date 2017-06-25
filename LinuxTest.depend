@@ -6,7 +6,7 @@
 	"allegro5/allegro_font.h"
 	<cstdio>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle.hpp
+1498317704 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle.hpp
 	"Eagle/Platform.hpp"
 	"Eagle/Area.hpp"
 	"Eagle/Color.hpp"
@@ -23,6 +23,8 @@
 	"Eagle/Logging.hpp"
 	"Eagle/MemberFunctors.hpp"
 	"Eagle/MousePointer.hpp"
+	"Eagle/Mutexes.hpp"
+	"Eagle/CXX11Mutexes.hpp"
 	"Eagle/NinePatch.hpp"
 	"Eagle/Object.hpp"
 	"Eagle/StringWork.hpp"
@@ -30,7 +32,7 @@
 	"Eagle/Threads.hpp"
 	"Eagle/Timer.hpp"
 
-1497653509 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
+1498051205 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
 	<cassert>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Area.hpp
@@ -47,9 +49,10 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Color.hpp
 	<iostream>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Exception.hpp
+1498051205 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Exception.hpp
 	<string>
 	<cassert>
+	"Eagle/Platform.hpp"
 	"Eagle/Logging.hpp"
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Logging.hpp
@@ -75,7 +78,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Container.hpp
 	<vector>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Events.hpp
+1498065304 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Events.hpp
 	<list>
 	<deque>
 	<vector>
@@ -91,7 +94,8 @@
 	<map>
 	<utility>
 
-1497669452 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+1498423481 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+	<mutex>
 	<thread>
 	<string>
 	"Eagle/Platform.hpp"
@@ -116,7 +120,7 @@
 	<string>
 	<vector>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/GraphicsContext.hpp
+1498319758 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/GraphicsContext.hpp
 	<list>
 	<string>
 	<map>
@@ -345,7 +349,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Lib.hpp
 	"Eagle/System.hpp"
 
-1497706239 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
+1498319042 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
 	"Eagle/Color.hpp"
 	"Eagle/Events.hpp"
 	"Eagle/GraphicsContext.hpp"
@@ -361,7 +365,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Clipboard.hpp
 	<string>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/WindowManager.hpp
+1498341713 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/WindowManager.hpp
 	<map>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/MemberFunctors.hpp
@@ -698,12 +702,12 @@
 	"allegro5/allegro.h"
 	"allegro5/allegro_font.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp
+1498319129 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp
 	"Eagle/GraphicsContext.hpp"
+	"Eagle/Mutexes.hpp"
 	"Eagle/backends/Allegro5/Allegro5Image.hpp"
 	"Eagle/backends/Allegro5/Allegro5Transform.hpp"
 	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
-	"Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 	"allegro5/allegro.h"
 	"allegro5/allegro_primitives.h"
 	<vector>
@@ -730,7 +734,7 @@
 	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 	"allegro5/allegro.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5System.hpp
+1498318581 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5System.hpp
 	"Eagle/System.hpp"
 	"allegro5/allegro.h"
 
@@ -738,8 +742,11 @@
 	"Eagle.hpp"
 	"allegro5/allegro.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp
+1498341704 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp
 	"Eagle/WindowManager.hpp"
 	"Eagle/Events.hpp"
 	"allegro5/allegro.h"
+
+1498318831 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/CXX11Mutexes.hpp
+	"Eagle/Mutexes.hpp"
 

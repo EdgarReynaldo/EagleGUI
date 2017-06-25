@@ -6,11 +6,12 @@
 
 
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/Mutexes.hpp"
 
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
-#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
+///#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 
 
 #include "allegro5/allegro.h"
@@ -47,12 +48,12 @@ EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);
 
 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
-   
+
 private :
-   
+
    ALLEGRO_DISPLAY* display;
    Allegro5Image realbackbuffer;
-   
+
    int blender_op;
    int blender_src;
    int blender_dest;
@@ -68,7 +69,7 @@ private :
 ///   ALLEGRO_EVENT_SOURCE window_event_source;
 ///   ALLEGRO_EVENT_QUEUE* window_queue;
 
-   
+
    void Init();
 
    void ResetBackBuffer();
@@ -85,7 +86,7 @@ public :
    ~Allegro5GraphicsContext();
 
    virtual EagleSystem* GetSystem();
-   
+
 
    /// creation/destruction
    virtual bool Create(int width , int height , int flags);
@@ -101,14 +102,14 @@ public :
 
    /// clears target bitmap
    virtual void Clear(EagleColor c = EagleColor(0,0,0));
-   
+
    /// Blender setting functions
    void SetCopyBlender();
    void SetPMAlphaBlender();
    void SetNoPMAlphaBlender();
    void RestoreLastBlendingState();
 protected:
-   
+
    void StoreBlender();
    void RestoreBlender();
 public :
@@ -127,7 +128,7 @@ public :
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c);
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c);
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c);
-   
+
    /// precise drawing operations
    virtual void PutPixel(float x , float y , EagleColor c);
    virtual void DrawLine(float x1 , float y1 , float x2 , float y2 , float thickness , EagleColor c);
@@ -144,7 +145,7 @@ public :
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl);
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,
-										 float x3 , float y3 , EagleColor c3 , 
+										 float x3 , float y3 , EagleColor c3 ,
 										 float x4 , float y4 , EagleColor c4);
 
    /// image drawing operations
@@ -171,12 +172,12 @@ public :
    virtual EagleImage* GetBackBuffer();
    virtual EagleImage* GetScreen();
    virtual EagleImage* GetDrawingTarget();
-   
+
    /// utilities
    virtual void HoldDrawing();
    virtual void ReleaseDrawing();
    virtual void SetDrawingTarget(EagleImage* dest);
-   
+
    /// image creation / loading / sub division
    EagleImage* EmptyImage();
    EagleImage* AdoptImage(ALLEGRO_BITMAP* img);

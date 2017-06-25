@@ -13,12 +13,16 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  */
 
+
+#error "Allegro 5 Mutex is deprected"
+
+/**
 
 #ifndef Allegro5Mutex_HPP
 #define Allegro5Mutex_HPP
@@ -57,5 +61,6 @@ public :
 
 #endif // Allegro5Mutex_HPP
 
+//*/
 
 

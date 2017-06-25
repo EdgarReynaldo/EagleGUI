@@ -42,6 +42,8 @@
 #include "Eagle/Logging.hpp"
 #include "Eagle/MemberFunctors.hpp"
 #include "Eagle/MousePointer.hpp"
+#include "Eagle/Mutexes.hpp"
+#include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/StringWork.hpp"

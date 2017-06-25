@@ -42,7 +42,7 @@ class EagleGraphicsContext;
 
 enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_NONE                        =  0,
-   
+
    EAGLE_EVENT_JOYSTICK_EVENT_START        =  1,
 
    EAGLE_EVENT_JOYSTICK_AXIS               =  1,
@@ -77,11 +77,12 @@ enum EAGLE_EVENT_TYPE {
 
    EAGLE_EVENT_TIMER_EVENT_STOP            = 30,
 
-   EAGLE_EVENT_DISPLAY_EVENT_START         = 38,
+   EAGLE_EVENT_DISPLAY_EVENT_START         = 37,
 
-   EAGLE_EVENT_DISPLAY_CREATE              = 38,/// No matching allegro event
-   EAGLE_EVENT_DISPLAY_DESTROY             = 39,/// No matching allegro event
-   
+   EAGLE_EVENT_DISPLAY_CREATE              = 37,/// No matching allegro event
+   EAGLE_EVENT_DISPLAY_DESTROY             = 38,/// No matching allegro event
+   EAGLE_EVENT_DISPLAY_HALT_DRAWING_ACKNOWLEDGED = 39,/// No matching allegro event
+
    EAGLE_EVENT_DISPLAY_EXPOSE              = 40,
    EAGLE_EVENT_DISPLAY_RESIZE              = 41,
    EAGLE_EVENT_DISPLAY_CLOSE               = 42,
@@ -103,8 +104,8 @@ enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_TOUCH_CANCEL                = 53,
 
    EAGLE_EVENT_TOUCH_EVENT_STOP            = 53,
-   
-   
+
+
    EAGLE_EVENT_WIDGET_EVENT_START          = 60,
    EAGLE_EVENT_WIDGET                      = 60,
    EAGLE_EVENT_WIDGET_EVENT_STOP           = 60,
@@ -125,7 +126,7 @@ struct KEYBOARD_EVENT_DATA {
    int unicode;
    int modifiers;
    bool repeat;
-   
+
    KEYBOARD_EVENT_DATA() :
          keycode(-1),
          unicode(-1),
@@ -144,7 +145,7 @@ struct MOUSE_EVENT_DATA {
    int dz;
    int dw;
    unsigned int button;// numbers from 1,2,3...
-   
+
    MOUSE_EVENT_DATA() :
          x(-1),
          y(-1),
@@ -167,7 +168,7 @@ struct JOYSTICK_EVENT_DATA {
    int axis;
    int button;
    float pos;
-   
+
    JOYSTICK_EVENT_DATA() :
          id(0),
          nid(-1),
@@ -185,7 +186,7 @@ struct TOUCH_EVENT_DATA {
    float dx;
    float dy;
    bool primary;
-   
+
    TOUCH_EVENT_DATA() :
          id(-1),
          x(-1.0f),
@@ -202,7 +203,7 @@ struct TIMER_EVENT_DATA {
    EagleTimer* eagle_timer_source;
    void* raw_source;
    long long int count;
-   
+
    TIMER_EVENT_DATA() :
          eagle_timer_source(0),
          raw_source(0),
@@ -225,7 +226,7 @@ struct DISPLAY_EVENT_DATA {
    int width;
    int height;
    int orientation;// an EAGLE_DISPLAY_ORIENTATION
-   
+
    DISPLAY_EVENT_DATA() :
          x(-1),
          y(-1),
@@ -236,7 +237,7 @@ struct DISPLAY_EVENT_DATA {
 };
 
 enum AVSTATE {
-   
+
 };
 
 class EagleAudio;
@@ -257,7 +258,7 @@ struct WIDGET_EVENT_DATA {
    WidgetBase* from;
    unsigned int topic;
    int msgs;
-   
+
    WIDGET_EVENT_DATA() :
          from(0),
          topic(TOPIC_NONE),
@@ -268,7 +269,7 @@ struct WIDGET_EVENT_DATA {
 struct USER_EVENT_DATA {
    int type;
    void* userdata;
-   
+
    USER_EVENT_DATA() :
          type(EAGLE_EVENT_USER_START),
          userdata(0)
@@ -287,7 +288,7 @@ public :
    EagleEventSource* source;
 
    EagleGraphicsContext* window;
-   
+
    double timestamp;// In seconds since program started
    union {
       KEYBOARD_EVENT_DATA keyboard;// keycode display unicode modifiers repeat
@@ -301,9 +302,9 @@ public :
       WIDGET_EVENT_DATA widget;
       USER_EVENT_DATA data;
    };
-   
+
 //   EagleEvent();
-   EagleEvent() : 
+   EagleEvent() :
          type(EAGLE_EVENT_NONE),
          source(0),
          window(0),
@@ -350,9 +351,9 @@ int EagleEventGroupType(EagleEvent e);
 class EagleEventFilter {
    int types_to_keep;
    int types_to_filter;
-   
+
    EagleGraphicsContext* windows_to_keep;
-   
+
 };
 
 
@@ -371,14 +372,14 @@ private :
 public :
 
    void EmitEvent(EagleEvent e);
-   
+
    EagleEventSource() : listeners() {}
    virtual ~EagleEventSource();
-   
+
    void SubscribeListener(EagleEventListener* l);
    void UnsubscribeListener(EagleEventListener* l);
    bool HasListeners() {return !listeners.empty();}
-   
+
    std::vector<EagleEventListener*> Listeners();
 
 };
@@ -388,18 +389,18 @@ class EagleEventListener {
 
 private :
    std::vector<EagleEventSource*> sources;
-   
+
    bool OnList(EagleEventSource* s);
 
 public :
    EagleEventListener() : sources() {}
    virtual ~EagleEventListener();
-   
+
    virtual void RespondToEvent(EagleEvent e)=0;
-   
+
    void ListenTo(EagleEventSource* s);
    void StopListeningTo(EagleEventSource* s);
-   
+
    bool HasSources() {return !sources.empty();}
 ///   void CheckSources();
 };
@@ -417,14 +418,14 @@ protected :
 public :
    EagleEventHandler(bool delay_emitted_events = true);
    virtual ~EagleEventHandler() {}
-   
+
    virtual bool Create()=0;
    virtual void Destroy()=0;
    virtual bool Valid()=0;
 
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e);
-   
+
    void Clear();
 
    void PushEvent(EagleEvent e);
@@ -432,21 +433,21 @@ public :
    bool HasEvent();
    EagleEvent TakeNextEvent();
    EagleEvent PeekNextEvent();
-   
+
    void InsertEventFront(EagleEvent e);/// Does not EmitEvent...merely adds the event to the front of the queue
                                        /// Allows you to 'put back' an event
-   
+
    std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype);
    std::vector<EagleEvent> FilterEvents(EagleEventSource* esrc);
    std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype , EagleEventSource* esrc);
-   
+
    EagleEvent WaitForEvent();
    EagleEvent WaitForEvent(double timeout);
    EagleEvent WaitForEvent(EAGLE_EVENT_TYPE t);
 
 ///   EagleEventHandler* CloneEventHandler();TODO : Make this abstract and virtual and move it to Allegro5EventHandler
-   
-   
+
+
 ///   virtual void SubscribeToAllAvailableSources()=0;/// Should be system function
 };
 

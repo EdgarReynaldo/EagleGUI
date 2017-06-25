@@ -132,7 +132,7 @@ protected :
 	virtual EagleTimer*           PrivateCreateTimer()=0;
    virtual EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags)=0;
    virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
-   virtual EagleMutex*           PrivateCreateMutex(bool recursive)=0;
+   virtual EagleMutex*           PrivateCreateMutex(bool recursive , bool timed)=0;
    virtual EagleClipboard*       PrivateCreateClipboard()=0;
    virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
 
@@ -196,7 +196,7 @@ public :
 	EagleTimer*           CreateTimer();
    EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
    EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
-   EagleMutex*           CreateMutex(bool recursive);
+   EagleMutex*           CreateMutex(bool recursive , bool timed);
    EagleClipboard*       CreateClipboard();
 
    void FreeInputHandler(EagleInputHandler* handler);

@@ -8,7 +8,6 @@
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
-#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
@@ -162,9 +161,9 @@ EagleThread* Allegro5System::PrivateCreateThread(void* (*process)(EagleThread* ,
 
 
 
-EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive) {
-   Allegro5Mutex* mutex = new Allegro5Mutex();
-   if (!mutex->Create(recursive)) {
+EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive , bool timed) {
+   CXX11Mutex* mutex = new CXX11Mutex();
+   if (!mutex->Create(recursive , timed)) {
       delete mutex;
       throw EagleException(StringPrintF("Failed to create %sAllegro 5 mutex" , recursive?"recursive ":""));
       return 0;
@@ -195,7 +194,7 @@ EagleSystem* Allegro5System::CreateAllegro5System() {
 Allegro5System::Allegro5System() :
       EagleSystem(StringPrintF("Allegro5System at %p" , this))
 {
-   
+
 }
 
 

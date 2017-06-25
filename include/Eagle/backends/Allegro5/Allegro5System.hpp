@@ -12,7 +12,7 @@
 class Allegro5System : public EagleSystem {
 
 private :
-   
+
    virtual bool PrivateInitializeSystem();
 
    virtual bool PrivateInitializeImages();
@@ -26,25 +26,25 @@ private :
    virtual bool PrivateInstallMouse();
    virtual bool PrivateInstallJoystick();
    virtual bool PrivateInstallTouch();
-   
+
    EagleInputHandler*    PrivateCreateInputHandler();
    EagleEventHandler*    PrivateCreateEventHandler(bool delay_events = true);
    EagleTimer*           PrivateCreateTimer();
    EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags);
    EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data);
-   EagleMutex*           PrivateCreateMutex(bool recursive);
+   EagleMutex*           PrivateCreateMutex(bool recursive , bool timed);
    EagleClipboard*       PrivateCreateClipboard();
    EagleWindowManager*   PrivateCreateWindowManager();
 
    friend class EagleLibrary;
 
    static EagleSystem* CreateAllegro5System();
-   
+
    Allegro5System();
 
 public :
    ~Allegro5System();
-   
+
    void Shutdown();
 
    double GetProgramTime();

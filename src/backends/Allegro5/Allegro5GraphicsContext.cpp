@@ -3,7 +3,9 @@
 #include "Eagle/Lib.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/StringWork.hpp"
+
 
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
@@ -107,9 +109,9 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
 
 Allegro5GraphicsContext::~Allegro5GraphicsContext() {
    Destroy();
-   
-   
-   
+
+
+
 }
 
 
@@ -122,31 +124,40 @@ EagleSystem* Allegro5GraphicsContext::GetSystem() {
 
 bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    Destroy();
-   
+
    /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
    al_set_new_display_flags(flags);
    display = al_create_display(width,height);
 
-   if (!display) {return false;}
+   if (!display) {
+      EagleCritical() << "Failed to create an allegro display for the Allegro 5 Graphics Context at " << this << std::endl;
+      return false;
+   }
 
    scrw = width;
    scrh = height;
-   
+
    GetAllegro5WindowManager()->AddDisplay(this , display);
 
    ResetBackBuffer();
 
+   window_mutex = new CXX11Mutex();
+   if (!window_mutex->Create(false , false)) {
+      EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;
+      return false;
+   }
+
    mp_manager = new Allegro5MousePointerManager(this);
-   
+
    LoadDefaultFont();
-   
+
    EagleEvent ee;
    ee.type = EAGLE_EVENT_DISPLAY_CREATE;
    ee.window = this;
    ee.display = DISPLAY_EVENT_DATA();
-   
+
    EmitEvent(ee);
-   
+
    return true;
 }
 
@@ -164,12 +175,17 @@ void Allegro5GraphicsContext::Destroy() {
    ee.type = EAGLE_EVENT_DISPLAY_DESTROY;
    ee.window = this;
    ee.display = DISPLAY_EVENT_DATA();
-   
+
    EmitEvent(ee);
 
    images.FreeAll();
 
    if (display) {
+
+      /// Block until after drawing is done and releases the lock,
+      /// or acquire the lock before drawing and prevent it
+      window_mutex->DoLock(EAGLE__FUNC);
+
       GetAllegro5WindowManager()->SignalClose(this);
 
       al_destroy_display(display);
@@ -177,6 +193,8 @@ void Allegro5GraphicsContext::Destroy() {
       GetAllegro5WindowManager()->RemoveDisplay(display);
 
       display = 0;
+
+      window_mutex->DoUnlock(EAGLE__FUNC);
    }
 
    if (mp_manager) {
@@ -227,7 +245,7 @@ void Allegro5GraphicsContext::LoadDefaultFont() {
    default_font_path = DefaultFontPath();
    default_font_size = DefaultFontSize();
    default_font_flags = DefaultFontFlags();
-   
+
    default_font = LoadFont(default_font_path.c_str() , default_font_size , default_font_flags , VIDEO_IMAGE);
 
    if (!default_font || !default_font->Valid()) {
@@ -278,12 +296,12 @@ void Allegro5GraphicsContext::SetPMAlphaBlender() {
    blender_src = ALLEGRO_ONE;
    blender_dest = ALLEGRO_INVERSE_ALPHA;
    al_set_blender(blender_op , blender_src , blender_dest);
-   
+
 }
 
 
 
-void Allegro5GraphicsContext::SetNoPMAlphaBlender() { 
+void Allegro5GraphicsContext::SetNoPMAlphaBlender() {
    StoreBlender();
    blender_op = ALLEGRO_ADD;
    blender_src = ALLEGRO_ALPHA;
@@ -520,7 +538,7 @@ void Allegro5GraphicsContext::DrawShadedRectangle(const Rectangle* r , EagleColo
 
 void Allegro5GraphicsContext::DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 															float x2 , float y2 , EagleColor c2 ,
-															float x3 , float y3 , EagleColor c3 , 
+															float x3 , float y3 , EagleColor c3 ,
 															float x4 , float y4 , EagleColor c4) {
 	ALLEGRO_VERTEX vtx[4] = {
 		MakeAllegro5Vertex(x1 , y1 , 0.0 , 0.0 , 0.0 , GetAllegroColor(c1)),
@@ -528,7 +546,7 @@ void Allegro5GraphicsContext::DrawShadedQuad(float x1 , float y1 , EagleColor c1
 		MakeAllegro5Vertex(x3 , y3 , 0.0 , 0.0 , 0.0 , GetAllegroColor(c3)),
 		MakeAllegro5Vertex(x4 , y4 , 0.0 , 0.0 , 0.0 , GetAllegroColor(c4))
 	};
-	
+
 	al_draw_prim(vtx , 0 , 0 , 0 , 4 , ALLEGRO_PRIM_TRIANGLE_FAN);
 }
 
@@ -635,7 +653,7 @@ void Allegro5GraphicsContext::Draw(EagleImage* src , EagleDrawingInfo info) {
                                             info.resize.dx , info.resize.dy , info.resize.dw , info.resize.dh , info.flags);
             }
             else {
-               
+
             }
          }
          else if (use_rotate) {
@@ -646,14 +664,14 @@ void Allegro5GraphicsContext::Draw(EagleImage* src , EagleDrawingInfo info) {
                yscale = info.scale.y;
             }
          }
-         
-         
+
+
       }
       else {
-         
+
       }
    }
-   
+
 }
 */
 
@@ -680,7 +698,7 @@ void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string str ,
    }
 //void al_draw_text(const ALLEGRO_FONT *font,
 //   ALLEGRO_COLOR color, float x, float y, int flags,
-//   char const *text) 
+//   char const *text)
 
    /// Need to set the premultiplied alpha blender here , and maybe the non-pm alpha too sometimes
    SetNoPMAlphaBlender();
@@ -769,9 +787,9 @@ EagleImage* Allegro5GraphicsContext::CloneImage(EagleImage* img) {
    PushDrawingTarget(newimg);
    /// TODO Reset blending here
    Draw(img , 0.0f , 0.0f);
-   
+
    PopDrawingTarget();
-   
+
    images.Add(newimg);
    return newimg;
 }
@@ -806,7 +824,7 @@ EagleImage* Allegro5GraphicsContext::CreateSubImage(EagleImage* parent , int x ,
 EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int flags , IMAGE_TYPE type) {
    EagleFont* eagle_font = new Allegro5Font(file , height , flags , type);
    fonts.Add(eagle_font);
-   
+
    return eagle_font;
 }
 

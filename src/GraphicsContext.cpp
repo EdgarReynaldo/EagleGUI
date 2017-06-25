@@ -133,7 +133,7 @@ EagleDrawingInfo::EagleDrawingInfo(float destx , float desty) :
       tint(255,255,255,255),
       flags(0)
 {}
-   
+
 
 
 void EagleDrawingInfo::SetDest(float x , float y) {
@@ -212,22 +212,6 @@ void EagleDrawingInfo::ClearSettings() {
 /// ------------------------------     EagleGraphicsContext     -------------------------------------------
 
 
-/*
-EagleGraphicsContext* EagleGraphicsContext::active_window = 0;
-
-
-
-EagleMutex* EagleGraphicsContext::window_mutex = 0;
-
-
-
-void EagleGraphicsContext::SetActiveWindow(EagleGraphicsContext* new_active_window) {
-   window_mutex->Lock();
-   active_window = new_active_window;
-   window_mutex->Unlock();
-}
-*/   
-
 
 EagleGraphicsContext::EagleGraphicsContext(std::string name) :
       EagleObject(name),
@@ -255,15 +239,19 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
    /// NOTE : derived class needs to instantiate window_mutex
 }
 
-/*
-EagleGraphicsContext* EagleGraphicsContext::GetActiveWindow() {
+
+
+bool EagleGraphicsContext::StartDrawing() {
    EAGLE_ASSERT(window_mutex && window_mutex->Valid());
-   window_mutex->Lock();
-   EagleGraphicsContext* win = active_window;
-   window_mutex->Unlock();
-   return win;
+   return window_mutex->DoTryLock(EAGLE__FUNC);
 }
-*/
+
+
+
+void EagleGraphicsContext::CompleteDrawing() {
+   window_mutex->Unlock();
+}
+
 
 
 float EagleGraphicsContext::GetFPS() {
@@ -327,7 +315,7 @@ void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string
                             HALIGNMENT halign , VALIGNMENT valign) {
    EAGLE_ASSERT(font);
    EAGLE_ASSERT(font->Valid());
-   
+
    int lineheight = font->Height();
    int nlines = 0;
    std::vector<std::string> lines;
@@ -335,7 +323,7 @@ void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string
    int maxwidth = 0;
    int totalheight = 0;
    GetTextAttributes(str , font , line_spacing , &nlines , &lines , &linewidths , &maxwidth , &totalheight);
-   
+
 
    if (valign == VALIGN_CENTER) {
       y -= totalheight/2;
@@ -359,18 +347,18 @@ void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string
 
 
 
-void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , 
+void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                        HALIGNMENT halign ,VALIGNMENT valign) {
-  
+
   EAGLE_ASSERT(font);
   EAGLE_ASSERT(font->Valid());
-  
+
   std::string text = GetGuiText(str);
   std::string underlinetext = GetGuiUnderlineText(str);
-  
+
   int height = font->Height();
   int vspace = height/10;///GUI_TEXT_LINE_SPACING + 1;
-  
+
   DrawTextString(font , text , x , y , c , halign , valign);
   DrawTextString(font , underlinetext , x , y + vspace, c , halign , valign);
 }
@@ -378,12 +366,12 @@ void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str ,
 
 
 void EagleGraphicsContext::FlipDisplay() {
-   
+
    previoustime = currenttime;
    currenttime = GetSystem()->GetProgramTime();
    float deltatime = currenttime - previoustime;
    total_frame_time += deltatime;
-   
+
    numframes++;
    frame_times.push_back(deltatime);
    if (numframes > maxframes) {
@@ -392,9 +380,9 @@ void EagleGraphicsContext::FlipDisplay() {
       total_frame_time -= oldtime;
       frame_times.pop_front();
    }
-   
+
    PrivateFlipDisplay();
-   
+
 }
 
 
@@ -502,11 +490,11 @@ void EagleGraphicsContext::SetMousePosition(int mousex , int mousey) {
 
 void EagleGraphicsContext::PushDrawingTarget(EagleImage* img) {
    EAGLE_ASSERT(img);
-   
+
    if (img != drawing_target) {
       SetDrawingTarget(img);
    }
-   
+
    draw_target_stack.push_back(img);
 }
 
@@ -517,7 +505,7 @@ void EagleGraphicsContext::PopDrawingTarget() {
    if (!draw_target_stack.empty()) {
       draw_target_stack.pop_back();
    }
-   
+
    EagleImage* back = GetBackBuffer();
    if (!draw_target_stack.empty()) {
       back = draw_target_stack.back();

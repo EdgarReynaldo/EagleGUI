@@ -80,7 +80,7 @@ extern int eagle_default_font_flags;
 
 /**
 class REGION_INFO {
-   
+
 public :
    REGION_INFO();
    REGION_INFO(float srcx , float srcy , float srcw , float srch);
@@ -110,12 +110,12 @@ class RESIZE_INFO {
 public :
    RESIZE_INFO();
    RESIZE_INFO(float destx , float desty , float destw , float desth);
-   
+
    float dx;
    float dy;
    float dw;
    float dh;
-   
+
 };// destination rectangle
 
 
@@ -139,7 +139,7 @@ class EagleDrawingInfo {
 
 private :
    void CheckUse();
-   
+
 public :
 
    EagleDrawingInfo();
@@ -151,17 +151,17 @@ public :
    bool use_resize;// if false, destination point will be used, which is default
    bool use_rotate;
    bool use_tint;
-   
+
    float dx;
    float dy;
-   
+
    REGION_INFO region;// sx sy sw sh
    SCALE_INFO scale;// x y
    RESIZE_INFO resize;// dx dy dw dh
    ROTATE_INFO rotate;// cx cy dx dy angle
    EagleColor tint;// r g b a
    int flags;// DRAW_HFLIP DRAW_VFLIP DRAW_HVFLIP
-   
+
    void SetDest(float x , float y);// overrides resize, scale, and rotate
    void SetRegion(REGION_INFO r);// sets source region
    void SetScale(SCALE_INFO s);// only used with rotate, overrides resize
@@ -184,19 +184,19 @@ class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
 
-   
+
 
    int scrw;
    int scrh;
-   
+
    EagleImage* backbuffer;
    EagleImage* drawing_target;
-   
+
    std::list<EagleImage*> draw_target_stack;
-   
+
    PointerManager<EagleImage> images;
-   PointerManager<EagleFont> fonts;
-   
+   PointerManager<EagleFont>  fonts;
+
    MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    // cannot be called in a base class constructor
    float maxframes;
@@ -206,33 +206,37 @@ protected :
    float previoustime;
    float currenttime;
 
-   EagleFont* default_font;
+   EagleFont*  default_font;
    std::string default_font_path;
-   int default_font_size;
-   int default_font_flags;
-   
-   
+   int         default_font_size;
+   int         default_font_flags;
+
+
    virtual void PrivateFlipDisplay()=0;
 
 protected :
-   
+
 ///   typedef std::map<EagleGraphicsContext* , bool> WINMAP;
 ///   typedef WINMAP::iterator WMIT;
 
-///   EagleMutex* window_mutex;
+///   EagleConditionVar* window_cond;
+   EagleMutex*        window_mutex;
+///   bool               window_drawing_ok;
 
 public :
-   
-   EagleGraphicsContext(std::string name);
-   
+
+   EagleGraphicsContext(std::string name);/// See NOTES In GraphicsContext.cpp
+
    virtual ~EagleGraphicsContext() {}
 
-///   static EagleGraphicsContext* GetActiveWindow();
-   
+   bool StartDrawing();
+   void CompleteDrawing();
+
+
    float GetFPS();
 
    virtual EagleSystem* GetSystem()=0;
-   
+
    /// creation/destruction
    virtual bool Create(int width , int height , int flags)=0;/// Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;
@@ -247,18 +251,18 @@ public :
 
    /// clears target bitmap
    virtual void Clear(EagleColor c = EagleColor(0,0,0))=0;
-   
+
    /// Blender setting functions
    virtual void SetCopyBlender()=0;
    virtual void SetPMAlphaBlender()=0;
    virtual void SetNoPMAlphaBlender()=0;
    virtual void RestoreLastBlendingState()=0;
-   
+
    /// basic drawing operations
    virtual void PutPixel(int x , int y , EagleColor c)=0;
-   
+
    virtual void DrawLine(int x1 , int y1 , int x2 , int y2 , EagleColor c)=0;
-   
+
    virtual void DrawRectangle(int x , int y , int w , int h , int thickness , EagleColor c)=0;
    void         DrawRectangle(Rectangle r , int thickness , EagleColor c);
 
@@ -273,13 +277,13 @@ public :
 
    virtual void DrawCircle(int cx , int cy , int radius , int thickness , EagleColor c)=0;
    virtual void DrawFilledCircle(int cx , int cy , int radius , EagleColor c)=0;
-   
+
    virtual void DrawEllipse(int cx , int cy , int rx , int ry , int thickness , EagleColor c)=0;
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c)=0;
-   
+
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c)=0;
-   
+
    // precise drawing operations
    virtual void PutPixel(float x , float y , EagleColor c)=0;
    virtual void DrawLine(float x1 , float y1 , float x2 , float y2 , float thickness , EagleColor c)=0;
@@ -294,7 +298,7 @@ public :
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,
-										 float x3 , float y3 , EagleColor c3 , 
+										 float x3 , float y3 , EagleColor c3 ,
 										 float x4 , float y4 , EagleColor c4)=0;
 
    /// image drawing operations
@@ -321,7 +325,7 @@ public :
                                VALIGNMENT valign = VALIGN_TOP);
 
 
-   void DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , 
+   void DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                           HALIGNMENT halign = HALIGN_LEFT ,
                           VALIGNMENT valign = VALIGN_TOP);
 
@@ -330,16 +334,16 @@ public :
    virtual EagleImage* GetBackBuffer()=0;
    virtual EagleImage* GetScreen()=0;
    virtual EagleImage* GetDrawingTarget()=0;
-   
+
    /// utilities
    void FlipDisplay();/// Overload PrivateFlipDisplay to affect this
-   
+
    virtual void HoldDrawing()=0;
    virtual void ReleaseDrawing()=0;
    virtual void SetDrawingTarget(EagleImage* dest)=0;
 
    void DrawToBackBuffer();
-      
+
    /// image creation / loading / sub division
    virtual EagleImage* EmptyImage()=0;
    virtual EagleImage* CloneImage(EagleImage* clone)=0;
@@ -347,37 +351,37 @@ public :
    virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height)=0;
    void                FreeImage(EagleImage* img);
-   
+
    /// font loading
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    void               FreeFont(EagleFont* font);
-   
+
    EagleFont* DefaultFont();
-   
+
    std::string DefaultFontPath();
    int DefaultFontSize();
    int DefaultFontFlags();
-   
+
    /// mouse control
 ///   MousePointerManager* GetMousePointerManager() {return mp_manager;}
-   
+
    void ShowMouse();
    void HideMouse();
-   
+
    bool AcquireMousePointer(void* caller , MOUSE_POINTER_TYPE ptype , bool use_system_pointer);
    void ReleaseMousePointer(const void* caller);
    void ReAcquireMouse();// call when window loses and regains focus if there is more than one, as the mp is shared
-   
+
    bool SetCustomPointer(MousePointerInfo info);
 ///   void SetCustomPointerSet(MousePointerSet* pointer_set);
-   
+
    void SetMousePosition(int mousex , int mousey);
-   
-   
+
+
    // drawing target
    void PushDrawingTarget(EagleImage* img);
    void PopDrawingTarget();
-   
+
    virtual Transformer* GetTransformer()=0;
 
 public :
@@ -395,12 +399,12 @@ class DrawingTargeter {
 
 private :
    EagleGraphicsContext* win;
-   
+
 public :
    DrawingTargeter(EagleGraphicsContext* window , EagleImage* target_image);// pushes target_image onto the drawing stack
    ~DrawingTargeter();// pops target image off drawing stack automatically when this goes out of scope.
-   
-   
+
+
 };
 
 

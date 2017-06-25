@@ -13,13 +13,13 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  */
 
-
+/**
 #include "Eagle/Exception.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 
@@ -68,6 +68,7 @@ bool Allegro5Mutex::Valid() {
    return mutex;
 }
 
+//*/
 
 
 

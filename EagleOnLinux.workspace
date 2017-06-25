@@ -2,12 +2,8 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="EagleOnLinux">
 		<Project filename="Eagle5Linux.cbp" />
-		<Project filename="Allegro5_backend_Linux.cbp">
-			<Depends filename="Eagle5Linux.cbp" />
-		</Project>
-		<Project filename="LibtestLinux.cbp">
-			<Depends filename="Eagle5Linux.cbp" />
-			<Depends filename="Allegro5_backend_Linux.cbp" />
-		</Project>
+		<Project filename="Allegro5_backend_Linux.cbp" />
+		<Project filename="LibtestLinux.cbp" />
+		<Project filename="LinuxTest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

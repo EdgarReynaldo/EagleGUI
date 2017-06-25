@@ -2,7 +2,7 @@
 
 #include "Eagle/Platform.hpp"
 #include "Eagle/Time.hpp"
-
+#include "Eagle/Exception.hpp"
 
 
 #if defined EAGLE_WIN32
@@ -70,7 +70,7 @@ ProgramTime ProgramTime::Now() {
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
 #elif defined EAGLE_LINUX
     timespec ts;
-    clock_gettime(CLOCK_REALTIME , &ts);
+    EAGLE_ASSERT(0 == clock_gettime(CLOCK_REALTIME , &ts));
     double rt = (double)ts.tv_sec + (double)ts.tv_nsec / pow(10 , 9);
     return ProgramTime(rt);
 #else
