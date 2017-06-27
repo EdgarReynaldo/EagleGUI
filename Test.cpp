@@ -10,7 +10,7 @@ void* test_thread(ALLEGRO_THREAD* t , void* d) {
    (void)t;
    (void)d;
    int j = 0;
-   al_rest(2.0);
+   al_rest(0.5);
    return (void*)(int)al_get_time();
 }
 int main(int argc , char** argv) {
@@ -20,7 +20,7 @@ int main(int argc , char** argv) {
    }
    ALLEGRO_THREAD* thread = al_create_thread(test_thread , 0);
    al_start_thread(thread);
-   al_rest(1.0);
+   al_rest(2.0);
    al_join_thread(thread , 0);
    al_destroy_thread(thread);
 

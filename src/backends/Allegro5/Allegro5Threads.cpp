@@ -12,11 +12,13 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
    EAGLE_ASSERT(allegro_thread);
    EAGLE_ASSERT(argument);
    Allegro5Thread* ethread = (Allegro5Thread*)argument;
-   
+
    void* (*thread_process)(EagleThread* , void*) = ethread->Process();
    EAGLE_ASSERT(thread_process);
    void* data = ethread->Data();
-   
+
+   EagleInfo() << StringPrintF("Starting  Process %p on EagleThread %p." , thread_process , ethread) << std::endl;
+
    ethread->running = true;
    void* process_result = thread_process(ethread , data);
    ethread->running = false;
@@ -24,13 +26,16 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
    al_lock_mutex(ethread->finish_mutex);
 
    ethread->finished_bool = true;
-   
+
    al_signal_cond(ethread->finish_condition_var);
 
    al_unlock_mutex(ethread->finish_mutex);
-   
+
+   EagleInfo() << StringPrintF("Finishing Process %p on EagleThread %p." , thread_process , ethread) << std::endl;
+
+
    return process_result;
-   
+
 }
 
 
@@ -45,7 +50,7 @@ Allegro5Thread::Allegro5Thread() :
       finish_condition_var(0),
       finish_mutex(0)
 {
-   
+
 }
 
 
@@ -61,15 +66,15 @@ bool Allegro5Thread::Create(void* (*process_to_run)(EagleThread* , void*) , void
 
    EAGLE_ASSERT(process_to_run);
    process = process_to_run;
-   
+
    // data may be null
    data = arg;
-   
+
    a5thread = al_create_thread(A5ThreadWrapperProcess , this);
    finish_condition_var = al_create_cond();
    finish_mutex = al_create_mutex();
    finished_bool = false;
-   
+
    if (!a5thread || !finish_condition_var || !finish_mutex) {
       if (!a5thread) {
          throw EagleException("Allegro5Thread::Create - failed to create a5thread.");
@@ -81,7 +86,7 @@ bool Allegro5Thread::Create(void* (*process_to_run)(EagleThread* , void*) , void
          throw EagleException("Allegro5Thread::Create - failed to create finish_mutex.");
       }
    }
-   
+
    return a5thread && finish_condition_var && finish_mutex;
 }
 
@@ -150,10 +155,10 @@ void* Allegro5Thread::FinishThread() {
       }
 
       al_unlock_mutex(finish_mutex);
-      
+
       al_join_thread(a5thread , &return_value);
    }
-   
+
    return return_value;
 }
 
@@ -161,7 +166,7 @@ void* Allegro5Thread::FinishThread() {
 
 bool Allegro5Thread::ShouldStop() {
    EAGLE_ASSERT(a5thread);
-   
+
    return al_get_thread_should_stop(a5thread);
 }
 

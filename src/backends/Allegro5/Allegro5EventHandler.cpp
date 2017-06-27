@@ -139,6 +139,8 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
    ALLEGRO_EVENT_SOURCE* main_source = &(a5_event_handler->main_source);
    EagleConditionVar* cond_var = a5_event_handler->cond_var;
 
+   EagleInfo() << StringPrintF("Allegro5EventThreadProcess process starting on EagleThread %p" , thread) << std::endl;
+
    bool close = false;
    while (!thread->ShouldStop() && !close) {
       ALLEGRO_EVENT ev;
@@ -166,6 +168,8 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
          cond_var->BroadcastCondition();// alert any thread waiting on the condition (an event)
       }
    }
+
+   EagleInfo() << StringPrintF("Allegro5EventThreadProcess process stopping on EagleThread %p" , thread) << std::endl;
 
    return event_handler;
 }
@@ -245,15 +249,18 @@ bool Allegro5EventHandler::Create() {
 
 void Allegro5EventHandler::Destroy() {
 
+   if (!event_thread) {return;}
    /// MUST STOP PROCESS FIRST
-   if (Running()) {
+   bool running = Running();
+   EagleInfo() << StringPrintF("Allegro5EventHandler::Destroy (this = %p) - on entrance : Running = %s , on EagleThread %p" , this , running?"true":"false" , event_thread) << std::endl;
+   if (running) {
       ALLEGRO_EVENT ev;
       ev.type = EAGLE_EVENT_USER_START;
       ev.any.source = &main_source;
       ev.any.timestamp = al_get_time();
       ev.user.source = &main_source;
       ev.user.data1 = CLOSE_EVENT_THREAD;
-      EagleInfo() << "Allegro5EventHandler::Destroy - emitting close event" << std::endl;
+      EagleInfo() << StringPrintF("Allegro5EventHandler::Destroy (this = %p) - emitting close event to EagleThread %p" , this , event_thread) << std::endl;
       al_emit_user_event(&main_source , &ev , NULL);// tell event thread to close
       event_thread->FinishThread();
    }
