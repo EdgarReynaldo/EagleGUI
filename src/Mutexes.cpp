@@ -46,7 +46,7 @@ void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
    
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    const char* threadname = callthread?callthread->GetName().c_str():"Main Thread";
-   int threadid = callthread?callthread->Id():-1;
+   int threadid = callthread?callthread->ID():-1;
    ThreadLog() << 
       StringPrintF("Mutex '%s' WaitLock on Thread #%d %s in function %s",
                    GetName().c_str() , threadid , threadname , callfunc.c_str()) << std::endl;
@@ -78,7 +78,7 @@ bool EagleMutex::DoLockWaitFor(EagleThread* callthread , std::string callfunc , 
 
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    const char* threadname = callthread?callthread->GetName().c_str():"Main Thread";
-   int threadid = callthread?callthread->Id():-1;
+   int threadid = callthread?callthread->ID():-1;
    ThreadLog() << 
       StringPrintF("Mutex '%s' WaitLock on Thread #%d %s in function %s",
                    GetName().c_str() , threadid , threadname , callfunc.c_str()) << std::endl;
@@ -118,7 +118,7 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
 
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    const char* threadname = callthread?callthread->GetName().c_str():"Main Thread";
-   int threadid = callthread?callthread->Id():-1;
+   int threadid = callthread?callthread->ID():-1;
    ThreadLog() << 
       StringPrintF("Mutex '%s' WaitLock on Thread #%d %s in function %s",
                    GetName().c_str() , threadid , threadname , callfunc.c_str()) << std::endl;
@@ -167,7 +167,7 @@ void EagleMutex::DoUnlock(EagleThread* callthread , std::string callfunc) {
    
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    const char* threadname = callthread?callthread->GetName().c_str():"Main Thread";
-   int threadid = callthread?callthread->Id():-1;
+   int threadid = callthread?callthread->ID():-1;
    ThreadLog() << 
       StringPrintF("Mutex '%s' Unlocked on Thread #%d %s in function %s" ,
                    GetName().c_str() , threadid , threadname , callfunc.c_str()) << std::endl;
