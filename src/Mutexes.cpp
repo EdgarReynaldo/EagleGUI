@@ -13,7 +13,8 @@ EagleMutex::EagleMutex() :
       type(MTX_INVALID),
       state(MTX_UNLOCKED),
       lock_count(0),
-      owner((EagleThread*)-1)
+      owner((EagleThread*)-1),
+      log(true)
 {
    SetName(StringPrintF("EagleMutex at %p" , this));
 }
@@ -33,8 +34,6 @@ bool EagleMutex::Recursive() {
 
 
 void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
-
-   (void)callfunc;
 
    if (state == MTX_ISLOCKED) {
       if (callthread == owner) {
@@ -143,17 +142,19 @@ EAGLE_MUTEX_STATE EagleMutex::GetMutexState() {
 
 
 
-void EagleMutex::LogThreadState(EagleThread* t , const char* func , const char* state) {
+void EagleMutex::LogThreadState(EagleThread* t , const char* func , const char* tstate) {
    (void)t;
    (void)func;
-   (void)state;
+   (void)tstate;
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
-   const char* threadname = t?t->GetName().c_str():"Main Thread";
-   int threadid = t?t->ID():-1;
+   if (log) {
+      const char* threadname = t?t->GetName().c_str():"Main Thread";
+      int threadid = t?t->ID():-1;
 
-   ThreadLog() << 
-      StringPrintF("Mutex '40%s' %8s on Thread #%4d %s in function %40s" ,
-                   GetName().c_str() , state , threadid , threadname , func) << std::endl;
+      ThreadLog() << 
+         StringPrintF("Mutex '%50s' %8s on Thread #%4d %50s in function %50s" ,
+                      GetName().c_str() , tstate , threadid , threadname , func) << std::endl;
+   }
 #endif
    return;
 }

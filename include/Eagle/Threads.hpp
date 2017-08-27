@@ -44,10 +44,14 @@ public :
 
    int ID() {return thread_id;}
 
+   void DoLockOnMutex
+   
 };
 
 
-
+/**
+   ThreadManager tracks which 
+*/
 class ThreadManager {
 
    friend class EagleThread;

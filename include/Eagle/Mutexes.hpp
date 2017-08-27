@@ -70,6 +70,7 @@ protected :
 
    int lock_count;
    EagleThread* owner;
+   bool log;
 
 
    virtual void PrivateLock()=0;
