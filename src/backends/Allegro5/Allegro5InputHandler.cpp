@@ -231,6 +231,11 @@ Allegro5InputHandler::Allegro5InputHandler() :
       throw EagleException("Allegro5InputHandler::Allegro5InputHandler : Failed to create input thread.");
    }
 
+   keyboard_event_handler.SetOurThread(&input_thread);
+   mouse_event_handler.SetOurThread(&input_thread);
+   joystick_event_handler.SetOurThread(&input_thread);
+   touch_event_handler.SetOurThread(&input_thread);
+   
    al_init_user_event_source(&input_extra_event_source);
 
    input_queue = al_create_event_queue();

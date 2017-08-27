@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -27,8 +27,9 @@
 
 #ifdef EAGLE_LIBRARY_BUILD
 
+
    /// Library build
-   #if defined (_WIN32) && !defined (EAGLE_STATIC_LINK)
+   #if defined _WIN32
       #if !defined (EAGLE_STATIC_LINK)
          #define EAGLE_LINK_TYPE __declspec__(dllexport)
       #endif

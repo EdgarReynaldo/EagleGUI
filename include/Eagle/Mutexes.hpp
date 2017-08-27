@@ -22,10 +22,12 @@
 #ifndef EagleMutex_HPP
 #define EagleMutex_HPP
 
+
+#include "Eagle/Object.hpp"
+
 #include <mutex>
 #include <thread>
 #include <string>
-
 
 enum EAGLE_MUTEX_TYPE {
    MTX_INVALID         = 0,
@@ -35,13 +37,28 @@ enum EAGLE_MUTEX_TYPE {
    MTX_RECURSIVE_TIMED = 4
 };
 
+
+
+enum EAGLE_MUTEX_STATE {
+   MTX_UNLOCKED = 0,
+   MTX_WAITLOCK = 1,
+   MTX_ISLOCKED = 2
+};
+
+
+
+class EagleThread;
+
+
+
 /// Abstract Base class
 
-class EagleMutex {
+class EagleMutex : public EagleObject {
 
 protected :
    EAGLE_MUTEX_TYPE type;
-
+   EAGLE_MUTEX_STATE state;
+   
    union {
       std::mutex*                 mtx;
       std::timed_mutex*           mtx_timed;
@@ -51,13 +68,13 @@ protected :
 
 ///   bool locked;
 
-   std::thread::id lock_thread_id;
-
+   int lock_count;
+   EagleThread* owner;
 
 
    virtual void PrivateLock()=0;
 
-///   virtual bool PrivateLockWaitFor(double timeout)=0;
+   virtual bool PrivateLockWaitFor(double timeout)=0;
 
    virtual bool PrivateTryLock()=0;
 
@@ -80,19 +97,35 @@ public :
    /// void Lock();/// There is a macro for Lock() that calls Lock(__function__) in your code
    /// void Unlock();/// There is a macro for Unlock() that calls Unlock(__function__) in your code
 
-   void DoLock(std::string calling_function);
-   bool DoLockWaitFor(std::string calling_function , double timeout);/// will throw an error if this is not a timed mutex
-   bool DoTryLock(std::string calling_function);
-   void DoUnlock(std::string calling_function);
+   /// DoLockWaitFor will throw an error if this is not a timed mutex
+   /// callthread may be NULL if calling from main
+   /// Pass EAGLE__FUNC for callfunc
+   
+   void DoLock       (EagleThread* callthread , std::string callfunc);
+   bool DoLockWaitFor(EagleThread* callthread , std::string callfunc , double timeout);
+   bool DoTryLock    (EagleThread* callthread , std::string callfunc);
+   void DoUnlock     (EagleThread* callthread , std::string callfunc);
 
-///   virtual bool Locked();/// TODO : NOTE : Not reliable yet
+   EAGLE_MUTEX_STATE GetMutexState();
 };
 
 
 #include "Eagle/Platform.hpp"
 
-#define Lock() DoLock(EAGLE__FUNC)
-#define Unlock() DoUnlock(EAGLE__FUNC)
+
+
+class EagleMutexManager {
+   
+private :
+   
+   
+   
+public :
+   
+   
+   
+   
+};
 
 
 

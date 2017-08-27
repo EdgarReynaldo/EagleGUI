@@ -142,6 +142,7 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ResetBackBuffer();
 
    window_mutex = new CXX11Mutex();
+   window_mutex->SetName(StringPrintF("Allegro5GraphicsContext(EID = %d) Window Mutex(EID = %d)" , GetEagleId() , window_mutex->GetEagleId()));
    if (!window_mutex->Create(false , false)) {
       EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;
       return false;
@@ -184,7 +185,7 @@ void Allegro5GraphicsContext::Destroy() {
 
       /// Block until after drawing is done and releases the lock,
       /// or acquire the lock before drawing and prevent it
-      window_mutex->DoLock(EAGLE__FUNC);
+      window_mutex->DoLock(our_thread , EAGLE__FUNC);
 
       GetAllegro5WindowManager()->SignalClose(this);
 
@@ -194,7 +195,7 @@ void Allegro5GraphicsContext::Destroy() {
 
       display = 0;
 
-      window_mutex->DoUnlock(EAGLE__FUNC);
+      window_mutex->DoUnlock(our_thread , EAGLE__FUNC);
    }
 
    if (mp_manager) {

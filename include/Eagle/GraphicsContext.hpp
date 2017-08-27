@@ -177,7 +177,7 @@ public :
 //*/
 
 class EagleSystem;
-
+class EagleThread;
 
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
@@ -211,6 +211,8 @@ protected :
    int         default_font_size;
    int         default_font_flags;
 
+   EagleThread* our_thread;
+   
 
    virtual void PrivateFlipDisplay()=0;
 
@@ -237,6 +239,8 @@ public :
 
    virtual EagleSystem* GetSystem()=0;
 
+   void SetOurThread(EagleThread* t) {our_thread = t;}
+   
    /// creation/destruction
    virtual bool Create(int width , int height , int flags)=0;/// Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;

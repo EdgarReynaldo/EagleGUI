@@ -1,4 +1,5 @@
 cbbuild/**
+msvcbuild/**
 Allegro5/**
 SantaHack2016/**
 TINS2016/**

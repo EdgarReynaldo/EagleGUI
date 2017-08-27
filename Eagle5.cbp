@@ -117,6 +117,7 @@
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/Animations.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
+		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
@@ -191,6 +192,7 @@
 		<Unit filename="src/AVHandler.cpp" />
 		<Unit filename="src/Animations.cpp" />
 		<Unit filename="src/Area.cpp" />
+		<Unit filename="src/CXX11Mutexes.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />

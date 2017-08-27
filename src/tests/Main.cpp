@@ -19,6 +19,8 @@ void* bad_thread(EagleThread* t , void* data) {
    void* ret = (void*)-1;
 
    EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(240 , 180 , EAGLE_WINDOWED);
+   new_win->SetOurThread(t);
+   
    EagleEventHandler* q = GetAllegro5System()->CreateEventHandler(false);
 
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
@@ -154,6 +156,7 @@ int main(int argc , char** argv) {
       }
       if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_N) {
          EagleThread* ethread = GetAllegro5System()->CreateThread();
+         ethread->SetName(StringPrintF("New Window Thread #%3d" , ethread->GetEagleId()));
          ethread->Create(bad_thread , ethread);
          ethread->Start();
          thread_list.push_back(ethread);

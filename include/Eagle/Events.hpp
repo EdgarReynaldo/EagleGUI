@@ -407,7 +407,7 @@ public :
 
 
 /// Abstract base class!
-class EagleEventHandler : public EagleEventListener , public EagleEventSource {
+class EagleEventHandler : public EagleObject , public EagleEventListener , public EagleEventSource {
 protected :
    std::deque<EagleEvent> queue;
    EagleMutex* mutex;
@@ -415,6 +415,8 @@ protected :
    bool emitter_delay;/// To decide whether events are emitted immediately upon receipt,
                       /// or whether they are emitted as they are taken off the queue
 
+   EagleThread* our_thread;
+                      
 public :
    EagleEventHandler(bool delay_emitted_events = true);
    virtual ~EagleEventHandler() {}
@@ -422,6 +424,8 @@ public :
    virtual bool Create()=0;
    virtual void Destroy()=0;
    virtual bool Valid()=0;
+   
+   void SetOurThread(EagleThread* t);
 
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e);
@@ -446,9 +450,6 @@ public :
    EagleEvent WaitForEvent(EAGLE_EVENT_TYPE t);
 
 ///   EagleEventHandler* CloneEventHandler();TODO : Make this abstract and virtual and move it to Allegro5EventHandler
-
-
-///   virtual void SubscribeToAllAvailableSources()=0;/// Should be system function
 };
 
 

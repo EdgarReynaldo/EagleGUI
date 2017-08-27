@@ -127,9 +127,9 @@ protected :
    virtual bool PrivateInstallJoystick()=0;
    virtual bool PrivateInstallTouch()=0;
 
-	virtual EagleInputHandler*    PrivateCreateInputHandler()=0;
-	virtual EagleEventHandler*    PrivateCreateEventHandler(bool delay_events = true)=0;
-	virtual EagleTimer*           PrivateCreateTimer()=0;
+   virtual EagleInputHandler*    PrivateCreateInputHandler()=0;
+   virtual EagleEventHandler*    PrivateCreateEventHandler(bool delay_events = true)=0;
+   virtual EagleTimer*           PrivateCreateTimer()=0;
    virtual EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags)=0;
    virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
    virtual EagleMutex*           PrivateCreateMutex(bool recursive , bool timed)=0;

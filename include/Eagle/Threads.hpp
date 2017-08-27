@@ -5,14 +5,21 @@
 #define Threads_HPP
 
 
+#include "Eagle/Object.hpp"
+
+
+#include <fstream>
+
+
+
 class EagleThread;
 
-// Your process will be given access to the eagle thread, and the ptr specified in EagleThread::Create
+/// Your process will be given access to the eagle thread, and the ptr specified in EagleThread::Create
 typedef void* (*EAGLE_THREAD_PROCESS)(EagleThread* , void*);
 
 
 
-class EagleThread {
+class EagleThread : public EagleObject {
    
 private :
    static int new_thread_id;
@@ -21,7 +28,7 @@ private :
    
 public :
    EagleThread();
-   virtual ~EagleThread() {}
+   virtual ~EagleThread();
    
    virtual bool Create(void* (*process_to_run)(EagleThread* , void*) , void* arg)=0;
    virtual void Destroy()=0;
@@ -41,4 +48,52 @@ public :
 
 
 
+class ThreadManager {
+
+   friend class EagleThread;
+
+private :
+   
+   static ThreadManager* threadman;
+   
+   
+   std::map<int , EagleThread*> thread_map;
+   
+   std::ofstream thread_log;
+   
+   ThreadManager();
+   
+   void Create();
+   void Destroy();
+
+   void RegisterThread(EagleThread* t);
+   void UnRegisterThread(EagleThread* t);
+   
+   friend void DestroyThreadManager();
+   friend std::ostream& ThreadLog();
+   
+public :
+
+   static ThreadManager* Instance();
+   
+
+};
+
+
+
+void DestroyThreadManager();
+
+std::ostream& ThreadLog();
+
+
+
+
+
+
+
+
 #endif // Threads_HPP
+
+
+
+

@@ -3,7 +3,7 @@
 
 
 #include "TestRegistry.hpp"
-
+#include "Eagle/StringWork.hpp"
 
 
 
@@ -20,6 +20,7 @@ TestRunner::TestRunner(EagleGraphicsContext* window , MAINFUNC mainfunc) :
    if (!our_thread) {
       throw EagleException("TestRunner::TestRunner : Failed to create TestRunnerThread process.");
    }
+   our_thread->SetName(StringPrintF("TestRunner Thread(EID = %d)" , our_thread->GetEagleId()));
    our_thread->Start();
 }
 

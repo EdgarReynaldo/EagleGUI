@@ -3,6 +3,10 @@
 
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/StringWork.hpp"
+
+
+#include <chrono>
 
 
 
@@ -26,7 +30,9 @@ void CXX11Mutex::PrivateLock() {
       break;
    }
 }
-/*
+
+
+
 bool CXX11Mutex::PrivateLockWaitFor(double timeout) {
    EAGLE_ASSERT(Valid());
 
@@ -34,17 +40,22 @@ bool CXX11Mutex::PrivateLockWaitFor(double timeout) {
       throw EagleException("CXX11Mutex::PrivateLockWaitFor(double) : This is not a Timed() mutex!");
    }
 
+   int ms = int(1000.0*timeout);
+   if (ms < 1) {ms = 1;}
+   auto duration = std::chrono::milliseconds(ms);
+
    switch (type) {
    case MTX_TIMED :
-      MTX.mtx_timed->try_lock_for();
+      return MTX.mtx_timed->try_lock_for(duration);
       break;
    case MTX_RECURSIVE_TIMED :
-      MTX.mtx_recursive_timed->try_lock_for();
+      return MTX.mtx_recursive_timed->try_lock_for(duration);
+      break;
+   default:
       break;
    }
+   return false;
 }
-//*/
-
 
 
 
@@ -95,7 +106,9 @@ void CXX11Mutex::PrivateUnlock() {
 
 CXX11Mutex::CXX11Mutex() :
       EagleMutex()
-{}
+{
+   SetName(StringPrintF("CXX11Mutex(EID = %d) at %p" , GetEagleId() , this));
+}
 
 
 

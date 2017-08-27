@@ -3,6 +3,14 @@ Notes for Eagle 5 development
 
 Issues
 
+-99 Threading Issues with Multiple Windows - debug this shit
+    Step 1. Create a separate log for threading only
+    Step 2. Give mutexes and threads a name - this may already be done if they are EagleObjects
+    Step 3. Log TryLock,Lock,and Unlock
+    Step 4. Eg. ThreadLog() << "[Try][Un]Locking mutex m on thread t"
+    Step 5. Keep a log of which mutexes are locked and how many there are
+
+
 -5. BasicText::ShrinkWrap needs some work? Margins are super large for large text. Not sure why.
 
 -4. WidgetHandler should be able to draw without a buffer. Separate buffer out.

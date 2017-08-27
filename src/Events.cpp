@@ -280,13 +280,23 @@ void EagleEventListener::CheckSources() {
 
 
 EagleEventHandler::EagleEventHandler(bool delay_emitted_events) :
+      EagleObject(),
       EagleEventListener(),
       EagleEventSource(),
       queue(),
       mutex(0),
       cond_var(0),
-      emitter_delay(delay_emitted_events)
-{}
+      emitter_delay(delay_emitted_events),
+      our_thread(0)
+{
+   SetName(StringPrintF("EagleEventHandler (EID = %d) at %p" , GetEagleId() , this));
+}
+
+
+
+void EagleEventHandler::SetOurThread(EagleThread* t) {
+   our_thread = t;
+}
 
 
 
@@ -295,9 +305,9 @@ void EagleEventHandler::RespondToEvent(EagleEvent e) {
    EAGLE_ASSERT(mutex);
 
    /// Store the event
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    queue.push_back(e);
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
 
    /// Wake any threads waiting on us
    cond_var->SignalCondition();
@@ -312,9 +322,9 @@ void EagleEventHandler::RespondToEvent(EagleEvent e) {
 
 void EagleEventHandler::Clear() {
    EAGLE_ASSERT(mutex);
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    queue.clear();
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
 }
 
 
@@ -329,9 +339,9 @@ bool EagleEventHandler::HasEvent() {
    EAGLE_ASSERT(Valid());
 
    bool has_event = false;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    has_event = !queue.empty();
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    return has_event;
 
 }
@@ -343,12 +353,12 @@ EagleEvent EagleEventHandler::TakeNextEvent() {
 
    EagleEvent e;
 
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    if (!queue.empty()) {
       e = queue.front();
       queue.pop_front();
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    if (emitter_delay) {
       EmitEvent(e);
    }
@@ -361,9 +371,9 @@ EagleEvent EagleEventHandler::PeekNextEvent() {
    EAGLE_ASSERT(Valid());
 
    EagleEvent e;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    if (!queue.empty()) {e = queue.front();}
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    return e;
 }
 
@@ -371,16 +381,16 @@ EagleEvent EagleEventHandler::PeekNextEvent() {
 
 void EagleEventHandler::InsertEventFront(EagleEvent e) {
    EAGLE_ASSERT(mutex);
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    queue.push_front(e);
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
 }
 
 
 
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype) {
    std::vector<EagleEvent> events;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.type == etype) {
@@ -391,7 +401,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype) 
          ++it;
       }
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    return events;
 }
 
@@ -399,7 +409,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype) 
 
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc) {
    std::vector<EagleEvent> events;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.source == esrc) {
@@ -410,7 +420,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc) 
          ++it;
       }
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    return events;
 }
 
@@ -418,7 +428,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc) 
 
 std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype , EagleEventSource* esrc) {
    std::vector<EagleEvent> events;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
       if (e.type == etype && e.source == esrc) {
@@ -429,7 +439,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
          ++it;
       }
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    return events;
 }
 
@@ -440,18 +450,18 @@ EagleEvent EagleEventHandler::WaitForEvent() {
    EAGLE_ASSERT(HasSources());
 
    EagleEvent e;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    if (!queue.empty()) {
       // eagle event in queue
       e = queue.front();
       queue.pop_front();
-      mutex->Unlock();
+      mutex->DoUnlock(our_thread , EAGLE__FUNC);
       if (emitter_delay) {
          EmitEvent(e);
       }
       return e;
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    /// wait for event from event thread saying there is a message in the queue
    cond_var->WaitForCondition();
    e = TakeNextEvent();
@@ -469,15 +479,15 @@ EagleEvent EagleEventHandler::WaitForEvent(double timeout) {
    EAGLE_ASSERT(HasSources());
 
    EagleEvent e;
-   mutex->Lock();
+   mutex->DoLock(our_thread , EAGLE__FUNC);
    if (!queue.empty()) {
       // eagle event in queue
       e = queue.front();
       queue.pop_front();
-      mutex->Unlock();
+      mutex->DoUnlock(our_thread , EAGLE__FUNC);
       return e;
    }
-   mutex->Unlock();
+   mutex->DoUnlock(our_thread , EAGLE__FUNC);
    // wait for event from event thread saying there is a message in the queue
    int ret = 0;
    ret = cond_var->WaitForConditionUntil(timeout);

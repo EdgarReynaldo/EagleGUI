@@ -14,7 +14,7 @@ class CXX11Mutex : public EagleMutex {
 protected :
    virtual void PrivateLock();
 
-///   virtual bool PrivateLockWaitFor(double timeout);
+   virtual bool PrivateLockWaitFor(double timeout);
 
    virtual bool PrivateTryLock();
 

@@ -176,6 +176,7 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
 
 
 
+/// ---------------------      Allegro5EventHandler      ----------------------------
 
 
 
@@ -191,6 +192,7 @@ Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events) :
       main_source(),
       event_thread(0)
 {
+   SetName(StringPrintF("Allegro5EventHandler(EID = %d) at %p" , GetEagleId() , this));
    al_init_user_event_source(&main_source);
 }
 
@@ -210,9 +212,12 @@ bool Allegro5EventHandler::Create() {
    al_register_event_source(event_queue , &main_source);
 
    mutex = new CXX11Mutex();
-
+   mutex->SetName(StringPrintF("%s Mutex (EID = %d)" , GetName().c_str() , mutex->GetEagleId()));
+   
    event_thread = new Allegro5Thread();
-
+   event_thread->SetName(StringPrintF("%s Thread (EID = %d)" , GetName().c_str() , event_thread->GetEagleId()));
+   SetOurThread(event_thread);
+   
    cond_var = new Allegro5ConditionVar();
 
    /// don't call create on thread until queue, mutex, and condvar are in place
@@ -268,6 +273,7 @@ void Allegro5EventHandler::Destroy() {
    if (event_thread) {
       delete event_thread;
       event_thread = 0;
+      our_thread = 0;
    }
    if (mutex) {
       delete mutex;

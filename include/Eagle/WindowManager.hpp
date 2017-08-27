@@ -8,6 +8,9 @@
 #define EagleWindowManager_HPP
 
 
+#include "Eagle/Object.hpp"
+
+
 
 #include <map>
 
@@ -20,7 +23,7 @@ class EagleMutex;
 
 
 
-class EagleWindowManager {
+class EagleWindowManager : public EagleObject {
 
 protected :
    EagleSystem*  parent_system;
@@ -37,7 +40,7 @@ protected :
 
    EagleGraphicsContext* active_window;
 
-
+   EagleThread* our_thread;
 
 
    void SwitchIn(EagleGraphicsContext* window);
