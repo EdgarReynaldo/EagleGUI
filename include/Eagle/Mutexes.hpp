@@ -107,25 +107,12 @@ public :
    void DoUnlock     (EagleThread* callthread , std::string callfunc);
 
    EAGLE_MUTEX_STATE GetMutexState();
-};
-
-
-#include "Eagle/Platform.hpp"
-
-
-
-class EagleMutexManager {
    
-private :
-   
-   
-   
-public :
-   
-   
-   
+   void LogThreadState(EagleThread* t , const char* func , const char* state);
    
 };
+
+
 
 
 
