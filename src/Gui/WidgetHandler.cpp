@@ -520,7 +520,7 @@ EagleGraphicsContext* WidgetHandler::GetDrawWindow() {
 
 
 
-bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) throw (EagleException) {
+bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 	bool success = true;
 
 	if (!window) {

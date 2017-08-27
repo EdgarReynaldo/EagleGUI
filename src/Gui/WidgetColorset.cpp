@@ -141,13 +141,7 @@ bool ColorRegistry::HasColor(std::string name) {
 
 
 EagleColor& ColorRegistry::GetColorByName(std::string name) {
-   return named_colors[name];
-}
-
-
-
-const EagleColor& ColorRegistry::GetColorByName(std::string name) const throw (EagleException) {
-   std::map<std::string , EagleColor>::const_iterator it = named_colors.find(name);
+   std::map<std::string , EagleColor>::iterator it = named_colors.find(name);
    if(it == named_colors.end()) {
       throw EagleException(StringPrintF("Color '%s' not found in color registry.\n" , name.c_str()));
    }
@@ -169,13 +163,7 @@ bool ColorRegistry::HasColorset(std::string name) {
 
 
 WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) {
-   return named_colorsets[name];
-}
-
-
-
-const WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) const throw (EagleException) {
-   std::map<std::string , WidgetColorset>::const_iterator it = named_colorsets.find(name);
+   std::map<std::string , WidgetColorset>::iterator it = named_colorsets.find(name);
    if (it == named_colorsets.end()) {
       throw EagleException(StringPrintF("WidgetColorset '%s' not found in color registry.\n" , name.c_str()));
    }

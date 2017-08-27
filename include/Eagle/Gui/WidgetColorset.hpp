@@ -118,7 +118,6 @@ public :
    bool HasColor(std::string name);
 
    EagleColor& GetColorByName(std::string name);
-   const EagleColor& GetColorByName(std::string name) const throw (EagleException);
 
    void RegisterColor(std::string name , const EagleColor& color);
    
@@ -126,7 +125,6 @@ public :
    bool HasColorset(std::string name);
    
    WidgetColorset& GetColorsetByName(std::string name);
-   const WidgetColorset& GetColorsetByName(std::string name) const throw (EagleException);
    
    void RegisterColorset(std::string name , const WidgetColorset& wc);
    

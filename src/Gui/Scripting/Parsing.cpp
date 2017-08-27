@@ -17,7 +17,7 @@ using namespace std;
 /// Attributes and values may be surrounded by padding whitespace for readability
 /// IE. " SUBCLASS : RadioButton ; POS : 100,50 ; DIM : 200,100 ; SDCOL : 0,64,0 ;"
 
-map<string , string> ParseAttributeSet(string widget_parameters) throw (EagleException) {
+map<string , string> ParseAttributeSet(string widget_parameters) {/// throw (EagleException) {
    
    map<string , string> attribute_map;
    
@@ -53,7 +53,7 @@ map<string , string> ParseAttributeSet(string widget_parameters) throw (EagleExc
 
 
 
-EagleColor ParseColor(std::string color_dec) throw (EagleException) {
+EagleColor ParseColor(std::string color_dec) {/// throw (EagleException) {
    EagleColor c;
    int r,g,b,a;
    float fr,fg,fb,fa;
@@ -108,7 +108,7 @@ EagleColor ParseColor(std::string color_dec) throw (EagleException) {
 
 
 
-WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap) throw (EagleException) {
+WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap) {/// throw (EagleException) {
    WidgetColorset wc;
    for (ATTRIBUTE_VALUE_MAP::const_iterator it = avmap.begin() ; it != avmap.end() ; ++it) {
       std::string att = it->first;
