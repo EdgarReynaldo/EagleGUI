@@ -217,7 +217,7 @@ Pin PinLayout::GetPin(int pin_slot) {
 
 std::ostream& PinLayout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << StringPrintF("PinLayout object at %p named %s (size %d):",
-                                this , GetName().c_str() , (int)GetLayoutSize()) << std::endl;
+                                this , GetNameCStr() , (int)GetLayoutSize()) << std::endl;
    os << indent << "Pins (" << pins.size() << ") : " << std::endl;
    ++indent;
    for (int i = 0 ; i < (int)pins.size() ; ++i) {

@@ -44,8 +44,6 @@ public :
 
    int ID() {return thread_id;}
 
-   void DoLockOnMutex
-   
 };
 
 

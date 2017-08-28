@@ -53,7 +53,7 @@ void BasicIcon::SetImage(EagleImage* new_image) {
 
 
 std::ostream& BasicIcon::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << StringPrintF("BasicIcon (%s) at %p" , GetName().c_str() , this) << std::endl;
+   os << indent << StringPrintF("BasicIcon (%s) at %p" , GetNameCStr() , this) << std::endl;
    os << indent << StringPrintF("icon_image is %p and is %s , stretch_icon is %s",
                                 icon_image , (icon_image && icon_image->Valid())?"Valid":"Invalid" , stretch_icon?"true":"false") << std::endl;
    WidgetBase::DescribeTo(os , indent);

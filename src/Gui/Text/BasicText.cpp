@@ -339,7 +339,7 @@ std::string BasicText::LineString(int linenum) {
 
 using std::endl;
 std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
-   os <<indent << StringPrintF("Basic text object \"%s\" at %p." , GetName().c_str() , this) << endl;
+   os <<indent << StringPrintF("Basic text object \"%s\" at %p." , GetNameCStr() , this) << endl;
    os << indent << PrintAlignment(halign , valign) << endl;
    os << indent << StringPrintF("Using text font (%p) :",this) << endl;
    if (text_font) {

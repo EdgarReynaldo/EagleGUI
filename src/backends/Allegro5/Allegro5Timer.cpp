@@ -115,7 +115,7 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
    process_queue = al_create_event_queue();
 
    ethread = new Allegro5Thread();
-   ethread->SetName(StringPrintF("%s Thread (EID = %d)" , GetName().c_str() , ethread->GetEagleId()));
+   ethread->SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , ethread->GetEagleId()));
    
    EAGLE_ASSERT(timer);
    EAGLE_ASSERT(timer_queue);

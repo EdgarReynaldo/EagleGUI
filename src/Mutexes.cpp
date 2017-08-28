@@ -148,12 +148,12 @@ void EagleMutex::LogThreadState(EagleThread* t , const char* func , const char* 
    (void)tstate;
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    if (log) {
-      const char* threadname = t?t->GetName().c_str():"Main Thread";
+      const char* threadname = t?t->GetNameCStr():"Main Thread";
       int threadid = t?t->ID():-1;
 
       ThreadLog() << 
          StringPrintF("Mutex '%50s' %8s on Thread #%4d %50s in function %50s" ,
-                      GetName().c_str() , tstate , threadid , threadname , func) << std::endl;
+                      GetNameCStr() , tstate , threadid , threadname , func) << std::endl;
    }
 #endif
    return;

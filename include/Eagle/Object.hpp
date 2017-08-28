@@ -82,7 +82,7 @@ int GetNameCount(std::string name);
 
 EagleObject* GetObjectById(EAGLE_ID eid);
 bool         GetValidById (EAGLE_ID eid);
-std::string  GetNameById  (EAGLE_ID eid);
+const char*  GetNameById  (EAGLE_ID eid);
 
 ///int GetIdByAddress(EagleObject* obj);
 
@@ -156,7 +156,7 @@ public :
 
    static bool Destroyed(EAGLE_ID eid);
    static bool Valid(EAGLE_ID eid);
-   static std::string Name(EAGLE_ID eid);
+   static const char* Name(EAGLE_ID eid);
    static EagleObject* Object(EAGLE_ID eid);
    
    static bool Destroyed(EagleObject* obj);
@@ -221,7 +221,7 @@ public :
    
    virtual ~EagleObject();
 
-   std::string GetName() const;
+   const char* GetNameCStr() const;
    void SetName(std::string newname);
 
    EAGLE_ID GetEagleId() const {return id;}

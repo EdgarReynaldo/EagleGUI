@@ -102,7 +102,7 @@ bool GetValidById(int eid) {
 
 
 
-std::string GetNameById(int eid) {
+const char* GetNameById(int eid) {
    return EagleObjectRegistryManager::Registry()->Name(eid);
 }
 
@@ -319,9 +319,9 @@ bool EagleObjectRegistry::Valid(EAGLE_ID eid) {
    
 
 
-std::string EagleObjectRegistry::Name(EAGLE_ID eid) {
+const char* EagleObjectRegistry::Name(EAGLE_ID eid) {
    CheckIdRange(eid);
-   return (*Objects())[eid-start_id].wname;
+   return (*Objects())[eid-start_id].wname.c_str();
 }
 
 
@@ -534,7 +534,7 @@ EagleObject::EagleObject(const EagleObject& rhs) :
    id(EAGLE_ID_UNASSIGNED)
 {
    EagleWarn() << "WARNING : EagleObject copy constructor called. RHS Object name will be duplicated." << std::endl;
-   Register(this , rhs.GetName() , id);
+   Register(this , std::string(rhs.GetNameCStr()) , id);
 }
 
 
@@ -557,7 +557,7 @@ EagleObject::~EagleObject() {
 
 
 
-std::string EagleObject::GetName() const {
+const char* EagleObject::GetNameCStr() const {
    return GetNameById(id);
 }
 

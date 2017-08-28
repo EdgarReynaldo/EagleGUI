@@ -76,7 +76,7 @@ void EagleWindowManager::CloseWindows() {
    for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
       if (it->second != 0) {
          EAGLE_ASSERT(GetValidById(it->first));
-         EagleLog() << StringPrintF("EagleWindowManager::CloseWindows - About to close window %s." , it->second->GetName().c_str()) << std::endl;
+         EagleLog() << StringPrintF("EagleWindowManager::CloseWindows - About to close window %s." , it->second->GetNameCStr()) << std::endl;
 ///         manager_mutex->Unlock();
          DestroyWindow(it->first);
 ///         manager_mutex->Lock();

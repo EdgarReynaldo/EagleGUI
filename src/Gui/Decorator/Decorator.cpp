@@ -842,17 +842,17 @@ std::string WidgetDecorator::GetWidgetClassName() {
 using std::endl;
 std::ostream& WidgetDecorator::DescribeTo(std::ostream& os , Indenter indent) const {
 
-   os << indent << StringPrintF("< WidgetDecorator %s at %p >" , GetName().c_str() , this) << endl;
+   os << indent << StringPrintF("< WidgetDecorator %s at %p >" , GetNameCStr() , this) << endl;
    ++indent;
    WidgetBase::DescribeTo(os,indent);
    --indent;
 
-   os << indent << StringPrintF("< WidgetDecorator : Decorator layout %s at %p >" , layout->GetName().c_str() , layout) << endl;
+   os << indent << StringPrintF("< WidgetDecorator : Decorator layout %s at %p >" , layout->GetNameCStr() , layout) << endl;
    ++indent;
    layout->DescribeTo(os,indent);
    --indent;
 
-   os << indent << StringPrintF("< WidgetDecorator : Decorated widget %s at %p >" , decorated_widget?decorated_widget->GetName().c_str():"None" , decorated_widget);
+   os << indent << StringPrintF("< WidgetDecorator : Decorated widget %s at %p >" , decorated_widget?decorated_widget->GetNameCStr():"None" , decorated_widget);
    ++indent;
    decorated_widget?(void)decorated_widget->DescribeTo(os,indent):(void)0;
    --indent;

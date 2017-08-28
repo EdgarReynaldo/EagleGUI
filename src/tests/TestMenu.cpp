@@ -94,7 +94,7 @@ void TestMenu::Run() {
          gui.Display(win , 0 , 0);
          
          if (gui.CurrentHover()) {
-            win->DrawTextString(font , StringPrintF("Hover is %p (%s)" , gui.CurrentHover() , gui.CurrentHover()->GetName().c_str()),
+            win->DrawTextString(font , StringPrintF("Hover is %p (%s)" , gui.CurrentHover() , gui.CurrentHover()->GetNameCStr()),
                                 win->Width() - 10 , 10 , EagleColor(255,255,255) , HALIGN_RIGHT);
          }
          

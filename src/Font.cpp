@@ -50,7 +50,7 @@ EagleFont::EagleFont(std::string name) :
 
 std::ostream& EagleFont::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << StringPrintF("EagleFont object %s at %p. Height = %d. Source file = \"%s\"",
-                      GetName().c_str() , this , height , srcfile.c_str());
+                      GetNameCStr() , this , height , srcfile.c_str());
    return os;
 }
 
