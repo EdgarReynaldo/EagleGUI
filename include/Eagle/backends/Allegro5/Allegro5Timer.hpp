@@ -26,7 +26,9 @@
 
 
 
-#include "Eagle.hpp"
+#include "Eagle/Threads.hpp"
+#include "Eagle/Timer.hpp"
+
 
 #include "allegro5/allegro.h"
 
@@ -53,7 +55,7 @@ private :
    EagleThread* ethread;
    
    friend void* TimerProcess(EagleThread* ethread , void* etimer);
-   void TickRelay(double timestamp) {Tick(timestamp);}
+///   void TickRelay(double timestamp) {Tick(timestamp);}
    
    ALLEGRO_TIMER* AllegroTimer() {return timer;}
    ALLEGRO_EVENT_QUEUE* AllegroEventQueue() {return process_queue;}
@@ -76,11 +78,11 @@ public :
    virtual void Start();
    virtual void Stop();
    virtual void Close();
-   virtual void WaitForTick();
+   virtual void WaitForTick(EagleThread* thread);
    
    virtual void* Source();
 
-   void RefreshTimer();
+   void RefreshTimer(EagleThread* thread);
    
    bool Valid();
    

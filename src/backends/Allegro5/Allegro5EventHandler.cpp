@@ -164,7 +164,7 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
       else {
          EagleEvent ee = GetEagleEvent(ev);
          ee.source = a5_event_handler;
-         a5_event_handler->PushEvent(ee);
+         a5_event_handler->PushEvent(ee , thread);
          cond_var->BroadcastCondition();// alert any thread waiting on the condition (an event)
       }
    }
@@ -305,8 +305,8 @@ bool Allegro5EventHandler::Valid() {
 
 
 
-void Allegro5EventHandler::RespondToEvent(EagleEvent ee) {
-   EagleEventHandler::RespondToEvent(ee);// emits and queues message
+void Allegro5EventHandler::RespondToEvent(EagleEvent ee , EagleThread* thread) {
+   EagleEventHandler::RespondToEvent(ee , thread);// emits and queues message
    /// now wake any threads waiting on us
    cond_var->BroadcastCondition();
 }

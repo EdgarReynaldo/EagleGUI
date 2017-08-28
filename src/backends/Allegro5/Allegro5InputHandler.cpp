@@ -2,6 +2,7 @@
 
 
 #include "Eagle/Lib.hpp"
+#include "Eagle/StringWork.hpp"
 
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
@@ -144,24 +145,20 @@ void* A5InputThreadProcess(EagleThread* thread , void* input_handler) {
       EagleInfo() << "Input Event #" << ee.type << " received." << std::endl;
       
       if (IsKeyboardEvent(ee)) {
-         handler->EmitEvent(ee);
-         a5_input_handler->keyboard_event_handler.RespondToEvent(ee);
-         a5_input_handler->keyboard_event_handler.TakeNextEvent();/// discard event after emitting
+         a5_input_handler->keyboard_event_handler.RespondToEvent(ee , thread);
+         a5_input_handler->keyboard_event_handler.TakeNextEvent(thread);/// discard event after emitting
       }
       else if (IsMouseEvent(ee)) {
-         handler->EmitEvent(ee);
-         a5_input_handler->mouse_event_handler.RespondToEvent(ee);
-         a5_input_handler->mouse_event_handler.TakeNextEvent();/// discard event after emitting
+         a5_input_handler->mouse_event_handler.RespondToEvent(ee , thread);
+         a5_input_handler->mouse_event_handler.TakeNextEvent(thread);/// discard event after emitting
       }
       else if (IsTouchEvent(ee)) {
-         handler->EmitEvent(ee);
-         a5_input_handler->touch_event_handler.RespondToEvent(ee);
-         a5_input_handler->touch_event_handler.TakeNextEvent();/// discard event after emitting
+         a5_input_handler->touch_event_handler.RespondToEvent(ee , thread);
+         a5_input_handler->touch_event_handler.TakeNextEvent(thread);/// discard event after emitting
       }
       else if (IsJoystickEvent(ee)) {
-         handler->EmitEvent(ee);
-         a5_input_handler->joystick_event_handler.RespondToEvent(ee);
-         a5_input_handler->joystick_event_handler.TakeNextEvent();/// discard event after emitting
+         a5_input_handler->joystick_event_handler.RespondToEvent(ee , thread);
+         a5_input_handler->joystick_event_handler.TakeNextEvent(thread);/// discard event after emitting
       }
    }
    return input_handler;
@@ -216,11 +213,15 @@ Allegro5InputHandler::Allegro5InputHandler() :
       touch_event_handler(false)
 {
    
+   keyboard_event_handler.SetName(StringPrintF("A5 Keyboard Event Handler (EID = %d)" , keyboard_event_handler.GetEagleId()));
+   joystick_event_handler.SetName(StringPrintF("A5 Joystick Event Handler (EID = %d)" , joystick_event_handler.GetEagleId()));
+   mouse_event_handler.SetName   (StringPrintF("A5 Mouse Event Handler    (EID = %d)" , mouse_event_handler.GetEagleId()));
+   touch_event_handler.SetName   (StringPrintF("A5 Touch Event Handler    (EID = %d)" , touch_event_handler.GetEagleId()));
+   
    keyboard_event_handler.Create();
    joystick_event_handler.Create();
    mouse_event_handler.Create();
    touch_event_handler.Create();
-   
    
    this->ListenTo(&keyboard_event_handler);
    this->ListenTo(&mouse_event_handler);
@@ -230,12 +231,12 @@ Allegro5InputHandler::Allegro5InputHandler() :
    if (!input_thread.Create(A5InputThreadProcess , this)) {
       throw EagleException("Allegro5InputHandler::Allegro5InputHandler : Failed to create input thread.");
    }
-
+/**
    keyboard_event_handler.SetOurThread(&input_thread);
    mouse_event_handler.SetOurThread(&input_thread);
    joystick_event_handler.SetOurThread(&input_thread);
    touch_event_handler.SetOurThread(&input_thread);
-   
+*/   
    al_init_user_event_source(&input_extra_event_source);
 
    input_queue = al_create_event_queue();
@@ -267,8 +268,8 @@ Allegro5InputHandler::~Allegro5InputHandler() {
 
 
 
-void Allegro5InputHandler::RespondToEvent(EagleEvent e) {
-   EmitEvent(e);
+void Allegro5InputHandler::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   EmitEvent(e , thread);
 }
 
 

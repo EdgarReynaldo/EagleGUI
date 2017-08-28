@@ -762,7 +762,7 @@ void EagleSystem::RegisterInputs(EagleEventHandler* queue) {
 bool EagleSystem::UpToDate() {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   return !system_queue->HasEvent();
+   return !system_queue->HasEvent(0);
 }
 
 
@@ -772,7 +772,7 @@ EagleEvent EagleSystem::UpdateSystemState() {
    EAGLE_ASSERT(system_queue);
 
    if (!UpToDate()) {
-      EagleEvent e = system_queue->TakeNextEvent();
+      EagleEvent e = system_queue->TakeNextEvent(0);
       most_recent_system_event = e;
       input_handler->HandleInputEvent(e);
       return e;
@@ -787,7 +787,7 @@ EagleEvent EagleSystem::UpdateSystemState() {
 EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   EagleEvent e = system_queue->WaitForEvent();
+   EagleEvent e = system_queue->WaitForEvent(0);
    most_recent_system_event = e;
    input_handler->HandleInputEvent(e);
    return e;
@@ -798,7 +798,7 @@ EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
 EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   EagleEvent e = system_queue->WaitForEvent(timeout);
+   EagleEvent e = system_queue->WaitForEvent(timeout , 0);
    if (e.type == EAGLE_EVENT_NONE) {return e;}
    most_recent_system_event = e;
    input_handler->HandleInputEvent(e);

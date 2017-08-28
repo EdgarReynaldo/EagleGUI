@@ -157,7 +157,7 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ee.window = this;
    ee.display = DISPLAY_EVENT_DATA();
 
-   EmitEvent(ee);
+   EmitEvent(ee , 0);
 
    return true;
 }
@@ -177,7 +177,7 @@ void Allegro5GraphicsContext::Destroy() {
    ee.window = this;
    ee.display = DISPLAY_EVENT_DATA();
 
-   EmitEvent(ee);
+   EmitEvent(ee , 0);
 
    images.FreeAll();
 

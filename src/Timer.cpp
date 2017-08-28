@@ -20,12 +20,12 @@
  */
 
 
-
+#include "Eagle/Threads.hpp"
 #include "Eagle/Timer.hpp"
 #include "Eagle/StringWork.hpp"
 
 
-void EagleTimer::Tick(double timestamp) {
+void EagleTimer::Tick(double timestamp , EagleThread* thread) {
    ++current_ticks;
    EagleEvent ev;
    TIMER_EVENT_DATA d;
@@ -36,7 +36,7 @@ void EagleTimer::Tick(double timestamp) {
    ev.source = this;
    ev.type = EAGLE_EVENT_TIMER;
    ev.timestamp = timestamp;
-   EmitEvent(ev);
+   EmitEvent(ev , thread);
 }
 
 
@@ -66,28 +66,28 @@ EagleTimer::EagleTimer(std::string name) :
 
 
 unsigned long long EagleTimer::Count() {
-   RefreshTimer();
+   RefreshTimer(0);
    return current_ticks;
 }
 
 
 
 unsigned long long EagleTimer::TicksPassed() {
-   RefreshTimer();
+   RefreshTimer(0);
    return current_ticks - previous_ticks;
 }
 
 
 
 double EagleTimer::TimePassed() {
-   RefreshTimer();
+   RefreshTimer(0);
    return (double)(current_ticks - previous_ticks)*spt;
 }
 
 
 
 int EagleTimer::TakeAllTicks() {
-   RefreshTimer();
+   RefreshTimer(0);
    int delta_ticks = (int)(current_ticks - previous_ticks);
    previous_ticks = current_ticks;
    return delta_ticks;
@@ -96,7 +96,7 @@ int EagleTimer::TakeAllTicks() {
 
 
 double EagleTimer::TakeAllTime() {
-   RefreshTimer();
+   RefreshTimer(0);
    double t = (double)(current_ticks - previous_ticks)*spt;
    previous_ticks = current_ticks;
    return t;

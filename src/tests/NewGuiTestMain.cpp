@@ -44,7 +44,7 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    win->Clear(EagleColor(0,0,255));
    warea.PaintImages(win , 0 , 0 , DRAW_NORMAL);
    win->FlipDisplay();
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
    NinePatch np = MakeNinePatch(win , npimage , warea);
    warea.SetImages(np.imgs);
@@ -55,12 +55,12 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    np_painter.PaintBackground(win , warea , WidgetColorset() , 0 , 0);
    win->RestoreLastBlendingState();
    win->FlipDisplay();
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
    win->Clear(EagleColor(0,0,0));
    win->Draw(npimage , 0 , 0);
    win->FlipDisplay();
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
    RelativeLayout r;
 

@@ -111,7 +111,7 @@ void TestMenu::Run() {
       /// Handle events
       do {
          
-         EagleEvent ev = test_queue->WaitForEvent();
+         EagleEvent ev = test_queue->WaitForEvent(0);
          
          if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
             EagleLog() << StringPrintF("Received event %d (%s) on window %p" ,
@@ -169,7 +169,7 @@ void TestMenu::Run() {
                }
             }
          }
-      } while (test_queue->HasEvent());
+      } while (test_queue->HasEvent(0));
    }
    
    for (int i = 0 ; i < (int)running_tests.size() ; ++i) {

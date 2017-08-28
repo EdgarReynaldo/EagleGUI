@@ -91,7 +91,7 @@ void WidgetBase::RaiseEvent(WidgetMsg msg) {
    
    // send event to listeners
    EagleEvent e = MakeEagleEvent(msg);
-   EmitEvent(e);
+   EmitEvent(e , 0);/// TODO : FIXME : We should fix this so it takes a thread*
    
    // tell our parent
    WidgetBase::QueueUserMessage(msg);

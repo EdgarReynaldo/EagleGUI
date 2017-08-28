@@ -29,6 +29,9 @@
 #include "Eagle/Object.hpp"
 
 
+class EagleThread;
+
+
 
 class EagleTimer : public EagleEventSource , public EagleObject {
 
@@ -46,7 +49,7 @@ protected :
       return i++;
    }
    
-   void Tick(double timestamp);
+   void Tick(double timestamp , EagleThread* thread);
    
 public :
    
@@ -55,14 +58,14 @@ public :
    virtual ~EagleTimer() {}
 
    /// EagleEventSource
-   void ReadEvents() {RefreshTimer();}
+   void ReadEvents() {RefreshTimer(0);}
 
    virtual bool Create(double seconds_per_tick)=0;
    virtual void Destroy()=0;
    virtual void Start()=0;
    virtual void Stop()=0;
    virtual void Close()=0;
-   virtual void WaitForTick()=0;
+   virtual void WaitForTick(EagleThread* thread)=0;
    bool SetSecondsPerTick(double secs) {return Create(secs);}
    
    
@@ -73,7 +76,7 @@ public :
    
    virtual void* Source()=0;
 
-   virtual void RefreshTimer()=0;
+   virtual void RefreshTimer(EagleThread* thread)=0;
    
    // time passed since the last TakeAllTime was called
    unsigned long long TicksPassed();

@@ -53,7 +53,7 @@ public :
    Allegro5InputHandler();
    ~Allegro5InputHandler();
    
-   virtual void RespondToEvent(EagleEvent e);
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
    
    virtual int NumJoysticksInstalled();
 

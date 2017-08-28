@@ -321,7 +321,7 @@ int ReadKey(EagleEventHandler* queue) {
    EAGLE_ASSERT(queue);
    EagleEvent ev;
    do {
-      ev = queue->WaitForEvent();
+      ev = queue->WaitForEvent(0);
       if (ev.type == EAGLE_EVENT_KEY_DOWN) {
          return ev.keyboard.keycode;
       }
@@ -873,7 +873,7 @@ void EagleInputHandler::RecordInputPress(EagleEventHandler* queue , Input* input
 //   al_flush_event_queue(queue);
    while (1) {
       EagleEvent ev;
-      ev = queue->WaitForEvent();
+      ev = queue->WaitForEvent(0);
       HandleInputEvent(ev);
       Input i;
       if (AnyInputPressed(&i)) {

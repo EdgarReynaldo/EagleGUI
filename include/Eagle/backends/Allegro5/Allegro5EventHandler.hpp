@@ -48,7 +48,7 @@ public :
    virtual void Destroy();
    virtual bool Valid();
 
-   virtual void RespondToEvent(EagleEvent e);
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
 
    ALLEGRO_EVENT_QUEUE* AllegroQueue() {return event_queue;}
 

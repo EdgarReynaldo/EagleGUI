@@ -76,7 +76,7 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
          a5man->SwitchOut(ee.window);
       }
 
-      ee.window->EmitEvent(ee);
+      ee.window->EmitEvent(ee , thread);
 
    }
    return 0;

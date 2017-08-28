@@ -110,7 +110,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
 ///      WidgetBorderedImagePainterStretch(win , a , c , 0 , 0);
 //      WidgetNPPainter(win , a , c , 0 , 0);
       win->FlipDisplay();
-      sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+      sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
    }
 
    WidgetHandler wgui(win);
@@ -247,7 +247,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    EagleLog() << "Printing Widgethandler hierarchy :" << endl;
    EagleLog() << *gui << endl << endl;
 
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 //   sys->GetSystemTimer()->Create(1.0);
    sys->GetSystemTimer()->Start();
 
@@ -288,10 +288,10 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
          EagleEvent e;
 
          EagleEventHandler* q = sys->GetSystemQueue();
-         e = q->PeekNextEvent();
+         e = q->PeekNextEvent(0);
          if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
             sys->Rest(0.5);
-            std::vector<EagleEvent> resize_events = q->FilterEvents(EAGLE_EVENT_DISPLAY_RESIZE);
+            std::vector<EagleEvent> resize_events = q->FilterEvents(EAGLE_EVENT_DISPLAY_RESIZE , 0);
             EagleLog() << resize_events.size() << " resize events." << std::endl;
             e = resize_events[resize_events.size() - 1];
             win->AcknowledgeResize();
@@ -416,7 +416,7 @@ int GuiTestMain2(int argc , char** argv , TestRunner* test_runner) {
 
    win->FlipDisplay();
 
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
    WidgetHandler gui(win);/// TEST : All other widgets will get destroyed first, make sure we don't call any methods on
                      /// a destroyed object
@@ -831,7 +831,7 @@ int GuiTestMain3(int argc , char** argv , TestRunner* test_runner) {
 
    win->FlipDisplay();
 
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
    return 0;
 }

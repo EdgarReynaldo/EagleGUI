@@ -1,6 +1,8 @@
 
 
 
+#include "Eagle/StringWork.hpp"
+
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Timer.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
@@ -39,7 +41,7 @@ void* TimerProcess(EagleThread* ethread , void* etimer) {
       if (ev.type == ALLEGRO_EVENT_TIMER && ev.timer.source == (ALLEGRO_TIMER*)eagle_a5_timer->Source()) {
 //         EagleInfo() << "TIMER_EVENT received" << std::endl;
          ++counter;
-         eagle_a5_timer->Tick(ev.any.timestamp);///al_get_time());
+         eagle_a5_timer->Tick(ev.any.timestamp , ethread);///al_get_time());
       }
       else if (ev.type == EAGLE_EVENT_USER_START) {
          switch (ev.user.data1) {
@@ -237,13 +239,13 @@ void Allegro5Timer::Close() {
 
 
 
-void Allegro5Timer::WaitForTick() {
+void Allegro5Timer::WaitForTick(EagleThread* thread) {
    if (timer_queue && timer) {
       do {
          ALLEGRO_EVENT e;
          al_wait_for_event(timer_queue , &e);
          if (e.type == ALLEGRO_EVENT_TIMER) {
-            Tick(al_get_time());
+            Tick(al_get_time() , thread);
             break;
          }
       } while (true);
@@ -259,12 +261,12 @@ void* Allegro5Timer::Source() {
 
 
 
-void Allegro5Timer::RefreshTimer() {
+void Allegro5Timer::RefreshTimer(EagleThread* thread) {
    if (timer_queue && timer) {
       ALLEGRO_EVENT ev;
       while (al_get_next_event(timer_queue , &ev)) {
          if (ev.type == ALLEGRO_EVENT_TIMER) {
-            Tick(al_get_time());
+            Tick(al_get_time() , thread);
          }
       }
    }

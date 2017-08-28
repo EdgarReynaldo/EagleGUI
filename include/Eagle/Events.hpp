@@ -371,7 +371,7 @@ private :
 
 public :
 
-   void EmitEvent(EagleEvent e);
+   void EmitEvent(EagleEvent e , EagleThread* thread);
 
    EagleEventSource() : listeners() {}
    virtual ~EagleEventSource();
@@ -396,7 +396,7 @@ public :
    EagleEventListener() : sources() {}
    virtual ~EagleEventListener();
 
-   virtual void RespondToEvent(EagleEvent e)=0;
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread)=0;
 
    void ListenTo(EagleEventSource* s);
    void StopListeningTo(EagleEventSource* s);
@@ -408,15 +408,20 @@ public :
 
 /// Abstract base class!
 class EagleEventHandler : public EagleObject , public EagleEventListener , public EagleEventSource {
+
 protected :
    std::deque<EagleEvent> queue;
    EagleMutex* mutex;
    EagleConditionVar* cond_var;
    bool emitter_delay;/// To decide whether events are emitted immediately upon receipt,
                       /// or whether they are emitted as they are taken off the queue
-
+   
    EagleThread* our_thread;
-                      
+   
+   
+   
+   void SetOurThread(EagleThread* t);
+   
 public :
    EagleEventHandler(bool delay_emitted_events = true);
    virtual ~EagleEventHandler() {}
@@ -425,29 +430,28 @@ public :
    virtual void Destroy()=0;
    virtual bool Valid()=0;
    
-   void SetOurThread(EagleThread* t);
 
    /// EagleEventListener
-   virtual void RespondToEvent(EagleEvent e);
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
 
-   void Clear();
+   void Clear(EagleThread* thread);
 
-   void PushEvent(EagleEvent e);
+   void PushEvent(EagleEvent e , EagleThread* thread);
 
-   bool HasEvent();
-   EagleEvent TakeNextEvent();
-   EagleEvent PeekNextEvent();
+   bool HasEvent(EagleThread* thread);
+   EagleEvent TakeNextEvent(EagleThread* thread);
+   EagleEvent PeekNextEvent(EagleThread* thread);
 
-   void InsertEventFront(EagleEvent e);/// Does not EmitEvent...merely adds the event to the front of the queue
+   void InsertEventFront(EagleEvent e , EagleThread* thread);/// Does not EmitEvent...merely adds the event to the front of the queue
                                        /// Allows you to 'put back' an event
 
-   std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype);
-   std::vector<EagleEvent> FilterEvents(EagleEventSource* esrc);
-   std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype , EagleEventSource* esrc);
+   std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype , EagleThread* thread);
+   std::vector<EagleEvent> FilterEvents(EagleEventSource* esrc , EagleThread* thread);
+   std::vector<EagleEvent> FilterEvents(EAGLE_EVENT_TYPE etype , EagleEventSource* esrc , EagleThread* thread);
 
-   EagleEvent WaitForEvent();
-   EagleEvent WaitForEvent(double timeout);
-   EagleEvent WaitForEvent(EAGLE_EVENT_TYPE t);
+   EagleEvent WaitForEvent(EagleThread* thread);
+   EagleEvent WaitForEvent(double timeout , EagleThread* thread);
+   EagleEvent WaitForEvent(EAGLE_EVENT_TYPE type , EagleThread* thread);
 
 ///   EagleEventHandler* CloneEventHandler();TODO : Make this abstract and virtual and move it to Allegro5EventHandler
 };

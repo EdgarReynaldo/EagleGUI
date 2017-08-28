@@ -36,7 +36,7 @@ int DrawingTestMain(int argc , char** argv , TestRunner* test_runner) {
 
    win->FlipDisplay();
 
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN);
+   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
 
 /**
    bool close = false;

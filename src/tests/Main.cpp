@@ -61,7 +61,7 @@ void* bad_thread(EagleThread* t , void* data) {
 
       do {
 
-         EagleEvent ee = q->WaitForEvent(1.0);
+         EagleEvent ee = q->WaitForEvent(1.0 , 0);
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             ret = (void*)0;
             quit = true;
@@ -87,7 +87,7 @@ void* bad_thread(EagleThread* t , void* data) {
             secs*= 60.0;
             redraw = true;
          }
-      } while (q->HasEvent());
+      } while (q->HasEvent(0));
    }
 
    GetAllegro5System()->FreeEventHandler(q);
@@ -131,7 +131,7 @@ int main(int argc , char** argv) {
    a5sys->GetSystemTimer()->Start();
 
    while (1) {
-      EagleEvent ee = queue->WaitForEvent();
+      EagleEvent ee = queue->WaitForEvent(0);
 
       if (ee.type != EAGLE_EVENT_TIMER && ee.type != EAGLE_EVENT_MOUSE_AXES) {
          EagleInfo() << "Handling event " << EagleEventName(ee.type) << std::endl;
