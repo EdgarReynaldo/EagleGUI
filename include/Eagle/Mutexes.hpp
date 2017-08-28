@@ -81,11 +81,25 @@ protected :
 
    virtual void PrivateUnlock()=0;
 
+   friend class EagleThread;
+   friend class MutexManager;
+   
+   void DoLock       (EagleThread* callthread , std::string callfunc);
+   bool DoLockWaitFor(EagleThread* callthread , std::string callfunc , double timeout);
+   bool DoTryLock    (EagleThread* callthread , std::string callfunc);
+   void DoUnLock     (EagleThread* callthread , std::string callfunc);
+
+   void DoLock       (std::string callfunc);
+   bool DoLockWaitFor(std::string callfunc , double timeout);
+   bool DoTryLock    (std::string callfunc);
+   void DoUnLock     (std::string callfunc);
+
+   void LogThreadState(EagleThread* t , const char* func , const char* state);
 
 public :
 
    EagleMutex();
-   virtual ~EagleMutex() {}
+   virtual ~EagleMutex();
 
    virtual bool Create(bool multi_lockable , bool is_timed)=0;
    virtual void Destroy()=0;/// NOTE : Must call Destroy in YOUR destructor for inherited mutex classes
@@ -94,30 +108,76 @@ public :
    bool Timed();
    bool Recursive();
 
-
-   /// void Lock();/// There is a macro for Lock() that calls Lock(__function__) in your code
-   /// void Unlock();/// There is a macro for Unlock() that calls Unlock(__function__) in your code
-
-   /// DoLockWaitFor will throw an error if this is not a timed mutex
-   /// callthread may be NULL if calling from main
-   /// Pass EAGLE__FUNC for callfunc
+   /** Mutex class has no public methods for locking and unlocking mutexes. Use MutexManager static methods instead. */
    
-   void DoLock       (EagleThread* callthread , std::string callfunc);
-   bool DoLockWaitFor(EagleThread* callthread , std::string callfunc , double timeout);
-   bool DoTryLock    (EagleThread* callthread , std::string callfunc);
-   void DoUnlock     (EagleThread* callthread , std::string callfunc);
-
    EAGLE_MUTEX_STATE GetMutexState();
    
-   void LogThreadState(EagleThread* t , const char* func , const char* state);
    
 };
 
 
+class MutexManager {
+   
+   friend class EagleMutex;
+   
+protected :
+   
+   static MutexManager* mutex_man;
+   
+   std::map<int , EagleMutex*> mutex_map;
 
+   MutexManager();
+   
+   void RegisterMutex(EagleMutex* m);
+   void UnRegisterMutex(EagleMutex* m);
+   
+   
+   
+public :
+   static MutexManager* Instance();
+   
+   
+   static void DoThreadLockOnMutex    (EagleThread* t , EagleMutex* m , const char* callfunc);
+   static bool DoThreadTryLockOnMutex (EagleThread* t , EagleMutex* m , const char* callfunc);
+   static bool DoThreadLockWaitOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc , double timeout);
+   static void DoThreadUnLockOnMutex  (EagleThread* t , EagleMutex* m , const char* callfunc);
+   
+   static void DoLockOnMutex    (EagleMutex* m , const char* callfunc);
+   static bool DoTryLockOnMutex (EagleMutex* m , const char* callfunc);
+   static bool DoLockWaitOnMutex(EagleMutex* m , const char* callfunc , double timeout);
+   static void DoUnLockOnMutex  (EagleMutex* m , const char* callfunc);
+   
+   
+};
 
+/** Some helper macros to make threading and mutex locks cleaner and easier to use */
+#define ThreadLockMutex(t,m) \
+        MutexManager::DoThreadLockOnMutex(t,m,EAGLE__FUNC)
 
+#define ThreadTryLockMutex(t,m) \
+        MutexManager::DoThreadTryLockOnMutex(t,m,EAGLE__FUNC)
 
+#define ThreadWaitLockMutex(t,m) \
+        MutexManager::DoThreadWaitLockOnMutex(t,m,EAGLE__FUNC)
+
+#define ThreadUnLockMutex(t,m) \
+        MutexManager::DoThreadUnLockOnMutex(t,m,EAGLE__FUNC)
+
+#define LockMutex(m)\
+        MutexManager::DoLockOnMutex(m,EAGLE__FUNC)
+
+#define TryLockMutex(m)\
+        MutexManager::DoTryLockOnMutex(m,EAGLE__FUNC)
+
+#define WaitLockMutex(m,d)\
+        MutexManager::DoWaitLockOnMutex(m,EAGLE__FUNC,d)
+
+#define UnLockMutex(m)\
+        MutexManager::DoUnLockOnMutex(m,EAGLE__FUNC)
+
+        
+        
+        
 #endif // EagleMutex_HPP
 
 

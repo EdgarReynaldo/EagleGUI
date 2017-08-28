@@ -6,7 +6,7 @@
 
 
 #include "Eagle/Object.hpp"
-
+#include "Eagle/Mutexes.hpp"
 
 #include <fstream>
 
@@ -25,6 +25,9 @@ private :
    static int new_thread_id;
    
    int thread_id;
+   EAGLE_MUTEX_STATE mutex_state;
+   EagleMutex* our_mutex;
+   
    
 public :
    EagleThread();
@@ -44,8 +47,14 @@ public :
 
    int ID() {return thread_id;}
 
+   void DoLockOnMutex(EagleMutex* m , const char* func);
+   bool DoTryLockOnMutex(EagleMutex* m , const char* func);
+   bool DoLockWaitOnMutex(EagleMutex* m , const char* func , double timeout);
+   void DoUnLockOnMutex(EagleMutex* m , const char* func);
+   
+   
+   
 };
-
 
 /**
    ThreadManager tracks which 

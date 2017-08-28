@@ -244,13 +244,13 @@ EagleGraphicsContext::EagleGraphicsContext(std::string name) :
 
 bool EagleGraphicsContext::StartDrawing() {
    EAGLE_ASSERT(window_mutex && window_mutex->Valid());
-   return window_mutex->DoTryLock(our_thread , EAGLE__FUNC);
+   return ThreadTryLockMutex(our_thread , window_mutex);
 }
 
 
 
 void EagleGraphicsContext::CompleteDrawing() {
-   window_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , window_mutex);
 }
 
 

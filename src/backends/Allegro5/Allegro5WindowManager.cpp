@@ -99,10 +99,10 @@ void Allegro5WindowManager::AddDisplay(EagleGraphicsContext* window , ALLEGRO_DI
       }
    }
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    display_context_map[display] = window;
    EagleInfo() << StringPrintF("Allegro5WindowManager::AddDisplay - adding ALLEGRO_DISPLAY* %p ." , display) << std::endl;
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
 
@@ -110,13 +110,13 @@ void Allegro5WindowManager::AddDisplay(EagleGraphicsContext* window , ALLEGRO_DI
 void Allegro5WindowManager::RemoveDisplay(ALLEGRO_DISPLAY* display) {
    if (!display) {return;}
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
    if (it != display_context_map.end()) {
       display_context_map.erase(it);
       EagleInfo() << StringPrintF("Allegro5WindowManager::RemoveDisplay - removing ALLEGRO_DISPLAY* %p ." , display) << std::endl;
    }
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
 
@@ -335,7 +335,7 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
 
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
 
    std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
    if (it != display_context_map.end()) {
@@ -345,7 +345,7 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
       EagleWarn() << StringPrintF("Failed to retrieve window for ALLEGRO_DISPLAY* %p.\n" , display);
    }
 
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 
    return window;
 }
@@ -382,9 +382,11 @@ Allegro5WindowManager* GetAllegro5WindowManager() {
 int Allegro5WindowManager::PrivateGiveWindowFocus(int window_eid) {
    EagleGraphicsContext* win = 0;
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+
+   ThreadLockMutex(our_thread , manager_mutex);
    win = window_map[window_eid];
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
+
    Allegro5GraphicsContext* a5win = dynamic_cast<Allegro5GraphicsContext*>(win);
    if (!a5win) {
       return -1;

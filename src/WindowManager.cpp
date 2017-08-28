@@ -12,12 +12,12 @@
 void EagleWindowManager::SwitchIn(EagleGraphicsContext* window) {
    EAGLE_ASSERT(window);
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    WMIT it = window_map.find(window->GetEagleId());
    EAGLE_ASSERT(it != window_map.end());
    EAGLE_ASSERT(it->second);
    active_window = window;
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
 
@@ -26,7 +26,7 @@ void EagleWindowManager::SwitchOut(EagleGraphicsContext* window) {
    EAGLE_ASSERT(window);
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
 
    EAGLE_ASSERT(window_map.find(window->GetEagleId()) != window_map.end());
 
@@ -34,7 +34,7 @@ void EagleWindowManager::SwitchOut(EagleGraphicsContext* window) {
       active_window = 0;/// We don't know which window will become active, but this one was, so zero the active_window
    }
 
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
 
@@ -69,9 +69,9 @@ void EagleWindowManager::CloseWindows() {
 
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    winmap = window_map;
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 
    for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
       if (it->second != 0) {
@@ -83,10 +83,10 @@ void EagleWindowManager::CloseWindows() {
       }
    }
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    window_map.clear();
    active_window = 0;
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 
    EAGLE_ASSERT(window_count == 0);
 }
@@ -101,11 +101,11 @@ EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , 
       }
 
       EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
-      manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+      ThreadLockMutex(our_thread , manager_mutex);
       window_map[window->GetEagleId()] = window;
       ++window_count;
       active_window = window;
-      manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+      ThreadUnLockMutex(our_thread , manager_mutex);
 
       return window;
    }
@@ -118,17 +118,17 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
 
    WMIT it = window_map.find(window_eid);
    if (it == window_map.end()) {
       EagleWarn() << "EagleWindowManager::DestroyWindow - attempting to destroy an unregistered window. Ignored." << std::endl;
-      manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+      ThreadUnLockMutex(our_thread , manager_mutex);
       return;
    }
    if (it->second == (EagleGraphicsContext*)0) {
       EagleWarn() << "EagleWindowManager::DestroyWindow - attempting to destroy null window. Ignored." << std::endl;
-      manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+      ThreadUnLockMutex(our_thread , manager_mutex);
       return;
    }
 
@@ -144,7 +144,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    --window_count;
 
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 
 }
 
@@ -155,9 +155,9 @@ EagleGraphicsContext* EagleWindowManager::GetActiveWindow() {
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
    EagleGraphicsContext* window = 0;
 
-   manager_mutex->DoLock(our_thread , EAGLE__FUNC);
+   ThreadLockMutex(our_thread , manager_mutex);
    window = active_window;
-   manager_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+   ThreadUnLockMutex(our_thread , manager_mutex);
 
    return window;
 }

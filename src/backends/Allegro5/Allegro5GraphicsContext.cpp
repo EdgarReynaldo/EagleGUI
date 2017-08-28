@@ -185,7 +185,7 @@ void Allegro5GraphicsContext::Destroy() {
 
       /// Block until after drawing is done and releases the lock,
       /// or acquire the lock before drawing and prevent it
-      window_mutex->DoLock(our_thread , EAGLE__FUNC);
+      ThreadLockMutex(our_thread , window_mutex);
 
       GetAllegro5WindowManager()->SignalClose(this);
 
@@ -195,7 +195,7 @@ void Allegro5GraphicsContext::Destroy() {
 
       display = 0;
 
-      window_mutex->DoUnlock(our_thread , EAGLE__FUNC);
+      ThreadUnLockMutex(our_thread , window_mutex);
    }
 
    if (mp_manager) {

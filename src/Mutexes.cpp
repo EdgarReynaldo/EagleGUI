@@ -8,30 +8,6 @@
 
 
 
-EagleMutex::EagleMutex() :
-      EagleObject(),
-      type(MTX_INVALID),
-      state(MTX_UNLOCKED),
-      lock_count(0),
-      owner((EagleThread*)-1),
-      log(true)
-{
-   SetName(StringPrintF("EagleMutex at %p" , this));
-}
-
-
-
-bool EagleMutex::Valid() {
-   return type != MTX_INVALID;
-}
-bool EagleMutex::Timed() {
-   return ((type == MTX_TIMED) || (type == MTX_RECURSIVE_TIMED));
-}
-bool EagleMutex::Recursive() {
-   return ((type == MTX_RECURSIVE) || (type == MTX_RECURSIVE_TIMED));
-}
-
-
 
 void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
 
@@ -114,7 +90,7 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
 
 
 
-void EagleMutex::DoUnlock(EagleThread* callthread , std::string callfunc) {
+void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
 
    PrivateUnlock();
    
@@ -132,6 +108,68 @@ void EagleMutex::DoUnlock(EagleThread* callthread , std::string callfunc) {
    
    LogThreadState(callthread , callfunc.c_str() , "UnLocked");
 
+}
+
+
+
+EagleMutex::EagleMutex() :
+      EagleObject(),
+      type(MTX_INVALID),
+      state(MTX_UNLOCKED),
+      lock_count(0),
+      owner((EagleThread*)-1),
+      log(true)
+{
+   SetName(StringPrintF("EagleMutex at %p" , this));
+   MutexManager::Instance()->RegisterMutex(this);
+}
+
+
+
+EagleMutex::~EagleMutex() {
+   MutexManager::Instance()->UnRegisterMutex(this);
+}
+
+
+
+bool EagleMutex::Valid() {
+   return type != MTX_INVALID;
+}
+
+
+
+bool EagleMutex::Timed() {
+   return ((type == MTX_TIMED) || (type == MTX_RECURSIVE_TIMED));
+}
+
+
+
+bool EagleMutex::Recursive() {
+   return ((type == MTX_RECURSIVE) || (type == MTX_RECURSIVE_TIMED));
+}
+
+
+
+void EagleMutex::DoLock(std::string callfunc) {
+   DoLock(0 , callfunc);
+}
+
+
+
+bool EagleMutex::DoLockWaitFor(std::string callfunc , double timeout) {
+   return DoLockWaitFor(0 , callfunc , timeout);
+}
+
+
+
+bool EagleMutex::DoTryLock(std::string callfunc) {
+   return DoTryLock(0 , callfunc);
+}
+
+
+
+void EagleMutex::DoUnLock(std::string callfunc) {
+   DoUnLock(0 , callfunc);
 }
 
 
@@ -158,6 +196,124 @@ void EagleMutex::LogThreadState(EagleThread* t , const char* func , const char* 
 #endif
    return;
 }
+
+
+
+/// ---------------------      MutexManager      -------------------------------------
+
+
+
+MutexManager* MutexManager::mutex_man = 0;
+
+
+MutexManager::MutexManager() :
+   mutex_map()
+{}
+
+
+
+void MutexManager::RegisterMutex(EagleMutex* m) {
+   mutex_map[m->GetEagleId()] = m;
+}
+
+
+
+void MutexManager::UnRegisterMutex(EagleMutex* m) {
+   auto it = mutex_map.find(m->GetEagleId());
+   if (it != mutex_map.end()) {
+      mutex_map.erase(it);
+   }
+}
+
+
+
+MutexManager* MutexManager::Instance() {
+   if (!mutex_man) {
+      mutex_man = new MutexManager();
+   }
+   return mutex_man;
+}
+
+
+
+void MutexManager::DoThreadLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
+   EAGLE_ASSERT(m);
+   EAGLE_ASSERT(callfunc);
+   if (t) {
+      t->DoLockOnMutex(m , callfunc);
+   }
+   else {
+      m->DoLock(callfunc);
+   }
+}
+
+
+
+bool MutexManager::DoThreadTryLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
+   EAGLE_ASSERT(m);
+   EAGLE_ASSERT(callfunc);
+   if (t) {
+      return t->DoTryLockOnMutex(m , callfunc);
+   }
+   else {
+      return m->DoTryLock(callfunc);
+   }
+   return false;
+}
+
+
+
+bool MutexManager::DoThreadLockWaitOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc , double timeout) {
+   EAGLE_ASSERT(m);
+   EAGLE_ASSERT(callfunc);
+   if (t) {
+      return t->DoLockWaitOnMutex(m , callfunc , timeout);
+   }
+   else {
+      return m->DoLockWaitFor(callfunc , timeout);
+   }
+   return false;
+}
+
+
+
+void MutexManager::DoThreadUnLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
+   EAGLE_ASSERT(m);
+   EAGLE_ASSERT(callfunc);
+   if (t) {
+      t->DoUnLockOnMutex(m , callfunc);
+   }
+   else {
+      m->DoUnLock(callfunc);
+   }
+}
+
+
+
+void MutexManager::DoLockOnMutex(EagleMutex* m , const char* callfunc) {
+   DoThreadLockOnMutex(0 , m , callfunc);
+}
+
+
+
+bool MutexManager::DoTryLockOnMutex (EagleMutex* m , const char* callfunc) {
+   return DoThreadTryLockOnMutex(0 , m , callfunc);
+}
+
+
+
+bool MutexManager::DoLockWaitOnMutex(EagleMutex* m , const char* callfunc , double timeout) {
+   return DoThreadLockWaitOnMutex(0 , m , callfunc , timeout);
+}
+
+
+
+void MutexManager::DoUnLockOnMutex  (EagleMutex* m , const char* callfunc) {
+   DoThreadUnLockOnMutex(0 , m , callfunc);
+}
+
+
+
 
 
 
