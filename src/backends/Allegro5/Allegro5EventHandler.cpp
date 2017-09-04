@@ -212,10 +212,11 @@ bool Allegro5EventHandler::Create() {
    al_register_event_source(event_queue , &main_source);
 
    mutex = new CXX11Mutex();
-   mutex->SetName(StringPrintF("%s Mutex (EID = %d)" , GetNameCStr() , mutex->GetEagleId()));
+   mutex->SetShortName("A5EH");
    
    event_thread = new Allegro5Thread();
-   event_thread->SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , event_thread->GetEagleId()));
+   event_thread->SetShortName("A5EH");
+///   SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , event_thread->GetEagleId()));
    SetOurThread(event_thread);
    
    cond_var = new Allegro5ConditionVar();

@@ -688,10 +688,10 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    }
    
    /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
-   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget - w->GetName() = (%s)\n" , w->GetNameCStr());
+   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget %s" , w->FullName());
    
    if (!OwnsWidget(w)) {
-      EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->GetNameCStr());
+      EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->FullName());
       return;
    }
    EAGLE_ASSERT(OwnsWidget(w));
@@ -1703,13 +1703,13 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    }
    os << ")" << endl;
    os << indent << StringPrintF("wfocus = %p (%s) , whover = %p (%s)" ,
-                                 wfocus , wfocus?wfocus->GetNameCStr():"" , whover , whover?whover->GetNameCStr():"") << endl;
+                                 wfocus , wfocus?wfocus->FullName():"" , whover , whover?whover->FullName():"") << endl;
    os << indent << "Widget Camera info :" << endl;
    ++indent;
    cam.DescribeTo(os,indent);
    --indent;
    WidgetBase::DescribeTo(os , indent);
-   os << indent << "Root Layout at " << root_layout << " is named " << (root_layout?root_layout->GetNameCStr():"NULL") << endl;
+   os << indent << "Root Layout at " << root_layout << " is named " << (root_layout?root_layout->FullName():"NULL") << endl;
    os << indent << "Widgets used by this dialog : {" << endl;
    ++indent;
    unsigned int nwidgets = wlist.size();

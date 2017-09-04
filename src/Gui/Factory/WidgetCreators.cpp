@@ -82,6 +82,7 @@ WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
 WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = new SelectText();
 
@@ -97,7 +98,8 @@ WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
 WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
-   
+   (void)cit;
+
    WidgetBase* widget = new LinkText();
 
    ApplyWidgetBaseAttributes(widget , att_map);
@@ -112,6 +114,7 @@ WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
 WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = new BasicButton();
 
@@ -125,6 +128,7 @@ WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
 WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = new GuiButton();
 
@@ -138,6 +142,7 @@ WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
 WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = new IconButton();
    
@@ -151,6 +156,7 @@ WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
 WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = 0;///new RadioButton();
    EAGLE_ASSERT(false);
@@ -165,6 +171,7 @@ WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
 WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
+   (void)cit;
    
    WidgetBase* widget = new BasicScrollButton();
    

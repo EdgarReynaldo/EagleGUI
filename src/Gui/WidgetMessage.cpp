@@ -138,7 +138,7 @@ WidgetMsg::WidgetMsg(const WidgetMsg& wmsg) :
    
 
 std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg) {
-   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << StringPrintF("] from %s at %p",wmsg.from?wmsg.from->GetNameCStr():"NULL widget" , wmsg.from);
+   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << StringPrintF("] from %s at %p",wmsg.from?wmsg.from->FullName():"NULL" , wmsg.from);
    return os;
 }
 

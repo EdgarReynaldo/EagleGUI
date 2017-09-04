@@ -959,10 +959,10 @@ const WidgetBase* WidgetBase::GetDecoratorRoot() const {
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    os << indent << "WidgetBase Info : " << endl;
-   os << indent << StringPrintF("WidgetBase object at (%p) named '%s' ID = %d" , this , GetNameCStr() , GetEagleId()) << endl;
+   os << indent << StringPrintF("WidgetBase object %s" , FullName()) << endl;
    ++indent;
-   os << indent << StringPrintF("Widget parent %p (%s) , layout %p (%s)" ,
-                                wparent , wparent?wparent->GetNameCStr():"NULL", layout , layout?layout->GetNameCStr():"NULL") << endl;
+   os << indent << StringPrintF("Widget parent (%s) , layout (%s)" ,
+                                wparent , wparent?wparent->FullName():"NULL", layout , layout?layout->FullName():"NULL") << endl;
    area.DescribeTo(os , indent);
    os << indent << StringPrintF("Min WxH = %i x %i" , minw , minh) << endl;
    os << indent << PrintFlags(flags);

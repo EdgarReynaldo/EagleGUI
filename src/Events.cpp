@@ -289,7 +289,7 @@ EagleEventHandler::EagleEventHandler(bool delay_emitted_events) :
       emitter_delay(delay_emitted_events),
       our_thread(0)
 {
-   SetName(StringPrintF("EagleEventHandler (EID = %d) at %p" , GetEagleId() , this));
+///   SetName(StringPrintF("EagleEventHandler (EID = %d) at %p" , GetEagleId() , this));
 }
 
 

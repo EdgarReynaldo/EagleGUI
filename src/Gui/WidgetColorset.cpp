@@ -76,7 +76,7 @@ WidgetColorset& WidgetColorset::operator=(const EagleColor colorset[EAGLE_NUMCOL
 
 std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) const {
    const EagleColor* c = wcolorset;
-   os << indent << StringPrintF("WidgetColorset object %s at %p : " , GetNameCStr() , this) << std::endl;
+   os << indent << StringPrintF("WidgetColorset %s : " , FullName()) << std::endl;
    ++indent;
    os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "]" << std::endl;
    os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "]" << std::endl;

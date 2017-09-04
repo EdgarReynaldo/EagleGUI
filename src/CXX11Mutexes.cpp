@@ -107,7 +107,7 @@ void CXX11Mutex::PrivateUnlock() {
 CXX11Mutex::CXX11Mutex() :
       EagleMutex()
 {
-   SetName(StringPrintF("CXX11Mutex(EID = %d) at %p" , GetEagleId() , this));
+///   SetShortName(StringPrintF("CXX11Mutex(EID = %d) at %p" , GetEagleId() , this));
 }
 
 

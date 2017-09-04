@@ -2,6 +2,7 @@
 Notes for Eagle 5 development
 
 Issues
+-101 StringPrintF() is not thread safe
 
 -99 Threading Issues with Multiple Windows - debug this shit
     Step 1. Create a separate log for threading only

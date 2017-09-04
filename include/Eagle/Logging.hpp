@@ -91,7 +91,7 @@ public :
    template<class Type>
    EagleLogger& operator<<(const Type& t);
    
-   
+   operator std::ostream&();
 };
 
 

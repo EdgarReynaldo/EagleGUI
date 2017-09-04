@@ -509,7 +509,7 @@ int Layout::GetLayoutSize() const {
 
 
 std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << StringPrintF("Layout object at %p named %s (size %d):" , this , GetNameCStr() , (int)GetLayoutSize()) << std::endl;
+   os << indent << StringPrintF("Layout object %s (size %d):" , FullName() , (int)GetLayoutSize()) << std::endl;
    ++indent;
    os << indent << PrintLayoutAttributes(attributes) << std::endl;
    os << indent << PrintAlignment(halign , valign) << std::endl;
@@ -518,7 +518,7 @@ std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
       WidgetBase* w = wchildren[i];
       if (w) {
-         os << indent << StringPrintF("#%d (%s) " , i , w->GetNameCStr());
+         os << indent << StringPrintF("#%d (%s) " , i , w->FullName());
          os << "Requested Area = " << RequestWidgetArea(w) << std::endl;
       }
    }

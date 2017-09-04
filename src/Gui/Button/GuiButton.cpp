@@ -460,7 +460,7 @@ void GuiButton::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_typ
 
 void GuiButton::SetLabel(string label_text) {
    text = label_text;
-   SetName(StringPrintF("\"%s\" %s at %p.", GetNameCStr() , GetWidgetClassName().c_str() , this));
+   SetShortName(text);
    SetBgRedrawFlag();
 }
 
@@ -533,7 +533,7 @@ std::string GuiButton::GetWidgetClassName() {
 
 
 std::ostream& GuiButton::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << StringPrintF("GuiButton object %s at %p :" , GetNameCStr() , this) << endl;
+   os << indent << FullName() << std::endl;
    input_group.DescribeTo(os,indent);
    os << indent << "GuiButton shape = [" << GetButtonShapeText(btn_shape) <<
                    "] GuiButton action type = [" << GetButtonActionTypeText(btn_action_type) << "]" << endl;

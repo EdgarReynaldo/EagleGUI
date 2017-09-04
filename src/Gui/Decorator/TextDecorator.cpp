@@ -304,15 +304,15 @@ void TextDecorator::SetAllowOverlapState(bool state) {
 std::ostream& TextDecorator::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    
-   os << indent << StringPrintF("<TextDecorator %s at %p (center_text = %s)>" , GetNameCStr() , this , center_text?"true":"false") << endl;
+   os << indent << StringPrintF("<%s (center_text = %s)>" , FullName() , center_text?"true":"false") << endl;
    ++indent;
-   os << indent << StringPrintF("<TextDecorator : text_widget_layout %s at %p>" ,
-                                text_widget_layout?text_widget_layout->GetNameCStr():"NULL" , text_widget_layout) << endl;
+   os << indent << StringPrintF("<TextDecorator : text_widget_layout <%s>>" ,
+                                text_widget_layout?text_widget_layout->FullName():"NULL") << endl;
    ++indent;
    text_widget_layout?(void)text_widget_layout->DescribeTo(os , indent):(void)0;
    --indent;
-   os << indent << StringPrintF("<TextDecorator : basic_text_widget %s at %p>" ,
-                                basic_text_widget?basic_text_widget->GetNameCStr():"NULL" , basic_text_widget) << endl;
+   os << indent << StringPrintF("<TextDecorator : basic_text_widget <%s>>" ,
+                                basic_text_widget?basic_text_widget->FullName():"NULL") << endl;
    ++indent;
    basic_text_widget?(void)basic_text_widget->DescribeTo(os , indent):(void)0;
    --indent;

@@ -178,6 +178,11 @@ EagleLogger& EagleCritical() {
 
 
 
+EagleLogger::operator ostream&() {
+   return log_file.log_file;
+}
+
+
 
 /** #################            Indenter class methods               ################# */
 
