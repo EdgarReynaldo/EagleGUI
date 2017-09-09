@@ -9,6 +9,23 @@
 
 
 
+const char* EagleMutexStateStr(EAGLE_MUTEX_STATE s) {
+   static const char* strs[NUM_MUTEX_STATES] = {
+      "MTX_UNLOCKED",
+      "MTX_WAITLOCK",
+      "MTX_FAILLOCK",
+      "MTX_ISLOCKED"
+   };
+   return strs[s];
+}
+
+
+
+/// ----------------------     EagleMutex      --------------------------------------
+
+
+
+
 void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
 
    if (state == MTX_ISLOCKED) {
@@ -17,16 +34,11 @@ void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
       }
    }
 
-   state = MTX_WAITLOCK;
+   LogThreadState(callthread , callfunc.c_str() , MTX_WAITLOCK);
    
-   LogThreadState(callthread , callfunc.c_str() , "WaitLock");
-
    PrivateLock();
-   state = MTX_ISLOCKED;
-   ++lock_count;
-   owner = callthread;
    
-   LogThreadState(callthread , callfunc.c_str() , "IsLocked");
+   LogThreadState(callthread , callfunc.c_str() , MTX_ISLOCKED);
 }
 
 
@@ -39,21 +51,17 @@ bool EagleMutex::DoLockWaitFor(EagleThread* callthread , std::string callfunc , 
       }
    }
 
-   state = MTX_WAITLOCK;
-
-   LogThreadState(callthread , callfunc.c_str() , "WaitLock");
+   LogThreadState(callthread , callfunc.c_str() , MTX_WAITLOCK);/// TODO : Add wait time to logging
 
    bool ret = PrivateLockWaitFor(timeout);
+
    if (ret) {
-      state = MTX_ISLOCKED;
-      ++lock_count;
-      owner = callthread;
-      LogThreadState(callthread , callfunc.c_str() , "IsLocked");
+      LogThreadState(callthread , callfunc.c_str() , MTX_ISLOCKED);
    }
    else {
-      state = MTX_UNLOCKED;
-      LogThreadState(callthread , callfunc.c_str() , "FailLock");
+      LogThreadState(callthread , callfunc.c_str() , MTX_FAILLOCK);
    }
+
    return ret;
 }
 
@@ -67,21 +75,15 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
       }
    }
 
-   state = MTX_WAITLOCK;
-
-   LogThreadState(callthread , callfunc.c_str() , "WaitLock");
+   LogThreadState(callthread , callfunc.c_str() , MTX_WAITLOCK);
 
    bool ret = PrivateTryLock();
 
    if (ret) {
-      state = MTX_ISLOCKED;
-      ++lock_count;
-      owner = callthread;
-      LogThreadState(callthread , callfunc.c_str() , "IsLocked");
+      LogThreadState(callthread , callfunc.c_str() , MTX_ISLOCKED);
    }
    else {
-      state = MTX_UNLOCKED;
-      LogThreadState(callthread , callfunc.c_str() , "FailLock");
+      LogThreadState(callthread , callfunc.c_str() , MTX_FAILLOCK);
    }
 
    return ret;
@@ -91,23 +93,8 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
 
 
 void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
-
    PrivateUnlock();
-   
-   state = MTX_UNLOCKED;
-   --lock_count;
-
-   EAGLE_ASSERT(lock_count >= 0);
-
-   if (!Recursive()) {
-      EAGLE_ASSERT(lock_count == 0);
-   }
-   if (lock_count == 0) {
-      owner = (EagleThread*)-1;
-   }
-   
-   LogThreadState(callthread , callfunc.c_str() , "UnLocked");
-
+   LogThreadState(callthread , callfunc.c_str() , MTX_UNLOCKED);
 }
 
 
@@ -120,7 +107,7 @@ EagleMutex::EagleMutex() :
       owner((EagleThread*)-1),
       log(true)
 {
-   SetName(StringPrintF("EagleMutex at %p" , this));
+///   SetName(StringPrintF("EagleMutex at %p" , this));
    MutexManager::Instance()->RegisterMutex(this);
 }
 
@@ -180,19 +167,39 @@ EAGLE_MUTEX_STATE EagleMutex::GetMutexState() {
 
 
 
-void EagleMutex::LogThreadState(EagleThread* t , const char* func , const char* tstate) {
-   (void)t;
-   (void)func;
-   (void)tstate;
+void EagleMutex::LogThreadState(EagleThread* t , const char* func , EAGLE_MUTEX_STATE tstate) {
+   if (t) {
+      t->SetState(tstate);
+      if (tstate == MTX_UNLOCKED) {
+         t->SetCaller("Unknown function");
+      }
+      else {
+         t->SetCaller(func);
+      }
+   }
+   state = tstate;
+   if (state == MTX_ISLOCKED) {
+      owner = t;
+      ++lock_count;
+   }
+   if (state == MTX_UNLOCKED) {
+      --lock_count;
+
+      EAGLE_ASSERT(lock_count >= 0);
+
+      if (!Recursive()) {
+         EAGLE_ASSERT(lock_count == 0);
+      }
+      if (lock_count == 0) {
+         owner = (EagleThread*)-1;
+      }
+   }
 #ifdef EAGLE_DEBUG_MUTEX_LOCKS
    if (log) {
       const char* threadname = t?t->FullName():"Main Thread";
       int threadid = t?t->ID():-1;
-
-      ThreadLog() << StringPrintF("%40s ID %3d %s on %40s in function %50s" , FullName() , threadid , tstate , threadname , func) << std::endl;
-      
-///         StringPrintF("Mutex '%50s' %8s on Thread #%4d %50s in function %50s" ,
-///                      GetNameCStr() , tstate , threadid , threadname , func) << std::endl;
+      ThreadLog() << StringPrintF("%40s ID %3d %s on %40s in function %50s" ,
+                                  threadname , threadid , EagleMutexStateStr(tstate) , FullName() , func) << std::endl;
    }
 #endif
    return;
@@ -240,6 +247,9 @@ MutexManager* MutexManager::Instance() {
 void MutexManager::DoThreadLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
    EAGLE_ASSERT(m);
    EAGLE_ASSERT(callfunc);
+   
+   m->DoLock(t , callfunc);
+   
    if (t) {
       t->DoLockOnMutex(m , callfunc);
    }

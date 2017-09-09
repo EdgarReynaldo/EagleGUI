@@ -21,13 +21,18 @@ typedef void* (*EAGLE_THREAD_PROCESS)(EagleThread* , void*);
 
 class EagleThread : public EagleObject {
    
+   friend class EagleMutex;
+   
 private :
    static int new_thread_id;
    
    int thread_id;
    EAGLE_MUTEX_STATE mutex_state;
    EagleMutex* our_mutex;
+   const char* latest_func_caller;
    
+   void SetState(EAGLE_MUTEX_STATE s);
+   void SetCaller(const char* caller);
    
 public :
    EagleThread();
@@ -46,7 +51,9 @@ public :
    virtual bool Valid()=0;
 
    int ID() {return thread_id;}
-
+   EAGLE_MUTEX_STATE State() {return mutex_state;}
+   EagleMutex* OurMutex() {return our_mutex;}
+   
    void DoLockOnMutex(EagleMutex* m , const char* func);
    bool DoTryLockOnMutex(EagleMutex* m , const char* func);
    bool DoLockWaitOnMutex(EagleMutex* m , const char* func , double timeout);
@@ -56,9 +63,11 @@ public :
    
 };
 
-/**
-   ThreadManager tracks which 
-*/
+
+
+
+
+
 class ThreadManager {
 
    friend class EagleThread;
@@ -68,7 +77,10 @@ private :
    static ThreadManager* threadman;
    
    
-   std::map<int , EagleThread*> thread_map;
+   typedef std::map<int , EagleThread*> THREAD_MAP;
+   typedef THREAD_MAP::iterator TMIT;
+   
+   THREAD_MAP thread_map;
    
    std::ofstream thread_log;
    
@@ -87,7 +99,21 @@ public :
 
    static ThreadManager* Instance();
    
-
+/**
+///   void PrintThreadReport();
+   void PrintThreadReport() {
+      MutexReporter rpt;
+      TMIT it = thread_map.begin();
+      while (it != thread_map.end()) {
+         EagleThread* t = it->second;
+         EagleMutex* m = t->OurMutex();
+         if (m) {
+            rpt.TrackMutexState(
+         }
+         ++it;
+      }
+   }
+*/
 };
 
 

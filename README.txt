@@ -28,7 +28,7 @@ EAGLE_LIBRARY_BUILD
 
 EAGLE_DEBUG_MUTEX_LOCKS
  - Turn on to enable debugging statements for eagle mutexes
- - Only useful when building the library
+ - Enables thread tracking
 
 Macros
 --------------------------------

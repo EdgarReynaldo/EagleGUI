@@ -3,9 +3,23 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Threads.hpp"
+#include "Eagle/Mutexes.hpp"
+
 
 
 int EagleThread::new_thread_id = 0;
+
+
+
+void EagleThread::SetState(EAGLE_MUTEX_STATE s) {
+   mutex_state = s;
+}
+
+
+
+void EagleThread::SetCaller(const char* caller) {
+   latest_func_caller = caller;
+}
 
 
 
@@ -29,16 +43,21 @@ EagleThread::~EagleThread() {
 
 void EagleThread::DoLockOnMutex(EagleMutex* m , const char* func) {
    EAGLE_ASSERT(m);
+   MutexManager::Instance()->DoThreadLockOnMutex(this , m , func);
+/*   
    mutex_state = MTX_WAITLOCK;
    our_mutex = m;
    m->DoLock(this , func);
    mutex_state = MTX_ISLOCKED;
+*/
 }
 
 
 
 bool EagleThread::DoTryLockOnMutex(EagleMutex* m , const char* func) {
    EAGLE_ASSERT(m);
+   return MutexManager::Instance()->DoThreadTryLockOnMutex(this , m , func);
+/*
    mutex_state = MTX_WAITLOCK;
    our_mutex = m;
    bool locked = m->DoTryLock(this , func);
@@ -49,12 +68,16 @@ bool EagleThread::DoTryLockOnMutex(EagleMutex* m , const char* func) {
       mutex_state = MTX_UNLOCKED;
    }
    return locked;
+*/
 }
 
 
 
 bool EagleThread::DoLockWaitOnMutex(EagleMutex* m , const char* func , double timeout) {
    EAGLE_ASSERT(m);
+   
+   return MutexManager::Instance()->DoThreadLockWaitOnMutex(this , m , func , timeout);
+/* OLD KEEP?
    mutex_state = MTX_WAITLOCK;
    our_mutex = m;
    bool locked = m->DoLockWaitFor(this , func , timeout);
@@ -63,8 +86,10 @@ bool EagleThread::DoLockWaitOnMutex(EagleMutex* m , const char* func , double ti
    }
    else {
       mutex_state = MTX_UNLOCKED;
+      our_mutex = 0;
    }
    return locked;
+*/
 }
 
 
@@ -72,9 +97,12 @@ bool EagleThread::DoLockWaitOnMutex(EagleMutex* m , const char* func , double ti
 void EagleThread::DoUnLockOnMutex(EagleMutex* m , const char* func) {
    EAGLE_ASSERT(m);
    EAGLE_ASSERT(m == our_mutex);
+   MutexManager::Instance()->DoThreadUnLockOnMutex(this , m , func);
+/*
    m->DoUnLock(this , func);
    mutex_state = MTX_UNLOCKED;
    our_mutex = 0;
+*/
 }
 
 
@@ -84,6 +112,10 @@ void EagleThread::DoUnLockOnMutex(EagleMutex* m , const char* func) {
 
 
 ThreadManager* ThreadManager::threadman = 0;
+
+
+
+///EagleThread* ThreadManager::main_thread = 0;
 
 
 

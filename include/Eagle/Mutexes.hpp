@@ -28,6 +28,8 @@
 #include <mutex>
 #include <thread>
 #include <string>
+#include <list>
+#include <map>
 
 enum EAGLE_MUTEX_TYPE {
    MTX_INVALID         = 0,
@@ -42,8 +44,14 @@ enum EAGLE_MUTEX_TYPE {
 enum EAGLE_MUTEX_STATE {
    MTX_UNLOCKED = 0,
    MTX_WAITLOCK = 1,
-   MTX_ISLOCKED = 2
+   MTX_FAILLOCK = 2,
+   MTX_ISLOCKED = 3,
+   NUM_MUTEX_STATES = 4
 };
+
+
+
+const char* EagleMutexStateStr(EAGLE_MUTEX_STATE s);
 
 
 
@@ -94,7 +102,7 @@ protected :
    bool DoTryLock    (std::string callfunc);
    void DoUnLock     (std::string callfunc);
 
-   void LogThreadState(EagleThread* t , const char* func , const char* state);
+   void LogThreadState(EagleThread* callthread , const char* func , EAGLE_MUTEX_STATE tstate);
 
 public :
 
@@ -112,8 +120,52 @@ public :
    
    EAGLE_MUTEX_STATE GetMutexState();
    
+   EagleThread* Owner() {return owner;}
    
 };
+
+
+
+/// -------------------     MutexReporter      ------------------------
+
+   typedef std::map<int , EagleMutex*> EAGLE_MUTEX_MAP;
+   typedef EAGLE_MUTEX_MAP::iterator EMMIT;
+
+class MutexReporter {
+   
+   typedef std::map<EagleMutex* , std::list<EagleThread*> > MUTEX_LOCK_STATE_MAP;
+   typedef MUTEX_LOCK_STATE_MAP::iterator LSMIT;
+   typedef std::list<EagleThread*>::iterator ETLIT;
+   
+   
+///   static std::string CreateReport(EAGLE_MUTEX_MAP mtx_map);
+std::string CreateReport(EAGLE_MUTEX_MAP mtx_map) {
+   MUTEX_LOCK_STATE_MAP lockmap;
+   MUTEX_LOCK_STATE_MAP waitmap;
+   for (EMMIT it = mtx_map.begin() ; it != mtx_map.end() ; ++it) {
+      EagleMutex* m = it->second;
+      EagleThread* t = m->Owner();
+      EAGLE_MUTEX_STATE s = m->GetMutexState();
+      if (s == MTX_ISLOCKED) {
+         lockmap[m].push_back(t);
+      }
+      else if (s == MTX_WAITLOCK) {
+         waitmap[m].push_back(t);
+      }
+   }
+   for (EMMIT it = mtx_map.begin() ; it != mtx_map.end() ; ++it) {
+///      EagleMutex* m = it->second;
+      
+   }
+   return "";
+}
+   
+};
+
+
+
+/// ----------------     MutexManager      ---------------------------------
+
 
 
 class MutexManager {
@@ -124,7 +176,7 @@ protected :
    
    static MutexManager* mutex_man;
    
-   std::map<int , EagleMutex*> mutex_map;
+   EAGLE_MUTEX_MAP mutex_map;
 
    MutexManager();
    

@@ -145,9 +145,9 @@ void EagleObjectInfo::RebuildName() {
 
 EagleObjectInfo::EagleObjectInfo(EagleObject* obj , std::string sname) :
       object(obj),
-      classname("Unknown Class"),
-      shortname(sname),
       destroyed(false),
+      classname("Nemo Class"),
+      shortname(sname),
       fullname("")
 {
    RebuildName();
