@@ -173,8 +173,8 @@ float EagleSystem::system_timer_rate = 1.0f/60.0f;
 
 
 
-EagleSystem::EagleSystem(std::string name) :
-   EagleObject(name),
+EagleSystem::EagleSystem(std::string objclass , std::string objname) :
+   EagleObject(objclass , objname),
    queues(true),
    inputs(true),
    timers(true),

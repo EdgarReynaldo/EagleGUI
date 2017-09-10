@@ -41,21 +41,9 @@ void EagleTimer::Tick(double timestamp , EagleThread* thread) {
 
 
 
-EagleTimer::EagleTimer() :
+EagleTimer::EagleTimer(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       EagleEventSource(),
-      EagleObject(StringPrintF("EagleTimer at %p" , this)),
-      id(NextId()),
-      spt(0.0),
-      previous_ticks(0UL),
-      current_ticks(0UL),
-      running(false)
-{}
-
-
-
-EagleTimer::EagleTimer(std::string name) :
-      EagleEventSource(),
-      EagleObject(name),
       id(NextId()),
       spt(0.0),
       previous_ticks(0UL),

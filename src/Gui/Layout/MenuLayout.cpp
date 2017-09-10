@@ -5,8 +5,8 @@
 
 
 
-MenuLayout::MenuLayout() :
-      GridLayout(StringPrintF("MenuLayout object at %p" , this)),
+MenuLayout::MenuLayout(std::string objname) :
+      GridLayout(0 , 0 , "MenuLayout" , objname),
       layout_direction(MENU_VERTICAL),
       menu_size(0)
 {}

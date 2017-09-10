@@ -104,12 +104,73 @@ void shutdown_main() {
 }
 
 
-int main2(int argc , char** argv) {
+int main(int argc , char** argv) {
+   
+   Allegro5System* a5sys = GetAllegro5System();
+   
+   a5sys->Initialize(EAGLE_FULL_SETUP);
+   
+   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_OPENGL);
+
+   EagleGraphicsContext* win2 = 0;
+///   EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_OPENGL);
+   
+   a5sys->GetSystemTimer()->SetSecondsPerTick(1.0);
+   a5sys->GetSystemTimer()->Start();
+   
+   bool redraw = true;
+   bool quit = false;
+   
+   do {
+      
+      if (redraw) {
+         EagleLog() << "Redraw" << std::endl;
+         if (win1) {
+            win1->DrawToBackBuffer();
+            win1->Clear(EagleColor(0,255,0));
+            win1->DrawTextString(win1->DefaultFont() , "Window 1" , 10 , 10 , EagleColor(0,0,0));
+            win1->FlipDisplay();
+         }
+         if (win2) {
+            win2->DrawToBackBuffer();
+            win2->Clear();
+            win2->DrawTextString(win2->DefaultFont() , "Window 2" , 10 , 10 , EagleColor(255,255,255));
+            win2->FlipDisplay();
+         }
+         redraw = false;
+      }
+         
+         
+      do {
+         EagleEvent ee = a5sys->GetSystemQueue()->WaitForEvent(0);
+         if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+            quit = true;
+         }
+         if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            EagleGraphicsContext* win = ee.window;
+            a5sys->FreeGraphicsContext(win);
+            if (win == win1) {
+               EagleInfo() << "Closing window 1" << std::endl;
+               win1 = 0;
+            }
+            if (win == win2) {
+               EagleInfo() << "Closing window 2" << std::endl;
+               win2 = 0;
+            }
+         }
+         if (ee.type == EAGLE_EVENT_TIMER) {
+            redraw = true;
+         }
+      } while (a5sys->GetSystemQueue()->HasEvent(0));
+   } while (!quit && (win1 || win2));
+   
+   a5sys->Shutdown();
+   
    return 0;
 
 }
 
-int main(int argc , char** argv) {
+int main2(int argc , char** argv) {
 
    atexit(shutdown_main);
 

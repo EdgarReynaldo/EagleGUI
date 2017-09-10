@@ -234,8 +234,8 @@ EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int
 
 
 
-Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys) :
-      EagleWindowManager(sys),
+Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys , std::string objname) :
+      EagleWindowManager(sys , "Allegro5WindowManager" , objname),
       display_context_map(),
       window_queue(0),
       window_event_source(),
@@ -274,11 +274,10 @@ bool Allegro5WindowManager::Create() {
    al_register_event_source(response_queue , &response_event_source);
 
    manager_mutex = new CXX11Mutex();
-   manager_mutex->SetName(
-      StringPrintF("Allegro5WindowManager(EID = %d) Window Manager Mutex(EID = %d)" , GetEagleId() , manager_mutex->GetEagleId())
-   );
+   manager_mutex->SetName("A5WM Mutex");
 
    manager_thread = new Allegro5Thread();
+   manager_thread->SetName("A5WM Thread");
 
    if (!manager_mutex->Create(true , false)) {
       throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create the window manager mutex.");

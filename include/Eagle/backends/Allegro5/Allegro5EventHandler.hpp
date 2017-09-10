@@ -41,7 +41,7 @@ private :
 
 public :
 
-   Allegro5EventHandler(bool delay_emitted_events);
+   Allegro5EventHandler(bool delay_emitted_events , std::string objname = "Nemo");
    ~Allegro5EventHandler();
 
    virtual bool Create();

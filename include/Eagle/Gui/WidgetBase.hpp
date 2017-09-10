@@ -137,8 +137,8 @@ protected :
    
 public :
    
-   WidgetBase();
-   WidgetBase(std::string name);
+///   WidgetBase();
+   WidgetBase(std::string objclass , std::string objname);
    virtual ~WidgetBase();
 
 /*   

@@ -70,26 +70,8 @@ void Allegro5GraphicsContext::PrivateFlipDisplay() {
 
 
 
-Allegro5GraphicsContext::Allegro5GraphicsContext() :
-      EagleGraphicsContext(StringPrintF("Allegro5GraphicsContext at %p" , this)),
-      display(0),
-      realbackbuffer(),
-      blender_op(ALLEGRO_ADD),
-      blender_src(ALLEGRO_ONE),
-      blender_dest(ALLEGRO_INVERSE_ALPHA),
-      blender_stack(),
-      allegro5transformer()
-//      window_thread(),
-//      window_event_source(),
-//      window_queue(0)
-{
-///   Init();
-}
-
-
-
-Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int flags) :
-      EagleGraphicsContext(StringPrintF("Allegro5GraphicsContext at %p" , this)),
+Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int flags , std::string objname) :
+      EagleGraphicsContext("Allegro5GraphicsContext" , objname),
       display(0),
       realbackbuffer(),
       blender_op(ALLEGRO_ADD),
@@ -102,7 +84,12 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
 ///      window_queue(0)
 {
 ///   Init();
-   Create(width , height , flags);
+
+   if (width < 0) {width = 0;}
+   if (height < 0) {height = 0;}
+   if (width && height) {
+      Create(width , height , flags);
+   }
 }
 
 
@@ -142,7 +129,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ResetBackBuffer();
 
    window_mutex = new CXX11Mutex();
-   window_mutex->SetName(StringPrintF("Allegro5GraphicsContext(EID = %d) Window Mutex(EID = %d)" , GetEagleId() , window_mutex->GetEagleId()));
+   window_mutex->SetName("A5GC Window Mutex");
+///   window_mutex->SetName(StringPrintF("Allegro5GraphicsContext(EID = %d) Window Mutex(EID = %d)" , GetEagleId() , window_mutex->GetEagleId()));
    if (!window_mutex->Create(false , false)) {
       EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;
       return false;
@@ -823,7 +811,7 @@ EagleImage* Allegro5GraphicsContext::CreateSubImage(EagleImage* parent , int x ,
 
 
 EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int flags , IMAGE_TYPE type) {
-   EagleFont* eagle_font = new Allegro5Font(file , height , flags , type);
+   EagleFont* eagle_font = new Allegro5Font(file , height , flags , file , type);
    fonts.Add(eagle_font);
 
    return eagle_font;

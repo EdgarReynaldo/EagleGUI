@@ -47,8 +47,7 @@ protected:
    virtual int PrivateUpdate(double tsec);
 
 public :
-   BasicScrollBar();
-   BasicScrollBar(std::string name);
+   BasicScrollBar(std::string objclass = "BasicScrollBar" , std::string name = "Nemo");
    
    virtual void QueueUserMessage(const WidgetMsg& wmsg);
 

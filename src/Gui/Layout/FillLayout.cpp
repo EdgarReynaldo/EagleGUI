@@ -16,8 +16,8 @@ void FillLayout::ReserveSlots(int nslots) {
 
 
 
-FillLayout::FillLayout() :
-      Layout(StringPrintF("FillLayout at %p" , this))
+FillLayout::FillLayout(std::string objname) :
+      Layout("FillLayout" , objname)
 {}
 
 

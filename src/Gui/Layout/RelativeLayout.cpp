@@ -33,15 +33,8 @@ void RelativeLayout::ReserveSlots(int nslots) {
 
 
 
-RelativeLayout::RelativeLayout() :
-      Layout(StringPrintF("RelativeLayout object at %p" , this)),
-      layout_rectangles()
-{}
-
-
-
-RelativeLayout::RelativeLayout(std::string name) :
-      Layout(name),
+RelativeLayout::RelativeLayout(std::string objname) :
+      Layout("RelativeLayout" , objname),
       layout_rectangles()
 {}
 

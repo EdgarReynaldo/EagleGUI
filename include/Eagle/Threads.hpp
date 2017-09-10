@@ -35,7 +35,7 @@ private :
    void SetCaller(const char* caller);
    
 public :
-   EagleThread();
+   EagleThread(std::string objclass = "EagleThread" , std::string objname = "Nemo");
    virtual ~EagleThread();
    
    virtual bool Create(void* (*process_to_run)(EagleThread* , void*) , void* arg)=0;

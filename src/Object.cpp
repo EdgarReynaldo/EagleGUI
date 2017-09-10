@@ -108,6 +108,12 @@ const char* GetShortNameById(int eid) {
 
 
 
+const char* GetClassNameById(int eid) {
+   return EagleObjectRegistry::Instance()->ClassName(eid);
+}
+
+
+
 const char* GetFullNameById(int eid) {
    return EagleObjectRegistry::Instance()->FullName(eid);
 }
@@ -137,16 +143,17 @@ const char* GetFullNameByAddress(EagleObject* obj) {
 
 
 void EagleObjectInfo::RebuildName() {
-   fullname = StringPrintF("%20s '%30s' : (EID %s %03d at %08p)" , 
-                           classname.c_str() , shortname.c_str() , destroyed?"<X>":"<=>" , object->GetEagleId() , object);
+///   fullname = StringPrintF("%20s '%30s' : (EID %s %03d at %08p)" , 
+   fullname = StringPrintF("%s %s : (%s %4d at 0x%08p)" , 
+                           classname.c_str() , shortname.c_str() , destroyed?"XXX":"EID" , object->GetEagleId() , object);
 }
 
 
 
-EagleObjectInfo::EagleObjectInfo(EagleObject* obj , std::string sname) :
+EagleObjectInfo::EagleObjectInfo(EagleObject* obj , std::string objclass , std::string sname) :
       object(obj),
       destroyed(false),
-      classname("Nemo Class"),
+      classname(objclass),
       shortname(sname),
       fullname("")
 {
@@ -261,7 +268,7 @@ void EagleObjectRegistry::RemoveNameEntry(EAGLE_ID eid) {
 
 
 
-void EagleObjectRegistry::Register(EagleObject* object , std::string name , EAGLE_ID eid /* = EAGLE_ID_UNASSIGNED*/) {
+void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , std::string name , EAGLE_ID eid /* = EAGLE_ID_UNASSIGNED*/) {
    EAGLE_ASSERT(object);
    
 ///   EOBINFO& eobinfo = *Objects();
@@ -286,6 +293,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string name , EAGL
       EAGLE_ASSERT((*pinfo)[id_index].GetObject() == object);/// Make sure the object address matches for this eid
       
       (*pinfo)[id_index].SetShortName(name);
+      (*pinfo)[id_index].SetClassName(objclass);
 
       return;
    }
@@ -302,7 +310,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string name , EAGL
    
    EAGLE_ASSERT((int)pinfo->size() == id_index);
    
-   EagleObjectInfo eoi(object , name);
+   EagleObjectInfo eoi(object , objclass , name);
    
    pinfo->push_back(eoi);
    
@@ -348,8 +356,8 @@ EagleObjectRegistry::EagleObjectRegistry() :
    pinfo(0),
    paddressmap(0),
    pnamemap(0),
-   start_id(-1),
-   stop_id(-1),
+   start_id(0),
+   stop_id(0),
    destruct_count(0)
 {
    Create();
@@ -390,7 +398,7 @@ void EagleObjectRegistry::Destroy() {
       delete pnamemap;
       pnamemap = 0;
    }
-   start_id = stop_id = -1;
+   start_id = stop_id;
 }
 
 
@@ -428,6 +436,13 @@ const char* EagleObjectRegistry::ShortName(EAGLE_ID eid) {
 const char* EagleObjectRegistry::FullName(EAGLE_ID eid) {
    CheckIdRange(eid);
    return ((*pinfo)[eid-start_id].FullName());
+}
+
+
+
+const char* EagleObjectRegistry::ClassName(EAGLE_ID eid) {
+   CheckIdRange(eid);
+   return ((*pinfo)[eid-start_id].ClassName());
 }
 
 
@@ -564,17 +579,12 @@ void EagleObjectRegistry::OutputLiveObjectsFull() {
 
 
 
-/// ----------------------------------- EagleObjectRegistryManager -------------------------------------------
-
-
-
-
 /// ----------------------------------- EagleObject -------------------------------------------
 
 
 
-void EagleObject::Register(EagleObject* obj , std::string name , EAGLE_ID eid) {
-   EagleObjectRegistry::Instance()->Register(obj , name , eid);
+void EagleObject::Register(EagleObject* obj , std::string objclass , std::string name , EAGLE_ID eid) {
+   EagleObjectRegistry::Instance()->Register(obj , objclass , name , eid);
 }
 
 
@@ -585,11 +595,11 @@ void EagleObject::Unregister() {
 }
 
 
-
+/*
 EagleObject::EagleObject() :
       id(EAGLE_ID_UNASSIGNED)
 {
-   Register(this , StringPrintF("Nemo at %p" , this) , id);
+   Register(this , "Nemo" , "Nameless" , id);
 }
 
 
@@ -597,7 +607,15 @@ EagleObject::EagleObject() :
 EagleObject::EagleObject(std::string name) :
       id(EAGLE_ID_UNASSIGNED)
 {
-   Register(this , name , id);
+   Register(this , "Nemo" , name , id);
+}
+*/
+
+
+EagleObject::EagleObject(std::string objclass , std::string objname) :
+      id(EAGLE_ID_UNASSIGNED)
+{
+   Register(this , objclass , objname , id);
 }
 
 
@@ -606,7 +624,7 @@ EagleObject::EagleObject(const EagleObject& rhs) :
    id(EAGLE_ID_UNASSIGNED)
 {
    EagleWarn() << "WARNING : EagleObject copy constructor called. RHS Object name will be duplicated." << std::endl;
-   Register(this , std::string(rhs.ShortName()) , id);
+   Register(this , std::string(rhs.ClassName()) , std::string(rhs.ShortName()) , id);
 }
 
 
@@ -641,8 +659,20 @@ const char* EagleObject::FullName() const {
 
 
 
+const char* EagleObject::ClassName() const {
+   return GetClassNameById(id);
+}
+
+
+
 void EagleObject::SetShortName(std::string newname) {
-   Register(this , newname , id);
+   Register(this , ClassName() , newname , id);
+}
+
+
+
+void EagleObject::SetClassName(std::string objclass) {
+   Register(this , objclass , ShortName() , id);
 }
 
 

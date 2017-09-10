@@ -23,13 +23,12 @@ void EagleThread::SetCaller(const char* caller) {
 
 
 
-EagleThread::EagleThread() :
-      EagleObject(),
+EagleThread::EagleThread(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       thread_id(new_thread_id++),
       mutex_state(MTX_UNLOCKED),
       our_mutex(0)
 {
-   SetName(StringPrintF("EagleThread at %p" , this));
    ThreadManager::Instance()->RegisterThread(this);
 }
 

@@ -147,7 +147,7 @@ public :
 
 
    /// Constructors
-   WidgetHandler(EagleGraphicsContext* window);
+   WidgetHandler(EagleGraphicsContext* window , std::string objname = "Nemo");
    
    ~WidgetHandler();
 

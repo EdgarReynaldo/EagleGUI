@@ -106,7 +106,7 @@ protected :
 
 public :
 
-   EagleMutex();
+   EagleMutex(std::string objclass = "EagleMutex" , std::string objname = "Nemo");
    virtual ~EagleMutex();
 
    virtual bool Create(bool multi_lockable , bool is_timed)=0;

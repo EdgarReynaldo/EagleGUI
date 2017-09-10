@@ -279,8 +279,10 @@ void EagleEventListener::CheckSources() {
 
 
 
-EagleEventHandler::EagleEventHandler(bool delay_emitted_events) :
-      EagleObject(),
+
+///EagleEventHandler::EagleEventHandler(bool delay_emitted_events) :
+EagleEventHandler::EagleEventHandler(std::string objclass , std::string objname , bool delay_emitted_events) :
+      EagleObject(objclass , objname),
       EagleEventListener(),
       EagleEventSource(),
       queue(),

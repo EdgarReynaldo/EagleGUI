@@ -49,8 +49,8 @@ Rectangle TwoWaySplitter::GetHandleArea() {
 
 
 
-TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* window) : 
-      Layout(StringPrintF("TwoWaySplitter object at %p" , this)),
+TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* window , std::string objname) : 
+      Layout("TwoWaySplitter" , objname),
       splitter_type(stype),
       draw_func(DefaultSplitterDrawFunction),
       divider_size(4),

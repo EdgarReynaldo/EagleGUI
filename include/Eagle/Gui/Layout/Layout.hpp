@@ -84,8 +84,7 @@ protected :
 
 public :
    
-   Layout();
-   Layout(std::string name);
+   Layout(std::string objclass , std::string objname);
    virtual ~Layout();
    
 	/// WIDGETBASE

@@ -46,7 +46,7 @@ protected :
 
 public :
 
-   PinLayout(std::string name="");
+   PinLayout(std::string objname = "Nemo");
 
    /// LayoutBase
    

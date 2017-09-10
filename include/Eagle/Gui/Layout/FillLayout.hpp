@@ -17,7 +17,7 @@ class FillLayout : public Layout {
 
 public :
    
-   FillLayout();
+   FillLayout(std::string objname = "Nemo");
    
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;

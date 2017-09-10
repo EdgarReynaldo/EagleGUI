@@ -125,8 +125,8 @@ void WidgetBase::RaiseEvent(WidgetMsg msg) {
    FOCUS_DRAW_TYPE focus_draw_type;
 
 */
-WidgetBase::WidgetBase() :
-      EagleObject(StringPrintF("WidgetBase object %p" , this)),
+WidgetBase::WidgetBase(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       EagleEventSource(),
       wparent(0),
       layout(0),
@@ -145,30 +145,6 @@ WidgetBase::WidgetBase() :
       decorator_parent(0)
 {
    
-}
-
-
-
-WidgetBase::WidgetBase(std::string name) :
-		EagleObject(name),
-		EagleEventSource(),
-      wparent(0),
-      layout(0),
-      wcols(),
-      privwcols(),
-      use_private_colorset(false),
-      area(),
-      minw(1),
-      minh(1),
-      flags(DEFAULT_FLAGS),
-      display_priority(MID_DISPLAY_PRIORITY),
-      background_painter(&default_background_painter),
-      background_draw_type(BG_DRAW_BACKGROUND_EMPTY),
-      focus_painter(&default_focus_painter),
-      focus_draw_type(FOCUS_DRAW_HIGHLIGHT_OUTLINE),
-      decorator_parent(0)
-{
-	
 }
 
 

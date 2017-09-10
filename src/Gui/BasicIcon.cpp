@@ -8,13 +8,11 @@
 
 
 
-BasicIcon::BasicIcon(std::string name) :
-      WidgetBase(name),
+BasicIcon::BasicIcon(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       stretch_icon(false)
 {
-   if (name.compare("") == 0) {
-///      SetName(StringPrintF("BasicIcon at %p" , this));
-   }
+   
 }
 
 

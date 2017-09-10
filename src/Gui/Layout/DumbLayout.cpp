@@ -28,16 +28,8 @@
 
 
 
-DumbLayout::DumbLayout() : 
-   Layout(StringPrintF("Dumb layout at %p" , this))
-{
-   (void)0;
-}
-
-
-
-DumbLayout::DumbLayout(std::string name) : 
-   Layout(name)
+DumbLayout::DumbLayout(std::string objname) : 
+   Layout("DumbLayout" , objname)
 {
    (void)0;
 }

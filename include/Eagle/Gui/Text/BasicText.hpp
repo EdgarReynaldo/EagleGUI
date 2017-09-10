@@ -46,8 +46,7 @@ protected :
 
    
 public :
-   BasicText();
-   BasicText(std::string name);
+   BasicText(std::string objclass = "BasicText" , std::string objname = "Nemo");
    virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);

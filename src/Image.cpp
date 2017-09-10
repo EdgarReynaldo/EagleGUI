@@ -27,25 +27,8 @@
 #include "Eagle/StringWork.hpp"
 
 
-EagleImage::EagleImage(EagleGraphicsContext* owner_context) :
-      EagleObject(StringPrintF("EagleImage at %p" , this)),
-      parent_context(owner_context),
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children(false),
-      clip_rects()
-{
-   
-}
-
-
-
-EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string name) :
-      EagleObject(name),
+EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       parent_context(owner_context),
       w(0),
       h(0),

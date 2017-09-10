@@ -27,9 +27,9 @@
 
 
 
-
+/*
 EagleFont::EagleFont() :
-      EagleObject(StringPrintF("EagleFont object at %p" , this)),
+      EagleObject("EagleFont" , "Nemo"),
       height(0),
       srcfile("") 
 {
@@ -39,7 +39,17 @@ EagleFont::EagleFont() :
 
 
 EagleFont::EagleFont(std::string name) :
-      EagleObject(name),
+      EagleObject("EagleFont" , name),
+      height(0),
+      srcfile("") 
+{
+   
+}
+*/
+
+
+EagleFont::EagleFont(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       height(0),
       srcfile("") 
 {

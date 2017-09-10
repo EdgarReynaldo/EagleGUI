@@ -161,8 +161,8 @@ int BasicScroller::PrivateUpdate(double tsec) {
 
 
 
-BasicScroller::BasicScroller() :
-      WidgetBase(StringPrintF("BasicScroller object at %p" , this)),
+BasicScroller::BasicScroller(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       scroller_area(),
       scroll_handle_layout(0.0f,0.0f,1.0f,1.0f),
       scroll_handle_area(),
@@ -186,30 +186,6 @@ BasicScroller::BasicScroller() :
 }
 
 
-
-BasicScroller::BasicScroller(std::string name) :
-      WidgetBase(name),
-      scroller_area(),
-      scroll_handle_layout(0.0f,0.0f,1.0f,1.0f),
-      scroll_handle_area(),
-      scroll_max(1),
-      scroll_val(0),
-      scroll_percent(0.0f),
-      total_length(1),
-      length_in_view(0),
-      horizontal_scroller(true),
-      mouse_drag_handle(false),
-      start_mouse_x(0),
-      start_mouse_y(0),
-      start_percent(0.0f),
-      down(false),
-      repeat_delay(SCROLLER_REPEAT_DELAY),
-      repeat_rate(1.0/SCROLLER_NUM_REPEAT_PER_SEC),
-      repeat_elapsed(0.0),
-      repeat_previous(0.0)
-{
-   scroller_area.SetMarginsContractFromOuter(5,5,5,5);
-}
 
 void BasicScroller::SetScrollLength(int max_scroll) {
    if (max_scroll < 1) {max_scroll = 1;}

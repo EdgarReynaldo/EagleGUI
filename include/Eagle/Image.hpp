@@ -77,8 +77,7 @@ protected :
 
 public :
 
-   EagleImage(EagleGraphicsContext* owner_context);
-   EagleImage(EagleGraphicsContext* owner_context , std::string name);
+   EagleImage(EagleGraphicsContext* owner_context , std::string objclass = "EagleImage" , std::string objname = "Nemo");
    virtual ~EagleImage() {}
 
    /** SUGGESTED IMPLEMENTATIONS IN YOUR DERIVED CLASS CONSTRUCTORS

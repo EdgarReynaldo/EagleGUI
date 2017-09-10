@@ -35,7 +35,7 @@
 #include "Eagle/Mutexes.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/Conditions.hpp"
-
+#include "Eagle/Object.hpp"
 
 
 class EagleGraphicsContext;
@@ -423,7 +423,7 @@ protected :
    void SetOurThread(EagleThread* t);
    
 public :
-   EagleEventHandler(bool delay_emitted_events = true);
+   EagleEventHandler(std::string objclass , std::string objname , bool delay_emitted_events = true);
    virtual ~EagleEventHandler() {}
 
    virtual bool Create()=0;

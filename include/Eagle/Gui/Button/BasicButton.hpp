@@ -121,8 +121,9 @@ protected :
 
 public :
    
-   BasicButton();
-   BasicButton(std::string name);
+///   BasicButton();
+///   BasicButton(std::string name);
+   BasicButton(std::string objclass = "BasicButton" , std::string objname = "Nemo");
    
    virtual ~BasicButton();
 

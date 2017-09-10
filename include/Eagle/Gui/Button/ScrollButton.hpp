@@ -37,32 +37,7 @@ protected :
 
 public :
    
-///   ScrollButton();
-   BasicScrollButton() :
-         WidgetBase(StringPrintF("ScrollButton object at %p" , this)),
-         our_basic_button(StringPrintF("ScrollButton's basic button at %p" , &our_basic_button)),
-         scroll_button(0),
-         our_scrollbar(0),
-         increment(1),
-         scroll_up_or_left(true),
-         scroll_horizontal(false),
-         our_click_area()
-   {
-      Reset();
-   }
-///   ScrollButton(std::string name);
-   BasicScrollButton(std::string name) :
-         WidgetBase(name),
-         our_basic_button(StringPrintF("ScrollButton's basic button at %p" , &our_basic_button)),
-         scroll_button(0),
-         our_scrollbar(0),
-         increment(1),
-         scroll_up_or_left(true),
-         scroll_horizontal(false),
-         our_click_area()
-   {
-      Reset();
-   }
+   BasicScrollButton(std::string objclass = "BasicScrollButton" , std::string objname = "Nemo");
    ~BasicScrollButton() {}
 
    void UseBasicButton();

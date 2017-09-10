@@ -227,7 +227,7 @@ protected :
 
 public :
 
-   EagleGraphicsContext(std::string name);/// See NOTES In GraphicsContext.cpp
+   EagleGraphicsContext(std::string objclass , std::string objname);/// See NOTES In GraphicsContext.cpp
 
    virtual ~EagleGraphicsContext() {}
 

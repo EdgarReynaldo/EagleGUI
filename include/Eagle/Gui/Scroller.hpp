@@ -71,8 +71,7 @@ protected :
    virtual int PrivateUpdate(double tsec);
 
 public :
-   BasicScroller();
-   BasicScroller(std::string name);
+   BasicScroller(std::string objclass = "BasicScroller" , std::string objname = "Nemo");
    
    void SetScrollLength(int max_scroll);
    void SetScrollPercent(float new_percent);

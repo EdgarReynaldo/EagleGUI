@@ -33,7 +33,7 @@ class EagleThread;
 
 
 
-class EagleTimer : public EagleEventSource , public EagleObject {
+class EagleTimer : public EagleObject , public EagleEventSource {
 
 private :
    int id;// unique id
@@ -52,9 +52,8 @@ protected :
    void Tick(double timestamp , EagleThread* thread);
    
 public :
-   
-   EagleTimer();
-   EagleTimer(std::string name);
+
+   EagleTimer(std::string objclass = "EagleTimer" , std::string objname = "Nemo");
    virtual ~EagleTimer() {}
 
    /// EagleEventSource

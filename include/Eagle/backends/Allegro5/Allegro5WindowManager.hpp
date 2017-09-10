@@ -56,7 +56,7 @@ protected :
 
 public :
 
-   Allegro5WindowManager(EagleSystem* sys);
+   Allegro5WindowManager(EagleSystem* sys , std::string objname = "Nemo");
    ~Allegro5WindowManager();
 
    bool Create();

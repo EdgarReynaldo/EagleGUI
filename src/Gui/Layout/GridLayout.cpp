@@ -116,40 +116,8 @@ void GridLayout::CalculateGrid() {
 
 
 
-GridLayout::GridLayout() :
-      Layout(StringPrintF("GridLayout object at %p" , this)),
-		ncols(0),
-		nrows(0),
-		size(0),
-		colwidth(0),
-		rowheight(0),
-		cellhpad(0),
-		cellvpad(0),
-		colhspace(0),
-		rowvspace(0),
-		options(GRID_FILL_CELL)
-{}
-
-
-
-GridLayout::GridLayout(std::string name) :
-      Layout(name),
-		ncols(0),
-		nrows(0),
-		size(0),
-		colwidth(0),
-		rowheight(0),
-		cellhpad(0),
-		cellvpad(0),
-		colhspace(0),
-		rowvspace(0),
-		options(GRID_FILL_CELL)
-{}
-
-
-
-GridLayout::GridLayout(int numcolumns , int numrows) :
-      Layout(StringPrintF("GridLayout object at %p" , this)),
+GridLayout::GridLayout(int numcolumns , int numrows , std::string objclass , std::string objname) :
+      Layout(objclass , objname),
 		ncols(0),
 		nrows(0),
 		size(0),

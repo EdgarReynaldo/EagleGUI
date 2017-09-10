@@ -18,9 +18,8 @@ private :
    ALLEGRO_FONT* allegro_font;
 
 public :
-   Allegro5Font();
-   Allegro5Font(ALLEGRO_FONT* font);
-   Allegro5Font(std::string file , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
+   Allegro5Font(ALLEGRO_FONT* font , std::string objname = "Nemo");
+   Allegro5Font(std::string file , int size , int flags , std::string objname = "Nemo" , IMAGE_TYPE type = VIDEO_IMAGE);
    
    
    bool Load(std::string file , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);

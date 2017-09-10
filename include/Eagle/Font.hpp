@@ -48,8 +48,9 @@ protected :
    std::string srcfile;
 
 public :   
-   EagleFont();
-   EagleFont(std::string name);
+///   EagleFont();
+///   EagleFont(std::string name);
+   EagleFont(std::string objclass , std::string objname);
    virtual ~EagleFont() {}
 
    virtual bool Load(std::string file , int size , int flags , IMAGE_TYPE type)=0;

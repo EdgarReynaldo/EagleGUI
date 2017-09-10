@@ -92,8 +92,8 @@ void Camera::PerformMove() {
 
 
 
-Camera::Camera(string name) :
-      WidgetBase(name),
+Camera::Camera(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       view_bmp(0),
       view_area(),
       prev_x(0.0),

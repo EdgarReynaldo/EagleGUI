@@ -5,22 +5,15 @@
 #include "Eagle/StringWork.hpp"
 
 
-Allegro5Font::Allegro5Font() :
-      EagleFont(StringPrintF("Allegro5Font at %p" , this)),
-      allegro_font(0)
-{}
-
-
-
-Allegro5Font::Allegro5Font(ALLEGRO_FONT* font) :
-   EagleFont(StringPrintF("Allegro5Font at %p" , this)),
+Allegro5Font::Allegro5Font(ALLEGRO_FONT* font , std::string objname) :
+   EagleFont("Allegro5Font" , objname),
    allegro_font(font)
 {}
 
 
 
-Allegro5Font::Allegro5Font(std::string file , int size , int flags , IMAGE_TYPE type) :
-      EagleFont(StringPrintF("Allegro5Font at %p" , this)),
+Allegro5Font::Allegro5Font(std::string file , int size , int flags , std::string objname , IMAGE_TYPE type) :
+      EagleFont("Allegro5Font" , objname),
       allegro_font(0)
 {
    Load(file , size , flags , type);

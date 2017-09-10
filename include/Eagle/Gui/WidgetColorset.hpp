@@ -72,9 +72,8 @@ protected :
 
 public :
 
-   WidgetColorset();
-   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
-   WidgetColorset(const WidgetColorset& rhs);
+   WidgetColorset(std::string objname = "Nemo");
+   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS] , std::string objname = "Nemo");
 
    WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
    

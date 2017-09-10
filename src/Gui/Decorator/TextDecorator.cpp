@@ -13,12 +13,12 @@
 
 
 
-TextDecorator::TextDecorator(std::string name,
-                             WidgetBase* widget_to_decorate,
+TextDecorator::TextDecorator(WidgetBase* widget_to_decorate,
                              BasicText* basic_text,
                              Layout* widget_layout,
-                             Layout* text_layout) :
-      WidgetDecorator(name , widget_to_decorate , widget_layout),
+                             Layout* text_layout,
+                             std::string objname) :
+      WidgetDecorator(widget_to_decorate , widget_layout , "TextDecorator" , objname),
       basic_text_widget(0),
       text_widget_layout(0),
       pin_layout(),
@@ -28,9 +28,6 @@ TextDecorator::TextDecorator(std::string name,
    UseLayout(widget_layout);
    UseTextLayout(text_layout);/// Must come before UseTextWidget to setup layout for text
    UseTextWidget(basic_text);
-   if (name.compare("") == 0) {
-      SetName(StringPrintF("TextDecorator at %p" , this));
-   }
 }
 
 

@@ -389,44 +389,10 @@ void WidgetHandler::CycleFocusBackward() {
    }
 }
 
-/**
-   EagleImage buffer;
-   EagleImage* drawtarget;
-   EagleImage* background;
-   bool stretch_bg;
-   bool use_bg_pic;
-   EagleColor bg_col;
 
-   Camera          cam;
-   int             realw;
-   int             realh;
 
-   WIDGETLIST      wlist;
-   WIDGETLIST      inputlist;// in order from top to bottom, not necessarily the reverse of drawlist's order
-   WIDGETLIST      drawlist;// in order from back to front
-
-   WIDGETLIST      removelist;
-   MEMTRACKER      memtrack;
-
-   int             focus_index;
-   bool            focus_start;
-   WidgetBase*     wfocus;
-   
-   WidgetBase*     whover;
-   
-   MESSAGEQUEUE    mque;
-   bool            clear_background;
-
-   InputGroup      focus_cycle_forward;
-   InputGroup      focus_cycle_backward;
-
-   FOCUS_DRAW_TYPE focus_type;
-
-   std::list<Rectangle> dbg_list;//dirty background rectangle list
-
-*/
-WidgetHandler::WidgetHandler(EagleGraphicsContext* window) :
-		WidgetBase(StringPrintF("WidgetHandler object at %p" , this)),
+WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string objname) :
+		WidgetBase("WidgetHandler" , objname),
 		gwindow(window),
 		buffer(0),
 		background(0),
@@ -434,7 +400,7 @@ WidgetHandler::WidgetHandler(EagleGraphicsContext* window) :
 		stretch_bg(false),
 		use_bg_pic(false),
 		bg_col(WCols()[BGCOL]),
-		cam(StringPrintF("WidgetHandler camera at %p" , &cam)),
+		cam(),
 		shrink_buffer_on_resize(false),
 		dumb_layout(),
 		root_layout(0),

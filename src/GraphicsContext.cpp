@@ -213,8 +213,8 @@ void EagleDrawingInfo::ClearSettings() {
 
 
 
-EagleGraphicsContext::EagleGraphicsContext(std::string name) :
-      EagleObject(name),
+EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       EagleEventSource(),
       scrw(0),
       scrh(0),

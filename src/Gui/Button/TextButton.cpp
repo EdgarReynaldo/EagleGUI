@@ -11,10 +11,10 @@
 
 
 
-TextButton::TextButton() :
-      BasicButton(StringPrintF("TextButton at %p" , this)),
+TextButton::TextButton(std::string objname) :
+      BasicButton("TextButton" , objname),
       real_button(0),
-      text_decorator(StringPrintF("TextButton::TextDecorator at %p" , &text_decorator))
+      text_decorator()
 {
    UseButton(this);
 }

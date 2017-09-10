@@ -30,8 +30,7 @@
 class DumbLayout : public Layout {
 
 public :
-	DumbLayout();
-	DumbLayout(std::string name);
+	DumbLayout(std::string name = "Nemo");
 	~DumbLayout();
 
 };

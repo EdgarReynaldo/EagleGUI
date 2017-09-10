@@ -28,14 +28,17 @@ const char* EagleMutexStateStr(EAGLE_MUTEX_STATE s) {
 
 void EagleMutex::DoLock(EagleThread* callthread , std::string callfunc) {
 
-   if (state == MTX_ISLOCKED) {
-      if (callthread == owner) {
-         EAGLE_ASSERT(Recursive());
-      }
-   }
+   EAGLE_MUTEX_STATE oldstate = state;
+   EagleThread* oldowner = owner;
 
    LogThreadState(callthread , callfunc.c_str() , MTX_WAITLOCK);
    
+   if (oldstate == MTX_ISLOCKED) {
+      if (callthread == oldowner) {/// Already locked by this thread
+         EAGLE_ASSERT(Recursive());/// Must be a recursive mutex
+      }
+   }
+
    PrivateLock();
    
    LogThreadState(callthread , callfunc.c_str() , MTX_ISLOCKED);
@@ -99,8 +102,8 @@ void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
 
 
 
-EagleMutex::EagleMutex() :
-      EagleObject(),
+EagleMutex::EagleMutex(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       type(MTX_INVALID),
       state(MTX_UNLOCKED),
       lock_count(0),
@@ -198,7 +201,7 @@ void EagleMutex::LogThreadState(EagleThread* t , const char* func , EAGLE_MUTEX_
    if (log) {
       const char* threadname = t?t->FullName():"Main Thread";
       int threadid = t?t->ID():-1;
-      ThreadLog() << StringPrintF("%40s ID %3d %s on %40s in function %50s" ,
+      ThreadLog() << StringPrintF("%50s ID %3d %s on %60s in function %-80s" ,
                                   threadname , threadid , EagleMutexStateStr(tstate) , FullName() , func) << std::endl;
    }
 #endif
@@ -249,13 +252,6 @@ void MutexManager::DoThreadLockOnMutex(EagleThread* t , EagleMutex* m , const ch
    EAGLE_ASSERT(callfunc);
    
    m->DoLock(t , callfunc);
-   
-   if (t) {
-      t->DoLockOnMutex(m , callfunc);
-   }
-   else {
-      m->DoLock(callfunc);
-   }
 }
 
 
@@ -263,13 +259,8 @@ void MutexManager::DoThreadLockOnMutex(EagleThread* t , EagleMutex* m , const ch
 bool MutexManager::DoThreadTryLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
    EAGLE_ASSERT(m);
    EAGLE_ASSERT(callfunc);
-   if (t) {
-      return t->DoTryLockOnMutex(m , callfunc);
-   }
-   else {
-      return m->DoTryLock(callfunc);
-   }
-   return false;
+   
+   return m->DoTryLock(t , callfunc);
 }
 
 
@@ -277,13 +268,8 @@ bool MutexManager::DoThreadTryLockOnMutex(EagleThread* t , EagleMutex* m , const
 bool MutexManager::DoThreadLockWaitOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc , double timeout) {
    EAGLE_ASSERT(m);
    EAGLE_ASSERT(callfunc);
-   if (t) {
-      return t->DoLockWaitOnMutex(m , callfunc , timeout);
-   }
-   else {
-      return m->DoLockWaitFor(callfunc , timeout);
-   }
-   return false;
+   
+   return m->DoLockWaitFor(t , callfunc , timeout);
 }
 
 
@@ -291,12 +277,8 @@ bool MutexManager::DoThreadLockWaitOnMutex(EagleThread* t , EagleMutex* m , cons
 void MutexManager::DoThreadUnLockOnMutex(EagleThread* t , EagleMutex* m , const char* callfunc) {
    EAGLE_ASSERT(m);
    EAGLE_ASSERT(callfunc);
-   if (t) {
-      t->DoUnLockOnMutex(m , callfunc);
-   }
-   else {
-      m->DoUnLock(callfunc);
-   }
+   
+   m->DoUnLock(t , callfunc);
 }
 
 

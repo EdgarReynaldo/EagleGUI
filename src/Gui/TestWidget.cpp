@@ -10,7 +10,7 @@
 
 
 TestWidget::TestWidget() :
-      WidgetBase(StringPrintF("TestWidget object at %p" , this)),
+      WidgetBase("TestWidget" , "Test"),
       bgcolor() 
 {
    RandomizeColor();

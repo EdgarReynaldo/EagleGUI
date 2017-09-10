@@ -208,21 +208,8 @@ void Layout::RepositionChild(int slot) {
 
 
 
-Layout::Layout() :
-      WidgetBase(StringPrintF("Layout object at %p" , this)),
-      attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
-      halign(HALIGN_LEFT),
-      valign(VALIGN_TOP),
-      wchildren(),
-      whandler(0)
-{
-   SetDisplayPriority(LOW_DISPLAY_PRIORITY);
-}
-
-
-
-Layout::Layout(std::string name) :
-      WidgetBase(name),
+Layout::Layout(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),

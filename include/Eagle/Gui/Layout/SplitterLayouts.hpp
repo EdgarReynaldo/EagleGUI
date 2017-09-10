@@ -67,7 +67,7 @@ protected :
 public :
    Rectangle GetHandleArea();
 
-   TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* mouse_window = 0);
+   TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* mouse_window = 0 , std::string objname = "Nemo");
    
    virtual ~TwoWaySplitter();
 

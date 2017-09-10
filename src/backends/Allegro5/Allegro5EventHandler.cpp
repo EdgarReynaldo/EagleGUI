@@ -186,13 +186,13 @@ bool Allegro5EventHandler::Running() {
 
 
 
-Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events) :
-      EagleEventHandler(delay_emitted_events),
+Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events , std::string objname) :
+      EagleEventHandler("Allegro5EventHandler" , objname , delay_emitted_events),
       event_queue(0),
       main_source(),
       event_thread(0)
 {
-   SetName(StringPrintF("Allegro5EventHandler(EID = %d) at %p" , GetEagleId() , this));
+   SetName("A5EH");
    al_init_user_event_source(&main_source);
 }
 

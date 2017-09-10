@@ -56,7 +56,7 @@ protected :
    virtual int PrivateGiveWindowFocus(int window_eid)=0;
 
 public :
-   EagleWindowManager(EagleSystem* sys);
+   EagleWindowManager(EagleSystem* sys , std::string objclass = "EagleWindowManager" , std::string objname = "Nemo");
 
    virtual ~EagleWindowManager();
 

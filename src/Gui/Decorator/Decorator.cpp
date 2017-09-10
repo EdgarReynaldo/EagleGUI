@@ -25,19 +25,17 @@ void WidgetDecorator::PrivateRaiseEvent(WidgetMsg msg) {
 
 
 
-WidgetDecorator::WidgetDecorator(std::string decorator_name,
-                                 WidgetBase* widget_to_decorate,
-                                 Layout* widget_layout) :
-      WidgetBase(decorator_name),
+WidgetDecorator::WidgetDecorator(WidgetBase* widget_to_decorate,
+                                 Layout* widget_layout,
+                                 std::string objclass,
+                                 std::string objname) :
+      WidgetBase(objclass , objname),
       decorated_widget(0),
       layout(&default_fill_layout),
       default_fill_layout()
 {
    DecorateWidget(widget_to_decorate);
    UseLayout(widget_layout);
-   if (decorator_name.compare("") == 0) {
-      SetName(StringPrintF("WidgetDecorator at %p" , this));
-   }
 }
 
 

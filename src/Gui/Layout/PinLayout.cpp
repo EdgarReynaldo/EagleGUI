@@ -81,13 +81,10 @@ std::ostream& operator<<(std::ostream& os , const Pin& pin) {
 
 
 
-PinLayout::PinLayout(std::string name) :
-      Layout(name),
+PinLayout::PinLayout(std::string objname) :
+      Layout("PinLayout" , objname),
       pins()
 {
-   if (name.compare("") == 0) {
-      SetName(StringPrintF("PinLayout at %p" , this));
-   }
 }
 
 

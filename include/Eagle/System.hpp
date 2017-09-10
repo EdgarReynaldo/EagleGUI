@@ -140,7 +140,7 @@ protected :
 
 public :
 
-   EagleSystem(std::string name);
+   EagleSystem(std::string objclass = "EagleSystem" , std::string objname = "Nemo");
    virtual ~EagleSystem() {}// Call Shutdown from your destructor please
 
    virtual void Shutdown();// Call EagleSystem::Shutdown from your overridden Shutdown methods please...

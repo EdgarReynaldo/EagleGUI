@@ -83,6 +83,7 @@ int GetNameCount(std::string name);
 EagleObject* GetObjectById   (EAGLE_ID eid);
 bool         GetValidById    (EAGLE_ID eid);
 const char*  GetShortNameById(EAGLE_ID eid);
+const char*  GetClassNameById(EAGLE_ID eid);
 const char*  GetFullNameById (EAGLE_ID eid);
 
 ///int GetIdByAddress(EagleObject* obj);
@@ -107,7 +108,7 @@ class EagleObjectInfo {
 
 public :
 
-   EagleObjectInfo(EagleObject* obj , std::string sname);
+   EagleObjectInfo(EagleObject* obj , std::string objclass , std::string sname);
 
    void SetObject(EagleObject* pobject);
    void SetClassName(std::string class_name);
@@ -162,7 +163,7 @@ class EagleObjectRegistry {
    ADDRESSMAP* AddressMap();/// Creator function. Returns address map (Singleton)
    NAMEMAP* NameMap();/// Creator function. Returns name map (Singleton)
 
-   void Register(EagleObject* object , std::string name , EAGLE_ID eid);
+   void Register(EagleObject* object , std::string objclass , std::string name , EAGLE_ID eid);
    void Unregister(EAGLE_ID eid);
 
    static EagleObjectRegistry* registry;
@@ -180,6 +181,7 @@ public :
    bool Destroyed(EAGLE_ID eid);
    bool Valid(EAGLE_ID eid);
    const char* ShortName(EAGLE_ID eid);
+   const char* ClassName(EAGLE_ID eid);
    const char* FullName(EAGLE_ID eid);
    EagleObject* Object(EAGLE_ID eid);
    
@@ -216,15 +218,15 @@ private :
    
    void SetId(EAGLE_ID eid) {id = eid;}
    
-   void Register(EagleObject* obj , std::string name , EAGLE_ID eid);
+   void Register(EagleObject* obj , std::string objclass , std::string name , EAGLE_ID eid);
    void Unregister();
 
 ///   virtual void SetClassName()=0;
                      
 public :
    
-   EagleObject();
-   EagleObject(std::string name);
+///   EagleObject();
+   EagleObject(std::string objclass , std::string objname);
    
    EagleObject(const EagleObject& rhs);/// Generates warning about name duplication
    
@@ -235,8 +237,10 @@ public :
 ///   const char* GetNameCStr() const;
    const char* ShortName() const;
    const char* FullName() const;
+   const char* ClassName() const;
    void SetName(std::string newname) {SetShortName(newname);}/// TODO : HACK : REMOVE
    void SetShortName(std::string newname);
+   void SetClassName(std::string newname);
 
    EAGLE_ID GetEagleId() const {return id;}
 

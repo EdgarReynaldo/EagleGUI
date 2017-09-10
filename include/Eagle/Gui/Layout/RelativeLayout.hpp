@@ -39,8 +39,7 @@ protected :
 
 public :
    
-   RelativeLayout();
-   RelativeLayout(std::string name);
+   RelativeLayout(std::string name = "Nemo");
    ~RelativeLayout();
 
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;

@@ -25,7 +25,7 @@ class MenuLayout : public GridLayout {
    
 public :
    
-   MenuLayout();
+   MenuLayout(std::string objname = "Nemo");
    
    
    void ResizeMenu(int new_menu_size);

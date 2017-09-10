@@ -87,29 +87,11 @@ int BasicScrollBar::PrivateUpdate(double tsec) {
 
 
 
-BasicScrollBar::BasicScrollBar() :
-      WidgetBase(StringPrintF("BasicScrollBar object at %p" , this)),
-      basic_scroller(StringPrintF("ScrollBar::basic_scroller object at %p" , &basic_scroller)),
-      basic_scroll_button_up_or_left(
-            StringPrintF("ScrollBar::basic_scroll_button_up_or_left object at %p" , &basic_scroll_button_up_or_left)),
-      basic_scroll_button_down_or_right(
-            StringPrintF("ScrollBar::basic_scroll_button_down_or_right object at %p" , &basic_scroll_button_down_or_right)),
-      scroller(0),
-      up_or_left_button(0),
-      down_or_right_button(0)
-{
-   SetScrollWidgets(&basic_scroller , &basic_scroll_button_up_or_left , &basic_scroll_button_down_or_right);
-}
-
-
-
-BasicScrollBar::BasicScrollBar(std::string name) :
-      WidgetBase(name),
-      basic_scroller(StringPrintF("ScrollBar::basic_scroller object at %p" , &basic_scroller)),
-      basic_scroll_button_up_or_left(
-            StringPrintF("ScrollBar::basic_scroll_button_up_or_left object at %p" , &basic_scroll_button_up_or_left)),
-      basic_scroll_button_down_or_right(
-            StringPrintF("ScrollBar::basic_scroll_button_down_or_right object at %p" , &basic_scroll_button_down_or_right)),
+BasicScrollBar::BasicScrollBar(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
+      basic_scroller(),
+      basic_scroll_button_up_or_left(),
+      basic_scroll_button_down_or_right(),
       scroller(0),
       up_or_left_button(0),
       down_or_right_button(0)

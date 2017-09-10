@@ -27,7 +27,7 @@ protected :
    
 public :
    
-   BasicIcon(std::string name = "");
+   BasicIcon(std::string objclass = "BasicIcon" , std::string objname = "Nemo");
    
    void SetStretch(bool stretch);
    void SetImage(EagleImage* new_image);

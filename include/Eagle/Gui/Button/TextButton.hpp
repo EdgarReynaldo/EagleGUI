@@ -27,7 +27,7 @@ protected:
 
    public :
 
-   TextButton();
+   TextButton(std::string name = "Nemo");
 
    
    /// TextButton functions

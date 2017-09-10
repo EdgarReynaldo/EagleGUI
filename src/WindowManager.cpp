@@ -42,7 +42,8 @@ void EagleWindowManager::SwitchOut(EagleGraphicsContext* window) {
 
 
 
-EagleWindowManager::EagleWindowManager(EagleSystem* sys) :
+EagleWindowManager::EagleWindowManager(EagleSystem* sys , std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       parent_system(sys),
       manager_thread(0),
       manager_mutex(0),

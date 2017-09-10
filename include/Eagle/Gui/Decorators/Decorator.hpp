@@ -28,10 +28,10 @@ protected :
 
 public :
       
-   WidgetDecorator(std::string decorator_name = "",
-                   WidgetBase* widget_to_decorate = 0,
-                   Layout* widget_layout = 0
-                   );
+   WidgetDecorator(WidgetBase* widget_to_decorate = 0,
+                   Layout* widget_layout = 0,
+                   std::string objclass = "WidgetDecorator",
+                   std::string objname = "Nemo");
 
    virtual ~WidgetDecorator();
 

@@ -77,8 +77,7 @@ private :
 
    friend class Allegro5WindowManager;
 
-   Allegro5GraphicsContext();
-   Allegro5GraphicsContext(int width , int height , int flags);
+   Allegro5GraphicsContext(int width = 0 , int height = 0 , int flags = 0 , std::string objname = "Nemo");
 
 public :
 

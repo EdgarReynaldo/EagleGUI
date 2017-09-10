@@ -87,7 +87,7 @@ protected :
 
 public :
    
-   Camera(std::string name);
+   Camera(std::string objclass = "Camera" , std::string objname = "Nemo");
    virtual ~Camera() {}
    
    /// Override functions for WidgetBase

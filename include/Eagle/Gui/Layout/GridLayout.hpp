@@ -66,9 +66,7 @@ protected :
    void CalculateGrid();
 
 public :
-	GridLayout();
-	GridLayout(std::string name);
-	GridLayout(int numcolumns , int numrows);
+	GridLayout(int numcolumns = 0 , int numrows = 0 , std::string objclass = "GridLayout" , std::string objname = "Nemo");
 	virtual ~GridLayout();
 
    /// WidgetBase

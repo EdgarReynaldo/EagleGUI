@@ -39,8 +39,8 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
 
 
 
-WidgetColorset::WidgetColorset() :
-      EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
+WidgetColorset::WidgetColorset(std::string objname) :
+      EagleObject("WidgetColorset" , objname),
       wcolorset()
 {
    *this = default_eagle_color_array;
@@ -48,20 +48,11 @@ WidgetColorset::WidgetColorset() :
 
 
 
-WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]) :
-   EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
+WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS] , std::string objname) :
+   EagleObject("WidgetColorset" , objname),
    wcolorset()
 {
    *this = colorset;
-}
-
-
-
-WidgetColorset::WidgetColorset(const WidgetColorset& rhs) :
-   EagleObject(StringPrintF("WidgetColorset object at %p" , this)),
-   wcolorset()
-{
-   *this = rhs.wcolorset;
 }
 
 

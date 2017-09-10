@@ -93,50 +93,9 @@ int BasicText::PrivateUpdate(double tsec) {
 }
 
 
-/**
-   HALIGNMENT halign;
-   VALIGNMENT valign;
-   EagleFont* text_font;
-   string text;
-   std::vector<std::string> lines;
-   std::vector<Rectangle> lineareas;
-   int nlines;
-   int hpadding;
-   int vpadding;
-   int linespacing;
-   int maxwidth;
-   int totalheight;
-   std::vector<int> widths_vector;
 
-//*/
-BasicText::BasicText() :
-      WidgetBase(StringPrintF("Basic Text object at %p" , this)),
-      halign(HALIGN_LEFT),
-      valign(VALIGN_TOP),
-      text_font(0),
-      text(""),
-      lines(),
-      lineareas(),
-      nlines(0),
-      hpadding(0),
-      vpadding(0),
-      linespacing(0),
-      maxwidth(0),
-      totalheight(0),
-      textx(0),
-      texty(0),
-      widths_vector(),
-      scale_to_fit(false),
-      scaling_transform(),
-      inverse_scaling_transform()
-{
-   
-}
-
-
-
-BasicText::BasicText(string name) :
-      WidgetBase(name),
+BasicText::BasicText(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
       text_font(0),
