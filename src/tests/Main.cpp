@@ -104,16 +104,97 @@ void shutdown_main() {
 }
 
 
+
+int main4(int argc , char** argv) {
+
+   if (!al_init()) {return 1;}
+   if (!al_install_keyboard()) {return 2;}
+   if (!al_install_mouse()) {return 3;}
+   
+   al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_OPENGL);
+   
+   ALLEGRO_DISPLAY* d1 = al_create_display(400,300);
+   ALLEGRO_FONT* f1 = al_create_builtin_font();
+   
+   ALLEGRO_DISPLAY* d2 = al_create_display(400,300);
+   ALLEGRO_FONT* f2 = al_create_builtin_font();
+   
+   ALLEGRO_TIMER* t = al_create_timer(1.0);
+   
+   ALLEGRO_EVENT_QUEUE* q = al_create_event_queue();
+   al_register_event_source(q , al_get_display_event_source(d1));
+   al_register_event_source(q , al_get_display_event_source(d2));
+   al_register_event_source(q , al_get_mouse_event_source());
+   al_register_event_source(q , al_get_keyboard_event_source());
+   al_register_event_source(q , al_get_timer_event_source(t));
+   
+   al_start_timer(t);
+   
+   bool redraw = true;
+   bool quit = false;
+
+   do {
+      if (redraw) {
+         if (d1) {
+            al_set_target_backbuffer(d1);
+            al_clear_to_color(al_map_rgb(0,255,0));
+            al_draw_text(f1 , al_map_rgb(0,0,0) , 10 , 10 , 0 , "Window 1");
+            al_flip_display();
+         }
+         if (d2) {
+            al_set_target_backbuffer(d2);
+            al_clear_to_color(al_map_rgb(255,255,255));
+            al_draw_text(f2 , al_map_rgb(0,0,0) , 10 , 10 , 0 , "Window 2");
+            al_flip_display();
+         }
+         redraw = false;
+      }
+      do {
+         ALLEGRO_EVENT ev;
+         al_wait_for_event(q , &ev);
+         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            ALLEGRO_DISPLAY* d = ev.display.source;
+            if (d == d1) {
+               al_destroy_display(d1);
+               d1 = 0;
+            }
+            if (d == d2) {
+               al_destroy_display(d2);
+               d2 = 0;
+            }
+         }
+         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+            if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+               quit = true;
+            }
+         }
+         if (ev.type == ALLEGRO_EVENT_TIMER) {
+            redraw = true;
+         }
+      } while (!al_is_event_queue_empty(q));
+   } while (!quit && (d1 || d2));
+   
+   return 0;
+}
+
+
+
 int main(int argc , char** argv) {
    
    Allegro5System* a5sys = GetAllegro5System();
    
    a5sys->Initialize(EAGLE_FULL_SETUP);
    
-   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_OPENGL);
-
-   EagleGraphicsContext* win2 = 0;
-///   EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_OPENGL);
+   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_DIRECT3D);
+///   EagleImage* img1 = win1->CreateImage(300,200);
+///   win1->SetDrawingTarget(img1);
+///   win1->Clear(EagleColor(0,0,255));
+   
+///   EagleGraphicsContext* win2 = 0;
+   EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_DIRECT3D);
+///   EagleImage* img2 = win1->CreateImage(300,200);
+///   win1->SetDrawingTarget(img2);
+///   win1->Clear(EagleColor(255,0,0));
    
    a5sys->GetSystemTimer()->SetSecondsPerTick(1.0);
    a5sys->GetSystemTimer()->Start();
@@ -128,12 +209,14 @@ int main(int argc , char** argv) {
          if (win1) {
             win1->DrawToBackBuffer();
             win1->Clear(EagleColor(0,255,0));
+///            win1->Draw(img1 , 150 , 100);
             win1->DrawTextString(win1->DefaultFont() , "Window 1" , 10 , 10 , EagleColor(0,0,0));
             win1->FlipDisplay();
          }
          if (win2) {
             win2->DrawToBackBuffer();
             win2->Clear();
+///            win2->Draw(img2 , 150 , 100);
             win2->DrawTextString(win2->DefaultFont() , "Window 2" , 10 , 10 , EagleColor(255,255,255));
             win2->FlipDisplay();
          }
