@@ -40,8 +40,8 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
 
 
 
-Allegro5Thread::Allegro5Thread() :
-      EagleThread(),
+Allegro5Thread::Allegro5Thread(std::string objname) :
+      EagleThread("Allegro5Thread" , objname),
       a5thread(0),
       data(0),
       process(0),

@@ -41,7 +41,7 @@ private :
    void* Data() {return data;}
 
 public :
-   Allegro5Thread();
+   Allegro5Thread(std::string objname = "Nemo");
    ~Allegro5Thread();
    
    bool Create(void* (*process_to_run)(EagleThread* , void*) , void* arg);

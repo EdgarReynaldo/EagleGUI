@@ -192,7 +192,7 @@ Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events , std::stri
       main_source(),
       event_thread(0)
 {
-   SetName("A5EH");
+///   SetName("A5EH");
    al_init_user_event_source(&main_source);
 }
 

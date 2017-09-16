@@ -67,7 +67,7 @@ protected :
    
 
 public :
-   Allegro5Timer();
+   Allegro5Timer(std::string objname = "Nemo");
    ~Allegro5Timer();
    
 ///   void ReadEvents();

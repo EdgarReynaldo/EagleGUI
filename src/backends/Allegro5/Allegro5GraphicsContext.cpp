@@ -70,7 +70,7 @@ void Allegro5GraphicsContext::PrivateFlipDisplay() {
 
 
 
-Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int flags , std::string objname) :
+Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width , int height , int flags) :
       EagleGraphicsContext("Allegro5GraphicsContext" , objname),
       display(0),
       realbackbuffer(),
@@ -79,12 +79,7 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
       blender_dest(ALLEGRO_INVERSE_ALPHA),
       blender_stack(),
       allegro5transformer()
-///      window_thread(),
-///      window_event_source(),
-///      window_queue(0)
 {
-///   Init();
-
    if (width < 0) {width = 0;}
    if (height < 0) {height = 0;}
    if (width && height) {
@@ -96,9 +91,6 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(int width , int height , int fl
 
 Allegro5GraphicsContext::~Allegro5GraphicsContext() {
    Destroy();
-
-
-
 }
 
 
@@ -129,8 +121,11 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    ResetBackBuffer();
 
    window_mutex = new CXX11Mutex();
-   window_mutex->SetName("A5GC Window Mutex");
+   
+   window_mutex->SetName(StringPrintF("A5GC (EID#%d)" , GetEagleId()));
+   
 ///   window_mutex->SetName(StringPrintF("Allegro5GraphicsContext(EID = %d) Window Mutex(EID = %d)" , GetEagleId() , window_mutex->GetEagleId()));
+
    if (!window_mutex->Create(false , false)) {
       EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;
       return false;

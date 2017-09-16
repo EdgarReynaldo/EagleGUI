@@ -80,8 +80,8 @@ void Allegro5Timer::SendTimerProcessMessage(int message) {
 
 
 
-Allegro5Timer::Allegro5Timer() :
-      EagleTimer(StringPrintF("Allegro5Timer at %p" , this)),
+Allegro5Timer::Allegro5Timer(std::string objname) :
+      EagleTimer("Allegro5Timer" , objname),
       timer(0),
       timer_queue(0),
       process_queue(0),

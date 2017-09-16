@@ -20,7 +20,7 @@
  */
 
 
-#error "Allegro 5 Mutex is deprected"
+#error "Allegro 5 Mutex is deprecated"
 
 /**
 
