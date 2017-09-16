@@ -224,7 +224,7 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
 
 
 EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int height , int flags) {
-   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext(width , height , flags);
+   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext("A5Win" , width , height , flags);
    EAGLE_ASSERT(a5win && a5win->Valid());
    al_register_event_source(window_queue , al_get_display_event_source(a5win->AllegroDisplay()));
    return a5win;
