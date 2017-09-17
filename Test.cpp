@@ -57,7 +57,7 @@ int main2(int argc , char** argv) {
          redraw = false;
       }
       do {
-         EagleEvent ee = sys->GetSystemQueue()->WaitForEvent();
+         EagleEvent ee = sys->GetSystemQueue()->WaitForEvent(0);
          EagleLog() << "Received EagleEvent type " << EagleEventName(ee.type) << std::endl;
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE || (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE)) {
             quit = true;
@@ -66,7 +66,7 @@ int main2(int argc , char** argv) {
             green = !green;
             redraw = true;
          }
-      } while (sys->GetSystemQueue()->HasEvent());
+      } while (sys->GetSystemQueue()->HasEvent(0));
    }
 
 ///   Eagle::EagleLibrary::ShutdownEagle();
