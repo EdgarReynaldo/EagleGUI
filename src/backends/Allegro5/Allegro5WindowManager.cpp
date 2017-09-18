@@ -99,9 +99,12 @@ void Allegro5WindowManager::AddDisplay(EagleGraphicsContext* window , ALLEGRO_DI
       }
    }
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
+
    ThreadLockMutex(our_thread , manager_mutex);
+
    display_context_map[display] = window;
    EagleInfo() << StringPrintF("Allegro5WindowManager::AddDisplay - adding ALLEGRO_DISPLAY* %p ." , display) << std::endl;
+
    ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
@@ -110,12 +113,15 @@ void Allegro5WindowManager::AddDisplay(EagleGraphicsContext* window , ALLEGRO_DI
 void Allegro5WindowManager::RemoveDisplay(ALLEGRO_DISPLAY* display) {
    if (!display) {return;}
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
+
    ThreadLockMutex(our_thread , manager_mutex);
+
    std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
    if (it != display_context_map.end()) {
       display_context_map.erase(it);
       EagleInfo() << StringPrintF("Allegro5WindowManager::RemoveDisplay - removing ALLEGRO_DISPLAY* %p ." , display) << std::endl;
    }
+
    ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
@@ -273,11 +279,9 @@ bool Allegro5WindowManager::Create() {
    al_register_event_source(window_queue , &window_event_source);
    al_register_event_source(response_queue , &response_event_source);
 
-   manager_mutex = new CXX11Mutex();
-   manager_mutex->SetName("A5WM Mutex");
+   manager_mutex = new CXX11Mutex("A5WM::manager_mutex");
 
-   manager_thread = new Allegro5Thread();
-   manager_thread->SetName("A5WM Thread");
+   manager_thread = new Allegro5Thread("A5WM::manager_thread");
 
    if (!manager_mutex->Create(true , false)) {
       throw EagleException("Allegro5WindowManager::Allegro5WindowManager - failed to create the window manager mutex.");

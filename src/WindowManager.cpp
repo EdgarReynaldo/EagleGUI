@@ -12,11 +12,14 @@
 void EagleWindowManager::SwitchIn(EagleGraphicsContext* window) {
    EAGLE_ASSERT(window);
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
+
    ThreadLockMutex(our_thread , manager_mutex);
+
    WMIT it = window_map.find(window->GetEagleId());
    EAGLE_ASSERT(it != window_map.end());
    EAGLE_ASSERT(it->second);
    active_window = window;
+
    ThreadUnLockMutex(our_thread , manager_mutex);
 }
 
@@ -102,10 +105,13 @@ EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , 
       }
 
       EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
+
       ThreadLockMutex(our_thread , manager_mutex);
+
       window_map[window->GetEagleId()] = window;
       ++window_count;
       active_window = window;
+
       ThreadUnLockMutex(our_thread , manager_mutex);
 
       return window;
@@ -135,7 +141,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    EagleGraphicsContext* window = window_map[window_eid];
 
-   EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying window %p with eid %d" , window , window_eid) << std::endl;
+   EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying %s" , window->FullName()) << std::endl;
 
    EAGLE_ASSERT(window);
 

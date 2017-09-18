@@ -233,7 +233,8 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       default_font_path(eagle_default_font_path),
       default_font_size(eagle_default_font_size),
       default_font_flags(eagle_default_font_flags),
-      our_thread(0)
+      our_thread(0),
+      window_mutex(0)
 {
    /// NOTE: derived class needs to instantiate mp_manager
    /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
@@ -242,15 +243,15 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
 
 
 
-bool EagleGraphicsContext::StartDrawing() {
+bool EagleGraphicsContext::StartDrawing(EagleThread* draw_thread) {
    EAGLE_ASSERT(window_mutex && window_mutex->Valid());
-   return ThreadTryLockMutex(our_thread , window_mutex);
+   return ThreadTryLockMutex(draw_thread , window_mutex);
 }
 
 
 
-void EagleGraphicsContext::CompleteDrawing() {
-   ThreadUnLockMutex(our_thread , window_mutex);
+void EagleGraphicsContext::CompleteDrawing(EagleThread* draw_thread) {
+   ThreadUnLockMutex(draw_thread , window_mutex);
 }
 
 

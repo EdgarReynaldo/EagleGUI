@@ -16,6 +16,7 @@ using namespace std;
 
 void* bad_thread(EagleThread* t , void* data) {
 
+   (void)data;
    void* ret = (void*)-1;
 
    EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(240 , 180 , EAGLE_WINDOWED);
@@ -42,7 +43,7 @@ void* bad_thread(EagleThread* t , void* data) {
    while (!quit && !a5thread->ShouldStop()) {
 
 
-      if (redraw && new_win->StartDrawing()) {
+      if (redraw && new_win->StartDrawing(t)) {
 
          new_win->DrawToBackBuffer();
          EagleColor cc = EagleColor(0,0,0);
@@ -56,12 +57,12 @@ void* bad_thread(EagleThread* t , void* data) {
          new_win->FlipDisplay();
 
          redraw = false;
-         new_win->CompleteDrawing();
+         new_win->CompleteDrawing(t);
       }
 
       do {
 
-         EagleEvent ee = q->WaitForEvent(1.0 , 0);
+         EagleEvent ee = q->WaitForEvent(1.0 , t);
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             ret = (void*)0;
             quit = true;
@@ -87,7 +88,7 @@ void* bad_thread(EagleThread* t , void* data) {
             secs*= 60.0;
             redraw = true;
          }
-      } while (q->HasEvent(0));
+      } while (q->HasEvent(t));
    }
 
    GetAllegro5System()->FreeEventHandler(q);
@@ -179,7 +180,7 @@ int main4(int argc , char** argv) {
 
 
 
-int main(int argc , char** argv) {
+int main2(int argc , char** argv) {
    
    Allegro5System* a5sys = GetAllegro5System();
    
@@ -253,7 +254,9 @@ int main(int argc , char** argv) {
 
 }
 
-int main2(int argc , char** argv) {
+
+
+int main(int argc , char** argv) {
 
    atexit(shutdown_main);
 

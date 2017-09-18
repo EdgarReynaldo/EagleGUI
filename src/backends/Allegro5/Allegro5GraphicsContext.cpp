@@ -120,12 +120,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
 
    ResetBackBuffer();
 
-   window_mutex = new CXX11Mutex();
+   window_mutex = new CXX11Mutex(StringPrintF("A5GC (EID#%d)" , GetEagleId()));
    
-   window_mutex->SetName(StringPrintF("A5GC (EID#%d)" , GetEagleId()));
-   
-///   window_mutex->SetName(StringPrintF("Allegro5GraphicsContext(EID = %d) Window Mutex(EID = %d)" , GetEagleId() , window_mutex->GetEagleId()));
-
    if (!window_mutex->Create(false , false)) {
       EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;
       return false;
@@ -181,6 +177,11 @@ void Allegro5GraphicsContext::Destroy() {
       ThreadUnLockMutex(our_thread , window_mutex);
    }
 
+   if (window_mutex) {
+      delete window_mutex;
+      window_mutex = 0;
+   }
+   
    if (mp_manager) {
       delete mp_manager;
       mp_manager = 0;

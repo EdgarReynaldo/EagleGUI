@@ -212,18 +212,11 @@ protected :
    int         default_font_flags;
 
    EagleThread* our_thread;
+   EagleMutex*  window_mutex;
    
 
+
    virtual void PrivateFlipDisplay()=0;
-
-protected :
-
-///   typedef std::map<EagleGraphicsContext* , bool> WINMAP;
-///   typedef WINMAP::iterator WMIT;
-
-///   EagleConditionVar* window_cond;
-   EagleMutex*        window_mutex;
-///   bool               window_drawing_ok;
 
 public :
 
@@ -231,8 +224,8 @@ public :
 
    virtual ~EagleGraphicsContext() {}
 
-   bool StartDrawing();
-   void CompleteDrawing();
+   bool StartDrawing(EagleThread* draw_thread);
+   void CompleteDrawing(EagleThread* draw_thread);
 
 
    float GetFPS();
