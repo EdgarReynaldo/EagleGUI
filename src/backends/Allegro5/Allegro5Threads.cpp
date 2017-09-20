@@ -50,7 +50,7 @@ Allegro5Thread::Allegro5Thread(std::string objname) :
       finish_condition_var(0),
       finish_mutex(0)
 {
-   SetName(StringPrintF("Allegro5Thread(EID = %d) at %p" , GetEagleId() , this));
+   
 }
 
 

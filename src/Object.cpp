@@ -302,7 +302,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    
    object->SetId(new_id);
    
-   EagleLog() << StringPrintF("Creating eagle object '%s' at %p with eid %d\n" , name.c_str() , object , new_id).c_str() << std::endl;
+   EagleLog() << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
 
    stop_id = new_id + 1;
    

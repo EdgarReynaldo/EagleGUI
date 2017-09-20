@@ -36,25 +36,30 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
       ALLEGRO_EVENT ev;
       al_wait_for_event(window_queue , &ev);
 
+      EagleEvent ee = a5man->GetEagleDisplayEvent(ev);
+      EagleInfo() << "Allegro5WindowManagerProcess received event " << EagleEventName(ee.type) << std::endl;
+
+///      if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE || ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
       if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
+         EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , ev.display.source) << std::endl;
+      
+         al_unregister_event_source(window_queue , al_get_display_event_source(ev.display.source));
 
-         EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
+///         if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
+            EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
 
-         Allegro5GraphicsContext* window = (Allegro5GraphicsContext*)ev.user.data1;
-         EAGLE_ASSERT(window);
-         al_unregister_event_source(window_queue , al_get_display_event_source(window->AllegroDisplay()));
+            Allegro5GraphicsContext* window = (Allegro5GraphicsContext*)ev.user.data1;
+            EAGLE_ASSERT(window);
+            ALLEGRO_EVENT_SOURCE* response_event_source = &(a5man->response_event_source);
 
-         ALLEGRO_EVENT_SOURCE* response_event_source = &(a5man->response_event_source);
+            ALLEGRO_EVENT ev2;
+            ev2.type = EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED;
+            ev2.user.data1 = (intptr_t)window;
+            al_emit_user_event(response_event_source , &ev2 , 0);
 
-         ALLEGRO_EVENT ev2;
-         ev2.type = EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED;
-         ev2.user.data1 = (intptr_t)window;
-         al_emit_user_event(response_event_source , &ev2 , 0);
-
-         continue;
+///         }
       }
-
-      if (ev.type == EAGLE_EVENT_WM_DESTROY) {
+      else if (ev.type == EAGLE_EVENT_WM_DESTROY) {
 
          EAGLE_ASSERT(a5man->WindowCount() == 0);
 
@@ -65,11 +70,7 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
             break;
          }
       }
-
-      EagleEvent ee = a5man->GetEagleDisplayEvent(ev);
-      EagleInfo() << "Allegro5WindowManagerProcess received event " << EagleEventName(ee.type) << std::endl;
-
-      if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_IN) {
+      else if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_IN) {
          a5man->SwitchIn(ee.window);
       }
       else if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_OUT) {
@@ -131,23 +132,6 @@ void Allegro5WindowManager::SignalClose(Allegro5GraphicsContext* window) {
 
 
    ALLEGRO_EVENT ev;
-
-/**
-   EagleEvent ee;
-
-   ee.type = EAGLE_EVENT_DISPLAY_HALT_DRAWING;
-   ee.window = window;
-   ee.display = DISPLAY_EVENT_DATA();
-
-   window->EmitEvent(ee);
-
-   do {
-      al_wait_for_event(response_queue , &ev);
-   } while (ev.type != EAGLE_EVENT_DISPLAY_HALT_DRAWING_ACKNOWLEDGED);
-   EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);/// TODO : Not safe for 64 bit pointers
-
-//*/
-
    ev.type = EAGLE_EVENT_WM_CLOSE_WINDOW;
    ev.user.data1 = (intptr_t)window;/// TODO : Not safe for 64 bit pointers
    al_emit_user_event(&window_event_source , &ev , 0);

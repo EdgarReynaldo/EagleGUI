@@ -20,6 +20,8 @@ void* bad_thread(EagleThread* t , void* data) {
    void* ret = (void*)-1;
 
    EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(240 , 180 , EAGLE_WINDOWED);
+   EAGLE_ASSERT(new_win && new_win->Valid());
+   
    new_win->SetOurThread(t);
    
    EagleEventHandler* q = GetAllegro5System()->CreateEventHandler(false);
@@ -27,7 +29,7 @@ void* bad_thread(EagleThread* t , void* data) {
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
 
    EagleFont* dfont = new_win->DefaultFont();
-   EAGLE_ASSERT(dfont);
+   EAGLE_ASSERT(dfont && dfont->Valid());
 
 ///   q->ListenTo(GetAllegro5System()->GetInputHandler());
    q->ListenTo(new_win);
@@ -102,6 +104,134 @@ void* bad_thread(EagleThread* t , void* data) {
 void shutdown_main() {
    EagleInfo() << "EAGLE INFO : Shutting down main." << std::endl;
    return;
+}
+
+
+
+int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
+   SendOutputToFile("Libtest.txt" , "" , false);
+
+   Allegro5System* a5sys = GetAllegro5System();//Eagle::EagleLibrary::System("Allegro5");
+
+   a5sys->Initialize(EAGLE_FULL_SETUP);
+
+   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
+   EAGLE_ASSERT(win1 && win1->Valid());
+
+   EagleEventHandler* queue = a5sys->GetSystemQueue();
+
+   std::vector<EagleThread*> thread_list;
+
+   a5sys->GetSystemTimer()->Start();
+
+   while (1) {
+      EagleEvent ee = queue->WaitForEvent(0);
+
+      if (ee.type != EAGLE_EVENT_TIMER && ee.type != EAGLE_EVENT_MOUSE_AXES) {
+         EagleInfo() << "Handling event " << EagleEventName(ee.type) << std::endl;
+      }
+
+      if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+         a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
+         if (ee.window == win1) {
+            break;
+         }
+      }
+///      if (ee.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING) {
+///         a5sys->GetWindowManager()->AcknowledgeDrawingHalt(ee.window);
+///      }
+      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+         break;
+      }
+      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_N) {
+         EagleThread* ethread = GetAllegro5System()->CreateThread();
+         ethread->SetName(StringPrintF("New Window Thread #%3d" , ethread->GetEagleId()));
+         ethread->Create(bad_thread , ethread);
+         ethread->Start();
+         thread_list.push_back(ethread);
+      }
+   }
+
+   for (int i = 0 ; i < (int)thread_list.size() ; ++i) {
+      EagleThread* t = thread_list[i];
+      t->Join();
+   }
+
+   Eagle::EagleLibrary::ShutdownEagle();
+
+   return 0;
+}
+
+
+
+
+int main3(int argc , char** argv) {
+
+   atexit(shutdown_main);
+
+   SendOutputToFile("Libtest.txt" , "" , false);
+
+   Allegro5System* a5sys = GetAllegro5System();//Eagle::EagleLibrary::System("Allegro5");
+
+   a5sys->Initialize(EAGLE_FULL_SETUP);
+
+   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
+   EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
+
+   int window_count = 2;
+
+   EagleEventHandler* queue = a5sys->GetSystemQueue();
+
+   std::vector<EagleThread*> thread_list;
+
+   a5sys->GetSystemTimer()->Start();
+
+   while (1) {
+      EagleEvent ee = queue->WaitForEvent(0);
+
+      if (ee.type != EAGLE_EVENT_TIMER && ee.type != EAGLE_EVENT_MOUSE_AXES) {
+         EagleInfo() << "Handling event " << EagleEventName(ee.type) << std::endl;
+      }
+
+      if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+         if (ee.window == win1) {
+            EagleInfo() << "Close display receieved by main display." << std::endl;
+            break;
+         }
+         a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
+         window_count--;
+         if (window_count == 0) {
+            break;
+         }
+      }
+///      if (ee.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING) {
+///         a5sys->GetWindowManager()->AcknowledgeDrawingHalt(ee.window);
+///      }
+      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+         break;
+      }
+      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_N) {
+         EagleThread* ethread = GetAllegro5System()->CreateThread();
+         ethread->SetName(StringPrintF("New Window Thread #%3d" , ethread->GetEagleId()));
+         ethread->Create(bad_thread , ethread);
+         ethread->Start();
+         thread_list.push_back(ethread);
+         window_count++;
+      }
+   }
+
+   for (int i = 0 ; i < (int)thread_list.size() ; ++i) {
+      EagleThread* t = thread_list[i];
+      t->Join();
+   }
+
+   Eagle::EagleLibrary::ShutdownEagle();
+
+   return 0;
 }
 
 
@@ -254,72 +384,6 @@ int main2(int argc , char** argv) {
 
 }
 
-
-
-int main(int argc , char** argv) {
-
-   atexit(shutdown_main);
-
-   SendOutputToFile("Libtest.txt" , "" , false);
-
-   Allegro5System* a5sys = GetAllegro5System();//Eagle::EagleLibrary::System("Allegro5");
-
-   a5sys->Initialize(EAGLE_FULL_SETUP);
-
-   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
-   EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(400,300,EAGLE_WINDOWED);
-
-   int window_count = 2;
-
-   EagleEventHandler* queue = a5sys->GetSystemQueue();
-
-   std::vector<EagleThread*> thread_list;
-
-   a5sys->GetSystemTimer()->Start();
-
-   while (1) {
-      EagleEvent ee = queue->WaitForEvent(0);
-
-      if (ee.type != EAGLE_EVENT_TIMER && ee.type != EAGLE_EVENT_MOUSE_AXES) {
-         EagleInfo() << "Handling event " << EagleEventName(ee.type) << std::endl;
-      }
-
-      if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
-         if (ee.window == win1) {
-            EagleInfo() << "Close display receieved by main display." << std::endl;
-            break;
-         }
-         a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
-         window_count--;
-         if (window_count == 0) {
-            break;
-         }
-      }
-///      if (ee.type == EAGLE_EVENT_DISPLAY_HALT_DRAWING) {
-///         a5sys->GetWindowManager()->AcknowledgeDrawingHalt(ee.window);
-///      }
-      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
-         break;
-      }
-      if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_N) {
-         EagleThread* ethread = GetAllegro5System()->CreateThread();
-         ethread->SetName(StringPrintF("New Window Thread #%3d" , ethread->GetEagleId()));
-         ethread->Create(bad_thread , ethread);
-         ethread->Start();
-         thread_list.push_back(ethread);
-         window_count++;
-      }
-   }
-
-   for (int i = 0 ; i < (int)thread_list.size() ; ++i) {
-      EagleThread* t = thread_list[i];
-      t->Join();
-   }
-
-   Eagle::EagleLibrary::ShutdownEagle();
-
-   return 0;
-}
 
 
 
