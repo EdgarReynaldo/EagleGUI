@@ -76,24 +76,18 @@ void EagleWindowManager::CloseWindows() {
 
    ThreadLockMutex(our_thread , manager_mutex);
    winmap = window_map;
+   window_map.clear();
+   active_window = 0;
+   window_count = 0;
    ThreadUnLockMutex(our_thread , manager_mutex);
 
    for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
       if (it->second != 0) {
          EAGLE_ASSERT(GetValidById(it->first));
          EagleLog() << StringPrintF("EagleWindowManager::CloseWindows - About to close window %s." , it->second->FullName()) << std::endl;
-///         manager_mutex->Unlock();
          DestroyWindow(it->first);
-///         manager_mutex->Lock();
       }
    }
-
-   ThreadLockMutex(our_thread , manager_mutex);
-   window_map.clear();
-   active_window = 0;
-   ThreadUnLockMutex(our_thread , manager_mutex);
-
-   EAGLE_ASSERT(window_count == 0);
 }
 
 

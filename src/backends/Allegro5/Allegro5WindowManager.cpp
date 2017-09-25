@@ -297,14 +297,16 @@ void Allegro5WindowManager::Destroy() {
 
    CloseWindows();
 
-   ALLEGRO_EVENT ev;
-   ev.any.source = &window_event_source;
-   ev.type = EAGLE_EVENT_WM_DESTROY;
-   ev.user.data1 = (intptr_t)this;
-
-   al_emit_user_event(&window_event_source , &ev , 0);
 
    if (manager_thread && manager_thread->Running()) {
+      
+      ALLEGRO_EVENT ev;
+      ev.any.source = &window_event_source;
+      ev.type = EAGLE_EVENT_WM_DESTROY;
+      ev.user.data1 = (intptr_t)this;
+
+      al_emit_user_event(&window_event_source , &ev , 0);
+      
       manager_thread->FinishThread();
    }
 
