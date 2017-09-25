@@ -35,14 +35,15 @@ protected :
 
 public :
    
-   Allegro5Image();
-   Allegro5Image(std::string name);
+   Allegro5Image(EagleGraphicsContext* owner , std::string objname);
+
+   /// TODO : ADD PARENT GC
    explicit Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership);
    Allegro5Image(int width , int height , IMAGE_TYPE type);
    Allegro5Image(std::string file , IMAGE_TYPE type);
    Allegro5Image(EagleImage* parent , int x , int y , int width , int height);
 
-   ~Allegro5Image() {Free();}
+   ~Allegro5Image();
    
    // creation
    virtual EagleImage* Clone(EagleGraphicsContext* parent_window);

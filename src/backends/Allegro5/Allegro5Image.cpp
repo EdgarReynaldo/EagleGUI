@@ -55,14 +55,8 @@ void Allegro5Image::ResetClippingRectangle() {
 
 
 
-Allegro5Image::Allegro5Image() :
-      EagleImage((EagleGraphicsContext*)0 , StringPrintF("Allegro5Image at %p" , this)),
-      bmp(0)
-{
-   
-}
-Allegro5Image::Allegro5Image(std::string name) :
-      EagleImage((EagleGraphicsContext*)0 , name),
+Allegro5Image::Allegro5Image(EagleGraphicsContext* owner , std::string objname) :
+      EagleImage(owner , "Allegro5Image" , objname),
       bmp(0)
 {
    
@@ -108,6 +102,12 @@ Allegro5Image::Allegro5Image(EagleImage* parent_bitmap , int x , int y , int wid
       bmp(0)
 {
    CreateSubBitmap(parent_bitmap , x , y , width , height);
+}
+
+
+
+Allegro5Image::~Allegro5Image() {
+   Free();
 }
 
 

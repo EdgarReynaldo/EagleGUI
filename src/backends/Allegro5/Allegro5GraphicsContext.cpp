@@ -73,7 +73,7 @@ void Allegro5GraphicsContext::PrivateFlipDisplay() {
 Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width , int height , int flags) :
       EagleGraphicsContext("Allegro5GraphicsContext" , objname),
       display(0),
-      realbackbuffer(),
+      realbackbuffer(this , "A5GC::realbackbuffer"),
       blender_op(ALLEGRO_ADD),
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
@@ -742,7 +742,7 @@ void Allegro5GraphicsContext::SetDrawingTarget(EagleImage* dest) {
 
 
 EagleImage* Allegro5GraphicsContext::EmptyImage() {
-   EagleImage* img = new Allegro5Image();
+   EagleImage* img = new Allegro5Image(this , "NewImage");
    images.Add(img);
    return img;
 }
@@ -750,6 +750,7 @@ EagleImage* Allegro5GraphicsContext::EmptyImage() {
 
 
 EagleImage* Allegro5GraphicsContext::AdoptImage(ALLEGRO_BITMAP* img) {
+   /// TODO : Conversion to new context?
    EagleImage* eagle_image = new Allegro5Image(img , true);
    images.Add(eagle_image);
    return eagle_image;
@@ -766,7 +767,7 @@ EagleImage* Allegro5GraphicsContext::ReferenceImage(ALLEGRO_BITMAP* img) {
 
 
 EagleImage* Allegro5GraphicsContext::CloneImage(EagleImage* img) {
-   Allegro5Image* newimg = new Allegro5Image();
+   Allegro5Image* newimg = new Allegro5Image(this , "CloneImage");
    newimg->Allocate(img->W() , img->H() , img->ImageType());
    /// TODO Set blender here
    PushDrawingTarget(newimg);

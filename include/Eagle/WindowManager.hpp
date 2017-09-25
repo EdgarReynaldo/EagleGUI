@@ -9,7 +9,7 @@
 
 
 #include "Eagle/Object.hpp"
-
+#include "Eagle/Events.hpp"
 
 
 #include <map>
@@ -23,7 +23,7 @@ class EagleMutex;
 
 
 
-class EagleWindowManager : public EagleObject {
+class EagleWindowManager : public EagleObject , public EagleEventSource {
 
 protected :
    EagleSystem*  parent_system;

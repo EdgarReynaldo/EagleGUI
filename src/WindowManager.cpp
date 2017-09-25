@@ -47,6 +47,7 @@ void EagleWindowManager::SwitchOut(EagleGraphicsContext* window) {
 
 EagleWindowManager::EagleWindowManager(EagleSystem* sys , std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
+      EagleEventSource(),
       parent_system(sys),
       manager_thread(0),
       manager_mutex(0),
@@ -125,6 +126,7 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    EAGLE_ASSERT(manager_mutex && manager_mutex->Valid());
 
+
    ThreadLockMutex(our_thread , manager_mutex);
 
    WMIT it = window_map.find(window_eid);
@@ -141,12 +143,20 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    EagleGraphicsContext* window = window_map[window_eid];
 
+   ThreadUnLockMutex(our_thread , manager_mutex);
+
+   
+
    EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying %s" , window->FullName()) << std::endl;
 
    EAGLE_ASSERT(window);
 
-   delete window;
+   delete window;/// Must destroy window outside of lock! Or else deadlock!
 
+
+
+   ThreadLockMutex(our_thread , manager_mutex);
+   
    window_map[window_eid] = 0;/// mark destroyed windows as null
 
    --window_count;

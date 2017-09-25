@@ -283,7 +283,7 @@ class EagleEvent {
 
 public :
 
-   EAGLE_EVENT_TYPE type;
+   int type;
 
    EagleEventSource* source;
 
