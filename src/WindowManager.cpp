@@ -76,9 +76,6 @@ void EagleWindowManager::CloseWindows() {
 
    ThreadLockMutex(our_thread , manager_mutex);
    winmap = window_map;
-   window_map.clear();
-   active_window = 0;
-   window_count = 0;
    ThreadUnLockMutex(our_thread , manager_mutex);
 
    for (WMIT it = winmap.begin() ; it != winmap.end() ; ++it) {
@@ -88,6 +85,8 @@ void EagleWindowManager::CloseWindows() {
          DestroyWindow(it->first);
       }
    }
+
+   EAGLE_ASSERT(window_count == 0);
 }
 
 

@@ -167,6 +167,9 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
          ee.window = 0;
          return ee;
       }
+      else {
+         throw EagleException("Unknown event from window event source in Allegro5WindowManager::GetEagleDisplayEvent()");
+      }
    }
    else {
       a5win = dynamic_cast<Allegro5GraphicsContext*>(GetAssociatedContext(/** THIS HAS TO BE A DISPLAY EVENT!**/ev.display.source));/** This LOCKS the wm mutex */
@@ -303,7 +306,7 @@ void Allegro5WindowManager::Destroy() {
       ALLEGRO_EVENT ev;
       ev.any.source = &window_event_source;
       ev.type = EAGLE_EVENT_WM_DESTROY;
-      ev.user.data1 = (intptr_t)this;
+      ev.user.data1 = (intptr_t)this;///TODO NOT SAFE FOR 64 BIT PTRS
 
       al_emit_user_event(&window_event_source , &ev , 0);
       
