@@ -145,6 +145,9 @@ void* Allegro5Thread::FinishThread() {
    EAGLE_ASSERT(finish_condition_var);
    EAGLE_ASSERT(finish_mutex);
 
+   
+   /// TODO : IMPLEMENT WITH A EVENT QUEUE SO THE SIGNAL CAN"T BE MISSED
+   
    return_value = 0;
    if (Running()) {
 
