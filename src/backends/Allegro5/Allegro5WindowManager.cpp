@@ -50,7 +50,7 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
          else if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
             EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
             EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , ev.display.source) << std::endl;
-         
+
             al_unregister_event_source(window_queue , al_get_display_event_source(ev.display.source));
 
             Allegro5GraphicsContext* window = (Allegro5GraphicsContext*)ev.user.data1;
@@ -70,7 +70,7 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
       else if (ee.type == EAGLE_EVENT_DISPLAY_SWITCH_OUT) {
          a5man->SwitchOut(ee.window);
       }
-      
+
       EAGLE_ASSERT(ee.window);
       /// This should always be a window event
       ee.window->EmitEvent(ee , thread);
@@ -180,12 +180,12 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
       ee.display.height = ev.display.height;
       ee.display.orientation = ev.display.orientation;
    }
-      
+
    EAGLE_ASSERT(a5win);
 
    ee.source = a5win;
    ee.window = a5win;
-   
+
    switch(ev.type) {
    case ALLEGRO_EVENT_DISPLAY_EXPOSE :
       ee.type = EAGLE_EVENT_DISPLAY_EXPOSE;
@@ -238,8 +238,8 @@ EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int
 
 
 
-Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys , std::string objname) :
-      EagleWindowManager(sys , "Allegro5WindowManager" , objname),
+Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys) :
+      EagleWindowManager(sys , "Allegro5WindowManager" , "A5WM"),
       display_context_map(),
       window_queue(0),
       window_event_source(),
@@ -302,22 +302,26 @@ void Allegro5WindowManager::Destroy() {
 
 
    if (manager_thread && manager_thread->Running()) {
-      
+
       ALLEGRO_EVENT ev;
       ev.any.source = &window_event_source;
       ev.type = EAGLE_EVENT_WM_DESTROY;
       ev.user.data1 = (intptr_t)this;///TODO NOT SAFE FOR 64 BIT PTRS
 
       al_emit_user_event(&window_event_source , &ev , 0);
-      
+
       manager_thread->FinishThread();
    }
 
    if (window_queue) {
+      al_unregister_event_source(window_queue , &window_event_source);
+      al_destroy_user_event_source(&window_event_source);
       al_destroy_event_queue(window_queue);
       window_queue = 0;
    }
    if (response_queue) {
+      al_unregister_event_source(response_queue , &response_event_source);
+      al_destroy_user_event_source(&response_event_source);
       al_destroy_event_queue(response_queue);
       response_queue = 0;
    }

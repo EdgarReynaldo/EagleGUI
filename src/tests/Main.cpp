@@ -21,9 +21,9 @@ void* bad_thread(EagleThread* t , void* data) {
 
    EagleGraphicsContext* new_win = GetAllegro5System()->CreateGraphicsContext(240 , 180 , EAGLE_WINDOWED);
    EAGLE_ASSERT(new_win && new_win->Valid());
-   
+
    new_win->SetOurThread(t);
-   
+
    EagleEventHandler* q = GetAllegro5System()->CreateEventHandler(false);
 
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
@@ -108,11 +108,65 @@ void shutdown_main() {
 
 
 
+
+int main6(int argc , char** argv) {
+
+   if (!al_install_system(ALLEGRO_VERSION_INT , 0)) {
+      return 1;
+   }
+
+   ALLEGRO_EVENT_SOURCE s;
+   al_init_user_event_source(&s);
+
+   ALLEGRO_EVENT_SOURCE s2;
+   al_init_user_event_source(&s2);
+
+   ALLEGRO_EVENT_QUEUE* q = al_create_event_queue();
+
+   al_register_event_source(q , &s);
+   al_register_event_source(q , &s2);
+
+   al_unregister_event_source(q , &s);
+   al_unregister_event_source(q , &s2);
+
+   al_destroy_user_event_source(&s);
+   al_destroy_user_event_source(&s2);
+
+   al_destroy_event_queue(q);
+
+   al_uninstall_system();
+
+   return 0;
+}
+
+
+
 int main(int argc , char** argv) {
-   
+
+   Allegro5System* a5sys = GetAllegro5System();
+
+   EAGLE_ASSERT(a5sys);
+
+   a5sys->Initialize(EAGLE_FULL_SETUP);
+
+///   EagleWindowManager* wm = a5sys->GetWindowManager();
+
+///   EAGLE_ASSERT(wm);
+
+   a5sys->Rest(3);
+
+   Eagle::EagleLibrary::ShutdownEagle();
+
+   return 0;
+}
+
+
+
+int main5(int argc , char** argv) {
+
    (void)argc;
    (void)argv;
-   
+
    SendOutputToFile("Libtest.txt" , "" , false);
 
    Allegro5System* a5sys = GetAllegro5System();//Eagle::EagleLibrary::System("Allegro5");
@@ -241,26 +295,26 @@ int main4(int argc , char** argv) {
    if (!al_init()) {return 1;}
    if (!al_install_keyboard()) {return 2;}
    if (!al_install_mouse()) {return 3;}
-   
+
    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_OPENGL);
-   
+
    ALLEGRO_DISPLAY* d1 = al_create_display(400,300);
    ALLEGRO_FONT* f1 = al_create_builtin_font();
-   
+
    ALLEGRO_DISPLAY* d2 = al_create_display(400,300);
    ALLEGRO_FONT* f2 = al_create_builtin_font();
-   
+
    ALLEGRO_TIMER* t = al_create_timer(1.0);
-   
+
    ALLEGRO_EVENT_QUEUE* q = al_create_event_queue();
    al_register_event_source(q , al_get_display_event_source(d1));
    al_register_event_source(q , al_get_display_event_source(d2));
    al_register_event_source(q , al_get_mouse_event_source());
    al_register_event_source(q , al_get_keyboard_event_source());
    al_register_event_source(q , al_get_timer_event_source(t));
-   
+
    al_start_timer(t);
-   
+
    bool redraw = true;
    bool quit = false;
 
@@ -304,37 +358,37 @@ int main4(int argc , char** argv) {
          }
       } while (!al_is_event_queue_empty(q));
    } while (!quit && (d1 || d2));
-   
+
    return 0;
 }
 
 
 
 int main2(int argc , char** argv) {
-   
+
    Allegro5System* a5sys = GetAllegro5System();
-   
+
    a5sys->Initialize(EAGLE_FULL_SETUP);
-   
+
    EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_DIRECT3D);
 ///   EagleImage* img1 = win1->CreateImage(300,200);
 ///   win1->SetDrawingTarget(img1);
 ///   win1->Clear(EagleColor(0,0,255));
-   
+
 ///   EagleGraphicsContext* win2 = 0;
    EagleGraphicsContext* win2 = a5sys->CreateGraphicsContext(600,400,EAGLE_WINDOWED | EAGLE_DIRECT3D);
 ///   EagleImage* img2 = win1->CreateImage(300,200);
 ///   win1->SetDrawingTarget(img2);
 ///   win1->Clear(EagleColor(255,0,0));
-   
+
    a5sys->GetSystemTimer()->SetSecondsPerTick(1.0);
    a5sys->GetSystemTimer()->Start();
-   
+
    bool redraw = true;
    bool quit = false;
-   
+
    do {
-      
+
       if (redraw) {
          EagleLog() << "Redraw" << std::endl;
          if (win1) {
@@ -353,8 +407,8 @@ int main2(int argc , char** argv) {
          }
          redraw = false;
       }
-         
-         
+
+
       do {
          EagleEvent ee = a5sys->GetSystemQueue()->WaitForEvent(0);
          if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
@@ -377,9 +431,9 @@ int main2(int argc , char** argv) {
          }
       } while (a5sys->GetSystemQueue()->HasEvent(0));
    } while (!quit && (win1 || win2));
-   
+
    a5sys->Shutdown();
-   
+
    return 0;
 
 }

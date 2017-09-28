@@ -213,12 +213,12 @@ bool Allegro5EventHandler::Create() {
 
    mutex = new CXX11Mutex();
    mutex->SetShortName("A5EH");
-   
+
    event_thread = new Allegro5Thread();
    event_thread->SetShortName("A5EH");
 ///   SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , event_thread->GetEagleId()));
    SetOurThread(event_thread);
-   
+
    cond_var = new Allegro5ConditionVar();
 
    /// don't call create on thread until queue, mutex, and condvar are in place
@@ -285,6 +285,8 @@ void Allegro5EventHandler::Destroy() {
       cond_var = 0;
    }
    if (event_queue) {
+      al_unregister_event_source(event_queue , &main_source);
+      al_destroy_user_event_source(&main_source);
       al_destroy_event_queue(event_queue);
       event_queue = 0;
    }

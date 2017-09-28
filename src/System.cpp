@@ -224,6 +224,8 @@ void EagleSystem::Shutdown() {
 
 
 int EagleSystem::Initialize(int state) {
+   int desired_state = state;
+
    state |= EAGLE_SYSTEM;/// System is non-optional
 
    if (state & EAGLE_SYSTEM)     {InitializeSystem();}
@@ -242,6 +244,8 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_TOUCH)      {InstallTouch();}
 
    FinalizeSystem();
+
+   PrintFailedEagleInitStates(desired_state , EagleInitState());
 
    return EagleInitState();
 }
@@ -556,6 +560,7 @@ EagleEventHandler* EagleSystem::GetSystemQueue() {
 EagleTimer* EagleSystem::GetSystemTimer() {
 	if (!system_timer) {
 		system_timer = CreateTimer();
+		system_timer->SetName("SystemTimer");
 		if (system_timer) {
 			system_timer->Create(system_timer_rate);
 		}

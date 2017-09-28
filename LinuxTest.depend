@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1498521828 source:/home/marc/PROJECTS/Eagle/EagleGUI/Test.cpp
+1505581930 source:/home/marc/PROJECTS/Eagle/EagleGUI/Test.cpp
 	"Eagle.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 	"allegro5/allegro.h"
@@ -32,7 +32,7 @@
 	"Eagle/Threads.hpp"
 	"Eagle/Timer.hpp"
 
-1498051205 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Platform.hpp
 	<cassert>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Area.hpp
@@ -55,13 +55,13 @@
 	"Eagle/Platform.hpp"
 	"Eagle/Logging.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Logging.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Logging.hpp
 	<string>
 	<iostream>
 	<fstream>
 	<unordered_set>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Object.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Object.hpp
 	"Eagle/Logging.hpp"
 	<string>
 	<map>
@@ -78,7 +78,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Container.hpp
 	<vector>
 
-1498065304 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Events.hpp
+1506454544 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Events.hpp
 	<list>
 	<deque>
 	<vector>
@@ -87,6 +87,7 @@
 	"Eagle/Mutexes.hpp"
 	"Eagle/Exception.hpp"
 	"Eagle/Conditions.hpp"
+	"Eagle/Object.hpp"
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetMessage.hpp
 	<iostream>
@@ -94,11 +95,13 @@
 	<map>
 	<utility>
 
-1498423481 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Mutexes.hpp
+	"Eagle/Object.hpp"
 	<mutex>
 	<thread>
 	<string>
-	"Eagle/Platform.hpp"
+	<list>
+	<map>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Conditions.hpp
 
@@ -107,12 +110,12 @@
 	<cstdio>
 	<iostream>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Font.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Font.hpp
 	<string>
 	"Eagle/Image.hpp"
 	"Eagle/Object.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Image.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Image.hpp
 	"Eagle/Area.hpp"
 	"Eagle/Color.hpp"
 	"Eagle/Container.hpp"
@@ -120,7 +123,7 @@
 	<string>
 	<vector>
 
-1498319758 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/GraphicsContext.hpp
+1505751263 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/GraphicsContext.hpp
 	<list>
 	<string>
 	<map>
@@ -162,10 +165,10 @@
 	"Gui/WidgetHandler.hpp"
 	"Gui/WidgetMessage.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/BasicIcon.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/BasicIcon.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetBase.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetBase.hpp
 	"Eagle/Area.hpp"
 	"Eagle/Events.hpp"
 	"Eagle/Object.hpp"
@@ -185,7 +188,7 @@
 	"Eagle/Area.hpp"
 	<iostream>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetColorset.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetColorset.hpp
 	"Eagle/Color.hpp"
 	"Eagle/Object.hpp"
 	"Eagle/Exception.hpp"
@@ -204,7 +207,7 @@
 	"Button/RadioButton.hpp"
 	"Button/ScrollButton.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/BasicButton.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/BasicButton.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/InputHandler.hpp"
 	<string>
@@ -217,7 +220,7 @@
 	"Eagle/Events.hpp"
 	"Eagle/Timer.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Timer.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Timer.hpp
 	"Eagle/Events.hpp"
 	"Eagle/Object.hpp"
 
@@ -240,7 +243,7 @@
 	"Eagle/Gui/Layout/Layout.hpp"
 	"Eagle/Gui/Button/BasicButton.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/Layout.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/Layout.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Gui/Layout/LayoutRectangle.hpp"
 	"Eagle/Gui/Alignment.hpp"
@@ -248,11 +251,11 @@
 	<string>
 	<climits>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/ScrollButton.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Button/ScrollButton.hpp
 	"Eagle/Gui/Button/BasicButton.hpp"
 	"Eagle/StringWork.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Camera.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Camera.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Image.hpp"
 
@@ -265,31 +268,31 @@
 	"Eagle/Gui/Layout/SplitterLayouts.hpp"
 	"Eagle/Gui/Decorators/Decorator.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/DumbLayout.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/DumbLayout.hpp
 	"Eagle/Gui/Layout/Layout.hpp"
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/FlowLayout.hpp
 	"Eagle/Gui/Layout/Layout.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/GridLayout.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/GridLayout.hpp
 	"Eagle/Gui/Layout/Layout.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/RelativeLayout.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/RelativeLayout.hpp
 	"Eagle/Gui/Layout/Layout.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/SplitterLayouts.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/SplitterLayouts.hpp
 	"Eagle/Area.hpp"
 	"Eagle/Gui/WidgetColorset.hpp"
 	"Eagle/Gui/Layout/Layout.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Decorators/Decorator.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Decorators/Decorator.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Gui/Layout/FillLayout.hpp"
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Gui/Layout/DumbLayout.hpp"
 	<string>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/FillLayout.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Layout/FillLayout.hpp
 	"Eagle/Gui/Layout/Layout.hpp"
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Menu.hpp
@@ -297,7 +300,7 @@
 	"Eagle/Gui/Button/BasicButton.hpp"
 	"Eagle/Gui/Text/BasicText.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/BasicText.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Text/BasicText.hpp
 	"Eagle/Gui/Text/GlobalText.hpp"
 	"Eagle/Gui/WidgetBase.hpp"
 
@@ -305,12 +308,12 @@
 	<vector>
 	<string>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/ScrollBar.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/ScrollBar.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Gui/Scroller.hpp"
 	"Eagle/Gui/Button/ScrollButton.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Scroller.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/Scroller.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	<string>
 
@@ -334,7 +337,7 @@
 	"Eagle/Gui/Text/SelectText.hpp"
 	"Eagle/StringWork.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetHandler.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Gui/WidgetHandler.hpp
 	"Eagle/Gui/WidgetBase.hpp"
 	"Eagle/Gui/Layout/Layout.hpp"
 	"Eagle/Gui/Layout/DumbLayout.hpp"
@@ -349,7 +352,7 @@
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Lib.hpp
 	"Eagle/System.hpp"
 
-1498319042 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
+1506540535 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/System.hpp
 	"Eagle/Color.hpp"
 	"Eagle/Events.hpp"
 	"Eagle/GraphicsContext.hpp"
@@ -360,12 +363,17 @@
 	"Eagle/Clipboard.hpp"
 	"Eagle/WindowManager.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Threads.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Threads.hpp
+	"Eagle/Object.hpp"
+	"Eagle/Mutexes.hpp"
+	<fstream>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/Clipboard.hpp
 	<string>
 
-1498341713 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/WindowManager.hpp
+1506454544 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/WindowManager.hpp
+	"Eagle/Object.hpp"
+	"Eagle/Events.hpp"
 	<map>
 
 1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/MemberFunctors.hpp
@@ -676,7 +684,7 @@
 	"Eagle/Color.hpp"
 	"allegro5/allegro.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5EventHandler.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5EventHandler.hpp
 	"Eagle/Events.hpp"
 	"Eagle/Threads.hpp"
 	"Eagle/backends/Allegro5/Allegro5Conditions.hpp"
@@ -687,10 +695,10 @@
 	"Eagle/Conditions.hpp"
 	"allegro5/allegro.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Threads.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Threads.hpp
 	"Eagle/Threads.hpp"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Font.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Font.hpp
 	"Eagle/Font.hpp"
 	"allegro5/allegro_font.h"
 	"allegro5/allegro_ttf.h"
@@ -702,7 +710,7 @@
 	"allegro5/allegro.h"
 	"allegro5/allegro_font.h"
 
-1498319129 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp
 	"Eagle/GraphicsContext.hpp"
 	"Eagle/Mutexes.hpp"
 	"Eagle/backends/Allegro5/Allegro5Image.hpp"
@@ -712,7 +720,7 @@
 	"allegro5/allegro_primitives.h"
 	<vector>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Image.hpp
+1506454544 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Image.hpp
 	"Eagle/Image.hpp"
 	"allegro5/allegro.h"
 
@@ -727,26 +735,27 @@
 1497465608 /usr/local/include/allegro5/allegro_primitives.h
 	<allegro5/allegro.h>
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp
 	"Eagle/Exception.hpp"
 	"Eagle/InputHandler.hpp"
 	"Eagle/backends/Allegro5/Allegro5Threads.hpp"
 	"Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 	"allegro5/allegro.h"
 
-1498318581 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5System.hpp
+1506540948 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5System.hpp
 	"Eagle/System.hpp"
 	"allegro5/allegro.h"
 
-1497489681 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Timer.hpp
-	"Eagle.hpp"
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5Timer.hpp
+	"Eagle/Threads.hpp"
+	"Eagle/Timer.hpp"
 	"allegro5/allegro.h"
 
-1498341704 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp
+1506538730 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp
 	"Eagle/WindowManager.hpp"
 	"Eagle/Events.hpp"
 	"allegro5/allegro.h"
 
-1498318831 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/CXX11Mutexes.hpp
+1505581331 /home/marc/PROJECTS/Eagle/EagleGUI/include/Eagle/CXX11Mutexes.hpp
 	"Eagle/Mutexes.hpp"
 

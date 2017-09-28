@@ -38,7 +38,7 @@ class LogFile {
 public :
    ofstream log_file;
    ~LogFile();
-   
+
 };
 
 LogFile::~LogFile() {
@@ -132,6 +132,11 @@ void EagleLogger::RemoveOutput(ostream& output) {
 
 
 EagleLogger& EagleLogger::operator<<(MANIP manip) {
+
+   if (manip == std::endl) {
+      cout << "Detected std::endl;" << std::endl;
+   }
+
    if (local_log_level >= global_log_level) {
       for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
          std::ostream& os = *(*it);
@@ -196,7 +201,7 @@ void Indenter::ResetSpaces() {
 
 
 Indenter::Indenter() :
-      indent_level(0) , num_spaces(3) , indent("") 
+      indent_level(0) , num_spaces(3) , indent("")
    {}
 
 
