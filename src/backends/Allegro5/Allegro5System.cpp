@@ -180,7 +180,7 @@ EagleClipboard* Allegro5System::PrivateCreateClipboard() {
 
 
 EagleWindowManager* Allegro5System::PrivateCreateWindowManager() {
-   return new Allegro5WindowManager(this , "A5SYS::A5WM");
+   return new Allegro5WindowManager(this);
 }
 
 
@@ -192,7 +192,7 @@ EagleSystem* Allegro5System::CreateAllegro5System() {
 
 
 Allegro5System::Allegro5System() :
-      EagleSystem(StringPrintF("Allegro5System at %p" , this))
+      EagleSystem("Allegro5System" , "A5SYS")
 {
 
 }

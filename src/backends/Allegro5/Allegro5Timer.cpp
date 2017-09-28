@@ -90,9 +90,7 @@ Allegro5Timer::Allegro5Timer(std::string objname) :
       process_event_source(),
       ethread(0)
 {
-   al_init_user_event_source(&timer_event_source);
-   al_init_user_event_source(&process_event_source);
-//   queue_lock = al_create_mutex();
+
 }
 
 
@@ -112,6 +110,9 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
 
    EagleInfo() << "Allegro5Timer::Create this=" << this << std::endl;
 
+   al_init_user_event_source(&timer_event_source);
+   al_init_user_event_source(&process_event_source);
+
    timer = al_create_timer(seconds_per_tick);
    timer_queue = al_create_event_queue();
    process_queue = al_create_event_queue();
@@ -119,7 +120,7 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
    ethread = new Allegro5Thread();
 
 ///   ethread->SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , ethread->GetEagleId()));
-   
+
    EAGLE_ASSERT(timer);
    EAGLE_ASSERT(timer_queue);
    EAGLE_ASSERT(process_queue);
@@ -181,11 +182,13 @@ void Allegro5Timer::Destroy() {
    if (timer_queue) {
       al_unregister_event_source(timer_queue , &process_event_source);
       al_unregister_event_source(timer_queue , al_get_timer_event_source(timer));
+      al_destroy_user_event_source(&process_event_source);
       al_destroy_event_queue(timer_queue);
       timer_queue = 0;
    }
    if (process_queue) {
       al_unregister_event_source(process_queue , &timer_event_source);
+      al_destroy_user_event_source(&timer_event_source);
       al_destroy_event_queue(process_queue);
       process_queue = 0;
    }

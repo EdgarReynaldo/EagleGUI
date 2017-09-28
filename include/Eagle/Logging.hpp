@@ -48,8 +48,53 @@ enum EAGLE_LOGGING_LEVEL {
 };
 
 
+class LogGuard {
+
+private :
+
+   EagleLogger& log;
+   CXX11Mutex* pmutex;
+
+   LogGuard(explicit EagleLogger& logger);
+   LogGuard(explicit EagleLogger& logger) :
+         log(logger)
+         pmutex()
+   {
+
+   }
+public :
+
+
+   typedef std::ostream&(*MANIP)(std::ostream&);
+
+   EagleLogger& operator<<(MANIP manip);
+
+   template<class Type>
+   EagleLogger& operator<<(const Type& t);
+
+};
+
+
+
+template<class Type>
+EagleLogGuard& EagleLogGuard::operator<<(const Type& t) {
+   if (local_log_level >= global_log_level) {
+      for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
+         std::ostream& os = *(*it);
+         os << t;
+      }
+   }
+   return *this;
+}
+
+
+
+EagleLog() << data << std::endl;
+
+EagleLogger
+
 class EagleLogger {
-   
+
 friend EagleLogger& EagleLog();
 friend EagleLogger& EagleInfo();
 friend EagleLogger& EagleWarn();
@@ -62,15 +107,15 @@ protected :
    EAGLE_LOGGING_LEVEL local_log_level;
 
    std::unordered_set<std::ostream*> outputs;
-   
+
 
    EagleLogger& SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level);
 
 
    EagleLogger();
-   
 
-public :   
+
+public :
 
    static EagleLogger& Instance();
 
@@ -78,10 +123,10 @@ public :
 
    void TurnLogOff();
    void TurnLogOn();
-   
+
    void AddOutput(std::ostream& output);
    void RemoveOutput(std::ostream& output);
-   
+
    /* CREDITS : A kind shout out to relpatseht who helped me get std::endl to work with my logging class */
 
    typedef std::ostream&(*MANIP)(std::ostream&);
@@ -90,7 +135,7 @@ public :
 
    template<class Type>
    EagleLogger& operator<<(const Type& t);
-   
+
    operator std::ostream&();
 };
 
@@ -132,7 +177,7 @@ private :
    std::string indent;
 
    void ResetSpaces();
-   
+
 public :
    Indenter();
    Indenter(int level , int spaces);
@@ -140,7 +185,7 @@ public :
    void SetLevel(unsigned int indentation_level);
    void SetSpaces(unsigned int number_of_spaces);
 
-   
+
    /// Prefix increment and decrement operators for changing the indentation level.
    Indenter& operator++();
    Indenter& operator--();
