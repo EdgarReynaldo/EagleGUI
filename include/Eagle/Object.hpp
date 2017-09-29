@@ -24,7 +24,7 @@
 #ifndef EagleObject_HPP
 #define EagleObject_HPP
 
-#include "Eagle/Logging.hpp"
+#include "Eagle/Indenter.hpp"
 
 #include <string>
 #include <map>
@@ -248,7 +248,6 @@ public :
 };
 
 std::ostream& operator<<(std::ostream& os , const EagleObject& obj);
-
 
 
 

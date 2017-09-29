@@ -22,6 +22,8 @@
 
 
 #include "Eagle/Logging.hpp"
+#include "Eagle/Exception.hpp"
+
 
 #include <fstream>
 
@@ -63,6 +65,7 @@ bool SendOutputToFile(const std::string& filepath , const std::string& header , 
 }
 
 
+
 /// -----------------------     EagleLogger class     ---------------------------------
 
 
@@ -71,18 +74,31 @@ EagleLogger& EagleLogger::SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_lev
    if (new_local_level == EAGLE_LOG_NONE) {
       new_local_level = EAGLE_LOG_CRITICAL;
    }
+   LockMutex(&mtx);
    local_log_level = new_local_level;
+   UnLockMutex(&mtx);
    return *this;
 }
 
 
 
+CXX11Mutex* EagleLogger::Mutex() {
+   return &mtx;
+}
+
+
+
 EagleLogger::EagleLogger() :
+      mtx("EagleLogMutex"),
       global_log_level(EAGLE_LOG_INFO),
       old_global_log_level(EAGLE_LOG_INFO),
       local_log_level(EAGLE_LOG_INFO),
       outputs()
 {
+   if (!mtx.Create(false , false)) {
+      throw EagleException("Failed to create EagleLogger::mtx mutex");
+   }
+   mtx.TurnLogOff();
 
    AddOutput(cout);
 
@@ -100,43 +116,90 @@ EagleLogger& EagleLogger::Instance() {
 
 
 
+EagleLogger& EagleLogger::EagleInfoLog() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_INFO);
+}
+
+
+
+EagleLogger& EagleLogger::EagleWarnLog() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_WARN);
+}
+
+
+
+EagleLogger& EagleLogger::EagleErrorLog() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_ERROR);
+}
+
+
+
+EagleLogger& EagleLogger::EagleCriticalLog() {
+   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_CRITICAL);
+}
+
+
+
+const char* EagleLogger::LogPrefixStr(EAGLE_LOGGING_LEVEL l) {
+   static const char* loglevelstrs[5] = {
+      "EAGLE INFO     : ",
+      "EAGLE WARN     : ",
+      "EAGLE ERROR    : ",
+      "EAGLE CRITICAL : ",
+      "EAGLE LOG NONE : "
+   };
+   return loglevelstrs[l];
+}
+
+
+
 void EagleLogger::SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level) {
+   LockMutex(&mtx);
    global_log_level = new_global_level;
+   UnLockMutex(&mtx);
 }
 
 
 
 void EagleLogger::TurnLogOff() {
+   LockMutex(&mtx);
    old_global_log_level = global_log_level;
+   UnLockMutex(&mtx);
    SetGlobalLoggingLevel(EAGLE_LOG_NONE);
 }
 
 
 
 void EagleLogger::TurnLogOn() {
+   LockMutex(&mtx);
    SetGlobalLoggingLevel(old_global_log_level);
+   UnLockMutex(&mtx);
 }
 
 
 
 void EagleLogger::AddOutput(ostream& output) {
+   LockMutex(&mtx);
    outputs.insert(&output);
+   UnLockMutex(&mtx);
 }
 
 
 
 void EagleLogger::RemoveOutput(ostream& output) {
+   LockMutex(&mtx);
    outputs.erase(&output);
+   UnLockMutex(&mtx);
 }
 
 
 
 EagleLogger& EagleLogger::operator<<(MANIP manip) {
-
+/*
    if (manip == std::endl) {
       cout << "Detected std::endl;" << std::endl;
    }
-
+*/
    if (local_log_level >= global_log_level) {
       for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
          std::ostream& os = *(*it);
@@ -148,38 +211,125 @@ EagleLogger& EagleLogger::operator<<(MANIP manip) {
 
 
 
+/// ------------------------     EagleLogGuard     -------------------------------
+
+
+
+
+EagleLogGuard::EagleLogGuard(EagleLogger& logger) :
+      log(logger),
+      pmutex(log.Mutex())
+{
+   EAGLE_ASSERT(pmutex);
+   LockMutex(pmutex);
+   log << EagleLogger::LogPrefixStr(log.local_log_level);
+}
+
+
+
+EagleLogGuard::EagleLogGuard(const EagleLogGuard& rhs) :
+      log(rhs.log),
+      pmutex(0)
+{
+///   static_assert(false , "EagleLogGuard's are not copyable!");
+   EAGLE_ASSERT(false);
+}
+
+
+
+EagleLogGuard& EagleLogGuard::operator=(const EagleLogGuard& rhs) {
+///   static_assert(false , "EagleLogGuard's are not assignable!");
+   (void)rhs;
+   EAGLE_ASSERT(false);
+   return *this;
+}
+
+
+
+EagleLogGuard::~EagleLogGuard() {
+   UnLockMutex(pmutex);
+}
+
+
+
+
+EagleLogGuard& EagleLogGuard::operator<<(MANIP manip) {
+   log << manip;
+   return *this;
+}
+
+
+
+EagleLogGuard EagleLogGuard::EagleGuardLog() {
+   return EagleLogGuard(EagleLogger::EagleInfoLog());
+}
+
+
+
+EagleLogGuard EagleLogGuard::EagleGuardInfo() {
+   return EagleLogGuard(EagleLogger::EagleInfoLog());
+}
+
+
+
+EagleLogGuard EagleLogGuard::EagleGuardWarn() {
+   return EagleLogGuard(EagleLogger::EagleWarnLog());
+}
+
+
+
+EagleLogGuard EagleLogGuard::EagleGuardError() {
+   return EagleLogGuard(EagleLogger::EagleErrorLog());
+}
+
+
+
+EagleLogGuard EagleLogGuard::EagleGuardCritical() {
+   return EagleLogGuard(EagleLogger::EagleCriticalLog());
+}
+
+
+
+/// ----------------------     Global functions     ---------------------------------
+
+
+
+
+EagleLogGuard EagleLog() {
+   return EagleLogGuard::EagleGuardLog();
+}
+
+
+
+EagleLogGuard EagleInfo() {
+   return EagleLogGuard::EagleGuardInfo();
+}
+
+
+EagleLogGuard EagleWarn() {
+   return EagleLogGuard::EagleGuardWarn();
+}
+
+
+
+EagleLogGuard EagleError() {
+   return EagleLogGuard::EagleGuardError();
+}
+
+
+
+EagleLogGuard EagleCritical() {
+   return EagleLogGuard::EagleGuardCritical();
+}
+
+
+
+
+
+
+
+
 /// ------------------------     Global Eagle Log functions     -----------------------
-
-
-
-
-EagleLogger& EagleLog() {
-   return EagleInfo();
-}
-
-
-
-EagleLogger& EagleInfo() {
-   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_INFO);
-}
-
-
-
-EagleLogger& EagleWarn() {
-   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_WARN);
-}
-
-
-
-EagleLogger& EagleError() {
-   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_ERROR);
-}
-
-
-
-EagleLogger& EagleCritical() {
-   return EagleLogger::Instance().SetLocalLoggingLevel(EAGLE_LOG_CRITICAL);
-}
 
 
 
@@ -187,92 +337,6 @@ EagleLogger::operator ostream&() {
    return log_file.log_file;
 }
 
-
-
-/** #################            Indenter class methods               ################# */
-
-
-
-void Indenter::ResetSpaces() {
-   indent.clear();
-   indent.append(indent_level*num_spaces , ' ');
-}
-
-
-
-Indenter::Indenter() :
-      indent_level(0) , num_spaces(3) , indent("")
-   {}
-
-
-
-Indenter::Indenter(int level , int spaces) :
-      indent_level(0) , num_spaces(3) , indent() {
-   if (level < 0) {level = 0;}
-   if (spaces < 1) {spaces = 1;}
-   indent_level = level;
-   num_spaces = spaces;
-   ResetSpaces();
-}
-
-
-
-void Indenter::SetLevel(unsigned int indentation_level) {
-   indent_level = indentation_level;
-   ResetSpaces();
-}
-
-
-
-void Indenter::SetSpaces(unsigned int number_of_spaces) {
-   num_spaces = number_of_spaces;
-   ResetSpaces();
-}
-
-
-/// Prefix
-Indenter& Indenter::operator++() {
-   ++indent_level;
-   ResetSpaces();
-   return *this;
-}
-
-
-
-Indenter& Indenter::operator--() {
-   if (indent_level) {
-      --indent_level;
-      ResetSpaces();
-   }
-   return *this;
-}
-
-
-/// Postfix
-Indenter Indenter::operator++(int) {
-   Indenter copy = *this;
-   ++indent_level;
-   ResetSpaces();
-   return copy;
-}
-
-
-
-Indenter Indenter::operator--(int) {
-   Indenter copy = *this;
-   if (indent_level) {
-      --indent_level;
-      ResetSpaces();
-   }
-   return copy;
-}
-
-
-
-ostream& operator<<(ostream& os , const Indenter& i) {
-   os << i.indent.c_str();
-   return os;
-}
 
 
 

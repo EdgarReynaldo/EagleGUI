@@ -31,7 +31,7 @@
 #include <fstream>
 #include <unordered_set>
 
-
+#include "Eagle/CXX11Mutexes.hpp"
 
 
 
@@ -48,60 +48,17 @@ enum EAGLE_LOGGING_LEVEL {
 };
 
 
-class LogGuard {
-
-private :
-
-   EagleLogger& log;
-   CXX11Mutex* pmutex;
-
-   LogGuard(explicit EagleLogger& logger);
-   LogGuard(explicit EagleLogger& logger) :
-         log(logger)
-         pmutex()
-   {
-
-   }
-public :
-
-
-   typedef std::ostream&(*MANIP)(std::ostream&);
-
-   EagleLogger& operator<<(MANIP manip);
-
-   template<class Type>
-   EagleLogger& operator<<(const Type& t);
-
-};
-
-
-
-template<class Type>
-EagleLogGuard& EagleLogGuard::operator<<(const Type& t) {
-   if (local_log_level >= global_log_level) {
-      for (std::unordered_set<std::ostream*>::iterator it = outputs.begin() ; it != outputs.end() ; ++it) {
-         std::ostream& os = *(*it);
-         os << t;
-      }
-   }
-   return *this;
-}
-
-
-
-EagleLog() << data << std::endl;
-
-EagleLogger
 
 class EagleLogger {
 
-friend EagleLogger& EagleLog();
-friend EagleLogger& EagleInfo();
-friend EagleLogger& EagleWarn();
-friend EagleLogger& EagleError();
-friend EagleLogger& EagleCritical();
+friend class EagleLogGuard;
+
+friend bool SendOutputToFile(const std::string& filepath , const std::string& header , bool append);
 
 protected :
+   
+   CXX11Mutex mtx;
+   
    EAGLE_LOGGING_LEVEL global_log_level;
    EAGLE_LOGGING_LEVEL old_global_log_level;
    EAGLE_LOGGING_LEVEL local_log_level;
@@ -111,13 +68,22 @@ protected :
 
    EagleLogger& SetLocalLoggingLevel(EAGLE_LOGGING_LEVEL new_local_level);
 
+   CXX11Mutex* Mutex();
 
    EagleLogger();
+   ~EagleLogger() {}
+   
+   static EagleLogger& Instance();
 
+   static EagleLogger& EagleInfoLog();
+   static EagleLogger& EagleWarnLog();
+   static EagleLogger& EagleErrorLog();
+   static EagleLogger& EagleCriticalLog();
 
+   static const char* LogPrefixStr(EAGLE_LOGGING_LEVEL l);
+   
 public :
 
-   static EagleLogger& Instance();
 
    void SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level);
 
@@ -137,6 +103,7 @@ public :
    EagleLogger& operator<<(const Type& t);
 
    operator std::ostream&();
+   
 };
 
 
@@ -155,47 +122,60 @@ EagleLogger& EagleLogger::operator<<(const Type& t) {
 
 
 
-EagleLogger& EagleLog();
-EagleLogger& EagleInfo();
-EagleLogger& EagleWarn();
-EagleLogger& EagleError();
-EagleLogger& EagleCritical();
+
+class EagleLogGuard {
 
 
-
-
-
-/// ------------------------      Indenter class      --------------------------------
-
-
-
-
-class Indenter {
 private :
-   unsigned int indent_level;
-   unsigned int num_spaces;
-   std::string indent;
 
-   void ResetSpaces();
+   EagleLogger& log;
+   CXX11Mutex* pmutex;
 
+   explicit EagleLogGuard(EagleLogger& logger);
+   
+   EagleLogGuard(const EagleLogGuard& rhs);
+   
+   EagleLogGuard& operator=(const EagleLogGuard& rhs);
+   
 public :
-   Indenter();
-   Indenter(int level , int spaces);
 
-   void SetLevel(unsigned int indentation_level);
-   void SetSpaces(unsigned int number_of_spaces);
+   ~EagleLogGuard();
 
+   typedef std::ostream&(*MANIP)(std::ostream&);
 
-   /// Prefix increment and decrement operators for changing the indentation level.
-   Indenter& operator++();
-   Indenter& operator--();
-   /// Postfix - returns copy and increments indenter
-   Indenter operator++(int);
-   Indenter operator--(int);
+   EagleLogGuard& operator<<(MANIP manip);
 
-   friend std::ostream& operator<<(std::ostream& os , const Indenter& i);
+   template<class Type>
+   EagleLogGuard& operator<<(const Type& t);
+
+   static EagleLogGuard EagleGuardLog();
+   static EagleLogGuard EagleGuardInfo();
+   static EagleLogGuard EagleGuardWarn();
+   static EagleLogGuard EagleGuardError();
+   static EagleLogGuard EagleGuardCritical();
+
+   friend EagleLogGuard EagleLog();
+   friend EagleLogGuard EagleInfo();
+   friend EagleLogGuard EagleWarn();
+   friend EagleLogGuard EagleError();
+   friend EagleLogGuard EagleCritical();
 };
 
+
+EagleLogGuard EagleLog();
+EagleLogGuard EagleInfo();
+EagleLogGuard EagleWarn();
+EagleLogGuard EagleError();
+EagleLogGuard EagleCritical();
+
+
+
+
+template<class Type>
+EagleLogGuard& EagleLogGuard::operator<<(const Type& t) {
+   log << t;
+   return *this;
+}
 
 
 #endif // Logging_H

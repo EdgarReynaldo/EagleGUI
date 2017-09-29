@@ -22,6 +22,8 @@
 
 
 #include "Eagle/Exception.hpp"
+#include "Eagle/Logging.hpp"
+
 
 #include <cassert>
 

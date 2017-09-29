@@ -25,6 +25,8 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 
+
+
 #include <iostream>
 #include <ostream>
 
@@ -678,7 +680,6 @@ void EagleObject::SetClassName(std::string objclass) {
 
 
 ostream& EagleObject::DescribeTo(ostream& os , Indenter indent) const {
-   EagleObjectInfo info = EagleObjectRegistry::Instance()->Info(id);
 	return os << indent << FullName() << std::endl;
 }
 

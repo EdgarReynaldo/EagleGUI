@@ -22,7 +22,7 @@
 #ifndef EagleMutex_HPP
 #define EagleMutex_HPP
 
-
+#include "Eagle/Platform.hpp"
 #include "Eagle/Object.hpp"
 
 #include <mutex>
@@ -112,6 +112,9 @@ public :
    virtual bool Create(bool multi_lockable , bool is_timed)=0;
    virtual void Destroy()=0;/// NOTE : Must call Destroy in YOUR destructor for inherited mutex classes
 
+   void TurnLogOn();
+   void TurnLogOff();
+   
    bool Valid();
    bool Timed();
    bool Recursive();

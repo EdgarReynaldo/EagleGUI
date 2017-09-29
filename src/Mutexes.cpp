@@ -210,6 +210,18 @@ void EagleMutex::LogThreadState(EagleThread* t , const char* func , EAGLE_MUTEX_
 
 
 
+void EagleMutex::TurnLogOn() {
+   log = true;
+}
+
+
+
+void EagleMutex::TurnLogOff() {
+   log = false;
+}
+
+
+
 /// ---------------------      MutexManager      -------------------------------------
 
 
