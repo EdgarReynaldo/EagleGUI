@@ -340,4 +340,10 @@ EagleLogger::operator ostream&() {
 
 
 
+EagleLogGuard& operator<<(EagleLogGuard& guard , const EagleObject& obj) {
+   std::ostream& os = (std::ostream&)(guard.log);
+   os << obj;
+   return guard;
+}
+
 

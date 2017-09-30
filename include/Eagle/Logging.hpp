@@ -159,6 +159,9 @@ public :
    friend EagleLogGuard EagleWarn();
    friend EagleLogGuard EagleError();
    friend EagleLogGuard EagleCritical();
+
+   friend class EagleObject;
+   friend EagleLogGuard& operator<<(EagleLogGuard& guard , const EagleObject& obj);
 };
 
 
@@ -176,6 +179,12 @@ EagleLogGuard& EagleLogGuard::operator<<(const Type& t) {
    log << t;
    return *this;
 }
+
+
+
+EagleLogGuard& operator<<(EagleLogGuard& guard , const EagleObject& obj);
+
+
 
 
 #endif // Logging_H

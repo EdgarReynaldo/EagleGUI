@@ -24,7 +24,7 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
-
+#include "Eagle/Logging.hpp"
 
 
 #include <iostream>
@@ -679,6 +679,14 @@ void EagleObject::SetClassName(std::string objclass) {
 
 
 
+EagleLogGuard& EagleObject::DescribeTo(EagleLogGuard&& guard , Indenter indent) const {
+   std::ostream& os = (std::ostream&)(guard.log);
+   DescribeTo(os , indent);
+   return guard;
+}
+
+
+
 ostream& EagleObject::DescribeTo(ostream& os , Indenter indent) const {
 	return os << indent << FullName() << std::endl;
 }
@@ -687,6 +695,8 @@ ostream& EagleObject::DescribeTo(ostream& os , Indenter indent) const {
 ostream& operator<<(ostream& os , const EagleObject& obj) {
    return obj.DescribeTo(os);
 }
+
+
 
 
 

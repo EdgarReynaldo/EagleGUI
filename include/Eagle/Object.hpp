@@ -208,6 +208,9 @@ public :
 
 
 
+class EagleLogGuard;
+
+
 class EagleObject {
 
    friend class EagleObjectRegistry;/// For private SetId function
@@ -244,12 +247,11 @@ public :
 
    EAGLE_ID GetEagleId() const {return id;}
 
+   EagleLogGuard& DescribeTo(EagleLogGuard&& guard , Indenter indent = Indenter()) const ;
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 std::ostream& operator<<(std::ostream& os , const EagleObject& obj);
-
-
 
 #endif // EagleObject_HPP
 
