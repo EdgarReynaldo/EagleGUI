@@ -104,8 +104,8 @@ void CXX11Mutex::PrivateUnlock() {
 
 
 
-CXX11Mutex::CXX11Mutex(std::string objname) :
-      EagleMutex("CXX11Mutex" , objname)
+CXX11Mutex::CXX11Mutex(std::string objname , bool use_log) :
+      EagleMutex("CXX11Mutex" , objname , use_log)
 {
 ///   SetShortName(StringPrintF("CXX11Mutex(EID = %d) at %p" , GetEagleId() , this));
 }

@@ -144,7 +144,7 @@ int main6(int argc , char** argv) {
 int main(int argc , char** argv) {
 
    Allegro5System* a5sys = GetAllegro5System();
-
+/*
    EAGLE_ASSERT(a5sys);
 
    a5sys->Initialize(EAGLE_FULL_SETUP);
@@ -156,7 +156,7 @@ int main(int argc , char** argv) {
    a5sys->Rest(3);
 
    Eagle::EagleLibrary::ShutdownEagle();
-
+*/
    return 0;
 }
 

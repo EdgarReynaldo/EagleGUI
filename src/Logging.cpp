@@ -89,7 +89,7 @@ CXX11Mutex* EagleLogger::Mutex() {
 
 
 EagleLogger::EagleLogger() :
-      mtx("EagleLogMutex"),
+      mtx("EagleLogMutex" , false),
       global_log_level(EAGLE_LOG_INFO),
       old_global_log_level(EAGLE_LOG_INFO),
       local_log_level(EAGLE_LOG_INFO),
@@ -98,7 +98,6 @@ EagleLogger::EagleLogger() :
    if (!mtx.Create(true , false)) {
       throw EagleException("Failed to create EagleLogger::mtx mutex");
    }
-   mtx.TurnLogOff();
 
    AddOutput(cout);
 

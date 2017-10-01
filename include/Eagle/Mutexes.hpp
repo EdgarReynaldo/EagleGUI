@@ -61,7 +61,7 @@ class EagleThread;
 
 /// Abstract Base class
 
-class EagleMutex : public EagleObject {
+class EagleMutex /** TODO : We need a mutex that doesn't log */ : public EagleObject {
 
 protected :
    EAGLE_MUTEX_TYPE type;
@@ -106,7 +106,7 @@ protected :
 
 public :
 
-   EagleMutex(std::string objclass = "EagleMutex" , std::string objname = "Nemo");
+   EagleMutex(std::string objclass = "EagleMutex" , std::string objname = "Nemo" , bool use_log = true);
    virtual ~EagleMutex();
 
    virtual bool Create(bool multi_lockable , bool is_timed)=0;

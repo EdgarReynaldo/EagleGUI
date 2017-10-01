@@ -102,14 +102,15 @@ void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
 
 
 
-EagleMutex::EagleMutex(std::string objclass , std::string objname) :
+EagleMutex::EagleMutex(std::string objclass , std::string objname , bool use_log) :
       EagleObject(objclass , objname),
       type(MTX_INVALID),
       state(MTX_UNLOCKED),
       lock_count(0),
       owner((EagleThread*)-1),
-      log(true)
+      log(use_log)
 {
+   
 ///   SetName(StringPrintF("EagleMutex at %p" , this));
    MutexManager::Instance()->RegisterMutex(this);
 }

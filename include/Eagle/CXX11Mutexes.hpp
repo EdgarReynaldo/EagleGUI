@@ -23,7 +23,7 @@ protected :
 
 public :
 
-   CXX11Mutex(std::string objname = "Nemo");
+   CXX11Mutex(std::string objname = "Nemo" , bool use_log = true);
    ~CXX11Mutex();
 
    virtual bool Create(bool multi_lockable , bool is_timed);
