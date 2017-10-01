@@ -144,19 +144,26 @@ int main6(int argc , char** argv) {
 int main(int argc , char** argv) {
 
    Allegro5System* a5sys = GetAllegro5System();
-/*
+
    EAGLE_ASSERT(a5sys);
 
    a5sys->Initialize(EAGLE_FULL_SETUP);
 
-///   EagleWindowManager* wm = a5sys->GetWindowManager();
+   EagleWindowManager* wm = a5sys->GetWindowManager();
 
-///   EAGLE_ASSERT(wm);
+   EAGLE_ASSERT(wm);
 
+
+   EagleGraphicsContext* win1 = wm->CreateWindow(400,300,EAGLE_WINDOWED | EAGLE_OPENGL);
+   
+   win1->Clear(EagleColor(255,255,255));
+   
+   win1->FlipDisplay();
+   
    a5sys->Rest(3);
-
+   
    Eagle::EagleLibrary::ShutdownEagle();
-*/
+
    return 0;
 }
 

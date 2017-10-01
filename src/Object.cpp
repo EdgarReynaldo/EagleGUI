@@ -304,8 +304,10 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    
    object->SetId(new_id);
    
-   EagleLog() << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
-
+   if (object->log_registration) {
+      EagleLog() << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
+   }
+   
    stop_id = new_id + 1;
    
    id_index = new_id - start_id;
@@ -337,8 +339,10 @@ void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
    
    EagleObjectInfo& eoi = (*pinfo)[id_index];
    
-   EagleLog() << StringPrintF("Destroying eagle object %s" , eoi.FullName()) << std::endl;
-
+   if (!eoi.IsDestroyed() && eoi.GetObject()->log_registration) {
+      EagleLog() << StringPrintF("Destroying eagle object %s" , eoi.FullName()) << std::endl;
+   }
+   
    if (eoi.IsDestroyed()) {
       EagleError() << StringPrintF("Double destruction of eagle object '%s' detected." , eoi.FullName()) << std::endl;
       EAGLE_ASSERT(!eoi.IsDestroyed());/// Throw
@@ -614,8 +618,9 @@ EagleObject::EagleObject(std::string name) :
 */
 
 
-EagleObject::EagleObject(std::string objclass , std::string objname) :
-      id(EAGLE_ID_UNASSIGNED)
+EagleObject::EagleObject(std::string objclass , std::string objname , bool log) :
+      id(EAGLE_ID_UNASSIGNED),
+      log_registration(log)
 {
    Register(this , objclass , objname , id);
 }

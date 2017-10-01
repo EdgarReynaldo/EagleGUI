@@ -103,7 +103,7 @@ void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
 
 
 EagleMutex::EagleMutex(std::string objclass , std::string objname , bool use_log) :
-      EagleObject(objclass , objname),
+      EagleObject(objclass , objname , use_log),
       type(MTX_INVALID),
       state(MTX_UNLOCKED),
       lock_count(0),

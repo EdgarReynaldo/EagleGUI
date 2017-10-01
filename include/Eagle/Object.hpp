@@ -218,6 +218,7 @@ class EagleObject {
 private :
 
    EAGLE_ID id;/// Unique id to track EagleObjects
+   bool log_registration;/// Need this to disallow some logging so the EagleLogGuard can construct a mutex without calling itself
    
    void SetId(EAGLE_ID eid) {id = eid;}
    
@@ -229,7 +230,7 @@ private :
 public :
    
 ///   EagleObject();
-   EagleObject(std::string objclass , std::string objname);
+   EagleObject(std::string objclass , std::string objname , bool log = true);
    
    EagleObject(const EagleObject& rhs);/// Generates warning about name duplication
    
