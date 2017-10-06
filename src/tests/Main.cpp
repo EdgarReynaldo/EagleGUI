@@ -164,7 +164,7 @@ int main(int argc , char** argv) {
    
    a5sys->Rest(3);
    
-   wm->DestroyWindow(win1->GetEagleId());
+///   wm->DestroyWindow(win1->GetEagleId());
    
    Eagle::EagleLibrary::ShutdownEagle();
 

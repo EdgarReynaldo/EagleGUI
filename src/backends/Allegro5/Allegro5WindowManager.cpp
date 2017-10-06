@@ -52,10 +52,18 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
             break;
          }
          else if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
+            
+            Allegro5GraphicsContext* win = (Allegro5GraphicsContext*)ev.user.data1;
+            EAGLE_ASSERT(win);
+            ALLEGRO_DISPLAY* d = win->AllegroDisplay();
+            EAGLE_ASSERT(d);
+            
             EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
-            EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , ev.display.source) << std::endl;
+///            EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , ev.display.source) << std::endl;
+            EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , d) << std::endl;
 
-            al_unregister_event_source(window_queue , al_get_display_event_source(ev.display.source));
+///            al_unregister_event_source(window_queue , al_get_display_event_source(ev.display.source));
+            al_unregister_event_source(window_queue , al_get_display_event_source(d));
 
             Allegro5GraphicsContext* window = (Allegro5GraphicsContext*)ev.user.data1;
             EAGLE_ASSERT(window);
