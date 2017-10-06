@@ -4,6 +4,7 @@
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 #include "Eagle/Lib.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/StringWork.hpp"
@@ -33,6 +34,9 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
          EagleInfo() << "A5WindowManagerProcess - thread has been signaled to stop." << std::endl;
          break;
       }
+      
+      EAGLE_ASSERT(al_is_event_source_registered(window_queue , &(a5man->window_event_source)));
+      
       ALLEGRO_EVENT ev;
       al_wait_for_event(window_queue , &ev);
 

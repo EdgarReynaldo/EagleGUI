@@ -41,20 +41,6 @@ ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float 
 
 
 
-/**
-void Allegro5GraphicsContext::Init() {
-   window_queue = al_create_event_queue();
-   EAGLE_ASSERT(window_queue);
-   al_init_user_event_source(&window_event_source);
-   al_register_event_source(window_queue , &window_event_source);
-
-   if (!window_thread.Create(A5WindowProcess , this)) {
-      throw EagleException("Allegro5GraphicsContext::Init : Failed to create window process thread.");
-   }
-}
-*/
-
-
 void Allegro5GraphicsContext::ResetBackBuffer() {
    realbackbuffer.ReferenceBitmap(al_get_backbuffer(display));
    backbuffer = &realbackbuffer;
@@ -120,7 +106,7 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
 
    ResetBackBuffer();
 
-   window_mutex = new CXX11Mutex(StringPrintF("A5GC (EID#%d)" , GetEagleId()));
+   window_mutex = new CXX11Mutex("A5GC::window_mutex");
    
    if (!window_mutex->Create(false , false)) {
       EagleCritical() << "Failed to Create new CXX11Mutex for the Allegro 5 Graphics Context at " << this << std::endl;

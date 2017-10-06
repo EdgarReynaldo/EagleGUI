@@ -143,6 +143,8 @@ int main6(int argc , char** argv) {
 
 int main(int argc , char** argv) {
 
+   SendOutputToFile("Libtest.txt" , "" , false);
+
    Allegro5System* a5sys = GetAllegro5System();
 
    EAGLE_ASSERT(a5sys);
@@ -161,6 +163,8 @@ int main(int argc , char** argv) {
    win1->FlipDisplay();
    
    a5sys->Rest(3);
+   
+   wm->DestroyWindow(win1->GetEagleId());
    
    Eagle::EagleLibrary::ShutdownEagle();
 
