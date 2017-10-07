@@ -137,21 +137,24 @@ bool Allegro5GraphicsContext::Valid() {
 
 void Allegro5GraphicsContext::Destroy() {
 
-   EagleEvent ee;
-   ee.type = EAGLE_EVENT_DISPLAY_DESTROY;
-   ee.window = this;
-   ee.display = DISPLAY_EVENT_DATA();
-
-   EmitEvent(ee , 0);
-
-   images.FreeAll();
-
    if (display) {
+
+       EagleEvent ee;
+       ee.type = EAGLE_EVENT_DISPLAY_DESTROY;
+       ee.window = this;
+       ee.display = DISPLAY_EVENT_DATA();
+
+       EmitEvent(ee , 0);
+
+       images.FreeAll();
 
       /// Block until after drawing is done and releases the lock,
       /// or acquire the lock before drawing and prevent it
       ThreadLockMutex(our_thread , window_mutex);
 
+      /// Make the display current before destroying it
+      al_set_target_backbuffer(display);
+      
       GetAllegro5WindowManager()->SignalClose(this);
 
       al_destroy_display(display);

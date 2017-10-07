@@ -162,10 +162,62 @@ int main(int argc , char** argv) {
    
    win1->FlipDisplay();
    
-   a5sys->Rest(3);
+   bool quit = false;
+   bool redraw = true;
    
-///   wm->DestroyWindow(win1->GetEagleId());
+   a5sys->GetSystemTimer()->SetSecondsPerTick(1);
+   a5sys->GetSystemTimer()->Start();
    
+   std::map<int , EagleGraphicsContext*> winmap;
+   
+   while (!quit) {
+      if (redraw) {
+         win1->DrawToBackBuffer();
+         win1->Clear();
+         win1->DrawTextString(win1->DefaultFont() , StringPrintF(" %d windows" , (int)winmap.size()) , 10 , 10 , EagleColor(255,255,255));
+         win1->DrawTextString(win1->DefaultFont() , " Active window :" , 10 , 20 , EagleColor(255,255,255));
+         EagleGraphicsContext* awin = GetAllegro5WindowManager()->GetActiveWindow();
+         int id = awin?awin->GetEagleId():-1;
+         win1->DrawTextString(win1->DefaultFont() , StringPrintF("%d" , id) , 10 , 30 , EagleColor(255,255,255));
+         win1->FlipDisplay();
+         for (std::map<int , EagleGraphicsContext*>::iterator it = winmap.begin() ; it != winmap.end() ; ++it) {
+            EagleGraphicsContext* win = it->second;
+            win->DrawToBackBuffer();
+            win->Clear();
+            win->DrawTextString(win->DefaultFont() , StringPrintF("EID #%d" , it->first) , 10 , 10 , EagleColor(0,255,255));
+            win->FlipDisplay();
+         }
+         redraw = false;
+      }
+      do {
+         EagleEvent ee = a5sys->GetSystemQueue()->WaitForEvent(0);
+         EagleInfo() << "Main received event " << EagleEventName(ee.type) << std::endl;
+         if (ee.type == EAGLE_EVENT_TIMER) {
+            EagleLog() << "Timer tick #" << a5sys->GetSystemTimer()->Count() << std::endl;
+            redraw = true;
+         }
+         if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            if (ee.window == win1) {
+               quit = true;
+               break;
+            }
+            EagleInfo() << "Destroying window #" << ee.window->GetEagleId() << std::endl;
+            winmap.erase(winmap.find(ee.window->GetEagleId()));
+            a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
+         }
+         if (ee.type == EAGLE_EVENT_KEY_DOWN) {
+            if (ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+               quit = true;
+               break;
+            }
+            if (ee.keyboard.keycode == EAGLE_KEY_N) {
+               EagleGraphicsContext* win = a5sys->GetWindowManager()->CreateWindow(300,200,EAGLE_WINDOWED);
+               winmap[win->GetEagleId()] = win;
+            }
+         }
+      } while (a5sys->GetSystemQueue()->HasEvent(0));
+   }
+
    Eagle::EagleLibrary::ShutdownEagle();
 
    return 0;

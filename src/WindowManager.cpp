@@ -108,6 +108,10 @@ EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , 
 
       ThreadUnLockMutex(our_thread , manager_mutex);
 
+      EAGLE_ASSERT(parent_system);
+      
+      parent_system->GetSystemQueue()->ListenTo(window);
+      
       return window;
    }
    return 0;
@@ -138,7 +142,9 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    ThreadUnLockMutex(our_thread , manager_mutex);
 
+   EAGLE_ASSERT(parent_system);
    
+   parent_system->GetSystemQueue()->StopListeningTo(window);
 
    EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying %s" , window->FullName()) << std::endl;
 
