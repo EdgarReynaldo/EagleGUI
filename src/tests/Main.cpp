@@ -183,8 +183,13 @@ int main(int argc , char** argv) {
          for (std::map<int , EagleGraphicsContext*>::iterator it = winmap.begin() ; it != winmap.end() ; ++it) {
             EagleGraphicsContext* win = it->second;
             win->DrawToBackBuffer();
-            win->Clear();
-            win->DrawTextString(win->DefaultFont() , StringPrintF("EID #%d" , it->first) , 10 , 10 , EagleColor(0,255,255));
+            if (id == win->GetEagleId()) {
+               win->Clear(EagleColor(0,127,127));
+            }
+            else {
+               win->Clear(EagleColor(0,0,127));
+            }
+            win->DrawTextString(win->DefaultFont() , StringPrintF("EID #%d" , it->first) , 10 , 10 , EagleColor(255,255,255));
             win->FlipDisplay();
          }
          redraw = false;
