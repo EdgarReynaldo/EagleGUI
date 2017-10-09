@@ -4,6 +4,11 @@
 #ifndef AllegroMultiWin_HPP
 #define AllegroMultiWin_HPP
 
+#include "allegro5/allegro.h"
+#include "allegro5/allegro_font.h"
+#include "allegro5/allegro_ttf.h"
+
+
 
 struct DISPLAY {
    ALLEGRO_DISPLAY* d;
