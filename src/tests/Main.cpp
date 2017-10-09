@@ -139,9 +139,21 @@ int main6(int argc , char** argv) {
    return 0;
 }
 
-
+#include "AllegroMultiWin.hpp"
 
 int main(int argc , char** argv) {
+   
+   PROG* prog = new PROG();
+   
+   delete prog;
+   
+   return 0;
+}
+
+
+
+
+int main7(int argc , char** argv) {
 
    SendOutputToFile("Libtest.txt" , "" , false);
 
