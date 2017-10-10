@@ -242,6 +242,7 @@
 		<Unit filename="src/Gui/WidgetHandler.cpp" />
 		<Unit filename="src/Gui/WidgetMessage.cpp" />
 		<Unit filename="src/Image.cpp" />
+		<Unit filename="src/Indenter.cpp" />
 		<Unit filename="src/InputHandler.cpp" />
 		<Unit filename="src/Lib.cpp" />
 		<Unit filename="src/Logging.cpp" />

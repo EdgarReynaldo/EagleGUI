@@ -151,8 +151,10 @@
 			<Add directory="cbbuild/bin" />
 		</Linker>
 		<Unit filename="cbbuild/bin/Libtest.txt" />
+		<Unit filename="include/Eagle/Indenter.hpp" />
 		<Unit filename="src/tests/Allegro5TestMain.cpp" />
 		<Unit filename="src/tests/Allegro5TestMain.hpp" />
+		<Unit filename="src/tests/AllegroMultiWin.hpp" />
 		<Unit filename="src/tests/AnimatedWedgeLayout.cpp" />
 		<Unit filename="src/tests/AnimatedWedgeLayout.hpp" />
 		<Unit filename="src/tests/DrawingTestMain.cpp" />
