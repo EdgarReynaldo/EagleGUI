@@ -156,7 +156,7 @@ Transformer::Transformer() :
 {
    /** These functions CAN'T be called from here. Initialize the stacks in your derived class Transformers.*/
 ///   PushViewTransform(GetIdentityTransform());
-///   PushProjectionTransform(GetIdentityTransform());
+///   PushProjectionTransform(GetProjectionTransform());
 }
 
 

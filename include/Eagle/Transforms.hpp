@@ -110,6 +110,8 @@ public :
    Transform GetIdentityTransform();
    Transform GetViewTransform();
    Transform GetProjectionTransform();
+   
+//   Transform GetImageTransform
 
    Transform CreateTransform() {return GetIdentityTransform();}
 

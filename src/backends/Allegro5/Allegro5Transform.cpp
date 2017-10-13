@@ -111,8 +111,8 @@ TransformBase* Allegro5TransformBase::Clone() {
 Allegro5Transformer::Allegro5Transformer() :
       Transformer()
 {
-   PushViewTransform(GetIdentityTransform());
-   PushProjectionTransform(GetIdentityTransform());
+///   PushViewTransform(GetIdentityTransform());
+///   PushProjectionTransform(GetProjectionTransform());
 }
 
 

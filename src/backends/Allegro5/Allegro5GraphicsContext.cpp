@@ -104,6 +104,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
 
    GetAllegro5WindowManager()->AddDisplay(this , display);
 
+   LoadDefaultFont();
+
    ResetBackBuffer();
 
    window_mutex = new CXX11Mutex("A5GC::window_mutex");
@@ -114,8 +116,6 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    }
 
    mp_manager = new Allegro5MousePointerManager(this);
-
-   LoadDefaultFont();
 
    EagleEvent ee;
    ee.type = EAGLE_EVENT_DISPLAY_CREATE;
@@ -675,10 +675,14 @@ void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string str ,
 //   char const *text)
 
    /// Need to set the premultiplied alpha blender here , and maybe the non-pm alpha too sometimes
-   SetNoPMAlphaBlender();
+///   SetNoPMAlphaBlender();
+
 ///   SetPMAlphaBlender();
    al_draw_text(f , GetAllegroColor(c) , x , y , 0 , str.c_str());
-   RestoreLastBlendingState();
+
+
+
+///   RestoreLastBlendingState();
 }
 
 
@@ -758,10 +762,12 @@ EagleImage* Allegro5GraphicsContext::ReferenceImage(ALLEGRO_BITMAP* img) {
 EagleImage* Allegro5GraphicsContext::CloneImage(EagleImage* img) {
    Allegro5Image* newimg = new Allegro5Image(this , "CloneImage");
    newimg->Allocate(img->W() , img->H() , img->ImageType());
-   /// TODO Set blender here
+
    PushDrawingTarget(newimg);
-   /// TODO Reset blending here
+
+   SetCopyBlender();
    Draw(img , 0.0f , 0.0f);
+   RestoreLastBlendingState();
 
    PopDrawingTarget();
 

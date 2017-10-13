@@ -39,7 +39,7 @@ public :
 
    /// TODO : ADD PARENT GC
    explicit Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership);
-   Allegro5Image(int width , int height , IMAGE_TYPE type);
+   Allegro5Image(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE);
    Allegro5Image(std::string file , IMAGE_TYPE type);
    Allegro5Image(EagleImage* parent , int x , int y , int width , int height);
 

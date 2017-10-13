@@ -19,6 +19,7 @@ DISPLAY* create_display(int w , int h) {
    DISPLAY* d = (DISPLAY*)malloc(sizeof(DISPLAY));
    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_OPENGL);
    d->d = al_create_display(w,h);
+   al_set_target_bitmap(al_get_backbuffer(d->d));
    d->f = al_load_ttf_font("Verdana.ttf" , 20 , 0);
    assert(d->d && d->f);
    return d;
@@ -156,6 +157,7 @@ public :
             al_draw_textf(f , al_map_rgb(255,255,255) , 10 , 10 , 0 , "Window ID : %d" , id);
          }
          al_flip_display();
+         al_set_target_bitmap(al_get_backbuffer(d));
       }
    }
    

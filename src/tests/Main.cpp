@@ -1,5 +1,10 @@
 
 
+
+#define ALLEGRO_UNSTABLE
+
+
+
 #include <cstdlib>
 
 
@@ -139,11 +144,16 @@ int main6(int argc , char** argv) {
    return 0;
 }
 
-#include "AllegroMultiWin.hpp"
+///#include "AllegroMultiWin.hpp"
+
+#include "EagleMultiWin.hpp"
+
+
 
 int main(int argc , char** argv) {
    
-   PROG* prog = new PROG();
+///   PROG* prog = new PROG();
+   PROGGIE* prog = new PROGGIE();
    
    delete prog;
    
@@ -228,7 +238,7 @@ int main7(int argc , char** argv) {
                break;
             }
             if (ee.keyboard.keycode == EAGLE_KEY_N) {
-               EagleGraphicsContext* win = a5sys->GetWindowManager()->CreateWindow(300,200,EAGLE_WINDOWED);
+               EagleGraphicsContext* win = a5sys->GetWindowManager()->CreateWindow(300,200,EAGLE_WINDOWED | EAGLE_OPENGL);
                winmap[win->GetEagleId()] = win;
             }
          }
