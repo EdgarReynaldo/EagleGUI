@@ -199,7 +199,7 @@ int main(int argc , char** argv) {
 
 void* test_thread(EagleThread* t , void* data) {
    
-   
+   (void)data;
    EagleInfo() << StringPrintF("Started test_thread on EagleThread %s" , t->FullName()) << std::endl;
 
    int j = 0;
@@ -217,6 +217,9 @@ void* test_thread(EagleThread* t , void* data) {
 
 
 int main2(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
    
    SendOutputToFile("Libtest.txt" , "" , false);
 

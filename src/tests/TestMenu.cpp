@@ -33,7 +33,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    font = win->LoadFont("Verdana.ttf" , -20 , LOAD_FONT_MONOCHROME);
    EAGLE_ASSERT(font->Valid());
    
-   font->SetName("Verdana20");
+   font->SetShortName("Verdana20");
    
    gui.SetupBuffer(w , h , win);
    gui.SetWidgetArea(0 , 0 , w , h , false);

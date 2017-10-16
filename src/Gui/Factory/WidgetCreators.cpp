@@ -5,6 +5,8 @@
 
 
 
+#include "Eagle/ObjectRegistry.hpp"
+#include "Eagle/StringWork.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
@@ -24,7 +26,6 @@
 
 #include "Eagle/Gui/Scripting/Parsing.hpp"
 
-#include "Eagle/StringWork.hpp"
 
 using namespace std;
 
@@ -226,7 +227,7 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
    const char* cstr = 0;
       
    if ((cit = attribute_map.find("NAME")) != attribute_map.end()) {
-      widget->SetName(cit->second);
+      widget->SetShortName(cit->second);
    }
 
    if ((cit = attribute_map.find("POS")) != attribute_map.end()) {

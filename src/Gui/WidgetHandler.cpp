@@ -21,12 +21,14 @@
 
 
 
-#include "Eagle/Gui/WidgetHandler.hpp"
-#include "Eagle/Gui/Decorators/Decorator.hpp"
-
+#include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/StringWork.hpp"
+
+#include "Eagle/Gui/WidgetHandler.hpp"
+#include "Eagle/Gui/Decorators/Decorator.hpp"
+
 
 #include <algorithm>
 

@@ -227,7 +227,7 @@ bool EagleGuiScript::RegisterColorsets() {
       try {
          wc = ParseWidgetColorset(avmap);
          RegisterColorset(egs_dec->object_name , wc);
-         GetColorsetByName(egs_dec->object_name).SetName(egs_dec->object_name);
+         GetColorsetByName(egs_dec->object_name).SetShortName(egs_dec->object_name);
       }
       catch (...) {
          ret = false;
@@ -253,7 +253,7 @@ bool EagleGuiScript::LoadWidgets() {
          ret = false;
       }
       else {
-         w->SetName(egs_dec->object_name);
+         w->SetShortName(egs_dec->object_name);
       }
    }
    return ret;

@@ -145,7 +145,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
 
    grid_layout->ResizeGrid(columns , rows);
 
-   grid_layout->SetName("2X2 Widget Root grid layout");
+   grid_layout->SetShortName("2X2 Widget Root grid layout");
 
 
 //   grid_layout->SetMarginsContractFromOuter(10,10,10,10);
@@ -201,7 +201,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
 
 
    RelativeLayout* relative_layout = new RelativeLayout();
-   relative_layout->SetName("Relative layout");
+   relative_layout->SetShortName("Relative layout");
 
 
    grid_layout->AddWidget(relative_layout);

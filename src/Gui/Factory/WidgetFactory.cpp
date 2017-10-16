@@ -2,9 +2,10 @@
 
 
 
+#include "Eagle/ObjectRegistry.hpp"
+#include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
 #include "Eagle/Gui/Factory/WidgetFactory.hpp"
-#include "Eagle/StringWork.hpp"
 
 
 WidgetFactory* eagle_widget_factory = 0;

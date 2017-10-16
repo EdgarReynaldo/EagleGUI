@@ -14,7 +14,6 @@ TestWidget::TestWidget() :
       bgcolor() 
 {
    RandomizeColor();
-   SetName(StringPrintF("TestWidget object at %p" , this));
 }
 
 
