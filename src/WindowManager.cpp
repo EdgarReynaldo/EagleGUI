@@ -91,8 +91,8 @@ void EagleWindowManager::CloseWindows() {
 
 
 
-EagleGraphicsContext* EagleWindowManager::CreateWindow(int width , int height , int flags) {
-   EagleGraphicsContext* window = PrivateCreateWindow(width , height , flags);
+EagleGraphicsContext* EagleWindowManager::CreateWindow(std::string objname , int width , int height , int flags) {
+   EagleGraphicsContext* window = PrivateCreateWindow(objname , width , height , flags);
    if (window) {
       if (!window->Valid()) {
          throw EagleException("EagleWindowManager::CreateWindow - Failed to create valid window!");
@@ -144,16 +144,15 @@ void EagleWindowManager::DestroyWindow(int window_eid) {
 
    EAGLE_ASSERT(parent_system);
    
+   EAGLE_ASSERT(window);
+
    parent_system->GetSystemQueue()->StopListeningTo(window);
 
    EagleInfo() << StringPrintF("EagleWindowManager::DestroyWindow - destroying %s" , window->FullName()) << std::endl;
 
-   EAGLE_ASSERT(window);
-
    delete window;/// Must destroy window outside of lock! Or else deadlock!
 
-
-
+   
    ThreadLockMutex(our_thread , manager_mutex);
    
    window_map[window_eid] = 0;/// mark destroyed windows as null

@@ -2,9 +2,16 @@
 
 
 #include "Eagle/Clipboard.hpp"
-///#include "Platform.hpp"
 #include "Eagle/GraphicsContext.hpp"
 
+
+
+
+EagleClipboard::EagleClipboard(std::string objclass , std::string objname) : 
+      EagleObject(objclass , objname),
+      window(0),
+      clipboard_string("")
+{}
 
 
 

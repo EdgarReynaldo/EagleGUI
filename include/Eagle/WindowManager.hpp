@@ -51,7 +51,7 @@ protected :
 
 
 protected :
-   virtual EagleGraphicsContext* PrivateCreateWindow(int width , int height , int flags)=0;
+   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags)=0;
 
    virtual int PrivateGiveWindowFocus(int window_eid)=0;
 
@@ -64,7 +64,7 @@ public :
 
    void CloseWindows();
 
-   EagleGraphicsContext* CreateWindow(int width , int height , int flags);
+   EagleGraphicsContext* CreateWindow(std::string objname , int width , int height , int flags);
    void                  DestroyWindow(int window_eid);
 
    EagleGraphicsContext* GetActiveWindow();

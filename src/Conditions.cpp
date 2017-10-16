@@ -20,9 +20,14 @@
  */
 
 
-//#include "Eagle/Conditions.hpp"
+#include "Eagle/Conditions.hpp"
 
-//EagleConditionVar::EagleConditionVar() {}
+
+
+EagleConditionVar::EagleConditionVar(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname)
+{}
+
 
 
 

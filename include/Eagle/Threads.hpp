@@ -17,6 +17,9 @@ class EagleThread;
 /// Your process will be given access to the eagle thread, and the ptr specified in EagleThread::Create
 typedef void* (*EAGLE_THREAD_PROCESS)(EagleThread* , void*);
 
+extern void* const THREAD_NOT_VALID;
+
+
 
 
 class EagleThread : public EagleObject {
@@ -48,6 +51,7 @@ public :
 
    virtual bool ShouldStop()=0;
    virtual bool Running()=0;
+   virtual bool Complete()=0;
    virtual bool Valid()=0;
 
    int ID() {return thread_id;}

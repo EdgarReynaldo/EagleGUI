@@ -11,6 +11,10 @@ int EagleThread::new_thread_id = 0;
 
 
 
+void* const THREAD_NOT_VALID = (void*)-1;
+
+
+
 void EagleThread::SetState(EAGLE_MUTEX_STATE s) {
    mutex_state = s;
 }
@@ -27,7 +31,8 @@ EagleThread::EagleThread(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
       thread_id(new_thread_id++),
       mutex_state(MTX_UNLOCKED),
-      our_mutex(0)
+      our_mutex(0),
+      latest_func_caller(0)
 {
    ThreadManager::Instance()->RegisterThread(this);
 }

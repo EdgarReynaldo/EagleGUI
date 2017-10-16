@@ -365,16 +365,24 @@ class EagleEventListener;
 class EagleEventSource {
 
 private :
-   std::vector<EagleEventListener*> listeners;
 
-   bool OnList(EagleEventListener* l);
+   typedef std::vector<EagleEventListener*> LISTENERS;
+   typedef LISTENERS::iterator LIT;
 
+   LISTENERS listeners;
+
+   LIT FindListener(EagleEventListener* l);
+
+protected :
+
+   void StopBroadcasting();
+   
 public :
 
-   void EmitEvent(EagleEvent e , EagleThread* thread);
-
-   EagleEventSource() : listeners() {}
+   EagleEventSource();
    virtual ~EagleEventSource();
+
+   void EmitEvent(EagleEvent e , EagleThread* thread);
 
    void SubscribeListener(EagleEventListener* l);
    void UnsubscribeListener(EagleEventListener* l);
@@ -388,12 +396,19 @@ public :
 class EagleEventListener {
 
 private :
-   std::vector<EagleEventSource*> sources;
+   
+   typedef std::vector<EagleEventSource*> SOURCES;
+   typedef SOURCES::iterator SIT;
+   
+   SOURCES sources;
 
-   bool OnList(EagleEventSource* s);
+   SIT FindSource(EagleEventSource* s);
 
+protected :
+   void StopListening();
+   
 public :
-   EagleEventListener() : sources() {}
+   EagleEventListener();
    virtual ~EagleEventListener();
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread)=0;
@@ -421,6 +436,8 @@ protected :
    
    
    void SetOurThread(EagleThread* t);
+   
+   void StopHandlingEvents();
    
 public :
    EagleEventHandler(std::string objclass , std::string objname , bool delay_emitted_events = true);

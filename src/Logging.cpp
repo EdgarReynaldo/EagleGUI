@@ -215,13 +215,13 @@ EagleLogger& EagleLogger::operator<<(MANIP manip) {
 
 
 
-EagleLogGuard::EagleLogGuard(EagleLogger& logger) :
+EagleLogGuard::EagleLogGuard(EagleLogger& logger , const char* prefix) :
       log(logger),
       pmutex(log.Mutex())
 {
    EAGLE_ASSERT(pmutex);
    LockMutex(pmutex);
-   log << EagleLogger::LogPrefixStr(log.local_log_level);
+   log << prefix;
 }
 
 
@@ -260,33 +260,38 @@ EagleLogGuard& EagleLogGuard::operator<<(MANIP manip) {
 
 
 EagleLogGuard EagleLogGuard::EagleGuardLog() {
-   return EagleLogGuard(EagleLogger::EagleInfoLog());
+   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO));
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardInfo() {
-   return EagleLogGuard(EagleLogger::EagleInfoLog());
+   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO));
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardWarn() {
-   return EagleLogGuard(EagleLogger::EagleWarnLog());
+   return EagleLogGuard(EagleLogger::EagleWarnLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_WARN));
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardError() {
-   return EagleLogGuard(EagleLogger::EagleErrorLog());
+   return EagleLogGuard(EagleLogger::EagleErrorLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_ERROR));
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardCritical() {
-   return EagleLogGuard(EagleLogger::EagleCriticalLog());
+   return EagleLogGuard(EagleLogger::EagleCriticalLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_CRITICAL));
 }
 
+
+
+EagleLogGuard EagleLogGuard::EagleGuardPrefix(const char* prefix) {
+   return EagleLogGuard(EagleLogger::EagleCriticalLog() , prefix);
+}
 
 
 /// ----------------------     Global functions     ---------------------------------
@@ -323,6 +328,9 @@ EagleLogGuard EagleCritical() {
 
 
 
+EagleLogGuard EaglePrefix(const char* prefix) {
+   return EagleLogGuard::EagleGuardPrefix(prefix);
+}
 
 
 

@@ -25,13 +25,17 @@
 #define EagleConditionVar_HPP
 
 
-class EagleConditionVar {
+#include "Eagle/Object.hpp"
+
+
+
+class EagleConditionVar : public EagleObject {
 
 private :
    
 public :
    
-   EagleConditionVar() {}
+   EagleConditionVar(std::string objclass = "EagleConditionVar" , std::string objname = "Nemo");
    virtual ~EagleConditionVar() {}
    
    virtual bool Create()=0;

@@ -28,6 +28,7 @@ public :
 
    static ProgramTime Now();
    static ProgramTime ProgramStart();
+   static ProgramTime Elapsed();
 
 };
 

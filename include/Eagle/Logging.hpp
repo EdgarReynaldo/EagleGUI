@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2017+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -131,7 +131,7 @@ private :
    EagleLogger& log;
    CXX11Mutex* pmutex;
 
-   explicit EagleLogGuard(EagleLogger& logger);
+   explicit EagleLogGuard(EagleLogger& logger , const char* prefix);
    
    EagleLogGuard(const EagleLogGuard& rhs);
    
@@ -153,12 +153,16 @@ public :
    static EagleLogGuard EagleGuardWarn();
    static EagleLogGuard EagleGuardError();
    static EagleLogGuard EagleGuardCritical();
+   
+   static EagleLogGuard EagleGuardPrefix(const char* prefix);
 
    friend EagleLogGuard EagleLog();
    friend EagleLogGuard EagleInfo();
    friend EagleLogGuard EagleWarn();
    friend EagleLogGuard EagleError();
    friend EagleLogGuard EagleCritical();
+
+   friend EagleLogGuard EaglePrefix(const char* prefix);
 
    friend class EagleObject;
    friend EagleLogGuard& operator<<(EagleLogGuard& guard , const EagleObject& obj);
@@ -170,6 +174,8 @@ EagleLogGuard EagleInfo();
 EagleLogGuard EagleWarn();
 EagleLogGuard EagleError();
 EagleLogGuard EagleCritical();
+
+EagleLogGuard EaglePrefix(const char* prefix);
 
 
 

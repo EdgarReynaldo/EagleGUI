@@ -159,13 +159,15 @@ int EagleEventGroupType(EagleEvent e) {
 
 
 
-bool EagleEventSource::OnList(EagleEventListener* l) {
-   for (unsigned int n = 0 ; n < listeners.size() ; ++n) {
-      if (listeners[n] == l) {
-         return true;
+EagleEventSource::LIT EagleEventSource::FindListener(EagleEventListener* l) {
+   std::vector<EagleEventListener*>::iterator it = listeners.begin();
+   while (it != listeners.end()) {
+      if (*it == l) {
+         return it;
       }
+      ++it;
    }
-   return false;
+   return it;
 }
 
 
@@ -179,19 +181,35 @@ void EagleEventSource::EmitEvent(EagleEvent e , EagleThread* thread) {
 
 
 
-EagleEventSource::~EagleEventSource() {
-   for (std::vector<EagleEventListener*>::iterator it = listeners.begin() ; it != listeners.end() ; ) {
-      EagleEventListener* l = *it;
-      it = listeners.erase(it);
+void EagleEventSource::StopBroadcasting() {
+   if (!listeners.size()) {return;}
+   
+   LISTENERS listen = listeners;
+   for (std::vector<EagleEventListener*>::reverse_iterator rit = listen.rbegin() ; rit != listen.rend() ; ++rit) {
+      EagleEventListener* l = *rit;
       l->StopListeningTo(this);
    }
+   EAGLE_ASSERT(listeners.size() == 0);
+}
+
+
+
+EagleEventSource::EagleEventSource() : 
+      listeners() 
+{}
+
+
+
+EagleEventSource::~EagleEventSource() {
+   StopBroadcasting();
 }
 
 
 
 void EagleEventSource::SubscribeListener(EagleEventListener* l) {
    if (!l) {return;}
-   if (!OnList(l)) {
+   LIT it = FindListener(l);
+   if (it == listeners.end()) {
       listeners.push_back(l);
    }
 }
@@ -200,13 +218,9 @@ void EagleEventSource::SubscribeListener(EagleEventListener* l) {
 
 void EagleEventSource::UnsubscribeListener(EagleEventListener* l) {
    if (!l) {return;}
-   for (std::vector<EagleEventListener*>::iterator it = listeners.begin() ; it != listeners.end() ; ) {
-      if (l == *it) {
-         it = listeners.erase(it);
-      }
-      else {
-         ++it;
-      }
+   LIT it = FindListener(l);
+   if (it != listeners.end()) {
+      listeners.erase(it);
    }
 }
 
@@ -221,29 +235,47 @@ std::vector<EagleEventListener*> EagleEventSource::Listeners() {
 /// ---------------      EagleEventListener         --------------------------------------
 
 
-
-bool EagleEventListener::OnList(EagleEventSource* s) {
-   for (unsigned int n = 0 ; n < sources.size() ; ++n) {
-      if (sources[n] == s) {
-         return true;
+EagleEventListener::SIT EagleEventListener::FindSource(EagleEventSource* s) {
+   SIT it = sources.begin();
+   while (it != sources.end()) {
+      if (*it == s) {
+         return it;
       }
+      ++it;
    }
-   return false;
+   return it;
 }
 
 
 
-EagleEventListener::~EagleEventListener() {
+void EagleEventListener::StopListening() {
+   if (!sources.size()) {return;}
+   
    std::vector<EagleEventSource*> sources_copy = sources;
    for (unsigned int n = 0 ; n < sources_copy.size() ; ++n) {
       StopListeningTo(sources_copy[n]);
    }
+   EAGLE_ASSERT(sources.size() == 0);
+}
+
+
+
+EagleEventListener::EagleEventListener() : 
+      sources() 
+{}
+
+
+
+EagleEventListener::~EagleEventListener() {
+   StopListening();
 }
 
 
 
 void EagleEventListener::ListenTo(EagleEventSource* s) {
-   if (!OnList(s)) {
+   if (!s) {return;}
+   SIT it = FindSource(s);
+   if (it == sources.end()) {
       sources.push_back(s);
       s->SubscribeListener(this);
    }
@@ -252,16 +284,11 @@ void EagleEventListener::ListenTo(EagleEventSource* s) {
 
 
 void EagleEventListener::StopListeningTo(EagleEventSource* s) {
-   if (OnList(s)) {
-      for (std::vector<EagleEventSource*>::iterator it = sources.begin() ; it != sources.end() ; ) {
-         if (*it == s) {
-            it = sources.erase(it);
-            s->UnsubscribeListener(this);
-         }
-         else {
-            ++it;
-         }
-      }
+   if (!s) {return;}
+   SIT it = FindSource(s);
+   if (it != sources.end()) {
+      sources.erase(it);
+      s->UnsubscribeListener(this);
    }
 }
 
@@ -298,6 +325,13 @@ EagleEventHandler::EagleEventHandler(std::string objclass , std::string objname 
 
 void EagleEventHandler::SetOurThread(EagleThread* t) {
    our_thread = t;
+}
+
+
+
+void EagleEventHandler::StopHandlingEvents() {
+   StopBroadcasting();
+   StopListening();
 }
 
 

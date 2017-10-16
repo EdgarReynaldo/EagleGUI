@@ -309,7 +309,7 @@ class InputGroup;
 
 
 
-class EagleInputHandler : public EagleEventSource , public EagleEventListener {
+class EagleInputHandler : public EagleObject , public EagleEventSource , public EagleEventListener {
 private :
    
    virtual void PrivateInitializeJoystickInput()=0;// called by initializejoysticksinput
@@ -318,7 +318,7 @@ private :
    virtual void PrivateInitializeTouchInput()=0;// called by initializekeyboardinput
 
 public :
-   EagleInputHandler();
+   EagleInputHandler(std::string objclass = "EagleInputHandler" , std::string objname = "Nemo");
    virtual ~EagleInputHandler() {}
    
    void InitializeInput();

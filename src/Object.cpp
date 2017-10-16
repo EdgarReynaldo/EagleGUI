@@ -305,7 +305,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    object->SetId(new_id);
    
    if (object->log_registration) {
-      EagleLog() << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
+      EaglePrefix("EAGLE_CREATE   : ") << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
    }
    
    stop_id = new_id + 1;
@@ -340,7 +340,7 @@ void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
    EagleObjectInfo& eoi = (*pinfo)[id_index];
    
    if (!eoi.IsDestroyed() && eoi.GetObject()->log_registration) {
-      EagleLog() << StringPrintF("Destroying eagle object %s" , eoi.FullName()) << std::endl;
+      EaglePrefix("EAGLE_DESTROY  : ") << StringPrintF("Destroying eagle object %s" , eoi.FullName()) << std::endl;
    }
    
    if (eoi.IsDestroyed()) {

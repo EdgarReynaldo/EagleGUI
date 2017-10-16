@@ -5,6 +5,11 @@
 #ifndef Clipboard_HPP
 #define Clipboard_HPP
 
+
+#include "Eagle/Object.hpp"
+
+
+
 #include <string>
 using std::string;
 
@@ -13,7 +18,13 @@ using std::string;
 class EagleGraphicsContext;
 
 
-class EagleClipboard {
+
+
+///class ClipboardData
+
+
+
+class EagleClipboard : public EagleObject {
 
 protected :
    EagleGraphicsContext* window;
@@ -23,10 +34,7 @@ protected :
    
 public :
 ///   Clipboard();
-   EagleClipboard() : 
-         window(0),
-         clipboard_string("")
-   {}
+   EagleClipboard(std::string objclass = "EagleClipboard" , std::string objname = "Nemo");
 
    virtual ~EagleClipboard() {}
    

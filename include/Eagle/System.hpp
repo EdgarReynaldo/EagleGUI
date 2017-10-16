@@ -127,13 +127,14 @@ protected :
    virtual bool PrivateInstallJoystick()=0;
    virtual bool PrivateInstallTouch()=0;
 
-   virtual EagleInputHandler*    PrivateCreateInputHandler()=0;
-   virtual EagleEventHandler*    PrivateCreateEventHandler(bool delay_events = true)=0;
-   virtual EagleTimer*           PrivateCreateTimer()=0;
-   virtual EagleGraphicsContext* PrivateCreateGraphicsContext(int width , int height , int flags)=0;
-   virtual EagleThread*          PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data)=0;
-   virtual EagleMutex*           PrivateCreateMutex(bool recursive , bool timed)=0;
-   virtual EagleClipboard*       PrivateCreateClipboard()=0;
+   virtual EagleInputHandler*    PrivateCreateInputHandler   (std::string objname)=0;
+   virtual EagleEventHandler*    PrivateCreateEventHandler   (std::string objname , bool delay_events = true)=0;
+   virtual EagleTimer*           PrivateCreateTimer          (std::string objname)=0;
+   virtual EagleGraphicsContext* PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags)=0;
+   virtual EagleThread*          PrivateCreateThread         (std::string objname , void* (*process)(EagleThread* , void*) , void* data)=0;
+   virtual EagleMutex*           PrivateCreateMutex          (std::string objname , bool recursive , bool timed)=0;
+   virtual EagleClipboard*       PrivateCreateClipboard      (std::string objname)=0;
+
    virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
@@ -184,20 +185,21 @@ public :
 
    int EagleInitState();
 
-   EagleInputHandler*  GetInputHandler();
+   EagleInputHandler*  GetSystemInput();
    EagleEventHandler*  GetSystemQueue();
    EagleTimer*         GetSystemTimer();
    EagleClipboard*     GetSystemClipboard();
    EagleWindowManager* GetWindowManager();
 
-	EagleInputHandler*    CreateInputHandler();
-	EagleEventHandler*    CreateEventHandler(bool delay_events);
+	EagleInputHandler*    CreateInputHandler(std::string objname = "Nemo");
+	
+	EagleEventHandler*    CreateEventHandler(std::string objname = "Nemo" , bool delay_events = false);
 
-	EagleTimer*           CreateTimer();
-   EagleGraphicsContext* CreateGraphicsContext(int width , int height , int flags);
-   EagleThread*          CreateThread(void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
-   EagleMutex*           CreateMutex(bool recursive , bool timed);
-   EagleClipboard*       CreateClipboard();
+	EagleTimer*           CreateTimer          (std::string objname = "Nemo");
+   EagleGraphicsContext* CreateGraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0);
+   EagleThread*          CreateThread         (std::string objname = "Nemo" , void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
+   EagleMutex*           CreateMutex          (std::string objname = "Nemo" , bool recursive = false , bool timed = false);
+   EagleClipboard*       CreateClipboard      (std::string objname = "Nemo");
 
    void FreeInputHandler(EagleInputHandler* handler);
    void FreeEventHandler(EagleEventHandler* event_handler);
@@ -228,6 +230,8 @@ public :
 	virtual void Rest(double time)=0;// Rest for time seconds
 
 	EagleGraphicsContext* GetActiveWindow();
+	
+	virtual const char* GetSystemName()=0;
 };
 
 

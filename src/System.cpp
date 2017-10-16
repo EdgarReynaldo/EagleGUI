@@ -24,6 +24,7 @@
 #include "Eagle/Logging.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/Time.hpp"
+#include "Eagle/StringWork.hpp"
 
 #include <signal.h>
 
@@ -282,9 +283,9 @@ bool EagleSystem::InitializeSystem() {
 
 
 bool EagleSystem::FinalizeSystem() {
-   if (!input_handler)    {input_handler    = CreateInputHandler();}
-   if (!system_timer)     {system_timer     = CreateTimer();}
-   if (!system_queue)     {system_queue     = CreateEventHandler(false);}
+   if (!input_handler)    {input_handler    = GetSystemInput();}
+   if (!system_timer)     {system_timer     = GetSystemTimer();}
+   if (!system_queue)     {system_queue     = GetSystemQueue();}
    if (!system_clipboard) {system_clipboard = CreateClipboard();}
    if (!window_manager)   {window_manager   = CreateWindowManager();}
 
@@ -398,7 +399,7 @@ bool EagleSystem::InstallKeyboard() {
    }
    else {
       EagleInfo() << "Eagle : Installed keyboard." << std::endl;
-   	EagleInputHandler* input = GetInputHandler();
+   	EagleInputHandler* input = GetSystemInput();
       EagleEventHandler* queue = GetSystemQueue();
 
    	if (input) {
@@ -421,7 +422,7 @@ bool EagleSystem::InstallMouse() {
    }
    else {
       EagleInfo() << "Eagle : Installed mouse." << std::endl;
-   	EagleInputHandler* input = GetInputHandler();
+   	EagleInputHandler* input = GetSystemInput();
    	if (input) {
    		input->InitializeMouseInput();
    		input->StartMouseEventHandler();
@@ -443,7 +444,7 @@ bool EagleSystem::InstallJoystick() {
    }
    else {
       EagleInfo() << "Eagle : Installed joystick." << std::endl;
-   	EagleInputHandler* input = GetInputHandler();
+   	EagleInputHandler* input = GetSystemInput();
    	if (input) {
    		input->InitializeJoystickInput();
    		input->StartJoystickEventHandler();
@@ -465,7 +466,7 @@ bool EagleSystem::InstallTouch() {
    }
    else {
       EagleInfo() << "Eagle : Installed touch input." << std::endl;
-   	EagleInputHandler* input = GetInputHandler();
+   	EagleInputHandler* input = GetSystemInput();
    	if (input) {
    		input->InitializeTouchInput();
    		input->StartTouchEventHandler();
@@ -533,9 +534,10 @@ int EagleSystem::EagleInitState() {
 
 
 
-EagleInputHandler* EagleSystem::GetInputHandler() {
+EagleInputHandler* EagleSystem::GetSystemInput() {
    if (!input_handler) {
-      input_handler = CreateInputHandler();
+      std::string input_name_str = StringPrintF("%sSystem::input_handler" , GetSystemName());
+      input_handler = CreateInputHandler(input_name_str);
       if (!input_handler) {
          throw EagleException("Failed to retrieve input handler.");
       }
@@ -547,7 +549,8 @@ EagleInputHandler* EagleSystem::GetInputHandler() {
 
 EagleEventHandler* EagleSystem::GetSystemQueue() {
 	if (!system_queue) {
-		system_queue = CreateEventHandler(false);
+      std::string queue_name_str = StringPrintF("%sSystem::system_queue" , GetSystemName());
+		system_queue = CreateEventHandler(queue_name_str , false);
 		if (!system_queue) {
 		   throw EagleException("Failed to retrieve system event handler.");
 		}
@@ -559,7 +562,8 @@ EagleEventHandler* EagleSystem::GetSystemQueue() {
 
 EagleTimer* EagleSystem::GetSystemTimer() {
 	if (!system_timer) {
-		system_timer = CreateTimer();
+      std::string timer_name_str = StringPrintF("%sSystem::system_timer" , GetSystemName());
+		system_timer = CreateTimer(timer_name_str);
 		system_timer->SetName("SystemTimer");
 		if (system_timer) {
 			system_timer->Create(system_timer_rate);
@@ -585,9 +589,9 @@ EagleWindowManager* EagleSystem::GetWindowManager() {
 
 
 
-EagleInputHandler* EagleSystem::CreateInputHandler() {
+EagleInputHandler* EagleSystem::CreateInputHandler(std::string objname) {
    EAGLE_ASSERT(system_up);
-   EagleInputHandler* input = PrivateCreateInputHandler();
+   EagleInputHandler* input = PrivateCreateInputHandler(objname);
    if (input) {
       inputs.Add(input);
    }
@@ -596,9 +600,9 @@ EagleInputHandler* EagleSystem::CreateInputHandler() {
 
 
 
-EagleEventHandler* EagleSystem::CreateEventHandler(bool delay_events) {
+EagleEventHandler* EagleSystem::CreateEventHandler(std::string objname , bool delay_events) {
    EAGLE_ASSERT(system_up);
-   EagleEventHandler* q = PrivateCreateEventHandler(delay_events);
+   EagleEventHandler* q = PrivateCreateEventHandler(objname , delay_events);
    if (q) {
       queues.Add(q);
    }
@@ -606,20 +610,10 @@ EagleEventHandler* EagleSystem::CreateEventHandler(bool delay_events) {
 }
 
 
-/**
-EagleEventHandler* EagleSystem::CreateEventHandlerDuplicate(EagleEventHandler* handler) {
-   EagleEventHandler* clone = handler->CloneEventHandler();
-   if (clone) {
-      queues.Add(clone);
-   }
-   return clone;
-}
-//*/
 
-
-EagleTimer* EagleSystem::CreateTimer() {
+EagleTimer* EagleSystem::CreateTimer(std::string objname) {
    EAGLE_ASSERT(system_up);
-   EagleTimer* timer = PrivateCreateTimer();
+   EagleTimer* timer = PrivateCreateTimer(objname);
    if (timer) {
       timers.Add(timer);
    }
@@ -628,9 +622,9 @@ EagleTimer* EagleSystem::CreateTimer() {
 
 
 
-EagleGraphicsContext* EagleSystem::CreateGraphicsContext(int width , int height , int flags) {
+EagleGraphicsContext* EagleSystem::CreateGraphicsContext(std::string objname , int width , int height , int flags) {
    EAGLE_ASSERT(system_up);
-   EagleGraphicsContext* win = PrivateCreateGraphicsContext(width,height,flags);
+   EagleGraphicsContext* win = PrivateCreateGraphicsContext(objname , width , height , flags);
    if (win) {
       if (system_queue) {
          system_queue->ListenTo(win);
@@ -642,9 +636,9 @@ EagleGraphicsContext* EagleSystem::CreateGraphicsContext(int width , int height 
 
 
 
-EagleThread* EagleSystem::CreateThread(void* (*process)(EagleThread* , void*) , void* data) {
+EagleThread* EagleSystem::CreateThread(std::string objname , void* (*process)(EagleThread* , void*) , void* data) {
    EAGLE_ASSERT(system_up);
-   EagleThread* ethread = PrivateCreateThread(process , data);
+   EagleThread* ethread = PrivateCreateThread(objname , process , data);
    if (ethread) {
       threads.Add(ethread);
    }
@@ -653,9 +647,9 @@ EagleThread* EagleSystem::CreateThread(void* (*process)(EagleThread* , void*) , 
 
 
 
-EagleMutex* EagleSystem::CreateMutex(bool recursive , bool timed) {
+EagleMutex* EagleSystem::CreateMutex(std::string objname , bool recursive , bool timed) {
    EAGLE_ASSERT(system_up);
-   EagleMutex* emutex = PrivateCreateMutex(recursive , timed);
+   EagleMutex* emutex = PrivateCreateMutex(objname , recursive , timed);
    if (emutex) {
       mutexes.Add(emutex);
    }
@@ -664,9 +658,9 @@ EagleMutex* EagleSystem::CreateMutex(bool recursive , bool timed) {
 
 
 
-EagleClipboard* EagleSystem::CreateClipboard() {
+EagleClipboard* EagleSystem::CreateClipboard(std::string objname) {
    EAGLE_ASSERT(system_up);
-   EagleClipboard* cb = PrivateCreateClipboard();
+   EagleClipboard* cb = PrivateCreateClipboard(objname);
    if (cb) {
       clipboards.Add(cb);
    }
@@ -813,7 +807,7 @@ EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
 
 
 double EagleSystem::GetProgramTime() {
-   return ProgramTime::Now() - ProgramTime::ProgramStart();
+   return ProgramTime::Elapsed();
 }
 
 

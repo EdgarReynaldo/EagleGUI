@@ -550,7 +550,8 @@ const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES] = {
 
 
 
-EagleInputHandler::EagleInputHandler() :
+EagleInputHandler::EagleInputHandler(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
       EagleEventSource(),
       EagleEventListener()
 {}

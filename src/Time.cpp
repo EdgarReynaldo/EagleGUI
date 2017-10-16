@@ -86,5 +86,8 @@ ProgramTime ProgramTime::ProgramStart() {
 
 
 
+ProgramTime ProgramTime::Elapsed() {
+   return Now() - ProgramStart();
+}
 
 
