@@ -233,6 +233,7 @@
 		<Unit filename="src/tests/AnimatedWedgeLayout.hpp" />
 		<Unit filename="src/tests/DrawingTestMain.cpp" />
 		<Unit filename="src/tests/DrawingTestMain.hpp" />
+		<Unit filename="src/tests/EagleMultiWin.hpp" />
 		<Unit filename="src/tests/EventHandlerDemoMain.cpp" />
 		<Unit filename="src/tests/EventHandlerDemoMain.hpp" />
 		<Unit filename="src/tests/GuiTestMain.cpp" />
