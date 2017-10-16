@@ -294,16 +294,10 @@ long long int Allegro5Timer::Count() {
 
 
 void Allegro5Timer::RegisterTimerInput(EagleEventHandler* event_handler) {
-/*
-   EAGLE_ASSERT(event_handler);
-   Allegro5EventHandler* a5_event_handler = dynamic_cast<Allegro5EventHandler*>(event_handler);
-   EAGLE_ASSERT(allegro_handler);
+   if (!event_handler) {return;}
 
-   ALLEGRO_EVENT_QUEUE* allegro_queue = a5_event_handler->AllegroQueue();
-   EAGLE_ASSERT(allegro_queue);
-   al_register_event_source(allegro_queue , al_get_timer_event_source(timer));
-*/
-   // so we don't have timers registered to queues and eagle timers registered as event sources at the same time
-   SubscribeListener(event_handler);/// TODO Convert to an event source
+   event_handler->ListenTo(this);
+   
+///   SubscribeListener(event_handler);/// TODO Convert to an event source
 }
 
