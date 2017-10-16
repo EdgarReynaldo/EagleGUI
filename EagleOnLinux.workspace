@@ -4,6 +4,5 @@
 		<Project filename="Eagle5Linux.cbp" />
 		<Project filename="Allegro5_backend_Linux.cbp" />
 		<Project filename="LibtestLinux.cbp" />
-		<Project filename="LinuxTest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

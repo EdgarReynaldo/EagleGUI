@@ -30,7 +30,7 @@ void* bad_thread(EagleThread* t , void* data) {
    new_win->SetOurThread(t);
 
    EagleEventHandler* q = GetAllegro5System()->CreateEventHandler("bad_thread::q" , false);
- 
+
    Allegro5Thread* a5thread = dynamic_cast<Allegro5Thread*>(t);
 
    EagleFont* f = new_win->DefaultFont();
@@ -49,7 +49,7 @@ void* bad_thread(EagleThread* t , void* data) {
    bool quit = false;
 
    while (!quit) {
-         
+
       if (a5thread->ShouldStop()) {
          EagleInfo() << StringPrintF("Eagle thread %d signalled to stop." , t->GetEagleId()) << std::endl;
          break;
@@ -108,7 +108,7 @@ void* bad_thread(EagleThread* t , void* data) {
    GetAllegro5System()->FreeGraphicsContext(new_win);
 
    EagleInfo() << "EXITING BAD THREAD" << std::endl;
-   
+
    return ret;
 }
 
@@ -126,12 +126,12 @@ void shutdown_main() {
 ///#include "EagleMultiWin.hpp"
 
 ///int main8(int argc , char** argv) {
-   
+
 ///   PROG* prog = new PROG();
 ///   PROGGIE* prog = new PROGGIE();
-   
+
 ///   delete prog;
-   
+
 ///   return 0;
 ///}
 */
@@ -194,11 +194,11 @@ int main(int argc , char** argv) {
 
    return 0;
 }
- 
+
 
 
 void* test_thread(EagleThread* t , void* data) {
-   
+
    (void)data;
    EagleInfo() << StringPrintF("Started test_thread on EagleThread %s" , t->FullName()) << std::endl;
 
@@ -209,7 +209,7 @@ void* test_thread(EagleThread* t , void* data) {
       ++j;
       if (t->ShouldStop()) {break;}
    }
-   
+
    EagleInfo() << StringPrintF("Stopping test_thread on EagleThread %s" , t->FullName()) << std::endl;
 
    return (void*)j;
@@ -217,17 +217,17 @@ void* test_thread(EagleThread* t , void* data) {
 
 
 int main2(int argc , char** argv) {
-   
+
    (void)argc;
    (void)argv;
-   
+
    SendOutputToFile("Libtest.txt" , "" , false);
 
    Allegro5System* a5sys = GetAllegro5System();
    a5sys->Initialize(EAGLE_FULL_SETUP);
    a5sys->GetSystemTimer()->SetSecondsPerTick(1);
    a5sys->GetSystemTimer()->Start();
-   
+
    int NTHREADS = 250;
    EagleThread* threads[NTHREADS];
    void* rvals[NTHREADS];
@@ -244,9 +244,9 @@ int main2(int argc , char** argv) {
       rvals[i] = threads[i]->Join();
    }
    for (int i = 0 ; i < NTHREADS ; ++i) {
-      EagleInfo() << StringPrintF("Thread %d returned %d" , threads[i]->GetEagleId() , (int)rvals[i]) << std::endl;
+      EagleInfo() << StringPrintF("Thread %d returned %ld" , threads[i]->GetEagleId() , (long long)rvals[i]) << std::endl;
    }
-   
+
    return 0;
 }
 
