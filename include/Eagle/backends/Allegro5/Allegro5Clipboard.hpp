@@ -18,9 +18,7 @@ class Allegro5Clipboard : public EagleClipboard {
 protected :
    
 public :
-   Allegro5Clipboard() :
-         EagleClipboard()
-   {}
+   Allegro5Clipboard(std::string objname = "Nemo");
    
    virtual void CopyToClipboard(string str);
    virtual string GetClipboardString();   

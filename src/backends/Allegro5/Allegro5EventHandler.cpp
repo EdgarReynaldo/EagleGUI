@@ -142,7 +142,10 @@ void* Allegro5EventThreadProcess(EagleThread* thread , void* event_handler) {
    EagleInfo() << StringPrintF("Allegro5EventThreadProcess process starting on EagleThread %p" , thread) << std::endl;
 
    bool close = false;
-   while (!thread->ShouldStop() && !close) {
+   while (!close) {
+      if (thread->ShouldStop()) {
+         EagleInfo() << "Allegro5EventThreadProcess : ShouldStop = TRUE" << std::endl;
+      }
       ALLEGRO_EVENT ev;
       al_wait_for_event(queue , &ev);
 
@@ -186,14 +189,12 @@ bool Allegro5EventHandler::Running() {
 
 
 
-Allegro5EventHandler::Allegro5EventHandler(bool delay_emitted_events , std::string objname) :
+Allegro5EventHandler::Allegro5EventHandler(std::string objname , bool delay_emitted_events) :
       EagleEventHandler("Allegro5EventHandler" , objname , delay_emitted_events),
       event_queue(0),
       main_source(),
       event_thread(0)
 {
-///   SetName("A5EH");
-   al_init_user_event_source(&main_source);
 }
 
 
@@ -208,18 +209,18 @@ bool Allegro5EventHandler::Create() {
    EAGLE_ASSERT(Eagle::EagleLibrary::Eagle()->System("Allegro5"));// System must be initialized and running
    Destroy();
 
+   al_init_user_event_source(&main_source);
+
    event_queue = al_create_event_queue();
    al_register_event_source(event_queue , &main_source);
 
-   mutex = new CXX11Mutex();
-   mutex->SetShortName("A5EH");
+   mutex = new CXX11Mutex("A5EH::mutex");
 
-   event_thread = new Allegro5Thread();
-   event_thread->SetShortName("A5EH");
-///   SetName(StringPrintF("%s Thread (EID = %d)" , GetNameCStr() , event_thread->GetEagleId()));
+   event_thread = new Allegro5Thread("A5EH::event_thread");
+   
    SetOurThread(event_thread);
 
-   cond_var = new Allegro5ConditionVar();
+   cond_var = new Allegro5ConditionVar("A5EH::cond_var");
 
    /// don't call create on thread until queue, mutex, and condvar are in place
    if (!event_queue ||
@@ -255,6 +256,8 @@ bool Allegro5EventHandler::Create() {
 
 void Allegro5EventHandler::Destroy() {
 
+   StopHandlingEvents();
+
    if (!event_thread) {return;}
    /// MUST STOP PROCESS FIRST
    bool running = Running();
@@ -276,6 +279,12 @@ void Allegro5EventHandler::Destroy() {
       event_thread = 0;
       our_thread = 0;
    }
+   if (event_queue) {
+      al_unregister_event_source(event_queue , &main_source);
+      al_destroy_user_event_source(&main_source);
+      al_destroy_event_queue(event_queue);
+      event_queue = 0;
+   }
    if (mutex) {
       delete mutex;
       mutex = 0;
@@ -283,12 +292,6 @@ void Allegro5EventHandler::Destroy() {
    if (cond_var) {
       delete cond_var;
       cond_var = 0;
-   }
-   if (event_queue) {
-      al_unregister_event_source(event_queue , &main_source);
-      al_destroy_user_event_source(&main_source);
-      al_destroy_event_queue(event_queue);
-      event_queue = 0;
    }
 
 }

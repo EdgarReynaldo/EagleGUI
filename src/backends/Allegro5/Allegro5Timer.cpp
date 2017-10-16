@@ -139,13 +139,13 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
       if (ethread->Valid()) {
          ethread->Start();
 
-         // send out create message to thread process
+         /// send out create message to thread process
          ALLEGRO_EVENT ev;
          ev.type = EAGLE_EVENT_USER_START;
          ev.user.data1 = EAGLE_MESSAGE_CREATE_TIMER;
          al_emit_user_event(&timer_event_source , &ev , 0);
 
-         // wait for return message
+         /// wait for return message
          do {
             al_wait_for_event(timer_queue , &ev);
          } while (!((ev.type == EAGLE_EVENT_USER_START) && (ev.user.data1 == EAGLE_MESSAGE_CREATE_TIMER)));
@@ -177,6 +177,8 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
 void Allegro5Timer::Destroy() {
    EagleInfo() << "Allegro5Timer::Destroy this=" << this << std::endl;
 
+   StopBroadcasting();
+   
    Close();
 
    if (timer_queue) {

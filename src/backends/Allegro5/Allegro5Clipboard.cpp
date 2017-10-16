@@ -9,6 +9,12 @@
 
 
 
+Allegro5Clipboard::Allegro5Clipboard(std::string objname) :
+      EagleClipboard("Allegro5Clipboard" , objname)
+{}
+
+
+
 void Allegro5Clipboard::CopyToClipboard(string str) {
    EagleClipboard::CopyToClipboard(str);
    /// Allegro 5 stuff here

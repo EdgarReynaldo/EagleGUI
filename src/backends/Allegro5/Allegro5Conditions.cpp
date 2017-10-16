@@ -29,12 +29,16 @@
 
 
 
-Allegro5ConditionVar::Allegro5ConditionVar() :
-      EagleConditionVar(),
+Allegro5ConditionVar::Allegro5ConditionVar(std::string objname) :
+      EagleConditionVar("Allegro5ConditionVar" , objname),
       mutex(0),
       cond(0)
-{
-   
+{}
+
+
+
+Allegro5ConditionVar::~Allegro5ConditionVar() {
+   Destroy();
 }
 
 

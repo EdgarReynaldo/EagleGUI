@@ -48,7 +48,7 @@ protected :
 
 
 
-   virtual EagleGraphicsContext* PrivateCreateWindow(int width , int height , int flags);
+   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags);
 
    virtual int PrivateGiveWindowFocus(int window_eid);
 
@@ -56,7 +56,7 @@ protected :
 
 public :
 
-   Allegro5WindowManager(EagleSystem* sys);
+   Allegro5WindowManager(EagleSystem* sys , std::string objname);
    ~Allegro5WindowManager();
 
    bool Create();

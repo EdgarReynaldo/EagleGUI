@@ -202,22 +202,16 @@ void Allegro5InputHandler::PrivateInitializeTouchInput() {
 
 
 
-Allegro5InputHandler::Allegro5InputHandler() :
-      EagleInputHandler(),
+Allegro5InputHandler::Allegro5InputHandler(std::string objname) :
+      EagleInputHandler("Allegro5InputHandler" , objname),
       input_extra_event_source(),
       input_queue(0),
-      input_thread(),
-      keyboard_event_handler(false),
-      joystick_event_handler(false),
-      mouse_event_handler(false),
-      touch_event_handler(false)
+      input_thread("A5 Input Thread"),
+      keyboard_event_handler("A5 KeyboardEventHandler" , false),
+      joystick_event_handler("A5 JoystickEventHandler" , false),
+      mouse_event_handler("A5 MouseEventHandler" , false),
+      touch_event_handler("A5 TouchEventHandler" , false)
 {
-   
-   keyboard_event_handler.SetName(StringPrintF("A5 Keyboard Event Handler (EID = %d)" , keyboard_event_handler.GetEagleId()));
-   joystick_event_handler.SetName(StringPrintF("A5 Joystick Event Handler (EID = %d)" , joystick_event_handler.GetEagleId()));
-   mouse_event_handler.SetName   (StringPrintF("A5 Mouse Event Handler    (EID = %d)" , mouse_event_handler.GetEagleId()));
-   touch_event_handler.SetName   (StringPrintF("A5 Touch Event Handler    (EID = %d)" , touch_event_handler.GetEagleId()));
-   
    keyboard_event_handler.Create();
    joystick_event_handler.Create();
    mouse_event_handler.Create();

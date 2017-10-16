@@ -50,7 +50,7 @@ private :
    
 public :
    
-   Allegro5InputHandler();
+   Allegro5InputHandler(std::string objname = "Nemo");
    ~Allegro5InputHandler();
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread);

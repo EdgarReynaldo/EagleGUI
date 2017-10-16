@@ -17,22 +17,21 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
    EAGLE_ASSERT(thread_process);
    void* data = ethread->Data();
 
-   EagleInfo() << StringPrintF("Starting  Process %p on EagleThread %p." , thread_process , ethread) << std::endl;
+   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Starting process %p on %s." , thread_process , ethread->FullName()) << std::endl;
 
    ethread->running = true;
    void* process_result = thread_process(ethread , data);
    ethread->running = false;
+   ethread->complete = true;
 
-   al_lock_mutex(ethread->finish_mutex);
+   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Finished process %p on %s." , thread_process , ethread->FullName()) << std::endl;
 
-   ethread->finished_bool = true;
-
-   al_signal_cond(ethread->finish_condition_var);
-
-   al_unlock_mutex(ethread->finish_mutex);
-
-   EagleInfo() << StringPrintF("Finishing Process %p on EagleThread %p." , thread_process , ethread) << std::endl;
-
+   ALLEGRO_EVENT ev;
+   ev.type = EAGLE_EVENT_USER_START;
+   ev.user.source = ethread->finish_event_source;
+   ev.user.data1 = (intptr_t)process_result;
+   
+   al_emit_user_event(ethread->finish_event_source , &ev , 0);
 
    return process_result;
 
@@ -47,10 +46,10 @@ Allegro5Thread::Allegro5Thread(std::string objname) :
       process(0),
       return_value(0),
       running(false),
-      finish_condition_var(0),
-      finish_mutex(0)
+      complete(false),
+      finish_event_source(0),
+      finish_queue(0)
 {
-   
 }
 
 
@@ -71,59 +70,72 @@ bool Allegro5Thread::Create(void* (*process_to_run)(EagleThread* , void*) , void
    data = arg;
 
    a5thread = al_create_thread(A5ThreadWrapperProcess , this);
-   finish_condition_var = al_create_cond();
-   finish_mutex = al_create_mutex();
-   finished_bool = false;
 
-   if (!a5thread || !finish_condition_var || !finish_mutex) {
+   finish_queue = al_create_event_queue();
+   
+   finish_event_source = new ALLEGRO_EVENT_SOURCE();
+   
+   if (!a5thread || !finish_queue) {
       if (!a5thread) {
          throw EagleException("Allegro5Thread::Create - failed to create a5thread.");
       }
-      if (!finish_condition_var) {
-         throw EagleException("Allegro5Thread::Create - failed to create finish_condition_var.");
-      }
-      if (!finish_mutex) {
-         throw EagleException("Allegro5Thread::Create - failed to create finish_mutex.");
+      if (!finish_queue) {
+         throw EagleException("Allegro5Thread::Create - failed to create finish_queue.");
       }
    }
 
-   return a5thread && finish_condition_var && finish_mutex;
+   al_init_user_event_source(finish_event_source);
+
+   al_register_event_source(finish_queue , finish_event_source);
+
+   return true;
 }
 
 
 
 void Allegro5Thread::Destroy() {
 
-   FinishThread();
+///   FinishThread();
 
-   if (a5thread) {
+   if (a5thread && running) {
+      Join();
       al_destroy_thread(a5thread);
       a5thread = 0;
    }
-   if (finish_condition_var) {
-      al_destroy_cond(finish_condition_var);
-      finish_condition_var = 0;
+
+   if (finish_queue) {
+      al_unregister_event_source(finish_queue , finish_event_source);
+      al_destroy_event_queue(finish_queue);
+      finish_queue = 0;
    }
-   if (finish_mutex) {
-      al_destroy_mutex(finish_mutex);
-      finish_mutex = 0;
+   if (finish_event_source) {
+      al_destroy_user_event_source(finish_event_source);
+      delete finish_event_source;
+      finish_event_source = 0;
    }
-   finished_bool = false;
 }
 
 
 
 void Allegro5Thread::Start() {
    EAGLE_ASSERT(a5thread);
-   if (!Running()) {
-      al_start_thread(a5thread);
+   if (Running()) {
+      EagleWarn() << StringPrintF("Allegro5Thread::Start() : Already running!") << std::endl;
    }
+   else {
+      EagleInfo() << StringPrintF("Allegro5Thread::Start() : Starting thread.") << std::endl;
+      complete = false;
+      al_start_thread(a5thread);
+      while (!Running()) {}
+   }
+   
 }
 
 
 
 void Allegro5Thread::SignalToStop() {
    if (!a5thread) {return;}
+   if (Complete()) {return;}
    if (Running()) {
       al_set_thread_should_stop(a5thread);
    }
@@ -140,29 +152,21 @@ void* Allegro5Thread::Join() {
 
 void* Allegro5Thread::FinishThread() {
    if (!a5thread) {
-      return (void*)-1;
+      return THREAD_NOT_VALID;
    }
-   EAGLE_ASSERT(finish_condition_var);
-   EAGLE_ASSERT(finish_mutex);
-
-   
-   /// TODO : IMPLEMENT WITH A EVENT QUEUE SO THE SIGNAL CAN"T BE MISSED
-   
-   return_value = 0;
-   if (Running()) {
-
-      al_lock_mutex(finish_mutex);
-
-      while (!finished_bool) {
-         al_wait_cond(finish_condition_var , finish_mutex);
-      }
-
-      al_unlock_mutex(finish_mutex);
-
-      al_join_thread(a5thread , &return_value);
+   if (!complete) {
+      EAGLE_ASSERT(running);
    }
 
-   return return_value;
+   EagleInfo() << StringPrintF("Allegro5Thread::FinishThread() : waiting for thread %s to finish." , FullName()) << std::endl;
+   
+   ALLEGRO_EVENT finish_event;
+   al_wait_for_event(finish_queue , &finish_event);
+   
+   EAGLE_ASSERT(finish_event.type == EAGLE_EVENT_USER_START);
+   EAGLE_ASSERT(finish_event.user.source == finish_event_source);
+   
+   return (void*)finish_event.user.data1;
 }
 
 
@@ -177,6 +181,12 @@ bool Allegro5Thread::ShouldStop() {
 
 bool Allegro5Thread::Running() {
    return running;
+}
+
+
+
+bool Allegro5Thread::Complete() {
+   return complete;
 }
 
 

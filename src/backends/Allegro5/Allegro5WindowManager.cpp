@@ -146,7 +146,7 @@ void Allegro5WindowManager::SignalClose(Allegro5GraphicsContext* window) {
    } while (ev.type != EAGLE_EVENT_WM_CLOSE_WINDOW_RECEIVED);
    EAGLE_ASSERT(ev.user.data1 == (intptr_t)window);/// TODO : Not safe for 64 bit pointers
 
-   EagleInfo() << StringPrintF("SignalClose acknowledged for window %p" , window) << std::endl;
+   EagleInfo() << StringPrintF("SignalClose acknowledged for window %s" , window->FullName()) << std::endl;
 }
 
 
@@ -181,7 +181,8 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
       }
    }
    else {
-      a5win = dynamic_cast<Allegro5GraphicsContext*>(GetAssociatedContext(/** THIS HAS TO BE A DISPLAY EVENT!**/ev.display.source));/** This LOCKS the wm mutex */
+      /** THIS HAS TO BE A DISPLAY EVENT!**/
+      a5win = dynamic_cast<Allegro5GraphicsContext*>(GetAssociatedContext(ev.display.source));/** This LOCKS the wm mutex */
 
       ee.display.x = ev.display.x;
       ee.display.y = ev.display.y;
@@ -236,8 +237,8 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
 
 
 
-EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int height , int flags) {
-   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext("A5Win" , width , height , flags);
+EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(std::string objname , int width , int height , int flags) {
+   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext(objname , width , height , flags);
    EAGLE_ASSERT(a5win && a5win->Valid());
    al_register_event_source(window_queue , al_get_display_event_source(a5win->AllegroDisplay()));
    return a5win;
@@ -247,8 +248,8 @@ EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(int width , int
 
 
 
-Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys) :
-      EagleWindowManager(sys , "Allegro5WindowManager" , "A5WM"),
+Allegro5WindowManager::Allegro5WindowManager(EagleSystem* sys , std::string objname) :
+      EagleWindowManager(sys , "Allegro5WindowManager" , objname),
       display_context_map(),
       window_queue(0),
       window_event_source(),

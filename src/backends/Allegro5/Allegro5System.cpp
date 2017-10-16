@@ -119,14 +119,14 @@ bool Allegro5System::PrivateInstallTouch() {
 
 
 
-EagleInputHandler* Allegro5System::PrivateCreateInputHandler() {
-   return new Allegro5InputHandler();
+EagleInputHandler* Allegro5System::PrivateCreateInputHandler(std::string objname) {
+   return new Allegro5InputHandler(objname);
 }
 
 
 
-EagleEventHandler* Allegro5System::PrivateCreateEventHandler(bool delay_events) {
-   Allegro5EventHandler* a5_handler = new Allegro5EventHandler(delay_events);
+EagleEventHandler* Allegro5System::PrivateCreateEventHandler(std::string objname , bool delay_events) {
+   Allegro5EventHandler* a5_handler = new Allegro5EventHandler(objname , delay_events);
    if (!a5_handler->Create()) {
       delete a5_handler;
       return 0;
@@ -136,20 +136,20 @@ EagleEventHandler* Allegro5System::PrivateCreateEventHandler(bool delay_events) 
 
 
 
-EagleTimer* Allegro5System::PrivateCreateTimer() {
-   return new Allegro5Timer();
+EagleTimer* Allegro5System::PrivateCreateTimer(std::string objname) {
+   return new Allegro5Timer(objname);
 }
 
 
 
-EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(int width , int height , int flags) {
-   return window_manager->CreateWindow(width , height , flags);
+EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags) {
+   return window_manager->CreateWindow(objname , width , height , flags);
 }
 
 
 
-EagleThread* Allegro5System::PrivateCreateThread(void* (*process)(EagleThread* , void*) , void* data) {
-   EagleThread* ethread = new Allegro5Thread();
+EagleThread* Allegro5System::PrivateCreateThread(std::string objname , void* (*process)(EagleThread* , void*) , void* data) {
+   EagleThread* ethread = new Allegro5Thread(objname);
    if (!process) {return ethread;}
    if (!ethread->Create(process , data)) {
       delete ethread;
@@ -161,8 +161,8 @@ EagleThread* Allegro5System::PrivateCreateThread(void* (*process)(EagleThread* ,
 
 
 
-EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive , bool timed) {
-   CXX11Mutex* mutex = new CXX11Mutex();
+EagleMutex* Allegro5System::PrivateCreateMutex(std::string objname , bool recursive , bool timed) {
+   CXX11Mutex* mutex = new CXX11Mutex(objname);
    if (!mutex->Create(recursive , timed)) {
       delete mutex;
       throw EagleException(StringPrintF("Failed to create %sAllegro 5 mutex" , recursive?"recursive ":""));
@@ -173,14 +173,14 @@ EagleMutex* Allegro5System::PrivateCreateMutex(bool recursive , bool timed) {
 
 
 
-EagleClipboard* Allegro5System::PrivateCreateClipboard() {
-   return new Allegro5Clipboard();
+EagleClipboard* Allegro5System::PrivateCreateClipboard(std::string objname) {
+   return new Allegro5Clipboard(objname);
 }
 
 
 
 EagleWindowManager* Allegro5System::PrivateCreateWindowManager() {
-   return new Allegro5WindowManager(this);
+   return new Allegro5WindowManager(this , "A5WindowManager");
 }
 
 
@@ -226,6 +226,13 @@ void Allegro5System::Rest(double time) {
 
 EagleGraphicsContext* Allegro5System::GetGraphicsContext(ALLEGRO_DISPLAY* allegro_display) {
    return dynamic_cast<Allegro5WindowManager*>(window_manager)->GetAssociatedContext(allegro_display);
+}
+
+
+
+const char* Allegro5System::GetSystemName() {
+   static const char* name = "Allegro5";
+   return name;
 }
 
 

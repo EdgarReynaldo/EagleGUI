@@ -12,6 +12,9 @@
 struct ALLEGRO_THREAD;
 struct ALLEGRO_COND;
 struct ALLEGRO_MUTEX;
+struct ALLEGRO_EVENT_SOURCE;
+struct ALLEGRO_EVENT_QUEUE;
+
 
 
 void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument);
@@ -27,11 +30,16 @@ private :
    void* (*process)(EagleThread* , void*);
    void* return_value;
    bool running;
+   bool complete;
    
+   ALLEGRO_EVENT_SOURCE* finish_event_source;
+   ALLEGRO_EVENT_QUEUE* finish_queue;
+   
+/**
    bool finished_bool;
    ALLEGRO_COND* finish_condition_var;
    ALLEGRO_MUTEX* finish_mutex;
-   
+*/   
    
    
    friend void* A5ThreadWrapperProcess(ALLEGRO_THREAD* , void*);
@@ -54,6 +62,7 @@ public :
 
    bool ShouldStop();
    bool Running();
+   bool Complete();
    bool Valid();
 };
 

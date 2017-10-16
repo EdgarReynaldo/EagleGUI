@@ -38,8 +38,8 @@ private :
 
 public :
    
-   Allegro5ConditionVar();
-   ~Allegro5ConditionVar() {Destroy();}
+   Allegro5ConditionVar(std::string objname = "Nemo");
+   ~Allegro5ConditionVar();
 
    bool Create();
    void Destroy();
