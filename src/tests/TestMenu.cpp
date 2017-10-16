@@ -72,11 +72,10 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
 
 void TestMenu::Run() {
    
-   EagleEventHandler* test_queue = sys->CreateEventHandler(false);
-   test_queue->ListenTo(sys->GetInputHandler());
-   test_queue->ListenTo(sys->GetSystemTimer());
-   test_queue->ListenTo(win);
-   
+   EagleEventHandler* test_queue = sys->CreateEventHandler("TestMenu::Run() : test_queue" , false);
+
+   test_queue->ListenTo(sys->GetSystemQueue());
+      
    
    sys->GetSystemTimer()->Start();
    selected = false;
@@ -121,7 +120,7 @@ void TestMenu::Run() {
             if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
                EagleLog() << StringPrintF("Handling event %d (%s)" , ev.type , EagleEventName(ev.type).c_str()).c_str() << std::endl;
             }
-            sys->GetInputHandler()->HandleInputEvent(ev);
+            sys->GetSystemInput()->HandleInputEvent(ev);
          }
          else {
             continue;

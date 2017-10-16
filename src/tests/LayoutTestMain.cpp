@@ -13,7 +13,7 @@ int LayoutTestMain(int argc , char** argv) {
    (void)argc;
    (void)argv;
 
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,0);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("win" , 800,600,0);
    if (!win) {
       return 1;
    }

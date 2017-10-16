@@ -15,7 +15,7 @@ int NewGuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    (void)argc;
    (void)argv;
 
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(800,600,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("win" , 800,600,EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
       return 2;
    }

@@ -19,7 +19,7 @@ int EventHandlerDemoMain(int argc , char** argv , TestRunner* test_runner) {
    (void)argc;
    (void)argv;
 
-   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow("win" , 800,600,EAGLE_WINDOWED));
 
    if (!win) {
       EagleLog() << "Failed to create window." << std::endl;

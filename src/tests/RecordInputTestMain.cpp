@@ -26,7 +26,7 @@ int RecordInputTestMain(int argc , char** argv , TestRunner* test_runner) {
 
    int SCREEN_WIDTH = 800;
    int SCREEN_HEIGHT = 600;
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED | EAGLE_OPENGL);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("win" , SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED | EAGLE_OPENGL);
    
    if (!win->Valid()) {
       return -2;

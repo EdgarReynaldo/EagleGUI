@@ -24,7 +24,7 @@ int Allegro5TestMain(int argc , char** argv , TestRunner* test_runner) {
    int SCREEN_WIDTH = 800;
    int SCREEN_HEIGHT = 600;
    t1 = al_get_time();
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("WIN" , SCREEN_WIDTH , SCREEN_HEIGHT , EAGLE_WINDOWED);
    t2 = al_get_time();
    printf("sys->CreateGraphicsContext(default window) took %f seconds\n" , t2 - t1);
    

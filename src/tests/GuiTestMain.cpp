@@ -48,7 +48,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
    (void)argc;
    (void)argv;
 
-   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow("win" , 800,600,EAGLE_WINDOWED));
 
    if (!win->Valid()) {
       throw EagleException("GuiTestMain : Failed to create valid resizable opengl window");
@@ -401,7 +401,7 @@ int GuiTestMain2(int argc , char** argv , TestRunner* test_runner) {
    al_set_new_window_position(112,84);
    al_set_new_window_title("Eagle 5 dynamic layout test ");
 
-   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow("win" , 800,600,EAGLE_WINDOWED));
 
    EagleFont* verdana = win->LoadFont("verdana.ttf" , -40 , LOAD_FONT_MONOCHROME);
 
@@ -816,7 +816,7 @@ int GuiTestMain3(int argc , char** argv , TestRunner* test_runner) {
 
    (void)test_runner;
 
-   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow(800,600,EAGLE_WINDOWED));
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(GetAllegro5WindowManager()->CreateWindow("win" , 800,600,EAGLE_WINDOWED));
 
    EAGLE_ASSERT(win);
 

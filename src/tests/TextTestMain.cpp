@@ -20,7 +20,7 @@ int TextTestMain(int argc , char** argv , TestRunner* test_runner) {
    int ww = 800;
    int wh = 600;
 
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("win" , ww , wh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
 ///   EagleGraphicsContext* win = sys->CreateGraphicsContext(ww , wh , EAGLE_WINDOWED | EAGLE_RESIZABLE);
    if (!win->Valid()) {
       return 2;

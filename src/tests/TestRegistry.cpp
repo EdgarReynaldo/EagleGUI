@@ -16,7 +16,7 @@ TestRunner::TestRunner(EagleGraphicsContext* window , MAINFUNC mainfunc) :
       error_message(""),
       main_function(mainfunc)
 {
-   our_thread = sys->CreateThread(TestRunnerThread , this);
+   our_thread = sys->CreateThread("TestRunnerThread" , TestRunnerThread , this);
    if (!our_thread) {
       throw EagleException("TestRunner::TestRunner : Failed to create TestRunnerThread process.");
    }
