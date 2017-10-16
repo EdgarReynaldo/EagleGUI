@@ -373,6 +373,11 @@ private :
 
    LIT FindListener(EagleEventListener* l);
 
+   friend class EagleEventListener;
+   
+   void SubscribeListener(EagleEventListener* l);
+   void UnsubscribeListener(EagleEventListener* l);
+
 protected :
 
    void StopBroadcasting();
@@ -384,8 +389,6 @@ public :
 
    void EmitEvent(EagleEvent e , EagleThread* thread);
 
-   void SubscribeListener(EagleEventListener* l);
-   void UnsubscribeListener(EagleEventListener* l);
    bool HasListeners() {return !listeners.empty();}
 
    std::vector<EagleEventListener*> Listeners();

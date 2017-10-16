@@ -6,6 +6,7 @@
 #include "Eagle/Threads.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/ObjectRegistry.hpp"
 
 
 

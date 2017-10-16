@@ -22,7 +22,7 @@
 
 
 #include "Eagle/Font.hpp"
-
+#include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/StringWork.hpp"
 
 

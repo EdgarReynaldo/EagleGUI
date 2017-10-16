@@ -181,6 +181,26 @@ void EagleEventSource::EmitEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+void EagleEventSource::SubscribeListener(EagleEventListener* l) {
+   if (!l) {return;}
+   LIT it = FindListener(l);
+   if (it == listeners.end()) {
+      listeners.push_back(l);
+   }
+}
+
+
+
+void EagleEventSource::UnsubscribeListener(EagleEventListener* l) {
+   if (!l) {return;}
+   LIT it = FindListener(l);
+   if (it != listeners.end()) {
+      listeners.erase(it);
+   }
+}
+
+
+
 void EagleEventSource::StopBroadcasting() {
    if (!listeners.size()) {return;}
    
@@ -202,26 +222,6 @@ EagleEventSource::EagleEventSource() :
 
 EagleEventSource::~EagleEventSource() {
    StopBroadcasting();
-}
-
-
-
-void EagleEventSource::SubscribeListener(EagleEventListener* l) {
-   if (!l) {return;}
-   LIT it = FindListener(l);
-   if (it == listeners.end()) {
-      listeners.push_back(l);
-   }
-}
-
-
-
-void EagleEventSource::UnsubscribeListener(EagleEventListener* l) {
-   if (!l) {return;}
-   LIT it = FindListener(l);
-   if (it != listeners.end()) {
-      listeners.erase(it);
-   }
 }
 
 

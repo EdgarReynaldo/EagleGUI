@@ -292,9 +292,7 @@ bool EagleSystem::FinalizeSystem() {
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
    if (system_timer) {
-      bool created_system_timer = system_timer->Create(system_timer_rate);
-      system_up = system_up && created_system_timer;
-      if (created_system_timer) {
+      if (system_timer->Valid()) {
          SetInputTimer(system_timer);
          if (system_queue) {
             system_timer->RegisterTimerInput(system_queue);
@@ -564,7 +562,6 @@ EagleTimer* EagleSystem::GetSystemTimer() {
 	if (!system_timer) {
       std::string timer_name_str = StringPrintF("%sSystem::system_timer" , GetSystemName());
 		system_timer = CreateTimer(timer_name_str);
-		system_timer->SetName("SystemTimer");
 		if (system_timer) {
 			system_timer->Create(system_timer_rate);
 		}

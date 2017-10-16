@@ -45,6 +45,8 @@
 #include "Eagle/Mutexes.hpp"
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/NinePatch.hpp"
+#include "Eagle/ObjectRegistry.hpp"
+#include "Eagle/ObjectInfo.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
