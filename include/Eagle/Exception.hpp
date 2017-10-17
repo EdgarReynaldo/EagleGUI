@@ -29,14 +29,22 @@
 
 #include "Eagle/Platform.hpp"
 #include "Eagle/Logging.hpp"
-//#include "Eagle/StringWork.hpp"
 
 
 
-void LogFailedAssert(const char* exp , const char* file , int line , const char* func);
-void LogFailedAssertAndFail(const char* exp , const char* file , int line , const char* func);
+std::string EagleTraceStr(const char* exp , const char* file , int line , const char* func);
+
+void LogFailedAssert(std::string info);
+void LogFailedAssertAndFail(std::string info);
+
+void Trace(std::string info);
+
+void EagleAssertHandler(const char* exp , const char* file , int line , const char* func);
 
 void EpicFail();
+
+
+#define EAGLE__TRACE(exp) EagleTraceStr(#exp , __FILE__ , __LINE__ , EAGLE__FUNC)
 
 
 #ifdef EAGLE_ASSERT_EXCEPTION
@@ -48,22 +56,27 @@ void EpicFail();
 
 
 /** CREDITS : Thanks to Per Larsson on allegro.cc for this do while trick in the macros */
+///                                   LogFailedAssert(# exp , __FILE__ , __LINE__ , EAGLE__FUNC); 
+
 #ifdef DEBUG
    #define EAGLE_ASSERT(exp) do {                                                              \
                                 if (!(exp)) {                                                  \
-                                   LogFailedAssert(# exp , __FILE__ , __LINE__ , EAGLE__FUNC); \
+                                   LogFailedAssert(EAGLE__TRACE(exp));                         \
                                    ASSERT_EXCEPTION();                                         \
                                 }                                                              \
                               } while (false)
+   #define EAGLE_TRACE(exp) do {                        \
+                              Trace(EAGLE__TRACE(exp)); \
+                            } while (false)
 
    #define EAGLE_DEBUG(exp) do {                \
-                                 exp            \
-                               } while (false)
+                               exp              \
+                            } while (false)
 
 #else
    #define EAGLE_ASSERT(exp) do { } while (false)
-   #define EAGLE_DEBUG(exp) do { } while (false)
-   
+   #define EAGLE_TRACE(exp)  do { } while (false)
+   #define EAGLE_DEBUG(exp)  do { } while (false)
 #endif
 
 

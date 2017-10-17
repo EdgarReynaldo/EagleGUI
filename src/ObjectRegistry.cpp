@@ -5,6 +5,8 @@
 #include "Eagle/StringWork.hpp"
 
 #include "Eagle/CXX11Mutexes.hpp"
+#include "Eagle/Threads.hpp"
+
 
 
 static int next_id = 0;
@@ -73,19 +75,19 @@ bool GetValidById(int eid) {
 
 
 
-const char* GetShortNameById(int eid) {
+std::string GetShortNameById(int eid) {
    return EagleObjectRegistry::Instance()->ShortName(eid);
 }
 
 
 
-const char* GetClassNameById(int eid) {
+std::string GetClassNameById(int eid) {
    return EagleObjectRegistry::Instance()->ClassName(eid);
 }
 
 
 
-const char* GetFullNameById(int eid) {
+std::string GetFullNameById(int eid) {
    return EagleObjectRegistry::Instance()->FullName(eid);
 }
 
@@ -97,13 +99,13 @@ bool GetValidByAddress(EagleObject* obj) {
 
 
 
-const char* GetShortNameByAddress(EagleObject* obj) {
+std::string GetShortNameByAddress(EagleObject* obj) {
    return EagleObjectRegistry::Instance()->ShortName(obj);
 }
 
 
 
-const char* GetFullNameByAddress(EagleObject* obj) {
+std::string GetFullNameByAddress(EagleObject* obj) {
    return EagleObjectRegistry::Instance()->FullName(obj);
 }
 
@@ -150,17 +152,15 @@ void EagleObjectRegistry::RemoveNameEntry(EAGLE_ID eid) {
 void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , std::string name , EAGLE_ID eid /* = EAGLE_ID_UNASSIGNED*/) {
    EAGLE_ASSERT(object);
    
-///   EOBINFO& eobinfo = *Objects();
-///   ADDRESSMAP& addrmap = *AddressMap();
-///   NAMEMAP& namemap = *NameMap();
-
    int id_index = -1;
    
    if (eid != EAGLE_ID_UNASSIGNED) {
       /// In this case all we are doing is assigning a new name to the object
       
-      CheckIdRange(eid);
+      LockOurMutex();
 
+      CheckIdRange(eid);
+      
       /// Remove the correct entry from the name map before inserting the new name element
       RemoveNameEntry(eid);
       
@@ -174,12 +174,16 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
       (*pinfo)[id_index].SetShortName(name);
       (*pinfo)[id_index].SetClassName(objclass);
 
+      UnLockOurMutex();
+      
       return;
    }
    
    EAGLE_ID new_id = NextId();
    
    object->SetId(new_id);
+   
+   LockOurMutex();
    
    if (object->log_registration) {
       EaglePrefix("EAGLE_CREATE   : ") << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
@@ -201,12 +205,15 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
 
    pnamemap->insert(nmval);
 
+   UnLockOurMutex();
 }
 
 
 
 void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
    EAGLE_ASSERT(eid != EAGLE_ID_UNASSIGNED);
+   
+   LockOurMutex();
    
    CheckIdRange(eid);
    
@@ -230,6 +237,25 @@ void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
       paddressmap->erase(mit);
       eoi.SetDestroyedFlag();
       ++destruct_count;
+   }
+   
+   UnLockOurMutex();
+   
+}
+
+
+
+void EagleObjectRegistry::LockOurMutex() {
+   if (registry_mutex) {
+      ThreadLockMutex(NOT_A_THREAD , registry_mutex);
+   }
+}
+
+
+
+void EagleObjectRegistry::UnLockOurMutex() {
+   if (registry_mutex) {
+      ThreadUnLockMutex(NOT_A_THREAD , registry_mutex);
    }
 }
 
@@ -267,6 +293,8 @@ void EagleObjectRegistry::Create() {
    }
    if (!registry_mutex) {
       registry_mutex = new CXX11Mutex("EagleObjectRegistry::registry_mutex" , false);
+      registry_mutex->Create(false , false);
+      EAGLE_ASSERT(registry_mutex->Valid());
    }
 }
 
@@ -316,19 +344,19 @@ bool EagleObjectRegistry::Valid(EAGLE_ID eid) {
    
 
 
-const char* EagleObjectRegistry::ShortName(EAGLE_ID eid) {
+std::string EagleObjectRegistry::ShortName(EAGLE_ID eid) {
    return Info(eid).ShortName();
 }
 
 
 
-const char* EagleObjectRegistry::FullName(EAGLE_ID eid) {
+std::string EagleObjectRegistry::FullName(EAGLE_ID eid) {
    return Info(eid).FullName();
 }
 
 
 
-const char* EagleObjectRegistry::ClassName(EAGLE_ID eid) {
+std::string EagleObjectRegistry::ClassName(EAGLE_ID eid) {
    return Info(eid).ClassName();
 }
 
@@ -354,33 +382,42 @@ bool EagleObjectRegistry::Valid(EagleObject* obj) {
 
 
 
-const char* EagleObjectRegistry::ShortName(EagleObject* obj) {
+std::string EagleObjectRegistry::ShortName(EagleObject* obj) {
    const EagleObjectInfo& info = FindInfoByAddress(obj);
    return info.ShortName();
 }
 
 
 
-const char* EagleObjectRegistry::FullName(EagleObject* obj) {
+std::string EagleObjectRegistry::FullName(EagleObject* obj) {
    const EagleObjectInfo& info = FindInfoByAddress(obj);
    return info.FullName();
 }
 
 
 
-const EagleObjectInfo& EagleObjectRegistry::Info(EAGLE_ID eid) {
+EagleObjectInfo EagleObjectRegistry::Info(EAGLE_ID eid) {
    CheckIdRange(eid);
    return (*pinfo)[eid - start_id];
 }
 
 
 
-const EagleObjectInfo& EagleObjectRegistry::FindInfoByAddress(EagleObject* object) {
+EagleObjectInfo EagleObjectRegistry::FindInfoByAddress(EagleObject* object) {
+   EAGLE_ID id = EAGLE_ID_UNASSIGNED;
+   
+   LockOurMutex();
+   
    ADDRESSMAP::iterator mit = paddressmap->find(object);
    if (mit == paddressmap->end()) {
       throw EagleException(StringPrintF("EagleObjectRegistry::FindInfoByAddress : Could not find info for object %p" , object));
    }
-   return (*pinfo)[mit->second - start_id];/// Access the object info using the EAGLE_ID key value stored in the address map
+   
+   id = mit->second;
+   
+   UnLockOurMutex();
+   
+   return Info(id);
 }
 
 
@@ -399,13 +436,17 @@ int EagleObjectRegistry::LiveObjectCount() {
 
 std::vector<EagleObject*> EagleObjectRegistry::GetObjectsByName(std::string name) {
 
-   NAMERANGE namerange = pnamemap->equal_range(name);
-   
    std::vector<EagleObject*> objs;
 
+   LockOurMutex();
+
+   NAMERANGE namerange = pnamemap->equal_range(name);
+   
    for (NMIT nmit = namerange.first ; nmit != namerange.second ; ++nmit) {
       objs.push_back(GetObjectById(nmit->second));
    }
+   
+   UnLockOurMutex();
    
    return objs;
 }
@@ -434,14 +475,40 @@ int EagleObjectRegistry::GetNameCount(std::string name) {
 
 
 
+EOBINFO EagleObjectRegistry::GetRegistryCopy() {
+   EOBINFO regcopy;
+   LockOurMutex();
+   if (pinfo) {
+      regcopy = *pinfo;
+   }
+   UnLockOurMutex();
+   return regcopy;
+}
+
+
+
+void EagleObjectRegistry::OutputAllObjectsBrief() {
+   
+   EOBINFO info = GetRegistryCopy();
+   
+   for (unsigned int id_index = 0 ; id_index < info.size() ; ++id_index) {
+      const EagleObjectInfo& i = info[id_index];
+      EagleInfo() << i.FullName() << std::endl;
+   }
+}
+
+
+
 void EagleObjectRegistry::OutputLiveObjectsBrief() {
    
-   for (unsigned int id_index = 0 ; id_index != pinfo->size() ; ++id_index) {
-      const EagleObjectInfo& info = (*pinfo)[id_index];
-
-      if (info.IsDestroyed()) {continue;}
+   EOBINFO info = GetRegistryCopy();
+   
+   for (unsigned int id_index = 0 ; id_index < info.size() ; ++id_index) {
+      const EagleObjectInfo& i = info[id_index];
       
-      EagleInfo() << info.FullName() << std::endl;
+      if (i.IsDestroyed()) {continue;}
+      
+      EagleInfo() << i.FullName() << std::endl;
    }
 }
 
@@ -449,16 +516,19 @@ void EagleObjectRegistry::OutputLiveObjectsBrief() {
 
 void EagleObjectRegistry::OutputLiveObjectsFull() {
    
-   for (unsigned int id_index = 0 ; id_index != pinfo->size() ; ++id_index) {
-      const EagleObjectInfo& info = (*pinfo)[id_index];
+   EOBINFO info = GetRegistryCopy();
+   
+   for (unsigned int id_index = 0 ; id_index < info.size() ; ++id_index) {
+      const EagleObjectInfo& i = info[id_index];
 
-      if (info.IsDestroyed()) {continue;}
+      if (i.IsDestroyed()) {continue;}
       
-      EagleObject* obj = info.GetObject();
+      EagleObject* obj = i.GetObject();
       
-      EagleInfo() << info.FullName() << " {" << std::endl;
-      Indenter i(1,3);
-      obj->DescribeTo(EagleInfo() , i);
+      EagleInfo() << i.FullName() << " {" << std::endl;
+      Indenter indent(1,3);
+      obj->DescribeTo(EagleInfo() , indent);
+      --indent;
       EagleInfo() << "}" << std::endl;
    }
 }

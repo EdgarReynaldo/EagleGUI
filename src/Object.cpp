@@ -84,19 +84,19 @@ EagleObject::~EagleObject() {
 
 
 
-const char* EagleObject::ShortName() const {
+std::string EagleObject::ShortName() const {
    return GetShortNameById(id);
 }
 
 
 
-const char* EagleObject::FullName() const {
+std::string EagleObject::FullName() const {
    return GetFullNameById(id);
 }
 
 
 
-const char* EagleObject::ClassName() const {
+std::string EagleObject::ClassName() const {
    return GetClassNameById(id);
 }
 

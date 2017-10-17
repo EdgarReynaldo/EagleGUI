@@ -67,10 +67,9 @@ public :
    
    virtual ~EagleObject();
 
-///   const char* GetNameCStr() const;
-   const char* ShortName() const;
-   const char* FullName() const;
-   const char* ClassName() const;
+   std::string ShortName() const;
+   std::string FullName() const;
+   std::string ClassName() const;
    void SetShortName(std::string newname);
    void SetClassName(std::string newname);
 

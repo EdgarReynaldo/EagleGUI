@@ -32,7 +32,7 @@ bool Allegro5System::PrivateInitializeSystem() {
       EagleCritical() << "Allegro failed to initialize." << std::endl;
    }
    else {
-      al_register_assert_handler(LogFailedAssertAndFail);
+      al_register_assert_handler(EagleAssertHandler);
    }
    return ret;
 }

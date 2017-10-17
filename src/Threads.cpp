@@ -7,7 +7,7 @@
 
 
 
-int EagleThread::new_thread_id = 0;
+int EagleThread::new_thread_id = 1;/// 0 is reserved for Main, and -1 is reserved for non-threads (free for all)
 
 
 

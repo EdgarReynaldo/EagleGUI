@@ -23,28 +23,50 @@
 
 #include "Eagle/Exception.hpp"
 #include "Eagle/Logging.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 
 #include <cassert>
 
 
 
-void LogFailedAssert(const char* exp , const char* file , int line , const char* func) {
-   EagleError() << "Assert(" << exp << ") failed at line " << line << " of " << file << " in function " << func << "." << std::endl;
+std::string EagleTraceStr(const char* exp , const char* file , int line , const char* func) {
+   return StringPrintF("%s in file %s on line %d in function %s" , exp , file , line , func);
 }
 
 
 
-void LogFailedAssertAndFail(const char* exp , const char* file , int line , const char* func) {
-   LogFailedAssert(exp , file , line , func);
+void LogFailedAssert(std::string info) {
+   EagleError() << "Assertion failed : " << info << std::endl;
+}
+
+
+
+void LogFailedAssertAndFail(std::string info) {
+   LogFailedAssert(info);
    ASSERT_EXCEPTION();
 }
 
 
 
+void Trace(std::string info) {
+   EagleInfo() << info << std::endl;
+}
+
+
+
+void EagleAssertHandler(const char* exp , const char* file , int line , const char* func) {
+   LogFailedAssertAndFail(EagleTraceStr(exp , file , line , func));
+}
+
+
+
 void EpicFail() {
-   int i = 1/int(0);
+   int i = 1/int(0);/// debugger almost always catches this
    (void)i;
+   int* p = 0;
+   *p = -1;/// Why not throw in a null pointer access too?
    assert(0);
 }
 

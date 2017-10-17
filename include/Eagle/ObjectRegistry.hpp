@@ -51,17 +51,17 @@ int GetNameCount(std::string name);
 
 EagleObject* GetObjectById   (EAGLE_ID eid);
 bool         GetValidById    (EAGLE_ID eid);
-const char*  GetShortNameById(EAGLE_ID eid);
-const char*  GetClassNameById(EAGLE_ID eid);
-const char*  GetFullNameById (EAGLE_ID eid);
+std::string  GetShortNameById(EAGLE_ID eid);
+std::string  GetClassNameById(EAGLE_ID eid);
+std::string  GetFullNameById (EAGLE_ID eid);
 
 ///int GetIdByAddress(EagleObject* obj);
 
 bool GetValidByAddress(EagleObject* obj);
 
-const char* GetShortNameByAddress(EagleObject* obj);
+std::string GetShortNameByAddress(EagleObject* obj);
 
-const char* GetFullNameByAddress(EagleObject* obj);
+std::string GetFullNameByAddress(EagleObject* obj);
 
 
 
@@ -96,19 +96,17 @@ class EagleObjectRegistry {
    int destruct_count;
 
 
-
    void CheckIdRange(EAGLE_ID eid);
 
    void RemoveNameEntry(EAGLE_ID eid);
-
-   EOBINFO* Objects();/// Creator function. Returns object info vector (Singleton)
-   ADDRESSMAP* AddressMap();/// Creator function. Returns address map (Singleton)
-   NAMEMAP* NameMap();/// Creator function. Returns name map (Singleton)
 
    void Register(EagleObject* object , std::string objclass , std::string name , EAGLE_ID eid);
    void Unregister(EAGLE_ID eid);
 
    static EagleObjectRegistry* registry;
+   
+   void LockOurMutex();
+   void UnLockOurMutex();
    
    EagleObjectRegistry();
    ~EagleObjectRegistry();
@@ -122,18 +120,18 @@ public :
    
    bool Destroyed(EAGLE_ID eid);
    bool Valid(EAGLE_ID eid);
-   const char* ShortName(EAGLE_ID eid);
-   const char* ClassName(EAGLE_ID eid);
-   const char* FullName(EAGLE_ID eid);
+   std::string ShortName(EAGLE_ID eid);
+   std::string ClassName(EAGLE_ID eid);
+   std::string FullName(EAGLE_ID eid);
    EagleObject* Object(EAGLE_ID eid);
    
    bool Destroyed(EagleObject* obj);
    bool Valid(EagleObject* obj);
-   const char* ShortName(EagleObject* obj);
-   const char* FullName(EagleObject* obj);
+   std::string ShortName(EagleObject* obj);
+   std::string FullName(EagleObject* obj);
 
-   const EagleObjectInfo& Info(EAGLE_ID eid);
-   const EagleObjectInfo& FindInfoByAddress(EagleObject* object);
+   EagleObjectInfo Info(EAGLE_ID eid);
+   EagleObjectInfo FindInfoByAddress(EagleObject* object);
    
    int TotalObjectCount();
    int LiveObjectCount();
@@ -144,6 +142,9 @@ public :
    
    int GetNameCount(std::string name);
 
+   EOBINFO GetRegistryCopy();
+   
+   void OutputAllObjectsBrief();
    void OutputLiveObjectsBrief();
    void OutputLiveObjectsFull();
 };
