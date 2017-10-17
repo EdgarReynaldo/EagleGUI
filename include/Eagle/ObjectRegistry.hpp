@@ -78,10 +78,13 @@ typedef std::pair<NMIT , NMIT> NAMERANGE;
 typedef std::pair<std::string , EAGLE_ID> NMVALUETYPE;
 
 
+class CXX11Mutex;
+
 class EagleObjectRegistry {
    
    friend class EagleObject;/// For EagleObjects to automatically register themselves with the registry (which are private functions).
    
+   CXX11Mutex* registry_mutex;
    
    EOBINFO* pinfo;
    ADDRESSMAP* paddressmap;

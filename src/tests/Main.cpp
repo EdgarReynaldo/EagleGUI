@@ -158,9 +158,31 @@ int main(int argc , char** argv) {
 
    a5sys->GetSystemTimer()->Start();
 
-   while (1) {
+   bool redraw = true;
+   bool quit = false;
+   
+   while (!quit) {
+      
+      EagleGraphicsContext* active_win = a5sys->GetActiveWindow();
+      EAGLE_ID active_win_id = EAGLE_ID_UNASSIGNED;
+      if (active_win) {
+         active_win_id = active_win->GetEagleId();
+      }
+      if (redraw) {
+         win1->DrawToBackBuffer();
+         win1->Clear(EagleColor(255,255,255));
+         win1->DrawTextString(win1->DefaultFont() , StringPrintF("Main Window EID %d" , win1->GetEagleId()) , 10 , 10 , EagleColor(0,0,0));
+         win1->DrawTextString(win1->DefaultFont() , StringPrintF("Active Window EID %d" , active_win_id) , 10 , 30 , EagleColor(0,0,0));
+         win1->FlipDisplay();
+         redraw = false;
+      }
+         
       EagleEvent ee = queue->WaitForEvent(0);
 
+      if (ee.type == EAGLE_EVENT_TIMER) {
+         redraw = true;
+      }
+      
       if (ee.type != EAGLE_EVENT_TIMER && ee.type != EAGLE_EVENT_MOUSE_AXES) {
          EagleInfo() << "Handling event " << EagleEventName(ee.type) << std::endl;
       }
@@ -168,6 +190,7 @@ int main(int argc , char** argv) {
       if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {
 ///         a5sys->GetWindowManager()->DestroyWindow(ee.window->GetEagleId());
          if (ee.window == win1) {
+            quit = true;
             break;
          }
       }
@@ -175,6 +198,7 @@ int main(int argc , char** argv) {
 ///         a5sys->GetWindowManager()->AcknowledgeDrawingHalt(ee.window);
 ///      }
       if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+         quit = true;
          break;
       }
       if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_N) {

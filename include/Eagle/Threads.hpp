@@ -19,6 +19,8 @@ typedef void* (*EAGLE_THREAD_PROCESS)(EagleThread* , void*);
 
 extern void* const THREAD_NOT_VALID;
 
+extern EagleThread* const MAIN_THREAD;
+extern EagleThread* const NOT_A_THREAD;
 
 
 

@@ -4,7 +4,7 @@
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/StringWork.hpp"
 
-
+#include "Eagle/CXX11Mutexes.hpp"
 
 
 static int next_id = 0;
@@ -236,15 +236,14 @@ void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
 
 
 EagleObjectRegistry::EagleObjectRegistry() :
+   registry_mutex(0),
    pinfo(0),
    paddressmap(0),
    pnamemap(0),
    start_id(0),
    stop_id(0),
    destruct_count(0)
-{
-   Create();
-}
+{}
 
 
 
@@ -255,6 +254,8 @@ EagleObjectRegistry::~EagleObjectRegistry() {
 
 
 void EagleObjectRegistry::Create() {
+   Destroy();
+   
    if (!pinfo) {
       pinfo = new EOBINFO();
    }
@@ -264,11 +265,18 @@ void EagleObjectRegistry::Create() {
    if (!pnamemap) {
       pnamemap = new NAMEMAP();
    }
+   if (!registry_mutex) {
+      registry_mutex = new CXX11Mutex("EagleObjectRegistry::registry_mutex" , false);
+   }
 }
 
 
 
 void EagleObjectRegistry::Destroy() {
+   if (registry_mutex) {
+      delete registry_mutex;
+      registry_mutex = 0;
+   }
    if (pinfo) {
       delete pinfo;
       pinfo = 0;
@@ -289,6 +297,7 @@ void EagleObjectRegistry::Destroy() {
 EagleObjectRegistry* EagleObjectRegistry::Instance() {
    if (!registry) {
       registry = new EagleObjectRegistry();
+      registry->Create();
    }
    return registry;
 }
@@ -296,43 +305,37 @@ EagleObjectRegistry* EagleObjectRegistry::Instance() {
 
 
 bool EagleObjectRegistry::Destroyed(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return ((*pinfo)[eid-start_id].IsDestroyed());
+   return Info(eid).IsDestroyed();
 }
 
 
 
 bool EagleObjectRegistry::Valid(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return !((*pinfo)[eid-start_id].IsDestroyed());
+   return !Info(eid).IsDestroyed();
 }
    
 
 
 const char* EagleObjectRegistry::ShortName(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return ((*pinfo)[eid-start_id].ShortName());
+   return Info(eid).ShortName();
 }
 
 
 
 const char* EagleObjectRegistry::FullName(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return ((*pinfo)[eid-start_id].FullName());
+   return Info(eid).FullName();
 }
 
 
 
 const char* EagleObjectRegistry::ClassName(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return ((*pinfo)[eid-start_id].ClassName());
+   return Info(eid).ClassName();
 }
 
 
 
 EagleObject* EagleObjectRegistry::Object(EAGLE_ID eid) {
-   CheckIdRange(eid);
-   return (*pinfo)[eid-start_id].GetObject();
+   return Info(eid).GetObject();
 }
 
 

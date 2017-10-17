@@ -15,6 +15,14 @@ void* const THREAD_NOT_VALID = (void*)-1;
 
 
 
+EagleThread* const MAIN_THREAD = (EagleThread*)0;
+
+
+
+EagleThread* const NOT_A_THREAD = (EagleThread*)-1;
+
+
+
 void EagleThread::SetState(EAGLE_MUTEX_STATE s) {
    mutex_state = s;
 }
