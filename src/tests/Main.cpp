@@ -1,6 +1,47 @@
 
 
 
+#include <string>
+#include <cstdarg>
+#include <iostream>
+
+unsigned int STRINGPRINTFEX_BUFFER_SIZE = 1024;
+
+
+
+std::string StringPrintFex(const char* format_str , ...) {
+   char buffer[STRINGPRINTFEX_BUFFER_SIZE];
+   va_list args;
+   va_start(args , format_str);
+///int vsnprintf (char * s, size_t n, const char * format, va_list arg );
+   vsnprintf(buffer , STRINGPRINTFEX_BUFFER_SIZE , format_str , args);
+   va_end(args);
+   return std::string(buffer);
+}
+
+std::string GetRandomString() {
+   static int rand = 0;
+   if (!rand) {
+      rand = 1;
+      return "Random";
+   }
+   else {
+      rand = 0;
+      return "String";
+   }
+   
+}
+
+int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
+   std::cout << StringPrintFex("Bad string : %s\nBad arg : %s" , GetRandomString().c_str() , GetRandomString()) << std::endl;
+   
+   return 0;
+}
+
 #define ALLEGRO_UNSTABLE
 
 
@@ -138,7 +179,7 @@ void shutdown_main() {
 
 
 
-int main(int argc , char** argv) {
+int main3(int argc , char** argv) {
 
    (void)argc;
    (void)argv;
