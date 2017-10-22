@@ -17,7 +17,7 @@ int main(int argc , char** argv) {
    
    a5sys->GetSystemTimer()->Start();
    
-   RunIntro();
+   al_save_bitmap("Intro.png" , dynamic_cast<Allegro5Image*>(RunIntro())->AllegroBitmap());
    
    Eagle::EagleLibrary::ShutdownEagle();
    
