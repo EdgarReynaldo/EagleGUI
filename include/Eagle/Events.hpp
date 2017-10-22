@@ -364,30 +364,28 @@ class EagleEventListener;
 
 class EagleEventSource {
 
-private :
-
+public :
    typedef std::vector<EagleEventListener*> LISTENERS;
    typedef LISTENERS::iterator LIT;
 
+protected :
    LISTENERS listeners;
 
    LIT FindListener(EagleEventListener* l);
 
    friend class EagleEventListener;
    
-   void SubscribeListener(EagleEventListener* l);
-   void UnsubscribeListener(EagleEventListener* l);
+   virtual void SubscribeListener(EagleEventListener* l);
+   virtual void UnsubscribeListener(EagleEventListener* l);
 
-protected :
-
-   void StopBroadcasting();
+   virtual void StopBroadcasting();
    
 public :
 
    EagleEventSource();
    virtual ~EagleEventSource();
 
-   void EmitEvent(EagleEvent e , EagleThread* thread);
+   virtual void EmitEvent(EagleEvent e , EagleThread* thread); 
 
    bool HasListeners() {return !listeners.empty();}
 
@@ -416,11 +414,10 @@ public :
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread)=0;
 
-   void ListenTo(EagleEventSource* s);
-   void StopListeningTo(EagleEventSource* s);
-
-   bool HasSources() {return !sources.empty();}
-///   void CheckSources();
+   virtual void ListenTo(EagleEventSource* s);
+   virtual void StopListeningTo(EagleEventSource* s);
+   
+   bool HasSources() {return sources.size();}
 };
 
 
@@ -442,6 +439,18 @@ protected :
    
    void StopHandlingEvents();
    
+///   void LockOurMutex(EagleThread* t);
+///   void UnLockOurMutex(EagleThread* t);
+
+   /// EagleEventSource
+
+   void SubscribeListener(EagleEventListener* l);
+   void UnsubscribeListener(EagleEventListener* l);
+
+   virtual void StopBroadcasting();
+
+   /// EagleEventListener
+   
 public :
    EagleEventHandler(std::string objclass , std::string objname , bool delay_emitted_events = true);
    virtual ~EagleEventHandler() {}
@@ -450,10 +459,21 @@ public :
    virtual void Destroy()=0;
    virtual bool Valid()=0;
    
+   /// EagleEventSource
+   void EmitEvent(EagleEvent e , EagleThread* thread);
 
    /// EagleEventListener
-   virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
 
+   void RespondToEvent(EagleEvent e , EagleThread* thread);
+
+   void ListenTo(EagleEventSource* s);
+   void StopListeningTo(EagleEventSource* s);
+
+   void ListenTo(EagleEventSource* s , EagleThread* t);
+   void StopListeningTo(EagleEventSource* s , EagleThread* t);
+
+
+   /// EagleEventHandler
    void Clear(EagleThread* thread);
 
    void PushEvent(EagleEvent e , EagleThread* thread);

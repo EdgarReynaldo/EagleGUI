@@ -102,6 +102,7 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
 
 
 void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
+   EAGLE_ASSERT(callthread == owner);
    PrivateUnlock();
    LogThreadState(callthread , callfunc.c_str() , MTX_UNLOCKED);
 }

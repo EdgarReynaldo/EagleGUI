@@ -1,31 +1,11 @@
 
 
-#include "Eagle/Animations.hpp"
+#include "Eagle/AnimationBase.hpp"
 #include "Eagle/Exception.hpp"
 
 
 
 const int TOPIC_ANIMATION = NextFreeTopicId();
-
-
-void AnimationBase::SetAnimationPercent(double percent) {
-   double old_animation_percent = animation_percent;
-   animation_percent = percent;
-   OnSetAnimationPercent();
-   
-   double diff = animation_percent - old_animation_percent;
-   
-   int delta_loops = (int)diff;
-   
-   for (int i = 0 ; i < delta_loops ; ++i) {
-      OnLoopComplete();
-   }
-   if (animation_percent >= total_num_loops) {
-      OnComplete();
-   }
-   
-}
-
 
 
 AnimationBase::AnimationBase() :
@@ -51,8 +31,8 @@ void AnimationBase::SetAnimationAttributes(double duration , EAGLE_ANIMATION_TYP
 
 
 
-void AnimationBase::AdvanceAnimationTime(double dt) {
-   SetAnimationTime(animation_time + dt);
+void AnimationBase::ResetAnimation() {
+   SetAnimationTime(0.0);
 }
 
 
@@ -64,8 +44,28 @@ void AnimationBase::SetAnimationTime(double t) {
 
 
 
-void AnimationBase::ResetAnimation() {
-   SetAnimationTime(0.0);
+void AnimationBase::AdvanceAnimationTime(double dt) {
+   SetAnimationTime(animation_time + dt);
+}
+
+
+
+void AnimationBase::SetAnimationPercent(double percent) {
+
+   double old_animation_percent = animation_percent;
+   animation_percent = percent;
+
+   OnSetAnimationPercent();
+   
+   int delta_loops = (int)animation_percent - (int)old_animation_percent;
+   
+   for (int i = 0 ; i < delta_loops ; ++i) {
+      OnLoopComplete();
+   }
+   if (animation_percent >= total_num_loops) {
+      OnComplete();
+   }
+   
 }
 
 

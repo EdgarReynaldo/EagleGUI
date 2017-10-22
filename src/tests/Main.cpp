@@ -9,6 +9,7 @@ unsigned int STRINGPRINTFEX_BUFFER_SIZE = 1024;
 
 
 
+std::string StringPrintFex(const char* format_str , ...)  __attribute__ ((format (printf, 1, 2)));
 std::string StringPrintFex(const char* format_str , ...) {
    char buffer[STRINGPRINTFEX_BUFFER_SIZE];
    va_list args;
@@ -32,12 +33,12 @@ std::string GetRandomString() {
    
 }
 
-int main(int argc , char** argv) {
+int main3(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
    
-   std::cout << StringPrintFex("Bad string : %s\nBad arg : %s" , GetRandomString().c_str() , GetRandomString()) << std::endl;
+///   std::cout << StringPrintFex("Bad string : %s\nBad arg : %s" , GetRandomString().c_str() , GetRandomString()) << std::endl;
    
    return 0;
 }
@@ -56,6 +57,34 @@ int main(int argc , char** argv) {
 
 
 #include <cstdlib>
+
+
+int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
+   Allegro5System* a5sys = GetAllegro5System();
+   
+   a5sys->Initialize(EAGLE_FULL_SETUP);
+   
+   EagleGraphicsContext* main_win = GetAllegro5WindowManager()->CreateWindow("TINS:main_win" , 1024 , 768 , EAGLE_OPENGL | EAGLE_WINDOWED);
+   
+   EAGLE_ASSERT(main_win && main_win->Valid());
+   
+   main_win->DrawToBackBuffer();
+   main_win->Clear(EagleColor(0,0,0));
+   main_win->FlipDisplay();
+   
+   
+   
+   return 0;
+}
+
+
+
+
+
 
 
 using namespace std;
@@ -77,9 +106,10 @@ void* bad_thread(EagleThread* t , void* data) {
    EagleFont* f = new_win->DefaultFont();
    EAGLE_ASSERT(f && f->Valid());
 
+   q->ListenTo(GetAllegro5System()->GetSystemQueue());
 ///   q->ListenTo(GetAllegro5System()->GetInputHandler());
-   q->ListenTo(new_win);
-   q->ListenTo(GetAllegro5System()->GetSystemTimer());
+///   q->ListenTo(new_win , t);
+///   q->ListenTo(GetAllegro5System()->GetSystemTimer() , t);
 
    double pt = 0.0;
    double st = GetAllegro5System()->GetProgramTime();
@@ -179,7 +209,7 @@ void shutdown_main() {
 
 
 
-int main3(int argc , char** argv) {
+int main4(int argc , char** argv) {
 
    (void)argc;
    (void)argv;
@@ -190,7 +220,7 @@ int main3(int argc , char** argv) {
 
    a5sys->Initialize(EAGLE_FULL_SETUP);
 
-   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext("win1" , 400,300,EAGLE_WINDOWED);
+   EagleGraphicsContext* win1 = a5sys->CreateGraphicsContext("main::win1" , 400,300,EAGLE_WINDOWED);
    EAGLE_ASSERT(win1 && win1->Valid());
 
    EagleEventHandler* queue = a5sys->GetSystemQueue();
@@ -309,7 +339,7 @@ int main2(int argc , char** argv) {
       rvals[i] = threads[i]->Join();
    }
    for (int i = 0 ; i < NTHREADS ; ++i) {
-      EagleInfo() << StringPrintF("Thread %d returned %ld" , threads[i]->GetEagleId() , (long long)rvals[i]) << std::endl;
+      EagleInfo() << StringPrintF("Thread %d returned %ld" , threads[i]->GetEagleId() , (long)rvals[i]) << std::endl;
    }
 
    return 0;

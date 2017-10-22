@@ -38,9 +38,6 @@ protected :
    EAGLE_ANIMATION_TYPE animation_type;
    
    
-   void SetAnimationPercent(double percent);
-
-   
    virtual void OnSetAnimationPercent()=0;
 
    virtual void OnLoopComplete()=0;
@@ -54,9 +51,13 @@ public :
    
    void SetAnimationAttributes(double duration , EAGLE_ANIMATION_TYPE type ,  int num_loops = 1);
    
-   void AdvanceAnimationTime(double dt);
-   void SetAnimationTime(double t);
    void ResetAnimation();
+
+   void SetAnimationTime(double t);
+   void AdvanceAnimationTime(double dt);
+
+   void SetAnimationPercent(double percent);
+   
 
    double GetAnimationPercent();
    double GetAnimationTime();

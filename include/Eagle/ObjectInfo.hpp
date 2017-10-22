@@ -20,9 +20,12 @@ class EagleObjectInfo {
    
    void RebuildName();
 
+   
 public :
 
+   EagleObjectInfo();
    EagleObjectInfo(EagleObject* obj , std::string objclass , std::string sname);
+   ~EagleObjectInfo();
 
    void SetObject(EagleObject* pobject);
    void SetClassName(std::string class_name);

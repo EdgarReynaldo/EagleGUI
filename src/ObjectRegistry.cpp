@@ -93,6 +93,12 @@ std::string GetFullNameById(int eid) {
 
 
 
+EagleObjectInfo InfoById(EAGLE_ID eid) {
+   return EagleObjectRegistry::Instance()->Info(eid);
+}
+
+
+
 bool GetValidByAddress(EagleObject* obj) {
    return EagleObjectRegistry::Instance()->Valid(obj);
 }
@@ -173,6 +179,8 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
       
       (*pinfo)[id_index].SetShortName(name);
       (*pinfo)[id_index].SetClassName(objclass);
+      
+      object->our_info = (*pinfo)[id_index];
 
       UnLockOurMutex();
       
@@ -198,6 +206,8 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    EagleObjectInfo eoi(object , objclass , name);
    
    pinfo->push_back(eoi);
+   
+   object->our_info = eoi;
    
    (*paddressmap)[object] = new_id;
    

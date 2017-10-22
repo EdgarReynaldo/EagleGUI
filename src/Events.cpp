@@ -277,7 +277,7 @@ void EagleEventListener::ListenTo(EagleEventSource* s) {
    SIT it = FindSource(s);
    if (it == sources.end()) {
       sources.push_back(s);
-      s->SubscribeListener(this);
+      s->EagleEventSource::SubscribeListener(this);
    }
 }
 
@@ -288,18 +288,10 @@ void EagleEventListener::StopListeningTo(EagleEventSource* s) {
    SIT it = FindSource(s);
    if (it != sources.end()) {
       sources.erase(it);
-      s->UnsubscribeListener(this);
+      s->EagleEventSource::UnsubscribeListener(this);
    }
 }
 
-
-/**
-void EagleEventListener::CheckSources() {
-   for (unsigned int i = 0 ; i < sources.size() ; ++i) {
-      sources[i]->ReadEvents();
-   }
-}
-//*/
 
 
 /// ---------------------     EagleEventHandler     -------------------------------
@@ -318,7 +310,6 @@ EagleEventHandler::EagleEventHandler(std::string objclass , std::string objname 
       emitter_delay(delay_emitted_events),
       our_thread(0)
 {
-///   SetName(StringPrintF("EagleEventHandler (EID = %d) at %p" , GetEagleId() , this));
 }
 
 
@@ -336,14 +327,62 @@ void EagleEventHandler::StopHandlingEvents() {
 
 
 
+#define LockOurMutex(t) \
+   if (mutex) {\
+      ThreadLockMutex(t , mutex);\
+   }
+
+#define UnLockOurMutex(t) \
+   if (mutex) {\
+      ThreadUnLockMutex(t , mutex);\
+   }
+
+
+
+void EagleEventHandler::SubscribeListener(EagleEventListener* l) {
+   LockOurMutex(our_thread);
+   EagleEventSource::SubscribeListener(l);
+   UnLockOurMutex(our_thread);
+}
+
+
+
+void EagleEventHandler::UnsubscribeListener(EagleEventListener* l) {
+   LockOurMutex(our_thread);
+   EagleEventSource::UnsubscribeListener(l);
+   UnLockOurMutex(our_thread);
+}
+
+
+
+void EagleEventHandler::StopBroadcasting() {
+   LockOurMutex(our_thread);
+   EagleEventSource::StopBroadcasting();
+   UnLockOurMutex(our_thread);
+}
+
+
+
+void EagleEventHandler::EmitEvent(EagleEvent e , EagleThread* thread) {
+   LockOurMutex(thread);
+   LISTENERS listen = listeners;
+   UnLockOurMutex(thread);
+   for (unsigned int n = 0 ; n < listen.size(); ++n) {
+      EagleEventListener* l = listen[n];
+      l->RespondToEvent(e , thread);
+   }
+}
+
+
+
 void EagleEventHandler::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
    EAGLE_ASSERT(mutex);
 
    /// Store the event
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
    queue.push_back(e);
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    /// Wake any threads waiting on us
    cond_var->SignalCondition();
@@ -356,11 +395,39 @@ void EagleEventHandler::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+void EagleEventHandler::ListenTo(EagleEventSource* s) {
+   ListenTo(s , 0);
+}
+
+
+
+void EagleEventHandler::StopListeningTo(EagleEventSource* s) {
+   StopListeningTo(s , 0);
+}
+
+
+
+void EagleEventHandler::ListenTo(EagleEventSource* s , EagleThread* t) {
+   LockOurMutex(t);
+   EagleEventListener::ListenTo(s);
+   UnLockOurMutex(t);
+}
+
+
+
+void EagleEventHandler::StopListeningTo(EagleEventSource* s , EagleThread* t) {
+   LockOurMutex(t);
+   EagleEventListener::StopListeningTo(s);
+   UnLockOurMutex(t);
+}
+
+
+
 void EagleEventHandler::Clear(EagleThread* thread) {
    EAGLE_ASSERT(mutex);
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
    queue.clear();
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 }
 
 
@@ -376,11 +443,11 @@ bool EagleEventHandler::HasEvent(EagleThread* thread) {
 
    bool has_event = false;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    has_event = !queue.empty();
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    return has_event;
 
@@ -393,14 +460,14 @@ EagleEvent EagleEventHandler::TakeNextEvent(EagleThread* thread) {
 
    EagleEvent e;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    if (!queue.empty()) {
       e = queue.front();
       queue.pop_front();
    }
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    if (emitter_delay) {
       EmitEvent(e , thread);
@@ -416,11 +483,11 @@ EagleEvent EagleEventHandler::PeekNextEvent(EagleThread* thread) {
 
    EagleEvent e;
    
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
    
    if (!queue.empty()) {e = queue.front();}
    
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
    
    return e;
 }
@@ -430,11 +497,11 @@ EagleEvent EagleEventHandler::PeekNextEvent(EagleThread* thread) {
 void EagleEventHandler::InsertEventFront(EagleEvent e , EagleThread* thread) {
    EAGLE_ASSERT(mutex);
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    queue.push_front(e);
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 }
 
 
@@ -443,7 +510,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
 
    std::vector<EagleEvent> events;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
@@ -456,7 +523,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
       }
    }
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    return events;
 }
@@ -467,7 +534,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc ,
 
    std::vector<EagleEvent> events;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
@@ -479,7 +546,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EagleEventSource* esrc ,
          ++it;
       }
    }
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
    
    return events;
 }
@@ -490,7 +557,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
    
    std::vector<EagleEvent> events;
    
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
    
    for (std::deque<EagleEvent>::iterator it = queue.begin() ; it != queue.end() ; ) {
       EagleEvent e = *it;
@@ -503,7 +570,7 @@ std::vector<EagleEvent> EagleEventHandler::FilterEvents(EAGLE_EVENT_TYPE etype ,
       }
    }
    
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
    
    return events;
 }
@@ -516,20 +583,20 @@ EagleEvent EagleEventHandler::WaitForEvent(EagleThread* thread) {
 
    EagleEvent e;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    if (!queue.empty()) {
       // eagle event in queue
       e = queue.front();
       queue.pop_front();
-      ThreadUnLockMutex(our_thread , mutex);
+      UnLockOurMutex(thread);
       if (emitter_delay) {
          EmitEvent(e , thread);
       }
       return e;
    }
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    /// wait for event from event thread saying there is a message in the queue
    cond_var->WaitForCondition();
@@ -549,17 +616,17 @@ EagleEvent EagleEventHandler::WaitForEvent(double timeout , EagleThread* thread)
 
    EagleEvent e;
 
-   ThreadLockMutex(thread , mutex);
+   LockOurMutex(thread);
 
    if (!queue.empty()) {
       // eagle event in queue
       e = queue.front();
       queue.pop_front();
-      ThreadUnLockMutex(thread , mutex);
+      UnLockOurMutex(thread);
       return e;
    }
 
-   ThreadUnLockMutex(thread , mutex);
+   UnLockOurMutex(thread);
 
    // wait for event from event thread saying there is a message in the queue
    int ret = 0;

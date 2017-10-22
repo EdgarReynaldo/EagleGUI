@@ -876,10 +876,7 @@ FOCUS_DRAW_TYPE TextButton::GetFocusDrawType() const {
 
 
 std::string TextButton::GetWidgetClassName() {
-   if (real_button == this) {
-      return "TextButton::BasicButton";
-   }
-   return StringPrintF("%s%s" , "TextButton::" , real_button->GetWidgetClassName());
+   return real_button->ClassName();
 }
 
 

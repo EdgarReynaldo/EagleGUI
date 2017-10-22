@@ -35,7 +35,6 @@ private :
    ALLEGRO_EVENT_SOURCE main_source;// for messages to the event thread
    
    Allegro5Thread* event_thread;
-   
 
    bool Running();
 

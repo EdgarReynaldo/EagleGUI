@@ -55,6 +55,8 @@ std::string  GetShortNameById(EAGLE_ID eid);
 std::string  GetClassNameById(EAGLE_ID eid);
 std::string  GetFullNameById (EAGLE_ID eid);
 
+EagleObjectInfo InfoById(EAGLE_ID eid);
+
 ///int GetIdByAddress(EagleObject* obj);
 
 bool GetValidByAddress(EagleObject* obj);

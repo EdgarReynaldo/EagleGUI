@@ -12,10 +12,20 @@
 
 
 void EagleObjectInfo::RebuildName() {
-///   fullname = StringPrintF("%20s '%30s' : (EID %s %03d at %08p)" , 
-   fullname = StringPrintF("%s %s : (%s %4d at 0x%08p)" , 
+///   fullname = StringPrintF("%20s '%30s' : (EID %s %03d at 0x%p)" , 
+   fullname = StringPrintF("%s %s : (%s %4d at 0x%p)" ,
                            classname.c_str() , shortname.c_str() , destroyed?"XXX":"EID" , object->GetEagleId() , object);
 }
+
+
+
+EagleObjectInfo::EagleObjectInfo() :
+      object(0),
+      destroyed(false),
+      classname(""),
+      shortname(""),
+      fullname("")
+{}
 
 
 
@@ -27,6 +37,16 @@ EagleObjectInfo::EagleObjectInfo(EagleObject* obj , std::string objclass , std::
       fullname("")
 {
    RebuildName();
+}
+
+
+
+EagleObjectInfo::~EagleObjectInfo() {
+   object = 0;
+   destroyed = true;
+   classname = "";
+   shortname = "";
+   fullname = "";
 }
 
 

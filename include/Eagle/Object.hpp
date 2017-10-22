@@ -30,7 +30,7 @@
 #include <string>
 
 #include "Eagle/Indenter.hpp"
-
+#include "Eagle/ObjectInfo.hpp"
 
 
 typedef int EAGLE_ID;
@@ -48,6 +48,7 @@ private :
 
    EAGLE_ID id;/// Unique id to track EagleObjects
    bool log_registration;/// Need this to disallow some logging so the EagleLogGuard can construct a mutex without calling itself
+   EagleObjectInfo our_info;
    
    void SetId(EAGLE_ID eid) {id = eid;}
    
@@ -67,9 +68,12 @@ public :
    
    virtual ~EagleObject();
 
-   std::string ShortName() const;
-   std::string FullName() const;
-   std::string ClassName() const;
+   const char* ShortName() const;
+   const char* FullName() const;
+   const char* ClassName() const;
+
+   EagleObjectInfo Info() const;
+   
    void SetShortName(std::string newname);
    void SetClassName(std::string newname);
 

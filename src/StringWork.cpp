@@ -40,8 +40,7 @@ using std::list;
 
 unsigned int STRINGPRINTF_BUFFER_SIZE = 1024;
 
-
-
+   
 string StringPrintF(const char* format_str , ...) {
    char buffer[STRINGPRINTF_BUFFER_SIZE];
    va_list args;

@@ -10,7 +10,7 @@
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/Gui/Button/TextButton.hpp"
-#include "Eagle/Animations.hpp"
+#include "Eagle/AnimationBase.hpp"
 #include "Eagle/GraphicsContext.hpp"
 
 #include "TestRegistry.hpp"

@@ -50,7 +50,8 @@ void EagleObject::Unregister() {
 
 EagleObject::EagleObject(std::string objclass , std::string objname , bool log) :
       id(EAGLE_ID_UNASSIGNED),
-      log_registration(log)
+      log_registration(log),
+      our_info()
 {
    Register(this , objclass , objname , id);
 }
@@ -58,7 +59,9 @@ EagleObject::EagleObject(std::string objclass , std::string objname , bool log) 
 
 
 EagleObject::EagleObject(const EagleObject& rhs) :
-   id(EAGLE_ID_UNASSIGNED)
+   id(EAGLE_ID_UNASSIGNED),
+   log_registration(rhs.log_registration),
+   our_info()
 {
    EagleWarn() << "WARNING : EagleObject copy constructor called. RHS Object name will be duplicated." << std::endl;
    Register(this , std::string(rhs.ClassName()) , std::string(rhs.ShortName()) , id);
@@ -84,20 +87,26 @@ EagleObject::~EagleObject() {
 
 
 
-std::string EagleObject::ShortName() const {
-   return GetShortNameById(id);
+const char* EagleObject::ShortName() const {
+   return our_info.ShortName();
 }
 
 
 
-std::string EagleObject::FullName() const {
-   return GetFullNameById(id);
+const char* EagleObject::FullName() const {
+   return our_info.FullName();
 }
 
 
 
-std::string EagleObject::ClassName() const {
-   return GetClassNameById(id);
+const char* EagleObject::ClassName() const {
+   return our_info.ClassName();
+}
+
+
+
+EagleObjectInfo EagleObject::Info() const {
+   return our_info;
 }
 
 

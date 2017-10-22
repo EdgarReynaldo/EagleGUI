@@ -51,6 +51,7 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Threads.hpp"
+#include "Eagle/Time.hpp"
 #include "Eagle/Timer.hpp"
 
 

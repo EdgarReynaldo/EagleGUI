@@ -6,7 +6,7 @@
 #define AnimatedWedgeLayout_HPP
 
 #include "Eagle/Position.hpp"
-#include "Eagle/Animations.hpp"
+#include "Eagle/AnimationBase.hpp"
 #include "Eagle/Gui/Layout/PinLayout.hpp"
 
 

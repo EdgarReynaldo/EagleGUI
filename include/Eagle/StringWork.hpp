@@ -33,7 +33,13 @@
 
 extern unsigned int STRINGPRINTF_BUFFER_SIZE;
 
-std::string StringPrintF(const char* format_str , ...);/// 1024 character limit!
+#if defined __GNUC__
+   #define PRINTF_FORMAT_STYLE __attribute__ ((format (printf, 1, 2)))
+#else
+   #define PRINTF_FORMAT_STYLE
+#endif
+
+std::string StringPrintF(const char* format_str , ...) PRINTF_FORMAT_STYLE;/// 1024 character limit!
 
 std::vector<std::string> SplitByNewLines(std::string s);
 
