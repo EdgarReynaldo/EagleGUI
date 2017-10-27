@@ -1,16 +1,17 @@
 
 #include "Animation.hpp"
 #include "Intro.hpp"
+#include "LousyGlobals.hpp"
+
 #include "Eagle/backends/Allegro5Backend.hpp"
+
 #include "allegro5/allegro_color.h"
 
 
-int window_width = 1024;
-int window_height = 768;
+int window_width = -1;
+int window_height = -1;
 
 EagleFont* our_font = 0;
-
-EagleGraphicsContext* our_win = 0;
 
 #define M_PI 3.14159265
 
@@ -116,8 +117,8 @@ Transform CenterTransform(double percent) {\
    return t;
 }
 
-Pos2d Zero(double percent) {return Pos2d(0,0);}
-Pos2d ZeroOffset(double percent) {return Pos2d(8,8);}
+Pos2d Zero(double percent) {(void)percent;return Pos2d(0,0);}
+Pos2d ZeroOffset(double percent) {(void)percent;return Pos2d(8,8);}
 
 Transform StretchTransform(double percent) {
    Transform t = our_win->GetTransformer()->CreateTransform();
@@ -133,19 +134,16 @@ EagleColor Black(double percent) {return EagleColor(0,0,0,255);}
 
 
 EagleImage* RunIntro() {
-   
-   Allegro5System* a5sys = GetAllegro5System();
-   
-   our_win = a5sys->GetWindowManager()->CreateWindow("TINS:our_win" , window_width , window_height , EAGLE_OPENGL | EAGLE_WINDOWED);
-   
+
+   window_width = our_win->Width();
+   window_height = our_win->Height();
+
    EagleImage* img = our_win->CreateImage(our_win->Width() , our_win->Height());
-   
-   EAGLE_ASSERT(our_win && our_win->Valid());
    
    our_font = our_win->LoadFont("Verdana.ttf" , -96);
    
    EAGLE_ASSERT(our_font && our_font->Valid());
-   
+
    bool corner = false;
    
    XYTextAnimation xyt_upper(our_font , "Welcome\nto\nTINS 2017!\n" , Red , Upper);
@@ -254,6 +252,8 @@ EagleImage* RunIntro() {
       
       
    } while (!quit);
+   
+   our_win->FreeFont(our_font);
    
    return img;
 }

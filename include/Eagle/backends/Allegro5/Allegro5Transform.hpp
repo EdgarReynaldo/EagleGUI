@@ -22,6 +22,8 @@ protected :
    
 public :
    
+   Allegro5TransformBase(const ALLEGRO_TRANSFORM& src);
+   
    Allegro5TransformBase();
    
    Allegro5TransformBase(Allegro5TransformBase* a5trans);
@@ -55,8 +57,8 @@ public :
 class Allegro5Transformer : public Transformer {
    
 protected :
-   
-   
+
+
    virtual TransformBase* CreateIdentityTransform();
    virtual TransformBase* CreateViewTransform();
    virtual TransformBase* CreateProjectionTransform();
@@ -65,6 +67,9 @@ protected :
    virtual void SetProjectionTransform(TransformBase* transform_base);
 
 public :
+   virtual void ResetTransformStack(EagleGraphicsContext* win);
+   virtual void RebaseTransformStack(EagleGraphicsContext* win);
+
    
    Allegro5Transformer();
 

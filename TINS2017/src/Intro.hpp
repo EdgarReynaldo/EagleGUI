@@ -7,7 +7,6 @@
 
 class EagleImage;
 
-
 EagleImage* RunIntro();
 
 

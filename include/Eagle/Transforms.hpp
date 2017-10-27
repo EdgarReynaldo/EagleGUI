@@ -83,6 +83,10 @@ public :
 };
 
 
+class EagleGraphicsContext;
+
+
+
 class Transformer {
 
 protected :
@@ -100,9 +104,11 @@ protected :
    virtual void SetViewTransform(TransformBase* transform_base)=0;
    virtual void SetProjectionTransform(TransformBase* transform_base)=0;
    
-   
 public :
+   virtual void RebaseTransformStack(EagleGraphicsContext* win)=0;
+   virtual void ResetTransformStack(EagleGraphicsContext* win)=0;
    
+
    Transformer();
    
    virtual ~Transformer() {}

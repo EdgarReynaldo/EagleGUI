@@ -730,6 +730,8 @@ void Allegro5GraphicsContext::SetDrawingTarget(EagleImage* dest) {
 ///   ALLEGRO_DISPLAY* current_a5_display = al_get_current_display();
 ///   SetCurrentDisplay(display_context_map[current_a5_display]);
    drawing_target = dest;
+   
+   allegro5transformer.RebaseTransformStack(this);
 }
 
 

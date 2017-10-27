@@ -225,10 +225,18 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
-		<Unit filename="TINS2017/Animation.cpp" />
+		<Unit filename="TINS2017/src/Animation.cpp" />
 		<Unit filename="TINS2017/src/Animation.hpp" />
+		<Unit filename="TINS2017/src/Dissolve.cpp" />
+		<Unit filename="TINS2017/src/Dissolve.hpp" />
+		<Unit filename="TINS2017/src/DissolveIntro.cpp" />
+		<Unit filename="TINS2017/src/DissolveIntro.hpp" />
+		<Unit filename="TINS2017/src/Game.cpp" />
+		<Unit filename="TINS2017/src/Game.hpp" />
 		<Unit filename="TINS2017/src/Intro.cpp" />
 		<Unit filename="TINS2017/src/Intro.hpp" />
+		<Unit filename="TINS2017/src/LousyGlobals.cpp" />
+		<Unit filename="TINS2017/src/LousyGlobals.hpp" />
 		<Unit filename="TINS2017/src/TINS2017main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -181,34 +181,35 @@ Transform Transformer::GetProjectionTransform() {
 
 
 void Transformer::SetViewTransform(const Transform& t) {
-   SetViewTransform(GetTransformBase(t));
    view_stack.top() = t;
+   SetViewTransform(GetTransformBase(t));
 }
 
 
 
 void Transformer::SetProjectionTransform(const Transform& t) {
-   SetProjectionTransform(GetTransformBase(t));
    proj_stack.top() = t;
+   SetProjectionTransform(GetTransformBase(t));
 }
 
 
 
 void Transformer::PushViewTransform(const Transform& t) {
-   SetViewTransform(GetTransformBase(t));
    view_stack.push(t);
+   SetViewTransform(GetTransformBase(t));
 }
 
 
 
 void Transformer::PushProjectionTransform(const Transform& t) {
-   SetProjectionTransform(GetTransformBase(t));
    proj_stack.push(t);
+   SetProjectionTransform(GetTransformBase(t));
 }
 
 
 
 void Transformer::PopViewTransform() {
+   EAGLE_ASSERT(!view_stack.empty());
    if (!view_stack.empty()) {
       view_stack.pop();
       if (view_stack.empty()) {
@@ -223,6 +224,7 @@ void Transformer::PopViewTransform() {
 
 
 void Transformer::PopProjectionTransform() {
+   EAGLE_ASSERT(!proj_stack.empty());
    if (!proj_stack.empty()) {
       proj_stack.pop();
       if (proj_stack.empty()) {

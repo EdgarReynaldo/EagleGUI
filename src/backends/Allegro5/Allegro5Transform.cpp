@@ -5,7 +5,16 @@
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 
 #include "Eagle/Exception.hpp"
+#include "Eagle/Image.hpp"
+#include "Eagle/GraphicsContext.hpp"
 
+
+Allegro5TransformBase::Allegro5TransformBase(const ALLEGRO_TRANSFORM& src) :
+   TransformBase(),
+   t()
+{
+   t = src;
+}
 
 
 
@@ -111,8 +120,7 @@ TransformBase* Allegro5TransformBase::Clone() {
 Allegro5Transformer::Allegro5Transformer() :
       Transformer()
 {
-///   PushViewTransform(GetIdentityTransform());
-///   PushProjectionTransform(GetProjectionTransform());
+   
 }
 
 
@@ -150,4 +158,53 @@ void Allegro5Transformer::SetProjectionTransform(TransformBase* transform_base) 
    ALLEGRO_TRANSFORM* t = &(a5trans->t);
    al_use_projection_transform(t);
 }
+
+
+
+void Allegro5Transformer::ResetTransformStack(EagleGraphicsContext* win) {
+   EAGLE_ASSERT(win);
+   EagleImage* tgt = win->GetDrawingTarget();
+   EAGLE_ASSERT(tgt);
+
+   while (!view_stack.empty()) {view_stack.pop();}
+   while (!proj_stack.empty()) {proj_stack.pop();}
+
+   Transform view_identity = GetIdentityTransform();
+   ALLEGRO_TRANSFORM pt;
+   al_identity_transform(&pt);
+   al_orthographic_transform(&pt , 0 , 0 , -1 , tgt->W() , tgt->H() , 1);
+   Transform proj_default = Transform(new Allegro5TransformBase(pt));
+   
+   PushViewTransform(view_identity);
+   PushProjectionTransform(proj_default);
+}
+
+
+
+void Allegro5Transformer::RebaseTransformStack(EagleGraphicsContext* win) {
+   (void)win;
+/*
+   EAGLE_ASSERT(win);
+   EagleImage* tgt = win->GetDrawingTarget();
+   EAGLE_ASSERT(tgt);
+   Allegro5Image* img = dynamic_cast<Allegro5Image*>(tgt);
+   EAGLE_ASSERT(img);
+*/
+   while (!view_stack.empty()) {view_stack.pop();}
+   while (!proj_stack.empty()) {proj_stack.pop();}
+
+   const ALLEGRO_TRANSFORM* vt = 0 , *pt = 0;
+   vt = al_get_current_transform();
+   pt = al_get_current_projection_transform();
+   EAGLE_ASSERT(vt && pt);
+
+   Transform view_identity = Transform(new Allegro5TransformBase(*vt));
+   Transform proj_default = Transform(new Allegro5TransformBase(*pt));
+
+   PushViewTransform(view_identity);
+   PushProjectionTransform(proj_default);
+}
+
+
+
 

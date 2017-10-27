@@ -15,6 +15,9 @@ class Animation : public AnimationBase {
 protected :
    virtual void OnSetAnimationPercent()=0;
 
+   virtual void OnLoopComplete()=0;
+   virtual void OnComplete()=0;
+
 public :
    
    Animation();

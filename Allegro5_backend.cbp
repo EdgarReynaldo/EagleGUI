@@ -112,6 +112,7 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
+			<Add option="-Wformat" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 			<Add directory="Allegro5/include" />
@@ -120,10 +121,6 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="CopySantaHackLibs.bat" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="CopySantaHackLibs.bat" />
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
