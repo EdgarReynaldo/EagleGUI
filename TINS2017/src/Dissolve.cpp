@@ -45,7 +45,7 @@ void Glob::ConstructFromSource(EagleImage* source , int srcx , int srcy) {
          ALLEGRO_COLOR ac = al_get_pixel(bmp , x , y);
          EagleColor c = GetEagleColor(ac);
          if (c.fa > 0.1) {
-            spart.push_back(Particle(c , x + srcx , y + srcy));
+            spart.push_back(Particle(c , x + srcx + 0.5 , y + srcy + 0.5));
          }
       }
    }

@@ -1,123 +1,90 @@
 
 
 
-#ifndef Position_HPP
-#define Position_HPP
+#ifndef Position2T_HPP
+#define Position2T_HPP
 
 #include <iostream>
 #include <cmath>
-
 
 #include "Eagle/Color.hpp"
 
 
 class EagleGraphicsContext;
-
-
-/// -------------------------------------     Pos2d class     ------------------------------------------
+///#include "Eagle/GraphicsContext.hpp"
 
 
 
-class Pos2d {
-protected :
-   int x;
-   int y;
+template <class TYPE>
+class Pos2T {
+   
+   TYPE tx;
+   TYPE ty;
    
 public :
-   Pos2d() : x(0) , y(0) {}
-   Pos2d(int xpos , int ypos) : x(xpos) , y(ypos) {}
+   Pos2T() : tx(0) , ty(0) {}
+   Pos2T(const TYPE& x , const TYPE& y) : tx(x) , ty(y) {}
    
-   inline bool operator==(const Pos2d& p) const ;
-   inline Pos2d& operator-=(const Pos2d& add);
-   inline Pos2d& operator+=(const Pos2d& add);
+   void SetPos(TYPE xpos , TYPE ypos)    {tx = xpos;ty=ypos;}
+   Pos2T& MoveBy(TYPE dx , TYPE dy)      {SetPos(tx + dx , ty + dy);return *this;}
+   Pos2T& MoveBy(const Pos2T& p)         {return MoveBy(p.X() , p.Y());}
+
+   bool operator==(const Pos2T& p) const {return ((p.tx == tx) && (p.ty == ty));}
    
-   inline void SetPos(int xpos , int ypos);
-   inline Pos2d& MoveBy(int dx , int dy);
+   Pos2T operator-(const Pos2T& p) const {
+      return Pos2T(tx - p.X() , ty - p.Y());
+      return *this;
+   }
 
-   void Draw(EagleGraphicsContext* win , EagleColor color) const;
-   void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , EagleColor color) const;
-   void DrawLineTo(EagleGraphicsContext* win , const Pos2d& p , double thickness , EagleColor color) const ;
-
-   inline double AngleToPoint(const Pos2d& p) const;
-   inline double AngleToPoint(int x , int y) const;
-
-   inline double DistanceToPoint(const Pos2d& p) const;
-   inline double DistanceToPoint(int xpos , int ypos) const;
-
-   int X() const {return x;}
-   int Y() const {return y;}
+   Pos2T operator+(const Pos2T& p) const {
+      return Pos2T(tx + p.X() , ty + p.Y());
+      return *this;
+   }
    
-   friend std::ostream& operator<<(std::ostream& os , const Pos2d& p);
+   Pos2T& operator-() const {
+      *this = Pos2T(-tx , -ty);
+      return *this;
+   }
+   
+   Pos2T& operator-=(const Pos2T& add) {MoveBy(-add);}
+   Pos2T& operator+=(const Pos2T& add) {MoveBy(add);}
+   
+   Pos2T& operator*(double scale) {*this = Pos2T(scale*tx , scale*ty);return *this;}
+   
+///   void Draw(EagleGraphicsContext* win , EagleColor color) const;
+
+   void DrawLineTo(EagleGraphicsContext* win , const Pos2T& p , EagleColor color) const;
+   void DrawLineTo(EagleGraphicsContext* win , const Pos2T& p , double thickness , EagleColor color) const ;
+
+/*
+
+   double DistanceToPoint(const Pos2T& p) const;
+   double DistanceToPoint(TYPE xpos , TYPE ypos) const;
+*/
+   double AngleToPoint(const Pos2T& p) const {return atan2(p.Y() - ty , p.X() - tx);}
+   double AngleToPoint(TYPE x , TYPE y) const {return atan2(y - ty , x - tx);}
+
+   TYPE X() const {return tx;}
+   TYPE Y() const {return ty;}
+   
+///   friend std::ostream& operator<<(std::ostream& os , const Pos2T<TYPE>& p);
+   
 };
 
-
-
-inline bool Pos2d::operator==(const Pos2d& p) const {
-   return ((x == p.x) && (y == p.y));
+template <class TYPE>
+std::ostream& operator<<(std::ostream& os , const Pos2T<TYPE>& p) {
+   os << p.X() << " , " << p.Y();
+   return os;
 }
 
-inline Pos2d& Pos2d::operator-=(const Pos2d& add) {
-   this->MoveBy(-add.X() , -add.Y());
-   return *this;
-}
+template <class TYPE>
+Pos2T<TYPE> operator*(double scale , const Pos2T<TYPE>& p) {return Pos2T<TYPE>(scale*p.X() , scale*p.Y());}
 
-inline Pos2d& Pos2d::operator+=(const Pos2d& add) {
-   this->MoveBy(add.X() , add.Y());
-   return *this;
-}
-
-inline void Pos2d::SetPos(int xpos , int ypos) {
-   x = xpos;
-   y = ypos;
-}
-
-inline Pos2d& Pos2d::MoveBy(int dx , int dy) {
-   SetPos(x + dx , y + dy);
-   return *this;
-}
-
-inline double Pos2d::AngleToPoint(const Pos2d& p) const {
-   if (*this == p) {return 0.0;}// same point, no angle
-   return atan2(p.y - y , p.x - x);
-}
-
-inline double Pos2d::AngleToPoint(int xpos , int ypos) const {
-   return atan2(ypos - y , xpos - x);
-}
-
-inline double Pos2d::DistanceToPoint(const Pos2d& p) const {
-   int dx = p.x - x;
-   int dy = p.y - y;
-   return sqrt((double)(dx*dx + dy*dy));
-}
-
-inline double Pos2d::DistanceToPoint(int xpos , int ypos) const {
-   int dx = xpos - x;
-   int dy = ypos - y;
-   return sqrt((double)(dx*dx + dy*dy));
-}
-
-inline double AngleToP2(const Pos2d& p1 , const Pos2d& p2) {return p1.AngleToPoint(p2);}
-   
-inline Pos2d operator-(const Pos2d& lhs , const Pos2d rhs) {
-   return Pos2d(lhs.X() - rhs.X() , lhs.Y() - rhs.Y());
-}
-
-inline Pos2d operator*(const Pos2d& lhs , const double& factor) {
-   double x = (double)lhs.X()*factor;
-   double y = (double)lhs.Y()*factor;
-   return Pos2d((int)x , (int)y);
-}
-
-inline Pos2d operator*(const double& factor , const Pos2d& rhs) {
-   double x = factor*(double)rhs.X();
-   double y = factor*(double)rhs.Y();
-   return Pos2d((int)x , (int)y);
-}
-
-inline Pos2d operator+(const Pos2d& lhs , const Pos2d& rhs) {
-   return Pos2d(lhs.X() + rhs.X() , lhs.Y() + rhs.Y());
-}
+typedef Pos2T<int> Pos2I;
+typedef Pos2T<float> Pos2F;
+typedef Pos2T<double> Pos2D;
 
 
-#endif // Position_HPP
+
+#endif // Position2T_HPP
+

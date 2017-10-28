@@ -38,40 +38,40 @@ EagleColor Magenta    (double pct) {return Hue(pct + 11.0/12.0);}
 
 
 
-Pos2d Upper(double percent) {
+Pos2D Upper(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width / 2 , window_height/4 - z);
+   return Pos2D(window_width / 2 , window_height/4 - z);
 }
-Pos2d Lower(double percent) {
+Pos2D Lower(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width / 2 , window_height*3/4 + z);
+   return Pos2D(window_width / 2 , window_height*3/4 + z);
 }
-Pos2d Left(double percent) {
+Pos2D Left(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width/4 - z , window_height/2);
+   return Pos2D(window_width/4 - z , window_height/2);
 }
-Pos2d Right(double percent) {
+Pos2D Right(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width*3/4 + z , window_height/2);
+   return Pos2D(window_width*3/4 + z , window_height/2);
 }
-Pos2d UpperLeft(double percent) {
+Pos2D UpperLeft(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width/4 - z , window_height/4 - z);
+   return Pos2D(window_width/4 - z , window_height/4 - z);
 }
-Pos2d LowerLeft(double percent) {
+Pos2D LowerLeft(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width/4 - z , window_height*3/4 + z);
+   return Pos2D(window_width/4 - z , window_height*3/4 + z);
 }
-Pos2d UpperRight(double percent) {
+Pos2D UpperRight(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width*3/4 + z, window_height/4 - z);
+   return Pos2D(window_width*3/4 + z, window_height/4 - z);
 }
-Pos2d LowerRight(double percent) {
+Pos2D LowerRight(double percent) {
    float z = our_font->Height()*sin(2*M_PI*percent);
-   return Pos2d(window_width*3/4 + z , window_height*3/4 + z);
+   return Pos2D(window_width*3/4 + z , window_height*3/4 + z);
 }
 
-Pos2d SpiralPos(double percent) {
+Pos2D SpiralPos(double percent) {
    if (percent < 0.5) {
       percent *= 2;
    }
@@ -80,21 +80,21 @@ Pos2d SpiralPos(double percent) {
    }
    double r = our_font->Height()*percent;
    double theta = 2.0*M_PI*percent;
-   return Pos2d(r*cos(theta) , r*sin(theta));
+   return Pos2D(r*cos(theta) , r*sin(theta));
 }
 
-Pos2d Center(double percent) {
+Pos2D Center(double percent) {
    percent = (float)(percent - (int)percent);
-   return Pos2d(our_win->Width()*percent/2.0 , our_win->Height()*percent/2.0);
+   return Pos2D(our_win->Width()*percent/2.0 , our_win->Height()*percent/2.0);
 }
-Pos2d CenterOffset(double percent) {
-   return Center(percent)+ Pos2d(5,5);
+Pos2D CenterOffset(double percent) {
+   return Center(percent)+ Pos2D(5,5);
 }
 Transform UpperRightTransform(double percent) {\
    Transform t = our_win->GetTransformer()->CreateTransform();
    t.GetIdentityMatrix();
-   Pos2d spos = SpiralPos(percent);
-   Pos2d center = Center(percent);
+   Pos2D spos = SpiralPos(percent);
+   Pos2D center = Center(percent);
    t.Translate(-center.X() , -center.Y());
    t.Rotate(2.0*M_PI*percent , 0 , 0 , 1);
    t.Scale(percent , percent);
@@ -107,8 +107,8 @@ Transform UpperRightTransform(double percent) {\
 Transform CenterTransform(double percent) {\
    Transform t = our_win->GetTransformer()->CreateTransform();
    t.GetIdentityMatrix();
-//   Pos2d spos = SpiralPos(.99);
-   Pos2d center = Center(.99);
+//   Pos2D spos = SpiralPos(.99);
+   Pos2D center = Center(.99);
 ///   t.Translate(-center.X() , -center.Y());
    t.Rotate(2.0*M_PI*.99 , 0 , 0 , 1);
    t.Scale(percent*8 , percent*8);
@@ -117,14 +117,14 @@ Transform CenterTransform(double percent) {\
    return t;
 }
 
-Pos2d Zero(double percent) {(void)percent;return Pos2d(0,0);}
-Pos2d ZeroOffset(double percent) {(void)percent;return Pos2d(8,8);}
+Pos2D Zero(double percent) {(void)percent;return Pos2D(0,0);}
+Pos2D ZeroOffset(double percent) {(void)percent;return Pos2D(8,8);}
 
 Transform StretchTransform(double percent) {
    Transform t = our_win->GetTransformer()->CreateTransform();
    t.GetIdentityMatrix();
    t.Scale(1.0 , percent);
-   Pos2d center = Center(0.99);
+   Pos2D center = Center(0.99);
    t.Translate(center.X() , center.Y());
    return t;
 }

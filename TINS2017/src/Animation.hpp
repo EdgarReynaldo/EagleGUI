@@ -30,7 +30,7 @@ public :
 #include "Eagle/Position.hpp"
 
 
-typedef Pos2d(*POS2D_FUNC)(double);
+typedef Pos2D(*POS2D_FUNC)(double);
 
 
 
@@ -39,7 +39,7 @@ class XYAnimation : public Animation {
 protected :
    POS2D_FUNC posfunc;
    
-   Pos2d pos;
+   Pos2D pos;
    
    void OnSetAnimationPercent();
 
@@ -95,9 +95,6 @@ public :
 
    virtual void Draw(EagleGraphicsContext* win , int x , int y);
 
-
-
-   
 };
 
 

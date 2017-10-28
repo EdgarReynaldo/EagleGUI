@@ -188,6 +188,8 @@
 		<Unit filename="include/Eagle/ObjectRegistry.hpp" />
 		<Unit filename="include/Eagle/Platform.hpp" />
 		<Unit filename="include/Eagle/Position.hpp" />
+		<Unit filename="include/Eagle/Position2.hpp" />
+		<Unit filename="include/Eagle/PositionOLD.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/Threads.hpp" />
@@ -258,7 +260,10 @@
 		<Unit filename="src/ObjectInfo.cpp" />
 		<Unit filename="src/ObjectRegistry.cpp" />
 		<Unit filename="src/Platform.cpp" />
-		<Unit filename="src/Position.cpp" />
+		<Unit filename="src/PositionOLD.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />

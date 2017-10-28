@@ -6,8 +6,8 @@
 
 
 ALLEGRO_COLOR GetAllegroColor(EagleColor c) {
-///   return al_map_rgba_f(c.fr , c.fg , c.fb , c.fa);
-   return al_map_rgba(c.r , c.g , c.b , c.a);
+   return al_map_rgba_f(c.fr , c.fg , c.fb , c.fa);
+///   return al_map_rgba(c.r , c.g , c.b , c.a);
 }
 
 

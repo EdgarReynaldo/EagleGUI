@@ -249,9 +249,9 @@ void Triangle::CheckPoints() {
 void Triangle::RenewAngles() {
    CheckPoints();
    if (points_unique) {
-      angle_ab = AngleToP2(p1,p2);// -PI to PI
-      angle_bc = AngleToP2(p2,p3);// -PI to PI
-      angle_ca = AngleToP2(p3,p1);// -PI to PI
+      angle_ab = p1.AngleToPoint(p2);// -PI to PI
+      angle_bc = p2.AngleToPoint(p3);// -PI to PI
+      angle_ca = p3.AngleToPoint(p1);// -PI to PI
       double turn_angle = angle_bc - angle_ab;//[-PI - PI , PI - -PI] = [-2PI , 2PI]
       // Normalize turn angle to (-M_PI , M_PI];
       if (turn_angle <= -M_PI) {turn_angle += 2.0*M_PI;}
@@ -314,14 +314,14 @@ Triangle::Triangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3) :
 
 bool Triangle::Contains(int xpos , int ypos) const {
    if (!points_make_triangle) {return false;}
-   Pos2d p4(xpos,ypos);
-   const Pos2d* pts[3] = {&p1 , &p2 , &p3};
+   Pos2D p4(xpos,ypos);
+   const Pos2D* pts[3] = {&p1 , &p2 , &p3};
    double angles[3] = {angle_ab , angle_bc , angle_ca};
    double turn_angle = 0.0;
    double angle_to_p4 = 0.0;
    for (int i = 0 ; i < 3 ; ++i) {
       if (*pts[i] == p4) {return true;}
-      angle_to_p4 = AngleToP2(*pts[i] , p4);// -PI to PI
+      angle_to_p4 = (*pts[i]).AngleToPoint(p4);// -PI to PI
       turn_angle = angle_to_p4 - angles[i];// -2PI to 2PI
       // Normalize turn angle to (-M_PI , M_PI];
       if (turn_angle <= -M_PI) {turn_angle += 2.0*M_PI;}
@@ -364,7 +364,7 @@ void Triangle::Draw(EagleGraphicsContext* win , double thickness , EagleColor co
 void Triangle::Fill(EagleGraphicsContext* win , EagleColor color) const {
    EAGLE_ASSERT(win);
    if (points_make_triangle) {
-      win->DrawFilledTriangle(p1.X() , p1.Y() , p2.X() , p2.Y() , p3.X() , p3.Y() , color);
+      win->DrawFilledTriangle((float)p1.X() , p1.Y() , p2.X() , p2.Y() , p3.X() , p3.Y() , color);
    }
 }
 

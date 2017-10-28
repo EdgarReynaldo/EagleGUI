@@ -23,7 +23,7 @@ Glob GetResult() {
       for (int x = 0 ; x < our_win->Width() ; ++x) {
          Particle p;
          p.c = GetEagleColor(al_get_pixel(bmp , x , y));
-         p.p = Pos2d(x,y);
+         p.p = Pos2D(x + 0.5,y + 0.5);
          g.spart.push_back(p);
       }
    }

@@ -28,7 +28,7 @@ public :
 
 
    Rectangle GetPinArea(int width , int height);
-   Pos2d GetPosition();
+   Pos2I GetPosition();
    
    friend std::ostream& operator<<(std::ostream& os , const Pin& pin);
    

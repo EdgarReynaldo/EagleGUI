@@ -126,8 +126,8 @@ public :
 
 class Line : public AreaBase {
 protected :
-   Pos2d p1;
-   Pos2d p2;
+   Pos2F p1;
+   Pos2F p2;
    double thickness;
    
 public :
@@ -146,9 +146,9 @@ class Triangle : public AreaBase {
 
    
 protected :
-   Pos2d p1;
-   Pos2d p2;
-   Pos2d p3;
+   Pos2D p1;
+   Pos2D p2;
+   Pos2D p3;
    double angle_ab;
    double angle_bc;
    double angle_ca;
@@ -302,7 +302,7 @@ public :
    inline void SetArea(const Rectangle& r);
 
    inline AreaBase& MoveBy(int dx , int dy);
-   inline Rectangle MoveBy(const Pos2d& p);
+   inline Rectangle MoveBy(const Pos2I& p);
 
    inline Rectangle Shrink(int delta);
    inline Rectangle Grow(int delta);
@@ -371,7 +371,7 @@ inline AreaBase& Rectangle::MoveBy(int dx    , int dy) {
    return *this;
 }
 
-inline Rectangle Rectangle::MoveBy(const Pos2d& p) {
+inline Rectangle Rectangle::MoveBy(const Pos2I& p) {
    MoveBy(p.X() , p.Y());
    return *this;
 }

@@ -168,7 +168,7 @@ int TwoWaySplitter::PrivateCheckInputs() {
 void TwoWaySplitter::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    Rectangle handle = GetHandleArea();
 
-   handle.MoveBy(Pos2d(xpos,ypos));
+   handle.MoveBy(Pos2I(xpos,ypos));
 
 //   EagleInfo() << StringPrintF("TwoWaySplitter::PrivateDisplay handle x,y,w,h = %d , %d , %d x %d , xpos,ypos = %d , %d\n" ,
 //                              handle.X(),handle.Y(),handle.W(),handle.H(),xpos,ypos);

@@ -33,7 +33,7 @@
 #include "Eagle/Image.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/Container.hpp"
-#include "Eagle/Area.hpp"
+///#include "Eagle/Area.hpp"
 #include "Eagle/MousePointer.hpp"
 ///#include "Eagle/System.hpp"
 #include "Eagle/Transforms.hpp"
@@ -386,6 +386,9 @@ public :
 
 };
 
+
+
+#include "Eagle/Position2.hpp"
 
 
 /// Simple class to automatically push and pop drawing targets onto the drawing target stack

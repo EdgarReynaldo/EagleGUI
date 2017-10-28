@@ -37,7 +37,7 @@ void AnimatedWedgeLayout::ReserveSlots(int nslots) {
 
 
 
-void AnimatedWedgeLayout::SetAnchors(Pos2d head , Pos2d tail1 , Pos2d tail2) {
+void AnimatedWedgeLayout::SetAnchors(Pos2I head , Pos2I tail1 , Pos2I tail2) {
    head_pt = head;
    tail_pt1 = tail1;
    tail_pt2 = tail2;
@@ -55,18 +55,18 @@ void AnimatedWedgeLayout::ResetPositions() {
    }
    
    /// Widgets are laid out in a wedge from tail 1 to head to tail 2, spread out evenly
-   Pos2d vec1 = head_pt - tail_pt1;
-   Pos2d vec2 = tail_pt2 - head_pt;
+   Pos2I vec1 = head_pt - tail_pt1;
+   Pos2I vec2 = tail_pt2 - head_pt;
    
    int half = sz/2 + 1;
    for (int i = 0 ; i < half ; ++i) {
       double pct = i/(double)(half - 1);
-      Pos2d v = tail_pt1 + vec1*pct;
+      Pos2I v = tail_pt1 + vec1*pct;
       SetPinPosition(i , v.X() , v.Y());
    }
    for (int i = half  ; i < sz ; ++i) {
       double pct = (i - half + 1)/(double)(sz - half);
-      Pos2d v = head_pt + vec2*pct;
+      Pos2I v = head_pt + vec2*pct;
       SetPinPosition(i , v.X() , v.Y());
    }
    RepositionAllChildren();
@@ -87,10 +87,10 @@ Rectangle AnimatedWedgeLayout::RequestWidgetArea(int widget_slot , int newx , in
       Rectangle current = widget->OuterArea();
 
       int dir = direction_forward?1:-1;
-      Pos2d start = GetPin(widget_slot).GetPosition();
-      Pos2d next = GetPin(widget_slot + dir).GetPosition();
+      Pos2I start = GetPin(widget_slot).GetPosition();
+      Pos2I next = GetPin(widget_slot + dir).GetPosition();
       
-      Pos2d newpos = start + move_percent*(next - start);
+      Pos2I newpos = start + move_percent*(next - start);
       
       Pin& pin = pins[widget_slot];
       if (newx != INT_MAX) {

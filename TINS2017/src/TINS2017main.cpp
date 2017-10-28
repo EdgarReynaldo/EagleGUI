@@ -27,7 +27,7 @@ int main(int argc , char** argv) {
    
    
    EagleImage* rsq = our_win->CreateImage(50,50);
-   EagleImage* gsq = our_win->CreateImage(100,100);
+   EagleImage* gsq = our_win->CreateImage(400,400);
    our_win->SetDrawingTarget(rsq);
    our_win->Clear(EagleColor(255,0,0));
    our_win->SetDrawingTarget(gsq);
@@ -35,7 +35,7 @@ int main(int argc , char** argv) {
    
    int rx = 100;
    int ry = 125;
-   int gx = our_win->Width() - 200;
+   int gx = our_win->Width()/2;
    int gy = 100;
    Dissolver d;
    d.ConstructDissolveMapFromImages(rsq , rx , ry , gsq , gx , gy);
@@ -49,29 +49,74 @@ int main(int argc , char** argv) {
 
    bool quit = false;
    bool redraw = true;
+   bool sub = false;
+   bool add = false;
+   bool dir = false;
+   
+   double duration = 4;
    
    while (!quit) {
       if (redraw) {
-         d.SetAnimationPercent(t/10.0);
+         d.SetAnimationPercent(t/duration);
 
          our_win->DrawToBackBuffer();
          our_win->Clear(EagleColor(0,0,0));
+         
          d.Draw(our_win , 0 , 0);
+         
+         our_win->DrawTextString(our_win->DefaultFont() , StringPrintF("%lf" , t) , our_win->Width()/2 , our_win->Height() - 20 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
+         
          our_win->FlipDisplay();
       }
       do {
          EagleEvent e = a5sys->GetSystemQueue()->WaitForEvent(0);
          if (e.type == EAGLE_EVENT_TIMER) {
-            t += e.timer.eagle_timer_source->SecondsPerTick();
-            if (t >= 10.0) {
-               quit = true;
-               break;
-            }
+///            t += e.timer.eagle_timer_source->SecondsPerTick()
+               if (sub) {
+                  t -= a5sys->GetSystemTimer()->SecondsPerTick();
+               }
+               if (add) {
+                  t += a5sys->GetSystemTimer()->SecondsPerTick();
+               }
+               if (dir) {
+                  t += a5sys->GetSystemTimer()->SecondsPerTick();
+               }
+               else {
+                  t -= a5sys->GetSystemTimer()->SecondsPerTick();
+               }
+               if (t >= duration) {
+                  t = duration;
+                  dir = false;
+               }
+               if (t < 0.0) {
+                  t = 0.0;
+                  dir = true;
+               }
             redraw = true;
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE || (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE)) {
             quit = true;
             break;
+         }
+         if (e.type == EAGLE_EVENT_KEY_DOWN) {
+            if (e.keyboard.keycode == EAGLE_KEY_LEFT) {
+               sub = true;
+               t -= a5sys->GetSystemTimer()->SecondsPerTick();
+            }
+            if (e.keyboard.keycode == EAGLE_KEY_RIGHT) {
+               add = true;
+               t += a5sys->GetSystemTimer()->SecondsPerTick();
+            }
+            redraw = true;
+         }
+         if (e.type == EAGLE_EVENT_KEY_UP) {
+            if (e.keyboard.keycode == EAGLE_KEY_LEFT) {
+               sub = false;
+            }
+            if (e.keyboard.keycode == EAGLE_KEY_RIGHT) {
+               add = false;
+            }
+            redraw = true;
          }
       } while (a5sys->GetSystemQueue()->HasEvent(0));
    }

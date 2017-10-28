@@ -51,7 +51,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    
    wedge_layout.Resize(tests.size());
    wedge_layout.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
-   wedge_layout.SetAnchors(Pos2d(3*w/4 , h/2) , Pos2d(w/2 , h/8) , Pos2d(w/2 , 7*h/8));
+   wedge_layout.SetAnchors(Pos2I(3*w/4 , h/2) , Pos2I(w/2 , h/8) , Pos2I(w/2 , 7*h/8));
 
    buttons.resize(tests.size());
 

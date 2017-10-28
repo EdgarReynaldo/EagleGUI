@@ -13,10 +13,10 @@
 
 struct Particle {
    EagleColor c;
-   Pos2d p;
+   Pos2D p;
    
    Particle() : c() , p(0,0) {}
-   Particle(EagleColor col , int x , int y) : c(col) , p(x,y) {}
+   Particle(EagleColor col , double x , double y) : c(col) , p(x,y) {}
 };
 
 Particle InterpolatePartical(const Particle& s , const Particle& d , double percent);

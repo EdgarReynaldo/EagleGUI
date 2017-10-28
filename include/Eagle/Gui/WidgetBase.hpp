@@ -295,7 +295,7 @@ public :
    /// Getters , some references for direct modification
    virtual int                   AbsParentX() const ;
    virtual int                   AbsParentY() const ;
-   virtual Pos2d                 GetParentOffset() const ;
+   virtual Pos2I                 GetParentOffset() const ;
    
    virtual WidgetBase*           Parent()          const {return wparent;}
    virtual WidgetColorset&       WCols();/// SetRedrawFlag if you change the colors!

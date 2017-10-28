@@ -122,7 +122,7 @@ int GuiTestMain(int argc , char** argv , TestRunner* test_runner) {
 
 
    Rectangle r(200,150,400,300);
-   Pos2d corner1,corner2;
+   Pos2I corner1,corner2;
    corner1.SetPos(200,150);
    corner2.SetPos(599,449);
  //*/

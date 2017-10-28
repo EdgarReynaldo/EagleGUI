@@ -607,7 +607,7 @@ void WidgetBase::ToggleWidgetVisibility() {
 
 
 bool WidgetBase::IsMouseOver(int realmsx , int realmsy) const {
-	Pos2d offset = GetParentOffset();
+	Pos2I offset = GetParentOffset();
 	Rectangle realarea = area.OuterArea();
 	realarea.MoveBy(offset);
 	return realarea.Contains(realmsx,realmsy);
@@ -887,10 +887,8 @@ int WidgetBase::AbsParentY() const {
 
 
 
-Pos2d WidgetBase::GetParentOffset() const {
-   Pos2d p;
-   p.SetPos(AbsParentX() , AbsParentY());
-   return p;
+Pos2I WidgetBase::GetParentOffset() const {
+   return Pos2I(AbsParentX() , AbsParentY());
 }
 
 

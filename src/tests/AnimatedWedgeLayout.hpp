@@ -14,9 +14,9 @@
 class AnimatedWedgeLayout : public PinLayout , public AnimationBase {
 
 protected :
-   Pos2d head_pt;
-   Pos2d tail_pt1;
-   Pos2d tail_pt2;
+   Pos2I head_pt;
+   Pos2I tail_pt1;
+   Pos2I tail_pt2;
    
    bool animation_running;
    bool direction_forward;
@@ -52,7 +52,7 @@ public :
    }
    
    /// AnimatedWedgeLayout
-   void SetAnchors(Pos2d head , Pos2d tail1 , Pos2d tail2);
+   void SetAnchors(Pos2I head , Pos2I tail1 , Pos2I tail2);
    void ResetPositions();
 
    /// PinLayout, Layout overloads

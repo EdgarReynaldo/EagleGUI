@@ -64,8 +64,8 @@ Rectangle Pin::GetPinArea(int width , int height) {
 
 
 
-Pos2d Pin::GetPosition() {
-   return Pos2d(px,py);
+Pos2I Pin::GetPosition() {
+   return Pos2I(px,py);
 }
 
 

@@ -181,7 +181,7 @@ protected:
    /// Getters , some references for direct modification
    virtual int                   AbsParentX() const ;
    virtual int                   AbsParentY() const ;
-   virtual Pos2d                 GetParentOffset() const ;
+   virtual Pos2I                 GetParentOffset() const ;
    
    virtual WidgetBase*           Parent()          const ;
    virtual WidgetColorset&       WCols();

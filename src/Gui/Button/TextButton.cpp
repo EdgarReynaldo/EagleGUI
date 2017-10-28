@@ -722,7 +722,7 @@ int TextButton::AbsParentY() const {
 
 
 
-Pos2d TextButton::GetParentOffset() const {
+Pos2I TextButton::GetParentOffset() const {
    if (real_button == this) {
       return BasicButton::GetParentOffset();
    }

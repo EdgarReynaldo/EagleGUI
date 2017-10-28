@@ -676,7 +676,7 @@ int WidgetDecorator::AbsParentY() const {
 
 
 
-Pos2d WidgetDecorator::GetParentOffset() const {
+Pos2I WidgetDecorator::GetParentOffset() const {
    return WidgetBase::GetParentOffset();
    
 ///   EAGLE_ASSERT(decorated_widget);
