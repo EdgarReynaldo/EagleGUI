@@ -41,6 +41,9 @@ public :
    bool SetQuestion(int qnum);
    bool NextQuestion();
    
+   bool SetHint(int hnum);
+   bool NextHint();
+   
    std::string Solution();
    HINTLIST GetHints();
 
@@ -51,6 +54,9 @@ public :
 };
 
 #include "Eagle/Events.hpp"
+#include "Animation.hpp"
+
+
 
 class EagleFont;
 
@@ -58,13 +64,31 @@ class Game {
    
    Questions questions;
    
+   std::vector<char> input;
+   int caret;
+   
    std::string guess;
    std::string info;
+   std::string message;
    HINTLIST hints;
+   
+   TextAnimation message_fader;
+   
+   bool question_up;
+   bool level_up;
+   bool finish;
+   double duration;
+   double msgtime;
    
    EagleFont* guess_font;
    EagleFont* info_font;
-   
+
+
+   void SetMessage(const char* msg , EagleColor color);
+
+   void RebuildInfo();
+   void RefreshGuess();
+
 public :
    
    Game();

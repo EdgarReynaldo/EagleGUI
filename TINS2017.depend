@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1509131432 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\intro.cpp
+1509212266 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\intro.cpp
 	"Animation.hpp"
 	"Intro.hpp"
 	"LousyGlobals.hpp"
@@ -779,18 +779,18 @@
 	"Eagle/Events.hpp"
 	"allegro5/allegro.h"
 
-1509080327 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
+1509213430 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
 	"Intro.hpp"
 	"DissolveIntro.hpp"
 	"LousyGlobals.hpp"
 	"Game.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 
-1508646482 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\animation.cpp
+1509217600 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\animation.cpp
 	"Animation.hpp"
 	"Eagle.hpp"
 
-1509131218 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\animation.hpp
+1509216632 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\animation.hpp
 	"Eagle/AnimationBase.hpp"
 	"Eagle/Position.hpp"
 	<string>
@@ -828,16 +828,18 @@
 
 1508691312 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lousyglobals.hpp
 
-1509055994 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
+1509219970 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
 	"Game.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
 	"Eagle.hpp"
 
-1509055996 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.hpp
+1509219499 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.hpp
 	"LousyGlobals.hpp"
 	<vector>
 	<string>
 	<utility>
 	"Eagle/Events.hpp"
+	"Animation.hpp"
 
 1509130232 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position2.hpp
 

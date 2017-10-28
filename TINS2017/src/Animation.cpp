@@ -15,11 +15,30 @@ void XYAnimation::OnSetAnimationPercent() {
 }
 
 
+XYAnimation::XYAnimation() : 
+      Animation(),
+      posfunc(0),
+      pos()
+{
+}
+
+
+
 XYAnimation::XYAnimation(POS2D_FUNC func) : 
       Animation(),
-      posfunc(func),
-      pos(posfunc(0.0))
-{}
+      posfunc(0),
+      pos()
+{
+   Create(func);
+}
+
+
+
+void XYAnimation::Create(POS2D_FUNC func) {
+   posfunc = func;
+   OnSetAnimationPercent();
+}
+
 
 
 void XYTextAnimation::OnSetAnimationPercent() {
@@ -29,13 +48,39 @@ void XYTextAnimation::OnSetAnimationPercent() {
 
 
 
+XYTextAnimation::XYTextAnimation() :
+      XYAnimation(),
+      text_font(0),
+      text_string(""),
+      text_color(),
+      colfunc(0)
+{
+   
+}
+
+
 XYTextAnimation::XYTextAnimation(EagleFont* f , std::string s , COLOR_FUNC cfunc , POS2D_FUNC pfunc) :
-      XYAnimation(pfunc),
-      text_font(f),
-      text_string(s),
-      text_color(cfunc(0.0)),
-      colfunc(cfunc)
-{}
+      XYAnimation(),
+      text_font(0),
+      text_string(""),
+      text_color(),
+      colfunc(0)
+{
+   Create(f,s,cfunc,pfunc);
+}
+
+
+
+
+
+void XYTextAnimation::Create(EagleFont* f , std::string s , COLOR_FUNC cfunc , POS2D_FUNC pfunc) {
+   text_font = f;
+   text_string = s;
+   colfunc = cfunc;
+   posfunc = pfunc;
+   OnSetAnimationPercent();
+}
+
 
 
 void XYTextAnimation::Draw(EagleGraphicsContext* win , int x , int y) {
@@ -56,11 +101,29 @@ void XYTextAnimation::OnComplete() {
 
 
 
-TextAnimation::TextAnimation(EagleFont* f , std::string s , TRANS_FUNC transfunc , COLOR_FUNC cfunc , POS2D_FUNC pfunc) :
-      XYTextAnimation(f,s,cfunc,pfunc),
-      tfunc(transfunc),
-      trans(transfunc(0.0))
+TextAnimation::TextAnimation() :
+      XYTextAnimation(),
+      tfunc(0),
+      trans()
 {}
+
+
+
+TextAnimation::TextAnimation(EagleFont* f , std::string s , TRANS_FUNC transfunc , COLOR_FUNC cfunc , POS2D_FUNC pfunc) :
+      XYTextAnimation(),
+      tfunc(0),
+      trans()
+{
+   Create(f , s , transfunc , cfunc , pfunc);
+}
+
+
+
+void TextAnimation::Create(EagleFont* f , std::string s , TRANS_FUNC transfunc , COLOR_FUNC cfunc , POS2D_FUNC pfunc) {
+   tfunc = transfunc;
+   XYTextAnimation::Create(f , s  , cfunc , pfunc);
+   OnSetAnimationPercent();
+}
 
 
 

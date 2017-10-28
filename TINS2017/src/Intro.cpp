@@ -200,10 +200,6 @@ EagleImage* RunIntro() {
             title.Draw(our_win , 0 , 0);
          }
          else {
-///            our_win->SetDrawingTarget(img);
-///            our_win->SetCopyBlender();
-///            our_win->Draw(our_win->GetBackBuffer() , 0 , 0);
-            img = our_win->GetBackBuffer();
             quit = true;
          }
 /*         
@@ -253,6 +249,11 @@ EagleImage* RunIntro() {
       
    } while (!quit);
    
+   our_win->SetDrawingTarget(img);
+   our_win->SetCopyBlender();
+   our_win->Draw(our_win->GetBackBuffer() , 0 , 0);
+   our_win->RestoreLastBlendingState();
+
    our_win->FreeFont(our_font);
    
    return img;

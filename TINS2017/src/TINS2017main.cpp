@@ -45,8 +45,7 @@ int main(int argc , char** argv) {
    
    a5sys->GetSystemTimer()->Start();
 
-   Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
-
+/**
    bool quit = false;
    bool redraw = true;
    bool sub = false;
@@ -120,23 +119,29 @@ int main(int argc , char** argv) {
          }
       } while (a5sys->GetSystemQueue()->HasEvent(0));
    }
+*/
+
    
-   /**
-   
-   Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
+///   Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
 ///   al_save_bitmap("Intro.png" , intro_img->AllegroBitmap());
-   
+
+
+
+/**   KEEP
+   Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
+
    our_win->DrawToBackBuffer();
    DissolveIntro(our_win , intro_img);
+*/
+
+
 
    Game g;
    g.Init();
    
    int redraw = 1;
    
-   while (1) {
-      if (redraw == -1) {break;}
-      
+   while (redraw != -1) {
       if (redraw) {
          g.Draw();
          redraw = false;
@@ -149,7 +154,6 @@ int main(int argc , char** argv) {
          
       } while (a5sys->GetSystemQueue()->HasEvent(0));
    }
-   */   
    
    Eagle::EagleLibrary::ShutdownEagle();
    

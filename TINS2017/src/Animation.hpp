@@ -44,7 +44,10 @@ protected :
    void OnSetAnimationPercent();
 
 public :
-   XYAnimation(POS2D_FUNC func);
+   XYAnimation(); 
+   XYAnimation(POS2D_FUNC pfunc); 
+   
+   void Create(POS2D_FUNC pfunc);
    
    virtual void Draw(EagleGraphicsContext* win , int x , int y)=0;
 };
@@ -55,6 +58,7 @@ class EagleFont;
 
 
 typedef EagleColor(*COLOR_FUNC)(double);
+
 
 class XYTextAnimation : public XYAnimation {
 
@@ -69,8 +73,12 @@ protected :
 
 public :
    
+   XYTextAnimation();
    XYTextAnimation(EagleFont* f , std::string s , COLOR_FUNC cfunc , POS2D_FUNC pfunc);
 
+   void Create(EagleFont* f , std::string s , COLOR_FUNC cfunc , POS2D_FUNC pfunc);
+
+   
    virtual void Draw(EagleGraphicsContext* win , int x , int y);
 
    void OnLoopComplete();
@@ -91,8 +99,12 @@ protected :
    virtual void OnSetAnimationPercent();
 public :
    
+   TextAnimation();
+
    TextAnimation(EagleFont* f , std::string s , TRANS_FUNC transfunc , COLOR_FUNC cfunc , POS2D_FUNC pfunc);
 
+   void Create(EagleFont* f , std::string s , TRANS_FUNC transfunc , COLOR_FUNC cfunc , POS2D_FUNC pfunc);
+   
    virtual void Draw(EagleGraphicsContext* win , int x , int y);
 
 };
