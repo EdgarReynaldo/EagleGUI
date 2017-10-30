@@ -127,14 +127,11 @@ int main(int argc , char** argv) {
 
 
 
-/**   KEEP
    Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
 
    our_win->DrawToBackBuffer();
+   
    DissolveIntro(our_win , intro_img);
-*/
-
-
 
    Game g;
    g.Init();

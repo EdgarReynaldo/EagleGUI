@@ -80,12 +80,17 @@ void DrawPillFour(EagleColor c) {
 
 
 void DrawPillGlyph(int i) {
+
    if (i < 0) {i = 0;}
    if (i >= NCHAR) {i = NCHAR - 1;}
    
-   PILL_DRAW_FUNC drawfuncs[5] = {DrawPillOne , DrawPillTwo , DrawPillThree , DrawPillFour , DrawPill};
-   EagleColor colors[5] = {EagleColor(255,0,0) , EagleColor(0,255,0) , EagleColor(255,255,0) , EagleColor(0,0,255) , EagleColor(255,255,255)};
-   
+   if (i == (NCHAR - 1)) {
+      DrawPill(EagleColor(255,255,255));
+      return;
+   }
+
+   PILL_DRAW_FUNC drawfuncs[4] = {DrawPillOne , DrawPillTwo , DrawPillThree , DrawPillFour};
+   EagleColor colors[4] = {EagleColor(255,0,0) , EagleColor(0,255,0) , EagleColor(255,255,0) , EagleColor(0,0,255)};
    drawfuncs[(i/4)](colors[i%4]);
    
 }
@@ -106,7 +111,7 @@ EagleImage* CreatePillFontImage(int w , int h) {
    our_win->SetDrawingTarget(font_img);
    our_win->SetCopyBlender();
    /// Background color of image
-   our_win->Clear(EagleColor(255,255,0,255));
+   our_win->Clear(EagleColor(255,0,255,255));/// magic pink (wink wink)
    
    for (int i = 0 ; i < NCHAR ; ++i) {
       our_win->SetDrawingTarget(font_img);
@@ -133,7 +138,7 @@ EagleFont* CreatePillFont(int w , int h) {
    
    int ranges[] = {'0' , '9' , 'a' , 'f' , ' ' , ' '};
    
-   ALLEGRO_FONT* font = al_grab_font_from_bitmap(bmp , 6 , ranges);
+   ALLEGRO_FONT* font = al_grab_font_from_bitmap(bmp , 3 , ranges);
    EAGLE_ASSERT(font);
    
    EagleFont* new_font = new Allegro5Font(font);

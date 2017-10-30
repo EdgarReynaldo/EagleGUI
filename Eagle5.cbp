@@ -260,6 +260,7 @@
 		<Unit filename="src/ObjectInfo.cpp" />
 		<Unit filename="src/ObjectRegistry.cpp" />
 		<Unit filename="src/Platform.cpp" />
+		<Unit filename="src/Position.cpp" />
 		<Unit filename="src/PositionOLD.cpp">
 			<Option compile="0" />
 			<Option link="0" />

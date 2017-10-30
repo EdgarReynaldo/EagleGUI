@@ -310,11 +310,10 @@ bool Allegro5EventHandler::Valid() {
 }
 
 
-
 void Allegro5EventHandler::RespondToEvent(EagleEvent ee , EagleThread* thread) {
    EagleEventHandler::RespondToEvent(ee , thread);// emits and queues message
    /// now wake any threads waiting on us
-   cond_var->BroadcastCondition();
+///   cond_var->BroadcastCondition();
 }
 
 

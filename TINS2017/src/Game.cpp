@@ -275,10 +275,10 @@ bool Game::Init() {
    if (!info_font) {
       info_font = our_win->LoadFont("Verdana.ttf" , -36);
    }
-   if (!pill_image) {
-      pill_image = CreatePillFontImage(64,64);
-      EAGLE_ASSERT(pill_image->Save("PillImage" , "png"));
-   }
+//   if (!pill_image) {
+//      pill_image = CreatePillFontImage(64,64);
+//      EAGLE_ASSERT(pill_image->Save("PillImage" , "png"));
+//   }
    if (!pill_font) {
       pill_font = CreatePillFont(64,64);
       EAGLE_ASSERT(pill_font && pill_font->Valid());
@@ -304,7 +304,7 @@ void Game::Draw() {
    our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*5/8 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
 
-   our_win->DrawTextString(pill_font , "0123456789abcdef " , our_win->Width()/2 , our_win->Height()*7/8 ,
+   our_win->DrawTextString(pill_font , guess , our_win->Width()/2 , our_win->Height()*7/8 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
 
 ///   our_win->DrawTextString(info_font , questions.Solution() , 10 , 10 , EagleColor(255,255,255));

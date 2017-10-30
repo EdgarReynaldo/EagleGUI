@@ -85,6 +85,7 @@
 					<Add option="-leagle_debug-static" />
 					<Add option="-lallegro_monolith-debug-static" />
 					<Add option="-lFLAC.dll" />
+					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
@@ -131,6 +132,7 @@
 					<Add option="-leagle_a5-static" />
 					<Add option="-leagle-static" />
 					<Add option="-lallegro_monolith-static" />
+					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lFLAC" />
 					<Add option="-lvorbisfile" />
@@ -177,6 +179,7 @@
 					<Add option="-leagle_a5_profile-static" />
 					<Add option="-leagle_profile-static" />
 					<Add option="-lallegro_monolith-static" />
+					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lFLAC" />
 					<Add option="-lvorbisfile" />
@@ -237,6 +240,8 @@
 		<Unit filename="TINS2017/src/Intro.hpp" />
 		<Unit filename="TINS2017/src/LousyGlobals.cpp" />
 		<Unit filename="TINS2017/src/LousyGlobals.hpp" />
+		<Unit filename="TINS2017/src/PillFont.cpp" />
+		<Unit filename="TINS2017/src/PillFont.hpp" />
 		<Unit filename="TINS2017/src/TINS2017main.cpp" />
 		<Extensions>
 			<code_completion />

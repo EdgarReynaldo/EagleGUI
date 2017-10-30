@@ -431,7 +431,7 @@
 	"Eagle/Color.hpp"
 	"allegro5/allegro.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro.h
 	"allegro5/base.h"
 	"allegro5/altime.h"
 	"allegro5/bitmap.h"
@@ -472,7 +472,7 @@
 	"allegro5/utf8.h"
 	"allegro5/alcompat.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\base.h
+1507734975 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\base.h
 	<errno.h>
 	<limits.h>
 	<limits.h>
@@ -486,7 +486,7 @@
 	<dmalloc.h>
 	"allegro5/internal/alconfig.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\internal\alconfig.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\internal\alconfig.h
 	"allegro5/platform/alplatf.h"
 	"allegro5/platform/alwatcom.h"
 	"allegro5/platform/almngw32.h"
@@ -501,9 +501,9 @@
 	"allegro5/platform/astdint.h"
 	"allegro5/platform/astdbool.h"
 
-1496634649 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alplatf.h
+1509385837 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alplatf.h
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alwatcom.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alwatcom.h
 	<io.h>
 	<i86.h>
 	<conio.h>
@@ -511,144 +511,144 @@
 	<direct.h>
 	<malloc.h>
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almngw32.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almngw32.h
 	<io.h>
 	<fcntl.h>
 	<direct.h>
 	<malloc.h>
 	"allegro5/platform/alplatf.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\albcc32.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\albcc32.h
 	<io.h>
 	<fcntl.h>
 	<direct.h>
 	<malloc.h>
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almsvc.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\almsvc.h
 	<io.h>
 	<fcntl.h>
 	<direct.h>
 	<malloc.h>
 	"allegro5/platform/alplatf.h"
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\aliphonecfg.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\aliphonecfg.h
 	<fcntl.h>
 	<unistd.h>
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alosxcfg.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alosxcfg.h
 	"allegro5/platform/alplatf.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alandroidcfg.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alandroidcfg.h
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alraspberrypicfg.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alraspberrypicfg.h
 	<fcntl.h>
 	<unistd.h>
 	<sys/types.h>
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alucfg.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alucfg.h
 	<fcntl.h>
 	<unistd.h>
 	"alunix.h"
 	"allegro5/platform/alplatf.h"
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alunix.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\alunix.h
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\allegro_sdl_config.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\allegro_sdl_config.h
 	<fcntl.h>
 	<unistd.h>
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdint.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdint.h
 	<inttypes.h>
 	<stdint.h>
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdbool.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\platform\astdbool.h
 	<stdbool.h>
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\altime.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\altime.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap.h
 	"allegro5/color.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\color.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\color.h
 	"allegro5/base.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_draw.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_draw.h
 	"allegro5/bitmap.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_io.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_io.h
 	"allegro5/bitmap.h"
 	"allegro5/file.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\file.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\file.h
 	"allegro5/base.h"
 	"allegro5/path.h"
 	"allegro5/utf8.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\path.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\path.h
 	"allegro5/base.h"
 	"allegro5/utf8.h"
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\utf8.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\utf8.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_lock.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\bitmap_lock.h
 	"allegro5/bitmap.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\blender.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\blender.h
 	"allegro5/base.h"
 	"allegro5/color.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\clipboard.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\clipboard.h
 	"allegro5/base.h"
 	"allegro5/display.h"
 	"allegro5/utf8.h"
 
-1496617676 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\display.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\display.h
 	"allegro5/bitmap.h"
 	"allegro5/color.h"
 	"allegro5/events.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\events.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\events.h
 	"allegro5/altime.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\config.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\config.h
 	"allegro5/file.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\cpu.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\cpu.h
 	"allegro5/base.h"
 
-1496617676 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\debug.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\debug.h
 	<assert.h>
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\drawing.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\drawing.h
 	"allegro5/color.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\error.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\error.h
 	"allegro5/base.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fixed.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fixed.h
 	"allegro5/base.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fmaths.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fmaths.h
 	"allegro5/base.h"
 	"allegro5/fixed.h"
 	"allegro5/inline/fmaths.inl"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\inline\fmaths.inl
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\inline\fmaths.inl
 	"allegro5/error.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fshook.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fshook.h
 	"allegro5/base.h"
 	"allegro5/file.h"
 	"allegro5/path.h"
 	<sys/types.h>
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fullscreen_mode.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\fullscreen_mode.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\haptic.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\haptic.h
 	"allegro5/base.h"
 	"allegro5/display.h"
 	"allegro5/events.h"
@@ -657,59 +657,59 @@
 	"allegro5/mouse.h"
 	"allegro5/touch_input.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\joystick.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\joystick.h
 	"allegro5/base.h"
 	"allegro5/events.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keyboard.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keyboard.h
 	"allegro5/base.h"
 	"allegro5/events.h"
 	"allegro5/keycodes.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keycodes.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\keycodes.h
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse.h
 	"allegro5/base.h"
 	"allegro5/events.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\touch_input.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\touch_input.h
 	"allegro5/base.h"
 	"allegro5/events.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\memory.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\memory.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\monitor.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\monitor.h
 	"allegro5/base.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse_cursor.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\mouse_cursor.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\render_state.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\render_state.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\shader.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\shader.h
 	"allegro5/base.h"
 	"allegro5/transformations.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\transformations.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\transformations.h
 	"allegro5/display.h"
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\system.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\system.h
 	"allegro5/config.h"
 	"allegro5/path.h"
 
-1496612817 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\threads.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\threads.h
 	"allegro5/altime.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\timer.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\timer.h
 	"allegro5/base.h"
 	"allegro5/events.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\tls.h
+1504591147 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\tls.h
 	"allegro5/base.h"
 
-1496617671 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\alcompat.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\alcompat.h
 
 1508366721 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5eventhandler.hpp
 	"Eagle/Events.hpp"
@@ -730,10 +730,10 @@
 	"allegro5/allegro_font.h"
 	"allegro5/allegro_ttf.h"
 
-1496617670 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_font.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_font.h
 	"allegro5/allegro.h"
 
-1496612816 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_ttf.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_ttf.h
 	"allegro5/allegro.h"
 	"allegro5/allegro_font.h"
 
@@ -755,7 +755,7 @@
 	"Eagle/Transforms.hpp"
 	"allegro5/allegro.h"
 
-1496617670 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_primitives.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
 
 1508013123 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5inputhandler.hpp
@@ -779,7 +779,7 @@
 	"Eagle/Events.hpp"
 	"allegro5/allegro.h"
 
-1509213430 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
+1509375481 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
 	"Intro.hpp"
 	"DissolveIntro.hpp"
 	"LousyGlobals.hpp"
@@ -799,7 +799,7 @@
 1508523399 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\animationbase.hpp
 	"Eagle/Gui/WidgetMessage.hpp"
 
-1496617676 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_color.h
+1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_color.h
 	"allegro5/allegro.h"
 
 1509131845 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\dissolve.cpp
@@ -813,7 +813,7 @@
 	"Eagle/AnimationBase.hpp"
 	"Animation.hpp"
 
-1509131393 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\dissolveintro.cpp
+1509378557 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\dissolveintro.cpp
 	"DissolveIntro.hpp"
 	"LousyGlobals.hpp"
 	"Eagle.hpp"
@@ -828,7 +828,7 @@
 
 1509235803 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lousyglobals.hpp
 
-1509372962 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
+1509375139 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
 	"Game.hpp"
 	"PillFont.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
@@ -844,7 +844,7 @@
 
 1509130232 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position2.hpp
 
-1509373299 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.cpp
+1509375321 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.cpp
 	"PillFont.hpp"
 
 1509305141 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.hpp
