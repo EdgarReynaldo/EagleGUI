@@ -13,8 +13,6 @@ int window_height = -1;
 
 EagleFont* our_font = 0;
 
-#define M_PI 3.14159265
-
 EagleColor Hue(double hue);
 EagleColor Hue(double hue) {
    hue = 360.0*(hue - (float)(int)hue);
@@ -130,7 +128,7 @@ Transform StretchTransform(double percent) {
 }
 
 EagleColor White(double percent) {return EagleColor((float)percent,percent,percent,percent);}      
-EagleColor Black(double percent) {return EagleColor(0,0,0,255);}      
+EagleColor Black(double percent) {return EagleColor(0.0f,0.0,0.0,percent);}      
 
 
 EagleImage* RunIntro() {

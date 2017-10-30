@@ -59,6 +59,7 @@ public :
 
 
 class EagleFont;
+class EagleImage;
 
 class Game {
    
@@ -82,7 +83,9 @@ class Game {
    
    EagleFont* guess_font;
    EagleFont* info_font;
+   EagleFont* pill_font;
 
+   EagleImage* pill_image;
 
    void SetMessage(const char* msg , EagleColor color);
 

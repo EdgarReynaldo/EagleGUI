@@ -54,14 +54,14 @@ void EagleImage::AddChild(EagleImage* child) {
 
 void EagleImage::RemoveChild(EagleImage* child) {
    EAGLE_ASSERT(child);
+   children.Remove(child);
    child->SetParent(0);
-   children.Free(child);
 }
 
 
 
 void EagleImage::SetParent(EagleImage* parent_image) {
-   EAGLE_ASSERT(parent_image);
+///   EAGLE_ASSERT(parent_image);
    parent = parent_image;
 }
 

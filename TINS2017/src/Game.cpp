@@ -2,6 +2,8 @@
 
 
 #include "Game.hpp"
+#include "PillFont.hpp"
+
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle.hpp"
@@ -84,9 +86,9 @@ HINTMAP LevelOne() {
 
 HINTMAP LevelTwo() {
    HINTMAP hmap;
-   hmap.push_back(HINTPAIR("abababab" , HINTLIST({"Quit babbling!" , "Killer abdomen!" , "Nice abs!"})));
+   hmap.push_back(HINTPAIR("abababab" , HINTLIST({"Why are there 4?" , "Killer abdomen!" , "Nice abs!"})));
    hmap.push_back(HINTPAIR("abcdabcd" , HINTLIST({"Alphabet soup!" , "Takes me back to grade school."})));
-   hmap.push_back(HINTPAIR("f000f000" , HINTLIST({"Is that perfume?"})));
+   hmap.push_back(HINTPAIR("f000f000" , HINTLIST({"Is that perfume?" , "-BAR!"})));
    return hmap;
 }
 
@@ -95,7 +97,8 @@ HINTMAP LevelTwo() {
 HINTMAP LevelThree() {
    HINTMAP hmap; 
    hmap.push_back(HINTPAIR("baadf00d" , HINTLIST({"I think I ate something raunchy..."})));
-   hmap.push_back(HINTPAIR("deadbeef" , HINTLIST({"Moo!"})));
+   hmap.push_back(HINTPAIR("deadbeef" , HINTLIST({"Moo!" , "Cow!"})));
+   hmap.push_back(HINTPAIR("1 babb1e" , HINTLIST({"I do not!" , "No, you babble!" , "There's only one!"})));
    hmap.push_back(HINTPAIR("cdcdcdcd" , HINTLIST({"Damn, triggered a breakpoint" , "This place is super seedy!"})));
    return hmap;
 }
@@ -249,7 +252,9 @@ Game::Game() :
       duration(0.0),
       msgtime(-1),
       guess_font(0),
-      info_font(0)
+      info_font(0),
+      pill_font(0),
+      pill_image(0)
 {
    duration = 3;
 }
@@ -270,7 +275,15 @@ bool Game::Init() {
    if (!info_font) {
       info_font = our_win->LoadFont("Verdana.ttf" , -36);
    }
-
+   if (!pill_image) {
+      pill_image = CreatePillFontImage(64,64);
+      EAGLE_ASSERT(pill_image->Save("PillImage" , "png"));
+   }
+   if (!pill_font) {
+      pill_font = CreatePillFont(64,64);
+      EAGLE_ASSERT(pill_font && pill_font->Valid());
+   }
+   
    SetMessage("Start!!!" , EagleColor(0,255,0));
 
    return guess_font && info_font;
@@ -282,13 +295,18 @@ void Game::Draw() {
    
    our_win->DrawToBackBuffer();
    our_win->Clear(EagleColor(0,0,0));
+
    int w = guess_font->Width(guess.c_str());
    int h = guess_font->Height();
    int x = our_win->Width()/2 - w/2 + caret*w/8;
    int y = our_win->Height()*3/4 - h/2;
    our_win->DrawFilledRectangle(x , y , w/8 , h , EagleColor(0,0,255));
-   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*3/4 ,
+   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*5/8 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+
+   our_win->DrawTextString(pill_font , "0123456789abcdef " , our_win->Width()/2 , our_win->Height()*7/8 ,
+                           EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+
 ///   our_win->DrawTextString(info_font , questions.Solution() , 10 , 10 , EagleColor(255,255,255));
    
    our_win->DrawMultiLineTextString(info_font , info , 10 , 10 , EagleColor(255,255,255) , info_font->Height()/2);
@@ -298,7 +316,7 @@ void Game::Draw() {
       message_fader.Draw(our_win , 0 , 0);
 ///      our_win->DrawTextString(guess_font , message , our_win->Width()/2 , our_win->Height()/4 , EagleColor(0,255,0) , HALIGN_CENTER , VALIGN_CENTER);
    }
-   
+
    our_win->FlipDisplay();
 }
 
@@ -324,7 +342,7 @@ int Game::HandleEvent(EagleEvent e) {
    if (e.type == EAGLE_EVENT_KEY_CHAR) {
       int ascii = e.keyboard.unicode;
       if (isalpha(ascii)) {ascii = tolower(ascii);}
-      if (isdigit(ascii) || (ascii >= 'a' && ascii <= 'f')) {
+      if (isdigit(ascii) || (ascii >= 'a' && ascii <= 'f') || (ascii == ' ')) {
          ///
          if (caret < 8) {
             input[caret++] = ascii;

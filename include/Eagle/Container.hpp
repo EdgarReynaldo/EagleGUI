@@ -70,6 +70,8 @@ public :
    Type*& operator[](unsigned int index) {return ptrs[index];}
    unsigned int size() {return ptrs.size();}
 
+   
+   const std::vector<Type*>& Ptrs() {return ptrs;}
 };
 
 

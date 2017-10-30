@@ -84,7 +84,7 @@ typedef Pos2T<int> Pos2I;
 typedef Pos2T<float> Pos2F;
 typedef Pos2T<double> Pos2D;
 
-
+Pos2D Vector(const Pos2D& p , double r , double theta);
 
 #endif // Position2T_HPP
 
