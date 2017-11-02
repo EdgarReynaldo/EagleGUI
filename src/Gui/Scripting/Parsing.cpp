@@ -18,17 +18,17 @@ using namespace std;
 /// IE. " SUBCLASS : RadioButton ; POS : 100,50 ; DIM : 200,100 ; SDCOL : 0,64,0 ;"
 
 map<string , string> ParseAttributeSet(string widget_parameters) {/// throw (EagleException) {
-   
+
    map<string , string> attribute_map;
-   
+
    vector<string> attributes = SplitByDelimiterString(widget_parameters , ";");
-   
+
    for (size_t i = 0 ; i < attributes.size() ; ++i) {
       string attribute_str = attributes[i];
       vector<string> attribute_pair = SplitByDelimiterString(attribute_str , ":");
       if (attribute_pair.size() != 2) {
-         throw EagleException(StringPrintF("ParseAttributeSet : Illegal attribute pair (%s) of size %u found in attribute %u\n",
-                                       attribute_str.c_str() , attribute_pair.size() , i));
+         throw EagleException(StringPrintF("ParseAttributeSet : Illegal attribute pair (%s) of size %d found in attribute %dbw\n",
+                                       attribute_str.c_str() , (int)attribute_pair.size() , (int)i));
       }
       string attribute = attribute_pair[0];
       string value = attribute_pair[1];
@@ -38,13 +38,13 @@ map<string , string> ParseAttributeSet(string widget_parameters) {/// throw (Eag
       TrimTrailingWhiteSpace(valstr);
       const char* attstr_start = SkipWhiteSpace(attstr);
       const char* valstr_start = SkipWhiteSpace(valstr);
-      
+
       attribute_map[attstr_start] = valstr_start;
-      
+
       free(attstr);
       free(valstr);
-      
-      
+
+
    }
    return attribute_map;
 }
@@ -59,12 +59,12 @@ EagleColor ParseColor(std::string color_dec) {/// throw (EagleException) {
    float fr,fg,fb,fa;
    /// Declaration follows format [RGB | RGBA | FRGB | FRGBA](%n,%n,%n[,%n])
    vector<string> args = SplitByDelimiterString(color_dec , "(");
-   
+
    string val = args[1];
-   
+
    char buf[256];
    memset(buf , 0 , 256);
-   
+
    if (1 != sscanf(args[0].c_str() , "%5s" , buf)) {
       throw EagleException(StringPrintF("ParseEagleColor : Failed to read attribute name from string '%s'\n" , args[0].c_str()));
    }

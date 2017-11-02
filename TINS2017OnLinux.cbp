@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TINS2017OnLinux" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="cbbuild/bin/Libtest-debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Dynamic/Debug" />
+				<Option external_deps="cbbuild/bin/libeagle_a5_debug.so;cbbuild/bin/libeagle_debug.so;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+				<Linker>
+					<Add option="-Bdynamic" />
+					<Add option="-leagle_a5_debug" />
+					<Add option="-leagle_debug" />
+					<Add option="`pkg-config --libs allegro_monolith-debug-5`" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="cbbuild/bin/Libtest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Dynamic/Release" />
+				<Option external_deps="cbbuild/bin/libeagle_a5.so;cbbuild/bin/libeagle.so;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-Bdynamic" />
+					<Add option="-leagle_a5" />
+					<Add option="-leagle" />
+					<Add option="`pkg-config --libs allegro_monolith-5`" />
+				</Linker>
+			</Target>
+			<Target title="Profiling">
+				<Option output="cbbuild/bin/Libtest-profile" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
+				<Option external_deps="cbbuild/bin/libeagle_a5_profile;cbbuild/bin/libeagle_profile;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pg" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add option="-Bdynamic" />
+					<Add option="-lgmon" />
+					<Add option="-leagle_a5_profile" />
+					<Add option="-leagle_profile" />
+					<Add option="`pkg-config --libs allegro_monolith-debug-5`" />
+				</Linker>
+			</Target>
+			<Target title="StaticDebug">
+				<Option output="cbbuild/bin/Libtest-debug-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Static/Debug" />
+				<Option external_deps="cbbuild/lib/libeagle_a5_debug-static.a;cbbuild/lib/libeagle_debug-static.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DALLEGRO_STATICLINK" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+				<Linker>
+					<Add option="-Bstatic" />
+					<Add option="-leagle_a5_debug-static" />
+					<Add option="-leagle_debug-static" />
+					<Add option="`pkg-config --libs --static allegro_monolith-debug-static-5`" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+				</Linker>
+			</Target>
+			<Target title="StaticRelease">
+				<Option output="cbbuild/bin/Libtest-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Static/Release" />
+				<Option external_deps="cbbuild/lib/libeagle_a5-static.a;cbbuild/lib/libeagle-static.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DALLEGRO_STATICLINK" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-Bstatic" />
+					<Add option="-leagle_a5" />
+					<Add option="-leagle" />
+					<Add option="`pkg-config --libs --static allegro_monolith-5`" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+				</Linker>
+			</Target>
+			<Target title="StaticProfiling">
+				<Option output="cbbuild/bin/Libtest-profile-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="cbbuild/bin" />
+				<Option object_output="cbbuild/obj/Static/Profiling" />
+				<Option external_deps="cbbuild/lib/libeagle_a5_profile-static.a;cbbuild/lib/libeagle_profile-static.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pg" />
+					<Add option="-DALLEGRO_STATICLINK" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add option="-Bstatic" />
+					<Add option="-leagle_a5_profile-static" />
+					<Add option="-leagle_profile-static" />
+					<Add option="`pkg-config --libs --static allegro_monolith-debug-5`" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+				</Linker>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Debug;Release;Profiling;StaticDebug;StaticRelease;StaticProfiling;" />
+			<Add alias="AllDynamic" targets="Debug;Release;Profiling;" />
+			<Add alias="AllStatic" targets="StaticDebug;StaticRelease;StaticProfiling;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wshadow" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add directory="cbbuild/lib" />
+			<Add directory="cbbuild/bin" />
+		</Linker>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
