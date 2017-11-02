@@ -28,7 +28,7 @@ REGISTER_WIDGET_MESSAGE(TOPIC_ANIMATION , ANIMATION_LOOP_COMPLETE);
 REGISTER_WIDGET_MESSAGE(TOPIC_ANIMATION , ANIMATION_COMPLETE);
 
 
-class AnimationBase {
+class AnimationBase , public EagleEventSource {
    
 protected :
    double animation_percent;
@@ -43,6 +43,15 @@ protected :
    virtual void OnLoopComplete()=0;
    virtual void OnComplete()=0;
 
+   void LoopComplete();
+   void Complete();
+   void LoopComplete() {
+      
+   }
+   void Complete() {
+      
+   }
+   
 public :
    
    AnimationBase();

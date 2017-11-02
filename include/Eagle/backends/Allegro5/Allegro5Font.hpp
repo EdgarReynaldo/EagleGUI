@@ -27,8 +27,9 @@ public :
    
    bool Valid();
 
-   virtual int Width(const char* str);
-   virtual int Height();
+   int Width(std::string str);
+   int Height();
+   int Height(std::string str , int ls);
    
    ALLEGRO_FONT* AllegroFont() {return allegro_font;}
 

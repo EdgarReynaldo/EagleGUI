@@ -41,6 +41,8 @@ extern unsigned int STRINGPRINTF_BUFFER_SIZE;
 
 std::string StringPrintF(const char* format_str , ...) PRINTF_FORMAT_STYLE;/// 1024 character limit!
 
+int CountNewLines(std::string s);
+
 std::vector<std::string> SplitByNewLines(std::string s);
 
 std::vector<std::string> SplitByDelimiterString(std::string string_to_split , const std::string token);

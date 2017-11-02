@@ -54,6 +54,24 @@ string StringPrintF(const char* format_str , ...) {
 
 
 
+int CountNewLines(std::string s) {
+   int nlines = 1;
+   for (unsigned int i = 0 ; i < s.length() ; i++) {
+      char c = s[i];
+      if (c == '\r' || c == '\n') {
+         ++nlines;
+         unsigned int i2 = i + 1;
+         char c2 = (i2 < s.length())?s[i2]:'\0';
+         if (c == '\r' && c2 == '\n') {
+            ++i;
+         }
+      }
+   }
+   return nlines;
+}
+
+
+
 vector<string> SplitByNewLines(std::string s) {
    vector<string> lines;
 

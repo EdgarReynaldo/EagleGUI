@@ -75,16 +75,31 @@ bool Allegro5Font::Valid() {
 
 
 
-int Allegro5Font::Width(const char* str) {
+int Allegro5Font::Width(std::string str) {
    if (!allegro_font) {return 0;}
-   return al_get_text_width(allegro_font , str);
+   std::vector<std::string> lines = SplitByNewLines(str);
+   int maxw = 0;
+   for (unsigned int i = 0 ; i < lines.size() ; ++i) {
+      int w = al_get_text_width(allegro_font , lines[i].c_str());
+      if (w > maxw) {maxw = w;}
+   }
+   return maxw;
 }
 
 
 
 int Allegro5Font::Height() {
    if (!allegro_font) {return 0;}
-   return al_get_font_line_height(allegro_font);
+   int fh = al_get_font_line_height(allegro_font);
+   return fh;
+}
+
+
+
+int Allegro5Font::Height(std::string str , int ls) {
+   int nlines = CountNewLines(str);
+   int th = nlines*Height() + (nlines-1)*ls;
+   return th;
 }
 
 

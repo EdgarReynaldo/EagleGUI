@@ -139,7 +139,7 @@
 	<cstdio>
 	<iostream>
 
-1505064651 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\font.hpp
+1509616748 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\font.hpp
 	<string>
 	"Eagle/Image.hpp"
 	"Eagle/Object.hpp"
@@ -263,7 +263,7 @@
 	"Eagle/Image.hpp"
 	"Eagle/StringWork.hpp"
 
-1508343667 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\stringwork.hpp
+1509620734 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\stringwork.hpp
 	<vector>
 	<string>
 	<list>
@@ -725,7 +725,7 @@
 1508011190 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5threads.hpp
 	"Eagle/Threads.hpp"
 
-1505072149 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5font.hpp
+1509616825 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\backends\allegro5\allegro5font.hpp
 	"Eagle/Font.hpp"
 	"allegro5/allegro_font.h"
 	"allegro5/allegro_ttf.h"
@@ -813,7 +813,7 @@
 	"Eagle/AnimationBase.hpp"
 	"Animation.hpp"
 
-1509378557 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\dissolveintro.cpp
+1509403125 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\dissolveintro.cpp
 	"DissolveIntro.hpp"
 	"LousyGlobals.hpp"
 	"Eagle.hpp"

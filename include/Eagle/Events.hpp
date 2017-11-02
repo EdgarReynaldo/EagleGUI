@@ -105,10 +105,12 @@ enum EAGLE_EVENT_TYPE {
 
    EAGLE_EVENT_TOUCH_EVENT_STOP            = 53,
 
-
-   EAGLE_EVENT_WIDGET_EVENT_START          = 60,
-   EAGLE_EVENT_WIDGET                      = 60,
-   EAGLE_EVENT_WIDGET_EVENT_STOP           = 60,
+   EAGLE_EVENT_ANIMATION_LOOP_COMPLETE     = 60,
+   EAGLE_EVENT_ANIMATION_COMPLETE          = 61,
+   
+   EAGLE_EVENT_WIDGET_EVENT_START          = 70,
+   EAGLE_EVENT_WIDGET                      = 70,
+   EAGLE_EVENT_WIDGET_EVENT_STOP           = 70,
 
    EAGLE_EVENT_USER_START                  = 1024
 };

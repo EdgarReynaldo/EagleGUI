@@ -9,6 +9,7 @@ const int TOPIC_ANIMATION = NextFreeTopicId();
 
 
 AnimationBase::AnimationBase() :
+      EagleEventSource(),
       animation_percent(0.0),
       animation_time(0.0),
       total_duration(1.0),

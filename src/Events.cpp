@@ -68,6 +68,8 @@ std::string EagleEventName(int event_num) {
    else if (n == EAGLE_EVENT_TOUCH_END)              {s = "EAGLE_EVENT_TOUCH_END";}
    else if (n == EAGLE_EVENT_TOUCH_MOVE)             {s = "EAGLE_EVENT_TOUCH_MOVE";}
    else if (n == EAGLE_EVENT_TOUCH_CANCEL)           {s = "EAGLE_EVENT_TOUCH_CANCEL";}
+   else if (n == EAGLE_EVENT_ANIMATION_LOOP_COMPLETE){s = "EAGLE_EVENT_ANIMATION_LOOP_COMPLETE";}
+   else if (n == EAGLE_EVENT_ANIMATION_COMPLETE)     {s = "EAGLE_EVENT_ANIMATION_COMPLETE";}
    else if (n == EAGLE_EVENT_WIDGET)                 {s = "EAGLE_EVENT_WIDGET";}
    else {
       s = "EAGLE_EVENT_UNDEFINED";

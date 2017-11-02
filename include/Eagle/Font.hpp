@@ -58,8 +58,9 @@ public :
    
    virtual bool Valid()=0;
    
-   virtual int Width(const char* str)=0;
+   virtual int Width(std::string str)=0;
    virtual int Height()=0;
+   virtual int Height(std::string str , int ls)=0;
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
