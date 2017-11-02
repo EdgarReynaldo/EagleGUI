@@ -116,7 +116,7 @@
 		<Unit filename="README.txt" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
-		<Unit filename="include/Eagle/Animations.hpp" />
+		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
@@ -193,7 +193,7 @@
 		<Unit filename="include/Eagle/Transforms.hpp" />
 		<Unit filename="include/Eagle/WindowManager.hpp" />
 		<Unit filename="src/AVHandler.cpp" />
-		<Unit filename="src/Animations.cpp" />
+		<Unit filename="src/AnimationBase.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/CXX11Mutexes.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
