@@ -238,6 +238,22 @@ struct DISPLAY_EVENT_DATA {
    {}
 };
 
+
+class AnimationBase;
+
+struct ANIMATION_EVENT_DATA {
+   AnimationBase* source;
+   int loops_complete;
+   bool animation_complete;
+   
+   ANIMATION_EVENT_DATA() :
+         source(0),
+         loops_complete(-1),
+         animation_complete(false)
+   {}
+};
+
+
 enum AVSTATE {
 
 };
@@ -299,6 +315,7 @@ public :
       TOUCH_EVENT_DATA touch;// display id x y dx dy primary
       TIMER_EVENT_DATA timer;// source count
       DISPLAY_EVENT_DATA display;// source x y width height orientation
+      ANIMATION_EVENT_DATA animation;
       AUDIO_EVENT_DATA audio;
       VIDEO_EVENT_DATA video;
       WIDGET_EVENT_DATA widget;

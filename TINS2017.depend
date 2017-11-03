@@ -114,7 +114,7 @@
 1509367470 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\container.hpp
 	<vector>
 
-1508406962 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\events.hpp
+1509676718 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\events.hpp
 	<list>
 	<deque>
 	<vector>
@@ -779,11 +779,12 @@
 	"Eagle/Events.hpp"
 	"allegro5/allegro.h"
 
-1509375481 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
+1509678891 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\tins2017main.cpp
 	"Intro.hpp"
 	"DissolveIntro.hpp"
 	"LousyGlobals.hpp"
 	"Game.hpp"
+	"Story.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 
 1509217600 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\animation.cpp
@@ -796,8 +797,9 @@
 	<string>
 	"Eagle/Transforms.hpp"
 
-1508523399 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\animationbase.hpp
+1509679434 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\animationbase.hpp
 	"Eagle/Gui/WidgetMessage.hpp"
+	"Eagle/Events.hpp"
 
 1504591146 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_color.h
 	"allegro5/allegro.h"
@@ -828,26 +830,44 @@
 
 1509235803 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lousyglobals.hpp
 
-1509375139 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
+1509687903 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
 	"Game.hpp"
 	"PillFont.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 	"Eagle.hpp"
 
-1509367504 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.hpp
+1509690830 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.hpp
 	"LousyGlobals.hpp"
 	<vector>
 	<string>
 	<utility>
 	"Eagle/Events.hpp"
 	"Animation.hpp"
+	"CombinationLock.hpp"
 
 1509130232 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position2.hpp
 
-1509375321 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.cpp
+1509688987 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.cpp
 	"PillFont.hpp"
 
 1509305141 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\pillfont.hpp
 	"Eagle/backends/Allegro5Backend.hpp"
 	"LousyGlobals.hpp"
+
+1509689452 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\story.cpp
+	"Story.hpp"
+	"Eagle/backends/Allegro5Backend.hpp"
+	"LousyGlobals.hpp"
+
+1509679707 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\story.hpp
+	"Eagle/AnimationBase.hpp"
+	"Eagle/Events.hpp"
+	"Eagle/Position.hpp"
+
+1509690734 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\combinationlock.cpp
+	"CombinationLock.hpp"
+	<cstdlib>
+
+1509690661 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\combinationlock.hpp
+	"PillFont.hpp"
 

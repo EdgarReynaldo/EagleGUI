@@ -55,7 +55,7 @@ public :
 
 #include "Eagle/Events.hpp"
 #include "Animation.hpp"
-
+#include "CombinationLock.hpp"
 
 
 class EagleFont;
@@ -64,6 +64,8 @@ class EagleImage;
 class Game {
    
    Questions questions;
+   
+   Safe safe;
    
    std::vector<char> input;
    int caret;

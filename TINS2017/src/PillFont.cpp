@@ -90,7 +90,7 @@ void DrawPillGlyph(int i) {
    }
 
    PILL_DRAW_FUNC drawfuncs[4] = {DrawPillOne , DrawPillTwo , DrawPillThree , DrawPillFour};
-   EagleColor colors[4] = {EagleColor(255,0,0) , EagleColor(0,255,0) , EagleColor(255,255,0) , EagleColor(0,0,255)};
+   EagleColor colors[4] = {EagleColor(255,0,0) , EagleColor(0,255,0) , EagleColor(127,127,127) , EagleColor(0,0,255)};
    drawfuncs[(i/4)](colors[i%4]);
    
 }

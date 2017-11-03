@@ -5,6 +5,9 @@
 #include "DissolveIntro.hpp"
 #include "LousyGlobals.hpp"
 #include "Game.hpp"
+#include "Story.hpp"
+
+
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 
@@ -21,7 +24,7 @@ int main(int argc , char** argv) {
    
    a5sys->Initialize(EAGLE_FULL_SETUP);
    
-   double t = 0.0;
+///   double t = 0.0;
    
    our_win = a5sys->GetWindowManager()->CreateWindow("TINS 2017 main" , 1024 , 768 , EAGLE_OPENGL | EAGLE_WINDOWED);
    
@@ -133,6 +136,16 @@ int main(int argc , char** argv) {
    
    DissolveIntro(our_win , intro_img);
 
+   EagleFont* story_font = our_win->LoadFont("Verdana.ttf" , -42);
+   
+   EAGLE_ASSERT(story_font && story_font->Valid());
+   
+   Story story(IntroStory() , story_font);
+   
+   story.Init(25.0);
+   
+   story.Play();
+   
    Game g;
    g.Init();
    

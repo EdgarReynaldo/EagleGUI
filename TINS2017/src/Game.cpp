@@ -63,22 +63,10 @@ HINTLIST MakeHintList(int hcount , const char* hints[]) {
 HINTMAP LevelOne() {
 
    HINTMAP hmap;
-
-   const char* q1hint[2] = {"What did you see here? Nada, El Capitan!" ,
-                            "All work and no play makes Dr. Pox a null boy"};
-   HINTPAIR q1(std::string("00000000") , MakeHintList(2 , q1hint));
-   
-   const char* q2hint[2] = {"Don't be so negative" , "I^2"};
-   HINTPAIR q2(std::string("ffffffff") , MakeHintList(2 , q2hint));
-   
-   const char* q3hint[3] = {"Fi Fo Fum" , "I don't like paying these" , "Be free"};
-   HINTLIST hlist = {"Fi Fo Fum" , "I don't like paying these" , "Be free"};
-   HINTPAIR q3(std::string("feeefeee") , MakeHintList(3 , q3hint));
-   
-   hmap.push_back(q1);
-   hmap.push_back(q2);
-   hmap.push_back(q3);
-
+   hmap.push_back(HINTPAIR("00000000" , HINTLIST({"What did you see here? Nada, El Capitan!" , 
+                                                  "All work and no play makes Dr. Pox a null boy!"})));
+   hmap.push_back(HINTPAIR("ffffffff" , HINTLIST({"Don't be so negative" , "I^2"})));
+   hmap.push_back(HINTPAIR("feeefeee" , HINTLIST({"Fi Fo Fum" , "I don't like paying these" , "Be free"})));
    return hmap;
 }
 
@@ -239,6 +227,7 @@ void Game::RefreshGuess() {
 */
 Game::Game() :
       questions(),
+      safe(),
       input(),
       caret(0),
       guess(""),
@@ -301,10 +290,11 @@ void Game::Draw() {
    int x = our_win->Width()/2 - w/2 + caret*w/8;
    int y = our_win->Height()*3/4 - h/2;
    our_win->DrawFilledRectangle(x , y , w/8 , h , EagleColor(0,0,255));
-   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*5/8 ,
+///   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*5/8 ,
+   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*3/4 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
 
-   our_win->DrawTextString(pill_font , guess , our_win->Width()/2 , our_win->Height()*7/8 ,
+   our_win->DrawTextString(pill_font , safe.GetPillEncoding(questions.Solution()) , our_win->Width()/2 , our_win->Height()*7/8 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
 
 ///   our_win->DrawTextString(info_font , questions.Solution() , 10 , 10 , EagleColor(255,255,255));

@@ -8,12 +8,12 @@
 
 #include "Eagle/AnimationBase.hpp"
 #include "Eagle/Events.hpp"
-
-
+#include "Eagle/Position.hpp"
 
 std::string IntroStory();
 
 
+class EagleFont;
 
 class Story : public AnimationBase {
    
@@ -25,27 +25,23 @@ class Story : public AnimationBase {
    
    Pos2D pos;
    
+   bool complete;
    
    
    Pos2D GetPos(double percent);
 
 protected :
-   virtual void OnSetAnimationPercent();
-   virtual void OnLoopComplete();
-   virtual void OnComplete();
-void OnSetAnimationPercent() }
-   pos = GetPos(GetAnimationPercent());
-}
-void OnLoopComplete() {
-   
-}
-void OnComplete() {
-   
-}
+   void OnSetAnimationPercent();
+
+   void OnComplete();
 
 public :
+   Story(std::string story_str , EagleFont* font);
+
    virtual void Draw(EagleGraphicsContext* win , int x , int y);
+
    int HandleEvent(EagleEvent e);
+
    void Play();
 
 };
