@@ -150,6 +150,25 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="cbbuild/bin" />
 		</Linker>
+		<Unit filename="TINS2017/src/Animation.cpp" />
+		<Unit filename="TINS2017/src/Animation.hpp" />
+		<Unit filename="TINS2017/src/CombinationLock.cpp" />
+		<Unit filename="TINS2017/src/CombinationLock.hpp" />
+		<Unit filename="TINS2017/src/Dissolve.cpp" />
+		<Unit filename="TINS2017/src/Dissolve.hpp" />
+		<Unit filename="TINS2017/src/DissolveIntro.cpp" />
+		<Unit filename="TINS2017/src/DissolveIntro.hpp" />
+		<Unit filename="TINS2017/src/Game.cpp" />
+		<Unit filename="TINS2017/src/Game.hpp" />
+		<Unit filename="TINS2017/src/Intro.cpp" />
+		<Unit filename="TINS2017/src/Intro.hpp" />
+		<Unit filename="TINS2017/src/LousyGlobals.cpp" />
+		<Unit filename="TINS2017/src/LousyGlobals.hpp" />
+		<Unit filename="TINS2017/src/PillFont.cpp" />
+		<Unit filename="TINS2017/src/PillFont.hpp" />
+		<Unit filename="TINS2017/src/Story.cpp" />
+		<Unit filename="TINS2017/src/Story.hpp" />
+		<Unit filename="TINS2017/src/TINS2017main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
