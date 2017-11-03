@@ -3,6 +3,6 @@
 	<Workspace title="EagleOnLinux">
 		<Project filename="Eagle5Linux.cbp" />
 		<Project filename="Allegro5_backend_Linux.cbp" />
-		<Project filename="LibtestLinux.cbp" />
+		<Project filename="TINS2017OnLinux.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
