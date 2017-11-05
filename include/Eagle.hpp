@@ -48,6 +48,7 @@
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/ObjectInfo.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Sound.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Threads.hpp"

@@ -129,6 +129,7 @@ int main(int argc , char** argv) {
 ///   al_save_bitmap("Intro.png" , intro_img->AllegroBitmap());
 
 
+   a5soundman = new Allegro5SoundManager();
 
    Allegro5Image* intro_img = dynamic_cast<Allegro5Image*>(RunIntro());
 
@@ -136,15 +137,7 @@ int main(int argc , char** argv) {
    
    DissolveIntro(our_win , intro_img);
 
-   EagleFont* story_font = our_win->LoadFont("Verdana.ttf" , -42);
-   
-   EAGLE_ASSERT(story_font && story_font->Valid());
-   
-   Story story(IntroStory() , story_font);
-   
-   story.Init(25.0);
-   
-   story.Play();
+   PlayStory();
    
    Game g;
    g.Init();
@@ -162,7 +155,7 @@ int main(int argc , char** argv) {
          
          redraw = g.HandleEvent(e);
          
-      } while (a5sys->GetSystemQueue()->HasEvent(0));
+      } while (a5sys->GetSystemQueue()->HasEvent(0) && redraw != -1);
    }
    
    Eagle::EagleLibrary::ShutdownEagle();

@@ -2,6 +2,7 @@
 #include "Animation.hpp"
 #include "Intro.hpp"
 #include "LousyGlobals.hpp"
+#include "Eagle/Sound.hpp"
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 
@@ -167,6 +168,12 @@ EagleImage* RunIntro() {
    
    double old_pct = 0.0;
    double pct = 0.0;
+   double time_start = ProgramTime::Now();
+   
+   bool dabomb = true;
+   Sound* bomb = a5soundman->CreateSound("Bomb4sec.ogg");
+   bool dathunder = false;
+   Sound* thunder = a5soundman->CreateSound("Thunder4sec.ogg");
    
    do {
       if (redraw) {
@@ -174,7 +181,7 @@ EagleImage* RunIntro() {
          our_win->Clear(EagleColor(0,0,0));
          
          old_pct = pct;
-         pct = ProgramTime::Elapsed()/3;
+         pct = ((double)ProgramTime::Now() - time_start)/3;
          
          if (pct < 1.0) {
             spinny_thing.SetAnimationPercent(pct*.99);
@@ -184,16 +191,22 @@ EagleImage* RunIntro() {
             spinny_thing.SetAnimationPercent(.99);
             spinny_thing.Draw(our_win , 0 , 0);
          }
-         else if (pct < 4.0) {
+         else if (pct < 3.0) {
             spinny_thing2.SetAnimationPercent(pct - 2);
             spinny_thing2.Draw(our_win , 0 , 0);
          }
-         else if (pct < 8.0) {
-            pct = (pct - 4)*2 + 4;
-            spinny_thing2.SetAnimationPercent(pct - 2);
+         else if (pct < 7.0) {
+            if (old_pct < 3.0) {
+               dathunder = true;
+            }
+            if ((pct >= 5.0) && (old_pct < 5.0)) {
+               dathunder = true;
+            }
+            double npct = (pct - 3)*2 + 4;
+            spinny_thing2.SetAnimationPercent(npct - 3);
             spinny_thing2.Draw(our_win , 0 , 0);
-            title.SetAnimationPercent(pct - 4);
-            title_shadow.SetAnimationPercent(pct - 4);
+            title.SetAnimationPercent(npct - 4);
+            title_shadow.SetAnimationPercent(npct - 4);
             title_shadow.Draw(our_win , 0 , 0);
             title.Draw(our_win , 0 , 0);
          }
@@ -235,6 +248,15 @@ EagleImage* RunIntro() {
       do {
          EagleEvent e = a5sys->GetSystemQueue()->WaitForEvent(0);
          
+         if (dabomb) {
+            bomb->Play();
+            dabomb = false;
+         }
+         if (dathunder) {
+               EagleInfo() << "Playing thunder." << std::endl;
+            thunder->Play();
+            dathunder = false;
+         }
          if (e.type == EAGLE_EVENT_TIMER) {
             redraw = true;
          }
@@ -252,6 +274,8 @@ EagleImage* RunIntro() {
    our_win->Draw(our_win->GetBackBuffer() , 0 , 0);
    our_win->RestoreLastBlendingState();
 
+   a5soundman->FreeSound(bomb);
+   a5soundman->FreeSound(thunder);
    our_win->FreeFont(our_font);
    
    return img;

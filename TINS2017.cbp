@@ -230,6 +230,8 @@
 		</Linker>
 		<Unit filename="TINS2017/src/Animation.cpp" />
 		<Unit filename="TINS2017/src/Animation.hpp" />
+		<Unit filename="TINS2017/src/CombinationLock.cpp" />
+		<Unit filename="TINS2017/src/CombinationLock.hpp" />
 		<Unit filename="TINS2017/src/Dissolve.cpp" />
 		<Unit filename="TINS2017/src/Dissolve.hpp" />
 		<Unit filename="TINS2017/src/DissolveIntro.cpp" />
@@ -242,6 +244,8 @@
 		<Unit filename="TINS2017/src/LousyGlobals.hpp" />
 		<Unit filename="TINS2017/src/PillFont.cpp" />
 		<Unit filename="TINS2017/src/PillFont.hpp" />
+		<Unit filename="TINS2017/src/Story.cpp" />
+		<Unit filename="TINS2017/src/Story.hpp" />
 		<Unit filename="TINS2017/src/TINS2017main.cpp" />
 		<Extensions>
 			<code_completion />

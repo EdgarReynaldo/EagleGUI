@@ -41,6 +41,24 @@ std::string IntroStory() {
 
 
 
+void PlayStory() {
+   EagleFont* story_font = our_win->LoadFont("Akashi.ttf" , -32);
+   
+   EAGLE_ASSERT(story_font && story_font->Valid());
+   
+   Story story(IntroStory() , story_font);
+   
+   story.Init(30.0);
+   
+   story.Play(); 
+   
+   our_win->FreeFont(story_font);
+   
+   return;
+}
+
+
+
 Pos2D Story::GetPos(double percent) {
    int h = story_font->Height(story , story_font->Height()/4);
    int w = story_font->Width(story);
@@ -68,7 +86,8 @@ Story::Story(std::string story_str , EagleFont* font) :
       key_up(false),
       key_down(false),
       pos(),
-      complete(false)
+      complete(false),
+      resting(0.0)
 {}
 
 void Story::Draw(EagleGraphicsContext* win , int x , int y) {
@@ -104,6 +123,7 @@ int Story::HandleEvent(EagleEvent e) {
    }
    if (e.type == EAGLE_EVENT_TIMER) {
       if (key_up || key_down) {
+         resting = 3.0;
          if (key_up) {
             AdvanceAnimationTime(a5sys->GetSystemTimer()->SecondsPerTick());
          }
@@ -112,7 +132,10 @@ int Story::HandleEvent(EagleEvent e) {
          }
       }
       else {
-         AdvanceAnimationTime(a5sys->GetSystemTimer()->SecondsPerTick());
+         resting -= e.timer.eagle_timer_source->SecondsPerTick();
+         if (resting <= 0.0) {
+            AdvanceAnimationTime(a5sys->GetSystemTimer()->SecondsPerTick());
+         }
       }
       ret = 1;
    }

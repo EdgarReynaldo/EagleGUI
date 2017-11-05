@@ -8,12 +8,24 @@
 
 
 
+std::string Safe::DecodePillString(std::string pill_string) {
+   std::string hex_string = pill_string;
+   for (unsigned int i = 0 ; i < pill_string.length() ; ++i) {
+      hex_string[i] = pill_to_alpha[pill_string[i]];
+   }
+   return hex_string;
+}
+
+
+
 Safe::Safe() :
       rng(),
       pill_recipe(""),
       pill_recipe_hex(""),
       alpha_to_pill(),
-      pill_to_alpha()
+      pill_to_alpha(),
+      known_alpha_to_pill(),
+      known_pill_to_alpha()
 {
    GenerateRecipe(0);/// TODO : CHANGE THIS
 }
@@ -28,6 +40,8 @@ void Safe::GenerateRecipe(int rng_seed) {
    
    alpha_to_pill.clear();
    pill_to_alpha.clear();
+   known_alpha_to_pill.clear();
+   known_pill_to_alpha.clear();
    
    /// Generate pill recipe string (public)
    pill_recipe = "";
@@ -82,5 +96,15 @@ std::string Safe::GetPillEncoding(std::string hex_string) {
 
 
 
+bool Safe::Decode(std::string hex_string , std::string pill_string) {
+   if (hex_string.compare(DecodePillString(pill_string)) == 0) {
+      for (unsigned int i = 0 ; i < hex_string.size() ; ++i) {
+         known_alpha_to_pill[hex_string[i]] = pill_string[i];
+         known_pill_to_alpha[pill_string[i]] = hex_string[i];
+      }
+      return true;
+   }
+   return false;
+}
 
 

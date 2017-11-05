@@ -12,6 +12,9 @@
 
 std::string IntroStory();
 
+void PlayStory();
+
+
 
 class EagleFont;
 
@@ -26,7 +29,7 @@ class Story : public AnimationBase {
    Pos2D pos;
    
    bool complete;
-   
+   double resting;
    
    Pos2D GetPos(double percent);
 

@@ -3,6 +3,8 @@
 
 #include "Game.hpp"
 #include "PillFont.hpp"
+#include "Story.hpp"
+
 
 
 #include "Eagle/backends/Allegro5Backend.hpp"
@@ -12,7 +14,7 @@
 
 Pos2D TopCenter(double percent) {
    (void)percent;
-   return Pos2D(our_win->Width()/2 , our_win->Height()/2);
+   return Pos2D(our_win->Width()/2 , our_win->Height()/4);
 }
 
 
@@ -177,6 +179,13 @@ HINTLIST Questions::GetHints() {
 
 
 
+double Game::GetTimeLeft() {
+   double dt = (double)ProgramTime::Now() - time_start;
+   return stop_time_counter - dt;
+}
+
+
+
 void Game::SetMessage(const char* msg , EagleColor color) {
    msgtime = duration;
    message = msg;
@@ -243,9 +252,21 @@ Game::Game() :
       guess_font(0),
       info_font(0),
       pill_font(0),
-      pill_image(0)
+      pill_image(0),
+      time_start(0.0),
+      stop_time_counter(0.0),
+      time_left(0.0),
+      finish_time(-1.0),
+      yay(0),
+      oops(0),
+      applause(0)
 {
    duration = 3;
+
+   stop_time_counter = 24.0*60;/// 24 hours (minutes) to cure his chicken pox!
+///   stop_time_counter = 16;
+
+///   time_counter_rate = 60;/// One minute per second, that gives you 24*60 seconds, or 1440, or 24 minutes to solve the game
 }
 
 
@@ -262,7 +283,8 @@ bool Game::Init() {
       guess_font = our_win->LoadFont("Consola.ttf" , -96);
    }
    if (!info_font) {
-      info_font = our_win->LoadFont("Verdana.ttf" , -36);
+///      info_font = our_win->LoadFont("Verdana.ttf" , -36);
+      info_font = our_win->LoadFont("Akashi.ttf" , -28);
    }
 //   if (!pill_image) {
 //      pill_image = CreatePillFontImage(64,64);
@@ -273,8 +295,23 @@ bool Game::Init() {
       EAGLE_ASSERT(pill_font && pill_font->Valid());
    }
    
+   if (!yay) {
+      yay = a5soundman->CreateSound("Yay.ogg");
+   }
+   if (!oops) {
+      oops = a5soundman->CreateSound("Oops.ogg");
+   }
+   if (!applause) {
+      applause = a5soundman->CreateSound("Applause3.ogg");
+   }
+   
    SetMessage("Start!!!" , EagleColor(0,255,0));
 
+
+   time_start = ProgramTime::Now();
+   
+   
+   
    return guess_font && info_font;
 }
 
@@ -285,28 +322,56 @@ void Game::Draw() {
    our_win->DrawToBackBuffer();
    our_win->Clear(EagleColor(0,0,0));
 
+   int gx = our_win->Width()/2;
+   int gy = our_win->Height()/2;
+   
+   /// x,y,w,h are text dimensions of guess
    int w = guess_font->Width(guess.c_str());
    int h = guess_font->Height();
-   int x = our_win->Width()/2 - w/2 + caret*w/8;
-   int y = our_win->Height()*3/4 - h/2;
+   int x = gx - w/2 + caret*w/8;
+   int y = gy - h/2;
+   
+   /// cursor
    our_win->DrawFilledRectangle(x , y , w/8 , h , EagleColor(0,0,255));
-///   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*5/8 ,
-   our_win->DrawTextString(guess_font , guess , our_win->Width()/2 , our_win->Height()*3/4 ,
+
+   /// current guess
+   our_win->DrawTextString(guess_font , std::string("0x").append(guess) , gx + w/2 , gy ,
+                           EagleColor(255,255,255) , HALIGN_RIGHT , VALIGN_CENTER);
+
+   /// solution in pill encoding
+   our_win->DrawTextString(pill_font , safe.GetPillEncoding(questions.Solution()) , gx , gy + our_win->Height()/8 ,
                            EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
 
-   our_win->DrawTextString(pill_font , safe.GetPillEncoding(questions.Solution()) , our_win->Width()/2 , our_win->Height()*7/8 ,
-                           EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
-
-///   our_win->DrawTextString(info_font , questions.Solution() , 10 , 10 , EagleColor(255,255,255));
+   /// hints?
+   our_win->DrawMultiLineTextString(info_font , info , 10 , our_win->Height() - 10 , EagleColor(255,255,255) , info_font->Height()/4 , HALIGN_LEFT , VALIGN_BOTTOM);
    
-   our_win->DrawMultiLineTextString(info_font , info , 10 , 10 , EagleColor(255,255,255) , info_font->Height()/2);
-   
+   /// message overlay
    if (msgtime > 0.0) {
       message_fader.SetAnimationPercent((duration - msgtime)/duration);
       message_fader.Draw(our_win , 0 , 0);
 ///      our_win->DrawTextString(guess_font , message , our_win->Width()/2 , our_win->Height()/4 , EagleColor(0,255,0) , HALIGN_CENTER , VALIGN_CENTER);
    }
 
+   /// time left
+   double t = time_left;
+   double pct = time_left/stop_time_counter;
+   int m = t/60.0;
+   int s = (t - 60.0*m);
+   if (t <= 0.0) {
+      m = 0;
+      s = 0;
+   }
+   string tstr = StringPrintF("%02dH:%02dM left!" , m , s);
+   EagleColor tcolor(0,255,0,255);
+   if (pct < 0.25) {
+      tcolor = EagleColor(255,0,0,255);
+   }
+   else if (pct < 0.5) {
+      tcolor = EagleColor(255,127,0,255);
+   }
+   our_win->DrawTextString(info_font , tstr , our_win->Width() - 10 , 10 , tcolor , HALIGN_RIGHT , VALIGN_TOP);
+   
+   /// display
    our_win->FlipDisplay();
 }
 
@@ -326,6 +391,12 @@ int Game::HandleEvent(EagleEvent e) {
          if (finish) {
             return -1;
          }
+      }
+      double old_time_left = time_left;
+      time_left = GetTimeLeft();
+      if (old_time_left >= 0.0 && time_left < 0.0) {
+         SetMessage("YOU FAILED!" , EagleColor(255,0,0));
+         finish = true;
       }
       ret = 1;
    }
@@ -366,6 +437,9 @@ int Game::HandleEvent(EagleEvent e) {
             SetMessage("No more hints!" , EagleColor(255,0,0));
          }
       }
+      else if (kc == EAGLE_KEY_S) {
+         PlayStory();
+      }
       else if (kc == EAGLE_KEY_ENTER) {
          if (questions.Solution().compare(guess) == 0) {
             if (questions.NextQuestion()) {
@@ -373,6 +447,7 @@ int Game::HandleEvent(EagleEvent e) {
                input = {' ',' ',' ',' ',' ',' ',' ',' '};
                caret = 0;
                SetMessage("Question Up!" , EagleColor(127,127,255));
+               yay->Play();
                hints = questions.GetHints();
                RebuildInfo();
             }
@@ -381,17 +456,21 @@ int Game::HandleEvent(EagleEvent e) {
                input = {' ',' ',' ',' ',' ',' ',' ',' '};
                caret = 0;
                SetMessage("Level Up!" , EagleColor(0,255,255));
+               yay->Play();
                hints = questions.GetHints();
                RebuildInfo();
             }
             else {
-               duration = 10;
+               finish_time = GetTimeLeft();
                finish = true;
+               duration = 10;
+               applause->Play();
                SetMessage("You won!" , EagleColor(0,255,0));
             }
          }
          else {
             SetMessage("Incorrect!" , EagleColor(255,0,0));
+            oops->Play();
          }
       }
       RefreshGuess();

@@ -88,7 +88,20 @@ class Game {
    EagleFont* pill_font;
 
    EagleImage* pill_image;
+   
+   double time_start;
+   double stop_time_counter;
+   double time_left;
+   double finish_time;
 
+   Sound* yay;
+   Sound* oops;
+   Sound* applause;
+   
+   
+   
+   double GetTimeLeft();
+   
    void SetMessage(const char* msg , EagleColor color);
 
    void RebuildInfo();

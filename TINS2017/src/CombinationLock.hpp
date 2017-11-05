@@ -34,6 +34,10 @@ class Safe {
    std::map<char , char> alpha_to_pill;
    std::map<char , char> pill_to_alpha;
    
+   std::map<char , char> known_alpha_to_pill;
+   std::map<char , char> known_pill_to_alpha;
+   
+   std::string DecodePillString(std::string pill_string);
 public :
    
    Safe();
@@ -47,7 +51,7 @@ public :
 
    std::string GetPillEncoding(std::string hex_string);
 
-   
+   bool Decode(std::string hex_string , std::string pill_string);
 };
 
 

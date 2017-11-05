@@ -18,8 +18,10 @@ void EagleWindowManager::SwitchIn(EagleGraphicsContext* window) {
 
    WMIT it = window_map.find(window->GetEagleId());
    EAGLE_ASSERT(it != window_map.end());
-   EAGLE_ASSERT(it->second);
-   active_window = window;
+   if (it != window_map.end()) {
+      EAGLE_ASSERT(it->second);
+      active_window = window;
+   }
 
    ThreadUnLockMutex(our_thread , manager_mutex);
 }

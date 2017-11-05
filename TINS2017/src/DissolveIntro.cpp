@@ -105,9 +105,6 @@ void DissolveIntro(EagleGraphicsContext* win , EagleImage* intro) {
          if (pct < 1.0) {
             dissolver.SetAnimationPercent(pct);
          }
-         else if (pct < 1.5) {
-            dissolver.SetAnimationPercent(1);
-         }
          else {
             quit = true;
          }

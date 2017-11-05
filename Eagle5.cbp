@@ -190,6 +190,7 @@
 		<Unit filename="include/Eagle/Position.hpp" />
 		<Unit filename="include/Eagle/Position2.hpp" />
 		<Unit filename="include/Eagle/PositionOLD.hpp" />
+		<Unit filename="include/Eagle/Sound.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/Threads.hpp" />
@@ -265,6 +266,7 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="src/Sound.cpp" />
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />
 		<Unit filename="src/Threads.cpp" />
