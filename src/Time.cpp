@@ -70,7 +70,8 @@ ProgramTime ProgramTime::Now() {
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
 #elif defined EAGLE_LINUX
     timespec ts;
-    EAGLE_ASSERT(0 == clock_gettime(CLOCK_REALTIME , &ts));
+    int ret = clock_gettime(CLOCK_REALTIME , &ts);
+    EAGLE_ASSERT(ret == 0);
     double rt = (double)ts.tv_sec + (double)ts.tv_nsec / pow(10 , 9);
     return ProgramTime(rt);
 #else

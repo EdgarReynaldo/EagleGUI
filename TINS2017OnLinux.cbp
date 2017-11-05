@@ -104,8 +104,8 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-Bstatic" />
-					<Add option="-leagle_a5" />
-					<Add option="-leagle" />
+					<Add option="-leagle_a5-static" />
+					<Add option="-leagle-static" />
 					<Add option="`pkg-config --libs --static allegro_monolith-5`" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
