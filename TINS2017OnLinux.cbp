@@ -162,10 +162,14 @@
 		<Unit filename="TINS2017/src/Game.hpp" />
 		<Unit filename="TINS2017/src/Intro.cpp" />
 		<Unit filename="TINS2017/src/Intro.hpp" />
+		<Unit filename="TINS2017/src/Lightning.cpp" />
+		<Unit filename="TINS2017/src/Lightning.hpp" />
 		<Unit filename="TINS2017/src/LousyGlobals.cpp" />
 		<Unit filename="TINS2017/src/LousyGlobals.hpp" />
 		<Unit filename="TINS2017/src/PillFont.cpp" />
 		<Unit filename="TINS2017/src/PillFont.hpp" />
+		<Unit filename="TINS2017/src/RNG.cpp" />
+		<Unit filename="TINS2017/src/RNG.hpp" />
 		<Unit filename="TINS2017/src/Story.cpp" />
 		<Unit filename="TINS2017/src/Story.hpp" />
 		<Unit filename="TINS2017/src/TINS2017main.cpp" />
