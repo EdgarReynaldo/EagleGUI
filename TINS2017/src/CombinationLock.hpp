@@ -9,20 +9,9 @@
 #include "PillFont.hpp"
 
 
+#include "RNG.hpp"
 
 
-class RNG {
-public :
-   
-   void SeedRng(int seed) {srand(seed);}
-   
-   int Rand0toNminus1(int n) {
-      return rand()%n;
-   }
-   int Rand0toN(int n) {
-      return Rand0toNminus1(n+1);
-   }
-};
 
 class Safe {
    

@@ -64,6 +64,8 @@ public :
    double AngleToPoint(const Pos2T& p) const {return atan2(p.Y() - ty , p.X() - tx);}
    double AngleToPoint(TYPE x , TYPE y) const {return atan2(y - ty , x - tx);}
 
+   double Length() const {return sqrt(tx*tx + ty*ty);}
+   
    TYPE X() const {return tx;}
    TYPE Y() const {return ty;}
    

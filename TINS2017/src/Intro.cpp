@@ -3,10 +3,15 @@
 #include "Intro.hpp"
 #include "LousyGlobals.hpp"
 #include "Eagle/Sound.hpp"
+#include "Lightning.hpp"
+
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 
+
+
 #include "allegro5/allegro_color.h"
+
 
 
 int window_width = -1;
@@ -175,6 +180,19 @@ EagleImage* RunIntro() {
    bool dathunder = false;
    Sound* thunder = a5soundman->CreateSound("Thunder4sec.ogg");
    
+   double ltime = 0.0;
+   double lduration = 2.0;
+   
+   LightningBolt bolt1;
+   LightningBolt bolt2;
+   LightningBolt bolt3;
+   LightningBolt bolt4;
+   
+   bolt1.Create(0 ,                0 ,                 0 , our_win->Width()/2 , our_win->Height()/2);
+   bolt2.Create(0 , our_win->Width() ,                 0 , our_win->Width()/2 , our_win->Height()/2);
+   bolt3.Create(0 ,                0 , our_win->Height() , our_win->Width()/2 , our_win->Height()/2);
+   bolt4.Create(0 , our_win->Width() , our_win->Height() , our_win->Width()/2 , our_win->Height()/2);
+   
    do {
       if (redraw) {
          our_win->DrawToBackBuffer();
@@ -196,15 +214,26 @@ EagleImage* RunIntro() {
             spinny_thing2.Draw(our_win , 0 , 0);
          }
          else if (pct < 7.0) {
-            if (old_pct < 3.0) {
-               dathunder = true;
-            }
-            if ((pct >= 5.0) && (old_pct < 5.0)) {
-               dathunder = true;
-            }
+
             double npct = (pct - 3)*2 + 4;
             spinny_thing2.SetAnimationPercent(npct - 3);
             spinny_thing2.Draw(our_win , 0 , 0);
+
+            if (old_pct < 3.0) {
+               dathunder = true;
+            }
+            
+            if (pct >= 5.0) {
+               if (old_pct < 5.0) {
+                  dathunder = true;
+               }
+            }
+            
+            bolt1.Draw(our_win , 0 , 0);
+            bolt2.Draw(our_win , 0 , 0);
+            bolt3.Draw(our_win , 0 , 0);
+            bolt4.Draw(our_win , 0 , 0);
+
             title.SetAnimationPercent(npct - 4);
             title_shadow.SetAnimationPercent(npct - 4);
             title_shadow.Draw(our_win , 0 , 0);
@@ -254,10 +283,24 @@ EagleImage* RunIntro() {
          }
          if (dathunder) {
                EagleInfo() << "Playing thunder." << std::endl;
-            thunder->Play();
+            bolt1.ResetAnimation();
+            bolt2.ResetAnimation();
+            bolt3.ResetAnimation();
+            bolt4.ResetAnimation();
+///            thunder->Play();
+            ltime = lduration;
             dathunder = false;
          }
          if (e.type == EAGLE_EVENT_TIMER) {
+            bolt1.AdvanceAnimationTime(e.timer.eagle_timer_source->SecondsPerTick());
+            bolt2.AdvanceAnimationTime(e.timer.eagle_timer_source->SecondsPerTick());
+            bolt3.AdvanceAnimationTime(e.timer.eagle_timer_source->SecondsPerTick());
+            bolt4.AdvanceAnimationTime(e.timer.eagle_timer_source->SecondsPerTick());
+            double lt = ltime;
+            ltime -= e.timer.eagle_timer_source->SecondsPerTick();
+            if (ltime < 0.0 && lt >= 0.0) {
+               thunder->Play();
+            }
             redraw = true;
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE || (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE)) {

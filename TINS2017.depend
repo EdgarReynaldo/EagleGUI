@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1509906900 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\intro.cpp
+1510183002 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\intro.cpp
 	"Animation.hpp"
 	"Intro.hpp"
 	"LousyGlobals.hpp"
 	"Eagle/Sound.hpp"
+	"Lightning.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 	"allegro5/allegro_color.h"
 
@@ -109,7 +110,7 @@
 1508350700 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\objectinfo.hpp
 	<string>
 
-1509231123 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position.hpp
+1510140688 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\position.hpp
 	<iostream>
 	<cmath>
 	"Eagle/Color.hpp"
@@ -833,9 +834,10 @@
 
 1509894080 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lousyglobals.hpp
 
-1509900159 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
+1509907740 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\game.cpp
 	"Game.hpp"
 	"PillFont.hpp"
+	"Story.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
 	"Eagle.hpp"
 
@@ -871,8 +873,9 @@
 	"CombinationLock.hpp"
 	<cstdlib>
 
-1509698985 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\combinationlock.hpp
+1510138621 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\combinationlock.hpp
 	"PillFont.hpp"
+	"RNG.hpp"
 
 1509892871 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\include\eagle\sound.hpp
 	<string>
@@ -884,4 +887,20 @@
 
 1504587546 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\allegro5\include\allegro5\allegro_audio.h
 	"allegro5/allegro.h"
+
+1510142026 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\rng.hpp
+
+1510142051 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\rng.cpp
+	<cstdlib>
+	"RNG.hpp"
+
+1510182839 source:c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lightning.cpp
+	"Lightning.hpp"
+	"RNG.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Time.hpp"
+
+1510174766 c:\ctwoplus\progcode\eagle5gui_git_bitbucket\tins2017\src\lightning.hpp
+	"Eagle/Position.hpp"
+	"Animation.hpp"
 
