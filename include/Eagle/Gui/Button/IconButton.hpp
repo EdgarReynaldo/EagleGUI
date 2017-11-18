@@ -42,16 +42,7 @@ private :
 
 public :
    
-   IconButton() :
-         BasicButton(StringPrintF("IconButton object at %p" , this)),
-         original_images(),
-         click_rect()
-   {
-      for (int i = 0 ; i < 4 ; ++i) {
-         original_images[i] = 0;
-      }
-      SetClickArea(&click_rect , false);
-   }
+   IconButton(std::string object_name);
    ~IconButton() {}
    
    void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);

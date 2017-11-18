@@ -9,13 +9,15 @@
 #include <string>
 #include <map>
 
+#include "Eagle/Properties.hpp"
+
 
 
 class WidgetBase;
 
 
 
-typedef WidgetBase* (*WIDGET_CREATION_FUNCTION)(std::string widget_parameters);
+typedef WidgetBase* (*WIDGET_CREATION_FUNCTION)(std::string object_name , AttributeValueMap avmap);
 
 
 
@@ -33,15 +35,15 @@ public :
 
 
 
-WidgetBase* CreateBasicTextWidget   (std::string widget_parameters);
-WidgetBase* CreateSelectTextWidget  (std::string widget_parameters);
-WidgetBase* CreateLinkTextWidget    (std::string widget_parameters);
-WidgetBase* CreateBasicButtonWidget (std::string widget_parameters);
-WidgetBase* CreateGuiButtonWidget   (std::string widget_parameters);
-WidgetBase* CreateIconButtonWidget  (std::string widget_parameters);
-WidgetBase* CreateRadioButtonWidget (std::string widget_parameters);
-WidgetBase* CreateScrollButtonWidget(std::string widget_parameters);
-WidgetBase* CreateTextButtonWidget  (std::string widget_parameters);
+WidgetBase* CreateBasicTextWidget   (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateSelectTextWidget  (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateLinkTextWidget    (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateBasicButtonWidget (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateGuiButtonWidget   (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateIconButtonWidget  (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateRadioButtonWidget (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateScrollButtonWidget(std::string object_name , AttributeValueMap avmap);
+///WidgetBase* CreateTextButtonWidget  (std::string object_name , AttributeValueMap avmap);
 
 
 
@@ -54,7 +56,7 @@ REGISTER_WIDGET_CREATOR(GuiButton         , CreateGuiButtonWidget);
 REGISTER_WIDGET_CREATOR(IconButton        , CreateIconButtonWidget);
 REGISTER_WIDGET_CREATOR(RadioButton       , CreateRadioButtonWidget);
 REGISTER_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
-REGISTER_WIDGET_CREATOR(TextButton        , CreateTextButtonWidget);
+///REGISTER_WIDGET_CREATOR(TextButton        , CreateTextButtonWidget);
 
 
 

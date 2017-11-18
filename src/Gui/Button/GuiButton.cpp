@@ -66,38 +66,8 @@ void GuiButton::ResetRadii() {
 
 
 
-/**
-   BUTTON_SHAPE btn_shape;
-
-   EagleFont* text_font;
-   std::string text;
-
-   /// Button type determines hit detection properties as well
-   // Rectangle button uses dimensions passed in constructor call
-   int rad_a;// Primary radius for circles and the horizontal radius for ellipse type buttons,
-               // as well as the corner radius for rounded rectangular buttons
-   int rad_b;// Secondary vertical radius, only for ellipses
-
-   float hradpercent;// for ROUNDED_BTN type buttons
-   float vradpercent;// for ROUNDED_BTN type buttons
-   //*/
-GuiButton::GuiButton() :
-      BasicButton(StringPrintF("GuiButton object at %p" , this)),
-      btn_shape(RECTANGLE_BTN),
-      text_font(0),
-      text(""),
-      rad_a(0),
-      rad_b(0),
-      hradpercent(0.75),
-      vradpercent(0.75)
-{
-   SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
-}
-
-
-
 GuiButton::GuiButton(string name) :
-      BasicButton(name),
+      BasicButton("GuiButton" , name),
       btn_shape(RECTANGLE_BTN),
       text_font(0),
       text(""),

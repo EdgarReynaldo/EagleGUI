@@ -39,7 +39,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    gui.SetWidgetArea(0 , 0 , w , h , false);
    gui.SetRootLayout(&relative_layout);
    
-   quit_button = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit ; NAME:QuitButton");
+   quit_button = CreateWidget<TextButton>("TextButton" , "quit_button" , "DIM:200,50 ; FONT:Verdana20 ; TEXT:Quit ; NAME:QuitButton");
    EAGLE_ASSERT(quit_button);
 
 ///   basic_button = new BasicButton();
@@ -56,7 +56,7 @@ TestMenu::TestMenu(EagleGraphicsContext* window) :
    buttons.resize(tests.size());
 
    for (int i = 0 ; i < (int)tests.size() ; ++i) {
-      TextButton* btn = CreateWidget<TextButton>("TextButton" , "DIM:200,50 ; FONT:Verdana20");
+      TextButton* btn = CreateWidget<TextButton>("TextButton" , StringPrintF("btn%d" , i) , "DIM:200,50 ; FONT:Verdana20");
       EAGLE_ASSERT(btn);
       btn->SetText(tests[i]->Name());
       btn->SetMarginsContractFromOuter(5,5,5,5);

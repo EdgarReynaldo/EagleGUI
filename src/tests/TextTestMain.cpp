@@ -48,7 +48,7 @@ int TextTestMain(int argc , char** argv , TestRunner* test_runner) {
    EagleImage* down = win->LoadImageFromFile("Data/GuiTestImages/RBA_Down.png");
    EagleImage* hover = win->LoadImageFromFile("Data/GuiTestImages/RBA_Hover.png");
 
-   IconButton icon;
+   IconButton icon("icon");
 
    icon.SetImages(up , down , hover , down);
 

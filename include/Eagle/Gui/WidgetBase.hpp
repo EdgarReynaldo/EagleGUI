@@ -30,7 +30,7 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Image.hpp"
-
+#include "Eagle/Gui/Scripting/GuiScript.hpp"
 #include "Eagle/Gui/WidgetArea.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetDrawFuncs.hpp"
@@ -176,6 +176,7 @@ protected :
 
 public :
 
+   /// Debugging
    static void ClipWidgets(bool clip);/// If you change this setting, tell your GUI to perform a full redraw (WidgetHandler::SetFullRedraw)
    static void DisplayWidgetArea(bool display);/// If you change this setting, tell your GUI to perform a full redraw
    
@@ -318,11 +319,9 @@ public :
    virtual WidgetDecorator*      GetDecoratorParent() const {return decorator_parent;}
    WidgetBase*                   GetDecoratorRoot();
 ///   const WidgetBase*             GetDecoratorRoot() const ;
-
-///   virtual std::string GetWidgetClassName()=0;/// TODO : What is this for? ICR. See how many classes implement this.
-   virtual std::string GetWidgetClassName() {return "WidgetBase object";}/// TODO : What is this for? ICR.
-
    
+   
+   virtual void SetAttributes(AttributeValueMap avmap);
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };

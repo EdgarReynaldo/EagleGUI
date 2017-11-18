@@ -33,6 +33,13 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
+LinkText::LinkText(std::string name) :
+   SelectText("LinkText" , name),
+   link_height(0.0f)
+{}
+
+
+
 int LinkText::LinkText::PrivateHandleEvent(EagleEvent e) {
    int ret = SelectText::PrivateHandleEvent(e);
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {

@@ -161,7 +161,7 @@ int BasicButton::PrivateCheckInputs() {
 
 
    if (input_group) {
-         
+      EagleInfo() << "input_group active" << std::endl;
       activated = true;
       if (btn_action_type == SPRING_BTN) {user_activated = true;}
    
@@ -303,6 +303,34 @@ int BasicButton::PrivateUpdate(double tsec) {
 
 BasicButton::BasicButton(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
+      btn_action_type(SPRING_BTN),
+      btn_class(BUTTON_CLASS_PLAIN),
+      btn_state(BUTTON_UP),
+      click_area(0),
+      delete_area_ptr(false),
+      use_default_click_area(true),
+      input_group(),
+      pointer_input(false),
+      spring_duration(SPRING_BTN_DURATION),
+      down_time_left(0.0),
+      repeat_delay(SPRING_BTN_REPEAT_DELAY),
+      repeat_rate(1.0/SPRING_BTN_NUM_REPEAT_PER_SEC),
+      repeat_elapsed(0.0),
+      repeat_previous(0.0),
+      user_activated(false),
+      focuskey_activated(false),
+      pointer_activated(false),
+      just_activated(false),
+      hover_message_enabled(false),
+      held_message_enabled(false)
+{
+   UseDefaultClickArea(true);
+}
+
+
+
+BasicButton::BasicButton(std::string objname) :
+      WidgetBase("BasicButton" , objname),
       btn_action_type(SPRING_BTN),
       btn_class(BUTTON_CLASS_PLAIN),
       btn_state(BUTTON_UP),

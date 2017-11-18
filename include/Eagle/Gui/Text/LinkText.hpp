@@ -25,15 +25,8 @@ protected :
    float link_height;
    
 public :
-///   LinkText();
-   LinkText() :
-      SelectText(StringPrintF("LinkText at %p" , this)),
-      link_height(0.0f)
-   {}
-   LinkText(std::string name) :
-      SelectText(name),
-      link_height(0.0f)
-   {}
+
+   LinkText(std::string name = "Nemo");
    
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();

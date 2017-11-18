@@ -27,34 +27,40 @@
 
 #include "Eagle/Platform.hpp"// Need to load this one first for basic settings
 
+#include "Eagle/AnimationBase.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/Color.hpp"
+#include "Eagle/Clipboard.hpp"
 #include "Eagle/Container.hpp"
-#include "Eagle/Exception.hpp"
+#include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/Events.hpp"
+#include "Eagle/Exception.hpp"
 #include "Eagle/FileWork.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Gui.hpp"
 #include "Eagle/Image.hpp"
+#include "Eagle/Indenter.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Lib.hpp"
 #include "Eagle/Logging.hpp"
 #include "Eagle/MemberFunctors.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/Mutexes.hpp"
-#include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/ObjectInfo.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Position.hpp"
+#include "Eagle/Properties.hpp"
 #include "Eagle/Sound.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Threads.hpp"
 #include "Eagle/Time.hpp"
 #include "Eagle/Timer.hpp"
-
+#include "Eagle/Transforms.hpp"
+#include "Eagle/WindowManager.hpp"
 
 
 #endif // Eagle5_HPP

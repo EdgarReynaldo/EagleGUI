@@ -63,9 +63,7 @@ protected :
 
 public :
    /// GuiButton area is determined from the button shape, and the radii are set accordingly
-   GuiButton();
-
-   GuiButton(std::string name);
+   GuiButton(std::string name = "Nemo");
 
    virtual ~GuiButton() {}
 

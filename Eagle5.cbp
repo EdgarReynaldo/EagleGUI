@@ -159,6 +159,7 @@
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
+		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
@@ -170,6 +171,7 @@
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetBase2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetDrawFuncs.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
@@ -190,6 +192,7 @@
 		<Unit filename="include/Eagle/Position.hpp" />
 		<Unit filename="include/Eagle/Position2.hpp" />
 		<Unit filename="include/Eagle/PositionOLD.hpp" />
+		<Unit filename="include/Eagle/Properties.hpp" />
 		<Unit filename="include/Eagle/Sound.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
@@ -262,10 +265,7 @@
 		<Unit filename="src/ObjectRegistry.cpp" />
 		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Position.cpp" />
-		<Unit filename="src/PositionOLD.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
+		<Unit filename="src/Properties.cpp" />
 		<Unit filename="src/Sound.cpp" />
 		<Unit filename="src/StringWork.cpp" />
 		<Unit filename="src/System.cpp" />

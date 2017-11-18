@@ -10,6 +10,13 @@
 #include <vector>
 #include <map>
 
+#include "Eagle/Properties.hpp"
+
+class EagleColor;
+class WidgetColorset;
+class ColorRegistry;
+class WidgetBase;
+
 /**
 
 Specification for an EagleGuiScript file (.egs). File is text, with declarations for EagleColor's, WidgetColorsets, and Widgets
@@ -25,20 +32,34 @@ Anything after an equals sign and before a separate newline will be parsed as at
 
 Supported class names include EagleColor, WidgetColorset, or any Widget class name
 
+New section named "Commands" which includes commands to create relationships between widgets
+
+
+
 [Declarations]
 
-CLASS NAME = ATTRIBUTE:VALUE ; ATTRIBUTE:VALUE;
+CLASSNAME OBJECTNAME = ATTRIBUTE:VALUE ; ATTRIBUTE:VALUE;
 ATTRIBUTE : VALUE
 
-CLASS NAME =
+CLASSNAME OBJECTNAME =
 ATTRIBUTE : VALUE ; ATTRIBUTE : VALUE
 
 EagleColor white = RGBA:255,255,255,255;
 
 WidgetColorset colorset1 = 
-SDCOL : 0,0,0,255
-...
-TXTCOL : 255,255,255,255
+SDCOL : RGBA : 0,0,0,255
+HLCOL : FRGBA:1.0,1.0,1.0 , 1.0
+TXTCOL : white
+
+
+
+[Commands]
+LAYOUT_CHILDREN root_layout = {abc,def,ghi,jkl,mno,pqr,stu,vwx,yz}
+GUI_LAYOUT gui = root_layout
+
+LAYOUT_CHILD_RELATIVE root_layout = widget:%f,%f,%f,%f
+
+METHOD OBJECT = ARGUMENTS
 
 [Functions]
 
@@ -50,50 +71,108 @@ class EGSDeclaration {
    std::string class_name;
    std::string object_name;
    std::string attribute_value_set;
-
-   friend class EagleGuiScript;
    
+   AttributeValueMap attribute_value_map;
+   
+
 public :
    
+   EGSDeclaration();
+   EGSDeclaration(std::string declaration);
+
    void Clear();
+
+   bool ParseDeclaration(std::string declaration);
    
+   std::string ClassName() const {return class_name;}
+   std::string ObjectName() const {return object_name;}
+   std::string AttributeSet() const {return attribute_value_set;}
+   AttributeValueMap AttributeValueMap() const {return attribute_value_map;}
 };
 
 
 
-
-
-
 class EagleGuiScript {
-   
-   std::string script;
-   
-   std::vector<std::string> lines;
 
-   std::vector<EGSDeclaration> decs;
-///   std::vector<std::string> funcs;
+protected:   
+
+   typedef std::vector<EGSDeclaration*> DECLIST;
    
-   typedef std::multimap<std::string , EGSDeclaration*> CLASS_DEC_MAP; 
+   typedef std::map<std::string , std::string> SECTION_MAP;
+   typedef SECTION_MAP::iterator SMIT;
+
+   typedef std::map<std::string , DECLIST> CLASS_DEC_MAP;
    typedef CLASS_DEC_MAP::iterator CDMIT;
+
+   
+   
+   
+   std::string script_file_path;
+   
+   std::string script_file_contents;
+   
+   SECTION_MAP section_map;
+   
+   std::vector<std::string> declaration_lines;
+   
+   std::vector<EGSDeclaration*> decs;
+   std::vector<std::string> funcs;/// Once our script has scripting capabilities
    
    CLASS_DEC_MAP class_dec_map;
-
+   
+   ColorRegistry* colreg;
+   
+   std::map<int , WidgetBase*> wmap;
    
 
+   
+   
    void ClearScript();
-   bool ReadScriptFile(std::string script_file_name);
-   bool ReadSections();
    
-   void MapClasses();
+   bool ReadScriptFile(std::string script_file_name);
+
+   SECTION_MAP ReadSections(std::string script_file);
+
+   std::vector<std::string> GetSectionLines(std::string content);
+
+   DECLIST ParseDeclarations(std::vector<std::string> declarations);
+   
+   CLASS_DEC_MAP MakeClassDeclarationMap();
    
    bool RegisterColors();
    bool RegisterColorsets();
 
    bool LoadWidgets();
-
+/*
+   bool RunCommands();
+   bool RunCommands() {
+      std::vector<std::string> lines = GetSectionLines(section_map["Commands"]);
+      
+      for (int i = 0 ; i < (int)lines.size() ; ++i) {
+         std::string l = lines[i];
+         std::vector<std::string> 
+      }
+      
+   }
+*/   
 public :
    
+   EagleGuiScript();
+   ~EagleGuiScript();
+
    bool LoadScript(std::string script_file_name);
+   
+///   bool SaveScript(std::string script_file_name);
+   bool SaveScript();/// Saves over previously loaded script - danger!
+   bool SaveScriptAs(std::string script_file_name);
+   
+   EagleColor* GetColor(std::string name);
+   WidgetColorset* GetColorset(std::string name);
+
+   WidgetBase* GetWidget(std::string name);
+
+
+
    
 };
 

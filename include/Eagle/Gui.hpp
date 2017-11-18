@@ -44,7 +44,10 @@
 #include "Gui/WidgetHandler.hpp"
 #include "Gui/WidgetMessage.hpp"
 
+#include "Gui/Scripting/GuiScript.hpp"
 
+#include "Gui/Factory/WidgetCreators.hpp"
+#include "Gui/Factory/WidgetFactory.hpp"
 
 
 #endif // EagleGui_HPP

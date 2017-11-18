@@ -412,7 +412,7 @@ WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string objname)
 		removelist(),
 //		memtrack(),
 		focus_index(-1),
-		focus_start(false),
+		focus_start(true),
 		wfocus(0),
 		whover(0),
 		mque(),
@@ -929,11 +929,13 @@ void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
       
       CheckRedraw();
       
+      win->SetCopyBlender();
       for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
          Rectangle& r = *it;
          win->DrawRegion(background , r , r.X() , r.Y());
       }
       dbg_list.clear();
+      win->RestoreLastBlendingState();
       
       /** Only widgets with the NEEDS_REDRAW flag should actually redraw */
       bool some_drawn = false;

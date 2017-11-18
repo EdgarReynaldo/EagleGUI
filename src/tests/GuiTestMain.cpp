@@ -510,12 +510,12 @@ int GuiTestMain2(int argc , char** argv , TestRunner* test_runner) {
    EagleFont* font4 = win->LoadFont("Data/fonts/consola.ttf" , -40 , DRAW_NORMAL);
    EagleFont* font5 = win->LoadFont("Data/fonts/AlexBrush.ttf" , -40 , DRAW_NORMAL);
 
-   BasicText dumbtext;
+   BasicText dumbtext("dumbtext");
    dumbtext.SetText("Layout Test" , verdana);
 
-   LinkText eaglelink;
-   LinkText bitbucketlink;
-   LinkText allegrolink;
+   LinkText eaglelink("eaglelink");
+   LinkText bitbucketlink("bitbucketlink");
+   LinkText allegrolink("allegrolink");
 
 ///   eaglelink.SetText("https://sourceforge.net/projects/eagle5gui" , verdana);
    bitbucketlink.SetText("https://bitbucket.org/bugsquasher/eaglegui" , font5);

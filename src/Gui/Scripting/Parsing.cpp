@@ -108,6 +108,12 @@ EagleColor ParseColor(std::string color_dec) {/// throw (EagleException) {
 
 
 
+WidgetColorset ParseWidgetColorset(const AttributeValueMap& avmap) {
+   return ParseWidgetColorset(avmap.GetMap());
+}
+
+
+
 WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap) {/// throw (EagleException) {
    WidgetColorset wc;
    for (ATTRIBUTE_VALUE_MAP::const_iterator it = avmap.begin() ; it != avmap.end() ; ++it) {
@@ -134,18 +140,11 @@ WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap) {/// throw 
       }
       if (color_index != -1) {
          EagleColor c;
-         try {
-            c = ParseColor(val);
+         if (HasColor(val)) {
+            c = GetColorByName(val);
          }
-         catch (...) {
-            char color_name[256];
-            memset(color_name , 0 , 256);
-            if ((1 == sscanf(val.c_str() , "%255s" , color_name) && HasColor(color_name))) {
-               c = GetColorByName(color_name);
-            }
-            else {
-               throw EagleException(StringPrintF("ParseWidgetColorset : Failed to parse color for value '%s'\n" , val.c_str()));
-            }
+         else {
+            c = ParseColor(val);
          }
          wc[color_index] = c;
       }

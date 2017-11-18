@@ -6,6 +6,7 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
 #include "Eagle/Gui/Factory/WidgetFactory.hpp"
+#include "Eagle/Gui/Scripting/Parsing.hpp"
 
 
 WidgetFactory* eagle_widget_factory = 0;
@@ -78,20 +79,27 @@ void WidgetFactory::RegisterWidgetCreationFunction(std::string widget_class_name
 
 
 
-WidgetBase* WidgetFactory::CreateWidgetBaseObject(std::string widget_class_name , std::string widget_parameters) {
+WidgetBase* WidgetFactory::CreateWidgetBaseObject(std::string widget_class_name , std::string object_name , std::string widget_parameters) {
+   return CreateWidgetBaseObject(widget_class_name , object_name , AttributeValueMap(widget_parameters));
+}
+
+
+
+WidgetBase* WidgetFactory::CreateWidgetBaseObject(std::string widget_class_name , std::string object_name , AttributeValueMap avmap) {
    if (widget_maker_map.find(widget_class_name) == widget_maker_map.end()) {
-      throw EagleException(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Could not find a creation function registered for %s class widgets.\n",
+      throw EagleException(
+               StringPrintF("WidgetFactory::CreateWidgetBaseObject : Could not find a creation function registered for %s class widgets.\n",
                                     widget_class_name.c_str()));
    }
    WIDGET_CREATION_FUNCTION CreatorFunc = widget_maker_map[widget_class_name];
    if (!CreatorFunc) {
       throw EagleException(StringPrintF("WidgetFactory::CreateWidgetBaseObject : Creation function for %s class widgets is NULL!\n",
-                       widget_class_name.c_str()));
+                                        widget_class_name.c_str()));
    }
-   WidgetBase* new_widget = CreatorFunc(widget_parameters);
+   WidgetBase* new_widget = CreatorFunc(object_name , avmap);
    
    if (new_widget) {
-         
+      (void)0;
    }
    
    return new_widget;
@@ -198,8 +206,14 @@ void FreeAllWidgets() {
 
 
 
-WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string widget_parameters) {
-   return EagleWidgetFactory().CreateWidgetBaseObject(widget_class_name , widget_parameters);
+WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string object_name , std::string widget_parameters) {
+   return CreateWidgetObject(widget_class_name , object_name , AttributeValueMap(widget_parameters));
+}
+
+
+
+WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string object_name , AttributeValueMap avmap) {
+   return EagleWidgetFactory().CreateWidgetBaseObject(widget_class_name , object_name , avmap);
 }
 
 

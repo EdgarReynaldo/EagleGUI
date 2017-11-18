@@ -930,6 +930,67 @@ const WidgetBase* WidgetBase::GetDecoratorRoot() const {
 
 
 
+/// Right now only NAME , POS, DIM, and AREA are supported
+void WidgetBase::SetAttributes(AttributeValueMap avmap) {
+
+    ATTRIBUTE_VALUE_MAP attribute_map = avmap.GetMap();
+
+   WidgetBase* widget = this;
+   
+   widget = widget->GetDecoratorRoot();
+   
+   std::map<std::string , std::string>::const_iterator cit = attribute_map.end();
+   
+   const char* cstr = 0;
+      
+   if ((cit = attribute_map.find("NAME")) != attribute_map.end()) {
+      widget->SetShortName(cit->second);
+   }
+
+   if ((cit = attribute_map.find("POS")) != attribute_map.end()) {
+      cstr = cit->second.c_str();
+      int x = 0 , y = 0;
+      if (2 != sscanf(cstr , "%d,%d" , &x , &y)) {
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (POS) Failed to read x,y pair from (%s)\n" , cstr));
+      }
+      widget->SetWidgetPos(x,y);
+   }
+   if ((cit = attribute_map.find("DIM")) != attribute_map.end()) {
+      cstr = cit->second.c_str();
+      int w = 0 , h = 0;
+      if (2 != sscanf(cstr , "%d,%d" , &w , &h)) {
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (DIM) Failed to read w,h pair from (%s)\n" , cstr));
+      }
+      int x = widget->Area().OuterArea().X();
+      int y = widget->Area().OuterArea().Y();
+      if (w < 0 || h < 0) {
+         if (w < 0) {
+            w = abs(w);
+            x = x - w;
+         }
+         if (h < 0) {
+            h = abs(h);
+            y = y - h;
+         }
+         widget->SetWidgetPos(x,y);
+      }
+      widget->SetWidgetDimensions(w,h);
+   }
+   if ((cit = attribute_map.find("AREA")) != attribute_map.end()) {
+      cstr = cit->second.c_str();
+      int x = 0 , y = 0 , w = 0 , h = 0;
+      if (4 != sscanf(cstr , "%d,%d,%d,%d" , &x , &y , &w , &h)) {
+         throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (AREA) Failed to read x,y,w,h set from (%s)\n" , cstr));
+      }
+      widget->SetWidgetArea(x,y,w,h);
+   }
+   
+}
+
+
+
+
+
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
    using std::endl;
    os << indent << "WidgetBase Info : " << endl;

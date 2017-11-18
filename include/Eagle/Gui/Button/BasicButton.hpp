@@ -119,11 +119,13 @@ protected :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int  PrivateUpdate(double tsec);
 
+   BasicButton(std::string objclass , std::string objname);
+
 public :
    
 ///   BasicButton();
 ///   BasicButton(std::string name);
-   BasicButton(std::string objclass = "BasicButton" , std::string objname = "Nemo");
+   BasicButton(std::string objname = "Nemo");
    
    virtual ~BasicButton();
 

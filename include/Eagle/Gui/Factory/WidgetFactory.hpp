@@ -9,13 +9,16 @@
 
 #include <map>
 #include <string>
+#include <typeinfo>
+
+
 
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
 
-
+#include "Eagle/Gui/Scripting/GuiScript.hpp"
 
 class WidgetFactory;
 
@@ -52,7 +55,8 @@ public :
    int RegisterBasicTextWidgetCreator(WIDGET_CREATION_FUNCTION widget_creator);
    int RegisterBasicButtonWidgetCreator(WIDGET_CREATION_FUNCTION widget_creator);
    
-   WidgetBase* CreateWidgetBaseObject(std::string widget_class_name , std::string widget_parameters);
+   WidgetBase* CreateWidgetBaseObject(std::string widget_class_name , std::string object_name , std::string widget_parameters);
+   WidgetBase* CreateWidgetBaseObject(std::string widget_class_name , std::string object_name , AttributeValueMap avmap);
 
    
    bool FreeWidget(EAGLE_ID eid);/// Search groups for widget
@@ -71,24 +75,31 @@ void FreeAllWidgets();
 
 
 
-WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string widget_parameters);
+WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string object_name , std::string widget_parameters);
+WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string object_name , AttributeValueMap avmap);
 
 
 
 template <class WIDGET_TYPE>
-WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string widget_parameters , WIDGET_TYPE** pwidget_store = 0);
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string object_name , AttributeValueMap avmap , WIDGET_TYPE** pwidget_store = 0);
 
+template <class WIDGET_TYPE>
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string object_name , std::string parameters , WIDGET_TYPE** pwidget_store = 0);
+
+template <class WIDGET_TYPE>
+WIDGET_TYPE* CreateWidget(const EGSDeclaration& dec , WIDGET_TYPE** pwidget_store = 0);
 
 
 /// Template functions
 
 template <class WIDGET_TYPE>
-WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string widget_parameters , WIDGET_TYPE** pwidget_store) {
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string object_name , AttributeValueMap avmap , WIDGET_TYPE** pwidget_store) {
    WIDGET_TYPE* pwidget = 0;
-   pwidget = dynamic_cast<WIDGET_TYPE*>(CreateWidgetObject(widget_class_name , widget_parameters));
+   pwidget = dynamic_cast<WIDGET_TYPE*>(CreateWidgetObject(widget_class_name , object_name , avmap));
    if (!pwidget) {
+      std::string avstr = avmap.ToString();
       throw EagleException(StringPrintF("Failed to create %s class widget with specified parameters (%s)\n" ,
-                                    widget_class_name.c_str() , widget_parameters.c_str()));
+                                    typeid(WIDGET_TYPE).name() , avstr.c_str()));
    }
    if (pwidget_store) {
       *pwidget_store = pwidget;
@@ -96,6 +107,18 @@ WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string widget_par
    return pwidget;
 }
 
+
+
+template <class WIDGET_TYPE>
+WIDGET_TYPE* CreateWidget(const EGSDeclaration& dec , WIDGET_TYPE** pwidget_store) {
+   return CreateWidget<WIDGET_TYPE>(dec.ClassName() , dec.ObjectName() , dec.AttributeValueMap() , pwidget_store);
+}
+
+
+template <class WIDGET_TYPE>
+WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string object_name , std::string parameters , WIDGET_TYPE** pwidget_store) {
+   return CreateWidget<WIDGET_TYPE>(widget_class_name , object_name , AttributeValueMap(parameters) , pwidget_store);
+}
 
 #endif // WidgetFactory_HPP
 

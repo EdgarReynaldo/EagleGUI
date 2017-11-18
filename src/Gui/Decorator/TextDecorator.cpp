@@ -20,6 +20,7 @@ TextDecorator::TextDecorator(WidgetBase* widget_to_decorate,
                              std::string objname) :
       WidgetDecorator(widget_to_decorate , widget_layout , "TextDecorator" , objname),
       basic_text_widget(0),
+      default_text("default_text"),
       text_widget_layout(0),
       pin_layout(),
       center_text(true)

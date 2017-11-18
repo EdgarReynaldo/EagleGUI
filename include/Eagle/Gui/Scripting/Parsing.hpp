@@ -9,7 +9,7 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
-
+#include "Eagle/Properties.hpp"
 
 #include <map>
 #include <string>
@@ -40,6 +40,7 @@ SDCOL : RGB(0,0,0)
 BGCOL : dark-gray
 */
 
+WidgetColorset ParseWidgetColorset(const AttributeValueMap& avmap);
 WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap);/// throw (EagleException);
 
 

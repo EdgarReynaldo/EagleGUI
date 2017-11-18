@@ -196,10 +196,10 @@ void SelectText::RefreshSelection() {
 }
 
 
-SelectText::SelectText() :
-      BasicText(StringPrintF("SelectText object at %p" , this)),
-      caret_time(0.0f),
-      caret_blink_time(0.5f),
+SelectText::SelectText(std::string classname , std::string objname) :
+      BasicText(classname , objname),
+      caret_time(0.0),
+      caret_blink_time(0.5),
       caret_visible(true),
       caret_pos(0),
       caret_line(0),
@@ -212,7 +212,9 @@ SelectText::SelectText() :
       drag(false),
       selected_text(""),
       deselect_on_lost_focus(true)
-{}
+{
+   
+}
 
 
 

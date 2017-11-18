@@ -65,15 +65,15 @@ enum WIDGETCOLOR {
 
 
 
-class WidgetColorset : public EagleObject {
+class WidgetColorset {
 
 protected :
    EagleColor wcolorset[EAGLE_NUMCOLORS];
 
 public :
 
-   WidgetColorset(std::string objname = "Nemo");
-   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS] , std::string objname = "Nemo");
+   WidgetColorset();
+   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
 
    WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
    
@@ -84,8 +84,9 @@ public :
    EagleColor& operator[] (int wc) {return wcolorset[wc];}
    const EagleColor& operator[] (int wc) const {return wcolorset[wc];}
    
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
+   friend std::ostream& operator<<(std::ostream& os , const EagleColor& ecol);
 };
 
 extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];

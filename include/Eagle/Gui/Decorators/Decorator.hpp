@@ -155,8 +155,6 @@ public :
    virtual FocusPainter*         GetFocusPainter()       const ;
    virtual FOCUS_DRAW_TYPE       GetFocusDrawType()      const ;
 
-   virtual std::string GetWidgetClassName();
-
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
 };

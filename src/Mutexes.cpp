@@ -103,8 +103,11 @@ bool EagleMutex::DoTryLock(EagleThread* callthread , std::string callfunc) {
 
 void EagleMutex::DoUnLock(EagleThread* callthread , std::string callfunc) {
    EAGLE_ASSERT(callthread == owner);
-   PrivateUnlock();
+   /**
+      In order to protect our lock count, we must process the unlock while the mutex is still locked!
+   */
    LogThreadState(callthread , callfunc.c_str() , MTX_UNLOCKED);
+   PrivateUnlock();
 }
 
 

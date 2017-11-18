@@ -63,10 +63,12 @@ public :
       *pcaret_pos = caret_pos;
    }
    
+protected :
+   SelectText(std::string classname , std::string objname);
+
 public :
 
-   SelectText();
-   SelectText(std::string name);
+   SelectText(std::string name = "Nemo");
    virtual ~SelectText() {}
    
    Rectangle GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey);

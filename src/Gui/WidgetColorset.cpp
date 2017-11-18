@@ -39,8 +39,7 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
 
 
 
-WidgetColorset::WidgetColorset(std::string objname) :
-      EagleObject("WidgetColorset" , objname),
+WidgetColorset::WidgetColorset() :
       wcolorset()
 {
    *this = default_eagle_color_array;
@@ -48,8 +47,7 @@ WidgetColorset::WidgetColorset(std::string objname) :
 
 
 
-WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS] , std::string objname) :
-   EagleObject("WidgetColorset" , objname),
+WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]) :
    wcolorset()
 {
    *this = colorset;
@@ -67,12 +65,19 @@ WidgetColorset& WidgetColorset::operator=(const EagleColor colorset[EAGLE_NUMCOL
 
 std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) const {
    const EagleColor* c = wcolorset;
-   os << indent << StringPrintF("WidgetColorset %s : " , FullName()) << std::endl;
+   os << indent << "WidgetColorset : " << std::endl;
    ++indent;
    os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "]" << std::endl;
    os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "]" << std::endl;
    --indent;
    return os;
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const WidgetColorset& wc) {
+    wc.DescribeTo(os);
+    return os;
 }
 
 

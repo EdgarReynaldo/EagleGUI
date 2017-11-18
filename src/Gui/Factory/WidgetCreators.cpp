@@ -50,140 +50,77 @@ REGISTERED_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
 REGISTERED_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
 REGISTERED_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
 REGISTERED_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
-REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
+///REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
 
 
 
-WidgetBase* CreateBasicTextWidget   (string widget_parameters) {
-   WidgetBase* widget = 0;
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   
-   if ((cit = att_map.find("SUBCLASS")) != att_map.end()) {
-      string subclass = cit->second;
-      if (strcmp(subclass.c_str() , "LinkText") == 0) {
-         return CreateLinkTextWidget(widget_parameters);
-      }
-      else if (strcmp(subclass.c_str() , "SelectText") == 0) {
-         return CreateSelectTextWidget(widget_parameters);
-      }
-   }
-   
-   widget = new BasicText();
-   
-   ApplyWidgetBaseAttributes(widget , att_map);
-   
-   ApplyTextAttributes(widget , att_map);
-
+WidgetBase* CreateBasicTextWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new BasicText(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateSelectTextWidget  (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = new SelectText();
-
-   ApplyWidgetBaseAttributes(widget , att_map);
-   
-   ApplyTextAttributes(widget , att_map);
-
+WidgetBase* CreateSelectTextWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new SelectText(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateLinkTextWidget    (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-
-   WidgetBase* widget = new LinkText();
-
-   ApplyWidgetBaseAttributes(widget , att_map);
-   
-   ApplyTextAttributes(widget , att_map);
-
+WidgetBase* CreateLinkTextWidget (std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new LinkText(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateBasicButtonWidget (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = new BasicButton();
-
-   ApplyWidgetBaseAttributes(widget , att_map);
-
+WidgetBase* CreateBasicButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new BasicButton(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateGuiButtonWidget   (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = new GuiButton();
-
-   ApplyWidgetBaseAttributes(widget , att_map);
-
+WidgetBase* CreateGuiButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new GuiButton(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateIconButtonWidget  (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = new IconButton();
-   
-   ApplyWidgetBaseAttributes(widget , att_map);
-
+WidgetBase* CreateIconButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new IconButton(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateRadioButtonWidget (string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = 0;///new RadioButton();
-   EAGLE_ASSERT(false);
-   
-   ApplyWidgetBaseAttributes(widget , att_map);
-
+WidgetBase* CreateRadioButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   (void)object_name;
+   WidgetBase* widget = 0;///new RadioButton(object_name);
+   throw EagleException("RadioButton is not implemented yet.");
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
 
-WidgetBase* CreateScrollButtonWidget(string widget_parameters) {
-   map<string , string> att_map = ParseAttributeSet(widget_parameters);
-   map<string , string>::const_iterator cit = att_map.end();
-   (void)cit;
-   
-   WidgetBase* widget = new BasicScrollButton();
-   
-   ApplyWidgetBaseAttributes(widget , att_map);
-
+WidgetBase* CreateScrollButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   WidgetBase* widget = new BasicScrollButton(object_name);
+   widget->SetAttributes(avmap);
    return widget;
 }
 
 
-
-WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
+/**
+WidgetBase* CreateTextButtonWidget(std::string object_name , std::AttributeValueMap avmap) {
    map<string , string> att_map = ParseAttributeSet(widget_parameters);
    map<string , string>::const_iterator cit = att_map.end();
    
@@ -211,7 +148,7 @@ WidgetBase* CreateTextButtonWidget(std::string widget_parameters) {
    return widget;
 }
 
-
+*/
 
 /// Right now only NAME , POS, DIM, and AREA are supported
 void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& attribute_map) {

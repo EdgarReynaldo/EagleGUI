@@ -122,6 +122,33 @@ BasicText::BasicText(std::string objclass , std::string objname) :
 
 
 
+BasicText::BasicText(std::string objname) :
+      WidgetBase("BasicText" , objname),
+      halign(HALIGN_LEFT),
+      valign(VALIGN_TOP),
+      text_font(0),
+      text(""),
+      lines(),
+      lineareas(),
+      nlines(0),
+      hpadding(0),
+      vpadding(0),
+      linespacing(0),
+      maxwidth(0),
+      fontheight(0),
+      totalheight(0),
+      textx(0),
+      texty(0),
+      widths_vector(),
+      scale_to_fit(false),
+      scaling_transform(),
+      inverse_scaling_transform()
+{
+   
+}
+
+
+
 void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c) {
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());

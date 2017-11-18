@@ -83,7 +83,7 @@ void BasicScrollButton::SyncButtonArea() {
 
 BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
-      our_basic_button(),
+      our_basic_button("BSB::our_basic_button"),
       scroll_button(0),
       our_scrollbar(0),
       increment(1),
@@ -91,7 +91,6 @@ BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname)
       scroll_horizontal(false),
       our_click_area()
 {
-   our_basic_button.SetShortName("BSB::BasicButton");
    Reset();
 }
 

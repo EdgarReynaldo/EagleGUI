@@ -45,8 +45,12 @@ protected :
    virtual int PrivateUpdate(double tsec);
 
    
+protected :
+   BasicText(std::string objclass , std::string objname);
+
 public :
-   BasicText(std::string objclass = "BasicText" , std::string objname = "Nemo");
+
+   BasicText(std::string objname = "Nemo");
    virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);

@@ -75,19 +75,18 @@ void Runner::Free() {
 
 
 void Runner::Draw(EagleGraphicsContext* win , double length) {
-   double l = (destpos - srcpos).Length();
+   double dist = (destpos - srcpos).Length();
    double thickness = 5.0;
    EagleColor color(255,255,255,127);
    
-   if (l < length) {
-      length -= l;
+   if (dist < length) {
+      length -= dist;
       win->DrawLine(srcpos.X() , srcpos.Y() , destpos.X() , destpos.Y() , thickness , color);
       win->DrawLine(srcpos.X() , srcpos.Y() , destpos.X() , destpos.Y() , 1.0 , EagleColor(255,255,255,255));
    }
    else {
-      double pct = length/l;
-      length -= l*pct;
-      Pos2D d = Vector(srcpos , pct*l , srcpos.AngleToPoint(destpos));
+      Pos2D d = Vector(srcpos , length , srcpos.AngleToPoint(destpos));
+      length = 0;
       win->DrawLine(srcpos.X() , srcpos.Y() , d.X() , d.Y() , thickness , color);
       win->DrawLine(srcpos.X() , srcpos.Y() , d.X() , d.Y() , 1.0 , EagleColor(255,255,255,255));
    }

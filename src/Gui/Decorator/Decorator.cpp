@@ -829,14 +829,6 @@ FOCUS_DRAW_TYPE WidgetDecorator::GetFocusDrawType() const {
 
 
 
-std::string WidgetDecorator::GetWidgetClassName() {
-   return WidgetBase::GetWidgetClassName();
-
-///   EAGLE_ASSERT(decorated_widget);
-///   return std::string("WidgetDecorator<") + decorated_widget->GetWidgetClassName(); + std::string(">");
-}
-
-
 using std::endl;
 std::ostream& WidgetDecorator::DescribeTo(std::ostream& os , Indenter indent) const {
 
