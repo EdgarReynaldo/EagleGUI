@@ -62,6 +62,8 @@ int main(int argc , char** argv) {
    
    EagleLog() << *gui << std::endl;
    
+   WidgetBase::ClipWidgets(true);
+   WidgetBase::DisplayWidgetArea(true);
    if (!gui) {
       EAGLE_ASSERT(gui);
       return 1;
