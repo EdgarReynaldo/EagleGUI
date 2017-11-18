@@ -133,8 +133,8 @@ Transform StretchTransform(double percent) {
    return t;
 }
 
-EagleColor White(double percent) {return EagleColor((float)percent,percent,percent,percent);}      
-EagleColor Black(double percent) {return EagleColor(0.0f,0.0,0.0,percent);}      
+EagleColor White(double percent) {return EagleColor((float)percent,percent,percent,percent);}
+EagleColor Black(double percent) {return EagleColor(0.0f,0.0,0.0,percent);}
 
 
 EagleImage* RunIntro() {
@@ -143,64 +143,70 @@ EagleImage* RunIntro() {
    window_height = our_win->Height();
 
    EagleImage* img = our_win->CreateImage(our_win->Width() , our_win->Height());
-   
+
    our_font = our_win->LoadFont("Verdana.ttf" , -96);
-   
+
    EAGLE_ASSERT(our_font && our_font->Valid());
 
    bool corner = false;
-   
+
    XYTextAnimation xyt_upper(our_font , "Welcome\nto\nTINS 2017!\n" , Red , Upper);
    XYTextAnimation xyt_lower(our_font , "Welcome\nto\nTINS 2017!\n" , Orange , Lower);
    XYTextAnimation xyt_right(our_font , "Welcome\nto\nTINS 2017!\n" , Yellow, Right);
    XYTextAnimation xyt_left(our_font , "Welcome\nto\nTINS 2017!\n" , Magenta, Left);
-   
+
    XYTextAnimation xyt_upper_right(our_font , "Welcome\nto\nTINS 2017!\n" , Green , UpperRight);
    XYTextAnimation xyt_lower_right(our_font , "Welcome\nto\nTINS 2017!\n" , Cyan , LowerRight);
    XYTextAnimation xyt_upper_left(our_font , "Welcome\nto\nTINS 2017!\n" , Blue , UpperLeft);
    XYTextAnimation xyt_lower_left(our_font , "Welcome\nto\nTINS 2017!\n" , Purple , LowerLeft);
-   
+
    TextAnimation spinny_thing(our_font , "Welcome\nto\nTINS 2017!\n" , UpperRightTransform , Red , Center);
    TextAnimation spinny_thing2(our_font , "Welcome\nto\nTINS 2017!\n" , CenterTransform , Red , Zero);
-   
+
    EagleFont* title_font = our_win->LoadFont("Verdana.ttf" , -64);
 
    TextAnimation title(title_font , "Dr. Von Chicken Pox" , StretchTransform , White , Zero);
    TextAnimation title_shadow(title_font , "Dr. Von Chicken Pox" , StretchTransform , Black , ZeroOffset);
-   
+
    bool quit = false;
    bool redraw = true;
-   
+
    double old_pct = 0.0;
    double pct = 0.0;
    double time_start = ProgramTime::Now();
-   
+
    bool dabomb = true;
    Sound* bomb = a5soundman->CreateSound("Bomb4sec.ogg");
    bool dathunder = false;
    Sound* thunder = a5soundman->CreateSound("Thunder4sec.ogg");
-   
+
    double ltime = 0.0;
    double lduration = 2.0;
-   
+
    LightningBolt bolt1;
    LightningBolt bolt2;
    LightningBolt bolt3;
    LightningBolt bolt4;
-   
+
    bolt1.Create(0 ,                0 ,                 0 , our_win->Width()/2 , our_win->Height()/2);
    bolt2.Create(0 , our_win->Width() ,                 0 , our_win->Width()/2 , our_win->Height()/2);
    bolt3.Create(0 ,                0 , our_win->Height() , our_win->Width()/2 , our_win->Height()/2);
    bolt4.Create(0 , our_win->Width() , our_win->Height() , our_win->Width()/2 , our_win->Height()/2);
-   
+
    do {
       if (redraw) {
-         our_win->DrawToBackBuffer();
-         our_win->Clear(EagleColor(0,0,0));
-         
+
          old_pct = pct;
          pct = ((double)ProgramTime::Now() - time_start)/3;
-         
+         if (pct >= 7.0) {
+            quit = true;
+            break;
+         }
+
+         our_win->SetDrawingTarget(img);
+         our_win->Clear(EagleColor(0,0,0));
+
+
          if (pct < 1.0) {
             spinny_thing.SetAnimationPercent(pct*.99);
             spinny_thing.Draw(our_win , 0 , 0);
@@ -222,13 +228,13 @@ EagleImage* RunIntro() {
             if (old_pct < 3.0) {
                dathunder = true;
             }
-            
+
             if (pct >= 5.0) {
                if (old_pct < 5.0) {
                   dathunder = true;
                }
             }
-            
+
             bolt1.Draw(our_win , 0 , 0);
             bolt2.Draw(our_win , 0 , 0);
             bolt3.Draw(our_win , 0 , 0);
@@ -239,10 +245,8 @@ EagleImage* RunIntro() {
             title_shadow.Draw(our_win , 0 , 0);
             title.Draw(our_win , 0 , 0);
          }
-         else {
-            quit = true;
-         }
-/*         
+
+/*
          if ((int)pct - (int)old_pct) {
             corner = !corner;
          }
@@ -254,7 +258,7 @@ EagleImage* RunIntro() {
          xyt_lower_right.SetAnimationPercent(pct);
          xyt_upper_left.SetAnimationPercent(pct);
          xyt_lower_left.SetAnimationPercent(pct);
-         
+
          if (!corner) {
             xyt_upper.Draw(our_win , 0 , 0);
             xyt_lower.Draw(our_win , 0 , 0);
@@ -268,15 +272,17 @@ EagleImage* RunIntro() {
             xyt_lower_left.Draw(our_win , 0 , 0);
          }
 */
-         
+
+         our_win->DrawToBackBuffer();
+         our_win->Draw(img , 0 , 0);
          our_win->FlipDisplay();
-         
+
          redraw = false;
       }
-      
+
       do {
          EagleEvent e = a5sys->GetSystemQueue()->WaitForEvent(0);
-         
+
          if (dabomb) {
             bomb->Play();
             dabomb = false;
@@ -306,21 +312,25 @@ EagleImage* RunIntro() {
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE || (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE)) {
             quit = true;
          }
-         
+
       } while (a5sys->GetSystemQueue()->HasEvent(0));
-      
-      
+
+
    } while (!quit);
-   
+
+/*
    our_win->SetDrawingTarget(img);
    our_win->SetCopyBlender();
    our_win->Draw(our_win->GetBackBuffer() , 0 , 0);
    our_win->RestoreLastBlendingState();
+*/
+
+   return  img;
 
    a5soundman->FreeSound(bomb);
    a5soundman->FreeSound(thunder);
    our_win->FreeFont(our_font);
-   
+
    return img;
 }
 
