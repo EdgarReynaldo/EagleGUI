@@ -264,6 +264,18 @@ void Allegro5GraphicsContext::SetCopyBlender() {
 
 
 
+void Allegro5GraphicsContext::SetFullCopyBlender() {
+   StoreBlender();
+   
+///void al_set_separate_blender(int op, int src, int dst, int alpha_op, int alpha_src, int alpha_dst)
+   blender_op = ALLEGRO_ADD;
+   blender_src = ALLEGRO_ONE;
+   blender_dest = ALLEGRO_ZERO;
+   al_set_separate_blender(blender_op , blender_src , blender_dest , blender_op , blender_src , blender_dest);
+}
+
+
+
 void Allegro5GraphicsContext::SetPMAlphaBlender() {
    StoreBlender();
    blender_op = ALLEGRO_ADD;

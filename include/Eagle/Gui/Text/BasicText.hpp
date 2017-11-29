@@ -51,6 +51,8 @@ protected :
 public :
 
    BasicText(std::string objname = "Nemo");
+   BasicText(EagleFont* font , std::string label ,
+             HALIGNMENT hal = HALIGN_CENTER, VALIGNMENT val = VALIGN_CENTER , int hpad = 0, int vpad = 0 , int vspacing = 0);
    virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);

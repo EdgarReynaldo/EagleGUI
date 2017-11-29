@@ -32,6 +32,7 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
    EagleColor(128 , 128 , 128 , 255),
    EagleColor(192 , 192 , 192 , 255),
    EagleColor(255 , 255 , 255 , 255),
+   EagleColor(255 , 255 , 255 , 255),
    EagleColor(255 , 255 , 255 , 255)
 };
 //
@@ -68,7 +69,7 @@ std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) con
    os << indent << "WidgetColorset : " << std::endl;
    ++indent;
    os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "]" << std::endl;
-   os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "]" << std::endl;
+   os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "] HVRCOL = [" << c[HVRCOL] << "]" << std::endl;
    --indent;
    return os;
 }

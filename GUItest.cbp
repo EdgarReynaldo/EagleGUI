@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/Libtest-debug" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest-debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug" />
 				<Option external_deps="cbbuild/lib/libeagle_a5_debug.dll.a;cbbuild/lib/libeagle_debug.dll.a;" />
@@ -27,7 +27,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/Libtest" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Release" />
 				<Option external_deps="cbbuild/lib/libeagle_a5.dll.a;cbbuild/lib/libeagle.dll.a;" />
@@ -45,7 +45,7 @@
 				</Linker>
 			</Target>
 			<Target title="Profiling">
-				<Option output="cbbuild/bin/Libtest-profile" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest-profile" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
 				<Option external_deps="cbbuild/lib/libeagle_a5_profile.dll.a;cbbuild/lib/libeagle_profile.dll.a;" />
@@ -63,7 +63,7 @@
 				</Linker>
 			</Target>
 			<Target title="StaticDebug">
-				<Option output="cbbuild/bin/Libtest-debug-static" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest-debug-static" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Static/Debug" />
 				<Option external_deps="cbbuild/lib/libeagle_a5_debug-static.a;cbbuild/lib/libeagle_debug-static.a;" />
@@ -114,7 +114,7 @@
 				</Linker>
 			</Target>
 			<Target title="StaticRelease">
-				<Option output="cbbuild/bin/Libtest-static" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest-static" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Static/Release" />
 				<Option external_deps="cbbuild/lib/libeagle_a5-static.a;cbbuild/lib/libeagle-static.a;" />
@@ -162,7 +162,7 @@
 				</Linker>
 			</Target>
 			<Target title="StaticProfiling">
-				<Option output="cbbuild/bin/Libtest-profile-static" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/guitest-profile-static" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Static/Profiling" />
 				<Option external_deps="cbbuild/lib/libeagle_a5_profile-static.a;cbbuild/lib/libeagle_profile-static.a;" />

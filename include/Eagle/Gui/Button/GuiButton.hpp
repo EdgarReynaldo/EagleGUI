@@ -60,6 +60,7 @@ protected :
    
 
    void ResetRadii();
+   void ResetClickArea();
 
 public :
    /// GuiButton area is determined from the button shape, and the radii are set accordingly
@@ -100,8 +101,6 @@ public :
 
    int                RadiusA();
    int                RadiusB();
-
-   virtual std::string GetWidgetClassName();
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };

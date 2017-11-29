@@ -249,7 +249,7 @@ void WidgetHandler::RedrawBackgroundBuffer() {
    if(!(background->W() && background->H())) {return;}
    
    gwindow->PushDrawingTarget(background);
-   gwindow->SetCopyBlender();
+   gwindow->SetFullCopyBlender();
    gwindow->Clear(bg_col);
    if (user_bg_ptr) {
       if (stretch_bg) {
@@ -904,7 +904,7 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
    /// WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
    /// of the state of their NEEDS_REDRAW flag.
-   win->SetCopyBlender();
+   win->SetFullCopyBlender();
    
    win->Draw(background , 0 , 0);
 
@@ -929,7 +929,7 @@ void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
       
       CheckRedraw();
       
-      win->SetCopyBlender();
+      win->SetFullCopyBlender();
       for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
          Rectangle& r = *it;
          win->DrawRegion(background , r , r.X() , r.Y());

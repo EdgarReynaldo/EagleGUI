@@ -58,9 +58,10 @@ enum WIDGETCOLOR {
    MGCOL   = 2,
    FGCOL   = 3,
    HLCOL   = 4,
-   TXTCOL  = 5
+   TXTCOL  = 5,
+   HVRCOL  = 6
 };
-#define EAGLE_NUMCOLORS 6
+#define EAGLE_NUMCOLORS 7
 //*/
 
 

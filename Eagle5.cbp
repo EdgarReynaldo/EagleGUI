@@ -135,6 +135,7 @@
 		<Unit filename="include/Eagle/Gui/BasicIcon.hpp" />
 		<Unit filename="include/Eagle/Gui/Button.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/BasicButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/CheckBox.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/GuiButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/IconButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/RadioButton.hpp" />
@@ -216,6 +217,7 @@
 		<Unit filename="src/Gui/Alignment.cpp" />
 		<Unit filename="src/Gui/BasicIcon.cpp" />
 		<Unit filename="src/Gui/Button/BasicButton.cpp" />
+		<Unit filename="src/Gui/Button/CheckBox.cpp" />
 		<Unit filename="src/Gui/Button/GuiButton.cpp" />
 		<Unit filename="src/Gui/Button/IconButton.cpp" />
 		<Unit filename="src/Gui/Button/RadioButton.cpp" />

@@ -424,8 +424,21 @@ void Layout::SetGuiHandler(WidgetHandler* handler) {
 
 
 
+void Layout::SetWChildren(std::vector<WidgetBase*> new_children) {
+   ClearWidgets();
+   Resize(new_children.size());
+   for (int i = 0 ; i < (int)new_children.size() ; ++i) {
+      PlaceWidget(new_children[i] , i);
+   }
+}
+
+
+
 std::vector<WidgetBase*> Layout::WChildren() const {
    
+   /// It's okay to preserve null children
+   return wchildren;
+
    /// Some widgets may be NULL so we can't just copy the vector
    std::vector<WidgetBase*> children;
    children.reserve(wchildren.size());

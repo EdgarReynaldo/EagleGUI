@@ -13,7 +13,8 @@ MenuLayout::MenuLayout(std::string objname) :
 
 
 
-void MenuLayout::ResizeMenu(int new_menu_size) {
+void MenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new_direction) {
+   layout_direction = new_direction;
    switch(layout_direction) {
    case MENU_HORIZONTAL :
       ResizeGrid(new_menu_size , 1);
@@ -26,7 +27,6 @@ void MenuLayout::ResizeMenu(int new_menu_size) {
    }
    
    menu_size = GridLayout::GetLayoutSize();
-   
 }
 
 

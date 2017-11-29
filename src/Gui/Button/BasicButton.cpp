@@ -420,7 +420,8 @@ void BasicButton::SetClickArea(AreaBase* new_click_area , bool delete_when_done)
 void BasicButton::UseDefaultClickArea(bool use_default) {
    use_default_click_area = use_default;
    if (use_default_click_area) {
-      SetClickArea(new Rectangle(area.MLeft() , area.MTop() , InnerArea().W() , InnerArea().H()) , true);
+      SetClickArea(new Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()) , true);
+///      SetClickArea(new Rectangle(area.MLeft() , area.MTop() , InnerArea().W() , InnerArea().H()) , true);
    }
 }
 

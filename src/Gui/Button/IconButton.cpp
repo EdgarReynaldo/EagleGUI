@@ -29,6 +29,19 @@ void IconButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 
+IconButton::IconButton(std::string classname , std::string objname) :
+      BasicButton(classname , objname),
+      original_images(),
+      click_rect()
+{
+   for (int i = 0 ; i < 4 ; ++i) {
+      original_images[i] = 0;
+   }
+   SetClickArea(&click_rect , false);
+}
+
+
+
 IconButton::IconButton(std::string object_name) :
       BasicButton("IconButton" , object_name),
       original_images(),

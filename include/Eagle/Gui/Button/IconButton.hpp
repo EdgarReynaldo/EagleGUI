@@ -7,8 +7,8 @@
 #ifndef IconButton_HPP
 #define IconButton_HPP
 
-
-#include "Eagle/Gui/Button/GuiButton.hpp"
+#include "Eagle/Area.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/StringWork.hpp"
 
@@ -23,7 +23,7 @@ enum BUTTON_STATE {
 
 class IconButton : public BasicButton {
 
-private :
+protected :
 /**
    EagleImage** upimage;
    EagleImage** downimage;
@@ -40,12 +40,13 @@ private :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
 
+   IconButton(std::string classname , std::string objname);
 public :
    
    IconButton(std::string object_name);
    ~IconButton() {}
    
-   void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
+   virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
    
    
    virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);

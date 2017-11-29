@@ -144,6 +144,9 @@ protected :
    void SetGuiHandler(WidgetHandler* handler);// for WidgetHandlers only
 
 public :   
+
+   virtual void SetWChildren(std::vector<WidgetBase*> new_children);
+
    // Getters
    std::vector<WidgetBase*> WChildren() const ;
    std::vector<WidgetBase*> Descendants() const ;

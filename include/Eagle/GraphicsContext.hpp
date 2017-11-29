@@ -251,6 +251,7 @@ public :
 
    /// Blender setting functions
    virtual void SetCopyBlender()=0;
+   virtual void SetFullCopyBlender()=0;
    virtual void SetPMAlphaBlender()=0;
    virtual void SetNoPMAlphaBlender()=0;
    virtual void RestoreLastBlendingState()=0;

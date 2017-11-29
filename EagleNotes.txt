@@ -2,8 +2,6 @@
 Notes for Eagle 5 development
 
 Issues
--101 StringPrintF() is not thread safe
-
 -99 Threading Issues with Multiple Windows - debug this shit
     Step 1. Create a separate log for threading only
     Step 2. Give mutexes and threads a name - this may already be done if they are EagleObjects
@@ -17,9 +15,6 @@ Issues
 -4. WidgetHandler should be able to draw without a buffer. Separate buffer out.
 
 -3. Layouts should all use AdjustWidgetArea in RequestWidgetRectangle. This is not the case yet.
-
--2. GuiButton uses Area hit detection, but not well - it should use a single Area* that it checks for Contains(msx,msy)
-      Combine with BasicButton? BasicButton already does this. GuiButton should be simpler I think.
 
 -1. EagleSystem doesn't have functions to free resources early - it only releases them on destruction
 
@@ -93,7 +88,7 @@ TODO : Milestones necessary for development
    C - ???
 
 6. Platform support - already mostly possible due to Allegro's multi platform support
-   A. OSX
-   B. Linux
+   A. Windows and Linux supported through gcc and mingw.
+   B. OSX
    C. Android
    D. iOS

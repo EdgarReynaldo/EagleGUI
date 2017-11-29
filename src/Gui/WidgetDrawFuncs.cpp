@@ -525,9 +525,9 @@ void HighlightOutlineFocusPainter::
 PaintFocus(EagleGraphicsContext* window , const WidgetArea& warea , const WidgetColorset& colors , int xpos , int ypos) {
    EAGLE_ASSERT(window);
    EAGLE_ASSERT(window->Valid());
-   Rectangle r = warea.InnerArea();
+   Rectangle r = warea.OuterArea();
    r.MoveBy(xpos,ypos);
-   window->DrawFilledRectangle(r,colors[HLCOL]);
+   window->DrawRectangle(r , 1.0 , colors[HLCOL]);
 }
 
 

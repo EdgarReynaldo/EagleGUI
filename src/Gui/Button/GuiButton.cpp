@@ -65,6 +65,26 @@ void GuiButton::ResetRadii() {
 }
 
 
+void GuiButton::ResetClickArea() {
+   switch(btn_shape) {
+   case RECTANGLE_BTN :
+      SetClickArea(new Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()) , true);
+      break;
+   case ROUNDED_BTN :
+      SetClickArea(new RoundedRectangle(Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()) , rad_a , rad_b) , true);
+      break;
+   case ELLIPSE_BTN :
+      SetClickArea(new Ellipse(0 , 0 , InnerArea().W() , InnerArea().H()) , true);
+      break;
+   case CIRCLE_BTN :
+      SetClickArea(new Circle(InnerArea().W()/2 , InnerArea().H()/2 , rad_a) , true);
+      break;
+   default :
+      break;
+   }
+}
+
+
 
 GuiButton::GuiButton(string name) :
       BasicButton("GuiButton" , name),
@@ -80,6 +100,14 @@ GuiButton::GuiButton(string name) :
 }
 
 int GuiButton::PrivateCheckInputs() {
+
+   return BasicButton::PrivateCheckInputs();
+
+
+   /// Don't think we need this
+
+
+
 
    UINT retmsg = DIALOG_OKAY;
    bool activated = false;
@@ -413,6 +441,7 @@ void GuiButton::SetRedrawFlag() {
 void GuiButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
    WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
    ResetRadii();
+   ResetClickArea();
    SetBgRedrawFlag();
 }
 
@@ -423,6 +452,7 @@ void GuiButton::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_typ
    btn_action_type = action_type;
    btn_class = button_class;
    ResetRadii();
+   ResetClickArea();
    SetBgRedrawFlag();
 }
 
@@ -492,13 +522,6 @@ int GuiButton::RadiusA() {
 int GuiButton::RadiusB() {
    return rad_b;
 }
-
-
-
-std::string GuiButton::GetWidgetClassName() {
-   return "GuiButton";
-}
-
 
 
 

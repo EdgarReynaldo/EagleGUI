@@ -104,6 +104,7 @@ public :
 
    /// Blender setting functions
    void SetCopyBlender();
+   void SetFullCopyBlender();
    void SetPMAlphaBlender();
    void SetNoPMAlphaBlender();
    void RestoreLastBlendingState();

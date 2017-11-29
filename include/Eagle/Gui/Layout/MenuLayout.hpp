@@ -28,8 +28,9 @@ public :
    MenuLayout(std::string objname = "Nemo");
    
    
-   void ResizeMenu(int new_menu_size);
+   void ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new_direction = MENU_VERTICAL);
    
+   MENU_LAYOUT_DIRECTION Direction() {return layout_direction;}
    
 };
 
