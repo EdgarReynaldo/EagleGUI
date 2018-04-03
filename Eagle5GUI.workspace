@@ -3,7 +3,5 @@
 	<Workspace title="Eagle5GUI_Workspace">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5_backend.cbp" />
-		<Project filename="Libtest.cbp" />
-		<Project filename="GUItest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

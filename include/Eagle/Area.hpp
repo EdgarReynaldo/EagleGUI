@@ -224,6 +224,8 @@ enum RECT_CORNER_POS {
    RECT_CORNER_BL = 3
 };
 
+#warning Eagle::Rectangle has issues with OpenGL headers
+
 
 class Rectangle : public AreaBase {
 protected :

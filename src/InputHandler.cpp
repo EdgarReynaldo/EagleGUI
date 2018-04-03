@@ -1384,6 +1384,19 @@ bool AnyInputPressed(Input* store) {
 }
 
 
+
+bool AnyKeyPressed(Input* store) {
+   Input i;
+   if (AnyInputPressed(&i)) {
+      if (i.Source() == KB) {
+         if (store) {*store = i;}
+         return true;
+      }
+   }
+   return false;
+}
+
+
 /// TODO : This function looks funny... I don't think it does what it is supposed to...
 bool NonModInputPressed(Input* store) {
    if (!store) {return false;}

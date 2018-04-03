@@ -70,6 +70,7 @@ class ExampleMenuItem : public MenuItemBase {
    
 protected :
    RelativeLayout our_layout;
+   
    BasicButton our_button;
    BasicText our_title_text;
    BasicText our_key_text;

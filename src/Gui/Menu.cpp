@@ -197,6 +197,7 @@ void ExampleMenuItem::SetSubMenu(Menu* m) {
    sub_menu = m;
    if (sub_menu) {
       MakeStateButton(false , false);
+      sub_menu->SetParent(this);
    }
 }
 

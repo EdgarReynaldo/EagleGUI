@@ -228,7 +228,15 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
-		<Unit filename="src/tests2/gui_test.cpp" />
+		<Unit filename="src/tests2/font_spacing.cpp" />
+		<Unit filename="src/tests2/gui_test.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/tests2/lights.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

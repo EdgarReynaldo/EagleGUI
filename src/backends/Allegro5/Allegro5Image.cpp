@@ -299,3 +299,35 @@ EagleColor Allegro5Image::GetPixel(int x , int y) {
    return GetEagleColor(ac);
 }
 
+
+
+void ConvertMaskColorToAlphaZero(Allegro5Image* img , EagleColor mask) {
+   EAGLE_ASSERT(img);
+   ALLEGRO_BITMAP* bmp = img->AllegroBitmap();
+   EAGLE_ASSERT(bmp);
+   
+   al_convert_mask_to_alpha(bmp , al_map_rgba(mask.R() , mask.G() , mask.B() , mask.A()));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

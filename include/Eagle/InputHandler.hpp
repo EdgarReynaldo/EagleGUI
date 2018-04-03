@@ -675,6 +675,7 @@ InputGroup operator||(const Input& i , const InputGroup& ig);
 
 
 bool AnyInputPressed(Input* store);
+bool AnyKeyPressed(Input* store = 0);
 bool NonModInputPressed(Input* store);
 bool ModifierHeld(Input* store);
 

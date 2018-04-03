@@ -46,7 +46,7 @@ public :
    void SetColor(int red , int green , int blue , int alpha = 255 , bool mult_alpha = pre_multiply_alpha);
    void SetFloatColor(float red , float green , float blue , float alpha = 1.0 , bool mult_alpha = pre_multiply_alpha);
 
-/**
+//**
    // Getters
    int R() {return r;}
    int G() {return g;}
@@ -56,7 +56,7 @@ public :
    float fG() {return fg;}
    float fB() {return fb;}
    float fA() {return fa;}
-*/
+//*/
    friend std::ostream& operator<<(std::ostream& os , const EagleColor& c);
 
 };
