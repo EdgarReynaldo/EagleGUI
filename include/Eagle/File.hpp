@@ -29,7 +29,7 @@
 #include <map>
 
 #include <ctime>
-
+#include <memory>
 
 
 enum FS_MODE_FLAGS {
@@ -55,9 +55,30 @@ public :
    bool IsDir() {return !IsFile();}
 };
 
+
+class FilePath {
+
+protected :
+   std::string drive;
+   std::vector<std::string> folderpath;   
+   std::string file;
+   
+   void SetPathComponents(const std::vector<std::string>& paths);
+
+public :
+   FilePath(std::string path);/// This uses SanitizePath, so it can be as dumb as you want
+
+   std::string Drive();
+   std::string Folder();
+   std::string File();
+   std::string Path();/// Returns full path, sanitized
+
+};
+
+
 class FSInfo {
 protected :
-   std::string fpath;
+   FilePath fpath;
    FSMode fmode;
    time_t tcreate;
    time_t tmodify;
@@ -65,9 +86,9 @@ protected :
    unsigned long long fsize;
 public :
    
-   FSInfo(std::string path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
+   FSInfo(FilePath path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
    
-   std::string Path() {return fpath;}
+   std::string Path() {return fpath.Path();}
    FSMode Mode() {return fmode;}
    time_t TimeCreated() {return tcreate;}
    time_t TimeModified() {return tmodify;}
@@ -84,8 +105,8 @@ protected :
    Folder* parent;
    FSInfo finfo;
    std::string fname;
-   std::map<std::string , File*> files;
-   std::map<std::string , Folder*> subfolders;
+   std::map<std::string , std::shared_ptr<File>> files;
+   std::map<std::string , std::shared_ptr<Folder>> subfolders;
 
    friend class FileSystem;
    
@@ -137,49 +158,6 @@ public :
    
 };
 
-
-
-class FileSystem {
-protected :
-   std::vector<Drive*> drives;
-   
-   
-   typedef FileSystem* (*FSCREATOR) ();
-   typedef void (*FSDESTRUCTOR) ();
-public :/// Need to friend Allegro5System but Eagle doesn't know about it
-   static FSCREATOR CreateFunc;
-protected :
-   static FSDESTRUCTOR DestroyFunc;
-   static FileSystem* fsys;
-   
-   FileSystem() : drives() {}
-   
-   static void DestroyFileSystem();
-   
-   virtual void ReadDirectoryContents(Folder* folder)=0;
-   
-   void RegisterFile(Folder* parent , File* file);
-   void RegisterSubFolder(Folder* parent , Folder* sub);
-   
-public :
-   virtual ~FileSystem() {}
-   
-   static FileSystem* Instance();
-   
-   /// Utility functions
-   virtual std::string GetFileName(std::string path)=0;
-   virtual std::string GetFileExt(std::string path)=0;
-   virtual FSInfo GetFileInfo(std::string path)=0;
-   
-   /// Read functions
-   virtual Folder* ReadFolder(std::string path)=0;
-   virtual File* ReadFile(std::string path)=0;
-};
-
-
-std::string GetFileName(std::string path);/// Returns everything after the last path separator
-std::string GetFileExt(std::string name);
-FSInfo      GetFileInfo(std::string path);
 
 
 #endif // File_HPP

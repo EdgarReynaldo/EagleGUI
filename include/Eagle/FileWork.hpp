@@ -49,6 +49,7 @@ bool ReadTextInteger(FILE* f , int* store);
 int fpeek(FILE* f);
 
 
+unsigned int SkipSeparators(const std::string& p , unsigned int index);
 
 
 #endif // FileWork_H

@@ -138,3 +138,17 @@ int fpeek(FILE* f) {
    return c;
 }
 
+
+
+unsigned int SkipSeparators(const std::string& p , unsigned int index) {
+   unsigned int stop = p.length();
+   while ((index < stop) && (p[index] == '\\' || p[index] == '/')) {
+      ++index;
+   }
+   return index;
+}
+
+
+
+
+

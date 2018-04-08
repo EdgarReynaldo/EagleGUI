@@ -3,7 +3,7 @@
 
 #include "allegro5/allegro.h"
 
-#include "Eagle/backends/Allegro5/Allegro5File.hpp"
+#include "Eagle/backends/Allegro5/Allegro5FileSystem.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 
@@ -40,22 +40,22 @@ FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f) {
 
 
 
-Folder* Allegro5FileSystem::ReadFolderInfo(ALLEGRO_FS_ENTRY* f) {
+std::shared_ptr<Folder> Allegro5FileSystem::ReadFolderInfo(ALLEGRO_FS_ENTRY* f) {
    if (!f) {return 0;}
    if (!al_fs_entry_exists(f)) {
       return 0;
    }
-   return new Folder(GetFSInfo(f));
+   return std::shared_ptr<Folder>(new Folder(GetFSInfo(f)));
 }
 
 
 
-File* Allegro5FileSystem::ReadFileInfo(ALLEGRO_FS_ENTRY* f) {
+std::shared_ptr<File> Allegro5FileSystem::ReadFileInfo(ALLEGRO_FS_ENTRY* f) {
    if (!f) {return 0;}
    if (!al_fs_entry_exists(f)) {
       return 0;
    }
-   return new File(GetFSInfo(f));
+   return std::shared_ptr<File>(new File(GetFSInfo(f)));
 }
 
 
@@ -141,30 +141,39 @@ FSInfo Allegro5FileSystem::GetFileInfo(std::string path) {
 
 
 
-Folder* Allegro5FileSystem::ReadFolder(std::string path) {
+std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(std::string path) {
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
-   Folder* folder = ReadFolderInfo(f);
+   std::shared_ptr<Folder> folder = ReadFolderInfo(f);
    al_destroy_fs_entry(f);
    if (!folder) {
       EagleWarn() << StringPrintF("Failed to read directory '%s' from filesystem.\n" , path.c_str());
    }
    else {
-      ReadDirectoryContents(folder);
+      ReadDirectoryContents(folder.get());
    }
    return folder;
 }
 
 
 
-File* Allegro5FileSystem::ReadFile(std::string path) {
+std::shared_ptr<File> Allegro5FileSystem::ReadFile(std::string path) {
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
-   File* file = ReadFileInfo(f);
+   std::shared_ptr<File> file = ReadFileInfo(f);
    al_destroy_fs_entry(f);
    if (!file) {
       EagleWarn() << StringPrintF("Failed to read file '%s' from filesystem.\n" , path.c_str());
    }
    return file;
 }
+
+
+
+char Allegro5FileSystem::PathSeparator() {
+   return ALLEGRO_NATIVE_PATH_SEP;
+}
+
+
+
 
 
 

@@ -10,7 +10,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
-#include "Eagle/backends/Allegro5/Allegro5File.hpp"
+#include "Eagle/backends/Allegro5/Allegro5FileSystem.hpp"
 
 
 #include "allegro5/allegro.h"

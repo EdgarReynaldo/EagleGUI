@@ -7,10 +7,13 @@
 #include "Eagle/Exception.hpp"
 
 
+#include "Eagle/FileSystem.hpp"
+
+
 /// -------------------------      FSInfo     -----------------------------
 
 
-FSInfo::FSInfo(std::string path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size) :
+FSInfo::FSInfo(FilePath path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size) :
       fpath(path),
       fmode(mode),
       tcreate(creation_time),
@@ -26,13 +29,13 @@ FSInfo::FSInfo(std::string path , FSMode mode , time_t creation_time , time_t mo
 
 
 void Folder::RegisterFile(File* f) {
-   files[f->Info().Path()] = f;
+   files[f->Info().Path()] = std::shared_ptr<File>(f);
 }
 
 
 
 void Folder::RegisterSubFolder(Folder* f) {
-   subfolders[f->Info().Path()] = f;
+   subfolders[f->Info().Path()] = std::shared_ptr<Folder>(f);
 }
 
 
@@ -45,6 +48,60 @@ Folder::Folder(FSInfo info) :
       subfolders()
 {
    fname = GetFileName(info.Path());
+}
+
+
+
+/// ---------------------------       FilePath       --------------------------------------------
+
+
+
+void FilePath::SetPathComponents(const std::vector<std::string>& paths) {
+   EAGLE_ASSERT(paths.size() >= 2);
+   drive = paths[0];
+   folderpath.clear();
+   for (int i = 1 ; i < (int)paths.size() - 1 ; ++i) {
+      folderpath.push_back(paths[i]);
+   }
+   file = paths[(int)paths.size() - 1];
+}
+
+
+
+FilePath::FilePath(std::string path) :
+      drive(""),
+      folderpath(),
+      file("")
+{
+   SetPathComponents(ExplodePath(path));
+}
+
+
+
+std::string FilePath::Drive() {
+   return drive + PathSeparator();
+}
+
+
+
+std::string FilePath::Folder() {
+   std::string f = FilePath::Drive();
+   for (unsigned int i = 0 ; i < folderpath.size() ; ++i) {
+      f += folderpath[i] + PathSeparator();
+   }
+   return f;
+}
+
+
+
+std::string FilePath::Path() {
+   return Folder() + File();
+}
+
+
+
+std::string FilePath::File() {
+   return file;
 }
 
 
@@ -95,82 +152,6 @@ bool File::WriteFileToDisk() {
    
    return true;
 }
-
-
-
-/// ----------------------------      FileSystem     ----------------------------------------
-
-
-
-FileSystem::FSCREATOR FileSystem::CreateFunc = 0;
-FileSystem::FSDESTRUCTOR FileSystem::DestroyFunc = FileSystem::DestroyFileSystem;
-FileSystem* FileSystem::fsys = 0;
-
-
-
-void FileSystem::DestroyFileSystem() {
-   if (fsys) {
-      delete fsys;
-   }
-   fsys = 0;
-}
-
-
-
-
-void FileSystem::RegisterFile(Folder* parent , File* file) {
-   EAGLE_ASSERT(parent);
-   EAGLE_ASSERT(file);
-   parent->RegisterFile(file);
-}
-
-
-
-void FileSystem::RegisterSubFolder(Folder* parent , Folder* sub) {
-   EAGLE_ASSERT(parent);
-   EAGLE_ASSERT(sub);
-   parent->RegisterSubFolder(sub);
-}
-
-
-
-FileSystem* FileSystem::Instance() {
-   if (fsys) {
-      return fsys;
-   }
-   else {
-      if (!CreateFunc) {
-         throw EagleException("FileSystem::Instance - no filesystem creation function registered!\n");
-      }
-      fsys = CreateFunc();
-      if (fsys) {
-         atexit(DestroyFileSystem);
-      }
-   }
-   return 0;
-}
-
-
-
-std::string GetFileName(std::string path) {
-   return FileSystem::Instance()->GetFileName(path);
-}
-
-
-
-std::string GetFileExt(std::string name) {
-   return FileSystem::Instance()->GetFileExt(name);
-}
-
-
-
-FSInfo GetFileInfo(std::string path) {
-   return FileSystem::Instance()->GetFileInfo(path);
-}
-
-
-
-
 
 
 
