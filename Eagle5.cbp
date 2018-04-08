@@ -127,6 +127,7 @@
 		<Unit filename="include/Eagle/Container.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
 		<Unit filename="include/Eagle/Exception.hpp" />
+		<Unit filename="include/Eagle/File.hpp" />
 		<Unit filename="include/Eagle/FileWork.hpp" />
 		<Unit filename="include/Eagle/Font.hpp" />
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
@@ -181,7 +182,9 @@
 		<Unit filename="include/Eagle/Indenter.hpp" />
 		<Unit filename="include/Eagle/InputHandler.hpp" />
 		<Unit filename="include/Eagle/Lib.hpp" />
+		<Unit filename="include/Eagle/LineEquations.hpp" />
 		<Unit filename="include/Eagle/Logging.hpp" />
+		<Unit filename="include/Eagle/Math.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
 		<Unit filename="include/Eagle/MousePointer.hpp" />
 		<Unit filename="include/Eagle/Mutexes.hpp" />
@@ -211,6 +214,7 @@
 		<Unit filename="src/Conditions.cpp" />
 		<Unit filename="src/Events.cpp" />
 		<Unit filename="src/Exception.cpp" />
+		<Unit filename="src/File.cpp" />
 		<Unit filename="src/FileWork.cpp" />
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
@@ -258,6 +262,7 @@
 		<Unit filename="src/Indenter.cpp" />
 		<Unit filename="src/InputHandler.cpp" />
 		<Unit filename="src/Lib.cpp" />
+		<Unit filename="src/LineEquations.cpp" />
 		<Unit filename="src/Logging.cpp" />
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/Mutexes.cpp" />
