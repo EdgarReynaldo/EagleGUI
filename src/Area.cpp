@@ -36,9 +36,8 @@ using std::map;
 
 /// NOTE : std=c++11 doesn't define M_PI
 
-#ifndef M_PI
-#define M_PI (3.14159265358979323846)
-#endif
+#include "Eagle/Math.hpp"
+
 
 void DestroyBoundingRectangles(vector<Rectangle*>& vrect) {
    for (unsigned int i = 0 ; i < vrect.size() ; ++i) {
