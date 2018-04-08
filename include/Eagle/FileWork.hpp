@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,12 +31,12 @@
 
 
 
-// Platform neutral getline - reads up unti EOF, \r (OSX), \r\n (WIN), or \n (NIX)
+/// Platform neutral getline - reads up unti EOF, \r (OSX), \r\n (WIN), or \n (NIX)
 
-// May only work in BINARY MODE.
+/// May only work in BINARY MODE.
 std::istream& GetLinePN(std::istream& is , std::string& s);
 
-// Same as above, but ONLY works in BINARY MODE!
+/// Same as above, but ONLY works in BINARY MODE!
 FILE* GetLinePN(FILE* f , std::string& s);
 
 
@@ -45,7 +45,7 @@ void SkipWhiteSpace(FILE* f);
 bool ReadTextInteger(FILE* f , int* store);
 
 
-// ONLY works in BINARY MODE!
+/// ONLY works in BINARY MODE!
 int fpeek(FILE* f);
 
 

@@ -10,6 +10,8 @@
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
+#include "Eagle/backends/Allegro5/Allegro5File.hpp"
+
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
@@ -27,6 +29,10 @@ bool Allegro5System::PrivateInitializeSystem() {
    // We can't call al_install_system(...,atexit) here because the allegro dll sometimes goes out of scope before our dll does
 ///   bool ret = al_init();
 ///   bool ret = al_install_system(ALLEGRO_VERSION_INT  , atexit);
+
+   FileSystem::CreateFunc = CreateAllegro5FileSystem;
+
+
    bool ret = al_install_system(ALLEGRO_VERSION_INT  , NULL);// this means we have to shutdown allegro
    if (!ret) {
       EagleCritical() << "Allegro failed to initialize." << std::endl;
