@@ -1,17 +1,16 @@
 
-
-/*
+/**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *     _______       ___       ____      __       _______       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_    \ \ \_____
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\    \ \_____ \
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_    \/ ____\ \
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\     /\______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/     \/______/
  *
  *
- *    EAGLE
+ *    EAGLE 5
  *    Edgar's Agile Gui Library and Extensions
  *
  *    Copyright 2009-2018+ by Edgar Reynaldo
@@ -141,22 +140,23 @@ protected :
    FSInfo finfo;
    std::string fname;
    std::string fext;
-   std::vector<unsigned char> fmem;
-   bool file_open;
-   
    
 public :   
    
    File(FSInfo info);
-   
-   bool ReadFileIntoMemory();
-   bool WriteFileToDisk();
    
    FSInfo Info() {return finfo;}
    std::string Name() {return fname;}
    std::string Ext() {return fext;}
    
 };
+
+
+class ArchiveFile : public File , public Folder {
+   
+   
+};
+
 
 
 

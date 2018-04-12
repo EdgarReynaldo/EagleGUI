@@ -593,6 +593,13 @@ void Rectangle::SetArea(int xpos , int ypos , int width , int height) {
 
 
 
+void Rectangle::Scale(double scale) {
+   w = (int)(w*scale);
+   h = (int)(h*scale);
+}
+
+
+
 void Rectangle::Draw(EagleGraphicsContext* win , EagleColor color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());

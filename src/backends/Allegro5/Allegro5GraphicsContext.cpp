@@ -99,8 +99,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
       return false;
    }
 
-   scrw = width;
-   scrh = height;
+   scrw = al_get_display_width(display);
+   scrh = al_get_display_height(display);
 
    GetAllegro5WindowManager()->AddDisplay(this , display);
 

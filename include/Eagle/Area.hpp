@@ -308,6 +308,8 @@ public :
 
    inline Rectangle Shrink(int delta);
    inline Rectangle Grow(int delta);
+   
+   void Scale(double scale);
 
    inline bool Overlaps(const Rectangle& r) const;
 

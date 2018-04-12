@@ -14,7 +14,7 @@
  *    EAGLE 5
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -35,7 +35,9 @@
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/File.hpp"
 #include "Eagle/FileWork.hpp"
+#include "Eagle/FileSystem.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Gui.hpp"
@@ -47,6 +49,7 @@
 #include "Eagle/MemberFunctors.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/Mutexes.hpp"
+#include "Eagle/NDimensionArray.hpp"
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/ObjectInfo.hpp"
