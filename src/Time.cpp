@@ -71,6 +71,7 @@ ProgramTime ProgramTime::Now() {
 #elif defined EAGLE_LINUX
     timespec ts;
     int ret = clock_gettime(CLOCK_REALTIME , &ts);
+    (void)ret;
     EAGLE_ASSERT(ret == 0);
     double rt = (double)ts.tv_sec + (double)ts.tv_nsec / pow(10 , 9);
     return ProgramTime(rt);

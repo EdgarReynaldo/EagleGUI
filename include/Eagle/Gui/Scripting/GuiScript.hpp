@@ -23,7 +23,7 @@ Specification for an EagleGuiScript file (.egs). File is text, with declarations
 
 Currently, there are two sections available in an .egs script. There is a "Declarations" section and a "Functions" section.
 
-Declarations follow the format of a class name followed by whitespace then by the object name, optional whitespace, 
+Declarations follow the format of a class name followed by whitespace then by the object name, optional whitespace,
 and an equals sign. The following lines consist of attribute name and value pairs separated by a colon.
 Each line is treated as a set of attribute value pairs. You may separate these pairs by a newline or by a semi colon,
 but they must be kept separate. Atrributes and values may be surrounded by whitespace, which will be trimmed.
@@ -46,7 +46,7 @@ ATTRIBUTE : VALUE ; ATTRIBUTE : VALUE
 
 EagleColor white = RGBA:255,255,255,255;
 
-WidgetColorset colorset1 = 
+WidgetColorset colorset1 =
 SDCOL : RGBA : 0,0,0,255
 HLCOL : FRGBA:1.0,1.0,1.0 , 1.0
 TXTCOL : white
@@ -71,64 +71,64 @@ class EGSDeclaration {
    std::string class_name;
    std::string object_name;
    std::string attribute_value_set;
-   
+
    AttributeValueMap attribute_value_map;
-   
+
 
 public :
-   
+
    EGSDeclaration();
    EGSDeclaration(std::string declaration);
 
    void Clear();
 
    bool ParseDeclaration(std::string declaration);
-   
+
    std::string ClassName() const {return class_name;}
    std::string ObjectName() const {return object_name;}
    std::string AttributeSet() const {return attribute_value_set;}
-   AttributeValueMap AttributeValueMap() const {return attribute_value_map;}
+   AttributeValueMap ValueMap() const {return attribute_value_map;}
 };
 
 
 
 class EagleGuiScript {
 
-protected:   
+protected:
 
    typedef std::vector<EGSDeclaration*> DECLIST;
-   
+
    typedef std::map<std::string , std::string> SECTION_MAP;
    typedef SECTION_MAP::iterator SMIT;
 
    typedef std::map<std::string , DECLIST> CLASS_DEC_MAP;
    typedef CLASS_DEC_MAP::iterator CDMIT;
 
-   
-   
-   
+
+
+
    std::string script_file_path;
-   
+
    std::string script_file_contents;
-   
+
    SECTION_MAP section_map;
-   
+
    std::vector<std::string> declaration_lines;
-   
+
    std::vector<EGSDeclaration*> decs;
    std::vector<std::string> funcs;/// Once our script has scripting capabilities
-   
-   CLASS_DEC_MAP class_dec_map;
-   
-   ColorRegistry* colreg;
-   
-   std::map<int , WidgetBase*> wmap;
-   
 
-   
-   
+   CLASS_DEC_MAP class_dec_map;
+
+   ColorRegistry* colreg;
+
+   std::map<int , WidgetBase*> wmap;
+
+
+
+
    void ClearScript();
-   
+
    bool ReadScriptFile(std::string script_file_name);
 
    SECTION_MAP ReadSections(std::string script_file);
@@ -136,9 +136,9 @@ protected:
    std::vector<std::string> GetSectionLines(std::string content);
 
    DECLIST ParseDeclarations(std::vector<std::string> declarations);
-   
+
    CLASS_DEC_MAP MakeClassDeclarationMap();
-   
+
    bool RegisterColors();
    bool RegisterColorsets();
 
@@ -147,25 +147,25 @@ protected:
    bool RunCommands();
    bool RunCommands() {
       std::vector<std::string> lines = GetSectionLines(section_map["Commands"]);
-      
+
       for (int i = 0 ; i < (int)lines.size() ; ++i) {
          std::string l = lines[i];
-         std::vector<std::string> 
+         std::vector<std::string>
       }
-      
+
    }
-*/   
+*/
 public :
-   
+
    EagleGuiScript();
    ~EagleGuiScript();
 
    bool LoadScript(std::string script_file_name);
-   
+
 ///   bool SaveScript(std::string script_file_name);
    bool SaveScript();/// Saves over previously loaded script - danger!
    bool SaveScriptAs(std::string script_file_name);
-   
+
    EagleColor* GetColor(std::string name);
    WidgetColorset* GetColorset(std::string name);
 
@@ -173,7 +173,7 @@ public :
 
 
 
-   
+
 };
 
 

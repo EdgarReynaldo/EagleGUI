@@ -71,7 +71,7 @@ bool EGSDeclaration::ParseDeclaration(std::string declaration) {
    EAGLE_ASSERT(split.size() == 2);
    std::string lhs = split[0];
    std::string rhs = split[1];
-   
+
    std::vector<std::string> names = SplitByDelimiterString(lhs , " ");
    if (names.size() != 2) {
       if (names.size() == 1) {
@@ -88,9 +88,9 @@ bool EGSDeclaration::ParseDeclaration(std::string declaration) {
    object_name = names[1];
    attribute_value_set = rhs;
    attribute_value_map = ParseAttributeSet(attribute_value_set);
-   
+
    EAGLE_ASSERT(!attribute_value_map.Empty());
-   
+
    return true;
 }
 
@@ -134,7 +134,7 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
       EagleError() << StringPrintF("EagleGuiScript::ReadScriptFile : Could not open file %s for reading.\n" , script_file_name.c_str());
       return false;
    }
-   
+
    /// Get length
    int oldcount = 0 , count = 0;
    while(!feof(file) && !ferror(file)) {
@@ -146,9 +146,9 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
       fclose(file);
       return false;
    }
-   
+
    rewind(file);
-   
+
    script_file_contents.resize(count);
    oldcount = count;
    count = 0;
@@ -165,11 +165,11 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
       fclose(file);
       return false;
    }
-   
+
    fclose(file);
-   
+
    script_file_path = script_file_name;
-   
+
    return true;
 }
 
@@ -178,9 +178,9 @@ bool EagleGuiScript::ReadScriptFile(std::string script_file_name) {
 
 
 EagleGuiScript::SECTION_MAP EagleGuiScript::ReadSections(std::string script_file) {
-   
+
    SECTION_MAP smap;
-   
+
    /// Read everything not in [section] tags into the current section
    std::string section = "Global";
    std::string content = "";
@@ -189,7 +189,7 @@ EagleGuiScript::SECTION_MAP EagleGuiScript::ReadSections(std::string script_file
    unsigned int brace_stop = script_file.find_first_of(brace_start , ']');
    unsigned int content_start = brace_stop + 1;
    unsigned int content_stop = script_file.find_first_of(content_start , '[');
-   
+
    /// Global content
    content = script_file.substr(0 , brace_start);
    smap[section] = content;
@@ -214,10 +214,10 @@ std::vector<std::string> EagleGuiScript::GetSectionLines(std::string content) {
    std::vector<std::string> lines = SplitByNewLines(content);
    std::vector<std::string> adjusted;
    string current = lines[0];
-   
-   
+
+
    /// Assume there is a statement. If we get an empty line, we push it back. If there are more empty lines after that we skip them.
-   
+
    int i = 0;
    do {
       /// Skip empty lines
@@ -237,9 +237,9 @@ std::vector<std::string> EagleGuiScript::GetSectionLines(std::string content) {
          ++i;
       }
       adjusted.push_back(current);
-      
+
    } while (i < (int)lines.size());
-   
+
    return adjusted;
 }
 
@@ -262,7 +262,7 @@ EagleGuiScript::CLASS_DEC_MAP EagleGuiScript::MakeClassDeclarationMap() {
       EGSDeclaration* dec = decs[i];
       std::string class_name = dec->ClassName();
       if (class_name.compare("EagleColor") != 0 &&
-          class_name.compare("WidgetColorset") != 0) 
+          class_name.compare("WidgetColorset") != 0)
       {
          class_name = "WidgetBase";
       }
@@ -300,10 +300,10 @@ bool EagleGuiScript::RegisterColorsets() {
    DECLIST d = class_dec_map["WidgetColorset"];
    for (int i = 0 ; i < (int)d.size() ; ++i) {
       EGSDeclaration* egs_dec = d[i];
-      
+
       WidgetColorset wc;
       try {
-         wc = ParseWidgetColorset(egs_dec->AttributeValueMap());
+         wc = ParseWidgetColorset(egs_dec->ValueMap());
          colreg->RegisterColorset(egs_dec->ObjectName() , wc);
       }
       catch (...) {
@@ -320,9 +320,9 @@ bool EagleGuiScript::LoadWidgets() {
 
    DECLIST d = class_dec_map["WidgetBase"];
    for (int i = 0 ; i < (int)d.size() ; ++i) {
-         
+
       EGSDeclaration* egs_dec = d[i];
-      
+
       WidgetBase* w = CreateWidget<WidgetBase>(egs_dec->ClassName() , egs_dec->ObjectName() , egs_dec->AttributeSet());
       if (!w) {
          EagleError() << StringPrintF("EagleGuiScript::LoadWidgets : Failed to load widget '%s' with attributes '%s'" ,
@@ -362,31 +362,31 @@ EagleGuiScript::~EagleGuiScript() {
 
 
 bool EagleGuiScript::LoadScript(std::string script_file_name) {
-   
+
    ClearScript();
-   
+
    if (!ReadScriptFile(script_file_name)) {
       EagleError() << "EagleGuiScript::LoadScript : Failed to read script file." << endl;
       return false;
    }
-   
+
    section_map = ReadSections(script_file_contents);
-   
+
    SMIT it = section_map.find("Declarations");
    EAGLE_ASSERT(it != section_map.end());
-   
+
    if (it != section_map.end()) {
       declaration_lines = GetSectionLines(it->second);
       decs = ParseDeclarations(declaration_lines);
    }
-   
+
    it = section_map.find("Functions");
    if (it != section_map.end()) {
       /// TODO : IMPLEMENT ME
    }
 
    class_dec_map = MakeClassDeclarationMap();
-   
+
    if (!RegisterColors()) {
       EagleError() << "EagleGuiScript::LoadScript : Failed to register EagleColors." << endl;
       return false;
@@ -399,7 +399,7 @@ bool EagleGuiScript::LoadScript(std::string script_file_name) {
       EagleError() << "EagleGuiScript::LoadScript : Failed to load widgets." << endl;
       return false;
    }
-   
+
    return true;
 }
 
@@ -413,14 +413,14 @@ bool EagleGuiScript::SaveScript() {
 
 bool EagleGuiScript::SaveScriptAs(std::string script_file_name) {
    EAGLE_ASSERT(script_file_name.compare("") != 0);
-   
+
    FILE* f = fopen(script_file_name.c_str() , "w");
    if (!f) {return false;}
-   
+
    /// For each section
-   
+
    /// For each declaration
-   
+
    return true;
 }
 
