@@ -8,8 +8,19 @@
 #include "Eagle/MemFile.hpp"
 
 
+#include <vector>
+#include <string>
 
-typedef std::map<std::string , std::string> KEYMAP;
+
+
+class ConfigItem {
+public :
+   std::vector<std::string> comments;
+   std::string value;
+};
+
+
+typedef std::map<std::string , ConfigItem> KEYMAP;
 typedef std::map<std::string , KEYMAP > SECTIONMAP;
 typedef SECTIONMAP::iterator SMIT;
 
@@ -22,7 +33,11 @@ protected :
    void UpdateContents();
    
 public :
-   
+///   ConfigSettings();
+   ConfigSettings() :
+      contents(""),
+      sectionmap()
+   {}
    
    void Clear();
       

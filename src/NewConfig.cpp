@@ -29,9 +29,12 @@ void ConfigSettings::UpdateContents() {
          
       KEYMAP::iterator kit = (it->second).begin();
       while (kit != (it->second).end()) {
-         
+         std::vector<std::string>& lines = kit->second.comments;
+         for (int i = 0 ; i < (int)lines.size() ; ++i) {
+            ss << lines[i] << std::endl;
+         }
          /// Write key value pair here
-         ss << kit->first << " = " << kit->second << std::endl;
+         ss << kit->first << " = " << kit->second.value << std::endl;
          
          ++kit;
       }
@@ -67,6 +70,8 @@ bool ConfigSettings::LoadFromFile(const char* path) {
    
    std::vector<std::string> lines = SplitByNewLines(contents);
    
+   std::vector<std::string> comments;
+   
    KEYMAP* section = &sectionmap["GLOBAL"];
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       std::string l = lines[i];
@@ -74,6 +79,7 @@ bool ConfigSettings::LoadFromFile(const char* path) {
          continue;
       }
       if (l[0] == '#') {
+         comments.push_back(l);
          continue;
       }
       unsigned int j = l.find_first_of('=');
@@ -92,16 +98,18 @@ bool ConfigSettings::LoadFromFile(const char* path) {
          /// Should have a key value pair
          std::string key = l.substr(0 , j);
          std::string value = l.substr(j + 1);
-         std::string::reverse_iterator rit = key.rbegin();
          while (j > 0 && isspace(key[j-1])) {--j;}
          key = key.substr(0 , j);/// Trim trailing white space off of key
          j = 0;
          while (j < value.size() && isspace(value[j])) {++j;}
          value = value.substr(j);
       
-         (*section)[key] = value;
+         (*section)[key].value = value;
+         (*section)[key].comments = comments;
+         comments.clear();
       }
    }
+   return true;
 }
 
 
@@ -135,7 +143,7 @@ std::string ConfigSettings::GetConfigString(std::string section , std::string ke
       throw EagleException(StringPrintF("ConfigSettings::GetConfigString - key '%s' not found in section %s!\n" ,
                                          key.c_str() , section.c_str()));
    }
-   return kit->second;
+   return kit->second.value;
 }
 
 
@@ -163,7 +171,7 @@ float ConfigSettings::GetConfigFloat(std::string section , std::string key) {
 
 
 void ConfigSettings::SetConfigString(std::string section , std::string key , std::string value) {
-   sectionmap[section][key] = value;
+   sectionmap[section][key].value = value;
 }
 
 
