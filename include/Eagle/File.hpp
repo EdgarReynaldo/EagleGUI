@@ -78,16 +78,23 @@ public :
 class FSInfo {
 protected :
    FilePath fpath;
+   bool fexists;
    FSMode fmode;
    time_t tcreate;
    time_t tmodify;
    time_t taccess;
    unsigned long long fsize;
+
 public :
-   
-   FSInfo(FilePath path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
-   
+
+   FSInfo(FilePath path);
+   FSInfo(FilePath path , bool exists , FSMode mode , 
+          time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
+
+          
+             
    std::string Path() {return fpath.Path();}
+   bool Exists() {return fexists;}
    FSMode Mode() {return fmode;}
    time_t TimeCreated() {return tcreate;}
    time_t TimeModified() {return tmodify;}

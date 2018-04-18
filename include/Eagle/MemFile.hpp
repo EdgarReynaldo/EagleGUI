@@ -15,8 +15,14 @@ class MemFile : public File {
 protected :
    std::vector<unsigned char> fmem;
 public :
+   
+   MemFile(FSInfo info) : File(info) {}
+   
    bool ReadFileIntoMemory();
    bool WriteFileToDisk();
+   
+   unsigned char* Begin();
+   unsigned char* End();
 };
 
 

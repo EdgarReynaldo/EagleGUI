@@ -39,3 +39,16 @@ bool MemFile::WriteFileToDisk() {
    return true;
 }
 
+
+unsigned char* MemFile::Begin() {
+   if (fmem.empty()) {return 0;}
+   return &fmem[0];
+}
+
+
+
+unsigned char* MemFile::End() {
+   if (fmem.empty()) {return 0;}
+   return (&fmem[0] + fmem.size());
+}
+

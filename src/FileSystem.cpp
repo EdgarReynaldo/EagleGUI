@@ -6,6 +6,8 @@
 #include "Eagle/File.hpp"
 #include "Eagle/FileWork.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 
 /// ----------------------------      FileSystem     ----------------------------------------
@@ -74,27 +76,32 @@ std::string GetFileExt(std::string name) {
 
 
 
-FSInfo GetFileInfo(std::string path) {
+FSInfo GetFileInfo(FilePath path) {
    return FileSystem::Instance()->GetFileInfo(path);
 }
 
 
 
-std::shared_ptr<Folder> ReadFolder(std::string path) {
-   return FileSystem::Instance()->ReadFolder(path);
+FSInfo GetFileInfo(std::string path) {
+   return GetFileInfo(FilePath(path));
 }
 
 
 
-std::shared_ptr<File> ReadFile(std::string path) {
-   return FileSystem::Instance()->ReadFile(path);
+FSInfo GetFileInfo(const char* path) {
+   return GetFileInfo(FilePath(std::string(path)));
 }
 
 
 
-std::string SanitizePath(std::string path) {
-   FilePath fp(path);
-   return fp.Path();
+std::shared_ptr<Folder> ReadFolder(FilePath fpath) {
+   return FileSystem::Instance()->ReadFolder(fpath);
+}
+
+
+
+std::shared_ptr<File> ReadFile(FilePath fpath) {
+   return FileSystem::Instance()->ReadFile(fpath);
 }
 
 
@@ -117,8 +124,87 @@ std::vector<std::string> ExplodePath(std::string path) {
 
 
 
+
+std::vector<std::string> GetAbsolutePath(std::string path) {
+   /// CWD/./../../abc/..
+   /// Filter all references to the current directory
+   std::vector<std::string> paths = ExplodePath(path);
+   
+   std::vector<std::string>::iterator it = paths.begin();
+   while (it != paths.end()) {
+      if (it->compare(".") == 0) {
+         it = paths.erase(it);
+      }
+      else {
+         ++it;
+      }
+   }
+   bool relative = false;
+   /// Check for references to parent directories
+   for (int i = 0 ; i < (int)paths.size() ; ++i) {
+      if (paths[i].compare("..") == 0) {
+         relative = true;
+         break;
+      }
+   }
+   
+   if (!relative) {
+      return paths;
+   }
+   
+   std::vector<std::string> abspath = ExplodePath(CurrentDirectory());
+   
+   abspath.insert(abspath.end() , paths.begin() , paths.end());/// Append relative directories to absolute working directory
+   
+   std::vector<std::string>::iterator it1 = abspath.begin();
+   while(it1 != abspath.end()) {
+      std::vector<std::string>::iterator it2 = it1;
+      if (it1->compare("..") == 0) {
+         /// Our absolute path starts with a relative directory
+         throw EagleException(StringPrintF("GetAbsolutePathComponents - cannot resolve path '%s'\n" , path.c_str()));
+      }
+      ++it2;
+      if (it2 != abspath.end() && it2->compare("..") == 0) {
+         abspath.erase(it1 , it2);
+         it = abspath.begin();
+      }
+      else {
+         ++it1;
+      }
+   }
+   return abspath;
+}
+
+
+
+std::string SanitizePath(std::string path) {
+   std::vector<std::string> abspath = GetAbsolutePath(path);
+   std::string p;
+   for (int i = 0 ; i < (int)abspath.size() ; ++i) {
+      p += path[i];
+      if (i != (int)abspath.size() - 1) {
+         p += PathSeparator();
+      }
+   }
+   return p;
+}
+
+
+
 char PathSeparator() {
    return FileSystem::Instance()->PathSeparator();
+}
+
+
+
+bool ChangeDirectory(std::string dir) {
+   return FileSystem::Instance()->ChangeDirectory(dir);
+}
+
+
+
+std::string CurrentDirectory() {
+   return FileSystem::Instance()->CurrentDirectory();
 }
 
 

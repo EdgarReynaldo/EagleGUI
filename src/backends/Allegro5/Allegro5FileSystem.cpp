@@ -27,6 +27,7 @@ FSMode GetFSModeFromAllegroFileMode(uint32_t amode) {
 
 
 FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f) {
+   EAGLE_ASSERT(al_fs_entry_exists(f));
    std::string fpath = al_get_fs_entry_name(f);
    uint32_t amode = al_get_fs_entry_mode(f);
    FSMode fmode = GetFSModeFromAllegroFileMode(amode);
@@ -34,7 +35,7 @@ FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f) {
    time_t fmodify = al_get_fs_entry_mtime(f);
    time_t faccess = al_get_fs_entry_atime(f);
    unsigned long long int fsize = al_get_fs_entry_size(f);
-   return FSInfo(fpath , fmode , fcreate , fmodify , faccess , fsize);
+   return FSInfo(fpath , true , fmode , fcreate , fmodify , faccess , fsize);
 }
 
 
@@ -132,16 +133,21 @@ std::string Allegro5FileSystem::GetFileExt(std::string path) {
 
 
 
-FSInfo Allegro5FileSystem::GetFileInfo(std::string path) {
+FSInfo Allegro5FileSystem::GetFileInfo(FilePath fpath) {
+   std::string path = fpath.Path();
    ALLEGRO_FS_ENTRY* fs = al_create_fs_entry(path.c_str());
-   FSInfo info = GetFSInfo(fs);
+   FSInfo info(path);
+   if (al_fs_entry_exists(fs)) {
+      info = GetFSInfo(fs);
+   }
    al_destroy_fs_entry(fs);
    return info;
 }
 
 
 
-std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(std::string path) {
+std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(FilePath fpath) {
+   std::string path = fpath.Path();
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
    std::shared_ptr<Folder> folder = ReadFolderInfo(f);
    al_destroy_fs_entry(f);
@@ -156,7 +162,8 @@ std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(std::string path) {
 
 
 
-std::shared_ptr<File> Allegro5FileSystem::ReadFile(std::string path) {
+std::shared_ptr<File> Allegro5FileSystem::ReadFile(FilePath fpath) {
+   std::string path = fpath.Path();
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
    std::shared_ptr<File> file = ReadFileInfo(f);
    al_destroy_fs_entry(f);
@@ -170,6 +177,18 @@ std::shared_ptr<File> Allegro5FileSystem::ReadFile(std::string path) {
 
 char Allegro5FileSystem::PathSeparator() {
    return ALLEGRO_NATIVE_PATH_SEP;
+}
+
+
+
+bool Allegro5FileSystem::ChangeDirectory(std::string dir) {
+   return al_change_directory(dir.c_str());
+}
+
+
+
+std::string Allegro5FileSystem::CurrentDirectory() {
+   return al_get_current_directory();
 }
 
 

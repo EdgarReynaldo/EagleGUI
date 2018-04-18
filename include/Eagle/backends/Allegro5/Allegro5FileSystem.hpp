@@ -52,13 +52,15 @@ public :
 
    virtual std::string GetFileName(std::string path);/// Relative paths okay
    virtual std::string GetFileExt(std::string name);
-   virtual FSInfo GetFileInfo(std::string path);
+   virtual FSInfo GetFileInfo(FilePath path);
 
-   virtual std::shared_ptr<Folder> ReadFolder(std::string path);
-   virtual std::shared_ptr<File>   ReadFile  (std::string path);
+   virtual std::shared_ptr<Folder> ReadFolder(FilePath path);
+   virtual std::shared_ptr<File>   ReadFile  (FilePath path);
 
    virtual char PathSeparator();
 
+   virtual bool ChangeDirectory(std::string dir);
+   virtual std::string CurrentDirectory();
 
 
 };

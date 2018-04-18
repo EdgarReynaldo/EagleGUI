@@ -13,8 +13,22 @@
 /// -------------------------      FSInfo     -----------------------------
 
 
-FSInfo::FSInfo(FilePath path , FSMode mode , time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size) :
+FSInfo::FSInfo(FilePath path) :
+   fpath(path),
+   fexists(false),
+   fmode(0),
+   tcreate(0),
+   tmodify(0),
+   taccess(0),
+   fsize(0ULL)
+{}
+
+
+
+FSInfo::FSInfo(FilePath path , bool exists , FSMode mode ,
+               time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size) :
       fpath(path),
+      fexists(exists),
       fmode(mode),
       tcreate(creation_time),
       tmodify(modify_time),
@@ -56,6 +70,7 @@ Folder::Folder(FSInfo info) :
 
 
 
+
 void FilePath::SetPathComponents(const std::vector<std::string>& paths) {
    EAGLE_ASSERT(paths.size() >= 2);
    drive = paths[0];
@@ -73,7 +88,7 @@ FilePath::FilePath(std::string path) :
       folderpath(),
       file("")
 {
-   SetPathComponents(ExplodePath(path));
+   SetPathComponents(GetAbsolutePath(path));
 }
 
 
