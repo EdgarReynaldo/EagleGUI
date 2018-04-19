@@ -194,6 +194,7 @@
 		<Unit filename="include/Eagle/Mutexes.hpp" />
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
 		<Unit filename="include/Eagle/NamedParameters.hpp" />
+		<Unit filename="include/Eagle/NewConfig.hpp" />
 		<Unit filename="include/Eagle/NinePatch.hpp" />
 		<Unit filename="include/Eagle/Object.hpp" />
 		<Unit filename="include/Eagle/ObjectInfo.hpp" />
@@ -279,6 +280,7 @@
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/Mutexes.cpp" />
 		<Unit filename="src/NamedParameters.cpp" />
+		<Unit filename="src/NewConfig.cpp" />
 		<Unit filename="src/NinePatch.cpp" />
 		<Unit filename="src/Object.cpp" />
 		<Unit filename="src/ObjectInfo.cpp" />

@@ -2,8 +2,8 @@
 
 
 
-#ifndef NewConfig_HPP
-#define NewConfig_HPP
+#ifndef ConfigFile_HPP
+#define ConfigFile_HPP
 
 #include "Eagle/MemFile.hpp"
 
@@ -17,15 +17,20 @@ class ConfigItem {
 public :
    std::vector<std::string> comments;
    std::string value;
+   ConfigItem& operator=(std::string new_value);
+   void AddCommentLine(std::string cline);
 };
 
 
-typedef std::map<std::string , ConfigItem> KEYMAP;
-typedef std::map<std::string , KEYMAP > SECTIONMAP;
-typedef SECTIONMAP::iterator SMIT;
 
 
-class ConfigSettings {
+class ConfigFile {
+
+public :
+   typedef std::map<std::string , ConfigItem> KEYMAP;
+   typedef std::map<std::string , KEYMAP > SECTIONMAP;
+   typedef SECTIONMAP::iterator SMIT;
+   
 protected :
    std::string contents;
    SECTIONMAP sectionmap;
@@ -58,5 +63,5 @@ public :
 
 
 
-#endif // NewConfig_HPP
+#endif // ConfigFile_HPP
 

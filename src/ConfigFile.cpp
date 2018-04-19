@@ -2,7 +2,7 @@
 
 
 
-#include "Eagle/NewConfig.hpp"
+#include "Eagle/ConfigFile.hpp"
 
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/Exception.hpp"
@@ -15,10 +15,27 @@
 
 
 
+/// --------------------------       ConfigItem       -----------------------
 
 
 
-void ConfigSettings::UpdateContents() {
+ConfigItem& ConfigItem::operator=(std::string new_value) {
+   value = new_value;
+}
+
+
+
+void ConfigItem::AddCommentLine(std::string cline) {
+   comments.push_back(cline);
+}
+
+
+
+/// --------------------------      ConfigFile      --------------------------------
+
+
+
+void ConfigFile::UpdateContents() {
    contents = "";
    std::stringstream ss;
    SMIT it = sectionmap.begin();
@@ -48,14 +65,14 @@ void ConfigSettings::UpdateContents() {
 
 
 
-void ConfigSettings::Clear() {
+void ConfigFile::Clear() {
    sectionmap.clear();
    contents = "";
 }
 
 
 
-bool ConfigSettings::LoadFromFile(const char* path) {
+bool ConfigFile::LoadFromFile(const char* path) {
    Clear();
    
    FSInfo finfo = GetFileInfo(std::string(path));
@@ -114,10 +131,10 @@ bool ConfigSettings::LoadFromFile(const char* path) {
 
 
 
-bool ConfigSettings::SaveToFile(const char* path) {
+bool ConfigFile::SaveToFile(const char* path) {
    FSInfo info = GetFileInfo(path);
    if (info.Exists() && !info.Mode().CanWrite()) {
-      throw EagleException(StringPrintF("ConfigSettings::SaveToFile - file %s is read only!\n" , path));
+      throw EagleException(StringPrintF("ConfigFile::SaveToFile - file %s is read only!\n" , path));
    }
    
    UpdateContents();
@@ -133,14 +150,14 @@ bool ConfigSettings::SaveToFile(const char* path) {
 
 
 
-std::string ConfigSettings::GetConfigString(std::string section , std::string key) {
+std::string ConfigFile::GetConfigString(std::string section , std::string key) {
    SMIT it = sectionmap.find(section);
    if (it == sectionmap.end()) {
-      throw EagleException(StringPrintF("ConfigSettings::GetConfigString - section '%s' not found!\n" , section.c_str()));
+      throw EagleException(StringPrintF("ConfigFile::GetConfigString - section '%s' not found!\n" , section.c_str()));
    }
    KEYMAP::iterator kit = (it->second).find(key);
    if (kit == (it->second).end()) {
-      throw EagleException(StringPrintF("ConfigSettings::GetConfigString - key '%s' not found in section %s!\n" ,
+      throw EagleException(StringPrintF("ConfigFile::GetConfigString - key '%s' not found in section %s!\n" ,
                                          key.c_str() , section.c_str()));
    }
    return kit->second.value;
@@ -148,41 +165,41 @@ std::string ConfigSettings::GetConfigString(std::string section , std::string ke
 
 
 
-int ConfigSettings::GetConfigInt(std::string section , std::string key) {
+int ConfigFile::GetConfigInt(std::string section , std::string key) {
    std::string istr = GetConfigString(section , key);
    int n = 0;
    if (1 != sscanf(istr.c_str() , "%d" , &n)) {
-      throw EagleException(StringPrintF("ConfigSettings::GetConfigInt - failed to read int value from '%s'\n" , istr.c_str()));
+      throw EagleException(StringPrintF("ConfigFile::GetConfigInt - failed to read int value from '%s'\n" , istr.c_str()));
    }
    return n;
 }
 
 
 
-float ConfigSettings::GetConfigFloat(std::string section , std::string key) {
+float ConfigFile::GetConfigFloat(std::string section , std::string key) {
    std::string fstr = GetConfigString(section , key);
    float f = 0.0f;
    if (1 != sscanf(fstr.c_str() , "%f" , &f)) {
-      throw EagleException(StringPrintF("ConfigSettings::GetConfigInt - failed to read float value from '%s'\n" , fstr.c_str()));
+      throw EagleException(StringPrintF("ConfigFile::GetConfigInt - failed to read float value from '%s'\n" , fstr.c_str()));
    }
    return f;
 }
 
 
 
-void ConfigSettings::SetConfigString(std::string section , std::string key , std::string value) {
+void ConfigFile::SetConfigString(std::string section , std::string key , std::string value) {
    sectionmap[section][key].value = value;
 }
 
 
 
-void ConfigSettings::SetConfigInt(std::string section , std::string key , int val) {
+void ConfigFile::SetConfigInt(std::string section , std::string key , int val) {
    SetConfigString(section , key , StringPrintF("%d" , val));
 }
 
 
 
-void ConfigSettings::SetConfigFloat(std::string section , std::string key , float val) {
+void ConfigFile::SetConfigFloat(std::string section , std::string key , float val) {
    SetConfigString(section , key , StringPrintF("%f" , val));
 }
 
