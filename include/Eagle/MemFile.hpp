@@ -18,6 +18,8 @@ public :
    
    MemFile(FSInfo info) : File(info) {}
    
+   void Clear() {fmem.clear();}
+   
    bool ReadFileIntoMemory();
    bool WriteFileToDisk();
    

@@ -15,19 +15,194 @@
 
 
 
-/// --------------------------       ConfigItem       -----------------------
+/// --------------------------     ConfigLine      -------------------------
 
 
 
-ConfigItem& ConfigItem::operator=(std::string new_value) {
-   value = new_value;
+void ConfigLine::ParseLine() {
+   spacer = !line.size();
+   comment = false;
+   if (!spacer) {
+      if (line[0] == '#') {
+         comment = true;
+      }
+   }
+   if (!comment && !spacer) {
+      unsigned int j = line.find_first_of('=');
+      EAGLE_ASSERT(line.find_first_of('=') != std::string::npos);
+      if (j != std::string::npos) {
+         /// Should have a key value pair
+         key = line.substr(0 , j);
+         value = line.substr(j + 1);
+         while (j > 0 && isspace(key[j-1])) {--j;}
+         key = key.substr(0 , j);/// Trim trailing white space off of key
+         j = 0;
+         while (j < value.size() && isspace(value[j])) {++j;}/// Trim leading whitespace off of value
+         value = value.substr(j);
+      }
+   }
 }
 
 
 
-void ConfigItem::AddCommentLine(std::string cline) {
-   comments.push_back(cline);
+ConfigLine::ConfigLine() :
+      comment(false),
+      spacer(true),
+      line(""),
+      key(""),
+      value("")
+{}
+
+
+
+ConfigLine::ConfigLine(std::string ln) :
+      comment(false),
+      spacer(true),
+      line(""),
+      key(""),
+      value("")
+{
+   SetLine(ln);
 }
+
+
+
+void ConfigLine::SetLine(std::string ln) {
+   line = ln;
+   ParseLine();
+}
+
+
+
+void ConfigLine::SetKeyAndValue(std::string k , std::string v) {
+   SetLine(k + " = " = v);
+}
+
+
+
+void ConfigLine::SetKey(std::string k) {
+   SetKeyAndValue(k , value);
+}
+
+
+
+void ConfigLine::SetValue(std::string v) {
+   SetKeyAndValue(key , v);
+}
+
+
+
+std::string ConfigLine::Line() {
+   if (comment) {
+      return line;
+   }
+   return key + " = " + value;
+}
+
+
+
+/// --------------------------       ConfigSection       -----------------------
+
+
+
+
+std::vector<ConfigLine*>::iterator ConfigSection::GetConfigIterator(std::string key) {
+   std::vector<ConfigLine*>::iterator it = clines.begin();
+   /// linear search, lame I know
+   while (it != clines.end()) {
+      ConfigLine* c = *it;
+      if (c->IsComment()) {
+         ++it;
+         continue;
+      }
+      if (key.compare(c->Key()) == 0) {
+         return it;
+      }
+      ++it;
+   }
+   return it;
+}
+
+
+
+ConfigLine* ConfigSection::FindConfig(std::string key) {
+   std::vector<ConfigLine*>::iterator it = GetConfigIterator(key);
+   if (it != clines.end()) {
+      return *it;
+   }
+   return 0;
+}
+
+
+
+ConfigLine* ConfigSection::GetConfigByKey(std::string key) {
+   ConfigLine* c = FindConfig(key);
+   if (!c) {
+      /// Key not found
+      c = new ConfigLine;
+      c->SetKey(key);
+      clines.push_back(c);
+   }
+   return c;
+}
+
+
+
+void ConfigSection::SetKeyValuePair(std::string key , std::string value) {
+   ConfigLine* c = GetConfigByKey(key);
+   c->SetValue(value);
+}
+
+
+
+void ConfigSection::RemoveLineByKey(std::string key) {
+   std::vector<ConfigLine*>::iterator it = GetConfigIterator(key);
+   if (it != clines.end()) {
+      clines.erase(it);
+   }
+}
+
+
+
+std::string& ConfigSection::operator[](std::string key) {
+   ConfigLine* cl = GetConfigByKey(key);
+   return cl->Value();
+}
+
+
+
+void ConfigSection::AddSpacer() {
+   clines.push_back(new ConfigLine(""));
+}
+
+
+
+void ConfigSection::AddComment(std::string comment) {
+   AddConfigLine(std::string("#") + comment);
+}
+
+
+
+void ConfigSection::AddConfigLine(std::string line) {
+   clines.push_back(new ConfigLine(line));
+}
+
+
+
+void ConfigSection::AddConfigLine(std::string key , std::string value) {
+   GetConfigByKey(key)->SetValue(value);
+}
+
+
+
+std::string ConfigSection::GetConfigLine(int index) {
+   if (index >= 0 && index < (int)clines.size()) {
+      return clines[index]->Line();
+   }
+   EAGLE_ASSERT(index >= 0 && index < (int)clines.size());
+   return "";
+}
+
 
 
 
@@ -42,20 +217,12 @@ void ConfigFile::UpdateContents() {
    while (it != sectionmap.end()) {
       
       /// Write section header here
-      ss << "[" << it->first << "]" << std::endl << std::endl;
-         
-      KEYMAP::iterator kit = (it->second).begin();
-      while (kit != (it->second).end()) {
-         std::vector<std::string>& lines = kit->second.comments;
-         for (int i = 0 ; i < (int)lines.size() ; ++i) {
-            ss << lines[i] << std::endl;
-         }
-         /// Write key value pair here
-         ss << kit->first << " = " << kit->second.value << std::endl;
-         
-         ++kit;
+      ss << "[" << it->first << "]" << std::endl;
+      
+      ConfigSection& cs = it->second;
+      for (int i = 0 ; i < (int)cs.NConfigLines() ; ++i) {
+         ss << cs.GetConfigLine(i) << std::endl;
       }
-      ++it;
       ss << std::endl;
    }
    ss << std::endl;
@@ -73,11 +240,14 @@ void ConfigFile::Clear() {
 
 
 bool ConfigFile::LoadFromFile(const char* path) {
+
    Clear();
    
    FSInfo finfo = GetFileInfo(std::string(path));
    
+   EAGLE_ASSERT(finfo.Exists());
    EAGLE_ASSERT(finfo.Mode().IsFile());
+   
    MemFile mem(finfo);
    if (!mem.ReadFileIntoMemory()) {
       return false;
@@ -85,45 +255,23 @@ bool ConfigFile::LoadFromFile(const char* path) {
    
    contents.insert(contents.begin() , mem.Begin() , mem.End());
    
+   mem.Clear();
+   
    std::vector<std::string> lines = SplitByNewLines(contents);
    
-   std::vector<std::string> comments;
-   
-   KEYMAP* section = &sectionmap["GLOBAL"];
+   ConfigSection* section = &sectionmap["GLOBAL"];
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       std::string l = lines[i];
-      if (!l.length()) {
-         continue;
-      }
-      if (l[0] == '#') {
-         comments.push_back(l);
-         continue;
-      }
-      unsigned int j = l.find_first_of('=');
-      if (j == std::string::npos) {
-         /// Not an assignment
-         unsigned int i1 = l.find_first_of('[');
-         unsigned int i2 = l.find_first_of(i1 , ']');
-         if (i1 != std::string::npos && i2 != std::string::npos) {
-             section = &sectionmap[l.substr(i1,i2)];
-         }
-         else {
-            EagleWarn() << StringPrintF("Malformed section heading on line %d in config file %s\n" , i + 1 , path) << std::endl;
-         }
+      
+      unsigned int idx1 = l.find_first_of('[');
+      unsigned int idx2 = l.find_first_of(']');
+      if (idx1 != std::string::npos && idx2 != std::string::npos && idx1 < idx2 && idx1 == 0) {
+         /// Found a section name
+         std::string section_str = l.substr(idx1 + 1 , idx2);
+         section = &sectionmap[section_str];
       }
       else {
-         /// Should have a key value pair
-         std::string key = l.substr(0 , j);
-         std::string value = l.substr(j + 1);
-         while (j > 0 && isspace(key[j-1])) {--j;}
-         key = key.substr(0 , j);/// Trim trailing white space off of key
-         j = 0;
-         while (j < value.size() && isspace(value[j])) {++j;}
-         value = value.substr(j);
-      
-         (*section)[key].value = value;
-         (*section)[key].comments = comments;
-         comments.clear();
+         section->AddConfigLine(l);
       }
    }
    return true;
@@ -146,61 +294,6 @@ bool ConfigFile::SaveToFile(const char* path) {
    fout << contents << std::endl;
    fout.close();
    return true;
-}
-
-
-
-std::string ConfigFile::GetConfigString(std::string section , std::string key) {
-   SMIT it = sectionmap.find(section);
-   if (it == sectionmap.end()) {
-      throw EagleException(StringPrintF("ConfigFile::GetConfigString - section '%s' not found!\n" , section.c_str()));
-   }
-   KEYMAP::iterator kit = (it->second).find(key);
-   if (kit == (it->second).end()) {
-      throw EagleException(StringPrintF("ConfigFile::GetConfigString - key '%s' not found in section %s!\n" ,
-                                         key.c_str() , section.c_str()));
-   }
-   return kit->second.value;
-}
-
-
-
-int ConfigFile::GetConfigInt(std::string section , std::string key) {
-   std::string istr = GetConfigString(section , key);
-   int n = 0;
-   if (1 != sscanf(istr.c_str() , "%d" , &n)) {
-      throw EagleException(StringPrintF("ConfigFile::GetConfigInt - failed to read int value from '%s'\n" , istr.c_str()));
-   }
-   return n;
-}
-
-
-
-float ConfigFile::GetConfigFloat(std::string section , std::string key) {
-   std::string fstr = GetConfigString(section , key);
-   float f = 0.0f;
-   if (1 != sscanf(fstr.c_str() , "%f" , &f)) {
-      throw EagleException(StringPrintF("ConfigFile::GetConfigInt - failed to read float value from '%s'\n" , fstr.c_str()));
-   }
-   return f;
-}
-
-
-
-void ConfigFile::SetConfigString(std::string section , std::string key , std::string value) {
-   sectionmap[section][key].value = value;
-}
-
-
-
-void ConfigFile::SetConfigInt(std::string section , std::string key , int val) {
-   SetConfigString(section , key , StringPrintF("%d" , val));
-}
-
-
-
-void ConfigFile::SetConfigFloat(std::string section , std::string key , float val) {
-   SetConfigString(section , key , StringPrintF("%f" , val));
 }
 
 

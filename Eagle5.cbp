@@ -124,6 +124,7 @@
 		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
+		<Unit filename="include/Eagle/ConfigFile.hpp" />
 		<Unit filename="include/Eagle/Container.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
 		<Unit filename="include/Eagle/Exception.hpp" />
@@ -194,7 +195,6 @@
 		<Unit filename="include/Eagle/Mutexes.hpp" />
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
 		<Unit filename="include/Eagle/NamedParameters.hpp" />
-		<Unit filename="include/Eagle/NewConfig.hpp" />
 		<Unit filename="include/Eagle/NinePatch.hpp" />
 		<Unit filename="include/Eagle/Object.hpp" />
 		<Unit filename="include/Eagle/ObjectInfo.hpp" />
@@ -221,6 +221,7 @@
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />
+		<Unit filename="src/ConfigFile.cpp" />
 		<Unit filename="src/Events.cpp" />
 		<Unit filename="src/Exception.cpp" />
 		<Unit filename="src/File.cpp" />
@@ -280,7 +281,6 @@
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/Mutexes.cpp" />
 		<Unit filename="src/NamedParameters.cpp" />
-		<Unit filename="src/NewConfig.cpp" />
 		<Unit filename="src/NinePatch.cpp" />
 		<Unit filename="src/Object.cpp" />
 		<Unit filename="src/ObjectInfo.cpp" />

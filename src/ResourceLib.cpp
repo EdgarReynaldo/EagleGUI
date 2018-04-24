@@ -39,12 +39,15 @@ ResourceBase::ResourceBase(const ResourceBase& r) :
    rid((RESOURCEID)-1),
    rtype(RT_UNKNOWN),
    pres(0)
-{}
+{
+   (void)r;
+}
 
 
 
 ResourceBase& ResourceBase::operator=(const ResourceBase& r) {
-   EagleError() << "Copied ResourceBase object." << std::endl;
+   (void)r;
+   EagleError() << "Tried to assign ResourceBase object." << std::endl;
    return *this;
 }
 
