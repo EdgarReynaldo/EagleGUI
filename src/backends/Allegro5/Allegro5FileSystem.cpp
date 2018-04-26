@@ -118,6 +118,7 @@ std::string Allegro5FileSystem::GetFileName(std::string path) {
    for (int i = psize - 1 ; i >= 0 ; --i) {
       if (path[i] == ALLEGRO_NATIVE_PATH_SEP) {
          index = i;
+         break;
       }
    }
    return path.substr(index + 1);

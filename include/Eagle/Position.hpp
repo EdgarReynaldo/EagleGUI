@@ -46,10 +46,11 @@ public :
       return *this;
    }
    
-   Pos2T& operator-=(const Pos2T& add) {MoveBy(-add);}
-   Pos2T& operator+=(const Pos2T& add) {MoveBy(add);}
+   Pos2T& operator-=(const Pos2T& add) {return MoveBy(-add);}
+   Pos2T& operator+=(const Pos2T& add) {return MoveBy(add);}
    
-   Pos2T& operator*(double scale) {*this = Pos2T(scale*tx , scale*ty);return *this;}
+   Pos2T operator*(double scale) {return Pos2T(scale*tx , scale*ty);}
+   Pos2T& operator*=(double scale) {*this = *this * scale;return *this;}
    
 ///   void Draw(EagleGraphicsContext* win , EagleColor color) const;
 
@@ -68,6 +69,8 @@ public :
    
    TYPE X() const {return tx;}
    TYPE Y() const {return ty;}
+   
+   void Normalize() {*this *= 1.0/Length();}
    
 ///   friend std::ostream& operator<<(std::ostream& os , const Pos2T<TYPE>& p);
    

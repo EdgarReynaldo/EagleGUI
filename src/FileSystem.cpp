@@ -59,7 +59,7 @@ FileSystem* FileSystem::Instance() {
          atexit(DestroyFileSystem);
       }
    }
-   return 0;
+   return fsys;
 }
 
 
@@ -117,6 +117,9 @@ std::vector<std::string> ExplodePath(std::string path) {
    while (index < stop) {
       unsigned int j = path.find_first_of("\\/" , index);
       components.push_back(path.substr(index , j));
+      if (j == std::string::npos) {
+         break;
+      }
       index = SkipSeparators(path , j);
    }
    return components;

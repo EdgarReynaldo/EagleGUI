@@ -204,6 +204,7 @@
 		<Unit filename="include/Eagle/Position2.hpp" />
 		<Unit filename="include/Eagle/PositionOLD.hpp" />
 		<Unit filename="include/Eagle/Properties.hpp" />
+		<Unit filename="include/Eagle/Random.hpp" />
 		<Unit filename="include/Eagle/ResourceLib.hpp" />
 		<Unit filename="include/Eagle/Resources.hpp" />
 		<Unit filename="include/Eagle/Sound.hpp" />
@@ -288,6 +289,7 @@
 		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Position.cpp" />
 		<Unit filename="src/Properties.cpp" />
+		<Unit filename="src/Random.cpp" />
 		<Unit filename="src/ResourceLib.cpp" />
 		<Unit filename="src/Resources.cpp" />
 		<Unit filename="src/Sound.cpp" />

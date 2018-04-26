@@ -22,6 +22,8 @@
 void ConfigLine::ParseLine() {
    spacer = !line.size();
    comment = false;
+   key = "";
+   value = "";
    if (!spacer) {
       if (line[0] == '#') {
          comment = true;
@@ -75,7 +77,7 @@ void ConfigLine::SetLine(std::string ln) {
 
 
 void ConfigLine::SetKeyAndValue(std::string k , std::string v) {
-   SetLine(k + " = " = v);
+   SetLine(k + " = " + v);
 }
 
 
@@ -93,7 +95,7 @@ void ConfigLine::SetValue(std::string v) {
 
 
 std::string ConfigLine::Line() {
-   if (comment) {
+   if (comment || spacer) {
       return line;
    }
    return key + " = " + value;
@@ -178,7 +180,7 @@ void ConfigSection::AddSpacer() {
 
 
 void ConfigSection::AddComment(std::string comment) {
-   AddConfigLine(std::string("#") + comment);
+   AddConfigLine(std::string("# ") + comment);
 }
 
 
@@ -215,7 +217,6 @@ void ConfigFile::UpdateContents() {
    std::stringstream ss;
    SMIT it = sectionmap.begin();
    while (it != sectionmap.end()) {
-      
       /// Write section header here
       ss << "[" << it->first << "]" << std::endl;
       
@@ -224,6 +225,7 @@ void ConfigFile::UpdateContents() {
          ss << cs.GetConfigLine(i) << std::endl;
       }
       ss << std::endl;
+      ++it;
    }
    ss << std::endl;
    contents = ss.str();
