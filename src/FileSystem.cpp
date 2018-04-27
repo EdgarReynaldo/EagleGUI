@@ -116,7 +116,8 @@ std::vector<std::string> ExplodePath(std::string path) {
 
    while (index < stop) {
       unsigned int j = path.find_first_of("\\/" , index);
-      components.push_back(path.substr(index , j));
+      components.push_back(path.substr(index , j - index));
+      EagleInfo() << "Component : " << components.back() << std::endl;
       if (j == std::string::npos) {
          break;
       }
@@ -129,6 +130,7 @@ std::vector<std::string> ExplodePath(std::string path) {
 
 
 std::vector<std::string> GetAbsolutePath(std::string path) {
+   EAGLE_ASSERT(path.size());
    /// CWD/./../../abc/..
    /// Filter all references to the current directory
    std::vector<std::string> paths = ExplodePath(path);
@@ -149,6 +151,10 @@ std::vector<std::string> GetAbsolutePath(std::string path) {
          relative = true;
          break;
       }
+   }
+   if ((paths[0].compare("") != 0) && /// Linux root drive is the empty string
+       (paths[0].find_first_of(":") == std::string::npos)) {/// Windows drives use colon
+      relative = true;
    }
    
    if (!relative) {

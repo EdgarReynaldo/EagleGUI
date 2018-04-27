@@ -269,7 +269,7 @@ bool ConfigFile::LoadFromFile(const char* path) {
       unsigned int idx2 = l.find_first_of(']');
       if (idx1 != std::string::npos && idx2 != std::string::npos && idx1 < idx2 && idx1 == 0) {
          /// Found a section name
-         std::string section_str = l.substr(idx1 + 1 , idx2);
+         std::string section_str = l.substr(idx1 + 1 , idx2 - idx1 - 1);
          section = &sectionmap[section_str];
       }
       else {

@@ -11,8 +11,13 @@
 
 
 bool MemFile::ReadFileIntoMemory() {
-   FILE* file = fopen(finfo.Path().c_str() , "rb");
-   if (!file) {return false;}
+   std::string fpath = finfo.Path();
+   const char* path = fpath.c_str();
+   FILE* file = fopen(path , "rb");
+   if (!file) {
+      EagleError() << StringPrintF("MemFile::ReadFileIntoMemory - failed to open file '%s' for reading" , path) << std::endl;
+      return false;
+   }
    
    fmem = std::vector<unsigned char>(finfo.Size() , '0');
    
