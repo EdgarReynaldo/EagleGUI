@@ -116,11 +116,11 @@ std::vector<std::string> ExplodePath(std::string path) {
 
    while (index < stop) {
       unsigned int j = path.find_first_of("\\/" , index);
+      if (j == std::string::npos) {
+         j = stop;
+      }
       components.push_back(path.substr(index , j - index));
       EagleInfo() << "Component : " << components.back() << std::endl;
-      if (j == std::string::npos) {
-         break;
-      }
       index = SkipSeparators(path , j);
    }
    return components;
