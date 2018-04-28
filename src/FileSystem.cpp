@@ -111,8 +111,8 @@ std::vector<std::string> ExplodePath(std::string path) {
    std::vector<std::string> components;
    
    /// separate into path components
-   int stop = path.length();
-   int index = 0;
+   unsigned int stop = path.length();
+   unsigned int index = 0;
 
    while (index < stop) {
       unsigned int j = path.find_first_of("\\/" , index);
