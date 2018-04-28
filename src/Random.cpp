@@ -57,13 +57,13 @@ unsigned int MTRNG::Rand1toN(unsigned int n) {
 
 
 float MTRNG::Percent() {
-   return (FRand()+1.0f)/2.0f;
+   return FRand();
 }
 
 
 
 double MTRNG::DPercent() {
-   return (DRand()+1.0)/2.0;
+   return DRand();
 }
 
 
