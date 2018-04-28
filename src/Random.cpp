@@ -3,7 +3,7 @@
 
 #include "Eagle/Random.hpp"
 
-
+#include <climits>
 
 void MTRNG::Seed(unsigned int s) {
    wtf.seed(s);
