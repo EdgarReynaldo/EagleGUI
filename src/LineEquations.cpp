@@ -70,9 +70,11 @@ bool IntersectionPoint(const GLE2D& la , const GLE2D& lb , Pos2D* i) {
 double DistanceFromLine(Pos2D p , GLE2D l) {
    double theta = l.SPos().AngleToPoint(l.EPos());
    theta += M_PI/2.0;
-   GLE2D intersect = GLE2D(p , theta);
+   GLE2D line_intersect = GLE2D(p , theta);
    Pos2D i;
-   EAGLE_ASSERT(IntersectionPoint(l , intersect , &i));
+   bool intersect = IntersectionPoint(l , line_intersect , &i);
+   (void)intersect;
+   EAGLE_ASSERT(intersect);
    return (p - i).Length();
 }
 

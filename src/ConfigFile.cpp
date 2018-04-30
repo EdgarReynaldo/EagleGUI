@@ -203,8 +203,9 @@ std::string& ConfigSection::operator[](std::string key) {
 
 
 const std::string& ConfigSection::operator[] (std::string key) const {
+   static std::string empty;
    const ConfigLine* cl = FindConfigConst(key);
-   return cl?cl->Value():"";
+   return cl?cl->Value():empty;
 }
 
 
@@ -364,6 +365,16 @@ void ConfigFile::Absorb(const ConfigFile& c) {
       }
       ++cit;
    }
+}
+
+
+
+ConfigSection* ConfigFile::FindSection(std::string section) {
+   SMIT it = sectionmap.find(section);
+   if (it != sectionmap.end()) {
+      return &(it->second);
+   }
+   return 0;
 }
 
 

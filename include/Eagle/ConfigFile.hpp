@@ -52,8 +52,6 @@ class ConfigSection {
    std::vector<ConfigLine*>::iterator GetConfigIterator(std::string key);
    std::vector<ConfigLine*>::const_iterator GetConfigIteratorConst(std::string key) const;
 
-   ConfigLine* FindConfig(std::string key);
-   const ConfigLine* FindConfigConst(std::string key) const ;
 
 public :
    
@@ -62,6 +60,9 @@ public :
          clines()
    {}
    
+   ConfigLine* FindConfig(std::string key);
+   const ConfigLine* FindConfigConst(std::string key) const ;
+
    ConfigLine* GetConfigByKey(std::string key);
 
    void SetKeyValuePair(std::string key , std::string value);
@@ -109,6 +110,8 @@ public :
    bool SaveToFile(const char* path);
    
    void Absorb(const ConfigFile& c);
+   
+   ConfigSection* FindSection(std::string section);
    
    ConfigSection& operator[] (std::string section);
    const ConfigSection& operator[] (std::string section) const;
