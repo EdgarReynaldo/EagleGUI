@@ -344,7 +344,7 @@ bool ConfigFile::SaveToFile(const char* path) {
    
    UpdateContents();
    
-   std::ofstream fout(info.Path() , std::ios_base::out | std::ios_base::binary);
+   std::ofstream fout(info.Path() , std::ios_base::out);
    if (!fout.good()) {
       return false;
    }
