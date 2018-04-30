@@ -26,4 +26,17 @@ EAGLE FAQ :
          for a widget. When adding Decorated widgets to a layout, use Widget->GetDecoratorRoot() instead of Widget. GUIs will take
          care of this for you, as you don't add Decorator sub components to a GUI.
          
-3. 
+3. My code works in debug mode, but not release mode. What did I do wrong?
+   A1. Check carefully for EAGLE_DEBUG and EAGLE_ASSERT statements. They will only run when DEBUG is defined.
+   A2. This means that if you call your bool Init() function inside an EAGLE_ASSERT, it won't call Init() in release mode!
+
+
+
+
+
+
+
+
+
+
+
