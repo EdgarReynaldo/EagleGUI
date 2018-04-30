@@ -356,6 +356,7 @@ bool ConfigFile::SaveToFile(const char* path) {
 
 
 void ConfigFile::Absorb(const ConfigFile& c) {
+   if (&c == this) {return;}
    SECTIONMAP::const_iterator cit = c.sectionmap.begin();
    while (cit != c.sectionmap.end()) {
       const ConfigSection& cs = cit->second;

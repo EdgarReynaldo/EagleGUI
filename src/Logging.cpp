@@ -193,6 +193,18 @@ void EagleLogger::RemoveOutput(ostream& output) {
 
 
 
+void EnableLog() {
+   EagleLogger::Instance().TurnLogOn();
+}
+
+
+
+void DisableLog() {
+   EagleLogger::Instance().TurnLogOff();
+}
+
+
+
 EagleLogger& EagleLogger::operator<<(MANIP manip) {
 /*
    if (manip == std::endl) {

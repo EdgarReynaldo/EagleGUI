@@ -87,6 +87,9 @@ public :
 
    void SetGlobalLoggingLevel(EAGLE_LOGGING_LEVEL new_global_level);
 
+   friend void EnableLog();
+   friend void DisableLog();
+
    void TurnLogOff();
    void TurnLogOn();
 
@@ -106,6 +109,10 @@ public :
    
 };
 
+
+
+void EnableLog();
+void DisableLog();
 
 
 
