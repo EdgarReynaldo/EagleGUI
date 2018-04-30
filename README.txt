@@ -12,8 +12,9 @@ Here is some general all around useful information for building and compiling th
 
 DEBUG :
  - turns on debugging (enables EAGLE_ASSERT() and EAGLE_DEBUG() statements)
-LOG :
- - turns on debugging log (enables EagleLog())
+EAGLE_LOG :
+ - turns on debugging log (enables EagleLog() statements inside eagle)
+ - does NOT enable user logging - for that you need TurnLogOn()
 EAGLE_ASSERT_EXCEPTION :
  - turns on assertion failure when throwing EagleError exceptions,
  - which allows you to get a backtrace because the debugger will catch an
