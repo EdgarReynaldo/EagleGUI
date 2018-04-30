@@ -33,11 +33,14 @@ public :
    void SetKey(std::string k);
    void SetValue(std::string v);
 
-   std::string Key() {return key;}
+   std::string Key() const {return key;}
    std::string& Value() {return value;}
+   const std::string& Value() const {return value;}
    std::string Line();
+   
    bool IsComment() {return comment;}
    bool IsSpacer() {return spacer;}
+   bool IsKeyValuePair() {return !comment && !spacer;}
 };
 
 
@@ -47,8 +50,10 @@ class ConfigSection {
    std::vector<ConfigLine*> clines;
 
    std::vector<ConfigLine*>::iterator GetConfigIterator(std::string key);
+   std::vector<ConfigLine*>::const_iterator GetConfigIteratorConst(std::string key) const;
 
    ConfigLine* FindConfig(std::string key);
+   const ConfigLine* FindConfigConst(std::string key) const ;
 
 public :
    
@@ -63,14 +68,17 @@ public :
    void RemoveLineByKey(std::string key);
    
    std::string& operator[](std::string key);
+   const std::string& operator[] (std::string key) const ;
    
    void AddSpacer();
    void AddComment(std::string comment);
    void AddConfigLine(std::string line);
    void AddConfigLine(std::string key , std::string value);
    
-   std::string GetConfigLine(int index);
-   unsigned int NConfigLines() {return clines.size();}
+   std::string GetConfigLine(int index) const ;
+   unsigned int NConfigLines() const;
+   
+   std::vector<std::string> GetKeys() const;
 };
 
 
@@ -100,7 +108,11 @@ public :
    
    bool SaveToFile(const char* path);
    
-   ConfigSection& operator[] (std::string section) {return sectionmap[section];}
+   void Absorb(const ConfigFile& c);
+   
+   ConfigSection& operator[] (std::string section);
+   const ConfigSection& operator[] (std::string section) const;
+
 };
 
 
