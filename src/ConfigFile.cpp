@@ -127,8 +127,37 @@ std::vector<ConfigLine*>::iterator ConfigSection::GetConfigIterator(std::string 
 
 
 
+std::vector<ConfigLine*>::const_iterator ConfigSection::GetConfigIteratorConst(std::string key) const {
+   std::vector<ConfigLine*>::const_iterator it = clines.begin();
+   /// linear search, lame I know
+   while (it != clines.end()) {
+      ConfigLine* c = *it;
+      if (!c->IsKeyValuePair()) {
+         ++it;
+         continue;
+      }
+      if (key.compare(c->Key()) == 0) {
+         return it;
+      }
+      ++it;
+   }
+   return it;
+}
+
+
+
 ConfigLine* ConfigSection::FindConfig(std::string key) {
    std::vector<ConfigLine*>::iterator it = GetConfigIterator(key);
+   if (it != clines.end()) {
+      return *it;
+   }
+   return 0;
+}
+
+
+
+const ConfigLine* ConfigSection::FindConfigConst(std::string key) const {
+   std::vector<ConfigLine*>::const_iterator it = GetConfigIteratorConst(key);
    if (it != clines.end()) {
       return *it;
    }
@@ -173,6 +202,13 @@ std::string& ConfigSection::operator[](std::string key) {
 
 
 
+const std::string& ConfigSection::operator[] (std::string key) const {
+   const ConfigLine* cl = FindConfigConst(key);
+   return cl?cl->Value():"";
+}
+
+
+
 void ConfigSection::AddSpacer() {
    clines.push_back(new ConfigLine(""));
 }
@@ -197,7 +233,7 @@ void ConfigSection::AddConfigLine(std::string key , std::string value) {
 
 
 
-std::string ConfigSection::GetConfigLine(int index) {
+std::string ConfigSection::GetConfigLine(int index) const {
    if (index >= 0 && index < (int)clines.size()) {
       return clines[index]->Line();
    }
@@ -205,6 +241,24 @@ std::string ConfigSection::GetConfigLine(int index) {
    return "";
 }
 
+
+
+unsigned int ConfigSection::NConfigLines() const {
+   return clines.size();
+}
+
+
+
+std::vector<std::string> ConfigSection::GetKeys() const {
+   std::vector<std::string> keys;
+   for (unsigned int i = 0 ; i < clines.size() ; ++i) {
+      ConfigLine* cl = clines[i];
+      if (cl->IsKeyValuePair()) {
+         keys.push_back(cl->Key());
+      }
+   }
+   return keys;
+}
 
 
 
@@ -300,6 +354,33 @@ bool ConfigFile::SaveToFile(const char* path) {
 
 
 
+void ConfigFile::Absorb(const ConfigFile& c) {
+   SECTIONMAP::const_iterator cit = c.sectionmap.begin();
+   while (cit != c.sectionmap.end()) {
+      const ConfigSection& cs = cit->second;
+      std::vector<std::string> keys = cs.GetKeys();
+      for (unsigned int i = 0 ; i < keys.size() ; ++i) {
+         sectionmap[cit->first][keys[i]] = cs[keys[i]];
+      }
+      ++cit;
+   }
+}
+
+
+
+ConfigSection& ConfigFile::operator[] (std::string section) {
+   return sectionmap[section];
+}
+
+
+
+const ConfigSection& ConfigFile::operator[] (std::string section) const {
+   SECTIONMAP::const_iterator it = sectionmap.find(section);
+   if (it == sectionmap.end()) {
+      throw EagleException(StringPrintF("ConfigFile::operator[](std::string) const - Section '%s' doesn't exist in sectionmap!" , section.c_str()));
+   }
+   return it->second;
+}
 
 
 
