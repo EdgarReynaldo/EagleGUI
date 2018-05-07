@@ -123,7 +123,7 @@ public :
 /// -------------------------------------     Line class       -----------------------------------------
 
 
-
+/**
 class Line : public AreaBase {
 protected :
    Pos2F p1;
@@ -136,7 +136,7 @@ public :
 ///   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
-
+*/
 
 /// -------------------------------------     Triangle class     ----------------------------------------
 
