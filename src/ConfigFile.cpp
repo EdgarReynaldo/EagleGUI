@@ -302,8 +302,16 @@ bool ConfigFile::LoadFromFile(const char* path) {
    
    FSInfo finfo = GetFileInfo(std::string(path));
    
-   EAGLE_ASSERT(finfo.Exists());
-   EAGLE_ASSERT(finfo.Mode().IsFile());
+   std::string fpath = finfo.Path();
+   
+   if (!finfo.Exists()) {
+      EagleWarn() << StringPrintF("ConfigFile::LoadFromFile - failed to load file on path '%s'\n" , fpath.c_str());
+      return false;
+   }
+   if (!finfo.Mode().IsFile()) {
+      EagleError() << StringPrintF("ConfigFile::LoadFromFile - path '%s' does not refer to a file!\n" , fpath.c_str());
+      return false;
+   }
    
    MemFile mem(finfo);
    if (!mem.ReadFileIntoMemory()) {
