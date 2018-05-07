@@ -29,7 +29,7 @@ GLE2D::GLE2D(Pos2D p , double theta_rad) :
       spos(p),
       epos()
 {
-   epos = p + Vector(Pos2D(0,0) , 1000.0 , theta_rad);
+   epos = Vector(spos , 1000.0 , theta_rad);
    SetABC();
 }
 
@@ -58,8 +58,10 @@ bool IntersectionPoint(const GLE2D& la , const GLE2D& lb , Pos2D* i) {
    double DENOM = A*E-B*D;
    if (DENOM != 0.0) {
       double y = (A*F - C*D)/DENOM;
-      double x = (B*C - C*E)/DENOM;
-      i->SetPos(x,y);
+      double x = (C*E - B*F)/DENOM;
+      if (i) {
+         i->SetPos(x,y);
+      }
       return true;
    }
    return false;
