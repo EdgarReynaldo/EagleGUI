@@ -120,7 +120,6 @@ std::vector<std::string> ExplodePath(std::string path) {
          j = stop;
       }
       components.push_back(path.substr(index , j - index));
-      EagleInfo() << "Component : " << components.back() << std::endl;
       index = SkipSeparators(path , j);
    }
    return components;
