@@ -33,8 +33,6 @@ FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f);
 FSMode GetFSModeFromAllegroFileMode(uint32_t amode);
 
 
-FileSystem* CreateAllegro5FileSystem();
-
 class Allegro5FileSystem : public FileSystem {
    
 
@@ -42,30 +40,33 @@ protected :
    std::shared_ptr<Folder> ReadFolderInfo(ALLEGRO_FS_ENTRY* f);
    std::shared_ptr<File> ReadFileInfo(ALLEGRO_FS_ENTRY* f);
 
-   virtual void ReadDirectoryContents(Folder* folder);
+   virtual void ReadDirectoryContents(Folder* folder , bool descending = false);
 
    
 public :
 
    Allegro5FileSystem();
    ~Allegro5FileSystem();
-
-   virtual std::string GetFileName(std::string path);/// Relative paths okay
-   virtual std::string GetFileExt(std::string name);
+   
    virtual FSInfo GetFileInfo(FilePath path);
 
-   virtual std::shared_ptr<Folder> ReadFolder(FilePath path);
    virtual std::shared_ptr<File>   ReadFile  (FilePath path);
+   virtual std::shared_ptr<Folder> ReadFolder(FilePath path , bool descending = false);
 
-   virtual char PathSeparator();
-
-   virtual bool ChangeDirectory(std::string dir);
-   virtual std::string CurrentDirectory();
-
+   virtual void UnmountArchive();
+   virtual bool MountArchive(FilePath fp);
+   
+   virtual bool ChangeFSDirectory(std::string dir);
+   virtual std::string CurrentFSDirectory();
 
 };
+
+Allegro5FileSystem* GetAllegro5FileSystem();
 
 
 
 #endif // Allegro5FileSystem_HPP
+
+
+
 

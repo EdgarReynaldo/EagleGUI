@@ -25,6 +25,9 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/Time.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/FileSystem.hpp"
+#include "Eagle/ResourceLib.hpp"
+
 
 #include <signal.h>
 
@@ -187,6 +190,8 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    system_queue(0),
    system_clipboard(0),
    window_manager(0),
+   file_system(0),
+   resource_library(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -211,6 +216,16 @@ void EagleSystem::Shutdown() {
    if (window_manager) {
       delete window_manager;
       window_manager = 0;
+   }
+
+   if (file_system) {
+      delete file_system;
+      file_system = 0;
+   }
+   
+   if (resource_library) {
+      delete resource_library;
+      resource_library = 0;
    }
 
    /// TODO : Manage destruction order carefully...
@@ -582,6 +597,24 @@ EagleClipboard* EagleSystem::GetSystemClipboard() {
 
 EagleWindowManager* EagleSystem::GetWindowManager() {
    return window_manager;
+}
+
+
+
+FileSystem* EagleSystem::GetFileSystem() {
+   if (!file_system) {
+      file_system = CreateFileSystem();
+   }
+   return file_system;
+}
+
+
+
+ResourceLibrary* EagleSystem::GetResourceLibrary() {
+   if (!resource_library) {
+      resource_library = CreateResourceLibrary();
+   }
+   return resource_library;
 }
 
 

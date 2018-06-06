@@ -36,9 +36,15 @@ protected :
    RESMAP resmap;
 
 public :
+   
+///   ResourceLibrary();
+   ResourceLibrary() :
+         resmap()
+   {}
+   
    virtual ~ResourceLibrary() {}
    
-   virtual RESOURCEID LoadResourceFromFile(FilePath fp , RESOURCE_TYPE rt = RT_UNKNOWN)=0;
+///   virtual RESOURCEID LoadResourceFromFile(FilePath fp , RESOURCE_TYPE rt = RT_UNKNOWN)=0;
    
    virtual std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt)=0;
    

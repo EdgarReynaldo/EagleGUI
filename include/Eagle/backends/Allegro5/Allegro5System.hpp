@@ -36,6 +36,8 @@ private :
    EagleClipboard*       PrivateCreateClipboard      (std::string objname);
 
    EagleWindowManager*   PrivateCreateWindowManager();
+   FileSystem*           PrivateCreateFileSystem();
+   ResourceLibrary*      PrivateCreateResourceLibrary();
 
    friend class EagleLibrary;
 

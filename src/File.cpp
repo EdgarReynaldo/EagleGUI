@@ -42,14 +42,26 @@ FSInfo::FSInfo(FilePath path , bool exists , FSMode mode ,
 
 
 
-void Folder::RegisterFile(File* f) {
-   files[f->Info().Path()] = std::shared_ptr<File>(f);
+void Folder::RegisterFile(std::shared_ptr<File> f) {
+   EAGLE_ASSERT(f);
+   f->SetParent(this);
+   files[f->Info().Path()] = f;
 }
 
 
 
-void Folder::RegisterSubFolder(Folder* f) {
-   subfolders[f->Info().Path()] = std::shared_ptr<Folder>(f);
+void Folder::RegisterArchiveFile(std::shared_ptr<ArchiveFile> af) {
+   EAGLE_ASSERT(af);
+   af->SetParent(this);
+   archives[af->File::Info().Path()] = af;
+}
+
+
+
+void Folder::RegisterSubFolder(std::shared_ptr<Folder> fl) {
+   EAGLE_ASSERT(fl);
+   fl->parent = this;
+   subfolders[fl->Info().Path()] = fl;
 }
 
 
@@ -62,6 +74,65 @@ Folder::Folder(FSInfo info) :
       subfolders()
 {
    fname = GetFileName(info.Path());
+}
+
+
+
+Folder::~Folder() {
+   archives.clear();
+   subfolders.clear();
+   files.clear();
+   parent = 0;
+   fname = "";
+}
+
+
+
+void Folder::PrintContents(Indenter indent) {
+   EagleLog() << indent << fname << std::endl;
+   ++indent;
+   FILEMAP::iterator fit = files.begin();
+   while (fit != files.end()) {
+      File* fl = fit->second.get();
+      EagleLog() << indent << fl->Name() << std::endl;
+      ++fit;
+   }
+   SUBFOLDERMAP::iterator sfit = subfolders.begin();
+   while (sfit != subfolders.end()) {
+      Folder* fl = sfit->second.get();
+      fl->PrintContents(indent);
+      ++sfit;
+   }
+   ARCHIVEMAP::iterator afit = archives.begin();
+   while (afit != archives.end()) {
+      ArchiveFile* afl = afit->second.get();
+      afl->Folder::PrintContents(indent);
+      ++afit;
+   }
+}
+
+
+
+void Folder::PrintContentsAbsolute() {
+   EagleLog() << Path() << " : " << std::endl;
+   FILEMAP::iterator fit = files.begin();
+   while (fit != files.end()) {
+      File* fl = fit->second.get();
+      EagleLog() << fl->Path() << std::endl;
+      ++fit;
+   }
+   SUBFOLDERMAP::iterator sfit = subfolders.begin();
+   while (sfit != subfolders.end()) {
+      Folder* fl = sfit->second.get();
+      fl->PrintContentsAbsolute();
+      ++sfit;
+   }
+   ARCHIVEMAP::iterator afit = archives.begin();
+   while (afit != archives.end()) {
+      ArchiveFile* afl = afit->second.get();
+      afl->Folder::PrintContentsAbsolute();
+      ++afit;
+   }
 }
 
 
@@ -94,7 +165,7 @@ FilePath::FilePath(std::string path) :
 
 
 std::string FilePath::Drive() {
-   return drive + PathSeparator();
+   return drive + "/";/// DONT USE NativePathSeparator();
 }
 
 
@@ -102,7 +173,7 @@ std::string FilePath::Drive() {
 std::string FilePath::Folder() {
    std::string f = FilePath::Drive();
    for (unsigned int i = 0 ; i < folderpath.size() ; ++i) {
-      f += folderpath[i] + PathSeparator();
+      f += folderpath[i] + "/";/// DONT USE NativePathSeparator();
    }
    return f;
 }
@@ -133,6 +204,12 @@ File::File(FSInfo info) :
 {
    fname = GetFileName(info.Path());
    fext = GetFileExt(fname);
+}
+
+
+
+void File::SetParent(Folder* parent_folder) {
+   parent = parent_folder;
 }
 
 

@@ -75,6 +75,15 @@ int EagleLibrary::RegisterSystemCreator(std::string driver , SYS_CREATION_FUNC s
 
 
 EagleSystem* EagleLibrary::System(std::string driver) {
+   
+   if (driver.compare("Any") == 0) {
+      for (SMIT it = Eagle()->sys_map.begin() ; it != Eagle()->sys_map.end() ; ++it) {
+         EagleSystem* s = it->second;
+         return s;
+      }
+      return 0;
+   }
+   
    SMIT it = Eagle()->sys_map.find(driver);
    
    if (it != Eagle()->sys_map.end()) {
@@ -94,7 +103,8 @@ EagleSystem* EagleLibrary::System(std::string driver) {
       Eagle()->sys_map[driver] = new_sys;
    }
    else {
-      throw EagleException(StringPrintF("Failed to create %s driver in EagleLibrary::System. No creation function registered." , driver.c_str()));
+      throw EagleException(StringPrintF("Failed to create %s driver in EagleLibrary::System. No creation function registered." ,
+                                         driver.c_str()));
    }
    
    return new_sys;

@@ -23,6 +23,7 @@
 				<Linker>
 					<Add option="-leagle_debug.dll" />
 					<Add option="-lallegro_monolith-debug.dll" />
+					<Add option="-lphysfs.dll" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -38,6 +39,7 @@
 				<Linker>
 					<Add option="-leagle.dll" />
 					<Add option="-lallegro_monolith.dll" />
+					<Add option="-lphysfs.dll" />
 				</Linker>
 			</Target>
 			<Target title="Profiling">
@@ -55,6 +57,7 @@
 					<Add option="-pg -lgmon" />
 					<Add option="-leagle_profile.dll" />
 					<Add option="-lallegro_monolith" />
+					<Add option="-lphysfs.dll" />
 				</Linker>
 			</Target>
 			<Target title="DebugStatic">

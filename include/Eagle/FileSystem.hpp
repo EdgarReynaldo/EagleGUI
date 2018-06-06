@@ -12,6 +12,26 @@
 
 #include "Eagle/File.hpp"
 
+
+/// Info
+char NativePathSeparator();
+
+/// Utility functions
+std::string GetFileName(std::string path);
+std::string GetFileExt(std::string filename);
+
+/// Path
+std::vector<std::string> ExplodePath(std::string path);
+
+std::vector<std::string> GetAbsolutePath(std::string rpath);
+
+std::string SanitizePath(std::string path);/// Removes all references to relative directories and replaces all separators with native ones
+
+
+std::string CurrentDirectory();
+std::string GetCWD();
+
+
 class Drive;
 
 
@@ -20,70 +40,42 @@ class FileSystem {
 protected :
    std::vector<Drive*> drives;
    
+   bool archive_mounted;
+   FilePath mount_file_path;
    
-   typedef FileSystem* (*FSCREATOR) ();
-   typedef void (*FSDESTRUCTOR) ();
-public :/// Need to friend Allegro5System but Eagle doesn't know about it
-   static FSCREATOR CreateFunc;
-protected :
-   static FSDESTRUCTOR DestroyFunc;
-   static FileSystem* fsys;
    
-   FileSystem() : drives() {}
+   virtual void ReadDirectoryContents(Folder* folder , bool descending = false)=0;
    
-   static void DestroyFileSystem();
-   
-   virtual void ReadDirectoryContents(Folder* folder)=0;
-   
-   void RegisterFile(Folder* parent , File* file);
-   void RegisterSubFolder(Folder* parent , Folder* sub);
+   void RegisterFile(Folder* parent , std::shared_ptr<File> file);
+   void RegisterArchiveFile(Folder* parent , std::shared_ptr<ArchiveFile> afile);
+   void RegisterSubFolder(Folder* parent , std::shared_ptr<Folder> sub);
    
 public :
+   FileSystem();
+
    virtual ~FileSystem() {}
    
-   static FileSystem* Instance();
-   
-   /// Utility functions
-   virtual std::string GetFileName(std::string path)=0;
-   virtual std::string GetFileExt(std::string path)=0;
-
    virtual FSInfo GetFileInfo(FilePath path)=0;
+
+   FSInfo         GetFileInfo(std::string path);
+   FSInfo         GetFileInfo(const char* path);
    
    /// Read functions
-   virtual std::shared_ptr<Folder> ReadFolder(FilePath path)=0;
    virtual std::shared_ptr<File>   ReadFile  (FilePath path)=0;
-   
-   /// Info
-   virtual char PathSeparator()=0;
+   virtual std::shared_ptr<Folder> ReadFolder(FilePath path , bool descending = false)=0;
    
    /// Directory functions
-   virtual bool ChangeDirectory(std::string dir)=0;
-   virtual std::string CurrentDirectory()=0;
+   
+   virtual void UnmountArchive()=0;
+   virtual bool MountArchive(FilePath fp)=0;
+   
+   
+///   virtual bool ChangeFSDirectory(std::string dir)=0;
+///   virtual std::string CurrentFSDirectory()=0;
+
+///   std::string GetCFSD() {return CurrentFSDirectory();}
 
 };
-
-
-std::string GetFileName(std::string path);/// Returns everything after the last path separator
-std::string GetFileExt(std::string name);
-
-FSInfo      GetFileInfo(FilePath path);
-FSInfo      GetFileInfo(std::string path);
-FSInfo      GetFileInfo(const char* path);
-
-std::shared_ptr<Folder> ReadFolder(FilePath fpath);
-std::shared_ptr<File> ReadFile(FilePath fpath);
-
-std::vector<std::string> ExplodePath(std::string path);
-std::vector<std::string> GetAbsolutePath(std::string rpath);
-
-std::string SanitizePath(std::string path);/// Removes all references to relative directories and replaces all separators with native ones
-
-
-
-char PathSeparator();
-bool ChangeDirectory(std::string dir);
-std::string CurrentDirectory();
-
 
 #endif // FileSystem_HPP
 
