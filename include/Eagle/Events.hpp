@@ -366,14 +366,10 @@ bool IsUserEvent(EagleEvent e);
 int EagleEventGroupType(EagleEvent e);
 
 
+EagleEvent MakeEagleEvent(WidgetMsg msg);
 
-class EagleEventFilter {
-   int types_to_keep;
-   int types_to_filter;
 
-   EagleGraphicsContext* windows_to_keep;
 
-};
 
 
 
@@ -404,7 +400,7 @@ public :
    EagleEventSource();
    virtual ~EagleEventSource();
 
-   virtual void EmitEvent(EagleEvent e , EagleThread* thread); 
+   virtual void EmitEvent(EagleEvent e , EagleThread* thread);
 
    bool HasListeners() {return !listeners.empty();}
 
@@ -431,7 +427,7 @@ public :
    EagleEventListener();
    virtual ~EagleEventListener();
 
-   virtual void RespondToEvent(EagleEvent e , EagleThread* thread)=0;
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = 0)=0;
 
    virtual void ListenTo(EagleEventSource* s);
    virtual void StopListeningTo(EagleEventSource* s);

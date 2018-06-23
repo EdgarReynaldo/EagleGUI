@@ -174,6 +174,7 @@
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetArea2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
@@ -266,6 +267,7 @@
 		<Unit filename="src/Gui/Text/SelectText.cpp" />
 		<Unit filename="src/Gui/WidgetArea.cpp" />
 		<Unit filename="src/Gui/WidgetBase.cpp" />
+		<Unit filename="src/Gui/WidgetBase2.cpp" />
 		<Unit filename="src/Gui/WidgetColorset.cpp" />
 		<Unit filename="src/Gui/WidgetDrawFuncs.cpp" />
 		<Unit filename="src/Gui/WidgetHandler.cpp" />

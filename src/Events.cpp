@@ -24,6 +24,8 @@
 #include "Eagle/Events.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/System.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
 
 
 /// ------------------     GLOBALS     ----------------------------
@@ -153,6 +155,19 @@ int EagleEventGroupType(EagleEvent e) {
       type = EAGLE_UNDEFINED_EVENT_TYPE;
    }
    return type;
+}
+
+
+
+EagleEvent MakeEagleEvent(WidgetMsg msg) {
+   EagleEvent e;
+   e.source = msg.From();
+   e.timestamp = EagleSystem::GetProgramTime();
+   e.type = EAGLE_EVENT_WIDGET;
+   e.widget.from = msg.from;
+   e.widget.topic = msg.topic;
+   e.widget.msgs = msg.msgs;
+   return e;
 }
 
 

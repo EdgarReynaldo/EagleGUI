@@ -5,7 +5,7 @@
 
 
 
-
+/**
 bool Allegro5Sound::Load(std::string file) {
    Free();
    a5sample = al_load_sample(file.c_str());
@@ -59,5 +59,8 @@ void Allegro5SoundManager::FreeSound(Sound* s) {
       snds.erase(snds.find(s));
    }
 }
+
+
+//*/
 
 

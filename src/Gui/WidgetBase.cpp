@@ -1025,19 +1025,6 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
-EagleEvent MakeEagleEvent(WidgetMsg msg) {
-   EagleEvent e;
-   e.source = msg.From();
-   e.timestamp = EagleSystem::GetProgramTime();
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = msg.from;
-   e.widget.topic = msg.topic;
-   e.widget.msgs = msg.msgs;
-   return e;
-}
-
-
-
 bool DrawPriorityIsLess(WidgetBase* lhs , WidgetBase* rhs) {
    return lhs->DisplayPriority()<rhs->DisplayPriority();
 }

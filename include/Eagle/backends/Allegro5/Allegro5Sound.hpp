@@ -9,7 +9,7 @@
 
 #include "allegro5/allegro_audio.h"
 
-
+/**
 
 class Allegro5Sound : public Sound {
 
@@ -44,6 +44,8 @@ public :
    void FreeSound(Sound* s);
    
 };
+
+//*/
 
 
 #endif // Allegro5Sound_HPP

@@ -98,8 +98,8 @@ EagleSystem* EagleLibrary::System(std::string driver) {
    EagleSystem* new_sys = 0;
    
    if (scmit != Eagle()->sys_creation_map.end()) {
-      SYS_CREATION_FUNC create = scmit->second;
-      new_sys = create();
+      SYS_CREATION_FUNC syscreator = scmit->second;
+      new_sys = syscreator();
       Eagle()->sys_map[driver] = new_sys;
    }
    else {

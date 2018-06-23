@@ -328,8 +328,6 @@ public :
 
 
 
-EagleEvent MakeEagleEvent(WidgetMsg msg);
-
 bool DrawPriorityIsLess(WidgetBase* lhs , WidgetBase* rhs);
 
 void PrintWidget(WidgetBase* widget);

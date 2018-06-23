@@ -79,12 +79,6 @@ REGISTER_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
 
 
 
-
-///void SetTopicAndMessageToStringsCallback(void (*callback)(unsigned int , int , std::string* , std::string* , bool*));
-
-
-
-
 class WidgetBase;
 
 class WidgetMsg {
