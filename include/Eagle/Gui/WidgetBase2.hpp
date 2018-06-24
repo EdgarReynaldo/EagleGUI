@@ -143,9 +143,22 @@ public :
 };
 
 
+typedef int (WIDGETBASE::*WIDGETCALLBACK)();
 
+class WidgetCallback {
 
+protected :
+   WIDGETBASE* wbobj;
+   WIDGETCALLBACK wcallback;
 
+public :
+   WidgetCallback(WIDGETBASE* wb , WIDGETCALLBACK wcb);
+   
+   virtual int operator();
+void operator() {
+   return (wbobj->*wcallback)();
+}
+};
 #endif // WidgetBaseNew_HPP
 
 
