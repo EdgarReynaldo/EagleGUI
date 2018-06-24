@@ -73,8 +73,8 @@ public :
    BORDERAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
    void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
-   inline int Width() {return left + right;}
-   inline int Height() {return top + bottom;}
+   inline int Width() const {return left + right;}
+   inline int Height() const {return top + bottom;}
 };
 
 #define WIDGETAREA WidgetArea2
@@ -83,7 +83,7 @@ class WIDGETAREA {
 
 protected :
 
-   Pos2D pos;
+   Pos2I pos;
    BORDERAREA margin;
    BORDERAREA border;
    BORDERAREA padding;
@@ -92,6 +92,16 @@ protected :
 
 
 public :
+
+///   WIDGETAREA();
+   WIDGETAREA() :
+         pos(0,0),
+         margin(0,0,0,0),
+         border(0,0,0,0),
+         padding(0,0,0,0),
+         inner_width(0),
+         inner_height(0)
+   {}
 
 	Rectangle OuterArea()   const ;
 	Rectangle BorderArea()  const ;

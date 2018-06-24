@@ -21,6 +21,7 @@
  
  
  #include "Eagle/Gui/WidgetBase2.hpp"
+ #include "Eagle/Gui/WidgetHandler2.hpp"
  #include "Eagle/Timer.hpp"
 
 
@@ -92,6 +93,13 @@ void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
+WIDGETAREA& WIDGETBASE::EditArea() {
+   if (handler) {
+      handler->MakeAreaDirty(warea.OuterArea());
+   }
+   SetRedrawFlag();
+   return warea;
+}
 
 
 

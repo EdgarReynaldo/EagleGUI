@@ -33,6 +33,7 @@
 #include "Eagle/Gui/WidgetArea2.hpp"
 #include "Eagle/Gui/WidgetMessage.hpp"
 
+
 #define WIDGETBASE WidgetBase2
 #define WIDGETCONTAINER WidgetContainer
 
@@ -66,9 +67,6 @@ public :
 
 class LAYOUTBASE;
 
-#define WIDGETHANDLER WidgetHandler2
-
-class WIDGETHANDLER;
 
 
 class ATTRIBUTEVALUEMAP {
@@ -97,6 +95,8 @@ public :
 
 
 
+class WidgetHandler2;
+
 class WIDGETBASE : public EagleObject , protected EagleEventSource {
 
 
@@ -105,7 +105,7 @@ protected :
    
    WIDGETBASE* parent;
    LAYOUTBASE* layout;
-   WIDGETHANDLER* handler;
+   WidgetHandler2* handler;
    
    ATTRIBUTEVALUEMAP attributes;
    
@@ -135,7 +135,10 @@ public :
       }
    }
 */
-   
+
+   WIDGETAREA& EditArea();
+
+   void SetRedrawFlag() {(void)0;}
    void ClearRedrawFlag() {(void)0;}
 };
 

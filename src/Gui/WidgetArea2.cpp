@@ -21,6 +21,7 @@
 
 
 
+#include "Eagle/Gui/WidgetArea2.hpp"
 
 /// BORDERAREA
 
@@ -84,24 +85,30 @@ Rectangle WIDGETAREA::InnerArea() const {
 
 
 
-Rectangle CellArea(CELL_TYPE type , CELL_AREA area) const {
+Rectangle WIDGETAREA::CellArea(CELL_TYPE type , CELL_AREA area) const {
    EAGLE_ASSERT(area != CELL_AREA_OUTSIDE);
    return CellArea(type , (VCELL_AREA)((int)area/3) , (HCELL_AREA)((int)area%3));
 }
-Rectangle CellArea(CELL_TYPE type , VCELL_AREA vcell , HCELL_AREA hcell) const {
+
+
+
+Rectangle WIDGETAREA::CellArea(CELL_TYPE type , VCELL_AREA vcell , HCELL_AREA hcell) const {
    
    int cellz = (int)type;
 
+   typedef Rectangle (WIDGETAREA::*AREAFUNC)() const;
    if ((vcell == VCELL_CENTER) && (hcell == HCELL_CENTER)) {
-      Rectangle (WIDGETAREA::*AREAFUNC[3])() = {
+      AREAFUNC areafunc[3] = {
          BorderArea,PaddingArea,InnerArea
       };
-      return AREAFUNC[cz];
+      AREAFUNC afunc = areafunc[cellz];
+      
+      return (this->*afunc)();
    }
    
    int celly = (int)vcell;
    int cellx = (int)hcell;
-   Pos2D cellpos = pos;
+   Pos2I cellpos = pos;
    const int cwidths[3][3] = {
       {
          margin.left , 
@@ -146,13 +153,13 @@ Rectangle CellArea(CELL_TYPE type , VCELL_AREA vcell , HCELL_AREA hcell) const {
       cellpos.MoveBy(cxoffsets[z] , cyoffsets[z]);
    }
    for (int y = 0 ; y < celly ; ++y) {
-      cellpos.MoveBy(0 , cheights[cz][y]);
+      cellpos.MoveBy(0 , cheights[cellz][y]);
    }
    for (int x = 0 ; x < cellx ; ++x) {
-      cellpos.MoveBy(cwidths[cz][x] , 0);
+      cellpos.MoveBy(cwidths[cellz][x] , 0);
    }
    
-   return Rectangle(cellpos.X() , cellpos.Y() , cwidths[cellx] , cheights[celly]);
+   return Rectangle(cellpos.X() , cellpos.Y() , cwidths[cellz][cellx] , cheights[cellz][celly]);
 }
 
 
@@ -188,7 +195,7 @@ int WIDGETAREA::PaddingAreaWidth() const {
 
 
 int WIDGETAREA::PaddingAreaHeight() const {
-   return PaddingHeight() + InnerAreaHeight()
+   return PaddingHeight() + InnerAreaHeight();
 }
 
 
