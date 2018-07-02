@@ -35,45 +35,8 @@
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetDrawFuncs.hpp"
 #include "Eagle/Gui/WidgetMessage.hpp"
+#include "Eagle/Gui/WidgetFlags.hpp"
 
-
-extern const unsigned int TOPIC_DIALOG;
-
-/// DIALOG_MSGS = Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
-
-enum DIALOG_MSGS {
-   DIALOG_OKAY       = 0x00,/// Also used to signify that there are no messages for the WidgetHandler::TakeNextMessage function.
-   DIALOG_CLOSE      = 0x01,
-   DIALOG_REDRAW_ALL = 0x02,/// For when the background needs to be cleared / redrawn
-   DIALOG_INPUT_USED = 0x04,/// Play nice, a WidgetHandler will stop checking other widgets input after this is received.
-   DIALOG_TAKE_FOCUS = 0x08,
-   DIALOG_DISABLED   = 0x10,/// Returned when you try to update or check the inputs of a disabled dialog.
-   DIALOG_REMOVE_ME  = 0x20
-};
-
-enum WIDGET_FLAGS {
-   FLAGS_NONE      = 0x000,
-   ENABLED         = 0x001,   // Currently active or not
-   VISIBLE         = 0x002,   // Whether anything is drawn
-   HOVER           = 0x004,   // If it has mouse hover - don't steal the focus for hover!
-   HASFOCUS        = 0x008,   // If it has the focus
-   MOVEABLE        = 0x010,   // Whether it can be moved
-   RESIZEABLE      = 0x020,   // Whether it can be resized
-   NEEDS_REDRAW    = 0x040,   // Whether it should be redrawn before display?
-   NEEDS_BG_REDRAW = 0x080,   // Whether it needs its background redrawn before being redrawn
-   ALLOW_CLOSE     = 0x100,   // If it is allowed to close the dialog based on input
-   ALLOW_OVERLAP   = 0x200   // TODO : DEPRECATED - REMOVE - If it is allowed to overlap other widgets
-};
-
-static const int NUM_WIDGET_FLAGS = 11;
-
-typedef unsigned int UINT;
-
-std::string PrintFlags(UINT flags);
-
-extern const UINT BASIC_FLAGS;
-extern const UINT DEFAULT_FLAGS;
-extern const UINT DEFAULT_OVERLAP_FLAGS;
 
 
 /// Widgets with higher display priority will display on top of widgets with lower display priority
@@ -87,11 +50,10 @@ enum WIDGET_DISPLAY_PRIORITY {
 };
 
 
+
 class Layout;
 class WidgetHandler;
 class WidgetDecorator;
-
-
 
 
 

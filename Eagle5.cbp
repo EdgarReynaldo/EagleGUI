@@ -121,6 +121,7 @@
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
+		<Unit filename="include/Eagle/Callbacks.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
@@ -134,6 +135,11 @@
 		<Unit filename="include/Eagle/Font.hpp" />
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetArea2.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetBase2.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetFlags.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetHandler2.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetPainters.hpp" />
 		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
 		<Unit filename="include/Eagle/Gui/BasicIcon.hpp" />
 		<Unit filename="include/Eagle/Gui/Button.hpp" />
@@ -175,13 +181,11 @@
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetArea2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetBase2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetDrawFuncs.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetHandler2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
 		<Unit filename="include/Eagle/Image.hpp" />
 		<Unit filename="include/Eagle/Indenter.hpp" />
@@ -222,6 +226,7 @@
 		<Unit filename="src/AnimationBase.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/CXX11Mutexes.cpp" />
+		<Unit filename="src/Callbacks.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />
@@ -233,6 +238,11 @@
 		<Unit filename="src/FileWork.cpp" />
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
+		<Unit filename="src/Gui2/WidgetArea2.cpp" />
+		<Unit filename="src/Gui2/WidgetBase2.cpp" />
+		<Unit filename="src/Gui2/WidgetFlags.cpp" />
+		<Unit filename="src/Gui2/WidgetHandler2.cpp" />
+		<Unit filename="src/Gui2/WidgetPainters.cpp" />
 		<Unit filename="src/Gui/Alignment.cpp" />
 		<Unit filename="src/Gui/BasicIcon.cpp" />
 		<Unit filename="src/Gui/Button/BasicButton.cpp" />
@@ -274,9 +284,11 @@
 		<Unit filename="src/Gui/WidgetBase2.cpp" />
 		<Unit filename="src/Gui/WidgetColorset.cpp" />
 		<Unit filename="src/Gui/WidgetDrawFuncs.cpp" />
+		<Unit filename="src/Gui/WidgetFlags.cpp" />
 		<Unit filename="src/Gui/WidgetHandler.cpp" />
 		<Unit filename="src/Gui/WidgetHandler2.cpp" />
 		<Unit filename="src/Gui/WidgetMessage.cpp" />
+		<Unit filename="src/Gui/WidgetPainters.cpp" />
 		<Unit filename="src/Image.cpp" />
 		<Unit filename="src/Indenter.cpp" />
 		<Unit filename="src/InputHandler.cpp" />

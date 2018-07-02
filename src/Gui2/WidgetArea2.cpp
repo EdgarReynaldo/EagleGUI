@@ -23,11 +23,11 @@
 
 #include "Eagle/Gui/WidgetArea2.hpp"
 
-/// BORDERAREA
+/// BOXAREA
 
 
 
-BORDERAREA::BORDERAREA() :
+BOXAREA::BOXAREA() :
    left(0),
    right(0),
    top(0),
@@ -36,7 +36,7 @@ BORDERAREA::BORDERAREA() :
 
 
 
-BORDERAREA::BORDERAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b) :
+BOXAREA::BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b) :
       left(l),
       right(r),
       top(t),
@@ -45,7 +45,7 @@ BORDERAREA::BORDERAREA(unsigned int l , unsigned int r , unsigned int t , unsign
 
 
 
-void BORDERAREA::Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+void BOXAREA::Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
    left = l;
    right = r;
    top = t;
@@ -54,10 +54,73 @@ void BORDERAREA::Set(unsigned int l , unsigned int r , unsigned int t , unsigned
 
 
 
+/// NPAREA
+
+
+NPAREA::NPAREA(Rectangle area , BOXAREA box) :
+   pos(area.X() , area.Y()),
+   left(box.left),
+   width(area.Width() - box.Width()),
+   right(box.right),
+   top(box.top),
+   height(area.Height() - box.Height()),
+   bottom(box.bottom)
+{}
+   
+
+
+Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
+   Pos2I p2 = pos;
+   const int cellwidths[4]  = {0 , left , width , right};
+   const int cellheights[4] = {0 , top , height , bottom};
+   for (unsigned int j = 0 ; j < vcell ; ++j) {
+      p2.MoveBy(0 , cellheights[j]);
+   }
+   for (unsigned int i = 0 ; i < hcell ; ++i) {
+      p2.MoveBy(cellwidths[i] , 0);
+   }
+   return Rectangle(p2.X() , p2.Y() , cellwidths[hcell + 1] , cellheights[vcell + 1]);
+}
 
 
 
 /// WIDGETAREA
+
+
+
+void WIDGETAREA::SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   BOXAREA* boxes[3] = {&margin , &border , &padding};
+   boxes[box]->Set(l,r,t,b);
+}
+
+
+
+void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
+   BOXAREA* boxes[3] = {&margin , &border , &padding};
+   boxes[box] = b;
+}
+
+
+
+/// Getters
+
+
+
+NPAREA WIDGETAREA::OuterNP() const {
+   return NPAREA(OuterArea() , GetAreaBox(BOX_TYPE_MARGIN));
+}
+
+
+
+NPAREA WIDGETAREA::BorderNP() const {
+   return NPAREA(BorderArea() , GetAreaBox(BOX_TYPE_BORDER));
+}
+
+
+
+NPAREA WIDGETAREA::PaddingNP() const {
+   return NPAREA(PaddingArea() , GetAreaBox(BOX_TYPE_PADDING));
+}
 
 
 
@@ -244,6 +307,29 @@ int WIDGETAREA::PaddingWidth() const {
 
 int WIDGETAREA::PaddingHeight() const {
    return padding.Height();
+}
+
+
+
+Rectangle WIDGETAREA::GetAreaRectangle(WAREA_TYPE atype) const {
+   static Rectangle (WIDGETAREA::*AREAFUNC)() const [4] = {
+      &OuterArea,
+      &BorderArea,
+      &PaddingArea,
+      &InnerArea
+   };
+   return (this->*(AREAFUNC[atype])());
+}
+
+
+
+BOXAREA WIDGETAREA::GetBoxArea(BOX_TYPE btype) const {
+   const BOXAREA * pbarea[3] = {
+      &margin,
+      &border,
+      &padding
+   };
+   return *(pbarea[btype]);
 }
 
 

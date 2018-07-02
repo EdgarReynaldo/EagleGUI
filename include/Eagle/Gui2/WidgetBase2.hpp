@@ -32,7 +32,7 @@
 
 #include "Eagle/Gui/WidgetArea2.hpp"
 #include "Eagle/Gui/WidgetMessage.hpp"
-
+#include "Eagle/Gui/WidgetFlags.hpp"
 
 #define WIDGETBASE WidgetBase2
 #define WIDGETCONTAINER WidgetContainer
@@ -99,66 +99,73 @@ class WidgetHandler2;
 
 class WIDGETBASE : public EagleObject , protected EagleEventSource {
 
-
 protected :
+   /// For sub widgets
    WIDGETCONTAINER widgets;
    
-   WIDGETBASE* parent;
-   LAYOUTBASE* layout;
-   WidgetHandler2* handler;
+   /// References only
+   WIDGETBASE* wparent;
+   LAYOUTBASE* wlayout;
+   WidgetHandler2* whandler;
    
-   ATTRIBUTEVALUEMAP attributes;
+   /// Can be shared
+   WidgetPainter wpainter;
+   
+   /// Separate
+   ATTRIBUTEVALUEMAP wattributes;
    
    WIDGETAREA warea;
    
-      
+   WidgetFlags wflags;
+   
+
+
+   /// WidgetEventSource
    void RaiseWidgetEvent(WidgetMsg msg);
    
-   virtual int PrivateHandleEvent(EagleEvent ee)=0;
-   virtual int PrivateCheckInputs() {return 0;}
-   virtual void PrivateUpdate(double dt) {(void)dt;}
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)=0;
-   
+   /// Private interface, override to define behavior
+   virtual int PrivateHandleEvent(EagleEvent ee);
+   virtual int PrivateCheckInputs();
+   virtual void PrivateUpdate(double dt);
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+
+   /// Parent messaging
    virtual void QueueUserMessage(WidgetMsg wmsg);
+
+   /// Callbacks, overload if you need to
+   virtual void OnAreaChanged();
+   virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
+   virtual void OnFlagChanged(WIDGET_FLAG f , bool on);
+
+   /// Default change handlers
+   void OnSelfAreaChange(WIDGETAREA new_widget_area);
+   void OnSelfAttributeChange(ATTRIBUTE a , VALUE v);
+   void OnSelfFlagChange(WidgetFlags new_widget_flags);
+   
 public :
    
-   
+   /// Main interface
    int HandleEvent(EagleEvent ee);
    void Update(double dt);
    void Display(EagleGraphicsContext* win , int xpos , int ypos);
    
-   
-/*   virtual bool SetAttribute(ATTRIBUTE a , VALUE v);
-   virtual bool SetAttribute(ATTRIBUTE a , VALUE v) {
-      if (IsKnownAttribute(a)) {
-         SetKnownAttribute(a , v);
-      }
-   }
-*/
+   /// Setters
+   bool SetAttribute(ATTRIBUTE a , VALUE v);
+   void SetWidgetArea(WIDGETAREA warea);
+   void SetWidgetFlags(WidgetFlags flags);
 
-   WIDGETAREA& EditArea();
+   /// Getters
+   VALUE GetAttributeValue(ATTRIBUTE a);
+   WIDGETAREA GetWidgetArea();
+   WidgetFlags Flags();
 
-   void SetRedrawFlag() {(void)0;}
-   void ClearRedrawFlag() {(void)0;}
+   virtual void SetRedrawFlag();
+   void ClearRedrawFlag();
 };
 
 
-typedef int (WIDGETBASE::*WIDGETCALLBACK)();
 
-class WidgetCallback {
 
-protected :
-   WIDGETBASE* wbobj;
-   WIDGETCALLBACK wcallback;
-
-public :
-   WidgetCallback(WIDGETBASE* wb , WIDGETCALLBACK wcb);
-   
-   virtual int operator();
-void operator() {
-   return (wbobj->*wcallback)();
-}
-};
 #endif // WidgetBaseNew_HPP
 
 

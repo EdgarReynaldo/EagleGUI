@@ -30,10 +30,17 @@
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 
 
-enum CELL_TYPE {
-   CELL_TYPE_MARGIN = 0,
-   CELL_TYPE_BORDER = 1,
-   CELL_TYPE_PADDING = 2
+enum WAREA_TYPE {
+   WAREA_TYPE_MARGIN  = 0,
+   WAREA_TYPE_BORDER  = 1,
+   WAREA_TYPE_PADDING = 2,
+   WAREA_TYPE_INNER   = 3
+};
+
+enum BOX_TYPE {
+   BOX_TYPE_MARGIN  = 0,
+   BOX_TYPE_BORDER  = 1,
+   BOX_TYPE_PADDING = 2
 };
 
 enum CELL_AREA {
@@ -61,21 +68,38 @@ enum VCELL_AREA {
 };
 
 
-class BORDERAREA {
+class BOXAREA {
 public :
    int left;
    int right;
    int top;
    int bottom;
    
-   BORDERAREA();
+   BOXAREA();
    
-   BORDERAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
    void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
    inline int Width() const {return left + right;}
    inline int Height() const {return top + bottom;}
 };
+
+class NPAREA {
+public :
+   Pos2I pos;
+   int left;
+   int width;
+   int right;
+   int top;
+   int height;
+   int bottom;
+   
+   NPAREA(Rectangle area , BOXAREA box);
+   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
+
+};
+
+
 
 #define WIDGETAREA WidgetArea2
 
@@ -84,9 +108,9 @@ class WIDGETAREA {
 protected :
 
    Pos2I pos;
-   BORDERAREA margin;
-   BORDERAREA border;
-   BORDERAREA padding;
+   BOXAREA margin;
+   BOXAREA border;
+   BOXAREA padding;
    int inner_width;
    int inner_height;
 
@@ -103,6 +127,18 @@ public :
          inner_height(0)
    {}
 
+   
+   /// Setters
+   
+   void SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void SetBoxArea(BOX_TYPE box , BOXAREA b);
+   
+   /// Getters
+   
+   NPAREA OuterNP() const;
+   NPAREA BorderNP() const;
+   NPAREA PaddingNP() const;
+   
 	Rectangle OuterArea()   const ;
 	Rectangle BorderArea()  const ;
 	Rectangle PaddingArea() const ;
@@ -130,7 +166,8 @@ public :
 	int PaddingWidth()  const;
 	int PaddingHeight() const;
 
-   
+	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;
+   BOXAREA GetAreaBox(BOX_TYPE btype) const;
 	
 	
 	
@@ -146,6 +183,10 @@ public :
 
 
 
-
-
 #endif // EagleGuiWidgetArea_HPP
+
+
+
+
+
+
