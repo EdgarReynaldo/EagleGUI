@@ -48,53 +48,6 @@ enum FOCUS_AREA_PAINT_TYPE {
    FOCUS_AREA_CUSTOM    = 4,
    NUM_FOCUS_AREA_TYPES = 5
 };
-void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb) {
-   WidgetArea warea = wb->GetWidgetArea();
-   switch (bgptype) {
-   case BG_AREA_EMPTY :
-      return;
-      break;
-   case BG_AREA_FILL :
-      
-      break;
-   case BG_AREA_ROUNDED_FILL :
-      
-      break;
-   case BG_AREA_IMAGE_CENTER :
-      
-      break;
-   case BG_AREA_IMAGE_STRETCH :
-      
-      break;
-   case BG_AREA_CUSTOM :
-      
-      break;
-   default :
-      break;
-   };
-}
-void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb) {
-   WidgetArea warea = wb->GetWidgetArea();
-   
-   switch (fptype) {
-   case FOCUS_AREA_INVISIBLE :/// duh were invisible they can't see us :O
-      break;
-   case FOCUS_AREA_OUTLINE :
-   
-      break;
-   case FOCUS_AREA_DOTTED :
-   
-      break;
-   case FOCUS_AREA_CONTRAST :
-   
-      break;
-   case FOCUS_AREA_CUSTOM :
-      PaintWidgetFocusCustom(win , wb);
-      break;
-   default :
-      break;
-   };
-}
 
 
 /// Abstract base class
@@ -114,6 +67,27 @@ class WidgetPainterBasic : public WidgetPainterBase {
    
    BG_AREA_PAINT_TYPE bgptype;
    FOCUS_AREA_PAINT_TYPE fptype;
+
+   
+protected :
+   
+   virtual void PaintMargin(const NPAREA& npmargin);
+   virtual void PaintBorder(const NPAREA& npborder);
+   virtual void PaintPadding(const NPAREA& nppadding);
+   virtual void PaintInnerArea(const Rectangle& inner);
+   
+void PaintMargin(const NPAREA& npmargin) {
+   
+}
+void PaintBorder(const NPAREA& npborder) {
+   
+}
+void PaintPadding(const NPAREA& nppadding) {
+   
+}
+void PaintInnerArea(const Rectangle& inner) {
+   
+}
 
 public :
    

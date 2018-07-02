@@ -181,40 +181,77 @@ void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
-WidgetFlags Flags() {
+WidgetFlags WIDGETBASE::Flags() {
    return wflags;
 }
 
 
 
-VALUE GetAttributeValue(ATTRIBUTE a) {
-   if (wattributes.find(a) != wattributes.end()) {
+bool WIDGETBASE::HasAttribute(ATTRIBUTE a) {
+   return wattributes.find(a) != wattributes.end();
+}
+
+
+
+bool WIDGETBASE::InheritsAttribute(ATTRIBUTE a) {
+   if (HasAttribute(a)) {return false;}
+   WIDGETBASE* w = wparent;
+   while (w) {
+      if (w->HasAttribute(a)) {return true;}
+      w = w->Parent();
+   }
+   if (wlayout && wlayout->HasAttribute(a)) {return true;}
+   if (whandler && whandler->HasAttribute(a)) {return true;}
+   if (ATTRIBUTEVALUEMAP::GlobalAttributeMap()->HasAttribute(a)) {return true;}
+   return false;
+}
+
+
+
+VALUE WIDGETBASE::GetAttributeValue(ATTRIBUTE a) {
+   if (HasAttribute(a)) {
       return wattributes[a];
+   }
+   WIDGETBASE* parent = wparent;
+   while (parent) {
+      if (parent->HasAttribute(a)) {
+         return parent->GetAttributeValue(a);
+      }
+      parent = parent->parent;
+   }
+   if (wlayout && wlayout->HasAttribute(a)) {
+      return wlayout->GetAttributeValue(a);
+   }
+   if (whandler && whandler->HasAttribute(a)) {
+      return whandler->GetAttributeValue(a);
+   }
+   if (ATTRIBUTEVALUEMAP::GlobalAttributeMap()->HasAttribute(a)) {
+      return ATTRIBUTEVALUEMAP::GlobalAttributeMap()->GetAttributeValue(a);
    }
    return "";
 }
 
 
 
-WIDGETAREA GetWidgetArea() {
+WIDGETAREA WIDGETBASE::GetWidgetArea() {
    return warea;
 }
 
 
 
-void SetWidgetFlags(WidgetFlags flags) {
+void WIDGETBASE::SetWidgetFlags(WidgetFlags flags) {
    OnSelfFlagChange(flags);
 }
 
 
    
-bool SetAttribute(ATTRIBUTE a , VALUE v) {
+bool WIDGETBASE::SetAttribute(ATTRIBUTE a , VALUE v) {
    OnSelfAttributeChange(a,v);
 }
 
 
    
-void SetWidgetArea(WIDGETAREA warea) {
+void WIDGETBASE::SetWidgetArea(WIDGETAREA warea) {
    OnSelfAreaChange(warea);
 }
 

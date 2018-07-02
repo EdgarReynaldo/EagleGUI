@@ -136,7 +136,9 @@
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
 		<Unit filename="include/Eagle/Gui2/WidgetArea2.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetAttributes.hpp" />
 		<Unit filename="include/Eagle/Gui2/WidgetBase2.hpp" />
+		<Unit filename="include/Eagle/Gui2/WidgetContainer.hpp" />
 		<Unit filename="include/Eagle/Gui2/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui2/WidgetHandler2.hpp" />
 		<Unit filename="include/Eagle/Gui2/WidgetPainters.hpp" />
@@ -239,6 +241,7 @@
 		<Unit filename="src/Font.cpp" />
 		<Unit filename="src/GraphicsContext.cpp" />
 		<Unit filename="src/Gui2/WidgetArea2.cpp" />
+		<Unit filename="src/Gui2/WidgetAttributes.cpp" />
 		<Unit filename="src/Gui2/WidgetBase2.cpp" />
 		<Unit filename="src/Gui2/WidgetFlags.cpp" />
 		<Unit filename="src/Gui2/WidgetHandler2.cpp" />

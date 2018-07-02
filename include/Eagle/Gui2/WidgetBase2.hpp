@@ -30,68 +30,22 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/Events.hpp"
 
-#include "Eagle/Gui/WidgetArea2.hpp"
 #include "Eagle/Gui/WidgetMessage.hpp"
-#include "Eagle/Gui/WidgetFlags.hpp"
+
+#include "Eagle/Gui2/WidgetArea2.hpp"
+#include "Eagle/Gui2/WidgetFlags.hpp"
+#include "Eagle/Gui2/WidgetAttributes.hpp"
+#include "Eagle/Gui2/WidgetContainer.hpp"
+
 
 #define WIDGETBASE WidgetBase2
-#define WIDGETCONTAINER WidgetContainer
 
 
-class WIDGETBASE;
-
-
-
-class WIDGETCONTAINER {
-public :
-   typedef std::shared_ptr<WIDGETBASE> SHAREDWIDGET;
-   typedef std::map<EAGLE_ID , SHAREDWIDGET > COMPONENT_MAP;
-   typedef COMPONENT_MAP::iterator CMIT;
-protected :
-   
-   COMPONENT_MAP cmap;
-   
-public :   
-   
-   
-   EAGLE_ID Register(SHAREDWIDGET sw);
-   void Remove(EAGLE_ID id);
-   void Clear();
-
-   SHAREDWIDGET FindById(EAGLE_ID id) {return cmap[id];}
-   
-   SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}
-};
-
-#define LAYOUTBASE Layout2
 
 class LAYOUTBASE;
 
 
 
-class ATTRIBUTEVALUEMAP {
-   
-public :
-   typedef std::string ATTRIBUTE;
-   typedef std::string VALUE;
-   typedef std::map<ATTRIBUTE , VALUE> ATTVALMAP;
-   
-protected :
-   
-   ATTVALMAP attributes;
-   
-public :
-   
-///   VALUE& operator[](ATTRIBUTE a);
-   VALUE& operator[](ATTRIBUTE a) {
-      return attributes[a];
-   }
-///   bool HasAttribute(ATTRIBUTE a);
-   bool HasAttribute(ATTRIBUTE a) {
-      return attributes.find(a) != attributes.end();
-   }
-   
-};
 
 
 
@@ -155,6 +109,8 @@ public :
    void SetWidgetFlags(WidgetFlags flags);
 
    /// Getters
+   bool HasAttribute(ATTRIBUTE a);
+   bool InheritsAttribute(ATTRIBUTE a);
    VALUE GetAttributeValue(ATTRIBUTE a);
    WIDGETAREA GetWidgetArea();
    WidgetFlags Flags();
