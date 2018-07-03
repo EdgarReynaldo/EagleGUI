@@ -171,10 +171,12 @@ void WIDGETBASE::Update(double dt) {
 
 
 void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   wpainter.PaintBackground(win , this);
+   if (wpainter) {
+      wpainter->PaintBackground(win , this);
+   }
    PrivateDisplay(win , xpos , ypos);
-   if (wflags.FlagSet(HASFOCUS)) {
-      wpainter.PaintFocus(win , this);
+   if (wpainter && wflags.FlagSet(HASFOCUS)) {
+      wpainter->PaintFocus(win , this);
    }
    ClearRedrawFlag();
 }

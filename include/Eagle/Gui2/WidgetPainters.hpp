@@ -31,6 +31,19 @@
 class EagleGraphicsContext;
 class WIDGETBASE;
 
+
+enum AREA_FILL_TYPE {
+   AREA_EMPTY          = 0,
+   AREA_SOLID          = 1,
+   AREA_ROUNDED        = 2,
+   AREA_CONTRAST       = 3,
+   AREA_RCONTRAST      = 4,
+   AREA_IMAGE_CENTER   = 5,
+   AREA_IMAGE_STRETCH  = 6,
+   NUM_AREA_FILL_TYPES = 7
+};
+
+
 enum BG_AREA_PAINT_TYPE {
    BG_AREA_EMPTY         = 0,
    BG_AREA_FILL          = 1,
@@ -65,11 +78,30 @@ public :
 
 class WidgetPainterBasic : public WidgetPainterBase {
    
-   BG_AREA_PAINT_TYPE bgptype;
-   FOCUS_AREA_PAINT_TYPE fptype;
-
    
 protected :
+   
+enum AREA_FILL_TYPE {
+   AREA_EMPTY          = 0,
+   AREA_SOLID          = 1,
+   AREA_ROUNDED        = 2,
+   AREA_CONTRAST       = 3,
+   AREA_RCONTRAST      = 4,
+   AREA_IMAGE_CENTER   = 5,
+   AREA_IMAGE_STRETCH  = 6,
+   NUM_AREA_FILL_TYPES = 7
+};
+   
+   void PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype);
+   void PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype) {
+      
+   }
+   
+   
+   
+   
+   
+   
    
    virtual void PaintMargin(const NPAREA& npmargin);
    virtual void PaintBorder(const NPAREA& npborder);
@@ -96,9 +128,6 @@ public :
    virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb);
    virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb);
 
-   void SetBgPaintType(BG_AREA_PAINT_TYPE bgtype);
-   void SetFocusPaintType(FOCUS_AREA_PAINT_TYPE ftype);
-   
 };
 
 

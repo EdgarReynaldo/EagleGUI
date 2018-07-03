@@ -29,6 +29,10 @@
 #include <map>
 
 
+typedef std::string ATTRIBUTE;
+typedef std::string VALUE;
+typedef std::map<ATTRIBUTE , VALUE> ATTVALMAP;
+
 
 bool IsKnownAttribute(const ATTRIBUTE& a);
 void RegisterKnownAttribute(const ATTRIBUTE& a);
@@ -39,9 +43,6 @@ void RemoveKnownAttribute(const ATTRIBUTE& a);
 class ATTRIBUTEVALUEMAP {
    
 public :
-   typedef std::string ATTRIBUTE;
-   typedef std::string VALUE;
-   typedef std::map<ATTRIBUTE , VALUE> ATTVALMAP;
    
    class ATTRIBUTESET {
       std::unordered_set<ATTRIBUTE> attset;
