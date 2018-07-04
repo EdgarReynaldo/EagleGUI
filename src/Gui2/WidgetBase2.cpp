@@ -20,8 +20,8 @@
  */
  
  
- #include "Eagle/Gui/WidgetBase2.hpp"
- #include "Eagle/Gui/WidgetHandler2.hpp"
+ #include "Eagle/Gui2/WidgetBase2.hpp"
+ #include "Eagle/Gui2/WidgetHandler2.hpp"
  #include "Eagle/Timer.hpp"
 
 
@@ -116,6 +116,12 @@ void WIDGETBASE::OnFlagChanged(WIDGET_FLAG f , bool on) {
 
 
 
+void WIDGETBASE::OnColorChanged() {
+   SetRedrawFlag();
+}
+
+
+
 void WIDGETBASE::OnSelfAreaChange(WIDGETAREA new_widget_area) {
    if (whandler) {
       whandler->MakeAreaDirty(warea);
@@ -155,6 +161,13 @@ void WIDGETBASE::OnSelfFlagChange(WidgetFlags new_widget_flags) {
 
 
 
+void WIDGETBASE::OnSelfColorChange(std::shared_ptr<WidgetColorset> cset) {
+   wcolors = cset;
+   OnColorChanged();
+}
+
+
+
 int WIDGETBASE::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_TIMER) {
       Update(ee.timer.eagle_timer_source->SPT());
@@ -183,8 +196,32 @@ void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
-WidgetFlags WIDGETBASE::Flags() {
-   return wflags;
+bool WIDGETBASE::SetAttribute(ATTRIBUTE a , VALUE v) {
+   OnSelfAttributeChange(a,v);
+}
+
+
+   
+void WIDGETBASE::SetWidgetArea(WIDGETAREA warea) {
+   OnSelfAreaChange(warea);
+}
+
+
+
+void WIDGETBASE::SetWidgetFlags(WidgetFlags flags) {
+   OnSelfFlagChange(flags);
+}
+
+
+   
+void WIDGETBASE::SetWidgetColorset(std::shared_ptr<WidgetColorset> cset) {
+   OnSelfColorChanged(cset);
+}
+
+
+
+void WIDGETBASE::SetWidgetColorset(const WidgetColorset& cset) {
+   SetWidgetColorset(std::shared_ptr(new WidgetColorset(cset)));
 }
 
 
@@ -219,7 +256,7 @@ VALUE WIDGETBASE::GetAttributeValue(ATTRIBUTE a) {
       if (parent->HasAttribute(a)) {
          return parent->GetAttributeValue(a);
       }
-      parent = parent->parent;
+      parent = parent->wparent;
    }
    if (wlayout && wlayout->HasAttribute(a)) {
       return wlayout->GetAttributeValue(a);
@@ -235,26 +272,40 @@ VALUE WIDGETBASE::GetAttributeValue(ATTRIBUTE a) {
 
 
 
+EagleColor WIDGETBASE::GetColor(WIDGETCOLOR wc) {
+   std::string cname = WidgetColorName(wc);
+   if (HasAttribute(cname)) {
+      return EagleColor(GetAttributeValue(cname));
+   }
+   std::shared_ptr<WidgetColorset> cset = WidgetColors();
+   if (cset) {
+      return (*cset)[wc];
+   }
+}
+
+
+
 WIDGETAREA WIDGETBASE::GetWidgetArea() {
    return warea;
 }
 
 
 
-void WIDGETBASE::SetWidgetFlags(WidgetFlags flags) {
-   OnSelfFlagChange(flags);
+WidgetFlags WIDGETBASE::Flags() {
+   return wflags;
 }
 
 
-   
-bool WIDGETBASE::SetAttribute(ATTRIBUTE a , VALUE v) {
-   OnSelfAttributeChange(a,v);
-}
 
-
-   
-void WIDGETBASE::SetWidgetArea(WIDGETAREA warea) {
-   OnSelfAreaChange(warea);
+std::shared_ptr<WidgetColorset> WIDGETBASE::WidgetColors() {
+   if (HasAttribute("Colorset")) {
+      return std::shared_ptr(new WidgetColorset(GetColorsetByName(GetAttributeValue("Colorset"))));
+   }
+   if (wcolors) {return wcolors;}
+   if (wparent && wparent->WidgetColors()) {return wparent->WidgetColors();}
+   if (wlayout && wlayout->WidgetColors()) {return wlayout->WidgetColors();}
+   if (whandler && whandler->WidgetColors()) {return whandler->WidgetColors();}
+   return 0;
 }
 
 
@@ -268,5 +319,9 @@ void WIDGETBASE::SetRedrawFlag() {
 void WIDGETBASE::ClearRedrawFlag() {
    wflags.RemoveFlag(NEEDS_REDRAW);
 }
+
+
+
+
 
 

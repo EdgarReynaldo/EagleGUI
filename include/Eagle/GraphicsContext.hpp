@@ -179,6 +179,12 @@ public :
 class EagleSystem;
 class EagleThread;
 
+enum QUADRANT_DIR {
+   QUADRANT_NE = 0,
+   QUADRANT_NW = 1,
+   QUADRANT_SW = 2,
+   QUADRANT_SE = 3
+};
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
@@ -279,6 +285,8 @@ public :
    virtual void DrawEllipse(int cx , int cy , int rx , int ry , int thickness , EagleColor c)=0;
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c)=0;
 
+   void         DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c)
+   
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c)=0;
 
@@ -291,6 +299,8 @@ public :
    virtual void DrawFilledRoundedRectangle(float x , float y , float w , float h , float rx , float ry , EagleColor c)=0;
    virtual void DrawCircle(float cx , float cy , float radius , float thickness , EagleColor c)=0;
    virtual void DrawFilledCircle(float cx , float cy , float radius , EagleColor c)=0;
+   virtual void DrawEllipse(float cx , float cy , float rx , float ry , float thickness , EagleColor c)=0;
+   virtual void DrawFilledEllipse(float cx , float cy , float rx , float ry , EagleColor c)=0;
    virtual void DrawTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , float thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , EagleColor c)=0;
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;

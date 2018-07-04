@@ -21,10 +21,10 @@
 
  
  
-#include "Eagle/Gui/WidgetPainters.hpp"
+#include "Eagle/Gui2/WidgetPainters.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
-#include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui2/WidgetBase2.hpp"
 
 
 

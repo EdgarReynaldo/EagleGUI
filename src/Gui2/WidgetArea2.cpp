@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Gui/WidgetArea2.hpp"
+#include "Eagle/Gui2/WidgetArea2.hpp"
 
 /// BOXAREA
 
@@ -84,6 +84,22 @@ Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
 
 
 
+Rectangle NPAREA::GetRow(VCELL_AREA vcell) {
+   Rectangle r = GetNPCell(HCELL_LEFT , vcell);
+   int heights[3] = {top , height , bottom};
+   return Rectangle(r.X() , r.Y() , Width() , heights[vcell]);
+}
+
+
+
+Rectangle NPAREA::GetColumn(HCELL_AREA hcell) {
+   Rectangle r = GetNPCell(hcell , VCELL_TOP);
+   int widths[3] = {left , width , bottom};
+   return Rectangle(r.X() , r.Y() , Height() , widths[hcell]);
+}
+
+
+
 /// WIDGETAREA
 
 
@@ -97,7 +113,7 @@ void WIDGETAREA::SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , uns
 
 void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
    BOXAREA* boxes[3] = {&margin , &border , &padding};
-   boxes[box] = b;
+   *(boxes[box]) = b;
 }
 
 
@@ -148,16 +164,16 @@ Rectangle WIDGETAREA::InnerArea() const {
 
 
 
-Rectangle WIDGETAREA::CellArea(CELL_TYPE type , CELL_AREA area) const {
+Rectangle WIDGETAREA::CellBox(BOX_TYPE box , CELL_AREA area) const {
    EAGLE_ASSERT(area != CELL_AREA_OUTSIDE);
-   return CellArea(type , (VCELL_AREA)((int)area/3) , (HCELL_AREA)((int)area%3));
+   return CellBox(box , (VCELL_AREA)((int)area/3) , (HCELL_AREA)((int)area%3));
 }
 
 
 
-Rectangle WIDGETAREA::CellArea(CELL_TYPE type , VCELL_AREA vcell , HCELL_AREA hcell) const {
+Rectangle WIDGETAREA::CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const {
    
-   int cellz = (int)type;
+   int cellz = (int)box;
 
    typedef Rectangle (WIDGETAREA::*AREAFUNC)() const;
    if ((vcell == VCELL_CENTER) && (hcell == HCELL_CENTER)) {
@@ -312,18 +328,18 @@ int WIDGETAREA::PaddingHeight() const {
 
 
 Rectangle WIDGETAREA::GetAreaRectangle(WAREA_TYPE atype) const {
-   static Rectangle (WIDGETAREA::*AREAFUNC)() const [4] = {
+   static Rectangle (WIDGETAREA::*AREAFUNC[4])() const = {
       &OuterArea,
       &BorderArea,
       &PaddingArea,
       &InnerArea
    };
-   return (this->*(AREAFUNC[atype])());
+   return (this->*AREAFUNC[atype])();
 }
 
 
 
-BOXAREA WIDGETAREA::GetBoxArea(BOX_TYPE btype) const {
+BOXAREA WIDGETAREA::GetAreaBox(BOX_TYPE btype) const {
    const BOXAREA * pbarea[3] = {
       &margin,
       &border,

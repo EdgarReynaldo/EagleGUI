@@ -22,8 +22,10 @@
 
 
 #include "Eagle/Color.hpp"
+#include "Eagle/StringWork.hpp"
+#include "Eagle/Exception.hpp"
 
-
+#include <cstring>
 
 bool pre_multiply_alpha = true;
 
@@ -34,15 +36,57 @@ void PreMultiplyAlpha(bool on) {
 
 
 EagleColor::EagleColor() :
-   r(0),g(0),b(0),a(0),
-   fr(0.0f),fg(0.0f),fb(0.0f),fa(0.0)
+      r(0),
+      g(0),
+      b(0),
+      a(0),
+      fr(0.0f),
+      fg(0.0f),
+      fb(0.0f),
+      fa(0.0)
 {}
 
 
 
+EagleColor::EagleColor(std::string colorstr) :
+      r(255),
+      g(0),
+      b(255),
+      a(255),
+      fr(1.0f),
+      fg(0.0f),
+      fb(1.0f),
+      fa(1.0f)
+{
+   const char* str = SkipWhiteSpace(colorstr.c_str());
+   if (strncmp(str , "RGBA " , 5) == 0) {
+      int r1,g1,b1,a1;
+      if (4 == sscanf(str , "RGBA %i,%i,%i,%i" , &r1 , &g1 , &b1 , &a1)) {
+         SetColor(r1,g1,b1,a1);
+      }
+   }
+   else if (strncmp(str , "FRGBA " , 6) == 0) {
+      float fr1,fg1,fb1,fa1;
+      if (4 == sscanf(str , "FRGBA %f,%f,%f,%f" , &fr1 , &fg1 , &fb1 , &fa1)) {
+         SetFloatColor(fr1,fg1,fb1,fa1);
+      }
+   }
+   else {
+      throw EagleException(StringPrintF("EagleColor(std::string) : Failed to parse EagleColor '%s'\n" , colorstr.c_str()));
+   }
+}
+
+
+
 EagleColor::EagleColor(int red , int green , int blue , int alpha) :
-   r(0),g(0),b(0),a(0),
-   fr(0.0f),fg(0.0f),fb(0.0f),fa(0.0)
+      r(0),
+      g(0),
+      b(0),
+      a(0),
+      fr(0.0f),
+      fg(0.0f),
+      fb(0.0f),
+      fa(0.0)
 {
    SetColor(red,green,blue,alpha);
 }
@@ -50,8 +94,14 @@ EagleColor::EagleColor(int red , int green , int blue , int alpha) :
 
 
 EagleColor::EagleColor(float red , float green , float blue , float alpha) :
-   r(0),g(0),b(0),a(0),
-   fr(0.0f),fg(0.0f),fb(0.0f),fa(0.0)
+      r(0),
+      g(0),
+      b(0),
+      a(0),
+      fr(0.0f),
+      fg(0.0f),
+      fb(0.0f),
+      fa(0.0)
 {
    SetFloatColor(red,green,blue,alpha);
 }

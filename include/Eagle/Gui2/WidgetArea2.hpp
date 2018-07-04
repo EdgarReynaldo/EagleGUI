@@ -97,8 +97,13 @@ public :
    NPAREA(Rectangle area , BOXAREA box);
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
 
+   Rectangle GetRow(VCELL_AREA vcell);
+   Rectangle GetColumn(HCELL_AREA hcell);
+   
+   inline int Width() {return left + width + right;}
+   inline int Height() {return top + height + bottom;}
+   inline Rectangle Area() {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
 };
-
 
 
 #define WIDGETAREA WidgetArea2
@@ -144,8 +149,8 @@ public :
 	Rectangle PaddingArea() const ;
 	Rectangle InnerArea()   const ;
 
-   Rectangle CellArea(CELL_TYPE type , CELL_AREA area) const;
-   Rectangle CellArea(CELL_TYPE type , VCELL_AREA vcell , HCELL_AREA hcell) const;
+   Rectangle CellBox(BOX_TYPE box , CELL_AREA area) const;
+   Rectangle CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const;
 
 	
 	

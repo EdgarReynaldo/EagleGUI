@@ -32,19 +32,19 @@
 
 
 bool IsKnownAttribute(const ATTRIBUTE& a) {
-   return KnownAttributes()->HasAttribute(a);
+   return ATTRIBUTEVALUEMAP::KnownAttributes()->HasAttribute(a);
 }
 
 
 
 void RegisterKnownAttribute(const ATTRIBUTE& a) {
-   KnownAttributes()->AddAttribute(a);
+   ATTRIBUTEVALUEMAP::KnownAttributes()->AddAttribute(a);
 }
 
 
 
 void RemoveKnownAttribute(const ATTRIBUTE& a) {
-   KnownAttributes()->RemoveAttribute(a);
+   ATTRIBUTEVALUEMAP::KnownAttributes()->RemoveAttribute(a);
 }
 
 
@@ -53,20 +53,20 @@ void RemoveKnownAttribute(const ATTRIBUTE& a) {
 
 
 
-bool ATTRIBUTESET::HasAttribute(const ATTRIBUTE& a) {
+bool ATTRIBUTEVALUEMAP::ATTRIBUTESET::HasAttribute(const ATTRIBUTE& a) {
    return attset.find(a) != attset.end();
 }
 
 
 
-void ATTRIBUTESET::AddAttribute(const ATTRIBUTE& a) {
+void ATTRIBUTEVALUEMAP::ATTRIBUTESET::AddAttribute(const ATTRIBUTE& a) {
    attset.insert(a);
 }
 
 
 
-void ATTRIBUTESET::RemoveAttribute(const ATTRIBUTE& a) {
-   if (AttributeInSet(a)) {
+void ATTRIBUTEVALUEMAP::ATTRIBUTESET::RemoveAttribute(const ATTRIBUTE& a) {
+   if (HasAttribute(a)) {
       attset.erase(attset.find(a));
    }
 }
@@ -84,7 +84,7 @@ ATTRIBUTEVALUEMAP* ATTRIBUTEVALUEMAP::GlobalAttributeMap() {
 
 
 
-ATTRIBUTESET* ATTRIBUTEVALUEMAP::KnownAttributes() {
+ATTRIBUTEVALUEMAP::ATTRIBUTESET* ATTRIBUTEVALUEMAP::KnownAttributes() {
    static ATTRIBUTESET aset;
    return &aset;
 }

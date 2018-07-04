@@ -32,6 +32,15 @@
 extern bool pre_multiply_alpha;
 void PreMultiplyAlpha(bool on);
 
+/**
+ *   EagleColor has a string constructor. The format is one of the following :
+ *   "RGBA %i,%i,%i,%i"
+ *   OR
+ *   "FRGBA %f,%f,%f,%f"
+*/
+
+
+
 class EagleColor {
    
 public :
@@ -39,6 +48,8 @@ public :
    float fr,fg,fb,fa;
 
    EagleColor();
+   EagleColor(std::string colorstr);
+
    EagleColor(int red , int green , int blue , int alpha = 255);
    EagleColor(float red , float green , float blue , float alpha = 1.0);
 

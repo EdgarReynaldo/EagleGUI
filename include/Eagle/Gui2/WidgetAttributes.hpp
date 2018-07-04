@@ -27,7 +27,7 @@
 
 #include <string>
 #include <map>
-
+#include <unordered_set>
 
 typedef std::string ATTRIBUTE;
 typedef std::string VALUE;
@@ -61,16 +61,16 @@ public :
    static ATTRIBUTEVALUEMAP* GlobalAttributeMap();
    static ATTRIBUTESET* KnownAttributes();
    
-   inline VALUE& operator[](ATTRIBUTE a);
-   inline bool HasAttribute(ATTRIBUTE a) const;
-   inline VALUE GetAttributeValue(ATTRIBUTE a);
-   inline void SetAttribute(ATTRIBUTE a);
-   inline void RemoveAttribute(ATTRIBUTE a);
+   inline VALUE& operator[](const ATTRIBUTE& a);
+   inline bool HasAttribute(const ATTRIBUTE& a) const;
+   inline VALUE GetAttributeValue(const ATTRIBUTE& a);
+   inline void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
+   inline void RemoveAttribute(const ATTRIBUTE& a);
 };
 
 
 
-inline VALUE& ATTRIBUTEVALUEMAP::operator[](ATTRIBUTE a) {
+inline VALUE& ATTRIBUTEVALUEMAP::operator[](const ATTRIBUTE& a) {
    return attributes[a];
 }
 
@@ -82,7 +82,7 @@ inline bool ATTRIBUTEVALUEMAP::HasAttribute(const ATTRIBUTE& a) const {
 
 
 
-inline VALUE ATTRIBUTEVALUEMAP::GetAttributeValue(ATTRIBUTE a) {
+inline VALUE ATTRIBUTEVALUEMAP::GetAttributeValue(const ATTRIBUTE& a) {
    return operator[](a);
 }
 

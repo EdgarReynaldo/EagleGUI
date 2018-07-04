@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Gui/WidgetFlags.hpp"
+#include "Eagle/Gui2/WidgetFlags.hpp"
 
 
 
@@ -46,7 +46,7 @@ WidgetFlags& WidgetFlags::SetNewFlags(WidgetFlags wflags) {
    changed_flags = flags ^ wflags.flags;
    added_flags = changed_flags & (~flags);/// Added flags equals flags that were off and were changed
    removed_flags = changed_flags & (flags);/// Removed flags equals flags that were on and were changed
-   flags = wflags;
+   flags = wflags.flags;
    return *this;
 }
 
@@ -86,7 +86,7 @@ WidgetFlags& WidgetFlags::RemoveFlags(unsigned int flags_to_remove) {
 
 
 
-void WidgetFlags::Reset() {1
+void WidgetFlags::Reset() {
    changed_flags = added_flags = removed_flags = FLAGS_NONE;
 }
 

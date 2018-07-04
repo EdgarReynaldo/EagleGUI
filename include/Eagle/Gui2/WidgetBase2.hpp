@@ -36,7 +36,7 @@
 #include "Eagle/Gui2/WidgetFlags.hpp"
 #include "Eagle/Gui2/WidgetAttributes.hpp"
 #include "Eagle/Gui2/WidgetContainer.hpp"
-
+#include "Eagle/Gui2/WidgetPainters.hpp"
 
 #define WIDGETBASE WidgetBase2
 
@@ -64,6 +64,7 @@ protected :
    
    /// Can be shared
    WidgetPainter wpainter;
+   std::shared_ptr<WidgetColorset> wcolors;
    
    /// Separate
    ATTRIBUTEVALUEMAP wattributes;
@@ -90,11 +91,13 @@ protected :
    virtual void OnAreaChanged();
    virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
    virtual void OnFlagChanged(WIDGET_FLAG f , bool on);
-
+   virtual void OnColorChanged();
+   
    /// Default change handlers
    void OnSelfAreaChange(WIDGETAREA new_widget_area);
    void OnSelfAttributeChange(ATTRIBUTE a , VALUE v);
    void OnSelfFlagChange(WidgetFlags new_widget_flags);
+   void OnSelfColorChange(std::shared_ptr<WidgetColorset> cset);
    
 public :
    
@@ -107,14 +110,20 @@ public :
    bool SetAttribute(ATTRIBUTE a , VALUE v);
    void SetWidgetArea(WIDGETAREA warea);
    void SetWidgetFlags(WidgetFlags flags);
-
+   void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset)
+   void SetWidgetColorset(const WidgetColorset& cset)
+   
    /// Getters
    bool HasAttribute(ATTRIBUTE a);
    bool InheritsAttribute(ATTRIBUTE a);
    VALUE GetAttributeValue(ATTRIBUTE a);
+   EagleColor GetColor(WIDGETCOLOR wc);
+   
    WIDGETAREA GetWidgetArea();
    WidgetFlags Flags();
-
+   std::shared_ptr<WidgetColorset> WidgetColors();
+   
+   
    virtual void SetRedrawFlag();
    void ClearRedrawFlag();
 };

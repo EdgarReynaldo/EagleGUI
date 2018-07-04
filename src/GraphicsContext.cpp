@@ -289,6 +289,21 @@ void EagleGraphicsContext::DrawFilledRoundedRectangle(Rectangle r , int rx , int
 
 
 
+void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c) {
+   EagleImage* target = GetDrawingTarget();
+   target->PushClippingRectangle(r);
+   Pos2I corners[4] = {
+      Pos2I(r.X()   , r.BRY()), 
+      Pos2I(r.BRX() , r.BRY()), 
+      Pos2I(r.BRX() , r.Y()  ),
+      Pos2I(r.X()   , r.Y()  ) 
+   };
+   win->DrawFilledEllipse(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height() , c);
+   target->PopClippingRectangle();
+}
+
+
+
 void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags) {
    if (halign == HALIGN_CENTER) {
       x -= img->W()/2.0f;

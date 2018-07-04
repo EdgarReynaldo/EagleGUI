@@ -35,7 +35,7 @@
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetDrawFuncs.hpp"
 #include "Eagle/Gui/WidgetMessage.hpp"
-#include "Eagle/Gui/WidgetFlags.hpp"
+#include "Eagle/Gui2/WidgetFlags.hpp"
 
 
 

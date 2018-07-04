@@ -25,6 +25,11 @@
 #define WidgetPainters_HPP
 
 
+#include "Eagle/Gui2/WidgetArea2.hpp"
+
+
+
+
 /// types of bg paint
 /// FILL, ROUNDEDFILL , IMAGE, CUSTOM
 
@@ -80,7 +85,7 @@ class WidgetPainterBasic : public WidgetPainterBase {
    
    
 protected :
-   
+/*   
 enum AREA_FILL_TYPE {
    AREA_EMPTY          = 0,
    AREA_SOLID          = 1,
@@ -91,10 +96,91 @@ enum AREA_FILL_TYPE {
    AREA_IMAGE_STRETCH  = 6,
    NUM_AREA_FILL_TYPES = 7
 };
+*/   
    
+   void PaintSolid(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
+   void PaintSolid(EagleGraphicsContext* win , const NPAREA& np , EagleColor c) {
+      win->DrawFilledRectangle(np.GetRow(VCELL_TOP) , c);
+      win->DrawFilledRectangle(np.GetRow(VCELL_BOTTOM) , c);
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_LEFT , VCELL_CENTER) , c);
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_RIGHT , VCELL_CENTER) , c);
+   }
+   void PaintRounded(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
+   void PaintRounded(EagleGraphicsContext* win , const NPAREA& np , EagleColor c) {
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_LEFT , VCELL_CENTER) , bgcol);
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_RIGHT , VCELL_CENTER) , bgcol);
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_CENTER , VCELL_TOP) , bgcol);
+      win->DrawFilledRectangle(np.GetNPCell(HCELL_CENTER , VCELL_BOTTOM) , bgcol);
+      win->DrawFilledQuarterEllipse(np.GetNPCell(HCELL_LEFT  , VCELL_TOP)    , QUADRANT_NW , bgcol);
+      win->DrawFilledQuarterEllipse(np.GetNPCell(HCELL_RIGHT , VCELL_TOP)    , QUADRANT_NE , bgcol); 
+      win->DrawFilledQuarterEllipse(np.GetNPCell(HCELL_RIGHT , VCELL_BOTTOM) , QUADRANT_SE , bgcol);
+      win->DrawFilledQuarterEllipse(np.GetNPCell(HCELL_LEFT  , VCELL_BOTTOM) , QUADRANT_SW , bgcol);
+   }
    void PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype);
    void PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype) {
+      if (filltype == AREA_EMPTY) {return;}
+      EagleColor bgcol = wb->GetColor("BGCOL");
+      EagleColor sdcol = wb->GetColor("BGCOL");
+      EagleColor hlcol = wb->GetColor("BGCOL");
       
+///      Rectangle topleft = np.GetNPCell(HCELL_LEFT , VCELL_TOP);
+///      Rectangle botright = np.GetNPCell(HCELL_RIGHT , VCELL_BOTTOM);
+      
+      switch (filltype) {
+      case AREA_SOLID :
+         PaintSolid(win , np , bgcol);
+         break;
+      case AREA_ROUNDED :
+         PaintRounded(win , np , bgcol);
+         break;
+      case AREA_RCONTRAST :
+         EagleColor temp = hlcol;
+         hlcol = bgcol;
+         bgcol = temp;
+      case AREA_CONTRAST :
+         {
+            NPAREA np1(np.Area() , BOXAREA(np.left/2 , np.right/2 , np.top/2 , np.bottom/2));
+            NPAREA np2(np1.GetCellBox(HCELL_CENTER , VCELL_CENTER) , 
+                       BOXAREA(np.left - np.left/2 , np.right - np.right/2 , np.top - np.top/2 , np.bottom - np.bottom/2))
+            PaintSolid(win , np1 , hlcol);
+            PaintSolid(win , np2 , sdcol);
+         }
+         break;
+      case AREA_IMAGE_CENTER :
+         {
+            VALUE bgimage = "";
+            if (!wb->InheritsAttribute("BackgroundImage") && wb->HasAttribute("BackgroundImage")) {
+               bgimage = wb->GetAttributeValue("BackgroundImage");
+            }
+            if (bgimage.length()) {
+               EagleImage* img = GetImageResource(bgimage);
+               Rectangle a = np.GetNPCell(HCELL_CENTER , VCELL_CENTER);
+               EagleImage* target = win->GetDrawingTarget();
+               target->PushClippingRectangle(a);
+               win->Draw(img , a.X() + (a.Width() - img->W())/2 , a.Y() + (a.Height() - img->H())/2);
+               target->PopClippingRectangle();
+            }
+         }
+         break;
+      case AREA_IMAGE_STRETCH :
+         {
+            VALUE bgimage = "";
+            if (!wb->InheritsAttribute("BackgroundImage") && wb->HasAttribute("BackgroundImage")) {
+               bgimage = wb->GetAttributeValue("BackgroundImage");
+            }
+            if (bgimage.length()) {
+               EagleImage* img = GetImageResource(bgimage);
+               Rectangle a = np.GetNPCell(HCELL_CENTER , VCELL_CENTER);
+               EagleImage* target = win->GetDrawingTarget();
+               target->PushClippingRectangle(a);
+               win->DrawStretchedRegion(img , Rectangle(0,0,img->W(),img->H()) , a , DRAW_NORMAL);
+               target->PopClippingRectangle();
+            }
+         }
+         break;
+      default :
+         break;
+      };
    }
    
    

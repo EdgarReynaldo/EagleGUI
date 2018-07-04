@@ -186,7 +186,6 @@
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetDrawFuncs.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
 		<Unit filename="include/Eagle/Image.hpp" />

@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -26,6 +26,45 @@
 #include "Eagle/StringWork.hpp"
 
 
+
+
+
+std::string WidgetColorName(WIDGETCOLOR wc) {
+   static const char* names[EAGLE_NUMCOLORS] = {
+      "SDCOL",
+      "BGCOL",
+      "MGCOL",
+      "FGCOL",
+      "HLCOL",
+      "TXTCOL",
+      "HVRCOL"
+   };
+   return names[wc];
+}
+
+
+
+WIDGETCOLOR WidgetColorFromName(std::string name) {
+   static const std::string names[EAGLE_NUMCOLORS] = {
+      "SDCOL",
+      "BGCOL",
+      "MGCOL",
+      "FGCOL",
+      "HLCOL",
+      "TXTCOL",
+      "HVRCOL"
+   };
+   for (int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {
+      if (name.compare(names[i]) == 0) {
+         return (WIDGETCOLOR)i;
+      }
+   }
+   throw EagleException(StringPrintF("Color '%s' is not a recognized WIDGETCOLOR.\n" , name));
+   return -1;
+}
+
+
+
 EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
    EagleColor(0   , 0   , 0   , 255),
    EagleColor(64  , 64  , 64  , 255),
@@ -35,8 +74,6 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
    EagleColor(255 , 255 , 255 , 255),
    EagleColor(255 , 255 , 255 , 255)
 };
-//
-
 
 
 
@@ -88,13 +125,13 @@ std::ostream& operator<<(std::ostream& os , const WidgetColorset& wc) {
 
 
 RegisteredColor::RegisteredColor(std::string name , float red , float green , float blue, float alpha) {
-   color_registry.RegisterColor(name , EagleColor(red,green,blue,alpha));
+   ColorRegistry::GlobalColorRegistry()->RegisterColor(name , EagleColor(red,green,blue,alpha));
 }
 
 
 
 RegisteredColor::RegisteredColor(std::string name , int red , int green , int blue, int alpha) {
-   color_registry.RegisterColor(name , EagleColor(red,green,blue,alpha));
+   ColorRegistry::GlobalColorRegistry()->RegisterColor(name , EagleColor(red,green,blue,alpha));
 }
    
 
@@ -103,7 +140,15 @@ RegisteredColor::RegisteredColor(std::string name , int red , int green , int bl
 
 
 
-ColorRegistry color_registry;
+ColorRegistry* ColorRegistry::GlobalColorRegistry() {
+   static ColorRegistry reg;
+   static int init = 1;
+   if (init) {
+      reg.RegisterColorset("Default" , WidgetColorset());
+      init = 0;
+   }
+   return &reg;
+}
 
 
 
@@ -159,7 +204,7 @@ bool ColorRegistry::HasColorset(std::string name) {
 
 
 
-WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) {
+std::shared_ptr<WidgetColorset> ColorRegistry::GetColorsetByName(std::string name) {
    std::map<std::string , WidgetColorset>::iterator it = named_colorsets.find(name);
    if (it == named_colorsets.end()) {
       throw EagleException(StringPrintF("WidgetColorset '%s' not found in color registry.\n" , name.c_str()));
@@ -170,7 +215,7 @@ WidgetColorset& ColorRegistry::GetColorsetByName(std::string name) {
 
 
 void ColorRegistry::RegisterColorset(std::string name , const WidgetColorset& wc) {
-   named_colorsets[name] = wc;
+   named_colorsets[name] = std::shared_ptr<WidgetColorset>(new WidgetColorset(wc));
 }
 
 
@@ -180,37 +225,37 @@ void ColorRegistry::RegisterColorset(std::string name , const WidgetColorset& wc
 
 
 bool HasColor(std::string name) {
-   return color_registry.HasColor(name);
+   return ColorRegistry::GlobalColorRegistry()->HasColor(name);
 }
 
 
 
 EagleColor GetColorByName(std::string name) {
-   return color_registry.GetColorByName(name);
+   return ColorRegistry::GlobalColorRegistry()->GetColorByName(name);
 }
 
 
 
 void RegisterColor(std::string name , const EagleColor& color) {
-   color_registry.RegisterColor(name , color);
+   ColorRegistry::GlobalColorRegistry()->RegisterColor(name , color);
 }
 
 
 
 bool HasColorset(std::string name) {
-   return color_registry.HasColorset(name);
+   return ColorRegistry::GlobalColorRegistry()->HasColorset(name);
 }
 
 
 
-WidgetColorset GetColorsetByName(std::string name) {
-   return color_registry.GetColorsetByName(name);
+std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name) {
+   return ColorRegistry::GlobalColorRegistry()->GetColorsetByName(name);
 }
 
 
 
 void RegisterColorset(std::string name , const WidgetColorset& wc) {
-   return color_registry.RegisterColorset(name , wc);
+   return ColorRegistry::GlobalColorRegistry()->RegisterColorset(name , wc);
 }
 
 

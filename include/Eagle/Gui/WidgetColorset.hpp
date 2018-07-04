@@ -64,6 +64,9 @@ enum WIDGETCOLOR {
 #define EAGLE_NUMCOLORS 7
 //*/
 
+std::string WidgetColorName(WIDGETCOLOR wc);
+WIDGETCOLOR WidgetColorFromName(std::string name);
+
 
 
 class WidgetColorset {
@@ -111,9 +114,13 @@ public :
 class ColorRegistry {
    
    std::map<std::string , EagleColor> named_colors;
-   std::map<std::string , WidgetColorset> named_colorsets;
+   std::map<std::string , std::shared_ptr<WidgetColorset> > named_colorsets;
    
 public :
+   
+   ColorRegistry() : named_colors() , named_colorsets() {}
+   
+   static ColorRegistry* GlobalColorRegistry();
    
    /// EagleColors
    bool HasColor(std::string name);
@@ -125,20 +132,18 @@ public :
    /// WidgetColorsets
    bool HasColorset(std::string name);
    
-   WidgetColorset& GetColorsetByName(std::string name);
+   std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name);
    
    void RegisterColorset(std::string name , const WidgetColorset& wc);
    
 };
-
-extern ColorRegistry color_registry;
 
 bool HasColor(std::string name);
 EagleColor GetColorByName(std::string name);
 void RegisterColor(std::string name , const EagleColor& color);
 
 bool HasColorset(std::string name);
-WidgetColorset GetColorsetByName(std::string name);
+std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name);
 void RegisterColorset(std::string name , const WidgetColorset& wc);
 
 
