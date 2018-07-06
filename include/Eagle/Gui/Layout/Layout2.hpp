@@ -52,8 +52,6 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
 
 class Layout : public WidgetBase {
 
-   friend class Decorator;
-
 protected :
    
    LAYOUT_ATTRIBUTES attributes;
@@ -62,9 +60,6 @@ protected :
    VALIGNMENT valign;
 
    std::vector<WidgetBase*> wchildren;
-
-   WidgetHandler* whandler;
-
 
 
    int WidgetIndex(WidgetBase* widget) const;

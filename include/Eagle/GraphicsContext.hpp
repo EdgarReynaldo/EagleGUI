@@ -285,7 +285,7 @@ public :
    virtual void DrawEllipse(int cx , int cy , int rx , int ry , int thickness , EagleColor c)=0;
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c)=0;
 
-   void         DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c)
+   void         DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c);
    
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c)=0;

@@ -26,11 +26,18 @@
 
 
 
+WidgetFlags::WidgetFlags() :
+      flags(FLAGS_NONE),
+      changed_flags(FLAGS_NONE),
+      added_flags(FLAGS_NONE),
+      removed_flags(FLAGS_NONE)
+{}
+
 WidgetFlags::WidgetFlags(int newflags) :
       flags(newflags),
-      changed_flags(0),
-      added_flags(0),
-      removed_flags(0)
+      changed_flags(newflags),
+      added_flags(newflags),
+      removed_flags(FLAGS_NONE)
 {}
 
 

@@ -220,8 +220,8 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       scrh(0),
       backbuffer(0),
       drawing_target(0),
-      images(true),
-      fonts(true),
+      images(),
+      fonts(),
       mp_manager(0),
       maxframes(60),
       numframes(0.0f),
@@ -298,7 +298,7 @@ void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR d
       Pos2I(r.BRX() , r.Y()  ),
       Pos2I(r.X()   , r.Y()  ) 
    };
-   win->DrawFilledEllipse(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height() , c);
+   DrawFilledQuarterEllipse(Rectangle(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height()) , dir , c);
    target->PopClippingRectangle();
 }
 
@@ -412,7 +412,7 @@ void EagleGraphicsContext::DrawToBackBuffer() {
 
 void EagleGraphicsContext::FreeImage(EagleImage* img) {
    if (img) {
-      images.Free(img);
+      images.Remove(img);
    }
 }
 
@@ -420,7 +420,7 @@ void EagleGraphicsContext::FreeImage(EagleImage* img) {
 
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
    if (font) {
-      fonts.Free(font);
+      fonts.Remove(font);
    }
 }
 

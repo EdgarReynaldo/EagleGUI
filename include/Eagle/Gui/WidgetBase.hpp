@@ -64,6 +64,7 @@ class WidgetDecorator;
 class WidgetBase : public EagleObject , public EagleEventSource {
 
 protected :
+   typedef unsigned int UINT;
    
    static bool clip_widgets;
    static bool display_widget_area;

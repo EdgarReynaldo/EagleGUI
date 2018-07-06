@@ -1,4 +1,22 @@
-
+/**
+ *
+ *     _______       ___       ____      __       _______       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_    \ \ \_____
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\    \ \_____ \
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_    \/ ____\ \
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\     /\______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/     \/______/
+ *
+ *
+ *    EAGLE 5
+ *    Edgar's Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2018+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ */
 
 
 
@@ -6,14 +24,34 @@
 #define Allegro5Resources_HPP
 
 
+
+#include "Eagle/Resources.hpp"
+
+
+
 class Allegro5ImageResource : public ImageResource {
 public :
+   /// Virtual methods
+   virtual bool LoadFromFile(FilePath fp)=0;
+   virtual bool LoadFromMemory(MemFile mf)=0;
+   virtual bool Loaded()=0;
+bool Allegro5ImageResource::Loaded() {
+   return (image);
+}
+   
 };
 
 
 
 class Allegro5FontResource : public FontResource {
 public :
+   /// Virtual methods
+   virtual bool LoadFromFile(FilePath fp)=0;
+   virtual bool LoadFromMemory(MemFile mf)=0;
+   virtual bool Loaded();
+bool Allegro5FontResource::Loaded() {
+   return (font);
+}
 };
 
 

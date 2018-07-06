@@ -20,33 +20,9 @@
  */
  
  
- #include "Eagle/Gui2/WidgetBase2.hpp"
- #include "Eagle/Gui2/WidgetHandler2.hpp"
- #include "Eagle/Timer.hpp"
-
-
-EAGLE_ID WIDGETCONTAINER::Register(SHAREDWIDGET sw) {
-   EAGLE_ID id = sw->GetEagleId();
-   cmap[id] = sw;
-   return id;
-}
-
-
-
-void WIDGETCONTAINER::Remove(EAGLE_ID id) {
-   CMIT it = cmap.find(id);
-   if (it != cmap.end()) {
-      cmap.erase(it);
-   }
-}
-
-
-
-void WIDGETCONTAINER::Clear() {
-   cmap.clear();
-}
-
-
+#include "Eagle/Gui2/WidgetBase2.hpp"
+#include "Eagle/Gui2/WidgetHandler2.hpp"
+#include "Eagle/Timer.hpp"
 
 
 
@@ -64,12 +40,13 @@ void WIDGETBASE::RaiseWidgetEvent(WidgetMsg wmsg) {
 
 int WIDGETBASE::PrivateHandleEvent(EagleEvent ee) {
    (void)ee;
+   return DIALOG_OKAY;
 }
 
 
 
 int WIDGETBASE::PrivateCheckInputs() {
-   return 0;
+   return DIALOG_OKAY;
 }
 
 
@@ -109,7 +86,7 @@ void WIDGETBASE::OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v) {
 
 
 
-void WIDGETBASE::OnFlagChanged(WIDGET_FLAG f , bool on) {
+void WIDGETBASE::OnFlagChanged(WIDGET_FLAGS f , bool on) {
    (void)f;
    (void)on;
 }
@@ -122,9 +99,9 @@ void WIDGETBASE::OnColorChanged() {
 
 
 
-void WIDGETBASE::OnSelfAreaChange(WIDGETAREA new_widget_area) {
+void WIDGETBASE::OnSelfAreaChanged(WIDGETAREA new_widget_area) {
    if (whandler) {
-      whandler->MakeAreaDirty(warea);
+      whandler->MakeAreaDirty(warea.OuterArea());
    }
    warea = new_widget_area;
    SetBgRedrawFlag();
@@ -133,35 +110,33 @@ void WIDGETBASE::OnSelfAreaChange(WIDGETAREA new_widget_area) {
 
 
 
-void WIDGETBASE::OnSelfAttributeChange(ATTRIBUTE a , VALUE v) {
+void WIDGETBASE::OnSelfAttributeChanged(ATTRIBUTE a , VALUE v) {
    wattributes[a] = v;
-   OnAttributeChange(a,v);
+   OnAttributeChanged(a,v);
 }
 
 
 
-void WIDGETBASE::OnSelfFlagChange(WidgetFlags new_widget_flags) {
+void WIDGETBASE::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    unsigned int diff = FlagDiff(wflags , new_widget_flags);
    if (diff & (VISIBLE | HOVER | HASFOCUS)) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
-      
    }
    wflags.SetNewFlags(new_widget_flags);
-   unsigned int cflags = wflags.ChangedFlags()
-      for (unsigned int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
-         /// If a flag changes, call its setter
-         unsigned int flag = 1 << i;
-         bool change = cflags & flag;
-         if (change) {
-            OnFlagChanged(flag , wflags.FlagOn(flag));
-         }
+   unsigned int cflags = wflags.ChangedFlags();
+   for (unsigned int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
+      /// If a flag changes, call its setter
+      unsigned int flag = 1 << i;
+      bool change = cflags & flag;
+      if (change) {
+         OnFlagChanged((WIDGET_FLAGS)flag , wflags.FlagOn((WIDGET_FLAGS)flag));
       }
    }
 }
 
 
 
-void WIDGETBASE::OnSelfColorChange(std::shared_ptr<WidgetColorset> cset) {
+void WIDGETBASE::OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset) {
    wcolors = cset;
    OnColorChanged();
 }
@@ -184,32 +159,33 @@ void WIDGETBASE::Update(double dt) {
 
 
 void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (wpainter) {
-      wpainter->PaintBackground(win , this);
+   WidgetPainterBase* wp = wpainter.Painter();
+   if (wp) {
+      wp->PaintWidgetBackground(win , this);
    }
    PrivateDisplay(win , xpos , ypos);
-   if (wpainter && wflags.FlagSet(HASFOCUS)) {
-      wpainter->PaintFocus(win , this);
+   if (wp && wflags.FlagOn(HASFOCUS)) {
+      wp->PaintWidgetFocus(win , this);
    }
    ClearRedrawFlag();
 }
 
 
 
-bool WIDGETBASE::SetAttribute(ATTRIBUTE a , VALUE v) {
-   OnSelfAttributeChange(a,v);
+void WIDGETBASE::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
+   OnSelfAttributeChanged(a,v);
 }
 
 
    
-void WIDGETBASE::SetWidgetArea(WIDGETAREA warea) {
-   OnSelfAreaChange(warea);
+void WIDGETBASE::SetWidgetArea(WIDGETAREA area) {
+   OnSelfAreaChanged(area);
 }
 
 
 
 void WIDGETBASE::SetWidgetFlags(WidgetFlags flags) {
-   OnSelfFlagChange(flags);
+   OnSelfFlagChanged(flags);
 }
 
 
@@ -221,23 +197,36 @@ void WIDGETBASE::SetWidgetColorset(std::shared_ptr<WidgetColorset> cset) {
 
 
 void WIDGETBASE::SetWidgetColorset(const WidgetColorset& cset) {
-   SetWidgetColorset(std::shared_ptr(new WidgetColorset(cset)));
+   SetWidgetColorset(std::shared_ptr<WidgetColorset>(new WidgetColorset(cset)));
 }
 
 
 
-bool WIDGETBASE::HasAttribute(ATTRIBUTE a) {
-   return wattributes.find(a) != wattributes.end();
+void WIDGETBASE::SetWidgetPainter(const WidgetPainter& wp) {
+   wpainter = wp;
+   SetBgRedrawFlag();
 }
 
 
 
-bool WIDGETBASE::InheritsAttribute(ATTRIBUTE a) {
+void WIDGETBASE::UnsetWidgetPainter() {
+   wpainter.Reset();
+}
+
+
+
+bool WIDGETBASE::HasAttribute(const ATTRIBUTE& a) const {
+   return wattributes.HasAttribute(a);
+}
+
+
+
+bool WIDGETBASE::InheritsAttribute(const ATTRIBUTE& a) const {
    if (HasAttribute(a)) {return false;}
    WIDGETBASE* w = wparent;
    while (w) {
       if (w->HasAttribute(a)) {return true;}
-      w = w->Parent();
+      w = w->wparent;
    }
    if (wlayout && wlayout->HasAttribute(a)) {return true;}
    if (whandler && whandler->HasAttribute(a)) {return true;}
@@ -247,7 +236,21 @@ bool WIDGETBASE::InheritsAttribute(ATTRIBUTE a) {
 
 
 
-VALUE WIDGETBASE::GetAttributeValue(ATTRIBUTE a) {
+bool WIDGETBASE::AttributeIsSet(const ATTRIBUTE& a) const {
+   return HasAttribute(a) || InheritsAttribute(a);
+}
+
+
+
+void WIDGETBASE::RemoveAttribute(const ATTRIBUTE& a) {
+   if (HasAttribute(a)) {
+      wattributes.RemoveAttribute(a);
+   }
+}
+
+
+
+VALUE WIDGETBASE::GetAttributeValue(const ATTRIBUTE& a) const {
    if (HasAttribute(a)) {
       return wattributes[a];
    }
@@ -281,6 +284,8 @@ EagleColor WIDGETBASE::GetColor(WIDGETCOLOR wc) {
    if (cset) {
       return (*cset)[wc];
    }
+   std::shared_ptr<WidgetColorset> cset2 = ColorRegistry::GlobalColorRegistry()->GetDefaultColorset();
+   return (*cset2)[wc];
 }
 
 
@@ -316,8 +321,14 @@ void WIDGETBASE::SetRedrawFlag() {
 
 
 
+void WIDGETBASE::SetBgRedrawFlag() {
+   wflags.AddFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW);
+}
+
+
+
 void WIDGETBASE::ClearRedrawFlag() {
-   wflags.RemoveFlag(NEEDS_REDRAW);
+   wflags.RemoveFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW);
 }
 
 

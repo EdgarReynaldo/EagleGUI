@@ -36,10 +36,17 @@ EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclas
       image_source(ALLOCATED),
       source(),
       parent(0),
-      children(false),
+      children(),
       clip_rects()
 {
    
+}
+
+
+
+EagleImage::~EagleImage() {
+   (void)0;
+///   children.RemoveAll();
 }
 
 

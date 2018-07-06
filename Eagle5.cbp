@@ -242,6 +242,7 @@
 		<Unit filename="src/Gui2/WidgetArea2.cpp" />
 		<Unit filename="src/Gui2/WidgetAttributes.cpp" />
 		<Unit filename="src/Gui2/WidgetBase2.cpp" />
+		<Unit filename="src/Gui2/WidgetContainer.cpp" />
 		<Unit filename="src/Gui2/WidgetFlags.cpp" />
 		<Unit filename="src/Gui2/WidgetHandler2.cpp" />
 		<Unit filename="src/Gui2/WidgetPainters.cpp" />

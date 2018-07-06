@@ -39,6 +39,10 @@
 #define WIDGETCONTAINER WidgetContainer
 
 
+#define WIDGETBASE WidgetBase2
+
+
+
 class WIDGETBASE;
 
 
@@ -59,7 +63,7 @@ public :
    void Remove(EAGLE_ID id);
    void Clear();
 
-   SHAREDWIDGET FindById(EAGLE_ID id) {return cmap[id];}
+   SHAREDWIDGET FindById(EAGLE_ID id);
    
    SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}
 };

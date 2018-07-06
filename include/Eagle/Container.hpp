@@ -44,119 +44,90 @@ void RemoveUniqueFromList(ListType& list , Type obj_to_remove) {
 template <class Type>
 class PointerManager {
 
+protected :
+   typedef std::shared_ptr<Type> PTYPE;
+   typedef std::vector<PTYPE> PTRLIST;
+   typedef typename PTRLIST::iterator PLIT;
+
 private :
-   std::vector<Type*> ptrs;
-   bool free_mem;
+   PTRLIST ptrs;
    
-   bool OnList(Type* mem);
+   PLIT GetListIterator(Type* ptype);
 
 public :
-   PointerManager(bool free_memory) : ptrs() , free_mem(free_memory) {}
-   
+   PointerManager();
    ~PointerManager();
-   
-   Type* Add(Type* p);
-   
-   void Free(Type* p);// 
-                        // Be careful with sub bitmap order
-   void FreeAll();// Frees in reverse order, so safe for sub bitmaps. 
-                  // Don't be retarded and create bitmaps in one pointer manager
-                  // and sub btmaps in another and then free the parents first :P
 
-   void Remove(Type* p);// simply removes from list, does not delete pointer
-   void RemoveAll();
-
-
-   Type*& operator[](unsigned int index) {return ptrs[index];}
-   unsigned int size() {return ptrs.size();}
-
-   
-   const std::vector<Type*>& Ptrs() {return ptrs;}
+   PTYPE Add(PTYPE sp);
+   void Remove(Type* sp);
+   void RemoveAll();   
 };
 
 
 
 template <class Type>
-bool PointerManager<Type>::OnList(Type* mem) {
-   for (unsigned int i = 0 ; i < ptrs.size() ; ++i) {
-      if (ptrs[i] == mem) {return true;}
+typename PointerManager<Type>::PLIT PointerManager<Type>::GetListIterator(Type* ptype) {
+   int i = 0;
+   PLIT it = ptrs.begin();
+   while (i < (int)ptrs.size()) {
+      Type* p = ptrs[i].get();
+      if (p == ptype) {
+         break;
+      }
+      ++it;
+      ++i;
    }
-   return false;
+   return it;
 }
 
 
 
+template <class Type>
+PointerManager<Type>::PointerManager() : ptrs() {}
+
+
+   
 template <class Type>
 PointerManager<Type>::~PointerManager() {
-   if (free_mem) {
-      FreeAll();
-   }
-   else {
-      RemoveAll();
-   }
+   RemoveAll();
 }
 
 
-
+   
 template <class Type>
-Type* PointerManager<Type>::Add(Type* new_mem) {
-   if (!new_mem) {return (Type*)0;}
-   if (!OnList(new_mem)) {
-      ptrs.push_back(new_mem);
-   }
-   return new_mem;
-}
-
-
-
-template <class Type>
-void PointerManager<Type>::Free(Type* p) {
-   if (OnList(p)) {
-      for (typename std::vector<Type*>::iterator it = ptrs.begin() ; it != ptrs.end() ; ++it) {
-         if (*it == p) {
-            delete p;
-            ptrs.erase(it);
-            return;
-         }
-      }
+typename PointerManager<Type>::PTYPE PointerManager<Type>::Add(PTYPE sp) {
+   Type* p = sp.get();
+   PLIT it = GetListIterator(p);
+   if (it != ptrs.end()) {
+      ptrs.push_back(sp);
    }
 }
-
-
-
-template <class Type>
-void PointerManager<Type>::FreeAll() {
-   for (int i = (int)ptrs.size() - 1 ; i >= 0 ; --i) {
-      Type* t = ptrs[i];
-      delete t;
-   }
-   ptrs.clear();
-
-}
-
+   
 
 
 template <class Type>
-void PointerManager<Type>::Remove(Type* p) {
-   if (OnList(p)) {
-      for (typename std::vector<Type*>::iterator it = ptrs.begin() ; it != ptrs.end() ; ++it) {
-         if (*it == p) {
-            ptrs.erase(it);
-            return;
-         }
-      }
-   }
+void PointerManager<Type>::Remove(Type* sp) {
+   PLIT it = GetListIterator(sp);
+   if (it != ptrs.end()) {ptrs.erase(it);}
 }
 
 
 
 template <class Type>
 void PointerManager<Type>::RemoveAll() {
-   ptrs.clear();
+   /// Need to free the elements in the reverse order they were created
+   while (!ptrs.empty()) {
+      ptrs.pop_back();
+   }
 }
 
 
 
 #endif // EagleContainer_HPP
+
+
+
+
+
 
 

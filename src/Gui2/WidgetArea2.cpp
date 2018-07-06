@@ -84,7 +84,7 @@ Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
 
 
 
-Rectangle NPAREA::GetRow(VCELL_AREA vcell) {
+Rectangle NPAREA::GetRow(VCELL_AREA vcell) const {
    Rectangle r = GetNPCell(HCELL_LEFT , vcell);
    int heights[3] = {top , height , bottom};
    return Rectangle(r.X() , r.Y() , Width() , heights[vcell]);
@@ -92,7 +92,7 @@ Rectangle NPAREA::GetRow(VCELL_AREA vcell) {
 
 
 
-Rectangle NPAREA::GetColumn(HCELL_AREA hcell) {
+Rectangle NPAREA::GetColumn(HCELL_AREA hcell) const {
    Rectangle r = GetNPCell(hcell , VCELL_TOP);
    int widths[3] = {left , width , bottom};
    return Rectangle(r.X() , r.Y() , Height() , widths[hcell]);

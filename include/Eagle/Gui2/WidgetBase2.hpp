@@ -37,8 +37,8 @@
 #include "Eagle/Gui2/WidgetAttributes.hpp"
 #include "Eagle/Gui2/WidgetContainer.hpp"
 #include "Eagle/Gui2/WidgetPainters.hpp"
-
-#define WIDGETBASE WidgetBase2
+#include "Eagle/Gui/WidgetColorset.hpp"
+#include "Eagle/Gui2/WidgetContainer.hpp"
 
 
 
@@ -57,6 +57,11 @@ protected :
    /// For sub widgets
    WIDGETCONTAINER widgets;
    
+   /// Separate
+   WIDGETAREA warea;
+   WidgetFlags wflags;
+   ATTRIBUTEVALUEMAP wattributes;
+
    /// References only
    WIDGETBASE* wparent;
    LAYOUTBASE* wlayout;
@@ -66,14 +71,7 @@ protected :
    WidgetPainter wpainter;
    std::shared_ptr<WidgetColorset> wcolors;
    
-   /// Separate
-   ATTRIBUTEVALUEMAP wattributes;
    
-   WIDGETAREA warea;
-   
-   WidgetFlags wflags;
-   
-
 
    /// WidgetEventSource
    void RaiseWidgetEvent(WidgetMsg msg);
@@ -90,41 +88,72 @@ protected :
    /// Callbacks, overload if you need to
    virtual void OnAreaChanged();
    virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
-   virtual void OnFlagChanged(WIDGET_FLAG f , bool on);
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
    virtual void OnColorChanged();
    
    /// Default change handlers
-   void OnSelfAreaChange(WIDGETAREA new_widget_area);
-   void OnSelfAttributeChange(ATTRIBUTE a , VALUE v);
-   void OnSelfFlagChange(WidgetFlags new_widget_flags);
-   void OnSelfColorChange(std::shared_ptr<WidgetColorset> cset);
+   void OnSelfAreaChanged(WIDGETAREA new_widget_area);
+   void OnSelfAttributeChanged(ATTRIBUTE a , VALUE v);
+   void OnSelfFlagChanged(WidgetFlags new_widget_flags);
+   void OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset);
    
 public :
    
+///   WIDGETBASE();
+WIDGETBASE() :
+      EagleObject("WIDGETBASE"),
+      EagleEventSource(),
+      widgets(),
+      warea(),
+      wflags(),
+      wattributes(),
+      wparent(0),
+      wlayout(0),
+      whandler(0),
+      wpainter(),
+      wcolors(0)
+{}
+   
+   
    /// Main interface
+
    int HandleEvent(EagleEvent ee);
    void Update(double dt);
    void Display(EagleGraphicsContext* win , int xpos , int ypos);
    
    /// Setters
-   bool SetAttribute(ATTRIBUTE a , VALUE v);
-   void SetWidgetArea(WIDGETAREA warea);
+
+   void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
+   void RemoveAttribute(const ATTRIBUTE& a);
+
+   void SetWidgetArea(WIDGETAREA area);
    void SetWidgetFlags(WidgetFlags flags);
-   void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset)
-   void SetWidgetColorset(const WidgetColorset& cset)
+   void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset);
+   void SetWidgetColorset(const WidgetColorset& cset);
+   void SetWidgetPainter(const WidgetPainter& wp);
+   void UnsetWidgetPainter();
    
    /// Getters
-   bool HasAttribute(ATTRIBUTE a);
-   bool InheritsAttribute(ATTRIBUTE a);
-   VALUE GetAttributeValue(ATTRIBUTE a);
+
+   bool HasAttribute(const ATTRIBUTE& a) const;
+   bool InheritsAttribute(const ATTRIBUTE& a) const;
+   bool AttributeIsSet(const ATTRIBUTE& a) const;
+
+
+   VALUE GetAttributeValue(const ATTRIBUTE& a) const;
+
+   WIDGETAREA GetWidgetArea();
+
+   WidgetFlags Flags();
+
    EagleColor GetColor(WIDGETCOLOR wc);
    
-   WIDGETAREA GetWidgetArea();
-   WidgetFlags Flags();
    std::shared_ptr<WidgetColorset> WidgetColors();
    
    
    virtual void SetRedrawFlag();
+   void SetBgRedrawFlag();
+
    void ClearRedrawFlag();
 };
 

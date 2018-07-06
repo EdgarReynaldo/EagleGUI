@@ -31,36 +31,30 @@ RESOURCEID NextRid() {
 }
 
 
-/// ---------------------      ResourceBase     ------------------------
-
-
-
-ResourceBase::ResourceBase(const ResourceBase& r) :
-   rid((RESOURCEID)-1),
-   rtype(RT_UNKNOWN),
-   pres(0)
-{
-   (void)r;
-}
-
-
-
-ResourceBase& ResourceBase::operator=(const ResourceBase& r) {
-   (void)r;
-   EagleError() << "Tried to assign ResourceBase object." << std::endl;
-   return *this;
-}
-
-
-ResourceBase::ResourceBase(RESOURCE_TYPE rt) :
-   rid(NextRid()),
-   rtype(rt),
-   pres(0)
-{}
-
-
 
 /// ---------------------      ResourceLibrary     ------------------------
+
+
+
+ResourceLibrary::~ResourceLibrary() {
+   FreeResources();
+   typemap.clear();
+}
+
+
+
+void ResourceLibrary::FreeResources() {
+   resmap.clear();
+}
+
+
+
+std::set<std::string> ResourceLibrary::GetSupportedTypes(RESOURCE_TYPE rt) {
+   if (typemap.find(rt)) {
+      return typemap[rt];
+   }
+   return std::set<std::string>();
+}
 
 
 
@@ -73,4 +67,17 @@ RESOURCE_TYPE ResourceLibrary::DeduceResourceType(std::string ext) {
    }
    return RT_UNKNOWN;
 }
+
+
+
+std::shared_ptr<ResourceBase> ResourceLibrary::GetResource(RESOURCEID rid) {
+   if (resmap.find(rid)) {
+      return resmap[rid];
+   }
+   return 0;
+}
+
+
+
+
 

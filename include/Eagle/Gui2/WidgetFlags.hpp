@@ -66,7 +66,7 @@ typedef unsigned int UINT;
    UINT removed_flags;
 
 public :
-   
+   WidgetFlags();
    WidgetFlags(int newflags);
    
    WidgetFlags& operator=(WidgetFlags wflags);

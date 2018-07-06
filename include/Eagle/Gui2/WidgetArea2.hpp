@@ -97,12 +97,12 @@ public :
    NPAREA(Rectangle area , BOXAREA box);
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
 
-   Rectangle GetRow(VCELL_AREA vcell);
-   Rectangle GetColumn(HCELL_AREA hcell);
+   Rectangle GetRow(VCELL_AREA vcell) const;
+   Rectangle GetColumn(HCELL_AREA hcell) const;
    
-   inline int Width() {return left + width + right;}
-   inline int Height() {return top + height + bottom;}
-   inline Rectangle Area() {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
+   inline int Width() const {return left + width + right;}
+   inline int Height() const {return top + height + bottom;}
+   inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
 };
 
 
