@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,7 +25,7 @@
 #define EagleGuiLayout_HPP
 
 
-#include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui2/WidgetBase2.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 #include "Eagle/Gui/Alignment.hpp"
 
@@ -59,7 +59,7 @@ protected :
    HALIGNMENT halign;
    VALIGNMENT valign;
 
-   std::vector<WidgetBase*> wchildren;
+   std::vector<std::shared_ptr<WIDGETBASE> > wchildren;
 
 
    int WidgetIndex(WidgetBase* widget) const;
@@ -87,15 +87,6 @@ public :
    virtual int PrivateHandleInputEvent(EagleEvent e);
    virtual int PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y);
-
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-
-	/// Changes position and outer area!!!
-	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
-
-	/// Make room in outer area for inner area first!!!
-	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
-
 
    virtual bool AcceptsFocus() {return false;}
 
@@ -133,24 +124,14 @@ public :
 
    virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 
-protected :
-   friend class WidgetHandler;
    
-   void SetGuiHandler(WidgetHandler* handler);// for WidgetHandlers only
-
-public :   
-
+   
    virtual void SetWChildren(std::vector<WidgetBase*> new_children);
 
    // Getters
    std::vector<WidgetBase*> WChildren() const ;
    std::vector<WidgetBase*> Descendants() const ;
    
-   Layout* RootLayout();
-   const Layout* RootLayout() const ;
-   bool IsRootLayout() const ;
-   WidgetHandler* WHandler() const ;
-
    int GetLayoutSize() const ;
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
@@ -158,14 +139,12 @@ public :
 
 
 
-/** *************************** LAYOUTS *************************** */
-
-
-
-// dumb , grid , table , vsplitter , hsplitter , flow , border?
-
-
-
 
 #endif // EagleGuiLayout_HPP
+
+
+
+
+
+
 

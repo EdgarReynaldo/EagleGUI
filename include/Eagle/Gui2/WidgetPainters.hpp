@@ -117,4 +117,6 @@ public :
    WidgetPainterBase* Painter() {return wpainter.get();}
 };
 
+
+
 #endif // WidgetPainters_HPP

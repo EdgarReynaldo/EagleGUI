@@ -122,6 +122,9 @@ void WIDGETBASE::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    if (diff & (VISIBLE | HOVER | HASFOCUS)) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
    }
+   if (new_widget_flags.FlagOn(NEEDS_BG_REDRAW)) {
+      new_widget_flags.AddFlag(NEEDS_REDRAW);
+   }
    wflags.SetNewFlags(new_widget_flags);
    unsigned int cflags = wflags.ChangedFlags();
    for (unsigned int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
@@ -159,7 +162,7 @@ void WIDGETBASE::Update(double dt) {
 
 
 void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   WidgetPainterBase* wp = wpainter.Painter();
+   WidgetPainter wp = GetWidgetPainter();
    if (wp) {
       wp->PaintWidgetBackground(win , this);
    }
@@ -316,19 +319,19 @@ std::shared_ptr<WidgetColorset> WIDGETBASE::WidgetColors() {
 
 
 void WIDGETBASE::SetRedrawFlag() {
-   wflags.AddFlag(NEEDS_REDRAW);
+   SetWidgetFlags(Flags().AddFlags(NEEDS_REDRAW));
 }
 
 
 
 void WIDGETBASE::SetBgRedrawFlag() {
-   wflags.AddFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW);
+   SetWidgetFlags(Flags().AddFlags(NEEDS_BG_REDRAW));
 }
 
 
 
 void WIDGETBASE::ClearRedrawFlag() {
-   wflags.RemoveFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW);
+   SetWidgetFlags(Flags().RemoveFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW));
 }
 
 

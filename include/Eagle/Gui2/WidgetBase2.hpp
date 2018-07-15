@@ -97,6 +97,7 @@ protected :
    void OnSelfFlagChanged(WidgetFlags new_widget_flags);
    void OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset);
    
+   
 public :
    
 ///   WIDGETBASE();
@@ -149,6 +150,23 @@ WIDGETBASE() :
    EagleColor GetColor(WIDGETCOLOR wc);
    
    std::shared_ptr<WidgetColorset> WidgetColors();
+   
+   WidgetPainter GetWidgetPainter();
+   WidgetPainter GetWidgetPainter() {
+      if (wpainter) {
+         return wpainter;
+      }
+      if (wparent && wparent->GetWidgetPainter()) {
+         return wparent->GetWidgetPainter();
+      }
+      if (wlayout && wlayout->GetWidgetPainter()) {
+         return wlayout->GetWidgetPainter();
+      }
+      if (whandler && whandler->GetWidgetPainter()) {
+         return whandler->GetWidgetPainter();
+      }
+      
+   }
    
    
    virtual void SetRedrawFlag();
