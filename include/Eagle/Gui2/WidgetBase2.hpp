@@ -114,7 +114,7 @@ WIDGETBASE() :
       wpainter(),
       wcolors(0)
 {}
-   
+   virtual ~WIDGETBASE();
    
    /// Main interface
 
@@ -127,10 +127,11 @@ WIDGETBASE() :
    void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    void RemoveAttribute(const ATTRIBUTE& a);
 
-   void SetWidgetArea(WIDGETAREA area);
+   void SetWidgetArea(WIDGETAREA area , bool notify_layout = true);
    void SetWidgetFlags(WidgetFlags flags);
    void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset);
    void SetWidgetColorset(const WidgetColorset& cset);
+   void UnsetWidgetColorset();
    void SetWidgetPainter(const WidgetPainter& wp);
    void UnsetWidgetPainter();
    
@@ -152,33 +153,33 @@ WIDGETBASE() :
    std::shared_ptr<WidgetColorset> WidgetColors();
    
    WidgetPainter GetWidgetPainter();
-   WidgetPainter GetWidgetPainter() {
-      if (wpainter) {
-         return wpainter;
-      }
-      if (wparent && wparent->GetWidgetPainter()) {
-         return wparent->GetWidgetPainter();
-      }
-      if (wlayout && wlayout->GetWidgetPainter()) {
-         return wlayout->GetWidgetPainter();
-      }
-      if (whandler && whandler->GetWidgetPainter()) {
-         return whandler->GetWidgetPainter();
-      }
-      
-   }
    
+   
+   virtual bool AcceptsFocus() {return true;}
    
    virtual void SetRedrawFlag();
    void SetBgRedrawFlag();
 
    void ClearRedrawFlag();
+   
+   void SetLayoutOwner(LAYOUTBASE* l);
+   void SetWidgetHandler(WidgetHandler2* wh);
+   
+   virtual int AbsMinWidth();
+   virtual int AbsMinHeight();
+   
 };
 
 
 
 
+
+
+
 #endif // WidgetBaseNew_HPP
+
+
+
 
 
 

@@ -8,6 +8,31 @@
 
 
 
+
+SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget) {
+   return SHAREDWIDGET(stack_widget , false);
+}
+
+
+
+SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget) {
+   return SHAREDWIDGET(&stack_widget , false);
+}
+
+
+
+WIDGETCONTAINER::WIDGETCONTAINER() :
+   cmap()
+{}
+
+
+
+WIDGETCONTAINER::~WIDGETCONTAINER() {
+   cmap.clear();
+}
+
+
+
 EAGLE_ID WIDGETCONTAINER::Register(SHAREDWIDGET sw) {
    EAGLE_ID id = sw->GetEagleId();
    cmap[id] = sw;
@@ -37,8 +62,6 @@ WIDGETCONTAINER::SHAREDWIDGET WIDGETCONTAINER::FindById(EAGLE_ID id) {
    }
    return SHAREDWIDGET();
 }
-
-
 
 
 

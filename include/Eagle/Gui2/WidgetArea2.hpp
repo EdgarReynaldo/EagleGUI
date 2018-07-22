@@ -119,6 +119,8 @@ protected :
    int inner_width;
    int inner_height;
 
+   void SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void SetBoxArea(BOX_TYPE box , BOXAREA b);
 
 public :
 
@@ -133,11 +135,22 @@ public :
    {}
 
    
+   WIDGETAREA& operator=(const WIDGETAREA& wa);
+   
+
    /// Setters
    
-   void SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
-   void SetBoxArea(BOX_TYPE box , BOXAREA b);
-   
+   void SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
+
+   void SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
+
+	void SetOuterArea(Rectangle oa);
+	void SetInnerArea(Rectangle ia);
+
+   void SetWidgetArea(const WIDGETAREA& wa);
+
    /// Getters
    
    NPAREA OuterNP() const;
@@ -173,7 +186,6 @@ public :
 
 	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;
    BOXAREA GetAreaBox(BOX_TYPE btype) const;
-	
 	
 	
 	

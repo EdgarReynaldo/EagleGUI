@@ -28,6 +28,10 @@
 
 
 
+WidgetPainter default_widget_painter(new WidgetPainterBasic());
+
+
+
 /// ---------------      WidgetPainterBase     ----------------------
 
 

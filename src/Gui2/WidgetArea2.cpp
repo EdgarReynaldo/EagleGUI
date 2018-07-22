@@ -118,6 +118,78 @@ void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
 
 
 
+/// Setters
+
+
+
+WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
+   SetWidgetArea(wa);
+   return *this;
+}
+
+
+
+void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   SetBoxArea(box , l , r , t , b);
+   SetOuterArea(OuterArea());
+}
+
+
+
+void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b) {
+   SetBoxArea(box , b);
+   SetOuterArea(OuterArea());
+}
+
+
+
+void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   SetBoxArea(box , l , r , t , b);
+   SetInnerArea(InnerArea());
+}
+
+
+
+void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b) {
+   SetBoxArea(box , b);
+   SetInnerArea(InnerArea());
+}
+
+
+
+void WIDGETAREA::SetOuterArea(Rectangle oa) {
+   pos.X() = oa.X();
+   pos.Y() = oa.Y();
+   int iw = oa.Width() - (OuterAreaWidth() - inner_width);
+   if (iw < 0) {iw = 0;}
+   int ih = oa.Height() - (OuterAreaHeight() - inner_height);
+   if (ih < 0) {ih = 0;}
+   inner_width = iw;
+   inner_height = ih;
+}
+
+
+
+void WIDGETAREA::SetInnerArea(Rectangle ia) {
+   inner_width = ia.Width();
+   inner_height = ia.Height();
+   pos.X() = ia.X() - (margin.left + border.left + padding.left);
+   pos.Y() = ia.Y() - (margin.top + border.top + padding.top);
+}
+
+
+
+void WIDGETAREA::SetWidgetArea(const WIDGETAREA& wa) {
+   pos = wa.pos;
+   margin = wa.margin;
+   border = wa.border;
+   padding = wa.padding;
+   inner_width = wa.inner_width;
+   inner_height = wa.inner_height;
+}
+
+
+
 /// Getters
 
 

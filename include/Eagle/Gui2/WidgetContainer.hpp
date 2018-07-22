@@ -46,10 +46,32 @@
 class WIDGETBASE;
 
 
+struct WIDGET_DELETER { 
+   bool deleteme;
+   WIDGET_DELETER() : deleteme(true) {}
+   WIDGET_DELETER(bool destroy_when_done) : deleteme(destroy_when_done) {}
+   
+   void operator()(WIDGETBASE* w) const {
+      (void)w;
+      if (deleteme) {
+         delete w;
+      }
+      return;
+   }
+};
+
+
+typedef std::shared_ptr<WIDGETBASE , WIDGET_DELETER> SHAREDWIDGET;
+
+
+
+SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget);
+SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget);
+
+
 
 class WIDGETCONTAINER {
 public :
-   typedef std::shared_ptr<WIDGETBASE> SHAREDWIDGET;
    typedef std::map<EAGLE_ID , SHAREDWIDGET > COMPONENT_MAP;
    typedef COMPONENT_MAP::iterator CMIT;
 protected :
@@ -58,6 +80,8 @@ protected :
    
 public :   
    
+   WIDGETCONTAINER();
+   ~WIDGETCONTAINER();
    
    EAGLE_ID Register(SHAREDWIDGET sw);
    void Remove(EAGLE_ID id);
@@ -67,6 +91,7 @@ public :
    
    SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}
 };
+
 
 
 

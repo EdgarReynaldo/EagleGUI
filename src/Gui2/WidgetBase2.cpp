@@ -146,6 +146,12 @@ void WIDGETBASE::OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset) {
 
 
 
+WIDGETBASE::~WIDGETBASE() {
+   widgets.clear();
+}
+
+
+
 int WIDGETBASE::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_TIMER) {
       Update(ee.timer.eagle_timer_source->SPT());
@@ -181,7 +187,10 @@ void WIDGETBASE::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
 
 
    
-void WIDGETBASE::SetWidgetArea(WIDGETAREA area) {
+void WIDGETBASE::SetWidgetArea(WIDGETAREA area , bool notify_layout) {
+   if (wlayout && notify_layout) {
+      area.SetOuterArea(wlayout->RequestWidgetArea(this , area.OuterArea()));
+   }
    OnSelfAreaChanged(area);
 }
 
@@ -201,6 +210,12 @@ void WIDGETBASE::SetWidgetColorset(std::shared_ptr<WidgetColorset> cset) {
 
 void WIDGETBASE::SetWidgetColorset(const WidgetColorset& cset) {
    SetWidgetColorset(std::shared_ptr<WidgetColorset>(new WidgetColorset(cset)));
+}
+
+
+
+void WIDGETBASE::UnsetWidgetColorset() {
+   SetWidgetColorset(std:;shared_ptr<WidgetColorset>(0));
 }
 
 
@@ -318,6 +333,24 @@ std::shared_ptr<WidgetColorset> WIDGETBASE::WidgetColors() {
 
 
 
+WidgetPainter WIDGETBASE::GetWidgetPainter() {
+   if (wpainter) {
+      return wpainter;
+   }
+   if (wparent && wparent->GetWidgetPainter()) {
+      return wparent->GetWidgetPainter();
+   }
+   if (wlayout && wlayout->GetWidgetPainter()) {
+      return wlayout->GetWidgetPainter();
+   }
+   if (whandler && whandler->GetWidgetPainter()) {
+      return whandler->GetWidgetPainter();
+   }
+   return default_widget_painter;
+}
+
+
+
 void WIDGETBASE::SetRedrawFlag() {
    SetWidgetFlags(Flags().AddFlags(NEEDS_REDRAW));
 }
@@ -334,6 +367,29 @@ void WIDGETBASE::ClearRedrawFlag() {
    SetWidgetFlags(Flags().RemoveFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW));
 }
 
+
+
+void WIDGETBASE::SetLayoutOwner(LAYOUTBASE* l) {
+   wlayout = l;
+}
+
+
+
+void WIDGETBASE::SetWidgetHandler(WidgetHandler2* wh) {
+   whandler = wh;
+}
+
+
+
+int WIDGETBASE::AbsMinWidth() {
+   return 0;
+}
+
+
+
+int WIDGETBASE::AbsMinHeight() {
+   return 0;
+}
 
 
 

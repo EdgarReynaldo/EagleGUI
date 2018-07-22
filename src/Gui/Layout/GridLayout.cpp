@@ -149,7 +149,7 @@ void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bo
 Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
    WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
    Rectangle cell_rect = RequestWidgetRectangle(widget_slot);
    newx = cell_rect.X();

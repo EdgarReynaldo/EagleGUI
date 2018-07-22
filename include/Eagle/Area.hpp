@@ -356,6 +356,8 @@ public :
 };
 
 
+extern const Rectangle BADRECTANGLE;
+
 /// Inline Rectangle:: class methods
 
 inline void Rectangle::RenewCornerPos() {
