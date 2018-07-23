@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2018+ by Edgar Reynaldo
+ *    Copyright 2009-2016+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,7 +25,7 @@
 #define EagleGuiLayout_HPP
 
 
-#include "Eagle/Gui2/WidgetBase2.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 #include "Eagle/Gui/Alignment.hpp"
 
@@ -50,54 +50,59 @@ enum LAYOUT_ATTRIBUTES {
 std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
 
 
-class LAYOUTBASE : public WidgetBase {
+class Layout : public WidgetBase {
+
+   friend class Decorator;
 
 protected :
    
-   std::vector<SHAREDWIDGET> wchildren;
-
    LAYOUT_ATTRIBUTES attributes;
    
    HALIGNMENT halign;
    VALIGNMENT valign;
 
+   std::vector<WidgetBase*> wchildren;
+
+   WidgetHandler* whandler;
 
 
-   /// Utility
+
    int WidgetIndex(WidgetBase* widget) const;
    WidgetBase* GetWidget(int slot) const;
    int NextFreeSlot();
 
-   /// Override and call if you need special storage
+
    virtual void ReserveSlots(int nslots);
 
-   /// All widget placement functions use ReplaceWidget
-   void ReplaceWidget(SHAREDWIDGET widget , int slot);
+   void ReplaceWidget(WidgetBase* widget , int slot);
 
-   /// Adjusts the widget area to obey minimum dimensions and to obey layout attributes and widget flags
    void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) const;
 
-   /// Called automatically on reposition
    void RepositionAllChildren();
    void RepositionChild(int slot);
 
 
-
+public :
+   
+   Layout(std::string objclass , std::string objname);
+   virtual ~Layout();
+   
 	/// WIDGETBASE
-   virtual void OnAreaChanged();
-
+	
    virtual int PrivateHandleInputEvent(EagleEvent e);
    virtual int PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y);
 
-   
-   
-public :
-   
-   LAYOUTBASE(std::string objclass , std::string objname);
-   virtual ~LAYOUTBASE();
-   
+   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
+	/// Changes position and outer area!!!
+	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
+
+	/// Make room in outer area for inner area first!!!
+	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
+
+
+   virtual bool AcceptsFocus() {return false;}
 
 
    /// LAYOUTBASE
@@ -117,55 +122,55 @@ public :
    
    void Resize(unsigned int nsize);
 
-   /// Adding widgets to layout
-   
    /// Widget may be null for PlaceWidget
-   /// Both replace the widget (Addwidget replaces a null widget) and call RepositionChild
-
-   virtual void PlaceWidget(SHAREDWIDGET w , int slot);
-   virtual int AddWidget(SHAREDWIDGET w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
-
-   /// Removal of widgets
+   /// Both replace the widget (addwidget replaces a null widget) and call RepositionChild
+   virtual void PlaceWidget(WidgetBase* widget , int slot);
+   virtual int AddWidget(WidgetBase* widget);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
 
    void EmptySlot(int slot);/// Remove a widget from the layout
-
    void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
-
    void ClearWidgets();/// Remove all widgets from layout
    
-/// TODO : Why is this public again?
-///   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
+   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
 
    void DetachFromGui();/// Call this in Layout derived class's destructor
    
 
    virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 
+protected :
+   friend class WidgetHandler;
    
-   
+   void SetGuiHandler(WidgetHandler* handler);// for WidgetHandlers only
+
+public :   
+
    virtual void SetWChildren(std::vector<WidgetBase*> new_children);
 
    // Getters
    std::vector<WidgetBase*> WChildren() const ;
    std::vector<WidgetBase*> Descendants() const ;
    
+   Layout* RootLayout();
+   const Layout* RootLayout() const ;
+   bool IsRootLayout() const ;
+   WidgetHandler* WHandler() const ;
+
    int GetLayoutSize() const ;
    
-
-
-   virtual bool AcceptsFocus() {return false;}
-
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 
 
+/** *************************** LAYOUTS *************************** */
+
+
+
+// dumb , grid , table , vsplitter , hsplitter , flow , border?
+
+
+
 
 #endif // EagleGuiLayout_HPP
-
-
-
-
-
-
 

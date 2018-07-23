@@ -100,9 +100,8 @@ protected :
    
 public :
    
-///   WIDGETBASE();
-WIDGETBASE() :
-      EagleObject("WIDGETBASE"),
+WIDGETBASE(std::string classname , std::string objname) :
+      EagleObject(classname , objname),
       EagleEventSource(),
       widgets(),
       warea(),
@@ -145,6 +144,8 @@ WIDGETBASE() :
    VALUE GetAttributeValue(const ATTRIBUTE& a) const;
 
    WIDGETAREA GetWidgetArea();
+   Rectangle OuterArea() {return warea.OuterArea();}
+   Rectangle InnerArea() {return warea.InnerArea();}
 
    WidgetFlags Flags();
 
