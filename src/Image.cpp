@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,6 +25,24 @@
 #include "Eagle/Exception.hpp"
 
 #include "Eagle/StringWork.hpp"
+
+
+
+
+SHAREDIMAGE StackImage(EagleImage* img) {
+   return SHAREDIMAGE(img , false);
+}
+
+
+
+SHAREDIMAGE StackImage(EagleImage& img) {
+   return SHAREDIMAGE(&img , false);
+}
+
+
+
+/// -----------------------      EagleImage      -------------------------------
+
 
 
 EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclass , std::string objname) :

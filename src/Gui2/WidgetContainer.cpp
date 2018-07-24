@@ -8,19 +8,6 @@
 
 
 
-
-SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget) {
-   return SHAREDWIDGET(stack_widget , false);
-}
-
-
-
-SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget) {
-   return SHAREDWIDGET(&stack_widget , false);
-}
-
-
-
 WIDGETCONTAINER::WIDGETCONTAINER() :
    cmap()
 {}

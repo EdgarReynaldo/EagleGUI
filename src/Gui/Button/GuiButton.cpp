@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2015+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -86,8 +86,25 @@ void GuiButton::ResetClickArea() {
 
 
 
-GuiButton::GuiButton(string name) :
-      BasicButton("GuiButton" , name),
+void GuiButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   DrawGuiButtonShape(win , this , xpos , ypos);
+   DrawGuiButtonText(win , this , xpos , ypos);
+   ClearRedrawFlag();
+}
+
+
+
+void GuiButton::OnAreaChanged() {
+   ResetRadii();
+   ResetClickArea();
+   SetBgRedrawFlag();
+}
+
+
+
+
+GuiButton::GuiButton(std::string classname , std::string name) :
+      BasicButton(classname , name),
       btn_shape(RECTANGLE_BTN),
       text_font(0),
       text(""),
@@ -99,351 +116,12 @@ GuiButton::GuiButton(string name) :
    SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
 }
 
-int GuiButton::PrivateCheckInputs() {
-
-   return BasicButton::PrivateCheckInputs();
-
-
-   /// Don't think we need this
-
-
-
-
-   UINT retmsg = DIALOG_OKAY;
-   bool activated = false;
-   bool released = false;
-
-   int msx = mouse_x;
-   int msy = mouse_y;
-   WidgetHandler* whandler = 0;
-   
-   if (wparent) {
-      whandler = dynamic_cast<WidgetHandler*>(wparent);
-   }
-   if (whandler) {
-      msx = whandler->GetMouseX();
-      msy = whandler->GetMouseY();
-   }
-///   int msx = mouse_x - AbsParentX();// This won't work becase it doesn't include the parent gui's camera position
-///   int msy = mouse_y - AbsParentY();// see above
-
-   /// Track whether the button is still being held since the last activation
-   if (user_activated || focuskey_activated || pointer_activated) {
-      /// Look for input releases
-      if (user_activated) {
-         Input click = input_group.FindClickInput();
-         if (click != input_key_press(EAGLE_KEY_NONE)) {
-            Input release(click.Source() , RELEASE , click.Value());
-            if (release) {
-               released = true;
-            }
-         }
-      }
-      if (focuskey_activated) {
-         if (input_key_release(EAGLE_KEY_SPACE) || input_key_release(EAGLE_KEY_ENTER)) {released = true;}
-      }
-      if (pointer_activated) {
-         if (input_mouse_release(LMB)) {released = true;}
-      }
-      if (released) {
-         SetButtonState(Flags() & HOVER , true);
-         user_activated = false;
-         focuskey_activated = false;
-         pointer_activated = false;
-      } else {
-         down_time_left = spring_duration;
-         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
-      }
-      return DIALOG_OKAY;
-   }
-
-
-   if (input_group) {
-         
-      activated = true;
-      if (btn_action_type == SPRING_BTN) {user_activated = true;}
-   
-   } else if ((Flags() & HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
-      
-      activated = true;
-      if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
-      
-   } else if (input_mouse_press(LMB) && area.InnerArea().Contains(msx,msy)) {
-      
-      if (click_area) {
-         if (click_area->Contains(msx - area.InnerArea().X() , msy - area.InnerArea().Y())) {
-            activated = true;
-            if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-         }
-      }
-      else {
-         Rectangle r = area.InnerArea();
-         switch (btn_shape) {
-            case RECTANGLE_BTN :
-               activated = true;
-               if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-               break;
-            case CIRCLE_BTN :
-               {
-                  Circle c(r.X() + r.W()/2 , r.Y() + r.H()/2 , rad_a);
-                  if (c.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-            case ROUNDED_BTN :
-               {
-                  RoundedRectangle rr(InnerArea() , rad_a , rad_b);
-                  if (rr.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-            case ELLIPSE_BTN :
-               {
-                  Ellipse e(InnerArea());
-                  if (e.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-         }
-      }
-   }
-   
-   if (activated) {// click or key press has activated the button action
-      retmsg |= DIALOG_TAKE_FOCUS;
-      retmsg |= DIALOG_INPUT_USED;
-      bool up = btn_state%2 == 0;
-      switch (btn_action_type) {
-         case SPRING_BTN :
-            if (up) {
-               up = false;
-            }
-            break;
-         case TOGGLE_BTN :
-            up = !up;
-            break;
-         default : throw EagleException("GuiButton::PrivateCheckInputs - btn_action_type unknown");break;
-      }
-      SetButtonState(Flags() & HOVER , up);
-      if (WidgetBase::Flags() & ALLOW_CLOSE) {
-         retmsg |= DIALOG_CLOSE;
-      }
-   }
-   return retmsg;
-   
-}
-
-
-
-void GuiButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   DrawGuiButtonShape(win , this , xpos , ypos);
-   DrawGuiButtonText(win , this , xpos , ypos);
-   ClearRedrawFlag();
-}
-
-
-
-int GuiButton::PrivateUpdate(double tsec) {
-   UINT retmsg = DIALOG_OKAY;
-   
-   if (btn_action_type == SPRING_BTN) {
-      bool up = btn_state%2 == 0;
-      bool hover = Flags() & HOVER;
-      if (!up && !user_activated && !focuskey_activated && !pointer_activated) {
-         down_time_left -= tsec;
-         if (down_time_left <= 0.0) {
-            down_time_left = spring_duration;
-            up = true;
-            SetButtonState(hover , up);
-         }
-      }
-   }
-   return retmsg;
-}
-
-
-
-/* TODO OLD REMOVE
-WidgetMsg GuiButton::CheckInputs(int msx , int msy)// Pass it the mouse position relative to it's drawing target,
-                                                // except for WidgetHandlers
-                                                // Hover is taken care of by WidgetHandlers, if you need it to
-                                                // do something, override the virtual SetHoverState function.
-{
-   
-   if (!(WidgetBase::Flags() & ENABLED)) {
-      return WidgetMsg(this , TOPIC_DIALOG , DIALOG_DISABLED);
-   }
-   
-   UINT retmsg = DIALOG_OKAY;
-   bool activated = false;
-   bool released = false;
-
-   /// Track whether the button is still being held since the last activation
-   if (user_activated || focuskey_activated || pointer_activated) {
-      /// Look for input releases
-      if (user_activated) {
-         Input click = input_group.FindClickInput();
-         if (click != input_key_press(KEY_NONE)) {
-            Input release(click.Source() , RELEASE , click.Value());
-            if (release) {
-               released = true;
-            }
-         }
-      }
-      if (focuskey_activated) {
-         if (input_key_release(KEY_SPACE) || input_key_release(KEY_ENTER)) {released = true;}
-      }
-      if (pointer_activated) {
-         if (input_mouse_release(LMB)) {released = true;}
-      }
-      if (released) {
-         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
-         user_activated = false;
-         focuskey_activated = false;
-         pointer_activated = false;
-         retmsg |= DIALOG_REDRAW_ME;
-         SetRedrawFlag();
-      } else {
-         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
-      }
-      return WidgetMsg(this , TOPIC_DIALOG , DIALOG_OKAY);
-   }
-
-
-   if (input_group) {
-      activated = true;
-      if (action_type == SPRING_BTN) {user_activated = true;}
-   } else if ((WidgetBase::Flags() & HASFOCUS) && (input_key_press(KEY_SPACE) || input_key_press(KEY_ENTER))) {
-      activated = true;
-      if (action_type == SPRING_BTN) {focuskey_activated = true;}
-   } else if (input_mouse_press(LMB) && area.Contains(msx,msy)) {
-      if (click_area) {
-         if (click_area->Contains(msx - area.X() , msy - area.Y())) {
-            activated = true;
-            if (action_type == SPRING_BTN) {pointer_activated = true;}
-         }
-      }
-      else {
-         switch (btn_shape) {
-            case RECTANGLE_BTN :
-               activated = true;
-               if (action_type == SPRING_BTN) {pointer_activated = true;}
-               break;
-            case CIRCLE_BTN :
-               {
-                  Circle c(area.X() + area.W()/2 , area.Y() + area.H()/2 , rad_a);
-                  if (c.Contains(msx,msy)) {
-                     activated = true;
-                     if (action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-            case ROUNDED_BTN :
-               // Lazy hit detection since a rounded rectangle is so close to a rectangle anyway.
-               activated = true;
-               if (action_type == SPRING_BTN) {pointer_activated = true;}
-               break;
-            case ELLIPSE_BTN :
-               {
-                  int xd = msx - (area.X() + area.W()/2);
-                  int yd = msy - (area.Y() + area.H()/2);
-                  double dist_sq = xd*xd + yd*yd;
-                  double angle = atan2(yd,xd);
-                  double exd = (double)rad_a*cos(angle);
-                  double eyd = (double)rad_b*sin(angle);
-                  double ellp_dist = exd*exd + eyd*eyd;
-                  if (dist_sq <= ellp_dist) {
-                     activated = true;
-                     if (action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-         }
-      }
-   }
-   
-   if (activated) {// click or key press has activated the button action
-      retmsg |= DIALOG_TAKE_FOCUS;
-      retmsg |= DIALOG_REDRAW_ME;
-      retmsg |= DIALOG_INPUT_USED;
-      SetBgRedrawFlag();
-      switch (action_type) {
-         case SPRING_BTN :
-            if (up) {
-               up = false;
-               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
-               if (WidgetBase::Flags() & ALLOW_CLOSE) {
-                  retmsg |= DIALOG_CLOSE;
-               }
-            }
-            break;
-         case TOGGLE_BTN :
-            up = !up;
-            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED));
-            if (WidgetBase::Flags() & ALLOW_CLOSE) {
-               retmsg |= DIALOG_CLOSE;
-            }
-            break;
-      }
-   }
-   return WidgetMsg(this , TOPIC_DIALOG , retmsg);
-}
-
-
-/// TODO OLD REMOVE
-void GuiButton::DisplayOn(BITMAP* bmp , int x , int y)/// DisplayOn should always draw, and always 
-                                                   /// clear the NEEDS_REDRAW flag.
-{
-   DrawGuiButtonRectangle(bmp , x , y);
-   DrawGuiButtonText(bmp , x , y);
-   ClearRedrawFlag();
-}
-
-*/
-
-
-/* TODO OLD REMOVE
-WidgetMsg GuiButton::Update (double tsec) // logic handling with animation support
-{
-   UINT retmsg = DIALOG_OKAY;
-   if (!(WidgetBase::Flags() & ENABLED)) {
-      return WidgetMsg(this , TOPIC_DIALOG , DIALOG_DISABLED);
-   }
-   
-   if (action_type == SPRING_BTN) {
-      if (!up && !user_activated && !focuskey_activated && !pointer_activated) {
-         dn_time_left -= tsec;
-         if (dn_time_left <= 0.0) {
-            dn_time_left = spring_duration;
-            up = true;
-            retmsg |= DIALOG_REDRAW_ME;
-            SetBgRedrawFlag();
-         }
-      }
-   }
-   return WidgetMsg(this , TOPIC_DIALOG , retmsg);
-}
-*/
-
 
 
 void GuiButton::SetRedrawFlag() {
    SetBgRedrawFlag();
 }
 
-
-
-void GuiButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   ResetRadii();
-   ResetClickArea();
-   SetBgRedrawFlag();
-}
 
 
 

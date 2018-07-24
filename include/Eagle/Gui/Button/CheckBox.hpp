@@ -22,7 +22,7 @@ protected :
    
    CHECKBOXDRAWFUNC draw_func;
    
-   EagleImage* cb_images[4];
+   SHAREDIMAGE cb_images[4];
    
    bool current;
    
@@ -34,19 +34,15 @@ protected :
    /// IconButton
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
+   virtual void OnAreaChanged();
+
 public :
    
    BasicCheckBox(std::string objname = "Nemo");
    ~BasicCheckBox();
    
-   /// WidgetBase
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);/// Pass INT_MAX if you don't care
-   
-   
-   
-   
    void SetDrawFunc(CHECKBOXDRAWFUNC cbdrawfunc);
-   virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
+   virtual void SetImages(SHAREDIMAGE upimage , SHAREDIMAGE downimage , SHAREDIMAGE hoverupimage , SHAREDIMAGE hoverdownimage);
 
    void ToggleChecked();
    void SetChecked(bool checked);

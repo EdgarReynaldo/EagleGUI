@@ -4,8 +4,8 @@
 #define ScrollButton_HPP
 
 
+
 #include "Eagle/Gui/Button/BasicButton.hpp"
-#include "Eagle/StringWork.hpp"
 
 
 
@@ -19,7 +19,7 @@ class BasicScrollButton : public WidgetBase {
 protected :
    BasicButton our_basic_button;
 
-   BasicButton* scroll_button;
+   SHAREDBUTTON scroll_button;
    BasicScrollBar* our_scrollbar;
    
    int increment;
@@ -35,6 +35,20 @@ protected :
    void ResetTriangle();
    void SyncButtonArea();
 
+   /// WidgetBase
+   virtual int PrivateHandleEvent(EagleEvent e);
+   virtual int PrivateCheckInputs();
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int PrivateUpdate(double tsec);
+
+   virtual void QueueUserMessage(const WidgetMsg& wmsg);
+   
+   /// Callbacks, overload if you need to
+   virtual void OnAreaChanged();
+   virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
+   virtual void OnColorChanged();
+
 public :
    
    BasicScrollButton(std::string objclass = "BasicScrollButton" , std::string objname = "Nemo");
@@ -45,30 +59,6 @@ public :
    void SetScrollBar(BasicScrollBar* scrollbar);/// For scrollbars to use
    void SetIncrement(int new_increment);
    virtual void SetScrollDirection(bool up_or_left , bool horizontal);
-
-   /// WidgetBase
-   virtual int PrivateHandleEvent(EagleEvent e);
-   virtual int PrivateCheckInputs();
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int PrivateUpdate(double tsec);
-
-   virtual void QueueUserMessage(const WidgetMsg& wmsg);
-   
-   virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
-   virtual void SetPrivateColorset(const WidgetColorset& colors);
-   virtual void UseColorset(bool use_public_colorset);
-   virtual void UsePrivateColorset(bool use_priv_colorset);
-
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-   virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
-
-
-
-   
-   
-   
-   
-   
 };
 
 

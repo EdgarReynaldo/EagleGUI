@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -28,9 +28,11 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Container.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/SharedMemory.hpp"
 
 #include <string>
 #include <vector>
+#include <memory>
 
 enum IMAGE_TYPE {
    MEMORY_IMAGE = 0,
@@ -131,6 +133,13 @@ public :
 	~Clipper();
 	
 };
+
+
+typedef std::shared_ptr<EagleImage , DELETER<EagleImage> > SHAREDIMAGE;
+
+SHAREDIMAGE StackImage(EagleImage* img);
+SHAREDIMAGE StackImage(EagleImage& img);
+
 
 #endif // EagleImage_HPP
 

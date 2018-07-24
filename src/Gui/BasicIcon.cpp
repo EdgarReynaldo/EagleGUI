@@ -43,7 +43,7 @@ void BasicIcon::SetStretch(bool stretch) {
 
 
 
-void BasicIcon::SetImage(EagleImage* new_image) {
+void BasicIcon::SetImage(SHAREDIMAGE new_image) {
    icon_image = new_image;
    SetBgRedrawFlag();
 }

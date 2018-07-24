@@ -17,7 +17,7 @@ class BasicIcon : public WidgetBase {
    
 protected :   
    
-   EagleImage* icon_image;
+   SHAREDIMAGE icon_image;
    
    bool stretch_icon;
    
@@ -30,7 +30,7 @@ public :
    BasicIcon(std::string objclass = "BasicIcon" , std::string objname = "Nemo");
    
    void SetStretch(bool stretch);
-   void SetImage(EagleImage* new_image);
+   void SetImage(SHAREDIMAGE new_image);
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    

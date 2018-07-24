@@ -6,16 +6,38 @@
 #define TextButton_HPP
 
 
-#include "Eagle/Gui/Decorators/TextDecorator.hpp"
-
 #include "Eagle/Gui/Button/BasicButton.hpp"
 
 
-/**
-   NOTES : What happens when a layout adds a TextButton to its layout?
-               A: The 
 
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+
 
 
 class TextButton : public BasicButton {
@@ -138,19 +160,6 @@ protected:
    virtual void SetAllowCloseState   (bool state);/// Does not set redraw flag
    virtual void SetAllowOverlapState (bool state);/// Does not set redraw flag
 
-/** We don't need to override these functions, they function properly on their own
-
-   virtual void SetRedrawFlag();/// Shortcut to SetNeedsRedrawState(true)
-   virtual void SetBgRedrawFlag();/// Shortcut to SetNeedsBgRedrawState(true)
-   virtual void ClearRedrawFlag();/// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
-
-   virtual void SetRedrawAllFlag();/// To tell parent widget handlers to redraw all widgets
-
-   virtual void ShowWidget();/// Makes the widget enabled and visible
-   virtual void HideWidget();/// Makes the widget disabled and invisible
-   virtual void ToggleWidgetVisibility();/// Toggles the enabled and visible state of the widget
-
-//*/
    
    virtual bool AcceptsFocus();
    virtual bool IsMouseOver(int realmsx , int realmsy) const;
@@ -212,6 +221,7 @@ protected:
    
 };
 
+//*/
 
 
 

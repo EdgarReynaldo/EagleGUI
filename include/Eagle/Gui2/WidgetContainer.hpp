@@ -30,15 +30,11 @@
 
 
 #include "Eagle/Object.hpp"
-
-
-
+#include "Eagle/SharedMemory.hpp"
 
 
 
 #define WIDGETCONTAINER WidgetContainer
-
-
 #define WIDGETBASE WidgetBase2
 
 
@@ -46,27 +42,8 @@
 class WIDGETBASE;
 
 
-struct WIDGET_DELETER { 
-   bool deleteme;
-   WIDGET_DELETER() : deleteme(true) {}
-   WIDGET_DELETER(bool destroy_when_done) : deleteme(destroy_when_done) {}
-   
-   void operator()(WIDGETBASE* w) const {
-      (void)w;
-      if (deleteme) {
-         delete w;
-      }
-      return;
-   }
-};
+typedef std::shared_ptr<WIDGETBASE , DELETER<WIDGETBASE>> SHAREDWIDGET;
 
-
-typedef std::shared_ptr<WIDGETBASE , WIDGET_DELETER> SHAREDWIDGET;
-
-
-
-SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget);
-SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget);
 
 
 

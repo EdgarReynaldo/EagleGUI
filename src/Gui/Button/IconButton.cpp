@@ -24,26 +24,18 @@ void IconButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    win->DrawTextString(win->DefaultFont() , StringPrintF("Mouse xy = %d,%d" , mx , my) ,
                         InnerArea().X() , InnerArea().BRY() + 10 , EagleColor(255,0,0));
 //*/
-   ClearRedrawFlag();
+}
+
+
+
+void IconButton::OnAreaChanged() {
+   click_rect.SetArea(0,0,InnerArea().W(),InnerArea().H());
 }
 
 
 
 IconButton::IconButton(std::string classname , std::string objname) :
       BasicButton(classname , objname),
-      original_images(),
-      click_rect()
-{
-   for (int i = 0 ; i < 4 ; ++i) {
-      original_images[i] = 0;
-   }
-   SetClickArea(&click_rect , false);
-}
-
-
-
-IconButton::IconButton(std::string object_name) :
-      BasicButton("IconButton" , object_name),
       original_images(),
       click_rect()
 {
@@ -65,10 +57,8 @@ void IconButton::SetImages(EagleImage* upimage , EagleImage* downimage , EagleIm
 
 
 
-void IconButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   click_rect.SetArea(0,0,InnerArea().W(),InnerArea().H());
-///   RefreshImages();
-}
+
+
+
 
 

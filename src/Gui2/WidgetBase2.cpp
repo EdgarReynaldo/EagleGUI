@@ -26,6 +26,19 @@
 
 
 
+
+SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget) {
+   return SHAREDWIDGET(stack_widget , false);
+}
+
+
+
+SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget) {
+   return SHAREDWIDGET(&stack_widget , false);
+}
+
+
+
 /// ---------------------     WIDGETBASE      --------------------------
 
 
@@ -61,14 +74,6 @@ void WIDGETBASE::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    (void)win;
    (void)xpos;
    (void)ypos;
-}
-
-
-
-void WIDGETBASE::QueueUserMessage(WidgetMsg wmsg) {
-   if (wparent) {
-      wparent->QueueUserMessage(wmsg);
-   }
 }
 
 
@@ -181,6 +186,14 @@ void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
+void WIDGETBASE::QueueUserMessage(WidgetMsg wmsg) {
+   if (wparent) {
+      wparent->QueueUserMessage(wmsg);
+   }
+}
+
+
+
 void WIDGETBASE::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
    OnSelfAttributeChanged(a,v);
 }
@@ -190,6 +203,15 @@ void WIDGETBASE::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
 void WIDGETBASE::SetWidgetArea(WIDGETAREA area , bool notify_layout) {
    if (wlayout && notify_layout) {
       area.SetOuterArea(wlayout->RequestWidgetArea(this , area.OuterArea()));
+   }
+   OnSelfAreaChanged(area);
+}
+
+
+
+void WIDGETBASE::SetWidgetArea(Rectangle oarea , bool notify_layout) {
+   if (wlayout && notify_layout) {
+      area.SetOuterArea(wlayout->RequestWidgetArea(this , oarea));
    }
    OnSelfAreaChanged(area);
 }
@@ -320,15 +342,15 @@ WidgetFlags WIDGETBASE::Flags() {
 
 
 
-std::shared_ptr<WidgetColorset> WIDGETBASE::WidgetColors() {
+WidgetColorset WIDGETBASE::WidgetColors() {
    if (HasAttribute("Colorset")) {
-      return std::shared_ptr(new WidgetColorset(GetColorsetByName(GetAttributeValue("Colorset"))));
+      return GetColorsetByName(GetAttributeValue("Colorset"));
    }
-   if (wcolors) {return wcolors;}
+   if (wcolors) {return *wcolors;}
    if (wparent && wparent->WidgetColors()) {return wparent->WidgetColors();}
    if (wlayout && wlayout->WidgetColors()) {return wlayout->WidgetColors();}
    if (whandler && whandler->WidgetColors()) {return whandler->WidgetColors();}
-   return 0;
+   return WidgetColorset();
 }
 
 

@@ -19,34 +19,19 @@ void BasicScrollBar::ResetScrollBarArea() {
       LayoutRectangle left_button_layout(0.0,0.0,0.1,1.0);
       LayoutRectangle right_button_layout(0.9,0.0,0.1,1.0);
       LayoutRectangle scroller_layout(0.1,0.0,0.8,1.0);
-      up_or_left_button->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , left_button_layout) , false);
-      down_or_right_button->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , right_button_layout) , false);
-      scroller->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
+      up_or_left_button->SetWidgetArea(LayoutArea(InnerArea() , left_button_layout) , false);
+      down_or_right_button->SetWidgetArea(LayoutArea(InnerArea() , right_button_layout) , false);
+      scroller->SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
    }
    else {
       LayoutRectangle up_button_layout(0.0,0.0,1.0,0.1);
       LayoutRectangle down_button_layout(0.0,0.9,1.0,0.1);
       LayoutRectangle scroller_layout(0.0,0.1,1.0,0.8);
-      up_or_left_button->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , up_button_layout) , false);
-      down_or_right_button->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , down_button_layout) , false);
-      scroller->WidgetBase::SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
+      up_or_left_button->SetWidgetArea(LayoutArea(InnerArea() , up_button_layout) , false);
+      down_or_right_button->SetWidgetArea(LayoutArea(InnerArea() , down_button_layout) , false);
+      scroller->SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
    }
    ResetHandleArea();
-}
-
-
-
-void BasicScrollBar::CheckRedraw() {
-   if ((scroller->Flags() & NEEDS_REDRAW) ||
-       (up_or_left_button->Flags() & NEEDS_REDRAW) ||
-       (down_or_right_button->Flags() & NEEDS_REDRAW)) {
-      SetRedrawFlag();
-   }
-   if ((scroller->Flags() & NEEDS_BG_REDRAW) ||
-       (up_or_left_button->Flags() & NEEDS_BG_REDRAW) ||
-       (down_or_right_button->Flags() & NEEDS_BG_REDRAW)) {
-      SetBgRedrawFlag();
-   }
 }
 
 
@@ -56,7 +41,6 @@ int BasicScrollBar::PrivateHandleEvent(EagleEvent e) {
    ret |= scroller->HandleEvent(e);
    ret |= up_or_left_button->HandleEvent(e);
    ret |= down_or_right_button->HandleEvent(e);
-///   CheckRedraw();
    return ret;
 }
 
@@ -81,22 +65,7 @@ int BasicScrollBar::PrivateUpdate(double tsec) {
    ret |= scroller->Update(tsec);
    ret |= up_or_left_button->Update(tsec);
    ret |= down_or_right_button->Update(tsec);
-///   CheckRedraw();
    return ret;
-}
-
-
-
-BasicScrollBar::BasicScrollBar(std::string objclass , std::string objname) :
-      WidgetBase(objclass , objname),
-      basic_scroller(),
-      basic_scroll_button_up_or_left(),
-      basic_scroll_button_down_or_right(),
-      scroller(0),
-      up_or_left_button(0),
-      down_or_right_button(0)
-{
-   SetScrollWidgets(&basic_scroller , &basic_scroll_button_up_or_left , &basic_scroll_button_down_or_right);
 }
 
 
@@ -127,22 +96,53 @@ void BasicScrollBar::QueueUserMessage(const WidgetMsg& wmsg) {
 
 
 
-void BasicScrollBar::SetScrollWidgets(BasicScroller* pbasic_scroller , BasicScrollButton* pbasic_up_or_left_button , BasicScrollButton* pbasic_down_or_right_button) {
+void BasicScrollBar::OnAreaChanged() {
+   ResetScrollBarArea();
+}
+
+
+
+BasicScrollBar::BasicScrollBar(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
+      basic_scroller(),
+      basic_scroll_button_up_or_left(),
+      basic_scroll_button_down_or_right(),
+      scroller(0),
+      up_or_left_button(0),
+      down_or_right_button(0)
+{
+   SetScrollWidgets(0,0,0);
+}
+
+
+
+void BasicScrollBar::SetScrollWidgets(SHAREDOBJECT<BasicScroller> pbasic_scroller ,
+                                      SHAREDOBJECT<BasicScrollButton> pbasic_up_or_left_button , 
+                                      SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button) {
+
+
+   scroller->SetParent(this);
+   up_or_left_button->SetParent(this);
+   down_or_right_button->SetParent(this);
+   
+   up_or_left_button->SetScrollBar(this);
+   down_or_right_button->SetScrollBar(this);
+
+
+
    scroller = pbasic_scroller;
-
-   scroller = &basic_scroller;
-   if (pbasic_scroller) {
-      scroller = pbasic_scroller;
+   if (!scroller) {
+      scroller = StackObject(&basic_scroller);
    }
 
-   up_or_left_button = &basic_scroll_button_up_or_left;
-   if (pbasic_up_or_left_button) {
-      up_or_left_button = pbasic_up_or_left_button;
+   up_or_left_button = pbasic_up_or_left_button;
+   if (!up_or_left_button) {
+      up_or_left_button = StackObject(&basic_scroll_button_up_or_left);
    }
 
-   down_or_right_button = &basic_scroll_button_down_or_right;
-   if (pbasic_down_or_right_button) {
-      down_or_right_button = pbasic_down_or_right_button;
+   down_or_right_button = pbasic_down_or_right_button;
+   if (!down_or_right_button) {
+      down_or_right_button = StackObject(&basic_scroll_button_down_or_right);
    }
    
    scroller->SetParent(this);
@@ -219,11 +219,6 @@ void BasicScrollBar::SetupView(int total_length_of_view , int actual_length_in_v
 
 
 
-void BasicScrollBar::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   ResetScrollBarArea();
-   SetRedrawFlag();
-}
    
 
 

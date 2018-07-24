@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -187,7 +187,7 @@ int Camera::Update (double tsec) {
 }
 
 
-
+/**
 /// Don't remove these two function - they serve to prevent redraw on color change
 void Camera::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
    wcols = colors;
@@ -204,7 +204,7 @@ void Camera::SetPrivateColorset(const WidgetColorset& colors) {
    // purposely don't set redraw flag
    return;
 }
-
+//*/
 
 
 void Camera::SetView(EagleImage* bmp , Rectangle area_to_view) {

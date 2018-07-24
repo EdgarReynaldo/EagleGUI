@@ -98,8 +98,8 @@ protected :
 public :
    virtual int  Update(double tsec);
    
-   virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
-   virtual void SetPrivateColorset(const WidgetColorset& colors);
+///   virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
+///   virtual void SetPrivateColorset(const WidgetColorset& colors);
 
 ///   virtual void SetWidgetArea(int xpos , int ypos , int width , int height);
 

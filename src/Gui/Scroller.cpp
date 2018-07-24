@@ -127,13 +127,16 @@ int BasicScroller::PrivateCheckInputs() {
 void BasicScroller::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    ///void WidgetBorderPainterShadow(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
    ContrastBorderBackgroundPainter painter;
-   painter.PaintBackground(win , scroller_area , WCols() , xpos , ypos);
+   
+   WidgetColorset wc = WidgetColors();
+   
+   painter.PaintBackground(win , scroller_area , wc , xpos , ypos);
    Rectangle r = scroller_area.InnerArea();
    r.MoveBy(xpos,ypos);
-   win->DrawFilledRectangle(r , WCols()[SDCOL]);
+   win->DrawFilledRectangle(r , wc[SDCOL]);
    Rectangle r2 = scroll_handle_area;
    r2.MoveBy(xpos,ypos);
-   win->DrawFilledRectangle(r2 , WCols()[FGCOL]);
+   win->DrawFilledRectangle(r2 , wc[FGCOL]);
 }
 
 
@@ -161,6 +164,13 @@ int BasicScroller::PrivateUpdate(double tsec) {
 
 
 
+void BasicScroller::OnAreaChanged() {
+   scroller_area.SetOuterArea(InnerArea());
+   ResetHandleArea();
+}
+
+
+
 BasicScroller::BasicScroller(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
       scroller_area(),
@@ -182,7 +192,7 @@ BasicScroller::BasicScroller(std::string objclass , std::string objname) :
       repeat_elapsed(0.0),
       repeat_previous(0.0)
 {
-   scroller_area.SetMarginsContractFromOuter(5,5,5,5);
+   scroller_area.SetWidgetArea(GetWidgetArea().SetBoxAreaContractFromOuter(BOX_TYPE_MARGIN , 5,5,5,5));
 }
 
 
@@ -249,11 +259,5 @@ void BasicScroller::SetupView(int total_length_of_view , int actual_length_in_vi
 }
 
 
-
-void BasicScroller::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   scroller_area.SetOuterArea(InnerArea());
-   ResetHandleArea();
-}
 
 

@@ -45,31 +45,30 @@ protected :
    bool deselect_on_lost_focus;
    
    
+
+   /// WIDGETBASE
+   virtual int PrivateHandleEvent(EagleEvent e);
+   virtual int PrivateCheckInputs();
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int PrivateUpdate(double tsec);
+
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
+
+   /// Members
    EagleGraphicsContext* GetDrawWindow();
-public :
-   void FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum);
 
    virtual void RefreshSelection();
-   
-///   void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos);
-   void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos) {
-      EAGLE_ASSERT(pselect_line);
-      EAGLE_ASSERT(pselect_pos);
-      EAGLE_ASSERT(pcaret_line);
-      EAGLE_ASSERT(pcaret_pos);
-      *pselect_line = select_line;
-      *pselect_pos = select_pos;
-      *pcaret_line = caret_line;
-      *pcaret_pos = caret_pos;
-   }
-   
-protected :
-   SelectText(std::string classname , std::string objname);
 
 public :
 
-   SelectText(std::string name = "Nemo");
+   SelectText(std::string classname = "SelectText" , std::string objname = "Nemo");
+
    virtual ~SelectText() {}
+
+   void FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum);
+
+   
+   void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos);
    
    Rectangle GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey);
 
@@ -77,14 +76,6 @@ public :
 
    void MoveCaretUpOrDown(int keycode , bool shift_held);
    void MoveCaretLeftOrRight(int keycode , bool shift_held);
-
-   virtual int PrivateHandleEvent(EagleEvent e);
-   virtual int PrivateCheckInputs();
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int PrivateUpdate(double tsec);
-
-   virtual void SetHoverState(bool state);
-   virtual void SetFocusState(bool state);
 
    void SetDeselectOnLostFocus(bool deselect);
    

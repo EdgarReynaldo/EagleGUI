@@ -81,65 +81,6 @@ void BasicScrollButton::SyncButtonArea() {
 
 
 
-BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname) :
-      WidgetBase(objclass , objname),
-      our_basic_button("BSB::our_basic_button"),
-      scroll_button(0),
-      our_scrollbar(0),
-      increment(1),
-      scroll_up_or_left(true),
-      scroll_horizontal(false),
-      our_click_area()
-{
-   Reset();
-}
-
-
-
-void BasicScrollButton::UseBasicButton() {
-   UseButton(&our_basic_button);
-   ResetTriangle();
-   our_basic_button.SetClickArea(&our_click_area , false);
-}
-
-
-
-
-void BasicScrollButton::UseButton(BasicButton* button) {
-   if (!button) {
-      UseBasicButton();
-   }
-   EAGLE_ASSERT(button);
-   scroll_button = button;
-   scroll_button->SetParent(this);
-   scroll_button->SetButtonType(SPRING_BTN);
-   SyncButtonArea();
-}
-
-
-
-void BasicScrollButton::SetScrollBar(BasicScrollBar* scrollbar) {
-   our_scrollbar = scrollbar;
-}
-
-
-
-void BasicScrollButton::SetIncrement(int new_increment) {
-   increment = new_increment;
-}
-
-
-
-void BasicScrollButton::SetScrollDirection(bool up_or_left , bool horizontal) {
-   scroll_up_or_left = up_or_left;
-   scroll_horizontal = horizontal;
-   if (scroll_button == &our_basic_button) {
-      ResetTriangle();
-   }
-}
-
-
-
 int BasicScrollButton::PrivateHandleEvent(EagleEvent e) {
    return scroll_button->HandleEvent(e);
 }
@@ -154,7 +95,7 @@ int BasicScrollButton::PrivateCheckInputs() {
 
 
 void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (scroll_button == &our_basic_button) {
+   if (scroll_button.get() == &our_basic_button) {
       Triangle t = our_click_area;
       t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
       if (scroll_button->Up()) {
@@ -204,45 +145,88 @@ void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
    WidgetBase::QueueUserMessage(wmsg);
 }
 
-      
 
 
-void BasicScrollButton::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
-   scroll_button->SetColorset(colors , set_descendants_colors);
-}
-
-
-
-void BasicScrollButton::SetPrivateColorset(const WidgetColorset& colors) {
-   scroll_button->SetPrivateColorset(colors);
-}
-
-
-
-void BasicScrollButton::UseColorset(bool use_public_colorset) {
-   scroll_button->UseColorset(use_public_colorset);
-}
-
-
-
-void BasicScrollButton::UsePrivateColorset(bool use_priv_colorset) {
-   scroll_button->UsePrivateColorset(use_priv_colorset);
-}
-
-
-
-
-void BasicScrollButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
+void BasicScrollButton::OnAreaChanged() {
+   scroll_button->SetWidgetArea(GetWidgetArea() , false);
    SyncButtonArea();
 }
 
 
 
-void BasicScrollButton::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
+void BasicScrollButton::OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v) {
+   scroll_button->SetAttribute(a , v);
+}
+
+
+
+void BasicScrollButton::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   scroll_button->SetWidgetFlags(Flags());
+}
+
+
+
+BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
+      our_basic_button("BSB::our_basic_button"),
+      scroll_button(0),
+      our_scrollbar(0),
+      increment(1),
+      scroll_up_or_left(true),
+      scroll_horizontal(false),
+      our_click_area()
+{
+   Reset();
+}
+
+
+
+void BasicScrollButton::UseBasicButton() {
+   UseButton(StackButton(our_basic_button));
+   ResetTriangle();
+   our_basic_button.SetClickArea(&our_click_area , false);
+}
+
+
+
+
+void BasicScrollButton::UseButton(SHAREDBUTTON button) {
+   if (!button) {
+      UseBasicButton();
+   }
+   EAGLE_ASSERT(button);
+   scroll_button = button;
+   scroll_button->SetParent(this);
+   scroll_button->SetButtonType(SPRING_BTN);
    SyncButtonArea();
 }
+
+
+
+void BasicScrollButton::SetScrollBar(BasicScrollBar* scrollbar) {
+   our_scrollbar = scrollbar;
+}
+
+
+
+void BasicScrollButton::SetIncrement(int new_increment) {
+   increment = new_increment;
+}
+
+
+
+void BasicScrollButton::SetScrollDirection(bool up_or_left , bool horizontal) {
+   scroll_up_or_left = up_or_left;
+   scroll_horizontal = horizontal;
+   if (scroll_button == &our_basic_button) {
+      ResetTriangle();
+   }
+}
+
+
+
+
+
 
 
 

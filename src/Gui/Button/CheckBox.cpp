@@ -46,7 +46,7 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
       for (int i = 0 ; i < 4 ; ++i) {
          bool up = (i%2)==0;
          bool hover = i/2;
-         EagleImage* img = win->CreateImage(OuterArea().W() , OuterArea().H());
+         SHAREDIMAGE img = win->CreateImage(OuterArea().W() , OuterArea().H());
          win->PushDrawingTarget(img);
          draw_func(win , Rectangle(0 , 0 , img->W() , img->H()) , 0 , 0 , WCols() , up , hover);
          cb_images[i] = img;
@@ -61,11 +61,7 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
 
 void BasicCheckBox::FreeImages() {
    for (int i = 0 ; i < 4 ; ++i) {
-      EagleImage* img = cb_images[i];
-      if (img) {
-         delete img;
-      }
-      cb_images[i] = 0;
+      cb_images[i].reset();
    }
    current = false;
 }
@@ -81,15 +77,19 @@ void BasicCheckBox::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
 
 
+void BasicCheckBox::OnAreaChanged() {
+   IconButton::OnAreaChanged();
+   current = false;
+}
+
+
+
 BasicCheckBox::BasicCheckBox(std::string objname) :
       IconButton("BasicCheckBox" , objname),
       draw_func(DefaultCBDrawFunc),
       cb_images(),
       current(false)
 {
-   for (int i = 0 ; i < 4 ; ++i) {
-      cb_images[i] = 0;
-   }
    SetButtonType(TOGGLE_BTN);
 }
 
@@ -97,19 +97,6 @@ BasicCheckBox::BasicCheckBox(std::string objname) :
 
 BasicCheckBox::~BasicCheckBox() {
    FreeImages();
-}
-
-
-
-void BasicCheckBox::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   int oldw = OuterArea().W();
-   int oldh = OuterArea().H();
-   IconButton::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   if ((oldw != OuterArea().W()) || (oldh != OuterArea().H())) {
-      if (draw_func) {
-         current = false;
-      }
-   }
 }
 
 
@@ -126,7 +113,7 @@ void BasicCheckBox::SetDrawFunc(CHECKBOXDRAWFUNC cbdrawfunc) {
 
 
 
-void BasicCheckBox::SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage) {
+void BasicCheckBox::SetImages(SHAREDIMAGE upimage , SHAREDIMAGE downimage , SHAREDIMAGE hoverupimage , SHAREDIMAGE hoverdownimage) {
    draw_func = 0;
    current = true;
    IconButton::SetImages(upimage , downimage , hoverupimage , hoverdownimage);

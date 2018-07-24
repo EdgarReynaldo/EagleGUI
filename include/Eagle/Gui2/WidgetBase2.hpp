@@ -42,14 +42,15 @@
 
 
 
+
+SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget);
+SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget);
+
+
 class LAYOUTBASE;
-
-
-
-
-
-
 class WidgetHandler2;
+
+
 
 class WIDGETBASE : public EagleObject , protected EagleEventSource {
 
@@ -81,9 +82,6 @@ protected :
    virtual int PrivateCheckInputs();
    virtual void PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-
-   /// Parent messaging
-   virtual void QueueUserMessage(WidgetMsg wmsg);
 
    /// Callbacks, overload if you need to
    virtual void OnAreaChanged();
@@ -121,12 +119,17 @@ WIDGETBASE(std::string classname , std::string objname) :
    void Update(double dt);
    void Display(EagleGraphicsContext* win , int xpos , int ypos);
    
+   /// Parent messaging
+   virtual void QueueUserMessage(WidgetMsg wmsg);
+
    /// Setters
 
    void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    void RemoveAttribute(const ATTRIBUTE& a);
 
-   void SetWidgetArea(WIDGETAREA area , bool notify_layout = true);
+   void SetWidgetArea(WIDGETAREA area , bool notify_layout = true);/// Totally overwrites area if layout allows
+   void SetWidgetArea(Rectangle oarea , bool notify_layout = true);/// Preserves border areas
+   
    void SetWidgetFlags(WidgetFlags flags);
    void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset);
    void SetWidgetColorset(const WidgetColorset& cset);
@@ -151,7 +154,7 @@ WIDGETBASE(std::string classname , std::string objname) :
 
    EagleColor GetColor(WIDGETCOLOR wc);
    
-   std::shared_ptr<WidgetColorset> WidgetColors();
+   WidgetColorset WidgetColors();
    
    WidgetPainter GetWidgetPainter();
    

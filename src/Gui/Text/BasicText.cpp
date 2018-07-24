@@ -94,6 +94,12 @@ int BasicText::PrivateUpdate(double tsec) {
 
 
 
+void BasicText::OnAreaChanged() {
+   Refresh();
+}
+
+
+
 BasicText::BasicText(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
       halign(HALIGN_LEFT),
@@ -214,12 +220,6 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
 
 
 
-void BasicText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout) {
-   WidgetBase::SetWidgetArea(x,y,w,h,notify_layout);
-   Refresh();
-}
-
-
 void BasicText::ShrinkWrap() {
    
    scale_to_fit = false;
@@ -235,20 +235,6 @@ void BasicText::ShrinkWrap() {
 void BasicText::ScaleToFit(bool scale) {
    scale_to_fit = scale;
    SetRedrawFlag();
-}
-
-
-
-void BasicText::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
-   Refresh();
-}
-
-
-
-void BasicText::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
-   Refresh();
 }
 
 
