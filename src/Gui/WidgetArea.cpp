@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -21,471 +21,403 @@
 
 
 
-#include "Eagle/GraphicsContext.hpp"
-#include "Eagle/Logging.hpp"
+#include "Eagle/Gui2/WidgetArea2.hpp"
 
-#include "Eagle/Gui/WidgetArea.hpp"
-#include "Eagle/StringWork.hpp"
+/// BOXAREA
 
 
 
-WidgetArea::WidgetArea() : 
-		mleft(0),
-		mright(0),
-		mtop(0),
-		mbot(0),
-		outer_area(),
-		inner_area(),
-		cell_images(),
-		has_image_alpha(false)
-{
-	for (int celly = 0 ; celly < 3 ; ++celly) {
-		for (int cellx = 0 ; cellx < 3 ; ++cellx) {
-			cell_images[celly][cellx] = (EagleImage*)0;
-		}
-	}
+BOXAREA::BOXAREA() :
+   left(0),
+   right(0),
+   top(0),
+   bottom(0)
+{}
+
+
+
+BOXAREA::BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b) :
+      left(l),
+      right(r),
+      top(t),
+      bottom(b)
+{}
+
+
+
+void BOXAREA::Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   left = l;
+   right = r;
+   top = t;
+   bottom = b;
 }
 
 
 
-WidgetArea::WidgetArea(const WidgetArea& a) :
-   mleft(a.mleft),
-   mright(a.mright),
-   mtop(a.mtop),
-   mbot(a.mbot),
-   outer_area(a.outer_area),
-   inner_area(a.inner_area),
-   cell_images(),
-   has_image_alpha(false)
-{
-   for (unsigned int i = 0 ; i < 3 ; ++i) {
-      for (unsigned int j = 0 ; j < 3 ; ++j) {
-         cell_images[i][j] = a.cell_images[i][j];
-      }
+/// NPAREA
+
+
+NPAREA::NPAREA(Rectangle area , BOXAREA box) :
+   pos(area.X() , area.Y()),
+   left(box.left),
+   width(area.Width() - box.Width()),
+   right(box.right),
+   top(box.top),
+   height(area.Height() - box.Height()),
+   bottom(box.bottom)
+{}
+   
+
+
+Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
+   Pos2I p2 = pos;
+   const int cellwidths[4]  = {0 , left , width , right};
+   const int cellheights[4] = {0 , top , height , bottom};
+   for (unsigned int j = 0 ; j < vcell ; ++j) {
+      p2.MoveBy(0 , cellheights[j]);
    }
+   for (unsigned int i = 0 ; i < hcell ; ++i) {
+      p2.MoveBy(cellwidths[i] , 0);
+   }
+   return Rectangle(p2.X() , p2.Y() , cellwidths[hcell + 1] , cellheights[vcell + 1]);
 }
 
 
 
-WidgetArea& WidgetArea::WidgetArea::operator=(const WidgetArea& a) {
-   mleft = a.mleft;
-   mright = a.mright;
-   mtop = a.mtop;
-   mbot = a.mbot;
-   for (unsigned int i = 0 ; i < 3 ; ++i) {
-      for (unsigned int j = 0 ; j < 3 ; ++j) {
-         cell_images[i][j] = a.cell_images[i][j];
-      }
-   }
-   has_image_alpha = a.has_image_alpha;
+Rectangle NPAREA::GetRow(VCELL_AREA vcell) const {
+   Rectangle r = GetNPCell(HCELL_LEFT , vcell);
+   int heights[3] = {top , height , bottom};
+   return Rectangle(r.X() , r.Y() , Width() , heights[vcell]);
+}
+
+
+
+Rectangle NPAREA::GetColumn(HCELL_AREA hcell) const {
+   Rectangle r = GetNPCell(hcell , VCELL_TOP);
+   int widths[3] = {left , width , bottom};
+   return Rectangle(r.X() , r.Y() , Height() , widths[hcell]);
+}
+
+
+
+/// WIDGETAREA
+
+
+
+void WIDGETAREA::SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   BOXAREA* boxes[3] = {&margin , &border , &padding};
+   boxes[box]->Set(l,r,t,b);
+}
+
+
+
+void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
+   BOXAREA* boxes[3] = {&margin , &border , &padding};
+   *(boxes[box]) = b;
+}
+
+
+
+/// Setters
+
+
+
+WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
+   SetWidgetArea(wa);
    return *this;
 }
 
 
 
-void WidgetArea::MoveBy(int dx , int dy) {
-   outer_area.MoveBy(dx,dy);
-   inner_area.MoveBy(dx,dy);
+void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   SetBoxArea(box , l , r , t , b);
+   SetOuterArea(OuterArea());
 }
 
 
 
-Rectangle WidgetArea::GetCellRectangle (MARGIN_CELL cell) const {
-   return GetCellRectangle((MARGIN_HCELL)(cell%3) , (MARGIN_VCELL)(cell/3));
+void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b) {
+   SetBoxArea(box , b);
+   SetOuterArea(OuterArea());
 }
 
 
 
-Rectangle WidgetArea::GetCellRectangle(MARGIN_HCELL hcell , MARGIN_VCELL vcell) const {
-
-	int xoffsets[3] = {0 , mleft , mleft + inner_area.W()};
-	int yoffsets[3] = {0 , mtop , mtop + inner_area.H()};
-	int widths[3] = {mleft , inner_area.W() , mright};
-	int heights[3] = {mtop , inner_area.H() , mbot};
-	
-	return Rectangle(outer_area.X() + xoffsets[hcell] , outer_area.Y() + yoffsets[vcell] , widths[hcell] , heights[vcell]);
-	
+void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+   SetBoxArea(box , l , r , t , b);
+   SetInnerArea(InnerArea());
 }
 
 
 
-EagleImage* WidgetArea::GetCellImage(MARGIN_HCELL hcell , MARGIN_VCELL vcell) const {
-	///return cell_images[hcell][vcell];
-	return cell_images[vcell][hcell];
+void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b) {
+   SetBoxArea(box , b);
+   SetInnerArea(InnerArea());
 }
 
 
 
-void WidgetArea::Paint(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell, EagleColor col , int x , int y) const {
-	Rectangle r = GetCellRectangle(hcell , vcell);
-	r.MoveBy(x,y);
-	r.Fill(win , col);
+void WIDGETAREA::SetOuterArea(Rectangle oa) {
+   pos.SetPos(oa.X() , oa.Y());
+   int iw = oa.Width() - (OuterAreaWidth() - inner_width);
+   if (iw < 0) {iw = 0;}
+   int ih = oa.Height() - (OuterAreaHeight() - inner_height);
+   if (ih < 0) {ih = 0;}
+   inner_width = iw;
+   inner_height = ih;
 }
 
 
 
-void WidgetArea::PaintAll(EagleGraphicsContext* win , EagleColor col , int x , int y) const {
-	Rectangle r = outer_area;
-	r.MoveBy(x,y);
-	r.Fill(win , col);
+void WIDGETAREA::SetInnerArea(Rectangle ia) {
+   inner_width = ia.Width();
+   inner_height = ia.Height();
+   int px = ia.X() - (margin.left + border.left + padding.left);
+   int py = ia.Y() - (margin.top + border.top + padding.top);
+   pos.SetPos(px,py);
 }
 
 
 
-void WidgetArea::PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell , int x , int y , int flags) const {
-	EagleImage* img = cell_images[vcell][hcell];
-	EAGLE_ASSERT(img);
-	if (!img) {return;}
-	Rectangle r = GetCellRectangle(hcell , vcell);
-	if (r.W() && r.H()) {
-      if (img) {
-         if (has_image_alpha) {
-            win->SetPMAlphaBlender();
-         }
-         win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
-         if (has_image_alpha) {
-            win->RestoreLastBlendingState();
-         }
+void WIDGETAREA::SetWidgetArea(const WIDGETAREA& wa) {
+   pos = wa.pos;
+   margin = wa.margin;
+   border = wa.border;
+   padding = wa.padding;
+   inner_width = wa.inner_width;
+   inner_height = wa.inner_height;
+}
+
+
+
+/// Getters
+
+
+
+NPAREA WIDGETAREA::OuterNP() const {
+   return NPAREA(OuterArea() , GetAreaBox(BOX_TYPE_MARGIN));
+}
+
+
+
+NPAREA WIDGETAREA::BorderNP() const {
+   return NPAREA(BorderArea() , GetAreaBox(BOX_TYPE_BORDER));
+}
+
+
+
+NPAREA WIDGETAREA::PaddingNP() const {
+   return NPAREA(PaddingArea() , GetAreaBox(BOX_TYPE_PADDING));
+}
+
+
+
+Rectangle WIDGETAREA::OuterArea() const {
+   return Rectangle(pos.X() , pos.Y() , OuterAreaWidth() , OuterAreaHeight());
+}
+
+
+
+Rectangle WIDGETAREA::BorderArea() const {
+   return Rectangle(pos.X() + margin.left , pos.Y() + margin.top , BorderAreaWidth() , BorderAreaHeight());
+}
+
+
+
+Rectangle WIDGETAREA::PaddingArea() const {
+   return Rectangle(pos.X() + margin.left + border.left , pos.Y() + margin.top + border.top , PaddingAreaWidth() , PaddingAreaHeight());
+}
+
+
+
+Rectangle WIDGETAREA::InnerArea() const {
+   return Rectangle(pos.X() + margin.left + border.left + padding.left , pos.Y() + margin.top + border.top + padding.top , InnerAreaWidth() , InnerAreaHeight());
+}
+
+
+
+Rectangle WIDGETAREA::CellBox(BOX_TYPE box , CELL_AREA area) const {
+   EAGLE_ASSERT(area != CELL_AREA_OUTSIDE);
+   return CellBox(box , (VCELL_AREA)((int)area/3) , (HCELL_AREA)((int)area%3));
+}
+
+
+
+Rectangle WIDGETAREA::CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const {
+   
+   int cellz = (int)box;
+
+   typedef Rectangle (WIDGETAREA::*AREAFUNC)() const;
+   if ((vcell == VCELL_CENTER) && (hcell == HCELL_CENTER)) {
+      AREAFUNC areafunc[3] = {
+         BorderArea,PaddingArea,InnerArea
+      };
+      AREAFUNC afunc = areafunc[cellz];
+      
+      return (this->*afunc)();
+   }
+   
+   int celly = (int)vcell;
+   int cellx = (int)hcell;
+   Pos2I cellpos = pos;
+   const int cwidths[3][3] = {
+      {
+         margin.left , 
+         BorderAreaWidth(),
+         margin.right
+      },
+      {
+         border.left,
+         PaddingAreaWidth(),
+         border.right
+      },
+      {
+         padding.left,
+         InnerAreaWidth(),
+         padding.right
       }
-      ///win->DrawRectangle(r , 1.0 , EagleColor(0,255,0));
-	}
-}
-
-
-
-void WidgetArea::PaintImages(EagleGraphicsContext* win , int x , int y , int flags) const {
-   if (has_image_alpha) {
-      win->SetPMAlphaBlender();
-   }
-	for (int celly = 0 ; celly < 3 ; ++celly) {
-		for (int cellx = 0 ; cellx < 3 ; ++cellx ) {
-         Rectangle r = GetCellRectangle((MARGIN_HCELL)cellx , (MARGIN_VCELL)celly);
-         if (r.W() && r.H()) {
-            EagleImage* img = GetCellImage((MARGIN_HCELL)cellx , (MARGIN_VCELL)celly);
-            if (img) {
-               win->DrawStretchedRegion(img , 0 , 0 , img->W() , img->H() , r.X() + x , r.Y() + y , r.W() , r.H() , flags);
-            }
-            ///win->DrawRectangle(r , 1.0 , EagleColor(0,255,0));
-         }
-		}
-	}
-   if (has_image_alpha) {
-      win->RestoreLastBlendingState();
-   }
-}
-
-
-
-void WidgetArea::SetImage(EagleImage* img , MARGIN_HCELL hcell , MARGIN_VCELL vcell) {
-	cell_images[vcell][hcell] = img;
-}
-
-
-
-void WidgetArea::SetImages(EagleImage* imgs[3][3]) {
-   for (unsigned int y = 0 ; y < 3 ; ++y) {
-      for (unsigned int x = 0 ; x < 3 ; ++x) {
-         cell_images[y][x] = imgs[y][x];
+   };
+   const int cheights[3][3] = {
+      {
+         margin.top , 
+         BorderAreaHeight(),
+         margin.bottom
+      },
+      {
+         border.top,
+         PaddingAreaHeight(),
+         border.bottom
+      },
+      {
+         padding.top,
+         InnerAreaHeight(),
+         padding.bottom
       }
+   };
+   const int cxoffsets[3] = {
+      0 , margin.left , border.left
+   };
+   const int cyoffsets[3] = {
+      0 , margin.top , border.top
+   };
+   for (int z = 0 ; z < cellz + 1 ; ++z) {
+      cellpos.MoveBy(cxoffsets[z] , cyoffsets[z]);
    }
-}
-
-
-
-void WidgetArea::SetImagesHaveAlpha(bool has_alpha) {
-   has_image_alpha = has_alpha;
-}
-
-
-
-void WidgetArea::SetOuterPos(int xpos , int ypos) {
-	outer_area.SetPos(xpos,ypos);
-	inner_area.SetPos(xpos + mleft , ypos + mtop);
-}
-
-
-
-void WidgetArea::SetOuterDim(unsigned int width , unsigned int height) {
-	unsigned int minwidth = (unsigned int)(mleft + mright);
-	unsigned int minheight = (unsigned int)(mtop + mbot);
-	if (width < minwidth) {width = minwidth;}
-	if (height < minheight) {height = minheight;}
-	outer_area.SetDimensions(width , height);
-	inner_area.SetArea(outer_area.X() + mleft , outer_area.Y() + mtop , outer_area.W() - minwidth , outer_area.H() - minheight);
-}
-
-
-
-void WidgetArea::SetOuterArea(Rectangle r) {
-	SetOuterArea(r.X() , r.Y() , r.W() , r.H());
-}
-
-
-
-void WidgetArea::SetOuterArea(int xpos , int ypos , unsigned int width , unsigned int height) {
-	unsigned int minwidth = (unsigned int)(mleft + mright);
-	unsigned int minheight = (unsigned int)(mtop + mbot);
-	if (width < minwidth) {width = minwidth;}
-	if (height < minheight) {height = minheight;}
-	outer_area.SetArea(xpos , ypos , width , height);
-	inner_area.SetArea(outer_area.X() + mleft , outer_area.Y() + mtop , outer_area.W() - minwidth , outer_area.H() - minheight);
-}
-
-
-
-void WidgetArea::SetInnerPos(int ixpos , int iypos) {
-   inner_area.SetPos(ixpos,iypos);
-   outer_area.SetPos(ixpos - mleft , iypos - mtop);
-}
-
-
-
-void WidgetArea::SetInnerDimensions(unsigned int width , unsigned int height) {
-   inner_area.SetDimensions(width , height);
-   SetMarginsExpandFromInner(mleft , mright , mtop , mbot);
-}
-
-
-
-void WidgetArea::SetInnerArea(int ixpos , int iypos , unsigned int iwidth , unsigned int iheight) {
-   inner_area.SetArea(ixpos , iypos , iwidth , iheight);
-   SetMarginsExpandFromInner(mleft , mright , mtop , mbot);
-}
-
-
-
-void WidgetArea::SetRelativeInnerPosition(int xpos , int ypos) {
-   SetRelativeInnerArea(xpos,ypos,inner_area.W(),inner_area.H());
-}
-
-
-
-void WidgetArea::SetRelativeInnerDimensions(unsigned int width , unsigned int height) {
-	SetRelativeInnerArea(inner_area.X() , inner_area.Y() , width , height);
-}
-
-
-
-void WidgetArea::SetRelativeInnerArea(Rectangle r) {
-	SetRelativeInnerArea(r.X() , r.Y() , r.W() , r.H());
-}
-
-
-
-void WidgetArea::SetRelativeInnerArea(int xpos , int ypos , unsigned int width , unsigned int height) {
-   
-   if (xpos < 0) {xpos = 0;}
-   if (ypos < 0) {ypos = 0;}
-   if (xpos >= outer_area.W()) {xpos = (outer_area.W() - 1);}
-   if (ypos >= outer_area.H()) {ypos = (outer_area.H() - 1);}
-
-   if ((xpos + (int)width) > outer_area.W()) {width = (unsigned int)(outer_area.W() - xpos);}
-   if ((ypos + (int)height) > outer_area.H()) {height = (unsigned int)(outer_area.H() - ypos);}
-
-   inner_area.SetArea(xpos,ypos,width,height);
-	
-	// resize
-	inner_area.SetDimensions(width , height);
-	outer_area.SetDimensions(mleft + width + mright , mtop + height + mbot);
-	
-	// reposition
-	inner_area.SetPos(xpos , ypos);
-	outer_area.SetPos(xpos - mleft , ypos - mtop);
-}
-
-
-
-void WidgetArea::SetFractionalInnerArea(float fx , float fy , float fw , float fh) {
-//**
-   if (fx < 0.0f) {fx = 0.0f;}
-   if (fx > 1.0f) {fx = 1.0f;}
-   if (fy < 0.0f) {fy = 0.0f;}
-   if (fy > 1.0f) {fy = 1.0f;}
-   if (fw < 0.0f) {fw = 0.0f;}
-   if (fx + fw > 1.0f) {fw = 1.0f - fx;}
-   if (fh < 0.0f) {fh = 0.0f;}
-   if (fy + fh > 1.0f) {fh = 1.0f - fy;}
-   Rectangle r = OuterArea();
-   int left = (int)(fx*r.W());
-   int top = (int)(fy*r.H());
-   int right = (int)((1.0f - (fx + fw))*r.W());
-   int bottom = (int)((1.0f - (fy + fh))*r.H());
-   SetMarginsContractFromOuter(left , right , top , bottom);
-//*/
-/**
-   inner_area.SetArea(LayoutArea(OuterArea() , LayoutRectangle(fx,fy,fw,fh)));
-   mleft = inner_area.X() - outer_area.X();
-   mtop = inner_area.Y() - outer_area.Y();
-   mright = outer_area.BRX() - inner_area.BRX();
-   mbot = outer_area.BRY() - inner_area.BRY();
-*/
-}
-
-
-
-void WidgetArea::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-	if (left < 0) {left = 0;}
-	if (right < 0) {right = 0;}
-	if (top < 0) {top = 0;}
-	if (bottom < 0) {bottom = 0;}
-	mleft = left;
-	mright = right;
-	mtop = top;
-	mbot = bottom;
-	
-	/// expand out from inner area, changing the outer area
-	outer_area.SetArea(inner_area.X() - left , inner_area.Y() - top , inner_area.W() + left + right , inner_area.H() + top + bottom);
-}
-
-
-
-void WidgetArea::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-	if (left < 0) {left = 0;}
-	if (right < 0) {right = 0;}
-	if (top < 0) {top = 0;}
-	if (bottom < 0) {bottom = 0;}
-	
-	/// Contract margins inward from the boundaries of the outer area, thus changing the inner area
-
-	/// We always set the margin values so they're preserved even when the size changes
-	/// This prevents us from setting incorrect margins on an zero sized rectangle
-	int newhmargin = left + right;
-	int newvmargin = top + bottom;
-
-	/// The new values don't necessarily match the new margins if the margins are too large for the outer area
-	int newleft = left;
-	int newtop = top;
-
-	/// Attempt to preserve ratio of margins if too large
-	if (newhmargin > outer_area.W()) {
-      newhmargin = outer_area.W();
-      newleft = (int)((float)outer_area.W()*left/((float)(left + right)));
+   for (int y = 0 ; y < celly ; ++y) {
+      cellpos.MoveBy(0 , cheights[cellz][y]);
    }
-	if (newvmargin > outer_area.H()) {
-      newvmargin = outer_area.H();
-      newtop = (int)((float)outer_area.W()*top/((float)(top + bottom)));
-	}
-	
-	int innerhspaceleft = outer_area.W() - newhmargin;
-	int innervspaceleft = outer_area.H() - newvmargin;
-
-	mleft = left;
-	mright = right;
-	mtop = top;
-	mbot = bottom;
-
-	// now set inner area
-	inner_area.SetArea(outer_area.X() + newleft , outer_area.Y() + newtop , innerhspaceleft , innervspaceleft);
-}
-
-
-
-int WidgetArea::GetCellIndex(int px , int py) {
-   int xoffset[3] = {0 , mleft , mleft + inner_area.W()};
-   int yoffset[3] = {0 , mtop , mtop + inner_area.H()};
-   int xindex = -1;
-   int yindex = -1;
-   
-   int xpos = outer_area.X();
-   int ypos = outer_area.Y();
-   
-   for (int i = 0 ; i < 3 ; ++i) {
-      xoffset[i] += xpos;
-      yoffset[i] += ypos;
+   for (int x = 0 ; x < cellx ; ++x) {
+      cellpos.MoveBy(cwidths[cellz][x] , 0);
    }
    
-   if (px < xoffset[0]) {
-      xindex = -1;
-   }
-   else if (px < xoffset[1]) {
-      xindex = 0;
-   }
-   else if (px < xoffset[2]) {
-      xindex = 1;
-   }
-   else if (px < xoffset[2] + mright) {
-      xindex = 2;
-   }
-   else {
-      xindex = -1;
-   }
-
-   if (py < yoffset[0]) {
-      yindex = -1;
-   }
-   else if (py < yoffset[1]) {
-      yindex = 0;
-   }
-   else if (py < yoffset[2]) {
-      yindex = 1;
-   }
-   else if (py < yoffset[2] + mbot) {
-      yindex = 2;
-   }
-   else {
-      yindex = -1;
-   }
-   
-   if (xindex != -1 && yindex != -1) {
-      return yindex*3 + xindex;
-   }
-   
-   return -1;
+   return Rectangle(cellpos.X() , cellpos.Y() , cwidths[cellz][cellx] , cheights[cellz][celly]);
 }
 
 
 
-bool WidgetArea::Contains(int px , int py) {
-   return outer_area.Contains(px,py);
+int WIDGETAREA::OuterAreaWidth() const {
+   return MarginWidth() + BorderAreaWidth();
 }
 
 
 
-bool WidgetArea::BorderContains(int px , int py) {
-   return SideContains(px,py) || CornerContains(px,py);
+int WIDGETAREA::OuterAreaHeight() const {
+   return MarginHeight() + BorderAreaHeight();
 }
 
 
 
-bool WidgetArea::SideContains(int px , int py) {
-   Rectangle left = GetCellRectangle(MARGIN_HCELL_LEFT , MARGIN_VCELL_CENTER);
-   Rectangle right = GetCellRectangle(MARGIN_HCELL_RIGHT , MARGIN_VCELL_CENTER);
-   Rectangle top = GetCellRectangle(MARGIN_HCELL_CENTER , MARGIN_VCELL_TOP);
-   Rectangle bottom = GetCellRectangle(MARGIN_HCELL_CENTER , MARGIN_VCELL_BOTTOM);
-   return (left.Contains(px,py) ||
-           right.Contains(px,py) ||
-           top.Contains(px,py) ||
-           bottom.Contains(px,py) );
+int WIDGETAREA::BorderAreaWidth() const {
+   return BorderWidth() + PaddingAreaWidth();
 }
 
 
 
-bool WidgetArea::CornerContains(int px , int py) {
-   Rectangle topleft = GetCellRectangle(MARGIN_HCELL_LEFT , MARGIN_VCELL_TOP);
-   Rectangle topright = GetCellRectangle(MARGIN_HCELL_RIGHT , MARGIN_VCELL_TOP);
-   Rectangle bottomright = GetCellRectangle(MARGIN_HCELL_RIGHT , MARGIN_VCELL_BOTTOM);
-   Rectangle bottomleft = GetCellRectangle(MARGIN_HCELL_LEFT , MARGIN_VCELL_BOTTOM);
-   return (topleft.Contains(px,py) ||
-           topright.Contains(px,py) ||
-           bottomright.Contains(px,py) ||
-           bottomleft.Contains(px,py) );
+int WIDGETAREA::BorderAreaHeight() const {
+   return BorderHeight() + PaddingAreaHeight();
 }
 
 
 
-std::ostream& WidgetArea::DescribeTo(std::ostream& os , Indenter indent) const {
-   using std::endl;
-   os << indent << "Outer Area : " << outer_area << endl;
-   os << indent << StringPrintF("Margins (L,R,T,B) = %i,%i,%i,%i" , mleft , mright , mtop , mbot) << endl;
-   os << indent << "Inner Area : " << inner_area << endl;
-   return os;
+int WIDGETAREA::PaddingAreaWidth() const {
+   return PaddingWidth() + InnerAreaWidth();
 }
 
 
 
-std::ostream& operator<<(std::ostream& os , const WidgetArea& wa) {
-   wa.DescribeTo(os);
-   return os;
+int WIDGETAREA::PaddingAreaHeight() const {
+   return PaddingHeight() + InnerAreaHeight();
+}
+
+
+
+int WIDGETAREA::InnerAreaWidth() const {
+   return inner_width;
+}
+
+
+
+int WIDGETAREA::InnerAreaHeight() const {
+   return inner_height;
+}
+
+
+
+int WIDGETAREA::MarginWidth() const {
+   return margin.Width();
+}
+
+
+
+int WIDGETAREA::MarginHeight() const {
+   return margin.Height();
+}
+
+
+
+int WIDGETAREA::BorderWidth() const {
+   return border.Width();
+}
+
+
+
+int WIDGETAREA::BorderHeight() const {
+   return border.Height();
+}
+
+
+
+int WIDGETAREA::PaddingWidth() const {
+   return padding.Width();
+}
+
+
+
+int WIDGETAREA::PaddingHeight() const {
+   return padding.Height();
+}
+
+
+
+Rectangle WIDGETAREA::GetAreaRectangle(WAREA_TYPE atype) const {
+   static Rectangle (WIDGETAREA::*AREAFUNC[4])() const = {
+      &OuterArea,
+      &BorderArea,
+      &PaddingArea,
+      &InnerArea
+   };
+   return (this->*AREAFUNC[atype])();
+}
+
+
+
+BOXAREA WIDGETAREA::GetAreaBox(BOX_TYPE btype) const {
+   const BOXAREA * pbarea[3] = {
+      &margin,
+      &border,
+      &padding
+   };
+   return *(pbarea[btype]);
 }
 
 

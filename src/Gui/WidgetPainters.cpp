@@ -28,7 +28,7 @@
 
 
 
-WidgetPainter default_widget_painter(new WidgetPainterBasic());
+WidgetPainter default_widget_painter(SHAREDOBJECT<WidgetPainterBase>(new WidgetPainterBasic()));
 
 
 

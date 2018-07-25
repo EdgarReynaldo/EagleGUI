@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -56,6 +56,310 @@ const WidgetMsg NoMessages((WidgetBase*)0 , TOPIC_DIALOG , DIALOG_OKAY);
 
 
 const unsigned int TOPIC_GUI = NextFreeTopicId();
+
+
+
+
+/// TODO : Alter mouse event for relative mouse coordinates
+int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
+   if (!(wlist.size())) {
+      return DIALOG_OKAY;
+   }
+   /**
+      Since WidgetHandlers have their own buffer, they need to offset the position they pass to their
+      widgets since each widget stores its position on their own drawing target (the WidgetHandler buffer).
+      This way, every widget that is called will have the relative mouse position on their target bitmap, and
+      they won't have to adjust it.
+   */
+
+   /// Need to get mouse position relative to buffer
+   const int mx = GetMouseX();
+   const int my = GetMouseY();
+   
+   if (IsMouseEvent(e)) {
+      e.mouse.x = mx;
+      e.mouse.y = my;
+   }
+   
+//   WidgetMsg retval;
+   bool gui_takes_focus = false;
+   int msg;
+   int retmsg = DIALOG_OKAY;
+   bool focus_taken = false;
+
+   /// GUIs can take the focus too
+   if (wparent && area.OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
+      /// TODO : this is kind of a relic of a gui being a window... but they're not anymore, sort of
+      /// TODO : Leave this to the EagleGuiWindow subclass
+//      gui_takes_focus = true;
+   }
+
+   /** WidgetHandlers will check whether the mouse is hovering over one of the widgets, and set the hover flag for
+         that widget, as well as removing it from any widget that had it last.
+   */
+   // Only root gui checks for hover
+   if (!wparent) {
+      WidgetBase* new_whover = 0;
+      for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
+         WidgetBase* w = drawlist[i];
+         bool hover = w->IsMouseOver(mouse_x , mouse_y);
+///         bool hover = w->OuterArea().Contains(mx,my);
+         if (hover) {
+            new_whover = w;
+            break;
+         }
+      }
+      if (new_whover != whover) {
+         if (whover) {
+            whover->SetHoverState(false);
+         }
+         /**
+         if (new_whover) {
+            new_whover->SetHoverState(true);
+         }
+         whover = new_whover;
+         */
+      }
+      /// Always set hover??? Need this to make some widgets work (like TextDecorator and Decorator)
+      if (new_whover) {
+         new_whover->SetHoverState(true);
+      }
+      whover = new_whover;
+   }
+   /**
+      Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
+   */
+
+   for (UINT index = 0 ; index < inputlist.size() ; ++index) {
+      WidgetBase* widget = inputlist[index];
+
+      if (!(widget->Flags() & ENABLED)) {continue;}
+
+      msg = widget->HandleEvent(e);
+
+      /// Warning - All messages not related to a dialog will be ignored.
+      /// Use QueueUserMessage or RaiseEvent for user notifications instead.
+      
+      if (msg == DIALOG_OKAY)      {continue;}
+      if (msg & DIALOG_CLOSE)      {return msg;}// Pass the CLOSE message up the chain and back to the user
+      //if (msg & DIALOG_DISABLED) {}// Ignore disabled dialogs
+      if (msg & DIALOG_REDRAW_ALL) {
+         clear_background = true;
+         SetRedrawFlag();
+      }
+      if (msg & DIALOG_REMOVE_ME) {
+         AddToRemoveList(widget);
+      }
+      if (msg & DIALOG_TAKE_FOCUS) {
+         /// The GiveWidgetFocus function will rearrange the widgets in the list, so stop processing then
+         GiveWidgetFocus(widget);
+         focus_taken = true;
+      }
+      if (msg & DIALOG_INPUT_USED) {
+         retmsg |= DIALOG_INPUT_USED;
+         // Don't check any of the other widget's inputs during this update
+         return retmsg;
+      }
+      if (focus_taken) {
+         return retmsg;
+      }
+   }
+   
+   msg = cam.HandleEvent(e);
+   if (msg & DIALOG_INPUT_USED) {
+      retmsg |= DIALOG_INPUT_USED;
+      return retmsg;
+   }
+
+   /// Now that all the widgets have been given priority, check for gui focus changes by key input
+   if (focus_cycle_forward) {
+      CycleFocusForward();
+   }
+   if (focus_cycle_backward) {
+      CycleFocusBackward();
+   }
+   if (gui_takes_focus) {
+      return DIALOG_TAKE_FOCUS;
+   }
+   return retmsg;
+}
+
+
+
+void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   EAGLE_ASSERT(win);
+   EAGLE_ASSERT(win->Valid());
+
+   DrawBuffer(win);
+   
+   DrawToWindow(win , xpos , ypos);
+}
+
+
+
+
+
+int WidgetHandler::PrivateUpdate(double tsec) {
+
+   int msg = 0;
+   int retmsg = DIALOG_OKAY;
+   
+   for (unsigned int i = 0 ; i < inputlist.size() ; ++i) {
+      WidgetBase* widget = inputlist[i];
+      msg = widget->Update(tsec);
+      
+      if (msg == DIALOG_OKAY)      {continue;}
+
+      if (msg & DIALOG_CLOSE)      {return retmsg | DIALOG_CLOSE;}/// Pass the CLOSE message up the chain and back to the user
+
+      ///if (msg & DIALOG_DISABLED) {}/// Ignore disabled dialogs
+
+      if (msg & DIALOG_REDRAW_ALL) {
+         clear_background = true;
+         SetRedrawFlag();
+      }
+
+      if (msg & DIALOG_TAKE_FOCUS) {
+         GiveWidgetFocus(widget);/// This rearranges the widget lists!!! Stop processing them!
+         return retmsg;
+      }
+
+      if (msg & DIALOG_INPUT_USED) {
+         throw EagleException("Your widget's Update function should not be returning DIALOG_INPUT_USED.\n");
+      }
+      
+      if (msg & DIALOG_REMOVE_ME) {
+         AddToRemoveList(widget);
+      }
+   }
+   cam.Update(tsec);
+   
+   return msg;
+}
+
+
+
+
+void WidgetHandler::OnAreaChanged() {
+   /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
+   Rectangle r = OuterArea();
+
+   cam.SetWidgetArea(0,0 , r.W(), r.H());
+
+   if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
+      SetupBuffer(r.W() , r.H() , gwindow);
+   }
+   else {
+      // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
+      cam.SetView(buffer , 0 , 0 , r.W() , r.H());
+   }
+   SyncLayoutPos();
+   clear_background = true;
+}
+
+
+
+void WidgetHandler::OnColorChanged() {
+   if (!use_bg_pic) {
+      RedrawBackgroundBuffer();
+   }
+   clear_background = true;
+}
+
+
+
+void WidgetHandler::TrackWidget(WidgetBase* widget) {
+   /// Only add unique widgets and never itself.
+   /// widget may be a layout, in which case all of its children get tracked as well
+
+   if (!widget) {return;}
+   if (widget == this) {return;}
+   if (HasWidget(widget)) {return;}
+
+   widget = widget->GetDecoratorRoot();
+   
+   Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
+   
+   std::vector<WidgetBase*> layout_children;
+   
+   if (widget_is_layout) {
+      layout_children = widget_is_layout->WChildren();
+      for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
+         TrackWidget(layout_children[i]);
+      }
+      widget_is_layout->SetGuiHandler(this);
+   }
+
+   wlist.push_back(widget);
+   inputlist.push_back(widget);
+   drawlist.insert(drawlist.begin() , widget);
+   /** First widget always has the focus */
+   if (wlist.size() == 1) {
+      GiveWidgetFocus(widget);
+   } else {
+      WidgetHandler* wh = widget->GetGui();
+      if (wh) {
+         wh->GiveWidgetFocus(0,false);
+      }
+   }
+   SortDrawListByPriority();
+   widget->SetParent(this);
+   widget->SetColorset(wcols , true);
+   widget->SetBgRedrawFlag();
+}
+
+
+/// TODO : WARNING : Tracked widgets may have gone out of scope by now, so we have to
+/// be careful not to call any widget functions through their pointers : WARNING : TODO
+
+void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
+   EAGLE_ASSERT(w);
+   if (!GetValidByAddress(w)) {
+      /// TODO : This widget has already been destroyed somehow - note it and move on - figure it out later
+      EagleError() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
+      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
+      return;
+   }
+   
+   /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
+   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget %s" , w->FullName());
+   
+   if (!OwnsWidget(w)) {
+      EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->FullName());
+      return;
+   }
+   EAGLE_ASSERT(OwnsWidget(w));
+   
+   Layout* widget_is_layout = dynamic_cast<Layout*>(w);
+   std::vector<WidgetBase*> layout_children;
+   
+   if (widget_is_layout) {
+      layout_children = widget_is_layout->WChildren();
+      for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
+         StopTrackingWidget(layout_children[i]);
+      }
+      widget_is_layout->SetGuiHandler(0);
+   }
+   
+   MakeAreaDirty(w->OuterArea());
+   
+   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
+   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
+   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
+
+   if (wfocus == w) {
+      GiveWidgetFocus(0);
+   } else {
+      GiveWidgetFocus(wfocus);
+   }
+   
+   w->SetParent(0);
+   if (w == root_layout) {
+      root_layout = &dumb_layout;
+   }
+}
 
 
 
@@ -270,6 +574,7 @@ void WidgetHandler::RedrawBackgroundBuffer() {
 
 
 
+
 bool WidgetHandler::HasWidget(WidgetBase* widget) {
    for (UINT i = 0 ; i < wlist.size() ; ++i) {
       WidgetBase* w = wlist[i];
@@ -393,8 +698,8 @@ void WidgetHandler::CycleFocusBackward() {
 
 
 
-WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string objname) :
-		WidgetBase("WidgetHandler" , objname),
+WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string classname , std::string objname) :
+		WidgetBase(classname , objname),
 		gwindow(window),
 		buffer(0),
 		background(0),
@@ -451,6 +756,23 @@ WidgetHandler::~WidgetHandler() {
 //*/
 }
 
+
+
+void WidgetHandler::QueueUserMessage(const WidgetMsg& wmsg) {
+   
+   const WidgetMsg cammovemsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);
+
+   if (wmsg == cammovemsg) {
+      SetRedrawFlag();
+      return;
+   }
+   
+   if (wparent) {
+      WidgetBase::QueueUserMessage(wmsg);
+   } else {
+      mque.push_back(wmsg);
+   }
+}
 
 
 void WidgetHandler::SetDrawWindow(EagleGraphicsContext* window) {
@@ -600,99 +922,6 @@ void WidgetHandler::ClearMessages() {
 
 
 
-void WidgetHandler::TrackWidget(WidgetBase* widget) {
-   /// Only add unique widgets and never itself.
-   /// widget may be a layout, in which case all of its children get tracked as well
-
-   if (!widget) {return;}
-   if (widget == this) {return;}
-   if (HasWidget(widget)) {return;}
-
-   widget = widget->GetDecoratorRoot();
-   
-   Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
-   
-   std::vector<WidgetBase*> layout_children;
-   
-   if (widget_is_layout) {
-      layout_children = widget_is_layout->WChildren();
-      for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
-         TrackWidget(layout_children[i]);
-      }
-      widget_is_layout->SetGuiHandler(this);
-   }
-
-   wlist.push_back(widget);
-   inputlist.push_back(widget);
-   drawlist.insert(drawlist.begin() , widget);
-   /** First widget always has the focus */
-   if (wlist.size() == 1) {
-      GiveWidgetFocus(widget);
-   } else {
-      WidgetHandler* wh = widget->GetGui();
-      if (wh) {
-         wh->GiveWidgetFocus(0,false);
-      }
-   }
-   SortDrawListByPriority();
-   widget->SetParent(this);
-   widget->SetColorset(wcols , true);
-   widget->SetBgRedrawFlag();
-}
-
-
-/// TODO : WARNING : Tracked widgets may have gone out of scope by now, so we have to
-/// be careful not to call any widget functions through their pointers : WARNING : TODO
-
-void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
-   EAGLE_ASSERT(w);
-   if (!GetValidByAddress(w)) {
-      /// TODO : This widget has already been destroyed somehow - note it and move on - figure it out later
-      EagleError() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
-      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
-      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
-      RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
-      return;
-   }
-   
-   /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
-   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget %s" , w->FullName());
-   
-   if (!OwnsWidget(w)) {
-      EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->FullName());
-      return;
-   }
-   EAGLE_ASSERT(OwnsWidget(w));
-   
-   Layout* widget_is_layout = dynamic_cast<Layout*>(w);
-   std::vector<WidgetBase*> layout_children;
-   
-   if (widget_is_layout) {
-      layout_children = widget_is_layout->WChildren();
-      for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
-         StopTrackingWidget(layout_children[i]);
-      }
-      widget_is_layout->SetGuiHandler(0);
-   }
-   
-   MakeAreaDirty(w->OuterArea());
-   
-   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
-   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
-   RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
-
-   if (wfocus == w) {
-      GiveWidgetFocus(0);
-   } else {
-      GiveWidgetFocus(wfocus);
-   }
-   
-   w->SetParent(0);
-   if (w == root_layout) {
-      root_layout = &dumb_layout;
-   }
-}
-
 
 
 void WidgetHandler::SetRootLayout(Layout* l) {
@@ -755,151 +984,6 @@ void WidgetHandler::ClearLayout() {
    
    MakeAreaDirty(area.OuterArea());
 }
-
-
-/// TODO : Alter mouse event for relative mouse coordinates
-int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
-   if (!(wlist.size())) {
-      return DIALOG_OKAY;
-   }
-   /**
-      Since WidgetHandlers have their own buffer, they need to offset the position they pass to their
-      widgets since each widget stores its position on their own drawing target (the WidgetHandler buffer).
-      This way, every widget that is called will have the relative mouse position on their target bitmap, and
-      they won't have to adjust it.
-   */
-
-   /// Need to get mouse position relative to buffer
-   const int mx = GetMouseX();
-   const int my = GetMouseY();
-   
-   if (IsMouseEvent(e)) {
-      e.mouse.x = mx;
-      e.mouse.y = my;
-   }
-   
-//   WidgetMsg retval;
-   bool gui_takes_focus = false;
-   int msg;
-   int retmsg = DIALOG_OKAY;
-   bool focus_taken = false;
-
-   /// GUIs can take the focus too
-   if (wparent && area.OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
-      /// TODO : this is kind of a relic of a gui being a window... but they're not anymore, sort of
-      /// TODO : Leave this to the EagleGuiWindow subclass
-//      gui_takes_focus = true;
-   }
-
-   /** WidgetHandlers will check whether the mouse is hovering over one of the widgets, and set the hover flag for
-         that widget, as well as removing it from any widget that had it last.
-   */
-   // Only root gui checks for hover
-   if (!wparent) {
-      WidgetBase* new_whover = 0;
-      for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
-         WidgetBase* w = drawlist[i];
-         bool hover = w->IsMouseOver(mouse_x , mouse_y);
-///         bool hover = w->OuterArea().Contains(mx,my);
-         if (hover) {
-            new_whover = w;
-            break;
-         }
-      }
-      if (new_whover != whover) {
-         if (whover) {
-            whover->SetHoverState(false);
-         }
-         /**
-         if (new_whover) {
-            new_whover->SetHoverState(true);
-         }
-         whover = new_whover;
-         */
-      }
-      /// Always set hover??? Need this to make some widgets work (like TextDecorator and Decorator)
-      if (new_whover) {
-         new_whover->SetHoverState(true);
-      }
-      whover = new_whover;
-   }
-   /**
-      Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
-   */
-
-   for (UINT index = 0 ; index < inputlist.size() ; ++index) {
-      WidgetBase* widget = inputlist[index];
-
-      if (!(widget->Flags() & ENABLED)) {continue;}
-
-      msg = widget->HandleEvent(e);
-
-      /// Warning - All messages not related to a dialog will be ignored.
-      /// Use QueueUserMessage or RaiseEvent for user notifications instead.
-      
-      if (msg == DIALOG_OKAY)      {continue;}
-      if (msg & DIALOG_CLOSE)      {return msg;}// Pass the CLOSE message up the chain and back to the user
-      //if (msg & DIALOG_DISABLED) {}// Ignore disabled dialogs
-      if (msg & DIALOG_REDRAW_ALL) {
-         clear_background = true;
-         SetRedrawFlag();
-      }
-      if (msg & DIALOG_REMOVE_ME) {
-         AddToRemoveList(widget);
-      }
-      if (msg & DIALOG_TAKE_FOCUS) {
-         /// The GiveWidgetFocus function will rearrange the widgets in the list, so stop processing then
-         GiveWidgetFocus(widget);
-         focus_taken = true;
-      }
-      if (msg & DIALOG_INPUT_USED) {
-         retmsg |= DIALOG_INPUT_USED;
-         // Don't check any of the other widget's inputs during this update
-         return retmsg;
-      }
-      if (focus_taken) {
-         return retmsg;
-      }
-   }
-   
-   msg = cam.HandleEvent(e);
-   if (msg & DIALOG_INPUT_USED) {
-      retmsg |= DIALOG_INPUT_USED;
-      return retmsg;
-   }
-
-   /// Now that all the widgets have been given priority, check for gui focus changes by key input
-   if (focus_cycle_forward) {
-      CycleFocusForward();
-   }
-   if (focus_cycle_backward) {
-      CycleFocusBackward();
-   }
-   if (gui_takes_focus) {
-      return DIALOG_TAKE_FOCUS;
-   }
-   return retmsg;
-}
-
-
-
-int  WidgetHandler::PrivateCheckInputs() {
-   return DIALOG_OKAY;
-}
-
-
-
-void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   EAGLE_ASSERT(win);
-   EAGLE_ASSERT(win->Valid());
-
-   DrawBuffer(win);
-   
-   DrawToWindow(win , xpos , ypos);
-}
-
-
-
 
 void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
    /// WidgetHandler needs to be fully redrawn, so redraw every contained widget as well, regardless
@@ -1005,122 +1089,6 @@ void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos
 
 
 
-int WidgetHandler::PrivateUpdate(double tsec) {
-
-   int msg = 0;
-   int retmsg = DIALOG_OKAY;
-   
-   for (unsigned int i = 0 ; i < inputlist.size() ; ++i) {
-      WidgetBase* widget = inputlist[i];
-      msg = widget->Update(tsec);
-      
-      if (msg == DIALOG_OKAY)      {continue;}
-
-      if (msg & DIALOG_CLOSE)      {return retmsg | DIALOG_CLOSE;}/// Pass the CLOSE message up the chain and back to the user
-
-      ///if (msg & DIALOG_DISABLED) {}/// Ignore disabled dialogs
-
-      if (msg & DIALOG_REDRAW_ALL) {
-         clear_background = true;
-         SetRedrawFlag();
-      }
-
-      if (msg & DIALOG_TAKE_FOCUS) {
-         GiveWidgetFocus(widget);/// This rearranges the widget lists!!! Stop processing them!
-         return retmsg;
-      }
-
-      if (msg & DIALOG_INPUT_USED) {
-         throw EagleException("Your widget's Update function should not be returning DIALOG_INPUT_USED.\n");
-      }
-      
-      if (msg & DIALOG_REMOVE_ME) {
-         AddToRemoveList(widget);
-      }
-   }
-   cam.Update(tsec);
-   
-   return msg;
-}
-
-
-/*
-bool WidgetHandler::Init() {
-   ClearMessages();// empty the message queue of any startup messages
-   bool init = true;
-   for (WLIT it = wlist.begin() ; it != wlist.end() ; ++it) {
-      WidgetBase* w = *it;
-      if (!w->Init()) {init = false;}
-      w->SetRedrawFlag();
-   }
-   /// TODO : Is this predrawing really necessary?
-   if (init) {
-      SetVisibilityState(false);
-      SetRedrawFlag();
-      Display();// Get everything drawn to the buffer
-      SetVisibilityState(true);
-   }
-   return init;
-}
-
-
-
-bool WidgetHandler::Ready() {
-   if (!background) {return false;}
-   if (!buffer) {return false;}
-   bool ready = true;
-   for (WLIT it = wlist.begin() ; it != wlist.end() ; ++it) {
-      if (!(*it)->Ready()) {ready = false;}
-   }
-   return ready;
-}
-
-
-
-bool WidgetHandler::Shutdown() {
-   bool shutdown = true;
-   for (WLIT it = wlist.begin() ; it != wlist.end() ; ++it) {
-      if (!(*it)->Shutdown()) {shutdown = false;}
-   }
-   return shutdown;
-}
-
-
-*/
-void WidgetHandler::QueueUserMessage(const WidgetMsg& wmsg) {
-   
-   const WidgetMsg cammovemsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);
-
-   if (wmsg == cammovemsg) {
-      SetRedrawFlag();
-      return;
-   }
-   
-   if (wparent) {
-      WidgetBase::QueueUserMessage(wmsg);
-   } else {
-      mque.push_back(wmsg);
-   }
-}
-
-
-
-void WidgetHandler::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
-   WidgetBase::SetColorset(colors , set_descendants_colors);
-   if (!use_bg_pic) {
-      RedrawBackgroundBuffer();
-   }
-   if (set_descendants_colors) {
-      for (WIDGETLIST::iterator it = wlist.begin() ; it != wlist.end() ; ++it) {
-         WidgetBase* wchild = *it;
-         wchild->SetColorset(colors , set_descendants_colors);
-      }
-      clear_background = true;
-   }
-}
-
-
-
 void WidgetHandler::SetBackgroundColor(const EagleColor color) {
    bg_col = color;
    use_bg_pic = false;
@@ -1139,37 +1107,6 @@ void WidgetHandler::SyncLayoutPos() {
 
 void WidgetHandler::SyncCamera() {
    cam.SetViewArea(cam.ViewArea());
-}
-
-
-
-void WidgetHandler::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   
-   Rectangle r = area.OuterArea();
-
-   /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
-   cam.SetWidgetArea(0,0 , r.W(), r.H());
-
-   if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
-      SetupBuffer(r.W() , r.H() , gwindow);
-   }
-   else {
-      // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-      cam.SetView(buffer , 0 , 0 , r.W() , r.H());
-   }
-   SyncLayoutPos();
-   clear_background = true;
-}
-
-
-
-void WidgetHandler::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
-   
-   // reset camera to reflect new area
-   cam.SetWidgetArea(0,0,area.OuterArea().W(), area.OuterArea().H());
 }
 
 
@@ -1408,108 +1345,9 @@ WidgetHandler* WidgetHandler::GetGui() {
 
 
 
-void WidgetHandler::SetGlobalBackgroundDrawType(BG_DRAW_TYPE type , bool for_all_guis) {
-   SetBackgroundDrawType(type);
-   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
-      WidgetBase* w = wlist[i];
-      w->SetBackgroundDrawType(type);
-      WidgetHandler* wh = w->GetGui();
-      if (wh && for_all_guis) {
-         wh->SetGlobalBackgroundDrawType(type , true);
-      }
-   }
-}
-
-
-
-void WidgetHandler::SetGlobalFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis) {
-   SetFocusDrawType(type);
-   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
-      WidgetBase* w = wlist[i];
-      w->SetFocusDrawType(type);
-      WidgetHandler* wh = w->GetGui();
-      if (wh && for_all_guis) {
-         wh->SetGlobalFocusDrawType(type , true);
-      }
-   }
-}
-
-
-
-void WidgetHandler::SetGlobalBackgroundPainter(BackgroundPainter* painter , bool for_all_guis) {
-   SetBackgroundPainter(painter);
-   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
-      WidgetBase* w = wlist[i];
-      w->SetBackgroundPainter(painter);
-      WidgetHandler* wh = w->GetGui();
-      if (wh && for_all_guis) {
-         wh->SetGlobalBackgroundPainter(painter , true);
-      }
-   }
-}
-
-
-
-
-void WidgetHandler::SetGlobalFocusPainter(FocusPainter* painter , bool for_all_guis) {
-   SetFocusPainter(painter);
-   for (unsigned int i = 0 ; i < wlist.size() ; ++i) {
-      WidgetBase* w = wlist[i];
-      w->SetFocusPainter(painter);
-      WidgetHandler* wh = w->GetGui();
-      if (wh && for_all_guis) {
-         wh->SetGlobalFocusPainter(painter , true);
-      }
-   }
-}
-
-
-
 void WidgetHandler::MakeAreaDirty(Rectangle dirty_area) {
    dbg_list.push_back(dirty_area);
    SetRedrawFlag();
-}
-
-
-
-void WidgetHandler::AccMoveViewTlxTo(int xpos , int ypos , double time) {
-   cam.AccMoveViewTlxTo(xpos , ypos , time);
-}
-
-
-
-void WidgetHandler::AccMoveViewCenterTo(int xpos , int ypos , double time) {
-   cam.AccMoveViewCenterTo(xpos , ypos , time);
-}
-
-
-
-void WidgetHandler::AccMoveViewBy(int dx , int dy , double time) {
-   cam.AccMoveViewBy(dx , dy , time);
-}
-
-
-
-void WidgetHandler::MoveViewTlxTo(int xpos , int ypos , double time) {
-   cam.MoveViewTlxTo(xpos , ypos , time);
-}
-
-
-
-void WidgetHandler::MoveViewCenterTo(int xpos , int ypos , double time) {
-   cam.MoveViewCenterTo(xpos , ypos , time);
-}
-
-
-
-void WidgetHandler::MoveViewBy(int dx , int dy , double time) {
-   cam.MoveViewBy(dx , dy , time);
-}
-
-
-
-void WidgetHandler::AllowMiddleMouseButtonDrag(bool allow) {
-   cam.AllowMiddleMouseButtonDrag(allow);
 }
 
 
@@ -1522,6 +1360,18 @@ WidgetBase* WidgetHandler::CurrentFocus() {
 
 WidgetBase* WidgetHandler::CurrentHover() {
    return whover;
+}
+
+
+
+EagleImage* WidgetHandler::BackgroundBitmap() {
+   return background;
+}
+
+
+
+EagleImage* WidgetHandler::BufferBitmap() {
+   return buffer;
 }
 
 
@@ -1638,6 +1488,48 @@ int WidgetHandler::GetMouseY() {
 
 
 
+void WidgetHandler::AccMoveViewTlxTo(int xpos , int ypos , double time) {
+   cam.AccMoveViewTlxTo(xpos , ypos , time);
+}
+
+
+
+void WidgetHandler::AccMoveViewCenterTo(int xpos , int ypos , double time) {
+   cam.AccMoveViewCenterTo(xpos , ypos , time);
+}
+
+
+
+void WidgetHandler::AccMoveViewBy(int dx , int dy , double time) {
+   cam.AccMoveViewBy(dx , dy , time);
+}
+
+
+
+void WidgetHandler::MoveViewTlxTo(int xpos , int ypos , double time) {
+   cam.MoveViewTlxTo(xpos , ypos , time);
+}
+
+
+
+void WidgetHandler::MoveViewCenterTo(int xpos , int ypos , double time) {
+   cam.MoveViewCenterTo(xpos , ypos , time);
+}
+
+
+
+void WidgetHandler::MoveViewBy(int dx , int dy , double time) {
+   cam.MoveViewBy(dx , dy , time);
+}
+
+
+
+void WidgetHandler::AllowMiddleMouseButtonDrag(bool allow) {
+   cam.AllowMiddleMouseButtonDrag(allow);
+}
+
+
+
 std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "WidgetHandler class object - address " << this << " {" << endl;
    ++indent;
@@ -1693,6 +1585,7 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    os << indent << "}" << endl;
    return os;
 }
+
 
 
 

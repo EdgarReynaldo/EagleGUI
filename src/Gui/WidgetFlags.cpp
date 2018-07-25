@@ -59,6 +59,12 @@ WidgetFlags& WidgetFlags::SetNewFlags(WidgetFlags wflags) {
 
 
 
+WidgetFlags& WidgetFlags::SetNewFlag(WIDGET_FLAGS f , bool value) {
+   value?AddFlag(f):RemoveFlag(f);
+}
+
+
+
 WidgetFlags& WidgetFlags::AddFlag(WIDGET_FLAGS f) {
    return AddFlags((UINT)f);
 }

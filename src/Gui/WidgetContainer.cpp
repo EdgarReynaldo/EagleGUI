@@ -43,7 +43,7 @@ void WIDGETCONTAINER::Clear() {
 
 
 
-WIDGETCONTAINER::SHAREDWIDGET WIDGETCONTAINER::FindById(EAGLE_ID id) {
+SHAREDWIDGET WIDGETCONTAINER::FindById(EAGLE_ID id) {
    if (cmap.find(id) != cmap.end()) {
       return cmap[id];
    }

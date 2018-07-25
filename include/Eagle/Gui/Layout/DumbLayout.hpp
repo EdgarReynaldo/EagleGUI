@@ -23,7 +23,7 @@
 #define DumbLayout_HPP
 
 
-#include "Eagle/Gui/Layout/Layout2.hpp"
+#include "Eagle/Gui/Layout/Layout.hpp"
 
 
 

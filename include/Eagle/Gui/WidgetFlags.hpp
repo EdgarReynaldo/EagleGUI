@@ -72,6 +72,8 @@ public :
    WidgetFlags& operator=(WidgetFlags wflags);
    
    WidgetFlags& SetNewFlags(WidgetFlags wflags);
+   
+   WidgetFlags& SetNewFlag(WIDGET_FLAGS f , bool value);
 
    WidgetFlags& AddFlag(WIDGET_FLAGS f);
    WidgetFlags& RemoveFlag(WIDGET_FLAGS f);

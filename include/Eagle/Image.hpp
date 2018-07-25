@@ -135,11 +135,13 @@ public :
 };
 
 
-typedef std::shared_ptr<EagleImage , DELETER<EagleImage> > SHAREDIMAGE;
+typedef SHAREDOBJECT<EagleImage> SHAREDIMAGE;
 
-SHAREDIMAGE StackImage(EagleImage* img);
-SHAREDIMAGE StackImage(EagleImage& img);
+
 
 
 #endif // EagleImage_HPP
+
+
+
 

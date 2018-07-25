@@ -28,7 +28,8 @@ public :
 };
 
 template <class T>
-typedef std::shared_ptr<T,DELETER = DELETER()> SHAREDOBJECT;
+class SHAREDOBJECT : public std::shared_ptr<T> {
+};
 
 template <class T>
 SHAREDOBJECT<T> StackObject(T* t);
@@ -37,11 +38,11 @@ SHAREDOBJECT<T> StackObject(T& t);
 
 template <class T>
 SHAREDOBJECT<T> StackObject(T* t) {
-   return SHAREDOBJECT<T>(t,DELETER(false));
+   return SHAREDOBJECT<T>(t,DELETER<T>(false));
 }
 template <class T>
 SHAREDOBJECT<T> StackObject(T& t) {
-   return SHAREDOBJECT<T>(&t,DELETER(false));
+   return SHAREDOBJECT<T>(&t,DELETER<T>(false));
 }
 
 
