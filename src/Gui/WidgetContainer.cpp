@@ -2,8 +2,8 @@
 
 
 
-#include "Eagle/Gui2/WidgetContainer.hpp"
-#include "Eagle/Gui2/WidgetBase2.hpp"
+#include "Eagle/Gui/WidgetContainer.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
 
 
 

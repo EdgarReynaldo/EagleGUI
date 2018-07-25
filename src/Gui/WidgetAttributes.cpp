@@ -23,7 +23,7 @@
 
 
 
-#include "Eagle/Gui2/WidgetAttributes.hpp"
+#include "Eagle/Gui/WidgetAttributes.hpp"
 
 
 

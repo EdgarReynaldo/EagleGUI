@@ -20,8 +20,8 @@
  */
  
  
-#include "Eagle/Gui2/WidgetBase2.hpp"
-#include "Eagle/Gui2/WidgetHandler2.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/Timer.hpp"
 
 

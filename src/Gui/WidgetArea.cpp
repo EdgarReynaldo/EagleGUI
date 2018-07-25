@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Gui2/WidgetArea2.hpp"
+#include "Eagle/Gui/WidgetArea.hpp"
 
 /// BOXAREA
 

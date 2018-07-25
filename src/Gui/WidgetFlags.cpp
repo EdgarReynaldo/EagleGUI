@@ -21,7 +21,7 @@
 
 
 
-#include "Eagle/Gui2/WidgetFlags.hpp"
+#include "Eagle/Gui/WidgetFlags.hpp"
 
 
 

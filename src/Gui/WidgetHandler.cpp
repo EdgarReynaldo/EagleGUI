@@ -27,7 +27,7 @@
 #include "Eagle/StringWork.hpp"
 
 #include "Eagle/Gui/WidgetHandler.hpp"
-#include "Eagle/Gui/Decorators/Decorator.hpp"
+///#include "Eagle/Gui/Decorators/Decorator.hpp"
 
 
 #include <algorithm>

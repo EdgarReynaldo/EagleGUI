@@ -25,17 +25,12 @@
 #define WidgetContainer_HPP
 
 
-#include <memory>
-#include <map>
 
 
 #include "Eagle/Object.hpp"
 #include "Eagle/SharedMemory.hpp"
 
-
-
-#define WIDGETCONTAINER WidgetContainer
-#define WIDGETBASE WidgetBase2
+#include <map>
 
 
 
@@ -70,7 +65,7 @@ public :
 };
 
 
-
+typedef WIDGETCONTAINER WidgetContainer;
 
 
 #endif // WidgetContainer_HPP

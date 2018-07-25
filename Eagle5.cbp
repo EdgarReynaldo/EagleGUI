@@ -169,7 +169,6 @@
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
-		<Unit filename="include/Eagle/Gui/TestWidget.hpp" />
 		<Unit filename="include/Eagle/Gui/Text.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
@@ -275,7 +274,6 @@
 		<Unit filename="src/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Gui/Scroller.cpp" />
-		<Unit filename="src/Gui/TestWidget.cpp" />
 		<Unit filename="src/Gui/Text/BasicText.cpp" />
 		<Unit filename="src/Gui/Text/GlobalText.cpp" />
 		<Unit filename="src/Gui/Text/LinkText.cpp" />

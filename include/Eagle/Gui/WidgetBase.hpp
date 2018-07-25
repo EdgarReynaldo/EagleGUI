@@ -32,13 +32,13 @@
 
 #include "Eagle/Gui/WidgetMessage.hpp"
 
-#include "Eagle/Gui2/WidgetArea2.hpp"
-#include "Eagle/Gui2/WidgetFlags.hpp"
-#include "Eagle/Gui2/WidgetAttributes.hpp"
-#include "Eagle/Gui2/WidgetContainer.hpp"
-#include "Eagle/Gui2/WidgetPainters.hpp"
+#include "Eagle/Gui/WidgetArea.hpp"
+#include "Eagle/Gui/WidgetFlags.hpp"
+#include "Eagle/Gui/WidgetAttributes.hpp"
+#include "Eagle/Gui/WidgetContainer.hpp"
+#include "Eagle/Gui/WidgetPainters.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
-#include "Eagle/Gui2/WidgetContainer.hpp"
+#include "Eagle/Gui/WidgetContainer.hpp"
 
 
 

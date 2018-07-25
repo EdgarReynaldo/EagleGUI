@@ -106,7 +106,6 @@ public :
 };
 
 
-#define WIDGETAREA WidgetArea2
 
 class WIDGETAREA {
 
@@ -197,6 +196,9 @@ public :
 
 };
 
+
+
+typedef WIDGETAREA WidgetArea;
 
 
 
