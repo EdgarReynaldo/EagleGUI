@@ -170,11 +170,15 @@ int WidgetBase::Update(double dt) {
 void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    WidgetPainter wp = GetWidgetPainter();
    if (wp) {
-      wp->PaintWidgetBackground(win , this);
+      wp->GetPainterReady(win , this , xpos , ypos);
+      wp->PaintBackground();
+      PrivateDisplay(win , xpos , ypos);
+      if (wflags.FlagOn(HASFOCUS)) {
+         wp->PaintFocus();
+      }
    }
-   PrivateDisplay(win , xpos , ypos);
-   if (wp && wflags.FlagOn(HASFOCUS)) {
-      wp->PaintWidgetFocus(win , this);
+   else {
+      PrivateDisplay(win , xpos , ypos);
    }
    ClearRedrawFlag();
 }
@@ -368,7 +372,7 @@ SHAREDOBJECT<WidgetColorset> WidgetBase::GetWidgetColorset() const {
 
 
 const WidgetColorset& WidgetBase::WidgetColors() const {
-   SHAREDOBJECT<WidgetColorset> wc = GetWidgetColorset();
+   SHAREDOBJECT<WidgetColorset> wc = GetWidgetColorset();/// This is safe because the colorset lives somewhere else
    return *(wc.get());
 }
 

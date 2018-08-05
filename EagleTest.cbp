@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="EagleTest" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="cbbuild/bin/EagleTestDebug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+				<Linker>
+					<Add option="-leagle_a5_debug.dll" />
+					<Add option="-leagle_debug.dll" />
+					<Add option="-lallegro_monolith-debug.dll" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="cbbuild/bin/EagleTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-leagle_a5.dll" />
+					<Add option="-leagle.dll" />
+					<Add option="-lallegro_monolith.dll" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="include" />
+			<Add directory="Allegro5/include" />
+		</Compiler>
+		<Linker>
+			<Add directory="cbbuild/lib" />
+			<Add directory="Allegro5/lib" />
+		</Linker>
+		<Unit filename="EagleTest/EagleTestMain.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

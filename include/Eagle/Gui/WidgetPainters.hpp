@@ -25,9 +25,7 @@
 #define WidgetPainters_HPP
 
 
-#include "Eagle/Gui/WidgetArea.hpp"
-
-
+#include "Eagle/SharedMemory.hpp"
 
 
 /// types of bg paint
@@ -70,37 +68,45 @@ enum FOCUS_AREA_PAINT_TYPE {
 
 /// Abstract base class
 class WidgetPainterBase {
-   
+
+protected :
+   EagleGraphicsContext* window;
+   const WidgetBase* widget;
+   int xoffset;
+   int yoffset;
+
+
 public :
-   WidgetPainterBase() {}
+   
+   WidgetPainterBase();
    virtual ~WidgetPainterBase() {}
    
-   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WidgetBase* wb)=0;
-   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WidgetBase* wb)=0;
+   virtual void PaintBackground()=0;
+   virtual void PaintFocus()=0;
+   
+   void GetPainterReady(EagleGraphicsContext* win , const WidgetBase* w , int xpos , int ypos);
 };
 
 
 
 class WidgetPainterBasic : public WidgetPainterBase {
    
-   
-protected :
-   
-   void PaintSolid(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
-   void PaintRounded(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
-
-   void PaintArea(EagleGraphicsContext* win , const WidgetBase* wb , const NPAREA& np , AREA_FILL_TYPE filltype);
-
 public :
    
-   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WidgetBase* wb);
-   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WidgetBase* wb);
-
-
+   virtual void PaintBackground();
+   virtual void PaintFocus();
 };
 
 typedef SHAREDOBJECT<WidgetPainterBase> WidgetPainter;
 
 extern WidgetPainter default_widget_painter;
 
+
+
+
+
 #endif // WidgetPainters_HPP
+
+
+
+

@@ -9,6 +9,11 @@
 #include "allegro5/allegro.h"
 
 
+
+extern const int ALLEGRO5_REGISTERED;
+
+
+
 class Allegro5System : public EagleSystem {
 
 private :

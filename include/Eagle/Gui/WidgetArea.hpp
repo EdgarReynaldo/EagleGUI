@@ -95,8 +95,15 @@ public :
    int bottom;
    
    NPAREA(Rectangle area , BOXAREA box);
-   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
+   
+   /// Paint functions
 
+   void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);
+   void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);
+   
+   /// Getters
+   
+   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
    Rectangle GetRow(VCELL_AREA vcell) const;
    Rectangle GetColumn(HCELL_AREA hcell) const;
    

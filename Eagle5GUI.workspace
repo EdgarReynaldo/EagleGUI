@@ -2,6 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Eagle5GUI_Workspace">
 		<Project filename="Eagle5.cbp" />
-		<Project filename="Allegro5_backend.cbp" />
+		<Project filename="Allegro5Backend.cbp" />
+		<Project filename="EagleTest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

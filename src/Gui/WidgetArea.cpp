@@ -22,6 +22,10 @@
 
 
 #include "Eagle/Gui/WidgetArea.hpp"
+#include "Eagle/GraphicsContext.hpp"
+
+
+
 
 /// BOXAREA
 
@@ -67,6 +71,52 @@ NPAREA::NPAREA(Rectangle area , BOXAREA box) :
    bottom(box.bottom)
 {}
    
+
+
+void NPAREA::PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c) {
+   for (int i = 0 ; i < 9 ; ++i) {
+      Rectangle cell = GetNPCell((HCELL_AREA)(i%3) , (VCELL_AREA)(i/3));
+      if (cell.Area()) {
+         win->DrawFilledRectangle(cell , c);
+      }
+   }
+}
+
+
+
+void NPAREA::PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c) {
+   Rectangle cells[9];
+   for (int i = 0 ; i < 9 ; ++i) {
+      HCELL_AREA hcell = (HCELL_AREA)(i%3);
+      VCELL_AREA vcell = (VCELL_AREA)(i/3);
+      cells[i] = GetNPCell(hcell , vcell);
+      if (cells[i].Area()) {
+         if ((hcell == HCELL_CENTER) || (vcell == VCELL_CENTER)) {
+            win->DrawFilledRectangle(cells[i] , c);
+         }
+         else {
+            /// Drawing a corner
+            if (hcell == HCELL_LEFT) {
+               if (vcell == VCELL_TOP) {
+                  win->DrawFilledQuarterEllipse(cells[i] , QUADRANT_NW , c);
+               }
+               else {
+                  win->DrawFilledQuarterEllipse(cells[i] , QUADRANT_SW , c);
+               }
+            }
+            else {
+               if (vcell == VCELL_TOP) {
+                  win->DrawFilledQuarterEllipse(cells[i] , QUADRANT_NE , c);
+               }
+               else {
+                  win->DrawFilledQuarterEllipse(cells[i] , QUADRANT_SE , c);
+               }
+            }
+         }
+      }
+   }
+}
+
 
 
 Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {

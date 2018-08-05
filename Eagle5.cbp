@@ -113,6 +113,7 @@
 		<Unit filename=".gitignore" />
 		<Unit filename="EagleCopyright.txt" />
 		<Unit filename="EagleFAQ.txt" />
+		<Unit filename="EagleFeatures.txt" />
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="README.txt" />
@@ -178,6 +179,7 @@
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetContainer.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetDrawingFuncs.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
@@ -294,6 +296,7 @@
 		<Unit filename="src/Gui/WidgetBase.cpp" />
 		<Unit filename="src/Gui/WidgetColorset.cpp" />
 		<Unit filename="src/Gui/WidgetContainer.cpp" />
+		<Unit filename="src/Gui/WidgetDrawingFuncs.cpp" />
 		<Unit filename="src/Gui/WidgetFlags.cpp" />
 		<Unit filename="src/Gui/WidgetHandler.cpp" />
 		<Unit filename="src/Gui/WidgetMessage.cpp" />
