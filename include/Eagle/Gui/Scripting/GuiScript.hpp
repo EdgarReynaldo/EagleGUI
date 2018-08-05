@@ -15,7 +15,7 @@
 class EagleColor;
 class WidgetColorset;
 class ColorRegistry;
-class WidgetBase;
+class WIDGETBASE;
 
 /**
 
@@ -122,7 +122,7 @@ protected:
 
    ColorRegistry* colreg;
 
-   std::map<int , WidgetBase*> wmap;
+   std::map<int , WIDGETBASE*> wmap;
 
 
 
@@ -169,7 +169,7 @@ public :
    EagleColor* GetColor(std::string name);
    WidgetColorset* GetColorset(std::string name);
 
-   WidgetBase* GetWidget(std::string name);
+   WIDGETBASE* GetWidget(std::string name);
 
 
 

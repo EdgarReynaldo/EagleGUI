@@ -59,7 +59,7 @@ WIDGETCOLOR WidgetColorFromName(std::string name) {
          return (WIDGETCOLOR)i;
       }
    }
-   throw EagleException(StringPrintF("Color '%s' is not a recognized WIDGETCOLOR.\n" , name));
+   throw EagleException(StringPrintF("Color '%s' is not a recognized WIDGETCOLOR.\n" , name.c_str()));
    return SDCOL;
 }
 
@@ -204,8 +204,8 @@ bool ColorRegistry::HasColorset(std::string name) {
 
 
 
-std::shared_ptr<WidgetColorset> ColorRegistry::GetColorsetByName(std::string name) {
-   std::map<std::string , std::shared_ptr<WidgetColorset> >::iterator it = named_colorsets.find(name);
+SHAREDOBJECT<WidgetColorset> ColorRegistry::GetColorsetByName(std::string name) {
+   std::map<std::string , SHAREDOBJECT<WidgetColorset> >::iterator it = named_colorsets.find(name);
    if (it == named_colorsets.end()) {
       throw EagleException(StringPrintF("WidgetColorset '%s' not found in color registry.\n" , name.c_str()));
    }
@@ -215,7 +215,7 @@ std::shared_ptr<WidgetColorset> ColorRegistry::GetColorsetByName(std::string nam
 
 
 void ColorRegistry::RegisterColorset(std::string name , const WidgetColorset& wc) {
-   named_colorsets[name] = std::shared_ptr<WidgetColorset>(new WidgetColorset(wc));
+   named_colorsets[name] = HeapObject(new WidgetColorset(wc));
 }
 
 
@@ -248,7 +248,7 @@ bool HasColorset(std::string name) {
 
 
 
-std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name) {
+SHAREDOBJECT<WidgetColorset> GetColorsetByName(std::string name) {
    return ColorRegistry::GlobalColorRegistry()->GetColorsetByName(name);
 }
 

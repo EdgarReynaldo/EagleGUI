@@ -30,6 +30,9 @@
 
 #include "Eagle/Image.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/SharedMemory.hpp"
+
+
 
 enum FONT_LOADING_FLAGS {
    LOAD_FONT_NORMAL = 0,
@@ -78,6 +81,8 @@ std::string DefaultFontPath();
 int DefaultFontSize();
 int DefaultFontFlags();
 
+
+typedef SHAREDOBJECT<EagleFont> SHAREDFONT;
 
 
 #endif // EagleFont_HPP

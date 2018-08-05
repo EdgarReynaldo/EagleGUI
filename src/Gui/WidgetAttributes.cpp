@@ -24,6 +24,8 @@
 
 
 #include "Eagle/Gui/WidgetAttributes.hpp"
+#include "Eagle/StringWork.hpp"
+#include "Eagle/Exception.hpp"
 
 
 
@@ -87,6 +89,16 @@ ATTRIBUTEVALUEMAP* ATTRIBUTEVALUEMAP::GlobalAttributeMap() {
 ATTRIBUTEVALUEMAP::ATTRIBUTESET* ATTRIBUTEVALUEMAP::KnownAttributes() {
    static ATTRIBUTESET aset;
    return &aset;
+}
+
+
+
+VALUE ATTRIBUTEVALUEMAP::GetDefinedAttributeValue(const ATTRIBUTE& a) const {
+   if (!HasAttribute(a)) {
+      throw EagleException(StringPrintF("GetDefinedAttributeValue attribute '%s' unknown!!!\n" , a.c_str()));
+   }
+   ATTVALMAP::const_iterator cit = attributes.find(a);
+   return cit->second;
 }
 
 

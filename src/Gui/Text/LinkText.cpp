@@ -63,7 +63,7 @@ int LinkText::PrivateCheckInputs() {
 void LinkText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    SelectText::PrivateDisplay(win,xpos,ypos);
 
-   if (Flags() & HOVER) {
+   if (Flags().FlagOn(HOVER)) {
       /// Draw underline for hyperlink
       for (unsigned int i = 0 ; i < lineareas.size() ; ++i) {
          const Rectangle& r = lineareas[i];
@@ -83,6 +83,7 @@ int LinkText::PrivateUpdate(double tsec) {
 
 
 void LinkText::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   (void)on;
    if (f == HOVER) {
       SetBgRedrawFlag();
    }

@@ -31,9 +31,9 @@
 #include "Eagle/Gui/Camera.hpp"
 
 #include "Eagle/Exception.hpp"
+#include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
-
 
 #include <vector>
 #include <list>
@@ -53,7 +53,11 @@ enum GUI_MSGS {
 REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);
 
 
+///class Layout {};
 
+class QUBERT : public WidgetBase {
+   Layout* l;
+};
 
 class WidgetHandler : public WidgetBase {
 	
@@ -109,7 +113,7 @@ protected :
    /// Widgetbase functions
    virtual int  PrivateHandleEvent(EagleEvent e);// Only handle events not handled in CheckInputs here
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int  PrivateUpdate(double tsec);
+   virtual int PrivateUpdate(double tsec);
 
    virtual void OnAreaChanged();
    virtual void OnColorChanged();
@@ -123,6 +127,8 @@ protected :
 
 
 private :
+   typedef unsigned int UINT;
+   
    bool OwnsWidget(WidgetBase* widget);
    UINT WidgetIndex(WidgetBase* widget);
    WLIT InputListIterator(WidgetBase* widget);
@@ -185,9 +191,8 @@ public :
    void SetRootLayout(Layout* l);
    
    /// Functions for adding widgets to the handler - automatically added to the layout
-   void AddWidget(WidgetBase* widget);
-   WidgetHandler& operator<<(WidgetBase* widget);
-   WidgetHandler& operator<<(WidgetBase& widget);
+   void AddWidget(SHAREDWIDGET widget);
+   WidgetHandler& operator<<(SHAREDWIDGET widget);
    void RemoveWidget(WidgetBase* widget);
    void ClearLayout();// Removes all widgets from the dialog and destroys the ones marked for deletion. Global WH's should probably call this.
 
@@ -210,7 +215,7 @@ public :
 
    virtual void SetFocusState(bool state);
 
-   virtual bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);/// notify_parent for internal use only
+   bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);/// notify_parent for internal use only
 
    virtual void SetRedrawAllFlag();
    
@@ -235,7 +240,6 @@ public :
    
    int GetMouseX();// returns mouse x relative to gui's inner area
    int GetMouseY();// returns mouse y relative to gui's inner area
-   
    
    /// Camera control
    void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0

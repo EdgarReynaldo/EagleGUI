@@ -27,11 +27,13 @@
 
 #include "Eagle/Resources.hpp"
 
-#include <memory>
+#include "Eagle/SharedMemory.hpp"
+
+
 
 class ResourceLibrary {
 public :
-   typedef std::map<RESOURCEID , std::shared_ptr<ResourceBase> > RESMAP;
+   typedef std::map<RESOURCEID , SHAREDOBJECT<ResourceBase> > RESMAP;
    typedef RESMAP::iterator RMIT;
    typedef std::map<RESOURCE_TYPE , std::set<std::string> > TYPEMAP;
 
@@ -54,9 +56,9 @@ public :
    
    RESOURCE_TYPE DeduceResourceType(std::string ext);
 
-   std::shared_ptr<ResourceBase> GetResource(RESOURCEID rid);
+   SHAREDOBJECT<ResourceBase> GetResource(RESOURCEID rid);
 
-   virtual RESOURCEID LoadResourceFromFile(FilePath fp)=0;
-   virtual RESOURCEID LoadResourceFromMemory(const MemFile* memfile)=0;
+///   virtual RESOURCEID LoadResourceFromFile(FilePath fp)=0;
+///   virtual RESOURCEID LoadResourceFromMemory(const MemFile* memfile)=0;
 };
 

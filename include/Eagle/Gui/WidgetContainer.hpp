@@ -34,11 +34,10 @@
 
 
 
-class WIDGETBASE;
+class WidgetBase;
 
 
-typedef SHAREDOBJECT<WIDGETBASE> SHAREDWIDGET;
-
+typedef SHAREDOBJECT<WidgetBase> SHAREDWIDGET;
 
 
 

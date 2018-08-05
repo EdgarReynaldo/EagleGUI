@@ -54,7 +54,7 @@ Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int new
    (void)newwidth;
    (void)newheight;
    
-   WIDGETBASE* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
    
    if (!widget) {
       return BADRECTANGLE;
@@ -68,7 +68,7 @@ Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int new
 
 
 void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot) {
-   Layout::PlaceWidget(0 , slot);
+   Layout::PlaceWidget(widget , slot);
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
       PlaceWidget(widget , slot , lrect);
@@ -78,7 +78,7 @@ void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot) {
 
 
 int RelativeLayout::AddWidget(SHAREDWIDGET widget) {
-   int new_slot = Layout::AddWidget(0);
+   int new_slot = Layout::AddWidget(SHAREDWIDGET());
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
       PlaceWidget(widget , new_slot , lrect);
@@ -98,7 +98,7 @@ void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot , LayoutRectangl
 
 
 int RelativeLayout::AddWidget(SHAREDWIDGET widget , LayoutRectangle lrect) {
-   int new_slot = Layout::AddWidget(0);
+   int new_slot = Layout::AddWidget(SHAREDWIDGET());
    if (widget) {
       EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
       layout_rectangles[new_slot] = lrect;

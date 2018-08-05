@@ -25,7 +25,7 @@
 #define EagleGuiLayout_HPP
 
 
-#include "Eagle/Gui2/WidgetBase2.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 #include "Eagle/Gui/Alignment.hpp"
 
@@ -33,9 +33,6 @@
 #include <iostream>
 #include <string>
 #include <climits>
-
-
-class WidgetHandler;
 
 
 
@@ -50,7 +47,7 @@ enum LAYOUT_ATTRIBUTES {
 std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
 
 
-class LAYOUTBASE : public WidgetBase {
+class Layout : public WidgetBase {
 
 protected :
    
@@ -64,8 +61,9 @@ protected :
 
 
    /// Utility
-   int WidgetIndex(WidgetBase* widget) const;
-   WidgetBase* GetWidget(int slot) const;
+   int WidgetIndex(const WidgetBase* widget) const;
+   WidgetBase* GetWidget(int slot);
+   const WidgetBase* GetWidget(int slot) const {return GetWidget(slot);}
    int NextFreeSlot();
 
    /// Override and call if you need special storage
@@ -94,25 +92,25 @@ protected :
    
 public :
    
-   LAYOUTBASE(std::string objclass , std::string objname);
-   virtual ~LAYOUTBASE();
+   Layout(std::string objclass , std::string objname);
+   virtual ~Layout();
    
 
 
 
-   /// LAYOUTBASE
+   /// Layout
 
    /// Pass INT_MAX for a parameter if you don't care about the position or size
    /// NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
    
-   Rectangle RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const;
+   Rectangle RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const;
 
    Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea) const;
 
-   Rectangle RequestWidgetArea(WidgetBase* widget , Rectangle newarea) const;
+   Rectangle RequestWidgetArea(const WidgetBase* widget , Rectangle newarea) const;
 
-   Rectangle RequestWidgetArea(WidgetBase* widget) const;
+   Rectangle RequestWidgetArea(const WidgetBase* widget) const;
    
    
    void Resize(unsigned int nsize);
@@ -134,7 +132,7 @@ public :
    void ClearWidgets();/// Remove all widgets from layout
    
 /// TODO : Why is this public again?
-///   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
+   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
 
    void DetachFromGui();/// Call this in Layout derived class's destructor
    
@@ -143,16 +141,20 @@ public :
 
    
    
-   virtual void SetWChildren(std::vector<WidgetBase*> new_children);
+   virtual void SetWChildren(std::vector<SHAREDWIDGET> new_children);
 
    // Getters
-   std::vector<WidgetBase*> WChildren() const ;
-   std::vector<WidgetBase*> Descendants() const ;
+   std::vector<SHAREDWIDGET> WChildren() const ;
+   std::vector<SHAREDWIDGET> Descendants() const ;
+   
+   Layout* RootLayout();
+   const Layout* RootLayout() const;
+   
+   bool IsRootLayout() const;
    
    int GetLayoutSize() const ;
    
-
-
+   
    virtual bool AcceptsFocus() {return false;}
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;

@@ -22,7 +22,7 @@ protected :
    
    CHECKBOXDRAWFUNC draw_func;
    
-   SHAREDIMAGE cb_images[4];
+   EagleImage* cb_images[4];
    
    bool current;
    
@@ -42,7 +42,7 @@ public :
    ~BasicCheckBox();
    
    void SetDrawFunc(CHECKBOXDRAWFUNC cbdrawfunc);
-   virtual void SetImages(SHAREDIMAGE upimage , SHAREDIMAGE downimage , SHAREDIMAGE hoverupimage , SHAREDIMAGE hoverdownimage);
+   virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
 
    void ToggleChecked();
    void SetChecked(bool checked);

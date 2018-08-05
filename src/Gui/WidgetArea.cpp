@@ -122,6 +122,13 @@ void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
 
 
 
+WIDGETAREA& WIDGETAREA::MoveBy(Pos2I p) {
+   pos.MoveBy(p);
+   return *this;
+}
+
+
+
 WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
    SetWidgetArea(wa);
    return *this;
@@ -129,35 +136,39 @@ WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
 
 
 
-void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+WIDGETAREA& WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
    SetBoxArea(box , l , r , t , b);
    SetOuterArea(OuterArea());
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b) {
+WIDGETAREA& WIDGETAREA::SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b) {
    SetBoxArea(box , b);
    SetOuterArea(OuterArea());
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
+WIDGETAREA& WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b) {
    SetBoxArea(box , l , r , t , b);
    SetInnerArea(InnerArea());
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b) {
+WIDGETAREA& WIDGETAREA::SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b) {
    SetBoxArea(box , b);
    SetInnerArea(InnerArea());
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetOuterArea(Rectangle oa) {
+WIDGETAREA& WIDGETAREA::SetOuterArea(Rectangle oa) {
    pos.SetPos(oa.X() , oa.Y());
    int iw = oa.Width() - (OuterAreaWidth() - inner_width);
    if (iw < 0) {iw = 0;}
@@ -165,27 +176,30 @@ void WIDGETAREA::SetOuterArea(Rectangle oa) {
    if (ih < 0) {ih = 0;}
    inner_width = iw;
    inner_height = ih;
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetInnerArea(Rectangle ia) {
+WIDGETAREA& WIDGETAREA::SetInnerArea(Rectangle ia) {
    inner_width = ia.Width();
    inner_height = ia.Height();
    int px = ia.X() - (margin.left + border.left + padding.left);
    int py = ia.Y() - (margin.top + border.top + padding.top);
    pos.SetPos(px,py);
+   return *this;
 }
 
 
 
-void WIDGETAREA::SetWidgetArea(const WIDGETAREA& wa) {
+WIDGETAREA& WIDGETAREA::SetWidgetArea(const WIDGETAREA& wa) {
    pos = wa.pos;
    margin = wa.margin;
    border = wa.border;
    padding = wa.padding;
    inner_width = wa.inner_width;
    inner_height = wa.inner_height;
+   return *this;
 }
 
 

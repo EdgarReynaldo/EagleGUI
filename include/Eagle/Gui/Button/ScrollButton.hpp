@@ -37,7 +37,6 @@ protected :
 
    /// WidgetBase
    virtual int PrivateHandleEvent(EagleEvent e);
-   virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
@@ -47,7 +46,7 @@ protected :
    virtual void OnAreaChanged();
    virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
    virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
-   virtual void OnColorChanged();
+///   virtual void OnColorChanged();
 
 public :
    
@@ -55,7 +54,7 @@ public :
    ~BasicScrollButton() {}
 
    void UseBasicButton();
-   void UseButton(BasicButton* button);/// Shallow copy - don't destroy this button while in use
+   void UseButton(SHAREDBUTTON button);
    void SetScrollBar(BasicScrollBar* scrollbar);/// For scrollbars to use
    void SetIncrement(int new_increment);
    virtual void SetScrollDirection(bool up_or_left , bool horizontal);

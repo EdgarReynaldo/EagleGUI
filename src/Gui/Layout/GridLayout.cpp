@@ -39,7 +39,7 @@ Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) const {
 
 Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
 
-   WidgetBase* widget = GetWidget(slot_index);
+   const WidgetBase* widget = GetWidget(slot_index);
 
    if (!widget) {
       return BADRECTANGLE;
@@ -48,8 +48,8 @@ Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
    int col = slot_index % ncols;
    int row = slot_index / ncols;
 
-   int basex = area.InnerArea().X() + col*(colwidth + colhspace);
-   int basey = area.InnerArea().Y() + row*(rowheight + rowvspace);
+   int basex = InnerArea().X() + col*(colwidth + colhspace);
+   int basey = InnerArea().Y() + row*(rowheight + rowvspace);
    
    int wwidth = widget->OuterArea().W();
    int wheight = widget->OuterArea().H();
@@ -88,9 +88,9 @@ Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
          basey += cellvpad;
          
          wwidth = colwidth - 2*cellhpad;
-         if (wwidth < widget->MinWidth()) {wwidth = widget->MinWidth();}
+         if (wwidth < widget->AbsMinWidth()) {wwidth = widget->AbsMinWidth();}
          wheight = rowheight - 2*cellvpad;
-         if (wheight < widget->MinHeight()) {wheight = widget->MinHeight();}
+         if (wheight < widget->AbsMinHeight()) {wheight = widget->AbsMinHeight();}
          break;
       default : EAGLE_ASSERT(0);break;
    }
@@ -104,8 +104,8 @@ Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
 void GridLayout::CalculateGrid() {
    colwidth = 0;
    rowheight = 0;
-   int tw = area.InnerArea().W();
-   int th = area.InnerArea().H();
+   int tw = InnerArea().W();
+   int th = InnerArea().H();
    if (tw > 0 && ncols > 0) {
       colwidth = (tw - (ncols - 1)*colhspace)/ncols;
    }
@@ -146,7 +146,7 @@ GridLayout::~GridLayout() {
 
 
 Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
-   WidgetBase* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
       return BADRECTANGLE;
    }
@@ -172,7 +172,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
       ClearWidgets();
 	}
    else {
-      std::vector<SHAREDWIDGET> keep_widgets((unsigned int)newsize , (WidgetBase*)0);
+      std::vector<SHAREDWIDGET> keep_widgets((unsigned int)newsize , StackObject((WidgetBase*)0));
       std::vector<SHAREDWIDGET> removed_widgets;
       int oldindex = 0;
       int newindex = 0;
@@ -185,7 +185,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
          if (row >= newrows) {
             for (col = 0 ; col < oldcols ; ++col) {
                oldindex = row*oldcols + col;
-               RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
+               RemoveWidgetFromLayout(wchildren[oldindex].get());/// Optionally frees widget and places NULL in its slot
             }
          }
          else {
@@ -227,10 +227,10 @@ void GridLayout::SetGlobalSpacing(unsigned int hspace , unsigned int vspace) {
    colhspace = hspace;
    rowvspace = vspace;
    if (ncols > 0) {
-      colwidth = area.InnerArea().W() - (ncols-1)*hspace;
+      colwidth = InnerArea().W() - (ncols-1)*hspace;
    }
    if (nrows > 0) {
-      rowheight = area.InnerArea().H() - (nrows - 1)*vspace;
+      rowheight = InnerArea().H() - (nrows - 1)*vspace;
    }
    RepositionAllChildren();
 }

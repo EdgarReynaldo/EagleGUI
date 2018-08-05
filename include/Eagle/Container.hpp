@@ -27,6 +27,8 @@
 
 #include <vector>
 
+#include "Eagle/SharedMemory.hpp"
+
 
 
 template <class Type , class ListType>
@@ -45,7 +47,7 @@ template <class Type>
 class PointerManager {
 
 protected :
-   typedef std::shared_ptr<Type> PTYPE;
+   typedef SHAREDOBJECT<Type> PTYPE;
    typedef std::vector<PTYPE> PTRLIST;
    typedef typename PTRLIST::iterator PLIT;
 
@@ -98,9 +100,10 @@ template <class Type>
 typename PointerManager<Type>::PTYPE PointerManager<Type>::Add(PTYPE sp) {
    Type* p = sp.get();
    PLIT it = GetListIterator(p);
-   if (it != ptrs.end()) {
+   if (it == ptrs.end()) {
       ptrs.push_back(sp);
    }
+   return sp;
 }
    
 

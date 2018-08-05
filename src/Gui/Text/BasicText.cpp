@@ -19,7 +19,7 @@ using namespace std;
 
 #include "Eagle/StringWork.hpp"
 
-#include "Eagle/Gui/Decorators/TextDecorator.hpp"
+///#include "Eagle/Gui/Decorators/TextDecorator.hpp"
 
 #include <cstdlib>
 
@@ -82,7 +82,7 @@ int BasicText::PrivateCheckInputs() {
 
 
 void BasicText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   DrawText(win , xpos , ypos , WCols()[TXTCOL]);
+   DrawText(win , xpos , ypos , GetColor(TXTCOL));
 }
 
 
@@ -224,10 +224,10 @@ void BasicText::ShrinkWrap() {
    
    scale_to_fit = false;
    
-   WidgetArea a = area;
-   a.SetInnerArea(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , totalheight + 2*vpadding);
+   WidgetArea wa = GetWidgetArea();
+   wa.SetInnerArea(Rectangle(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , totalheight + 2*vpadding));
    
-   WidgetBase::SetWidgetArea(a.OuterArea());
+   SetWidgetArea(wa);
 }
 
 
@@ -264,12 +264,6 @@ void BasicText::SetText(std::string textstr , EagleFont* font) {
       fontheight = 0;
    }
    Refresh();
-   
-   TextDecorator* text_decorator = dynamic_cast<TextDecorator*>(GetDecoratorParent());
-   
-   if (text_decorator) {
-      text_decorator->RepositionText();
-   }
 }
 
 

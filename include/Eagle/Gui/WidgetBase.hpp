@@ -35,24 +35,41 @@
 #include "Eagle/Gui/WidgetArea.hpp"
 #include "Eagle/Gui/WidgetFlags.hpp"
 #include "Eagle/Gui/WidgetAttributes.hpp"
-#include "Eagle/Gui/WidgetContainer.hpp"
 #include "Eagle/Gui/WidgetPainters.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetContainer.hpp"
 
 
 
+class Layout;
+class WidgetHandler;
 
-SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget);
-SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget);
+enum WIDGET_ZORDER_PRIORITY {
+   ZORDER_PRIORITY_LOWEST = 0,
+   ZORDER_PRIORITY_LOW    = 64,
+   ZORDER_PRIORITY_NORMAL = 128,
+   ZORDER_PRIORITY_HIGH   = 192,
+   ZORDER_PRIORITY_HIGHEST = 255
+};
 
 
-class LAYOUTBASE;
-class WidgetHandler2;
+extern const unsigned int TOPIC_DIALOG;
+
+/// DIALOG_MSGS = Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
+
+enum DIALOG_MSGS {
+   DIALOG_OKAY       = 0x00,/// Also used to signify that there are no messages for the WidgetHandler::TakeNextMessage function.
+   DIALOG_CLOSE      = 0x01,
+   DIALOG_REDRAW_ALL = 0x02,/// For when the background needs to be cleared / redrawn
+   DIALOG_INPUT_USED = 0x04,/// Play nice, a WidgetHandler will stop checking other widgets input after this is received.
+   DIALOG_TAKE_FOCUS = 0x08,
+   DIALOG_DISABLED   = 0x10,/// Returned when you try to update or check the inputs of a disabled dialog.
+   DIALOG_REMOVE_ME  = 0x20
+};
 
 
 
-class WIDGETBASE : public EagleObject , protected EagleEventSource {
+class WidgetBase : public EagleObject , public EagleEventSource {
 
 protected :
    /// For sub widgets
@@ -64,23 +81,26 @@ protected :
    ATTRIBUTEVALUEMAP wattributes;
 
    /// References only
-   WIDGETBASE* wparent;
-   LAYOUTBASE* wlayout;
-   WidgetHandler2* whandler;
+   WidgetBase* wparent;
+   Layout* wlayout;
+   WidgetHandler* whandler;
    
    /// Can be shared
    WidgetPainter wpainter;
-   std::shared_ptr<WidgetColorset> wcolors;
+   SHAREDOBJECT<WidgetColorset> wcolors;
+   
+   /// Visual ordering
+   int zdepth;
    
    
 
    /// WidgetEventSource
-   void RaiseWidgetEvent(WidgetMsg msg);
+   void RaiseEvent(WidgetMsg msg);
    
    /// Private interface, override to define behavior
    virtual int PrivateHandleEvent(EagleEvent ee);
    virtual int PrivateCheckInputs();
-   virtual void PrivateUpdate(double dt);
+   virtual int PrivateUpdate(double dt);
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
    /// Callbacks, overload if you need to
@@ -93,12 +113,12 @@ protected :
    void OnSelfAreaChanged(WIDGETAREA new_widget_area);
    void OnSelfAttributeChanged(ATTRIBUTE a , VALUE v);
    void OnSelfFlagChanged(WidgetFlags new_widget_flags);
-   void OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset);
+   void OnSelfColorChanged(SHAREDOBJECT<WidgetColorset> cset);
    
    
 public :
    
-WIDGETBASE(std::string classname , std::string objname) :
+WidgetBase(std::string classname , std::string objname) :
       EagleObject(classname , objname),
       EagleEventSource(),
       widgets(),
@@ -109,14 +129,15 @@ WIDGETBASE(std::string classname , std::string objname) :
       wlayout(0),
       whandler(0),
       wpainter(),
-      wcolors(0)
+      wcolors(),
+      zdepth(ZORDER_PRIORITY_NORMAL)
 {}
-   virtual ~WIDGETBASE();
+   virtual ~WidgetBase();
    
    /// Main interface
 
    int HandleEvent(EagleEvent ee);
-   void Update(double dt);
+   int Update(double dt);
    void Display(EagleGraphicsContext* win , int xpos , int ypos);
    
    /// Parent messaging
@@ -134,12 +155,14 @@ WIDGETBASE(std::string classname , std::string objname) :
    void SetHoverState(bool hover);
    void SetFocusState(bool focus);
    
-   void SetWidgetColorset(std::shared_ptr<WidgetColorset> cset);
+   void SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset);
    void SetWidgetColorset(const WidgetColorset& cset);
    void UnsetWidgetColorset();
 
    void SetWidgetPainter(const WidgetPainter& wp);
    void UnsetWidgetPainter();
+   
+   void SetZOrder(int zpriority);
    
    /// Getters
 
@@ -150,17 +173,18 @@ WIDGETBASE(std::string classname , std::string objname) :
 
    VALUE GetAttributeValue(const ATTRIBUTE& a) const;
 
-   WIDGETAREA GetWidgetArea();
-   Rectangle OuterArea() {return warea.OuterArea();}
-   Rectangle InnerArea() {return warea.InnerArea();}
+   WIDGETAREA GetWidgetArea() const;
+   Rectangle OuterArea() const;
+   Rectangle InnerArea() const;
 
-   WidgetFlags Flags();
+   WidgetFlags Flags() const;
 
-   EagleColor GetColor(WIDGETCOLOR wc);
+   SHAREDOBJECT<WidgetColorset> GetWidgetColorset() const;
+   const WidgetColorset& WidgetColors() const;
+   EagleColor GetColor(WIDGETCOLOR wc) const;
    
-   WidgetColorset WidgetColors();
    
-   WidgetPainter GetWidgetPainter();
+   WidgetPainter GetWidgetPainter() const;
    
    
    virtual bool AcceptsFocus() {return true;}
@@ -170,19 +194,33 @@ WIDGETBASE(std::string classname , std::string objname) :
 
    void ClearRedrawFlag();
    
-   void SetLayoutOwner(LAYOUTBASE* l);
-   void SetWidgetHandler(WidgetHandler2* wh);
+   void SetLayoutOwner(Layout* l);
+   void SetWidgetHandler(WidgetHandler* wh);
+   void SetParent(WidgetBase* p);
    
-   virtual int AbsMinWidth();
-   virtual int AbsMinHeight();
+   virtual int AbsMinWidth() const;
+   virtual int AbsMinHeight() const;
    
+   Pos2I AbsParentPos() const;
+   int AbsParentX() const;
+   int AbsParentY() const;
+   
+   WidgetArea AbsoluteArea() const;
+   
+   WidgetBase*    Root();
+   WidgetHandler* RootHandler();
+   
+   WidgetBase*    GetParent()  {return wparent;}
+   Layout*        GetLayout()  {return wlayout;}
+   WidgetHandler* GetHandler() {return whandler;}
+   
+   bool HasGui();
+   virtual WidgetHandler* GetGui();
+   
+   int ZValue() const {return zdepth;}
 };
 
-
-
-
-
-
+bool DrawPriorityIsLess(const WidgetBase* w1 , const WidgetBase* w2);
 
 #endif // WidgetBaseNew_HPP
 

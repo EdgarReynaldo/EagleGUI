@@ -136,19 +136,20 @@ public :
    
    WIDGETAREA& operator=(const WIDGETAREA& wa);
    
+   WIDGETAREA& MoveBy(Pos2I p);
 
    /// Setters
    
-   void SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
-   void SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
+   WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
 
-   void SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
-   void SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
+   WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
 
-	void SetOuterArea(Rectangle oa);
-	void SetInnerArea(Rectangle ia);
+	WIDGETAREA& SetOuterArea(Rectangle oa);
+	WIDGETAREA& SetInnerArea(Rectangle ia);
 
-   void SetWidgetArea(const WIDGETAREA& wa);
+   WIDGETAREA& SetWidgetArea(const WIDGETAREA& wa);
 
    /// Getters
    

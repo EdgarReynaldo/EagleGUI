@@ -5,12 +5,14 @@
 
 #include "Eagle/Gui/BasicIcon.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/GraphicsContext.hpp"
+
 
 
 
 BasicIcon::BasicIcon(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
-      stretch_icon(false)
+      stretch_icon()
 {
    
 }
@@ -25,7 +27,7 @@ void BasicIcon::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) 
    if (stretch_icon) {
       Rectangle dest = InnerArea();
       dest.MoveBy(xpos,ypos);
-      win->DrawStretchedRegion(icon_image , src , dest , DRAW_NORMAL);
+      win->DrawStretchedRegion(icon_image , src , dest);
    }
    else {
       int x = xpos + (InnerArea().W() - icon_image->W())/2;
@@ -53,7 +55,7 @@ void BasicIcon::SetImage(SHAREDIMAGE new_image) {
 std::ostream& BasicIcon::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << FullName() << " :" << std::endl;
    os << indent << StringPrintF("icon_image is %p and is %s , stretch_icon is %s",
-                                icon_image , (icon_image && icon_image->Valid())?"Valid":"Invalid" , stretch_icon?"true":"false") << std::endl;
+                                (const EagleImage*)icon_image , (icon_image && icon_image->Valid())?"Valid":"Invalid" , stretch_icon?"true":"false") << std::endl;
    WidgetBase::DescribeTo(os , indent);
    return os;
 }

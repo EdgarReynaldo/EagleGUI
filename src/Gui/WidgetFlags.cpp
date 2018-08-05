@@ -60,7 +60,7 @@ WidgetFlags& WidgetFlags::SetNewFlags(WidgetFlags wflags) {
 
 
 WidgetFlags& WidgetFlags::SetNewFlag(WIDGET_FLAGS f , bool value) {
-   value?AddFlag(f):RemoveFlag(f);
+   return (value?AddFlag(f):RemoveFlag(f));
 }
 
 

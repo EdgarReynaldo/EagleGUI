@@ -102,7 +102,7 @@ Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    (void)newx;
    (void)newy;
    
-   WidgetBase* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
       return Rectangle(-1,-1,-1,-1);
    }

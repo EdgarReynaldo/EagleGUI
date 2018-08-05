@@ -29,6 +29,8 @@ public :
    
    BasicIcon(std::string objclass = "BasicIcon" , std::string objname = "Nemo");
    
+   virtual ~BasicIcon() {}
+   
    void SetStretch(bool stretch);
    void SetImage(SHAREDIMAGE new_image);
    

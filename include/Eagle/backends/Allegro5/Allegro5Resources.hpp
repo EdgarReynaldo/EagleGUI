@@ -31,27 +31,12 @@
 
 class Allegro5ImageResource : public ImageResource {
 public :
-   /// Virtual methods
-   virtual bool LoadFromFile(FilePath fp)=0;
-   virtual bool LoadFromMemory(MemFile mf)=0;
-   virtual bool Loaded()=0;
-bool Allegro5ImageResource::Loaded() {
-   return (image);
-}
-   
 };
 
 
 
 class Allegro5FontResource : public FontResource {
 public :
-   /// Virtual methods
-   virtual bool LoadFromFile(FilePath fp)=0;
-   virtual bool LoadFromMemory(MemFile mf)=0;
-   virtual bool Loaded();
-bool Allegro5FontResource::Loaded() {
-   return (font);
-}
 };
 
 

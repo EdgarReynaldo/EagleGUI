@@ -25,7 +25,7 @@
 #define WidgetPainters_HPP
 
 
-#include "Eagle/Gui2/WidgetArea2.hpp"
+#include "Eagle/Gui/WidgetArea.hpp"
 
 
 
@@ -34,7 +34,7 @@
 /// FILL, ROUNDEDFILL , IMAGE, CUSTOM
 
 class EagleGraphicsContext;
-class WIDGETBASE;
+class WidgetBase;
 
 
 enum AREA_FILL_TYPE {
@@ -75,8 +75,8 @@ public :
    WidgetPainterBase() {}
    virtual ~WidgetPainterBase() {}
    
-   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb)=0;
-   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb)=0;
+   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WidgetBase* wb)=0;
+   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WidgetBase* wb)=0;
 };
 
 
@@ -89,33 +89,17 @@ protected :
    void PaintSolid(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
    void PaintRounded(EagleGraphicsContext* win , const NPAREA& np , EagleColor c);
 
-   void PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype);
+   void PaintArea(EagleGraphicsContext* win , const WidgetBase* wb , const NPAREA& np , AREA_FILL_TYPE filltype);
 
 public :
    
-   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb);
-   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb);
+   virtual void PaintWidgetBackground(EagleGraphicsContext* win , const WidgetBase* wb);
+   virtual void PaintWidgetFocus(EagleGraphicsContext* win , const WidgetBase* wb);
 
 
 };
 
-
-
-class WidgetPainter {
-protected :
-   std::shared_ptr<WidgetPainterBase> wpainter;
-public :
-   WidgetPainter();
-   WidgetPainter(std::shared_ptr<WidgetPainterBase> wpbase);
-   
-   void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb);
-   void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb);
-
-   void Reset() {wpainter.reset();}
-   operator bool() {return (bool)wpainter.get();}
-   WidgetPainterBase* operator->() {return Painter();}
-   WidgetPainterBase* Painter() {return wpainter.get();}
-};
+typedef SHAREDOBJECT<WidgetPainterBase> WidgetPainter;
 
 extern WidgetPainter default_widget_painter;
 

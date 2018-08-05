@@ -105,6 +105,10 @@ public :
 };
 
 
+/// Miscellaneous drawing functions
+
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , EagleColor hlcol , EagleColor sdcol);
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , const WidgetColorset& colors);
 
 /*
 class ThreeWaySplitter {

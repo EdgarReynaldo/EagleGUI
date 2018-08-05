@@ -25,6 +25,9 @@
 #define Resources_HPP
 
 #include "Eagle/File.hpp"
+#include "Eagle/MemFile.hpp"
+#include "Eagle/SharedMemory.hpp"
+
 
 #include <memory>
 
@@ -55,8 +58,8 @@ protected :
    RESOURCEID rid;
    RESOURCE_TYPE rtype;
    
-   FilePath filepath;
-   MemFile memfile;
+//   FilePath filepath;
+//   MemFile memfile;
    
    ResourceBase(const ResourceBase& r);/// copying is prohibited
    ResourceBase& operator=(const ResourceBase& r);/// assignment is prohibited
@@ -78,31 +81,33 @@ public :
 };
 
 
+class EagleImage;
 
 class ImageResource : public ResourceBase {
 protected :
-   std::shared_ptr<EagleImage> image;
+   SHAREDOBJECT<EagleImage> image;
    
 public :
    ImageResource() :
          ResourceBase(RT_IMAGE),
-         image(0)
+         image()
    {}
-   std::shared_ptr<EagleImage> GetImage() {return image;}
+   SHAREDOBJECT<EagleImage> GetImage() {return image;}
 };
 
 
+class EagleFont;
 
 class FontResource : public ResourceBase {
 protected :
-   std::shared_ptr<EagleFont> font;
+   SHAREDOBJECT<EagleFont> font;
    
 public :
    FontResource() :
          ResourceBase(RT_FONT),
-         font(0)
+         font()
    {}
-   std::shared_ptr<EagleFont> GetFont() {return font;}
+   SHAREDOBJECT<EagleFont> GetFont() {return font;}
 };
 
 

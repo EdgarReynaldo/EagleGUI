@@ -25,6 +25,7 @@
 #define WidgetAttributes_HPP
 
 
+
 #include <string>
 #include <map>
 #include <unordered_set>
@@ -61,8 +62,10 @@ public :
    static ATTRIBUTEVALUEMAP* GlobalAttributeMap();
    static ATTRIBUTESET* KnownAttributes();
    
-   inline VALUE& operator[](const ATTRIBUTE& a);
    inline bool HasAttribute(const ATTRIBUTE& a) const;
+   VALUE GetDefinedAttributeValue(const ATTRIBUTE& a) const;
+
+   inline VALUE& operator[](const ATTRIBUTE& a);
    inline VALUE GetAttributeValue(const ATTRIBUTE& a);
    inline void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    inline void RemoveAttribute(const ATTRIBUTE& a);
@@ -70,14 +73,14 @@ public :
 
 
 
-inline VALUE& ATTRIBUTEVALUEMAP::operator[](const ATTRIBUTE& a) {
-   return attributes[a];
+inline bool ATTRIBUTEVALUEMAP::HasAttribute(const ATTRIBUTE& a) const {
+   return attributes.find(a) != attributes.end();
 }
 
 
 
-inline bool ATTRIBUTEVALUEMAP::HasAttribute(const ATTRIBUTE& a) const {
-   return attributes.find(a) != attributes.end();
+inline VALUE& ATTRIBUTEVALUEMAP::operator[](const ATTRIBUTE& a) {
+   return attributes[a];
 }
 
 

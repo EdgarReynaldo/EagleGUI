@@ -33,8 +33,6 @@
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
 
-#include "Eagle/Gui/Decorators/Decorator.hpp"
-
 
 #endif // Layouts_HPP
 

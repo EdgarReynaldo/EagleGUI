@@ -117,7 +117,7 @@ protected :
 
    virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int  PrivateUpdate(double tsec);
+   virtual int PrivateUpdate(double tsec);
 
    virtual void OnAreaChanged();
 
@@ -159,7 +159,7 @@ public :
 #include <memory>
 #include "Eagle/SharedMemory.hpp"
 
-typedef std::shared_ptr<BasicButton , DELETER<BasicButton> > SHAREDBUTTON;
+typedef SHAREDOBJECT<BasicButton> SHAREDBUTTON;
 
 SHAREDBUTTON StackButton(BasicButton* b);
 SHAREDBUTTON StackButton(BasicButton& b);

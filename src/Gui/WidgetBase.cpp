@@ -26,24 +26,15 @@
 
 
 
-
-SHAREDWIDGET StackWidget(WIDGETBASE* stack_widget) {
-   return SHAREDWIDGET(stack_widget , false);
-}
+const unsigned int TOPIC_DIALOG = NextFreeTopicId();
 
 
 
-SHAREDWIDGET StackWidget(WIDGETBASE& stack_widget) {
-   return SHAREDWIDGET(&stack_widget , false);
-}
+/// ---------------------     WidgetBase      --------------------------
 
 
 
-/// ---------------------     WIDGETBASE      --------------------------
-
-
-
-void WIDGETBASE::RaiseWidgetEvent(WidgetMsg wmsg) {
+void WidgetBase::RaiseEvent(WidgetMsg wmsg) {
    QueueUserMessage(wmsg);
    EagleEvent ee = MakeEagleEvent(wmsg);
    EmitEvent(ee , 0);
@@ -51,26 +42,27 @@ void WIDGETBASE::RaiseWidgetEvent(WidgetMsg wmsg) {
 
 
 
-int WIDGETBASE::PrivateHandleEvent(EagleEvent ee) {
+int WidgetBase::PrivateHandleEvent(EagleEvent ee) {
    (void)ee;
    return DIALOG_OKAY;
 }
 
 
 
-int WIDGETBASE::PrivateCheckInputs() {
+int WidgetBase::PrivateCheckInputs() {
    return DIALOG_OKAY;
 }
 
 
 
-void WIDGETBASE::PrivateUpdate(double dt) {
+int WidgetBase::PrivateUpdate(double dt) {
    (void)dt;
+   return DIALOG_OKAY;
 }
 
 
 
-void WIDGETBASE::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+void WidgetBase::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    (void)win;
    (void)xpos;
    (void)ypos;
@@ -78,33 +70,33 @@ void WIDGETBASE::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 
-void WIDGETBASE::OnAreaChanged() {
+void WidgetBase::OnAreaChanged() {
    (void)0;
 }
 
 
 
-void WIDGETBASE::OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v) {
+void WidgetBase::OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v) {
    (void)a;
    (void)v;
 }
 
 
 
-void WIDGETBASE::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+void WidgetBase::OnFlagChanged(WIDGET_FLAGS f , bool on) {
    (void)f;
    (void)on;
 }
 
 
 
-void WIDGETBASE::OnColorChanged() {
+void WidgetBase::OnColorChanged() {
    SetRedrawFlag();
 }
 
 
 
-void WIDGETBASE::OnSelfAreaChanged(WIDGETAREA new_widget_area) {
+void WidgetBase::OnSelfAreaChanged(WIDGETAREA new_widget_area) {
    if (whandler) {
       whandler->MakeAreaDirty(warea.OuterArea());
    }
@@ -115,14 +107,17 @@ void WIDGETBASE::OnSelfAreaChanged(WIDGETAREA new_widget_area) {
 
 
 
-void WIDGETBASE::OnSelfAttributeChanged(ATTRIBUTE a , VALUE v) {
+void WidgetBase::OnSelfAttributeChanged(ATTRIBUTE a , VALUE v) {
    wattributes[a] = v;
+   if (a.compare("Colorset") == 0) {
+      wcolors = GetColorsetByName(GetAttributeValue("Colorset"));
+   }
    OnAttributeChanged(a,v);
 }
 
 
 
-void WIDGETBASE::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
+void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    unsigned int diff = FlagDiff(wflags , new_widget_flags);
    if (diff & (VISIBLE | HOVER | HASFOCUS)) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
@@ -144,20 +139,20 @@ void WIDGETBASE::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
 
 
 
-void WIDGETBASE::OnSelfColorChanged(std::shared_ptr<WidgetColorset> cset) {
+void WidgetBase::OnSelfColorChanged(SHAREDOBJECT<WidgetColorset> cset) {
    wcolors = cset;
    OnColorChanged();
 }
 
 
 
-WIDGETBASE::~WIDGETBASE() {
-   widgets.clear();
+WidgetBase::~WidgetBase() {
+   widgets.Clear();
 }
 
 
 
-int WIDGETBASE::HandleEvent(EagleEvent ee) {
+int WidgetBase::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_TIMER) {
       Update(ee.timer.eagle_timer_source->SPT());
    }
@@ -166,13 +161,13 @@ int WIDGETBASE::HandleEvent(EagleEvent ee) {
 
 
 
-void WIDGETBASE::Update(double dt) {
-   PrivateUpdate(dt);
+int WidgetBase::Update(double dt) {
+   return PrivateUpdate(dt);
 }
 
 
 
-void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
+void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    WidgetPainter wp = GetWidgetPainter();
    if (wp) {
       wp->PaintWidgetBackground(win , this);
@@ -186,7 +181,7 @@ void WIDGETBASE::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
-void WIDGETBASE::QueueUserMessage(WidgetMsg wmsg) {
+void WidgetBase::QueueUserMessage(WidgetMsg wmsg) {
    if (wparent) {
       wparent->QueueUserMessage(wmsg);
    }
@@ -194,13 +189,13 @@ void WIDGETBASE::QueueUserMessage(WidgetMsg wmsg) {
 
 
 
-void WIDGETBASE::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
+void WidgetBase::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
    OnSelfAttributeChanged(a,v);
 }
 
 
    
-void WIDGETBASE::SetWidgetArea(WIDGETAREA area , bool notify_layout) {
+void WidgetBase::SetWidgetArea(WIDGETAREA area , bool notify_layout) {
    if (wlayout && notify_layout) {
       area.SetOuterArea(wlayout->RequestWidgetArea(this , area.OuterArea()));
    }
@@ -209,73 +204,84 @@ void WIDGETBASE::SetWidgetArea(WIDGETAREA area , bool notify_layout) {
 
 
 
-void WIDGETBASE::SetWidgetArea(Rectangle oarea , bool notify_layout) {
+void WidgetBase::SetWidgetArea(Rectangle oarea , bool notify_layout) {
+   WidgetArea wa = GetWidgetArea();
    if (wlayout && notify_layout) {
-      area.SetOuterArea(wlayout->RequestWidgetArea(this , oarea));
+      wa.SetOuterArea(wlayout->RequestWidgetArea(this , oarea));
    }
-   OnSelfAreaChanged(area);
+   else {
+      wa.SetOuterArea(oarea);
+   }
+   OnSelfAreaChanged(wa);
 }
 
 
 
-void WIDGETBASE::SetWidgetFlags(WidgetFlags flags) {
+void WidgetBase::SetWidgetFlags(WidgetFlags flags) {
    OnSelfFlagChanged(flags);
 }
 
 
 
-void SetHoverState(bool hover) {
+void WidgetBase::SetHoverState(bool hover) {
    SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
 }
 
 
 
-void SetFocusState(bool focus) {
+void WidgetBase::SetFocusState(bool focus) {
    SetWidgetFlags(Flags().SetNewFlag(HASFOCUS , focus));
 }
 
 
   
-void WIDGETBASE::SetWidgetColorset(std::shared_ptr<WidgetColorset> cset) {
+void WidgetBase::SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset) {
    OnSelfColorChanged(cset);
 }
 
 
 
-void WIDGETBASE::SetWidgetColorset(const WidgetColorset& cset) {
-   SetWidgetColorset(std::shared_ptr<WidgetColorset>(new WidgetColorset(cset)));
+void WidgetBase::SetWidgetColorset(const WidgetColorset& cset) {
+   SetWidgetColorset(HeapObject(new WidgetColorset(cset)));
 }
 
 
 
-void WIDGETBASE::UnsetWidgetColorset() {
-   SetWidgetColorset(std:;shared_ptr<WidgetColorset>(0));
+void WidgetBase::UnsetWidgetColorset() {
+   SetWidgetColorset(SHAREDOBJECT<WidgetColorset>());
 }
 
 
 
-void WIDGETBASE::SetWidgetPainter(const WidgetPainter& wp) {
+void WidgetBase::SetWidgetPainter(const WidgetPainter& wp) {
    wpainter = wp;
    SetBgRedrawFlag();
 }
 
 
 
-void WIDGETBASE::UnsetWidgetPainter() {
-   wpainter.Reset();
+void WidgetBase::UnsetWidgetPainter() {
+   wpainter.reset();
 }
 
 
 
-bool WIDGETBASE::HasAttribute(const ATTRIBUTE& a) const {
+void WidgetBase::SetZOrder(int zpriority) {
+   zdepth = zpriority;
+   SetBgRedrawFlag();
+}
+
+
+
+bool WidgetBase::HasAttribute(const ATTRIBUTE& a) const {
    return wattributes.HasAttribute(a);
 }
 
 
 
-bool WIDGETBASE::InheritsAttribute(const ATTRIBUTE& a) const {
+bool WidgetBase::InheritsAttribute(const ATTRIBUTE& a) const {
    if (HasAttribute(a)) {return false;}
-   WIDGETBASE* w = wparent;
+   WidgetBase* w = wparent;
    while (w) {
       if (w->HasAttribute(a)) {return true;}
       w = w->wparent;
@@ -288,13 +294,13 @@ bool WIDGETBASE::InheritsAttribute(const ATTRIBUTE& a) const {
 
 
 
-bool WIDGETBASE::AttributeIsSet(const ATTRIBUTE& a) const {
+bool WidgetBase::AttributeIsSet(const ATTRIBUTE& a) const {
    return HasAttribute(a) || InheritsAttribute(a);
 }
 
 
 
-void WIDGETBASE::RemoveAttribute(const ATTRIBUTE& a) {
+void WidgetBase::RemoveAttribute(const ATTRIBUTE& a) {
    if (HasAttribute(a)) {
       wattributes.RemoveAttribute(a);
    }
@@ -302,11 +308,11 @@ void WIDGETBASE::RemoveAttribute(const ATTRIBUTE& a) {
 
 
 
-VALUE WIDGETBASE::GetAttributeValue(const ATTRIBUTE& a) const {
+VALUE WidgetBase::GetAttributeValue(const ATTRIBUTE& a) const {
    if (HasAttribute(a)) {
-      return wattributes[a];
+      return wattributes.GetDefinedAttributeValue(a);
    }
-   WIDGETBASE* parent = wparent;
+   WidgetBase* parent = wparent;
    while (parent) {
       if (parent->HasAttribute(a)) {
          return parent->GetAttributeValue(a);
@@ -327,47 +333,66 @@ VALUE WIDGETBASE::GetAttributeValue(const ATTRIBUTE& a) const {
 
 
 
-EagleColor WIDGETBASE::GetColor(WIDGETCOLOR wc) {
-   std::string cname = WidgetColorName(wc);
-   if (HasAttribute(cname)) {
-      return EagleColor(GetAttributeValue(cname));
-   }
-   std::shared_ptr<WidgetColorset> cset = WidgetColors();
-   if (cset) {
-      return (*cset)[wc];
-   }
-   std::shared_ptr<WidgetColorset> cset2 = ColorRegistry::GlobalColorRegistry()->GetDefaultColorset();
-   return (*cset2)[wc];
-}
-
-
-
-WIDGETAREA WIDGETBASE::GetWidgetArea() {
+WIDGETAREA WidgetBase::GetWidgetArea() const {
    return warea;
 }
 
 
 
-WidgetFlags WIDGETBASE::Flags() {
+Rectangle WidgetBase::OuterArea() const {
+   return warea.OuterArea();
+}
+
+
+
+Rectangle WidgetBase::InnerArea() const {
+   return warea.InnerArea();
+}
+
+
+
+WidgetFlags WidgetBase::Flags() const {
    return wflags;
 }
 
 
 
-WidgetColorset WIDGETBASE::WidgetColors() {
-   if (HasAttribute("Colorset")) {
-      return GetColorsetByName(GetAttributeValue("Colorset"));
-   }
-   if (wcolors) {return *wcolors;}
-   if (wparent && wparent->WidgetColors()) {return wparent->WidgetColors();}
-   if (wlayout && wlayout->WidgetColors()) {return wlayout->WidgetColors();}
-   if (whandler && whandler->WidgetColors()) {return whandler->WidgetColors();}
-   return WidgetColorset();
+SHAREDOBJECT<WidgetColorset> WidgetBase::GetWidgetColorset() const {
+   if (wcolors) {return wcolors;}
+   if ((bool)wparent && wparent->GetWidgetColorset()) {return wparent->GetWidgetColorset();}
+   if ((bool)wlayout && wlayout->GetWidgetColorset()) {return wlayout->GetWidgetColorset();}
+   if ((bool)whandler && whandler->GetWidgetColorset()) {return whandler->GetWidgetColorset();}
+   return GetColorsetByName("Default");/// This is guaranteed to be in the color registry
 }
 
 
 
-WidgetPainter WIDGETBASE::GetWidgetPainter() {
+const WidgetColorset& WidgetBase::WidgetColors() const {
+   SHAREDOBJECT<WidgetColorset> wc = GetWidgetColorset();
+   return *(wc.get());
+}
+
+
+
+EagleColor WidgetBase::GetColor(WIDGETCOLOR wc) const {
+   return WidgetColors()[wc];
+
+   std::string cname = WidgetColorName(wc);
+
+   if (HasAttribute(cname)) {
+      return EagleColor(GetAttributeValue(cname));
+   }
+   SHAREDOBJECT<WidgetColorset> cset = GetWidgetColorset();
+   if (cset) {
+      return (*cset)[wc];
+   }
+   SHAREDOBJECT<WidgetColorset> cset2 = ColorRegistry::GlobalColorRegistry()->GetDefaultColorset();
+   return (*cset2)[wc];
+}
+
+
+
+WidgetPainter WidgetBase::GetWidgetPainter() const {
    if (wpainter) {
       return wpainter;
    }
@@ -385,47 +410,117 @@ WidgetPainter WIDGETBASE::GetWidgetPainter() {
 
 
 
-void WIDGETBASE::SetRedrawFlag() {
+void WidgetBase::SetRedrawFlag() {
    SetWidgetFlags(Flags().AddFlags(NEEDS_REDRAW));
 }
 
 
 
-void WIDGETBASE::SetBgRedrawFlag() {
+void WidgetBase::SetBgRedrawFlag() {
    SetWidgetFlags(Flags().AddFlags(NEEDS_BG_REDRAW));
 }
 
 
 
-void WIDGETBASE::ClearRedrawFlag() {
+void WidgetBase::ClearRedrawFlag() {
    SetWidgetFlags(Flags().RemoveFlags(NEEDS_BG_REDRAW | NEEDS_REDRAW));
 }
 
 
 
-void WIDGETBASE::SetLayoutOwner(LAYOUTBASE* l) {
+void WidgetBase::SetLayoutOwner(Layout* l) {
    wlayout = l;
 }
 
 
 
-void WIDGETBASE::SetWidgetHandler(WidgetHandler2* wh) {
+void WidgetBase::SetWidgetHandler(WidgetHandler* wh) {
    whandler = wh;
 }
 
 
 
-int WIDGETBASE::AbsMinWidth() {
+void WidgetBase::SetParent(WidgetBase* p) {
+   wparent = p;
+}
+
+
+
+int WidgetBase::AbsMinWidth() const {
    return 0;
 }
 
 
 
-int WIDGETBASE::AbsMinHeight() {
+int WidgetBase::AbsMinHeight() const {
    return 0;
 }
 
 
 
+Pos2I WidgetBase::AbsParentPos() const {
+   WidgetBase* p = wparent;
+   Pos2I pos(0,0);
+   while (p) {
+      Rectangle r = p->InnerArea();
+      pos.MoveBy(r.X() , r.Y());
+      p = p->wparent;
+   }
+   return pos;
+}
+
+
+
+int WidgetBase::AbsParentX() const {
+   return AbsParentPos().X();
+}
+
+
+
+int WidgetBase::AbsParentY() const {
+   return AbsParentPos().Y();
+}
+
+
+
+WidgetArea WidgetBase::AbsoluteArea() const {
+   WidgetArea wa = GetWidgetArea();
+   Pos2I p = AbsParentPos();
+   wa.MoveBy(p);
+   return wa;
+}
+
+
+
+WidgetBase* WidgetBase::Root() {
+   WidgetBase* root = this;
+   while (root->wparent) {root = root->wparent;}
+   return root;
+}
+
+
+
+WidgetHandler* WidgetBase::RootHandler() {
+   WidgetBase* w = Root();
+   return w->whandler;
+}
+
+
+
+bool WidgetBase::HasGui() {
+   return GetGui();
+}
+
+
+
+WidgetHandler* WidgetBase::GetGui() {
+   return dynamic_cast<WidgetHandler*>(this);
+}
+
+
+
+bool DrawPriorityIsLess(const WidgetBase* w1 , const WidgetBase* w2) {
+   return (w1->ZValue() < w2->ZValue());
+}
 
 

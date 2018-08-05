@@ -13,11 +13,11 @@
 
 
 
-class WidgetBase;
+class WIDGETBASE;
 
 
 
-typedef WidgetBase* (*WIDGET_CREATION_FUNCTION)(std::string object_name , AttributeValueMap avmap);
+typedef WIDGETBASE* (*WIDGET_CREATION_FUNCTION)(std::string object_name , AttributeValueMap avmap);
 
 
 
@@ -35,15 +35,15 @@ public :
 
 
 
-WidgetBase* CreateBasicTextWidget   (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateSelectTextWidget  (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateLinkTextWidget    (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateBasicButtonWidget (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateGuiButtonWidget   (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateIconButtonWidget  (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateRadioButtonWidget (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateScrollButtonWidget(std::string object_name , AttributeValueMap avmap);
-///WidgetBase* CreateTextButtonWidget  (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateBasicTextWidget   (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateSelectTextWidget  (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateLinkTextWidget    (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateBasicButtonWidget (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateGuiButtonWidget   (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateIconButtonWidget  (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateRadioButtonWidget (std::string object_name , AttributeValueMap avmap);
+WIDGETBASE* CreateScrollButtonWidget(std::string object_name , AttributeValueMap avmap);
+///WIDGETBASE* CreateTextButtonWidget  (std::string object_name , AttributeValueMap avmap);
 
 
 
@@ -64,15 +64,15 @@ REGISTER_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
 
 /// Right now only POS:x,y , and DIM:w,h , and AREA:x,y,w,h are supported
 /// TODO : Support WIDGETCOLORSET, and widget colors
-void ApplyWidgetBaseAttributes(WidgetBase* widget , const std::map<std::string , std::string>& attribute_map);
+void ApplyWIDGETBASEAttributes(WIDGETBASE* widget , const std::map<std::string , std::string>& attribute_map);
 
 /// Right now only TEXT:text_string , FONT:font_name, and SHRINKWRAP:YES are supported
 /// TODO : In the future, support HALIGN, VALIGN, HPAD, VPAD, and LINESPACING
-void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std::string>& attribute_map);
+void ApplyTextAttributes(WIDGETBASE* widget ,  const std::map<std::string , std::string>& attribute_map);
 
 
 
-void SetWidgetBaseParameters(WidgetBase* widget , std::string widget_parameters);
+void SetWIDGETBASEParameters(WIDGETBASE* widget , std::string widget_parameters);
 
 
 

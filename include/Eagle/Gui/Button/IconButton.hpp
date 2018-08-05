@@ -24,8 +24,8 @@ enum BUTTON_STATE {
 class IconButton : public BasicButton {
 
 protected :
-   SHAREDIMAGE original_images[4];/// These are just for reference, but they are used when the button size changes
-///   SHAREDIMAGE scaled_images[4];/// We own these, they are scaled to fit the inner area
+   EagleImage* original_images[4];/// These are just for reference, but they are used when the button size changes
+///   EagleImage* scaled_images[4];/// We own these, they are scaled to fit the inner area
 
    Rectangle click_rect;
 
@@ -41,7 +41,7 @@ public :
 
    virtual ~IconButton() {}
    
-   virtual void SetImages(SHAREDIMAGE upimage , SHAREDIMAGE downimage , SHAREDIMAGE hoverupimage , SHAREDIMAGE hoverdownimage);
+   virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
 };
 
 #endif // IconButton_HPP

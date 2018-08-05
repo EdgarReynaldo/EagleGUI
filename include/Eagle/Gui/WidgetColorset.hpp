@@ -29,6 +29,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/SharedMemory.hpp"
 
 #include <map>
 
@@ -114,7 +115,7 @@ public :
 class ColorRegistry {
    
    std::map<std::string , EagleColor> named_colors;
-   std::map<std::string , std::shared_ptr<WidgetColorset> > named_colorsets;
+   std::map<std::string , SHAREDOBJECT<WidgetColorset> > named_colorsets;
    
 public :
    
@@ -132,7 +133,8 @@ public :
    /// WidgetColorsets
    bool HasColorset(std::string name);
    
-   std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name);
+   SHAREDOBJECT<WidgetColorset> GetColorsetByName(std::string name);
+   SHAREDOBJECT<WidgetColorset> GetDefaultColorset() {return GetColorsetByName("Default");}
    
    void RegisterColorset(std::string name , const WidgetColorset& wc);
    
@@ -143,7 +145,7 @@ EagleColor GetColorByName(std::string name);
 void RegisterColor(std::string name , const EagleColor& color);
 
 bool HasColorset(std::string name);
-std::shared_ptr<WidgetColorset> GetColorsetByName(std::string name);
+SHAREDOBJECT<WidgetColorset> GetColorsetByName(std::string name);
 void RegisterColorset(std::string name , const WidgetColorset& wc);
 
 

@@ -107,11 +107,13 @@ BasicScrollBar::BasicScrollBar(std::string objclass , std::string objname) :
       basic_scroller(),
       basic_scroll_button_up_or_left(),
       basic_scroll_button_down_or_right(),
-      scroller(0),
-      up_or_left_button(0),
-      down_or_right_button(0)
+      scroller(),
+      up_or_left_button(),
+      down_or_right_button()
 {
-   SetScrollWidgets(0,0,0);
+   SetScrollWidgets(SHAREDOBJECT<BasicScroller>() ,
+                    SHAREDOBJECT<BasicScrollButton>() ,
+                    SHAREDOBJECT<BasicScrollButton>() );
 }
 
 
@@ -121,15 +123,18 @@ void BasicScrollBar::SetScrollWidgets(SHAREDOBJECT<BasicScroller> pbasic_scrolle
                                       SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button) {
 
 
-   scroller->SetParent(this);
-   up_or_left_button->SetParent(this);
-   down_or_right_button->SetParent(this);
+   if (scroller) {
+      scroller->SetParent(0);
+   }
+   if (up_or_left_button) {
+      up_or_left_button->SetParent(0);
+      up_or_left_button->SetScrollBar(0);
+   }
+   if (down_or_right_button) {
+      down_or_right_button->SetParent(0);
+      down_or_right_button->SetScrollBar(0);
+   }
    
-   up_or_left_button->SetScrollBar(this);
-   down_or_right_button->SetScrollBar(this);
-
-
-
    scroller = pbasic_scroller;
    if (!scroller) {
       scroller = StackObject(&basic_scroller);

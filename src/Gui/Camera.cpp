@@ -27,6 +27,7 @@
 
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/GraphicsContext.hpp"
 
 
 
@@ -123,8 +124,8 @@ Camera::Camera(std::string objclass , std::string objname) :
 void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
    EAGLE_ASSERT(win);
    
-   if (view_bmp && (flags & VISIBLE)) {
-      Rectangle r = area.InnerArea();
+   if (view_bmp && (Flags().FlagOn(VISIBLE))) {
+      Rectangle r = InnerArea();
       r.MoveBy(x,y);
       Clipper(win->GetDrawingTarget() , r);
    
@@ -144,8 +145,8 @@ void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
 int Camera::CheckInputs() {
    int msx = mouse_x - AbsParentX();
    int msy = mouse_y - AbsParentY();
-   if (flags & ENABLED) {
-      if (area.OuterArea().Contains(msx,msy)) {
+   if (Flags().FlagOn(ENABLED)) {
+      if (OuterArea().Contains(msx,msy)) {
          if (input_mouse_press(LMB)) {
             if (take_focus) {// workaround for WidgetHandler so it can take the focus instead
                return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;

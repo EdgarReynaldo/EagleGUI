@@ -31,16 +31,15 @@
 #include "Gui/Button.hpp"
 #include "Gui/Camera.hpp"
 #include "Gui/Layouts.hpp"
-#include "Gui/Menu.hpp"
+///#include "Gui/Menu.hpp"
 #include "Gui/ScrollBar.hpp"
 #include "Gui/Scroller.hpp"
-#include "Gui/TestWidget.hpp"
 #include "Gui/Text.hpp"
 
 #include "Gui/WidgetArea.hpp"
 #include "Gui/WidgetBase.hpp"
 #include "Gui/WidgetColorset.hpp"
-#include "Gui/WidgetDrawFuncs.hpp"
+///#include "Gui/WidgetDrawFuncs.hpp"
 #include "Gui/WidgetHandler.hpp"
 #include "Gui/WidgetMessage.hpp"
 

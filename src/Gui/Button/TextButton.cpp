@@ -288,14 +288,6 @@ int TextButton::PrivateHandleEvent(EagleEvent e) {
 
 
 
-/** PrivateCheckInputs will be called by HandleEvent, no need to override
-int TextButton::PrivateCheckInputs() {
-   if (real_button == this) {
-      return BasicButton::PrivateCheckInputs();
-   }
-   return real_button->PrivateCheckInputs();
-}
-//*/
 
 
 void TextButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
@@ -562,22 +554,6 @@ void TextButton::SetAllowOverlapState(bool state) {
    }
    real_button->SetAllowOverlapState(state);
 }
-
-
-
-/** We don't need to override these functions, they function properly on their own
-
-virtual void SetRedrawFlag();/// Shortcut to SetNeedsRedrawState(true)
-virtual void SetBgRedrawFlag();/// Shortcut to SetNeedsBgRedrawState(true)
-virtual void ClearRedrawFlag();/// Shortcut to SetNeedsRedrawState(false) and SetNeedsBgRedrawState(false)
-
-virtual void SetRedrawAllFlag();/// To tell parent widget handlers to redraw all widgets
-
-virtual void ShowWidget();/// Makes the widget enabled and visible
-virtual void HideWidget();/// Makes the widget disabled and invisible
-virtual void ToggleWidgetVisibility();/// Toggles the enabled and visible state of the widget
-
-//*/
 
 
 

@@ -28,15 +28,14 @@
 
 
 
-
-SHAREDIMAGE StackImage(EagleImage* img) {
-   return SHAREDIMAGE(img , false);
+EagleImage* Clone(EagleGraphicsContext* parent_window , EagleImage* img , std::string iname) {
+   return img->Clone(parent_window , iname);
 }
 
 
 
-SHAREDIMAGE StackImage(EagleImage& img) {
-   return SHAREDIMAGE(&img , false);
+EagleImage* CreateSubImage(EagleImage* img , int sx , int sy , int sw , int sh , std::string iname) {
+   return img->CreateSubBitmap(sx,sy,sw,sh , iname);
 }
 
 
@@ -45,9 +44,34 @@ SHAREDIMAGE StackImage(EagleImage& img) {
 
 
 
-EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclass , std::string objname) :
+void EagleImage::SetParent(EagleImage* parent_image) {
+   parent = parent_image;
+}
+
+
+
+void EagleImage::AddChild(EagleImage* child) {
+   EAGLE_ASSERT(child);
+   child->SetParent(this);
+   children.insert(child);
+}
+
+
+
+void EagleImage::RemoveChild(EagleImage* child) {
+   EAGLE_ASSERT(child);
+   IMGIT it = children.find(child);
+   EAGLE_ASSERT(it != children.end());
+   children.erase(it);
+   /// child removes itself upon destruction - don't call child methods
+   ///child->SetParent(0);/// BAD, UNNECESSARY
+}
+
+
+
+EagleImage::EagleImage(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
-      parent_context(owner_context),
+      pcontext(0),
       w(0),
       h(0),
       image_type(MEMORY_IMAGE),
@@ -63,33 +87,33 @@ EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclas
 
 
 EagleImage::~EagleImage() {
+   /// Can't free children here, as our parents derived class destructor has already run
+   /// Must do it in derived class destructors....
    (void)0;
-///   children.RemoveAll();
+   if (parent) {
+      parent->RemoveChild(this);
+   }
 }
 
 
 
-void EagleImage::AddChild(EagleImage* child) {
-   EAGLE_ASSERT(child);
-   child->SetParent(this);
-   children.Add(child);
+void EagleImage::FreeChildren() {
+   IMGSET imgs = children;/// Must make a copy as children is altered by destruction of each child which calls RemoveChild
+   for (IMGIT it = imgs.begin() ; it != imgs.end() ; ++it) {
+      delete *it;
+   }
+   EAGLE_ASSERT(children.size() == 0);
 }
 
 
 
-void EagleImage::RemoveChild(EagleImage* child) {
-   EAGLE_ASSERT(child);
-   children.Remove(child);
-   child->SetParent(0);
+void EagleImage::FreeChild(EagleImage* child) {
+   IMGIT it = children.find(child);
+   if (it != children.end()) {
+      delete child;/// ~EagleImage calls RemoveChild
+   }
+   EAGLE_ASSERT(children.find(child) == children.end());
 }
-
-
-
-void EagleImage::SetParent(EagleImage* parent_image) {
-///   EAGLE_ASSERT(parent_image);
-   parent = parent_image;
-}
-
 
 
 void EagleImage::PushClippingRectangle(Rectangle new_clip) {
@@ -113,6 +137,11 @@ void EagleImage::PopClippingRectangle() {
 
 
 
+
+/// ----------------     Clipper      ------------------------
+
+
+
 Clipper::Clipper(EagleImage* image , Rectangle clip)
 {
 	EAGLE_ASSERT(image);
@@ -130,45 +159,4 @@ Clipper::~Clipper() {
 
 
 
-/**
-EagleImage::EagleImage(int width , int height , IMAGE_TYPE type) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   Allocate(width , height , type);
-}
-
-
-
-EagleImage::EagleImage(std::string file , IMAGE_TYPE type) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   Load(file , type);
-}
-
-
-
-EagleImage::EagleImage(EagleImage* parent , int x , int y , int width , int height) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   CreateSubBitmap(parent , x , y , width , height);
-}
-*/
 

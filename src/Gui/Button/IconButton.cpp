@@ -39,9 +39,6 @@ IconButton::IconButton(std::string classname , std::string objname) :
       original_images(),
       click_rect()
 {
-   for (int i = 0 ; i < 4 ; ++i) {
-      original_images[i] = 0;
-   }
    SetClickArea(&click_rect , false);
 }
 

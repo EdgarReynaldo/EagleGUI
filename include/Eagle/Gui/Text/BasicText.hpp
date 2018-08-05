@@ -5,10 +5,11 @@
 #ifndef DumbText_HPP
 #define DumbText_HPP
 
+#include "Eagle/Gui/Alignment.hpp"
 #include "Eagle/Gui/Text/GlobalText.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
-
+#include "Eagle/Transforms.hpp"
 
 
 class BasicText : public WidgetBase {

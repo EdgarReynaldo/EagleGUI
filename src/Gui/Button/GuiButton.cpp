@@ -43,7 +43,7 @@ using std::endl;
 
 void GuiButton::ResetRadii() {
    // Uses the largest size shape that will fit into the rectangle
-   Rectangle r = area.InnerArea();
+   Rectangle r = InnerArea();
    switch (btn_shape) {
       case RECTANGLE_BTN : 
          break;
@@ -258,26 +258,27 @@ void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int
 ///   int rad_b = btn->RadiusB();
    Rectangle r = btn->InnerArea();
    r.MoveBy(x,y);
+   WidgetColorset wc = btn->WidgetColors();
    switch(btn->ButtonShape()) {
       case RECTANGLE_BTN : 
          up?
-         r.DrawGuiRectUp(win , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
-         r.DrawGuiRectDown(win , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
+         r.DrawGuiRectUp(win , wc[FGCOL] , wc[SDCOL]):
+         r.DrawGuiRectDown(win , wc[MGCOL] , wc[SDCOL]);
          break;
       case CIRCLE_BTN : 
          up?
-         r.DrawGuiCircleUp(win , rad_a , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
-         r.DrawGuiCircleDown(win , rad_a , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
+         r.DrawGuiCircleUp(win , rad_a , wc[FGCOL] , wc[SDCOL]):
+         r.DrawGuiCircleDown(win , rad_a , wc[MGCOL] , wc[SDCOL]);
          break;
       case ROUNDED_BTN :
          up?
-         r.DrawGuiRoundedUp(win , rad_a , rad_b , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
-         r.DrawGuiRoundedDown(win , rad_a , rad_b , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
+         r.DrawGuiRoundedUp(win , rad_a , rad_b , wc[FGCOL] , wc[SDCOL]):
+         r.DrawGuiRoundedDown(win , rad_a , rad_b , wc[MGCOL] , wc[SDCOL]);
          break;
       case ELLIPSE_BTN : 
          up?
-         r.DrawGuiEllipseUp(win , btn->WCols()[FGCOL] , btn->WCols()[SDCOL]):
-         r.DrawGuiEllipseDown(win , btn->WCols()[MGCOL] , btn->WCols()[SDCOL]);
+         r.DrawGuiEllipseUp(win , wc[FGCOL] , wc[SDCOL]):
+         r.DrawGuiEllipseDown(win , wc[MGCOL] , wc[SDCOL]);
          break;
    }
 }
@@ -307,7 +308,7 @@ void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int 
       int tx = x + r.X() + r.W()/2;
       int ty = y + r.Y() + r.H()/2;
       
-      win->DrawGuiTextString(text_font , text.c_str() , tx , ty , btn->WCols()[TXTCOL] , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawGuiTextString(text_font , text.c_str() , tx , ty , btn->GetColor(TXTCOL) , HALIGN_CENTER , VALIGN_CENTER);
    }
    
 }

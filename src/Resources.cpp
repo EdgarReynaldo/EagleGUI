@@ -20,7 +20,7 @@
  */
 
 
-
+#include "Eagle/Exception.hpp"
 #include "Eagle/Resources.hpp"
 
 
@@ -34,8 +34,7 @@ const RESOURCEID BADRESOURCEID = ~0;
 
 ResourceBase::ResourceBase(const ResourceBase& r) :
    rid(BADRESOURCEID),
-   rtype(RT_UNKNOWN),
-   resource(0)
+   rtype(RT_UNKNOWN)
 {
    (void)r;
    throw EagleException("ResourceBase::ResourceBase - tried to copy a ResourceBase object.");
@@ -52,8 +51,7 @@ ResourceBase& ResourceBase::operator=(const ResourceBase& r) {
 
 ResourceBase::ResourceBase(RESOURCE_TYPE rt) :
    rid(NextRid()),
-   rtype(rt),
-   resource(0)
+   rtype(rt)
 {}
 
 

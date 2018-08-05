@@ -3,9 +3,8 @@
 
 
 #include "Eagle/Gui/Scroller.hpp"
-#include "Eagle/Gui/WidgetDrawFuncs.hpp"
 #include "Eagle/StringWork.hpp"
-
+#include "Eagle/GraphicsContext.hpp"
 
 
 const int TOPIC_SCROLL_WIDGET = NextFreeTopicId();
@@ -95,10 +94,10 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
          int delta = horizontal_scroller?dx:dy;
          int length = 0;
          if (horizontal_scroller) {
-            length = (scroller_area.W() - scroll_handle_area.W());
+            length = (scroller_area.InnerArea().W() - scroll_handle_area.W());
          }
          else if (!horizontal_scroller) {
-            length = (scroller_area.H() - scroll_handle_area.H());
+            length = (scroller_area.InnerArea().H() - scroll_handle_area.H());
          }
          if (length == 0) {length = 1;}
          float percent = (float)delta/length;
@@ -123,14 +122,14 @@ int BasicScroller::PrivateCheckInputs() {
 }
 
 
-
 void BasicScroller::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    ///void WidgetBorderPainterShadow(EagleGraphicsContext* win , const WidgetArea& a , const WidgetColorset& c , int xpos , int ypos);
-   ContrastBorderBackgroundPainter painter;
+#warning TODO : FIXME : NEED PAINTER FUNCS
+///   ContrastBorderBackgroundPainter painter;
    
    WidgetColorset wc = WidgetColors();
    
-   painter.PaintBackground(win , scroller_area , wc , xpos , ypos);
+///   painter.PaintBackground(win , scroller_area , wc , xpos , ypos);
    Rectangle r = scroller_area.InnerArea();
    r.MoveBy(xpos,ypos);
    win->DrawFilledRectangle(r , wc[SDCOL]);

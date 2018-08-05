@@ -28,7 +28,7 @@
 
 
 
-WidgetPainter default_widget_painter(SHAREDOBJECT<WidgetPainterBase>(new WidgetPainterBasic()));
+WidgetPainter default_widget_painter(HeapObject<WidgetPainterBase>(new WidgetPainterBasic()));
 
 
 
@@ -67,15 +67,16 @@ void WidgetPainterBasic::PaintRounded(EagleGraphicsContext* win , const NPAREA& 
 
 
 
-void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WIDGETBASE* wb , const NPAREA& np , AREA_FILL_TYPE filltype) {
+void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WidgetBase* wb , const NPAREA& np , AREA_FILL_TYPE filltype) {
    if (filltype == AREA_EMPTY) {return;}
-   EagleColor bgcol = wb->GetColor("BGCOL");
-   EagleColor sdcol = wb->GetColor("SDCOL");
-   EagleColor hlcol = wb->GetColor("HLCOL");
+   EagleColor bgcol = wb->GetColor(BGCOL);
+   EagleColor sdcol = wb->GetColor(SDCOL);
+   EagleColor hlcol = wb->GetColor(HLCOL);
    
 ///      Rectangle topleft = np.GetNPCell(HCELL_LEFT , VCELL_TOP);
 ///      Rectangle botright = np.GetNPCell(HCELL_RIGHT , VCELL_BOTTOM);
    
+   EagleColor temp = hlcol;
    switch (filltype) {
    case AREA_SOLID :
       PaintSolid(win , np , bgcol);
@@ -84,16 +85,18 @@ void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WIDGETBASE*
       PaintRounded(win , np , bgcol);
       break;
    case AREA_RCONTRAST :
-      EagleColor temp = hlcol;
       hlcol = bgcol;
       bgcol = temp;
    case AREA_CONTRAST :
       {
+#warning TODO : FIXME : IMPLEMENT
+         /**
          NPAREA np1(np.Area() , BOXAREA(np.left/2 , np.right/2 , np.top/2 , np.bottom/2));
          NPAREA np2(np1.GetCellBox(HCELL_CENTER , VCELL_CENTER) , 
-                    BOXAREA(np.left - np.left/2 , np.right - np.right/2 , np.top - np.top/2 , np.bottom - np.bottom/2))
+                    BOXAREA(np.left - np.left/2 , np.right - np.right/2 , np.top - np.top/2 , np.bottom - np.bottom/2));
          PaintSolid(win , np1 , hlcol);
          PaintSolid(win , np2 , sdcol);
+         //*/
       }
       break;
    case AREA_IMAGE_CENTER :
@@ -103,7 +106,9 @@ void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WIDGETBASE*
             bgimage = wb->GetAttributeValue("BackgroundImage");
          }
          if (bgimage.length()) {
-            EagleImage* img = GetImageResource(bgimage);
+            EagleImage* img = 0;
+#warning TODO : FIXME : BROKEN RESOURCE
+///            EagleImage* img = GetImageResource(bgimage);
             Rectangle a = np.GetNPCell(HCELL_CENTER , VCELL_CENTER);
             EagleImage* target = win->GetDrawingTarget();
             target->PushClippingRectangle(a);
@@ -119,7 +124,9 @@ void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WIDGETBASE*
             bgimage = wb->GetAttributeValue("BackgroundImage");
          }
          if (bgimage.length()) {
-            EagleImage* img = GetImageResource(bgimage);
+            EagleImage* img = 0;
+#warning TODO : FIXME : BROKEN RESOURCE
+///            EagleImage* img = GetImageResource(bgimage);
             Rectangle a = np.GetNPCell(HCELL_CENTER , VCELL_CENTER);
             EagleImage* target = win->GetDrawingTarget();
             target->PushClippingRectangle(a);
@@ -135,66 +142,24 @@ void WidgetPainterBasic::PaintArea(EagleGraphicsContext* win , const WIDGETBASE*
 
 
 
-void PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb) {
+void WidgetPainterBasic::PaintWidgetBackground(EagleGraphicsContext* win , const WidgetBase* wb) {
+   (void)win;
+   (void)wb;
+/**   
    WIDGETAREA warea = wb->GetWidgetArea();
    if (warea.HasBorder() && wb->AttributeIsSet("BorderFillType")) {
       VALUE tval = wb->GetAttributeValue("BorderFillType");
       
    }
+*/
 }
 
 
 
-void PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb) {
-   
+void WidgetPainterBasic::PaintWidgetFocus(EagleGraphicsContext* win , const WidgetBase* wb) {
+   (void)win;
+   (void)wb;
 }
 
 
 
-void WidgetPainterBasic::SetBgPaintType(BG_AREA_PAINT_TYPE bgtype) {
-   bgptype = bgtype;
-}
-
-
-
-void WidgetPainterBasic::SetFocusPaintType(FOCUS_AREA_PAINT_TYPE ftype)
-   fptype = ftype;
-}
-
-
-
-
-
-
-
-
-/// -----------------------     WidgetPainter      -------------------------------
-
-
-
-
-WidgetPainter::WidgetPainter() :
-      wpainter(0)
-{}
-
-
-
-WidgetPainter::WidgetPainter(std::shared_ptr<WidgetPainterBase> wpbase) :
-      wpainter(wpbase)
-{}
-
-
-
-void WidgetPainter::PaintWidgetBackground(EagleGraphicsContext* win , const WIDGETBASE* wb) {
-   WidgetPainterBase* wptr = wpainter.get();
-   if (!wptr) {return;}
-   wptr->PaintWidgetBackground(win , wb);
-}
-
-
-
-void WidgetPainter::PaintWidgetFocus(EagleGraphicsContext* win , const WIDGETBASE* wb);
-   WidgetPainterBase* wptr = wpainter.get();
-   if (!wptr) {return;}
-   wptr->PaintWidgetFocus(win , wb);
-}

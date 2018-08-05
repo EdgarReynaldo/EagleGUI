@@ -220,8 +220,8 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       scrh(0),
       backbuffer(0),
       drawing_target(0),
-      images(),
-      fonts(),
+      imageset(),
+      fontset(),
       mp_manager(0),
       maxframes(60),
       numframes(0.0f),
@@ -229,7 +229,7 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       frame_times(),
       previoustime(0.0f),
       currenttime(0.0f),
-      default_font(0),
+      default_font(),
       default_font_path(eagle_default_font_path),
       default_font_size(eagle_default_font_size),
       default_font_flags(eagle_default_font_flags),
@@ -411,17 +411,50 @@ void EagleGraphicsContext::DrawToBackBuffer() {
 
 
 void EagleGraphicsContext::FreeImage(EagleImage* img) {
-   if (img) {
-      images.Remove(img);
+   if (!img) {return;}
+   EagleImage* parent = img->Parent();
+   if (parent) {
+      /// This is a sub bitmap, we don't own it
+      parent->FreeChild(img);
+      return;
+   }
+      
+   ISIT it = imageset.find(img);
+   if (it != imageset.end()) {
+      delete img;
+      imageset.erase(it);
    }
 }
 
 
 
-void EagleGraphicsContext::FreeFont(EagleFont* font) {
-   if (font) {
-      fonts.Remove(font);
+void EagleGraphicsContext::FreeAllImages() {
+   IMAGESET iset = imageset;
+   for (ISIT it = iset.begin() ; it != iset.end() ; ++it) {
+      FreeImage(*it);
    }
+   EAGLE_ASSERT(imageset.empty());
+}
+
+
+
+void EagleGraphicsContext::FreeFont(EagleFont* font) {
+   if (!font) {return;}
+   FSIT it = fontset.find(font);
+   if (it != fontset.end()) {
+      delete font;
+      fontset.erase(it);
+   }
+}
+
+
+
+void EagleGraphicsContext::FreeAllFonts() {
+   FONTSET fset = fontset;
+   for (FSIT it = fset.begin() ; it != fset.end() ; ++it) {
+      FreeFont(*it);
+   }
+   EAGLE_ASSERT(fontset.empty());
 }
 
 

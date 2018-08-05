@@ -2,6 +2,7 @@
 
 
 #include "Eagle/Gui/Button/CheckBox.hpp"
+#include "Eagle/GraphicsContext.hpp"
 
 
 
@@ -46,9 +47,9 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
       for (int i = 0 ; i < 4 ; ++i) {
          bool up = (i%2)==0;
          bool hover = i/2;
-         SHAREDIMAGE img = win->CreateImage(OuterArea().W() , OuterArea().H());
+         EagleImage* img = win->CreateImage(OuterArea().W() , OuterArea().H());
          win->PushDrawingTarget(img);
-         draw_func(win , Rectangle(0 , 0 , img->W() , img->H()) , 0 , 0 , WCols() , up , hover);
+         draw_func(win , Rectangle(0 , 0 , img->W() , img->H()) , 0 , 0 , WidgetColors() , up , hover);
          cb_images[i] = img;
          win->PopDrawingTarget();
          IconButton::SetImages(cb_images[0] , cb_images[1] , cb_images[2] , cb_images[3]);
@@ -61,7 +62,10 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
 
 void BasicCheckBox::FreeImages() {
    for (int i = 0 ; i < 4 ; ++i) {
-      cb_images[i].reset();
+      if (cb_images[i]) {
+         delete cb_images[i];
+         cb_images[i] = 0;
+      }
    }
    current = false;
 }
@@ -113,7 +117,7 @@ void BasicCheckBox::SetDrawFunc(CHECKBOXDRAWFUNC cbdrawfunc) {
 
 
 
-void BasicCheckBox::SetImages(SHAREDIMAGE upimage , SHAREDIMAGE downimage , SHAREDIMAGE hoverupimage , SHAREDIMAGE hoverdownimage) {
+void BasicCheckBox::SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage) {
    draw_func = 0;
    current = true;
    IconButton::SetImages(upimage , downimage , hoverupimage , hoverdownimage);

@@ -88,7 +88,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    bool focus_taken = false;
 
    /// GUIs can take the focus too
-   if (wparent && area.OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
+   if (wparent && OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
       /// TODO : this is kind of a relic of a gui being a window... but they're not anymore, sort of
       /// TODO : Leave this to the EagleGuiWindow subclass
 //      gui_takes_focus = true;
@@ -102,7 +102,8 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       WidgetBase* new_whover = 0;
       for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
          WidgetBase* w = drawlist[i];
-         bool hover = w->IsMouseOver(mouse_x , mouse_y);
+         Rectangle abswidgetpos = w->AbsoluteArea().OuterArea();
+         bool hover = abswidgetpos.Contains(mouse_x , mouse_y);
 ///         bool hover = w->OuterArea().Contains(mx,my);
          if (hover) {
             new_whover = w;
@@ -133,7 +134,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    for (UINT index = 0 ; index < inputlist.size() ; ++index) {
       WidgetBase* widget = inputlist[index];
 
-      if (!(widget->Flags() & ENABLED)) {continue;}
+      if (!(widget->Flags().FlagOn(ENABLED))) {continue;}
 
       msg = widget->HandleEvent(e);
 
@@ -243,8 +244,7 @@ int WidgetHandler::PrivateUpdate(double tsec) {
 void WidgetHandler::OnAreaChanged() {
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
    Rectangle r = OuterArea();
-
-   cam.SetWidgetArea(0,0 , r.W(), r.H());
+   cam.SetWidgetArea(r);
 
    if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
       SetupBuffer(r.W() , r.H() , gwindow);
@@ -276,18 +276,18 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    if (widget == this) {return;}
    if (HasWidget(widget)) {return;}
 
-   widget = widget->GetDecoratorRoot();
+///   widget = widget->GetDecoratorRoot();
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
    
-   std::vector<WidgetBase*> layout_children;
+   std::vector<SHAREDWIDGET> layout_children;
    
    if (widget_is_layout) {
       layout_children = widget_is_layout->WChildren();
       for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
          TrackWidget(layout_children[i]);
       }
-      widget_is_layout->SetGuiHandler(this);
+      widget_is_layout->SetWidgetHandler(this);
    }
 
    wlist.push_back(widget);
@@ -297,14 +297,18 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    if (wlist.size() == 1) {
       GiveWidgetFocus(widget);
    } else {
+      if (widget->HasGui()) {
+         widget->GetGui()->GiveWidgetFocus(0,false);
+      }
+/**
       WidgetHandler* wh = widget->GetGui();
       if (wh) {
          wh->GiveWidgetFocus(0,false);
       }
+*/
    }
    SortDrawListByPriority();
    widget->SetParent(this);
-   widget->SetColorset(wcols , true);
    widget->SetBgRedrawFlag();
 }
 
@@ -333,14 +337,14 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(OwnsWidget(w));
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(w);
-   std::vector<WidgetBase*> layout_children;
+   std::vector<SHAREDWIDGET> layout_children;
    
    if (widget_is_layout) {
       layout_children = widget_is_layout->WChildren();
       for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
-         StopTrackingWidget(layout_children[i]);
+         StopTrackingWidget(layout_children[i].get());
       }
-      widget_is_layout->SetGuiHandler(0);
+      widget_is_layout->SetWidgetHandler(0);
    }
    
    MakeAreaDirty(w->OuterArea());
@@ -372,8 +376,8 @@ bool WidgetHandler::OwnsWidget(WidgetBase* widget) {
 
 
 
-UINT WidgetHandler::WidgetIndex(WidgetBase* widget) {
-   for (UINT index = 0 ; index < wlist.size() ; ++index) {
+unsigned int WidgetHandler::WidgetIndex(WidgetBase* widget) {
+   for (unsigned int index = 0 ; index < wlist.size() ; ++index) {
       WidgetBase* w = wlist[index];
       WidgetHandler* wh = w->GetGui();
       
@@ -405,10 +409,9 @@ void WidgetHandler::CheckRedraw(UINT widget_index) {
       /// Check whether each widget behind it overlaps
       for (UINT i = 0 ; i < widget_index ; ++i) {
          WidgetBase* w = drawlist[i];
-         Rectangle warea = w->OuterArea();
-         if (widgetarea.Overlaps(warea)) {
-            UINT wflags = w->Flags();
-            if ((wflags & NEEDS_REDRAW) != NEEDS_REDRAW) {// w doesn't have the redraw flag set
+         Rectangle area = w->OuterArea();
+         if (widgetarea.Overlaps(area)) {
+            if (w->Flags().FlagOff(NEEDS_REDRAW)) {// w doesn't have the redraw flag set
                w->SetRedrawFlag();
                CheckRedraw(i);
             }
@@ -420,10 +423,9 @@ void WidgetHandler::CheckRedraw(UINT widget_index) {
       /// Check whether each widget in front of it overlaps
       for (UINT i = widget_index + 1 ; i < drawlist.size() ; ++i) {
          WidgetBase* w = drawlist[i];
-         Rectangle warea = w->OuterArea();
-         if (widgetarea.Overlaps(warea)) {
-            UINT wflags = w->Flags();
-            if ((wflags & NEEDS_REDRAW) != NEEDS_REDRAW) {// w doesn't have the redraw flag set
+         Rectangle area = w->OuterArea();
+         if (widgetarea.Overlaps(area)) {
+            if (w->Flags().FlagOff(NEEDS_REDRAW)) {
                w->SetRedrawFlag();
                CheckRedraw(i);
             }
@@ -443,10 +445,10 @@ void WidgetHandler::CheckRedraw() {
       Rectangle r = *it;
       for (UINT i = 0 ; i < drawlist.size() ; ++i) {
          WidgetBase* w = drawlist[i];
-         Rectangle warea = w->OuterArea();
-         if (r.Overlaps(warea)) {
-            UINT wflags = w->Flags();
-            if ((wflags & NEEDS_REDRAW) != NEEDS_REDRAW) {
+#warning FIXME IM BROKEN - RELATIVE VS ABSOLUTE POSITION
+         Rectangle area = w->OuterArea();
+         if (r.Overlaps(area)) {
+            if (w->Flags().FlagOff(NEEDS_REDRAW)) {
                w->SetRedrawFlag();
             }
          }
@@ -614,12 +616,12 @@ WidgetBase* WidgetHandler::NextFocus() {
    }
    for (int index = start_index + 1 ; index < (int)wlist.size() ; ++index) {
       WidgetBase* widget = wlist[index];
-      UINT wflags = widget->Flags();
-      if ((wflags & ENABLED) && (wflags & VISIBLE) && InView(widget)) {
-         WidgetHandler* whandler = widget->GetGui();
-         if (whandler) {
-            whandler->FocusStart();
-            WidgetBase* next = whandler->NextFocus();
+      UINT flags = widget->Flags();
+      if ((flags & ENABLED) && (flags & VISIBLE) && InView(widget)) {
+         if (widget->HasGui()) {
+            WidgetHandler* handler = widget->GetGui();
+            handler->FocusStart();
+            WidgetBase* next = handler->NextFocus();
             if (next) {
                return next;
             }
@@ -652,12 +654,12 @@ WidgetBase* WidgetHandler::PreviousFocus() {
    }
    for (int index = start_index - 1 ; index >= 0 ; --index) {
       WidgetBase* widget = wlist[index];
-      UINT wflags = widget->Flags();
-      if ((wflags & ENABLED) && (wflags & VISIBLE) && InView(widget)) {
-         WidgetHandler* whandler = widget->GetGui();
-         if (whandler) {
-            whandler->FocusStart();
-            WidgetBase* previous = whandler->PreviousFocus();
+      UINT flags = widget->Flags();
+      if ((flags & ENABLED) && (flags & VISIBLE) && InView(widget)) {
+         if (widget->HasGui()) {
+            WidgetHandler* handler = widget->GetGui();
+            handler->FocusStart();
+            WidgetBase* previous = handler->PreviousFocus();
             if (previous) {
                return previous;
             }
@@ -706,7 +708,7 @@ WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string classnam
 		user_bg_ptr(0),
 		stretch_bg(false),
 		use_bg_pic(false),
-		bg_col(WCols()[BGCOL]),
+		bg_col((*(ColorRegistry::GlobalColorRegistry()->GetDefaultColorset()))[BGCOL]),
 		cam(),
 		shrink_buffer_on_resize(false),
 		dumb_layout(),
@@ -729,7 +731,7 @@ WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string classnam
    SetRootLayout(&dumb_layout);
    cam.SetParent(this);
    cam.TakesFocus(false);
-   SetDisplayPriority(HIGH_DISPLAY_PRIORITY);
+   SetZOrder(ZORDER_PRIORITY_HIGH);
    SetRedrawFlag();
 }
 
@@ -850,7 +852,7 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 void WidgetHandler::SetBufferShrinkOnResize(bool buffer_shrink_on_resize) {
    if (shrink_buffer_on_resize != buffer_shrink_on_resize) {
       if (buffer_shrink_on_resize) {
-         Rectangle r = area.OuterArea();
+         Rectangle r = OuterArea();
          if ((buffer->W() > r.W()) || (buffer->H() > r.H())) {
             SetupBuffer(r.W() , r.H() , gwindow);
          }
@@ -868,7 +870,7 @@ void WidgetHandler::UseBackgroundImage(EagleImage* bg , bool stretch) {
 	if (background && background->W() && background->H()) {
       RedrawBackgroundBuffer();
 	}
-	MakeAreaDirty(area.OuterArea());
+	MakeAreaDirty(OuterArea());
 }
 
 
@@ -879,7 +881,7 @@ void WidgetHandler::UseBackgroundColor(EagleColor col) {
 	if (background->W() && background->H()) {
 	   RedrawBackgroundBuffer();
 	}
-	MakeAreaDirty(area.OuterArea());
+	MakeAreaDirty(OuterArea());
 }
 
 
@@ -942,21 +944,14 @@ void WidgetHandler::SetRootLayout(Layout* l) {
 
 
 
-void WidgetHandler::AddWidget(WidgetBase* widget) {
+void WidgetHandler::AddWidget(SHAREDWIDGET widget) {
    root_layout->AddWidget(widget);
 }
 
 
 
-WidgetHandler& WidgetHandler::operator<<(WidgetBase* widget) {
+WidgetHandler& WidgetHandler::operator<<(SHAREDWIDGET widget) {
    AddWidget(widget);
-   return *this;
-}
-
-
-
-WidgetHandler& WidgetHandler::operator<<(WidgetBase& widget) {
-   AddWidget(&widget);
    return *this;
 }
 
@@ -982,7 +977,7 @@ void WidgetHandler::ClearLayout() {
    focus_start = true;
    mque.clear();
    
-   MakeAreaDirty(area.OuterArea());
+   MakeAreaDirty(OuterArea());
 }
 
 void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
@@ -998,7 +993,7 @@ void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
    dbg_list.clear();
    for (UINT i = 0 ; i < drawlist.size() ; ++i) {
       WidgetBase* w = drawlist[i];
-      if (w->Flags() & VISIBLE) {
+      if (w->Flags().FlagOn(VISIBLE)) {
 ///            Rectangle a = area.InnerArea();
          w->Display(win , 0 , 0);
       }
@@ -1008,32 +1003,27 @@ void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
 
 
 void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
-      /** Draw dirty backgrounds first */
-      dbg_list = ConsolidateRectangles(dbg_list);
-      
-      CheckRedraw();
-      
-      win->SetFullCopyBlender();
-      for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
-         Rectangle& r = *it;
-         win->DrawRegion(background , r , r.X() , r.Y());
+   /** Draw dirty backgrounds first */
+   dbg_list = ConsolidateRectangles(dbg_list);
+
+   CheckRedraw();
+
+   win->SetFullCopyBlender();
+   for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
+      Rectangle& r = *it;
+      win->DrawRegion(background , r , r.X() , r.Y());
+   }
+   dbg_list.clear();
+   win->RestoreLastBlendingState();
+
+   /** Only widgets with the NEEDS_REDRAW flag should actually redraw */
+   for (UINT i = 0 ; i < drawlist.size() ; ++i) {
+      WidgetBase* w = drawlist[i];
+      UINT flags = w->Flags();
+      if (flags & NEEDS_REDRAW) {
+         w->Display(win , 0 , 0);
       }
-      dbg_list.clear();
-      win->RestoreLastBlendingState();
-      
-      /** Only widgets with the NEEDS_REDRAW flag should actually redraw */
-      bool some_drawn = false;
-      for (UINT i = 0 ; i < drawlist.size() ; ++i) {
-         WidgetBase* w = drawlist[i];
-         UINT wflags = w->Flags();
-         if ((wflags & NEEDS_REDRAW) || (some_drawn && (wflags & ALLOW_OVERLAP))) {
-            if (wflags & VISIBLE) {
-               some_drawn = true;
-               w->Display(win , 0 , 0);
-///               if (wfocus == w) {DrawFocus(win);}
-            }
-         }
-      }
+   }
 }
 
 
@@ -1068,7 +1058,7 @@ void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
 
 void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos) {
    
-   if (flags & VISIBLE) {
+   if (Flags().FlagOn(VISIBLE)) {
          
       cam.SetRedrawFlag();
    
@@ -1099,8 +1089,7 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
-   root_layout->WidgetBase::SetWidgetArea(area.InnerArea(),false);
-//   ((WidgetBase*)root_layout))->SetWidgetArea(area.InnerArea());
+   root_layout->WidgetBase::SetWidgetArea(InnerArea(),false);
 }
 
 
@@ -1226,19 +1215,18 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget) {
 //** OLD SetFocusState and GiveWidgetFocus
 
 void WidgetHandler::SetFocusState(bool state) {
-      WidgetBase::SetFocusState(state);
-      if (!state) {
-         if (wfocus) {
-            wfocus->SetFocusState(false);
-            /// The widget handler that owns the wfocus needs to be notified it has lost focus as well
-            WidgetBase* pfocus = wfocus->Parent();
-            WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(pfocus);
-            if (pwh && (pwh != this)) {
-               pwh->GiveWidgetFocus(0 , false);
-            }
-            wfocus = 0;
+   WidgetBase::SetFocusState(state);
+   if (!state) {
+      if (wfocus) {
+         wfocus->SetFocusState(false);
+         /// The widget handler that owns the wfocus needs to be notified it has lost focus as well
+         WidgetHandler* pwh = wfocus->GetHandler();
+         if (pwh && (pwh != this)) {
+            pwh->GiveWidgetFocus(0 , false);
          }
+         wfocus = 0;
       }
+   }
 }
 
 
@@ -1252,16 +1240,17 @@ void WidgetHandler::SetFocusState(bool state) {
 
 bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
 //   EagleInfo() << "Giving widget focus to " << widget << endl;
-   if (wparent && notify_parent) {
-      return wparent->GiveWidgetFocus(widget , true);
+
+   WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(widget->GetParent());
+   if (notify_parent && pwh && pwh != this) {
+      return pwh->GiveWidgetFocus(widget , false);
    }
-   
-   /// TODO : Working here - 
    
    if (!widget) {
       SetFocusState(false);
       return true;
    }
+   
    if (HasWidget(widget) && widget->AcceptsFocus()) {
 /** TODO : WARNING : Do not enable this line, if you do it will break RemoveWidget because it depends
               on being able to set the same focus again (this resets the focus_index properly).
@@ -1269,16 +1258,13 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
       
       TODO : I think this is fixed now, by the "if (wfocus && wfocus != widget)" line below
 */      
-      
-
       /// Remove focus from previous widget
       if (wfocus && wfocus != widget) {
          /// The widget handler that owns the wfocus needs to be notified it has lost focus as well
          wfocus->SetFocusState(false);
-         WidgetBase* pfocus = wfocus->Parent();
-         WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(pfocus);
-         if (pwh) {
-            pwh->GiveWidgetFocus(0 , false);
+         WidgetHandler* pwh2 = dynamic_cast<WidgetHandler*>(wfocus->GetParent());
+         if (pwh2) {
+            pwh2->GiveWidgetFocus(0 , false);
          }
       }
       if (OwnsWidget(widget)) {
@@ -1377,7 +1363,7 @@ EagleImage* WidgetHandler::BufferBitmap() {
 
 
 bool WidgetHandler::AreaFree(Rectangle r , WidgetBase* widget) {
-   if (!area.OuterArea().Contains(r)) {return false;}
+   if (!OuterArea().Contains(r)) {return false;}
    for (UINT i = 0 ; i < wlist.size() ; ++i) {
       WidgetBase* w = wlist[i];
       if ((w != widget) && r.Overlaps(w->OuterArea())) {
@@ -1392,15 +1378,15 @@ bool WidgetHandler::AreaFree(Rectangle r , WidgetBase* widget) {
 bool WidgetHandler::InView(WidgetBase* w) {
    if (!w) {return false;}
    Rectangle view = cam.ViewArea();
-   Rectangle warea = w->OuterArea();
-   return (view.Overlaps(warea));
+   Rectangle area = w->OuterArea();
+   return (view.Overlaps(area));
    /// TODO : Perhaps add in checking to see if the widget w is fully obscured by other widgets?
 }
 
 
 
 /// Returns top most widget at x,y
-/// TODO : FIX, WORKING HERE
+#warning TODO : FIXME, WORKING HERE
 WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
@@ -1413,7 +1399,7 @@ WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
          }
       }
    }
-   if (area.OuterArea().Contains(x,y)) {return this;}
+   if (OuterArea().Contains(x,y)) {return this;}
    return 0;
 }
 
@@ -1421,14 +1407,14 @@ WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
 
 int WidgetHandler::GetMouseX() {
    
-   WidgetHandler* whandler = dynamic_cast<WidgetHandler*>(wparent);
+   WidgetHandler* handler = dynamic_cast<WidgetHandler*>(wparent);
    
    int mx = mouse_x;
    
-   int absx = area.OuterArea().X();
+   int absx = OuterArea().X();
    
-   if (whandler) {
-      mx = whandler->GetMouseX();
+   if (handler) {
+      mx = handler->GetMouseX();
    }
    else if (wparent) {
       absx += AbsParentX();
@@ -1452,17 +1438,17 @@ int WidgetHandler::GetMouseX() {
 }
 
 
-
+#warning FIXME WHAT ARE THESE FOR AND HOW DO THEY WORK
 int WidgetHandler::GetMouseY() {
    
-   WidgetHandler* whandler = dynamic_cast<WidgetHandler*>(wparent);
+   WidgetHandler* handler = dynamic_cast<WidgetHandler*>(wparent);
    
    int my = mouse_y;
    
-   int absy = area.OuterArea().Y();
+   int absy = OuterArea().Y();
    
-   if (whandler) {
-      my = whandler->GetMouseY();
+   if (handler) {
+      my = handler->GetMouseY();
    }
    else if (wparent) {
       absy += AbsParentY();

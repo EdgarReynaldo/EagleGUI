@@ -111,20 +111,20 @@ void BasicButton::FreeClickArea() {
 
 int BasicButton::PrivateCheckInputs() {
 
-   UINT retmsg = DIALOG_OKAY;
+   unsigned int retmsg = DIALOG_OKAY;
    bool activated = false;
    bool released = false;
 
    int msx = mouse_x;
    int msy = mouse_y;
-   WidgetHandler* whandler = 0;
+   WidgetHandler* handler = 0;
    
    if (wparent) {
-      whandler = dynamic_cast<WidgetHandler*>(wparent);
+      handler = dynamic_cast<WidgetHandler*>(wparent);
    }
-   if (whandler) {
-      msx = whandler->GetMouseX();
-      msy = whandler->GetMouseY();
+   if (handler) {
+      msx = handler->GetMouseX();
+      msy = handler->GetMouseY();
    }
 ///   int msx = mouse_x - AbsParentX();// This won't work becase it doesn't include the parent gui's camera position
 ///   int msy = mouse_y - AbsParentY();// see above
@@ -148,7 +148,7 @@ int BasicButton::PrivateCheckInputs() {
          if (input_mouse_release(LMB)) {released = true;}
       }
       if (released) {
-         SetButtonState(Flags() & HOVER , true);
+         SetButtonState(Flags().FlagOn(HOVER) , true);
          user_activated = false;
          focuskey_activated = false;
          pointer_activated = false;
@@ -165,7 +165,7 @@ int BasicButton::PrivateCheckInputs() {
       activated = true;
       if (btn_action_type == SPRING_BTN) {user_activated = true;}
    
-   } else if ((Flags() & HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
+   } else if (Flags().FlagOn(HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
       
       activated = true;
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
@@ -196,8 +196,8 @@ int BasicButton::PrivateCheckInputs() {
             break;
          default : throw EagleException("BasicButton::PrivateCheckInputs - btn_action_type unknown");break;
       }
-      SetButtonState(Flags() & HOVER , up);
-      if (WidgetBase::Flags() & ALLOW_CLOSE) {
+      SetButtonState(Flags().FlagOn(HOVER) , up);
+      if (Flags().FlagOn(ALLOW_CLOSE)) {
          retmsg |= DIALOG_CLOSE;
       }
    }
@@ -230,7 +230,7 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
 int BasicButton::PrivateUpdate(double tsec) {
    if (btn_action_type == SPRING_BTN) {
       bool up = (btn_state%2) == 0;
-      bool hover = Flags() & HOVER;
+      bool hover = Flags().FlagOn(HOVER);
       
       if (!up) {
          repeat_elapsed += tsec;
@@ -305,7 +305,7 @@ BasicButton::~BasicButton() {
 
 void BasicButton::SetButtonType(BUTTON_ACTION_TYPE type) {
    btn_action_type = type;
-   bool hover = Flags() & HOVER;
+   bool hover = Flags().FlagOn(HOVER);
    bool up = true;
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
 }
@@ -327,7 +327,7 @@ void BasicButton::SetSpringDuration(double duration) {
 
 void BasicButton::SetButtonUpState(bool button_up) {
    bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
+   bool hover = (unsigned int)Flags() & HOVER;
    if (up != button_up) {
       up = button_up;
       SetButtonState(hover , up);
@@ -339,7 +339,7 @@ void BasicButton::SetButtonUpState(bool button_up) {
 
 void BasicButton::ToggleButton() {
    bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
+   bool hover = (unsigned int)Flags() & HOVER;
    up = !up;
    SetButtonState(hover , up);
    SetBgRedrawFlag();
@@ -367,7 +367,7 @@ void BasicButton::UseDefaultClickArea(bool use_default) {
 
 
 void BasicButton::SetButtonState(bool hover , bool up) {
-   bool oldhover = Flags() & HOVER;
+   bool oldhover = (unsigned int)Flags() & HOVER;
    bool oldup = (btn_state % 2 == 0);
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
@@ -457,13 +457,13 @@ bool BasicButton::Hover() {
 
 
 SHAREDBUTTON StackButton(BasicButton* b) {
-   return SHAREDBUTTON(b , false);
+   return StackObject(b);
 }
 
 
 
 SHAREDBUTTON StackButton(BasicButton& b) {
-   return SHAREDBUTTON(&b , false);
+   return StackObject(&b);
 }
 
 

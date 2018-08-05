@@ -88,7 +88,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
          }
       }
    }
-   if (Flags() & HASFOCUS) {
+   if (Flags().FlagOn(HASFOCUS)) {
       if (ev.type == EAGLE_EVENT_KEY_CHAR) {
          EagleInfo() << "Key down event detected in SelectText::HandleEvent - key " <<
                         ev.keyboard.keycode << " was pressed." << std::endl;
@@ -196,7 +196,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    }
 ///   EagleInfo() << "SelectText::PrivateDisplay - background drawn" << std::endl;
 
-   DrawText(win , xpos , ypos , WCols()[TXTCOL]);
+   DrawText(win , xpos , ypos , GetColor(TXTCOL));
 
    /// Draw caret
    if (caret_visible) {
@@ -210,7 +210,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 ///         float w = 3;
          float h = text_font->Height();
          
-         EagleColor col = WCols()[FGCOL];
+         EagleColor col = GetColor(FGCOL);
          
          win->DrawFilledRectangle(x-1,y,3.0f,h,col);
          win->DrawFilledRectangle      (x-3 , y   , 7.0f , 2.0f , col);
@@ -265,7 +265,7 @@ void SelectText::OnFlagChanged(WIDGET_FLAGS f , bool on) {
       }
    }
    else if (f == HOVER) {
-      WidgetHandler* gui = RootGui();
+      WidgetHandler* gui = RootHandler();
       EAGLE_ASSERT(gui);
       EagleGraphicsContext* win = gui->GetDrawWindow();
       EAGLE_ASSERT(win);
@@ -285,7 +285,7 @@ void SelectText::OnFlagChanged(WIDGET_FLAGS f , bool on) {
 
 
 EagleGraphicsContext* SelectText::GetDrawWindow() {
-   WidgetHandler* root_gui = RootGui();
+   WidgetHandler* root_gui = RootHandler();
    if (root_gui) {
       return root_gui->GetDrawWindow();
    }
@@ -463,7 +463,7 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
 
 
 
-void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos) {
+void SelectText::GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos) {
    EAGLE_ASSERT(pselect_line);
    EAGLE_ASSERT(pselect_pos);
    EAGLE_ASSERT(pcaret_line);
@@ -522,8 +522,8 @@ void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum
    Rectangle r = GetSelectionArea(linenum , left , right , xpos , ypos);
 
    if (r.W()) {
-      win->DrawFilledRectangle(r , WCols()[MGCOL]);
-      win->DrawRectangle(r , 3.0 , WCols()[HLCOL]);
+      win->DrawFilledRectangle(r , GetColor(MGCOL));
+      win->DrawRectangle(r , 3.0 , GetColor(HLCOL));
    }
 }
 

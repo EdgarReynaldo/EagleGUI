@@ -71,11 +71,11 @@ int Layout::WidgetIndex(WidgetBase* widget) const {
 
 
 
-WidgetBase* Layout::GetWidget(int slot)  const {
+WidgetBase* Layout::GetWidget(int slot) {
    if (slot < 0 || slot >= (int)wchildren.size()) {
       return 0;
    }
-   return wchildren[slot];
+   return wchildren[slot].get();
 }
 
 
@@ -103,19 +103,19 @@ void Layout::ReserveSlots(int nslots) {
          EmptySlot(i);
       }
    }
-   wchildren.resize(nslots , 0);
+   wchildren.resize(nslots , SHAREDWIDGET());
 }
 
 
 
-void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
+void Layout::ReplaceWidget(SHAREDWIDGET widget , int slot) {
    
 /** NOTE : This will not work right, and will prevent decorators from working properly.
    while (widget->GetDecoratorParent()) {
       widget = widget->GetDecoratorParent();
    }
 */   
-   RemoveWidgetFromLayout(wchildren[slot]);
+   RemoveWidgetFromLayout(wchildren[slot].get());
    wchildren[slot] = widget;
    RepositionChild(slot);
 
@@ -123,7 +123,7 @@ void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
       if (whandler) {
          whandler->TrackWidget(widget);
       }
-      widget->SetOwnerLayout(this);
+      widget->SetLayoutOwner(this);
    }
 }
 
@@ -136,7 +136,7 @@ void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy ,
    EAGLE_ASSERT(newwidth);
    EAGLE_ASSERT(newheight);
    
-   int wflags = widget->Flags();
+   unsigned int flags = (unsigned int)widget->Flags();
    
    Rectangle w = widget->OuterArea();
    
@@ -165,11 +165,11 @@ void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy ,
       }
    }
    
-   if (!(wflags & MOVEABLE)) {
+   if (!(flags & MOVEABLE)) {
       *newx = w.X();
       *newy = w.Y();
    }
-   if (!(wflags & RESIZEABLE)) {
+   if (!(flags & RESIZEABLE)) {
       *newwidth = w.W();
       *newheight = w.H();
    }

@@ -189,9 +189,14 @@ enum QUADRANT_DIR {
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
+   typedef std::unordered_set<EagleImage*> IMAGESET;
+   typedef std::unordered_set<EagleFont*> FONTSET;
 
+   typedef IMAGESET::iterator ISIT;
+   typedef FONTSET::iterator FSIT;
 
-
+   
+   
    int scrw;
    int scrh;
 
@@ -200,11 +205,11 @@ protected :
 
    std::list<EagleImage*> draw_target_stack;
 
-   PointerManager<EagleImage> images;
-   PointerManager<EagleFont>  fonts;
+   IMAGESET imageset;
+   FONTSET  fontset;
 
-   MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
-                                   // cannot be called in a base class constructor
+   MousePointerManager* mp_manager;/// Derived class is responsible for instantiating this object, b/c a virtual creation function
+                                   /// cannot be called in a base class constructor
    float maxframes;
    float numframes;
    float total_frame_time;
@@ -352,18 +357,24 @@ public :
 
    void DrawToBackBuffer();
 
-   /// image creation / loading / sub division
-   virtual EagleImage* EmptyImage()=0;
-   virtual EagleImage* CloneImage(EagleImage* clone)=0;
-   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE)=0;
+   /// Image creation / loading / sub division - these images are owned by the window
+   virtual EagleImage* EmptyImage(std::string iname = "Nemo")=0;
+
+   virtual EagleImage* CloneImage(EagleImage* clone , std::string iname = "Nemo")=0;
+   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;
+
+   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;
    virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height)=0;
+
    void                FreeImage(EagleImage* img);
+   void                FreeAllImages();
 
-   /// font loading
+   /// Font loading - these fonts are owned by the window
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   void               FreeFont(EagleFont* font);
 
+   void               FreeFont(EagleFont* font);
+   void               FreeAllFonts();
+   
    EagleFont* DefaultFont();
 
    std::string DefaultFontPath();

@@ -272,6 +272,8 @@ struct VIDEO_EVENT_DATA {
    AVSTATE avstate;
 };
 
+class WidgetBase;
+
 struct WIDGET_EVENT_DATA {
    WidgetBase* from;
    unsigned int topic;

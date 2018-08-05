@@ -50,7 +50,7 @@ void ResourceLibrary::FreeResources() {
 
 
 std::set<std::string> ResourceLibrary::GetSupportedTypes(RESOURCE_TYPE rt) {
-   if (typemap.find(rt)) {
+   if (typemap.find(rt) != typemap.end()) {
       return typemap[rt];
    }
    return std::set<std::string>();
@@ -70,11 +70,11 @@ RESOURCE_TYPE ResourceLibrary::DeduceResourceType(std::string ext) {
 
 
 
-std::shared_ptr<ResourceBase> ResourceLibrary::GetResource(RESOURCEID rid) {
-   if (resmap.find(rid)) {
+SHAREDOBJECT<ResourceBase> ResourceLibrary::GetResource(RESOURCEID rid) {
+   if (resmap.find(rid) != resmap.end()) {
       return resmap[rid];
    }
-   return 0;
+   return SHAREDOBJECT<ResourceBase>();
 }
 
 
