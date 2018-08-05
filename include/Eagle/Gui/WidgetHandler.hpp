@@ -191,8 +191,10 @@ public :
    void SetRootLayout(Layout* l);
    
    /// Functions for adding widgets to the handler - automatically added to the layout
-   void AddWidget(SHAREDWIDGET widget);
-   WidgetHandler& operator<<(SHAREDWIDGET widget);
+   void AddWidget(WidgetBase* widget);
+   WidgetHandler& operator<<(WidgetBase* widget);
+   WidgetHandler& operator<<(WidgetBase& widget);
+
    void RemoveWidget(WidgetBase* widget);
    void ClearLayout();// Removes all widgets from the dialog and destroys the ones marked for deletion. Global WH's should probably call this.
 

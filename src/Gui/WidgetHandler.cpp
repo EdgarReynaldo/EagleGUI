@@ -944,14 +944,21 @@ void WidgetHandler::SetRootLayout(Layout* l) {
 
 
 
-void WidgetHandler::AddWidget(SHAREDWIDGET widget) {
+void WidgetHandler::AddWidget(WidgetBase* widget) {
    root_layout->AddWidget(widget);
 }
 
 
 
-WidgetHandler& WidgetHandler::operator<<(SHAREDWIDGET widget) {
+WidgetHandler& WidgetHandler::operator<<(WidgetBase* widget) {
    AddWidget(widget);
+   return *this;
+}
+
+
+
+WidgetHandler& WidgetHandler::operator<<(WidgetBase& widget) {
+   AddWidget(&widget);
    return *this;
 }
 
