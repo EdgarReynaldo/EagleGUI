@@ -147,7 +147,7 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
 Allegro5FileSystem::Allegro5FileSystem() : 
       FileSystem() 
 {
-   #warning PHYSFS_INIT needs to be called here but we need argv[0]
+   #warning TODO : PHYSFS_INIT needs to be called here but we need argv[0]
 ///   PHYSFS_init();
 }
 
