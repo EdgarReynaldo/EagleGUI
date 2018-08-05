@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild\bin\SquireDebug" prefix_auto="1" extension_auto="1" />
-				<Option object_output="cbbuild\obj\Dynamic\Debug\" />
+				<Option output="cbbuild/bin/SquireDebug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -17,13 +17,14 @@
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-lAllegro5_backend_d.dll" />
-					<Add option="-lEagle5d.dll" />
+					<Add option="-leagle_a5_debug..dll" />
+					<Add option="-leagle_debug.dll" />
+					<Add option="-lallegro_monolith-debug.dll" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild\bin\Squire" prefix_auto="1" extension_auto="1" />
-				<Option object_output="cbbuild\obj\Dynamic\Release\" />
+				<Option output="cbbuild/bin/Squire" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -31,25 +32,29 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lAllegro5_backend_r.dll" />
-					<Add option="-lEagle5r.dll" />
+					<Add option="-leagle_a5.dll" />
+					<Add option="-leagle.dll" />
+					<Add option="-lallegro_monolith.dll" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add directory="include" />
+			<Add directory="Allegro5/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="cbbuild\lib" />
+			<Add directory="cbbuild/lib" />
+			<Add directory="Allegro5/lib" />
 		</Linker>
-		<Unit filename="src\demo_SantaHack2012\Squire\Game.cpp" />
-		<Unit filename="src\demo_SantaHack2012\Squire\Game.hpp" />
-		<Unit filename="src\demo_SantaHack2012\Squire\Notes.txt" />
-		<Unit filename="src\demo_SantaHack2012\Squire\Squire.cpp" />
+		<Unit filename="src/Squire/Game.cpp" />
+		<Unit filename="src/Squire/Game.hpp" />
+		<Unit filename="src/Squire/Notes.txt" />
+		<Unit filename="src/Squire/Squire.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Libtest" />
+		<Option title="LibtestOld" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -229,33 +229,32 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro5/lib" />
 		</Linker>
-		<Unit filename="cbbuild/bin/Libtest.txt" />
-		<Unit filename="src/tests/Allegro5TestMain.cpp" />
-		<Unit filename="src/tests/Allegro5TestMain.hpp" />
-		<Unit filename="src/tests/AllegroMultiWin.hpp" />
-		<Unit filename="src/tests/AnimatedWedgeLayout.cpp" />
-		<Unit filename="src/tests/AnimatedWedgeLayout.hpp" />
-		<Unit filename="src/tests/DrawingTestMain.cpp" />
-		<Unit filename="src/tests/DrawingTestMain.hpp" />
-		<Unit filename="src/tests/EagleMultiWin.hpp" />
-		<Unit filename="src/tests/EventHandlerDemoMain.cpp" />
-		<Unit filename="src/tests/EventHandlerDemoMain.hpp" />
-		<Unit filename="src/tests/GuiTestMain.cpp" />
-		<Unit filename="src/tests/GuiTestMain.hpp" />
-		<Unit filename="src/tests/LayoutTestMain.cpp" />
-		<Unit filename="src/tests/LayoutTestMain.hpp" />
-		<Unit filename="src/tests/Main.cpp" />
-		<Unit filename="src/tests/Menu.hpp" />
-		<Unit filename="src/tests/NewGuiTestMain.cpp" />
-		<Unit filename="src/tests/NewGuiTestMain.hpp" />
-		<Unit filename="src/tests/RecordInputTestMain.cpp" />
-		<Unit filename="src/tests/RecordInputTestMain.hpp" />
-		<Unit filename="src/tests/TestMenu.cpp" />
-		<Unit filename="src/tests/TestMenu.hpp" />
-		<Unit filename="src/tests/TestRegistry.cpp" />
-		<Unit filename="src/tests/TestRegistry.hpp" />
-		<Unit filename="src/tests/TextTestMain.cpp" />
-		<Unit filename="src/tests/TextTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/Allegro5TestMain.cpp" />
+		<Unit filename="LibTests/oldtests/Allegro5TestMain.hpp" />
+		<Unit filename="LibTests/oldtests/AllegroMultiWin.hpp" />
+		<Unit filename="LibTests/oldtests/AnimatedWedgeLayout.cpp" />
+		<Unit filename="LibTests/oldtests/AnimatedWedgeLayout.hpp" />
+		<Unit filename="LibTests/oldtests/DrawingTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/DrawingTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/EagleMultiWin.hpp" />
+		<Unit filename="LibTests/oldtests/EventHandlerDemoMain.cpp" />
+		<Unit filename="LibTests/oldtests/EventHandlerDemoMain.hpp" />
+		<Unit filename="LibTests/oldtests/GuiTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/GuiTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/LayoutTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/LayoutTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/Main.cpp" />
+		<Unit filename="LibTests/oldtests/Menu.hpp" />
+		<Unit filename="LibTests/oldtests/NewGuiTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/NewGuiTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/RecordInputTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/RecordInputTestMain.hpp" />
+		<Unit filename="LibTests/oldtests/TestMenu.cpp" />
+		<Unit filename="LibTests/oldtests/TestMenu.hpp" />
+		<Unit filename="LibTests/oldtests/TestRegistry.cpp" />
+		<Unit filename="LibTests/oldtests/TestRegistry.hpp" />
+		<Unit filename="LibTests/oldtests/TextTestMain.cpp" />
+		<Unit filename="LibTests/oldtests/TextTestMain.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
