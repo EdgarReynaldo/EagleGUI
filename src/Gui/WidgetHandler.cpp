@@ -280,7 +280,7 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
    
-   std::vector<SHAREDWIDGET> layout_children;
+   std::vector<WidgetBase*> layout_children;
    
    if (widget_is_layout) {
       layout_children = widget_is_layout->WChildren();
@@ -337,12 +337,12 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(OwnsWidget(w));
    
    Layout* widget_is_layout = dynamic_cast<Layout*>(w);
-   std::vector<SHAREDWIDGET> layout_children;
+   std::vector<WidgetBase*> layout_children;
    
    if (widget_is_layout) {
       layout_children = widget_is_layout->WChildren();
       for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
-         StopTrackingWidget(layout_children[i].get());
+         StopTrackingWidget(layout_children[i]);
       }
       widget_is_layout->SetWidgetHandler(0);
    }

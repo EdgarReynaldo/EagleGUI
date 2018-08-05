@@ -64,7 +64,7 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
 int Layout::WidgetIndex(const WidgetBase* widget) const {
    if (!widget) {return -1;}
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-      if (widget == wchildren[i].get()) {
+      if (widget == wchildren[i]) {
          return (int)i;
       }
    }
@@ -77,14 +77,14 @@ WidgetBase* Layout::GetWidget(int slot) {
    if (slot < 0 || slot >= (int)wchildren.size()) {
       return 0;
    }
-   return wchildren[slot].get();
+   return wchildren[slot];
 }
 
 
 
 int Layout::NextFreeSlot() {
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
-      if (wchildren[i].get() == 0) {
+      if (wchildren[i] == 0) {
          return i;
       }
    }
@@ -105,18 +105,13 @@ void Layout::ReserveSlots(int nslots) {
          EmptySlot(i);
       }
    }
-   wchildren.resize(nslots , SHAREDWIDGET());
+   wchildren.resize(nslots , (WidgetBase*)0);
 }
 
 
 
-void Layout::ReplaceWidget(SHAREDWIDGET widget , int slot) {
+void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
    
-/** NOTE : This will not work right, and will prevent decorators from working properly.
-   while (widget->GetDecoratorParent()) {
-      widget = widget->GetDecoratorParent();
-   }
-*/   
    RemoveWidgetFromLayout(wchildren[slot]);
    wchildren[slot] = widget;
    RepositionChild(slot);
@@ -300,7 +295,7 @@ void Layout::Resize(unsigned int nsize) {
 
 
 
-void Layout::PlaceWidget(SHAREDWIDGET widget , int slot) {
+void Layout::PlaceWidget(WidgetBase* widget , int slot) {
    /// widget may be NULL to remove a widget from a slot
    EAGLE_ASSERT((slot >= 0) && (slot < (int)wchildren.size()));
 
@@ -309,7 +304,7 @@ void Layout::PlaceWidget(SHAREDWIDGET widget , int slot) {
 
 
 
-int Layout::AddWidget(SHAREDWIDGET widget) {
+int Layout::AddWidget(WidgetBase* widget) {
    int slot = NextFreeSlot();
    if (slot == -1) {
       ReserveSlots((int)wchildren.size() + 1);
@@ -323,7 +318,7 @@ int Layout::AddWidget(SHAREDWIDGET widget) {
 
 void Layout::EmptySlot(int slot) {
    EAGLE_ASSERT(slot >= 0 && slot < (int)wchildren.size());
-   PlaceWidget(SHAREDWIDGET() , slot);
+   PlaceWidget(0 , slot);
 }
 
 
@@ -332,7 +327,7 @@ void Layout::RemoveWidget(WidgetBase* widget) {
    if (!widget) {return;}
    int index = WidgetIndex(widget);
    if (index == -1) {return;}
-   PlaceWidget(SHAREDWIDGET() , index);
+   PlaceWidget(0 , index);
 }
 
 
@@ -388,33 +383,23 @@ void Layout::SetWChildren(std::vector<SHAREDWIDGET> new_children) {
 
 
 
-std::vector<SHAREDWIDGET> Layout::WChildren() const {
+std::vector<WidgetBase*> Layout::WChildren() const {
    
    /// It's okay to preserve null children
    return wchildren;
-
-   /// Some widgets may be NULL so we can't just copy the vector
-   std::vector<SHAREDWIDGET> children;
-   children.reserve(wchildren.size());
-   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-      if (wchildren[i]) {
-         children.push_back(wchildren[i]);
-      }
-   }
-   return children;
 }
 
 
 
-std::vector<SHAREDWIDGET> Layout::Descendants() const {
-	std::vector<SHAREDWIDGET> descendants;
+std::vector<WidgetBase*> Layout::Descendants() const {
+	std::vector<WidgetBase*> descendants;
 	for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-		SHAREDWIDGET widget = wchildren[i];
+		WidgetBase* widget = wchildren[i];
 		if (!widget) {continue;}
 		descendants.push_back(widget);
-		Layout* l = dynamic_cast<Layout*>(widget.get());
+		Layout* l = dynamic_cast<Layout*>(widget);
 		if (l) {
-			std::vector<SHAREDWIDGET> grandchildren = l->Descendants();
+			std::vector<WidgetBase*> grandchildren = l->Descendants();
 			for (unsigned int j = 0 ; j < grandchildren.size() ; ++j) {
 				descendants.push_back(grandchildren[j]);
 			}

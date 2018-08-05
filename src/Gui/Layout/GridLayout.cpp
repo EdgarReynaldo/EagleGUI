@@ -172,8 +172,8 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
       ClearWidgets();
 	}
    else {
-      std::vector<SHAREDWIDGET> keep_widgets((unsigned int)newsize , StackObject((WidgetBase*)0));
-      std::vector<SHAREDWIDGET> removed_widgets;
+      std::vector<WidgetBase*> keep_widgets((unsigned int)newsize , (WidgetBase*)0);
+      std::vector<WidgetBase*> removed_widgets;
       int oldindex = 0;
       int newindex = 0;
       const int oldrows = nrows;
@@ -185,7 +185,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
          if (row >= newrows) {
             for (col = 0 ; col < oldcols ; ++col) {
                oldindex = row*oldcols + col;
-               RemoveWidgetFromLayout(wchildren[oldindex].get());/// Optionally frees widget and places NULL in its slot
+               RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
             }
          }
          else {

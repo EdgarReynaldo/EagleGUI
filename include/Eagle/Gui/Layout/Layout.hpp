@@ -51,7 +51,7 @@ class Layout : public WidgetBase {
 
 protected :
    
-   std::vector<SHAREDWIDGET> wchildren;
+   std::vector<WidgetBase*> wchildren;/// We do not own these
 
    LAYOUT_ATTRIBUTES attributes;
    
@@ -70,7 +70,7 @@ protected :
    virtual void ReserveSlots(int nslots);
 
    /// All widget placement functions use ReplaceWidget
-   void ReplaceWidget(SHAREDWIDGET widget , int slot);
+   void ReplaceWidget(WidgetBase* widget , int slot);
 
    /// Adjusts the widget area to obey minimum dimensions and to obey layout attributes and widget flags
    void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) const;
@@ -120,8 +120,8 @@ public :
    /// Widget may be null for PlaceWidget
    /// Both replace the widget (Addwidget replaces a null widget) and call RepositionChild
 
-   virtual void PlaceWidget(SHAREDWIDGET w , int slot);
-   virtual int AddWidget(SHAREDWIDGET w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
+   virtual void PlaceWidget(WidgetBase* w , int slot);
+   virtual int AddWidget(WidgetBase* w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
 
    /// Removal of widgets
 
@@ -144,8 +144,8 @@ public :
    virtual void SetWChildren(std::vector<SHAREDWIDGET> new_children);
 
    // Getters
-   std::vector<SHAREDWIDGET> WChildren() const ;
-   std::vector<SHAREDWIDGET> Descendants() const ;
+   std::vector<WidgetBase*> WChildren() const ;
+   std::vector<WidgetBase*> Descendants() const ;
    
    Layout* RootLayout();
    const Layout* RootLayout() const;
