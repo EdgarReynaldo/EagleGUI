@@ -267,10 +267,6 @@
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
 		<Unit filename="src/Gui/Layout/GridLayout.cpp" />
 		<Unit filename="src/Gui/Layout/Layout.cpp" />
-		<Unit filename="src/Gui/Layout/Layout.old.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
 		<Unit filename="src/Gui/Layout/LayoutRectangle.cpp" />
 		<Unit filename="src/Gui/Layout/MenuLayout.cpp" />
 		<Unit filename="src/Gui/Layout/PinLayout.cpp" />

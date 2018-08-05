@@ -18,7 +18,7 @@
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-leagle_a5_debug..dll" />
+					<Add option="-leagle_a5_debug.dll" />
 					<Add option="-leagle_debug.dll" />
 					<Add option="-lallegro_monolith-debug.dll" />
 				</Linker>
