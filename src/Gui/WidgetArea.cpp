@@ -40,6 +40,24 @@ BOXAREA::BOXAREA() :
 
 
 
+BOXAREA::BOXAREA(int side) :
+      left(side),
+      right(side),
+      top(side),
+      bottom(side)
+{}
+
+
+
+BOXAREA::BOXAREA(int hsize , int vsize) :
+      left(hsize),
+      right(hsize),
+      top(vsize),
+      bottom(vsize)
+{}
+
+
+
 BOXAREA::BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b) :
       left(l),
       right(r),
@@ -58,7 +76,32 @@ void BOXAREA::Set(unsigned int l , unsigned int r , unsigned int t , unsigned in
 
 
 
+std::ostream& BOXAREA::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "BOXAREA(" << left << "," << right << "," << top << "," << bottom << ")";
+   return os;
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const BOXAREA& ba) {
+   return ba.DescribeTo(os);
+}
+
+
+
 /// NPAREA
+
+
+NPAREA::NPAREA() :
+      pos(0,0),
+      left(0),
+      width(0),
+      right(0),
+      top(0),
+      height(0),
+      bottom(0)
+{}
+
 
 
 NPAREA::NPAREA(Rectangle area , BOXAREA box) :
@@ -75,8 +118,9 @@ NPAREA::NPAREA(Rectangle area , BOXAREA box) :
 
 void NPAREA::PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c) {
    for (int i = 0 ; i < 9 ; ++i) {
+      if (i == 4) {continue;}
       Rectangle cell = GetNPCell((HCELL_AREA)(i%3) , (VCELL_AREA)(i/3));
-      if (cell.Area()) {
+      if (cell.Area() > 0) {
          win->DrawFilledRectangle(cell , c);
       }
    }
@@ -87,10 +131,11 @@ void NPAREA::PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c) {
 void NPAREA::PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c) {
    Rectangle cells[9];
    for (int i = 0 ; i < 9 ; ++i) {
+      if (i == 4) {continue;}
       HCELL_AREA hcell = (HCELL_AREA)(i%3);
       VCELL_AREA vcell = (VCELL_AREA)(i/3);
       cells[i] = GetNPCell(hcell , vcell);
-      if (cells[i].Area()) {
+      if (cells[i].Area() > 0) {
          if ((hcell == HCELL_CENTER) || (vcell == VCELL_CENTER)) {
             win->DrawFilledRectangle(cells[i] , c);
          }
@@ -123,10 +168,10 @@ Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
    Pos2I p2 = pos;
    const int cellwidths[4]  = {0 , left , width , right};
    const int cellheights[4] = {0 , top , height , bottom};
-   for (unsigned int j = 0 ; j < vcell ; ++j) {
+   for (unsigned int j = 0 ; j <= vcell ; ++j) {
       p2.MoveBy(0 , cellheights[j]);
    }
-   for (unsigned int i = 0 ; i < hcell ; ++i) {
+   for (unsigned int i = 0 ; i <= hcell ; ++i) {
       p2.MoveBy(cellwidths[i] , 0);
    }
    return Rectangle(p2.X() , p2.Y() , cellwidths[hcell + 1] , cellheights[vcell + 1]);
@@ -150,6 +195,19 @@ Rectangle NPAREA::GetColumn(HCELL_AREA hcell) const {
 
 
 
+std::ostream& NPAREA::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "NPAREA(Pos = " << pos.X() << "," << pos.Y() << " , " << "(l,w,r = " << left << "," << width << "," << right << ") (t,h,b = " << top << "," << height << "," << bottom << "))" << std::endl;
+   return os;
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const NPAREA& np) {
+   return np.DescribeTo(os);
+}
+
+
+
 /// WIDGETAREA
 
 
@@ -168,6 +226,43 @@ void WIDGETAREA::SetBoxArea(BOX_TYPE box , BOXAREA b) {
 
 
 
+WIDGETAREA::WIDGETAREA() :
+      pos(0,0),
+      margin(0,0,0,0),
+      border(0,0,0,0),
+      padding(0,0,0,0),
+      inner_width(0),
+      inner_height(0)
+{}
+
+
+
+WIDGETAREA::WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox) :
+      pos(0,0),
+      margin(0,0,0,0),
+      border(0,0,0,0),
+      padding(0,0,0,0),
+      inner_width(0),
+      inner_height(0)
+{
+   SetBoxesContract(outerarea , marginbox , borderbox , paddingbox);
+}
+
+
+
+WIDGETAREA::WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea) :
+      pos(0,0),
+      margin(0,0,0,0),
+      border(0,0,0,0),
+      padding(0,0,0,0),
+      inner_width(0),
+      inner_height(0)
+{
+   SetBoxesExpand(marginbox , borderbox , paddingbox , innerarea);
+}
+
+
+
 /// Setters
 
 
@@ -182,6 +277,60 @@ WIDGETAREA& WIDGETAREA::MoveBy(Pos2I p) {
 WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
    SetWidgetArea(wa);
    return *this;
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesContract(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox) {
+   margin = marginbox;
+   border = borderbox;
+   padding = paddingbox;
+   return SetOuterArea(outerarea);
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesContract(Rectangle outerarea , int marginsize , int bordersize , int paddingsize) {
+   return SetBoxesContract(outerarea , BOXAREA(marginsize) , BOXAREA(bordersize) , BOXAREA(paddingsize));
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesContract(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox) {
+   return SetBoxesContract(OuterArea() , marginbox , borderbox , paddingbox);
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesContract(int marginsize , int bordersize , int paddingsize) {
+   return SetBoxesContract(BOXAREA(marginsize) , BOXAREA(bordersize) , BOXAREA(paddingsize));
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea) {
+   margin = marginbox;
+   border = borderbox;
+   padding = paddingbox;
+   return SetInnerArea(innerarea);
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesExpand(int marginsize , int bordersize , int paddingsize , Rectangle innerarea) {
+   return SetBoxesExpand(BOXAREA(marginsize) , BOXAREA(bordersize) , BOXAREA(paddingsize) , innerarea);
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox) {
+   return SetBoxesExpand(marginbox , borderbox , paddingbox , InnerArea());
+}
+
+
+
+WIDGETAREA& WIDGETAREA::SetBoxesExpand(int marginsize , int bordersize , int paddingsize) {
+   return SetBoxesExpand(BOXAREA(marginsize) , BOXAREA(bordersize) , BOXAREA(paddingsize));
 }
 
 
@@ -482,6 +631,42 @@ BOXAREA WIDGETAREA::GetAreaBox(BOX_TYPE btype) const {
       &padding
    };
    return *(pbarea[btype]);
+}
+
+
+
+int WIDGETAREA::LeftIndent() const {
+   return margin.left + border.left + padding.left;
+}
+
+
+
+int WIDGETAREA::RightIndent() const {
+   return margin.right + border.right + padding.right;
+}
+
+
+
+int WIDGETAREA::TopIndent() const {
+   return margin.top + border.top + padding.top;
+}
+
+
+
+int WIDGETAREA::BottomIndent() const {
+   return margin.bottom + border.bottom + padding.bottom;
+}
+
+
+
+std::ostream& WIDGETAREA::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "WIDGETAREA(OuterArea = " << OuterArea() << " , margin = " << margin << " , border = " << border << " , padding = " << padding << " , InnerArea = " << InnerArea() << ")" << std::endl;
+   return os;
+}
+
+
+std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa) {
+   return wa.DescribeTo(os);
 }
 
 

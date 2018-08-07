@@ -53,11 +53,6 @@ enum GUI_MSGS {
 REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);
 
 
-///class Layout {};
-
-class QUBERT : public WidgetBase {
-   Layout* l;
-};
 
 class WidgetHandler : public WidgetBase {
 	
@@ -88,8 +83,8 @@ protected :
    Layout*         root_layout;
 
    WIDGETLIST      wlist;
-   WIDGETLIST      inputlist;// in order from top to bottom, not necessarily the reverse of drawlist's order
-   WIDGETLIST      drawlist;// in order from back to front
+   WIDGETLIST      inputlist;/// in order from top to bottom, not necessarily the reverse of drawlist's order
+   WIDGETLIST      drawlist;/// in order from back to front
 
    WIDGETLIST      removelist;
 
@@ -105,7 +100,7 @@ protected :
    InputGroup      focus_cycle_forward;
    InputGroup      focus_cycle_backward;
 
-   std::list<Rectangle> dbg_list;//dirty background rectangle list
+   std::list<Rectangle> dbg_list;///dirty background rectangle list
    
    
 protected :

@@ -67,7 +67,7 @@ Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int new
 
 
 
-void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot) {
+void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot) {
    Layout::PlaceWidget(widget , slot);
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
@@ -77,8 +77,8 @@ void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot) {
 
 
 
-int RelativeLayout::AddWidget(SHAREDWIDGET widget) {
-   int new_slot = Layout::AddWidget(SHAREDWIDGET());
+int RelativeLayout::AddWidget(WidgetBase* widget) {
+   int new_slot = Layout::AddWidget(0);
    if (widget) {
       LayoutRectangle lrect(InnerArea() , widget->OuterArea());
       PlaceWidget(widget , new_slot , lrect);
@@ -88,7 +88,7 @@ int RelativeLayout::AddWidget(SHAREDWIDGET widget) {
 
 
 
-void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot , LayoutRectangle lrect) {
+void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect) {
    EAGLE_ASSERT(slot >= 0 && slot < GetLayoutSize());
    layout_rectangles[slot] = lrect;
 
@@ -97,8 +97,8 @@ void RelativeLayout::PlaceWidget(SHAREDWIDGET widget , int slot , LayoutRectangl
 
 
 
-int RelativeLayout::AddWidget(SHAREDWIDGET widget , LayoutRectangle lrect) {
-   int new_slot = Layout::AddWidget(SHAREDWIDGET());
+int RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
+   int new_slot = Layout::AddWidget(0);
    if (widget) {
       EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
       layout_rectangles[new_slot] = lrect;
@@ -121,7 +121,7 @@ Rectangle RelativeLayout::SetLayoutRectangle(int index , LayoutRectangle layout_
 
 
 
-Rectangle RelativeLayout::SetLayoutRectangle(SHAREDWIDGET widget , LayoutRectangle layout_rect) {
+Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect) {
    EAGLE_ASSERT(widget);
    int index = WidgetIndex(widget);
    EAGLE_ASSERT(index != -1);

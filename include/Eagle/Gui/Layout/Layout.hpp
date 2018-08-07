@@ -63,7 +63,7 @@ protected :
    /// Utility
    int WidgetIndex(const WidgetBase* widget) const;
    WidgetBase* GetWidget(int slot);
-   const WidgetBase* GetWidget(int slot) const {return GetWidget(slot);}
+   const WidgetBase* GetWidget(int slot) const;
    int NextFreeSlot();
 
    /// Override and call if you need special storage
@@ -79,7 +79,8 @@ protected :
    void RepositionAllChildren();
    void RepositionChild(int slot);
 
-
+   /// Takes care of removing widget from associated handler and from our layout - public API is RemoveWidget
+   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
 
 	/// WIDGETBASE
    virtual void OnAreaChanged();
@@ -131,9 +132,6 @@ public :
 
    void ClearWidgets();/// Remove all widgets from layout
    
-/// TODO : Why is this public again?
-   void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
-
    void DetachFromGui();/// Call this in Layout derived class's destructor
    
 
@@ -141,11 +139,12 @@ public :
 
    
    
-   virtual void SetWChildren(std::vector<SHAREDWIDGET> new_children);
+   virtual void SetWChildren(std::vector<WidgetBase*> new_children);
 
    // Getters
-   std::vector<WidgetBase*> WChildren() const ;
-   std::vector<WidgetBase*> Descendants() const ;
+   std::vector<WidgetBase*> ChildrenVector() const ;/// Some children may be NULL!
+   std::vector<WidgetBase*> WChildren() const ;/// Only real children
+   std::vector<WidgetBase*> Descendants() const ;/// Only real descendants
    
    Layout* RootLayout();
    const Layout* RootLayout() const;

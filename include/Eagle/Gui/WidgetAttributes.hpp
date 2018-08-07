@@ -30,9 +30,15 @@
 #include <map>
 #include <unordered_set>
 
+#include "Eagle/Indenter.hpp"
+
+
+
+
 typedef std::string ATTRIBUTE;
 typedef std::string VALUE;
 typedef std::map<ATTRIBUTE , VALUE> ATTVALMAP;
+typedef ATTVALMAP::iterator AVMIT;
 
 
 bool IsKnownAttribute(const ATTRIBUTE& a);
@@ -69,7 +75,15 @@ public :
    inline VALUE GetAttributeValue(const ATTRIBUTE& a);
    inline void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    inline void RemoveAttribute(const ATTRIBUTE& a);
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
+   friend std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm);
 };
+
+
+
+std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm);
 
 
 

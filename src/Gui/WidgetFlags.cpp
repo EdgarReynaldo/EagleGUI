@@ -23,6 +23,41 @@
 
 #include "Eagle/Gui/WidgetFlags.hpp"
 
+#include <sstream>
+
+
+std::string WidgetFlagString(unsigned int flags) {
+   static const char* fstrs[NUM_WIDGET_FLAGS] = {
+      "FLAGS_NONE",
+      "ENABLED",
+      "VISIBLE",
+      "HOVER",
+      "HASFOCUS",
+      "MOVEABLE",
+      "RESIZEABLE",
+      "NEEDS_REDRAW",
+      "NEEDS_BG_REDRAW",
+      "ALLOW_CLOSE"
+   };
+   if (!flags) {
+      return fstrs[0];
+   }
+   std::stringstream strm;
+   strm.str("");
+   bool first = true;
+   for (int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
+      unsigned int f = 1 << (i-1);
+      if (flags & f) {
+         if (!first) {
+            strm << " | ";
+         }
+         strm << fstrs[i];
+         first = false;
+      }
+      
+   }
+   return strm.str();
+}
 
 
 
@@ -105,6 +140,13 @@ void WidgetFlags::Reset() {
 
 
 
+std::ostream& WidgetFlags::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << WidgetFlagString(flags);
+   return os;
+}
+
+
+
 /// -------------------    Global functions    --------------------------------
 
 
@@ -112,5 +154,11 @@ void WidgetFlags::Reset() {
 unsigned int FlagDiff(const WidgetFlags& wf1 , const WidgetFlags& wf2) {
    return (wf1.flags) ^ (wf2.flags);
 }
+
+
+std::ostream& operator<<(std::ostream& os , const WidgetFlags& wf) {
+   return wf.DescribeTo(os);
+}
+
 
 

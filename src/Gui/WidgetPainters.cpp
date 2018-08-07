@@ -67,8 +67,19 @@ void WidgetPainterBasic::PaintBackground() {
    wa.MoveBy(Pos2I(xoffset , yoffset));
    
    /// Paint background
-   window->DrawFilledRectangle(wa.OuterArea() , wc[BGCOL]);
    
+   NPAREA np;
+   np = wa.OuterNP();
+   np.PaintOutsideSolid(window , EagleColor(255,0,0));
+   np = wa.BorderNP();
+   np.PaintOutsideSolid(window , EagleColor(0,255,0));
+   np = wa.PaddingNP();
+   np.PaintOutsideSolid(window , EagleColor(0,0,255));
+   
+   
+   
+   
+/**
    /// TODO : Implement
    VALUE v = widget->GetAttributeValue("BorderColor");
    if (v.length()) {
@@ -76,11 +87,13 @@ void WidgetPainterBasic::PaintBackground() {
       NPAREA border = wa.BorderNP();
       border.PaintOutsideSolid(window , c);
    }
+//*/
 }
 
 
 
 void WidgetPainterBasic::PaintFocus() {
+   return;
    const WidgetColorset& wc = widget->WidgetColors();
    WidgetArea wa = widget->GetWidgetArea();
    wa.MoveBy(Pos2I(xoffset , yoffset));

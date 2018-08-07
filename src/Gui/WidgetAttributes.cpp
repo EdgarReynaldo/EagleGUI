@@ -103,4 +103,23 @@ VALUE ATTRIBUTEVALUEMAP::GetDefinedAttributeValue(const ATTRIBUTE& a) const {
 
 
 
+std::ostream& ATTRIBUTEVALUEMAP::DescribeTo(std::ostream& os , Indenter indent) const {
+
+   os << indent;
+
+   ATTVALMAP::const_iterator it = attributes.begin();
+   while (it != attributes.end()) {
+      os << it->first << ":" << it->second << ";";
+   }
+   return os;
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm) {
+   return avm.DescribeTo(os);
+}
+
+
+
 

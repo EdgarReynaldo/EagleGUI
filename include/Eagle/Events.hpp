@@ -146,7 +146,7 @@ struct MOUSE_EVENT_DATA {
    int dy;
    int dz;
    int dw;
-   unsigned int button;// numbers from 1,2,3...
+   unsigned int button;/// numbers from 1,2,3.../// TODO : make these correspond to an enum like LMB,RMB,MMB,ETC
 
    MOUSE_EVENT_DATA() :
          x(-1),

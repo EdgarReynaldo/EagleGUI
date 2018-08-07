@@ -76,12 +76,19 @@ public :
    int bottom;
    
    BOXAREA();
+   BOXAREA(int side);
+   BOXAREA(int hsize , int vsize);
+
    
    BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
    void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
    inline int Width() const {return left + right;}
    inline int Height() const {return top + bottom;}
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   friend std::ostream& operator<<(std::ostream& os , const BOXAREA& ba);
 };
 
 class NPAREA {
@@ -94,6 +101,7 @@ public :
    int height;
    int bottom;
    
+   NPAREA();
    NPAREA(Rectangle area , BOXAREA box);
    
    /// Paint functions
@@ -110,8 +118,12 @@ public :
    inline int Width() const {return left + width + right;}
    inline int Height() const {return top + height + bottom;}
    inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
-};
 
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   friend std::ostream& operator<<(std::ostream& os , const NPAREA& np);
+
+};
 
 
 class WIDGETAREA {
@@ -125,28 +137,39 @@ protected :
    int inner_width;
    int inner_height;
 
+
+
    void SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
    void SetBoxArea(BOX_TYPE box , BOXAREA b);
 
 public :
 
-///   WIDGETAREA();
-   WIDGETAREA() :
-         pos(0,0),
-         margin(0,0,0,0),
-         border(0,0,0,0),
-         padding(0,0,0,0),
-         inner_width(0),
-         inner_height(0)
-   {}
+   WIDGETAREA();
+
+   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   
+   WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
 
    
+
    WIDGETAREA& operator=(const WIDGETAREA& wa);
    
    WIDGETAREA& MoveBy(Pos2I p);
 
    /// Setters
    
+   WIDGETAREA& SetBoxesContract(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesContract(Rectangle outerarea , int marginsize , int bordersize , int paddingsize);
+   WIDGETAREA& SetBoxesContract(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesContract(int marginsize , int bordersize , int paddingsize);
+
+   WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
+   WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize , Rectangle innerarea);
+   WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize);
+
+
+      
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
 
@@ -194,7 +217,10 @@ public :
 	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;
    BOXAREA GetAreaBox(BOX_TYPE btype) const;
 	
-	
+	int LeftIndent() const;
+	int RightIndent() const;
+	int TopIndent() const;
+	int BottomIndent() const;
 	
 	
 	
@@ -204,6 +230,7 @@ public :
 
 };
 
+std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);
 
 
 typedef WIDGETAREA WidgetArea;

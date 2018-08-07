@@ -411,6 +411,20 @@ void EagleGraphicsContext::DrawToBackBuffer() {
 
 
 void EagleGraphicsContext::FreeImage(EagleImage* img) {
+      
+   ISIT it = imageset.find(img);
+   if (it != imageset.end()) {
+      delete img;
+      imageset.erase(it);
+      return;
+   }
+   
+   /// If we get here, we don't own this image, what should we do?
+   /// If it is a sub bitmap, when the parent is destroyed, it will be destroyed, should we bother?
+   /// This image might have been freed already
+   /// Best bet is to do nothing. There won't be any memory leak, just a memory waste until its used
+   
+/** Not necessary
    if (!img) {return;}
    EagleImage* parent = img->Parent();
    if (parent) {
@@ -418,12 +432,7 @@ void EagleGraphicsContext::FreeImage(EagleImage* img) {
       parent->FreeChild(img);
       return;
    }
-      
-   ISIT it = imageset.find(img);
-   if (it != imageset.end()) {
-      delete img;
-      imageset.erase(it);
-   }
+*/
 }
 
 

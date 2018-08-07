@@ -51,6 +51,8 @@ void EagleLibrary::Shutdown() {
 
 
 void EagleLibrary::ShutdownEagle() {
+   printf("**** SHUTDOWN EAGLE ******\n");
+///   EagleInfo() << "Shutting down Eagle in atexit" << std::endl;
    Eagle()->Shutdown();
 }
 

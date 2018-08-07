@@ -92,6 +92,7 @@ protected :
    /// Visual ordering
    int zdepth;
    
+
    
 
    /// WidgetEventSource
@@ -123,7 +124,7 @@ WidgetBase(std::string classname , std::string objname) :
       EagleEventSource(),
       widgets(),
       warea(),
-      wflags(),
+      wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE),
       wattributes(),
       wparent(0),
       wlayout(0),
@@ -218,6 +219,10 @@ WidgetBase(std::string classname , std::string objname) :
    virtual WidgetHandler* GetGui();
    
    int ZValue() const {return zdepth;}
+   
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
 };
 
 bool DrawPriorityIsLess(const WidgetBase* w1 , const WidgetBase* w2);

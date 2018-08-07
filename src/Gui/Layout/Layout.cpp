@@ -82,6 +82,15 @@ WidgetBase* Layout::GetWidget(int slot) {
 
 
 
+const WidgetBase* Layout::GetWidget(int slot) const {
+   if (slot < 0 || slot >= (int)wchildren.size()) {
+      return 0;
+   }
+   return wchildren[slot];
+}
+
+
+
 int Layout::NextFreeSlot() {
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
       if (wchildren[i] == 0) {
@@ -195,12 +204,22 @@ void Layout::RepositionAllChildren() {
 void Layout::RepositionChild(int slot) {
    WidgetBase* widget = GetWidget(slot);
    if (!widget) {
-      EAGLE_DEBUG(
-         EagleInfo() << "INFO : Layout::RepositionChild - Attempt to reposition NULL widget" << std::endl;
-      );
       return;
    }
    widget->SetWidgetArea(RequestWidgetArea(slot , INT_MAX , INT_MAX , INT_MAX , INT_MAX) , false);
+}
+
+
+
+void Layout::RemoveWidgetFromLayout(WidgetBase* widget) {
+   if (!widget) {
+      return;
+   }
+
+   if (whandler) {
+      whandler->StopTrackingWidget(widget);
+      widget->SetLayoutOwner(0);
+   }
 }
 
 
@@ -343,19 +362,6 @@ void Layout::ClearWidgets() {
 
 
 
-void Layout::RemoveWidgetFromLayout(WidgetBase* widget) {
-   if (!widget) {
-      return;
-   }
-
-   if (whandler) {
-      whandler->StopTrackingWidget(widget);
-      widget->SetLayoutOwner(0);
-   }
-}
-
-
-
 void Layout::DetachFromGui() {
    if (whandler) {
       whandler->StopTrackingWidget(this);/// This will remove us and all of our widgets from the widgethandler's tracker mechanism
@@ -373,7 +379,7 @@ void Layout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 
 
-void Layout::SetWChildren(std::vector<SHAREDWIDGET> new_children) {
+void Layout::SetWChildren(std::vector<WidgetBase*> new_children) {
    ClearWidgets();
    Resize(new_children.size());
    for (int i = 0 ; i < (int)new_children.size() ; ++i) {
@@ -383,10 +389,20 @@ void Layout::SetWChildren(std::vector<SHAREDWIDGET> new_children) {
 
 
 
-std::vector<WidgetBase*> Layout::WChildren() const {
-   
-   /// It's okay to preserve null children
+std::vector<WidgetBase*> Layout::ChildrenVector() const {
    return wchildren;
+}
+
+
+
+std::vector<WidgetBase*> Layout::WChildren() const {
+   std::vector<WidgetBase*> real;
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      if (wchildren[i]) {
+         real.push_back(wchildren[i]);
+      }
+   }
+   return real;
 }
 
 

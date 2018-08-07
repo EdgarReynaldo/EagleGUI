@@ -126,13 +126,33 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
    }
    wflags.SetNewFlags(new_widget_flags);
+
    unsigned int cflags = wflags.ChangedFlags();
+
+   if (!cflags) {return;}/// Nothing changed
+
    for (unsigned int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
       /// If a flag changes, call its setter
       unsigned int flag = 1 << i;
       bool change = cflags & flag;
       if (change) {
          OnFlagChanged((WIDGET_FLAGS)flag , wflags.FlagOn((WIDGET_FLAGS)flag));
+      }
+   }
+   if (!wparent) {return;}
+   
+   if (cflags & NEEDS_REDRAW) {
+      wparent->SetRedrawFlag();
+   }
+   if (cflags & HASFOCUS) {
+      wparent->SetFocusState(wflags.FlagOn(HASFOCUS));
+   }
+   if (cflags & HOVER) {
+      wparent->SetHoverState(wflags.FlagOn(HOVER));
+   }
+   if (cflags & VISIBLE) {
+      if (whandler) {
+         whandler->MakeAreaDirty(OuterArea());
       }
    }
 }
@@ -147,6 +167,9 @@ void WidgetBase::OnSelfColorChanged(SHAREDOBJECT<WidgetColorset> cset) {
 
 
 WidgetBase::~WidgetBase() {
+   if (wlayout) {
+      wlayout->RemoveWidget(this);
+   }
    widgets.Clear();
 }
 
@@ -422,6 +445,9 @@ void WidgetBase::SetRedrawFlag() {
 
 void WidgetBase::SetBgRedrawFlag() {
    SetWidgetFlags(Flags().AddFlags(NEEDS_BG_REDRAW));
+   if (whandler) {
+      whandler->MakeAreaDirty(OuterArea());
+   }
 }
 
 
@@ -520,6 +546,25 @@ bool WidgetBase::HasGui() {
 WidgetHandler* WidgetBase::GetGui() {
    return dynamic_cast<WidgetHandler*>(this);
 }
+
+
+
+std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "WIDGETBASE : [" << FullName() << "] {" << std::endl;
+   ++indent;
+   os << indent << "WAREA = [" << warea << "]" << std::endl;
+   os << indent << "FLAGS = [" << wflags << "]" << std::endl;
+   os << indent << "ATTVALMAP = [";
+   wattributes.DescribeTo(os,indent);
+   os << "]" << std::endl;
+   --indent;
+   os << indent << "}" << std::endl;
+   return os;
+}
+
+
+
+/// Global functions
 
 
 

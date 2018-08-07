@@ -26,6 +26,12 @@
 #define WidgetFlags_HPP
 
 
+#include "Eagle/Indenter.hpp"
+
+#include <string>
+#include <iostream>
+
+
 enum WIDGET_FLAGS {
    FLAGS_NONE      = 0x000,
    ENABLED         = 0x001,   // Currently active or not
@@ -39,6 +45,8 @@ enum WIDGET_FLAGS {
    ALLOW_CLOSE     = 0x100,   // If it is allowed to close the dialog based on input
    NUM_WIDGET_FLAGS = 10
 };
+
+std::string WidgetFlagString(unsigned int flags);
 
 class WidgetFlags {
 
@@ -81,8 +89,14 @@ public :
    bool operator|(unsigned int f) {return flags | f;}
    
    operator unsigned int() {return flags;}
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   friend std::ostream& operator<<(std::ostream& os , const WidgetFlags& wf);
 };
 
+
+std::ostream& operator<<(std::ostream& os , const WidgetFlags& wf);
 
 unsigned int FlagDiff(const WidgetFlags& wf1 , const WidgetFlags& wf2);
 
