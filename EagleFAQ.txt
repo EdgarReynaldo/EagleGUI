@@ -18,21 +18,21 @@ EAGLE FAQ :
    A2. Have you called EagleGraphicsContext::FlipDisplay() after drawing your scene? If not, it won't show up.
    A3. Are you using a DumbLayout? DumbLayout's are dumb. They don't do anything with the area or position of the widgets
          that they hold. If you haven't given their widgets a position and area, they will default to 0x0 at 0,0.
-
-2. My decorated class widgets are all screwed up when I add them to a layout. Why?
-   A1. You need to add the outermost decoration of the widget to the layout, not the widget itself. A GUI is smart enough to add
-         the most decorated layer of the widget, but not a Layout. This is by design. Sometimes you want to add a widget that is decorated
-         to a layout without tracking the decoration itself. This is useful for decorator widgets to have their own inner layouts
-         for a widget. When adding Decorated widgets to a layout, use Widget->GetDecoratorRoot() instead of Widget. GUIs will take
-         care of this for you, as you don't add Decorator sub components to a GUI.
          
-3. My code works in debug mode, but not release mode. What did I do wrong?
+2. My code works in debug mode, but not release mode. What did I do wrong?
    A1. Check carefully for EAGLE_DEBUG and EAGLE_ASSERT statements. They will only run when DEBUG is defined.
    A2. This means that if you call your bool Init() function inside an EAGLE_ASSERT, it won't call Init() in release mode!
 
+3. My app / game crashes on exit. What's up?
+   A1. If you have GUI objects like a WidgetHandler, they often have resources like images. If you shutdown eagle, all images
+       are destroyed when their window is destroyed when the window manager closes when eagle is shutdown. This means the GUIs images
+       have already been destroyed when they try to free them.
 
-
-
+4. I get input events, but state based input doesn't work - for example if (input_mouse_press(LMB)) {...} never returns true???
+   A1. You're not updating the input handler. This can be fixed in the following ways.
+   A2. Instead of taking events directly from the system queue, use EagleSystem::WaitForSystemEventAndUpdateState instead. It
+       waits for an event and updates the input handler for you.
+   A3. Use EagleSystem::GetSystemInput()->HandleInputEvent(EagleEvent ev). This will update the system input state machine.
 
 
 
