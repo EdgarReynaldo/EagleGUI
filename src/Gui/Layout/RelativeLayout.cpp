@@ -131,6 +131,13 @@ Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangl
 
 
 
+std::ostream& RelativeLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "[" << FullName() << "]" << std::endl;
+   for (int i = 0 ; i < GetLayoutSize() ; ++i) {
+      os << indent << "LR#" << i << " : " << layout_rectangles[i] << std::endl;
+   }
+   return Layout::DescribeTo(os,indent);
+}
 
 
 

@@ -144,6 +144,11 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    if (cflags & NEEDS_REDRAW) {
       wparent->SetRedrawFlag();
    }
+   if (cflags & NEEDS_BG_REDRAW) {
+      if (whandler) {
+         whandler->MakeAreaDirty(OuterArea());
+      }
+   }
    if (cflags & HASFOCUS) {
       wparent->SetFocusState(wflags.FlagOn(HASFOCUS));
    }
@@ -191,17 +196,19 @@ int WidgetBase::Update(double dt) {
 
 
 void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   WidgetPainter wp = GetWidgetPainter();
-   if (wp) {
-      wp->GetPainterReady(win , this , xpos , ypos);
-      wp->PaintBackground();
-      PrivateDisplay(win , xpos , ypos);
-      if (wflags.FlagOn(HASFOCUS)) {
-         wp->PaintFocus();
+   if (Flags().FlagOn(VISIBLE)) {
+      WidgetPainter wp = GetWidgetPainter();
+      if (wp) {
+         wp->GetPainterReady(win , this , xpos , ypos);
+         wp->PaintBackground();
+         PrivateDisplay(win , xpos , ypos);
+         if (wflags.FlagOn(HASFOCUS)) {
+            wp->PaintFocus();
+         }
       }
-   }
-   else {
-      PrivateDisplay(win , xpos , ypos);
+      else {
+         PrivateDisplay(win , xpos , ypos);
+      }
    }
    ClearRedrawFlag();
 }
@@ -445,9 +452,6 @@ void WidgetBase::SetRedrawFlag() {
 
 void WidgetBase::SetBgRedrawFlag() {
    SetWidgetFlags(Flags().AddFlags(NEEDS_BG_REDRAW));
-   if (whandler) {
-      whandler->MakeAreaDirty(OuterArea());
-   }
 }
 
 

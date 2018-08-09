@@ -124,20 +124,15 @@ Camera::Camera(std::string objclass , std::string objname) :
 void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
    EAGLE_ASSERT(win);
    
-   if (view_bmp && (Flags().FlagOn(VISIBLE))) {
-      Rectangle r = InnerArea();
-      r.MoveBy(x,y);
-      Clipper(win->GetDrawingTarget() , r);
+   Rectangle r = InnerArea();
+   r.MoveBy(x,y);
+   Clipper clip(win->GetDrawingTarget() , r);
+
+   // center the viewed area on the display area
+   int ox = (r.W() - view_area.W())/2;
+   int oy = (r.H() - view_area.H())/2;
    
-      // center the viewed area on the display area
-      int ox = (r.W() - view_area.W())/2;
-      int oy = (r.H() - view_area.H())/2;
-      
-//      EagleInfo() << "View area = " << view_area << std::endl;
-      
-      win->DrawRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy);
-   }
-   ClearRedrawFlag();
+   win->DrawRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy);
 }
 
 

@@ -276,15 +276,18 @@ int WidgetHandler::PrivateUpdate(double tsec) {
 
 void WidgetHandler::OnAreaChanged() {
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
-   Rectangle r = OuterArea();
-   cam.SetWidgetArea(r);
+   WIDGETAREA wa = GetWidgetArea();
+   Rectangle r = wa.OuterArea();
+   Rectangle rcam = wa.InnerArea();
+   
+   cam.SetWidgetArea(rcam);
 
    if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
       SetupBuffer(r.W() , r.H() , gwindow);
    }
    else {
       // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-      cam.SetView(buffer , 0 , 0 , r.W() , r.H());
+      cam.SetView(buffer , InnerArea());
    }
    SyncLayoutPos();
    clear_background = true;
@@ -493,19 +496,31 @@ void WidgetHandler::CheckRedraw() {
       CheckRedraw(i);
    }
 }
-*/
+//*/
 #warning TODO : Working on CheckRedraw
 
 void WidgetHandler::CheckRedraw(UINT widget_index) {
    if (widget_index >= drawlist.size()) {return;}
    WidgetBase* cwidget = drawlist[widget_index];
-   UINT flags = cwidget->Flags();
-   Rectangle checkarea = cwidget->OuterArea();
+   UINT cflags = cwidget->Flags();
+   Rectangle carea = cwidget->OuterArea();
 
+   if (!(cflags & NEEDS_REDRAW)) {
+      return;
+   }
+   
    /// We're guaranteed that every widget behind us has been checked already
    
    /// Check every widget in front of us for overlap with our area
    
+   /// If we need to be redrawn, so does every widget in front of us
+   
+   for (unsigned int i = widget_index + 1 ; i < drawlist.size() ; ++i) {
+      WidgetBase* w = drawlist[i];
+      if (carea.Overlaps(w->OuterArea())) {
+         w->SetRedrawFlag();
+      }
+   }
    
 }
 
@@ -521,64 +536,7 @@ void WidgetHandler::CheckRedraw() {
 
 
 void WidgetHandler::SortDrawListByPriority() {
-   
    stable_sort(drawlist.begin() , drawlist.end() , DrawPriorityIsLess);
-   
-   
-/* KEEP FOR NOW
-   vector<WidgetBase*> plist;
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      MenuBar* mbar = dynamic_cast<MenuBar*>(w);
-      if (mbar) {
-         plist.push_back(w);
-      }
-   }
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
-      if (wh) {
-         plist.push_back(w);
-      }
-   }
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      MenuBar* mbar = dynamic_cast<MenuBar*>(w);
-      WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
-      if (!mbar && !wh) {
-         plist.push_back(w);
-      }
-   }
-   sortlist = plist;
-*/
-///   vector<WidgetBase*> plist;
-///   plist.push_back(&titlebar);
-/*
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      if (w == titlebar) {
-         plist.push_back(w);
-      }
-   }
-*/
-/**
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
-      if (wh) {
-         plist.push_back(w);
-      }
-   }
-   for (unsigned int i = 0 ; i < sortlist.size() ; ++i) {
-      WidgetBase* w = sortlist[i];
-      WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
-      if (!wh && (w != &titlebar)) {
-         plist.push_back(w);
-      }
-   }
-   sortlist = plist;
-*/
-   
 }
 
 
@@ -903,7 +861,10 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 	}
 	if (success) {
 	   RedrawBackgroundBuffer();
-	   cam.SetView(buffer , Rectangle(0 , 0 , buffer->W() , buffer->H()));
+#warning TODO : Something is funny here, when there is an indent, the widgets are offset
+	   Rectangle vrect(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight());
+	   
+	   cam.SetView(buffer , vrect);
 	}
 	return success;
 }
@@ -1157,9 +1118,7 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
    
-   Rectangle lrect(warea.LeftIndent() , warea.TopIndent() , InnerArea().W() , InnerArea().H());
-   
-   root_layout->WidgetBase::SetWidgetArea(lrect,false);
+   root_layout->WidgetBase::SetWidgetArea(Rectangle(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight()),false);
 }
 
 
@@ -1462,7 +1421,6 @@ bool WidgetHandler::InView(WidgetBase* w) {
 
 
 /// Returns top most widget at x,y
-#warning TODO : FIXME, WORKING HERE
 WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
@@ -1514,7 +1472,7 @@ int WidgetHandler::GetMouseX() {
 }
 
 
-#warning FIXME WHAT ARE THESE FOR AND HOW DO THEY WORK
+
 int WidgetHandler::GetMouseY() {
    
    WidgetHandler* handler = dynamic_cast<WidgetHandler*>(wparent);

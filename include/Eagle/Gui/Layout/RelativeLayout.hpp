@@ -56,6 +56,7 @@ public :
    Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
    Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
 
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 
