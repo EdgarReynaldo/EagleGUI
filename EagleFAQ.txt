@@ -34,6 +34,12 @@ EAGLE FAQ :
        waits for an event and updates the input handler for you.
    A3. Use EagleSystem::GetSystemInput()->HandleInputEvent(EagleEvent ev). This will update the system input state machine.
 
+5. My animation isn't working. I don't get any timer events.
+   A1. You need to start the system timer before it will tick. sys->GetSystemTimer()->Start(); will do it.
+   A2. Are you passing the timer event to your GUI? You can also call GUI::Update(sys->GetSystemTimer()->SPT()) or whatever
+       else you need.
+   
+
 
 
 
