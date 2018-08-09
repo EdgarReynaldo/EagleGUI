@@ -54,22 +54,14 @@ int main(int argc , char** argv) {
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();
    
-   WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
-
-///   gui1.SetupBuffer(900,600,win);
-   gui1.SetWidgetArea(WIDGETAREA(Rectangle(62,84,900,600),0,0,0),false);
-   gui1.GetRootLayout()->SetWidgetArea(gui1.GetRootLayout()->GetWidgetArea().SetBoxesContract(50,25,10));
+//   WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
+//   gui1.SetWidgetArea(Rectangle(62,84,900,600),false);
    
-   EagleLog() << gui1 << std::endl;
-   
-   
-//**
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
+///   gui2.SetWidgetArea(Rectangle(0,0,1024,768) , false);
+   gui2.SetWidgetArea(Rectangle(112,84,800,600) , false);
    
-   gui2.SetupBuffer(600,400,win);
-   gui2.SetWidgetArea(WIDGETAREA(Rectangle(150,100,600,400),5,10,15) , false);
-   
-   gui1.SetBackgroundColor(EagleColor(0,255,255));
+//   gui1.SetBackgroundColor(EagleColor(0,255,255));
    gui2.SetBackgroundColor(EagleColor(255,0,255));
    
    RelativeLayout rl1("RLAYOUT1");
@@ -78,7 +70,7 @@ int main(int argc , char** argv) {
    rl1.SetLayoutRectangle(1 , LayoutRectangle(0.2 , 0.6 , 0.6 , 0.2));
    
    gui2.SetRootLayout(&rl1);
-   gui1.AddWidget(&gui2);
+//   gui1.AddWidget(&gui2);
    
    TestWidget tw1("TESTWIDGET1") , tw2("TESTWIDGET2");
    
@@ -88,25 +80,24 @@ int main(int argc , char** argv) {
    tw1.SetWidgetArea(WIDGETAREA(tw1.OuterArea() , 3,5,7));
    tw2.SetWidgetArea(WIDGETAREA(tw2.OuterArea() , 7,5,3));
          
-   EagleLog() << tw1 << std::endl;
-   EagleLog() << tw2 << std::endl;
-//*/
+   EagleLog() << rl1 << std::endl;
 
 ///   EagleEventHandler* q = sys->GetSystemQueue();
    
    bool quit = false;
    bool redraw = true;
    
+   sys->GetSystemTimer()->Start();
+   
    while (!quit) {
 ///      if (redraw) {
       if (1) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         gui1.Display(win , 0 , 0);
+         gui2.Display(win , 0 , 0);
          win->FlipDisplay();
          redraw = false;
       }
-      break;
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
          if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
@@ -116,25 +107,26 @@ int main(int argc , char** argv) {
             quit = true;
          }
          else if (ev.type == EAGLE_EVENT_TIMER) {
-            gui1.Update(ev.timer.eagle_timer_source->SPT());
+            gui2.Update(ev.timer.eagle_timer_source->SPT());
             /// redraw = true;
          }
          else {
-            gui1.HandleEvent(ev);
+            EagleLog() << "GUI2 Handling event " << EagleEventName(ev.type) << std::endl;
+            gui2.HandleEvent(ev);
          }
          
-         while (gui1.HasMessages()) {
-            WidgetMsg wmsg = gui1.TakeNextMessage();
+         while (gui2.HasMessages()) {
+            WidgetMsg wmsg = gui2.TakeNextMessage();
             (void)wmsg;
          }
-         if (gui1.Flags().FlagOn(NEEDS_REDRAW)) {
+         if (gui2.Flags().FlagOn(NEEDS_REDRAW)) {
             redraw = true;
          }
          
       } while (!sys->UpToDate());
    }
    
-   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
+///   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
    
    EagleLog() << "Exited main loop." << std::endl;
    
