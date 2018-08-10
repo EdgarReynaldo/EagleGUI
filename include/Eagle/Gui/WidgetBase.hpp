@@ -124,7 +124,7 @@ WidgetBase(std::string classname , std::string objname) :
       EagleEventSource(),
       widgets(),
       warea(),
-      wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE),
+      wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE | NEEDS_REDRAW),
       wattributes(),
       wparent(0),
       wlayout(0),

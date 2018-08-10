@@ -38,7 +38,7 @@
 #include <vector>
 #include <list>
 #include <map>
-
+#include <set>
 
 
 /// Used by WidgetHandler::TakeNextMessage to signify an empty message queue
@@ -130,7 +130,7 @@ private :
 
    /// TODO : Possibly rewrite check redraw to use two map<WidgetBase* , list<WidgetBase*> >'s
    /// TODO : for widgets in front of and behind each widget
-   void CheckRedraw(UINT widget_index);
+   std::set<unsigned int> CheckRedraw(UINT widget_index);
    void CheckRedraw();
 
    void SortDrawListByPriority();// sorts from least drawing priority to highest drawing priority

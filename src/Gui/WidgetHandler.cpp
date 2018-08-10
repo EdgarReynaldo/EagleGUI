@@ -499,14 +499,15 @@ void WidgetHandler::CheckRedraw() {
 //*/
 #warning TODO : Working on CheckRedraw
 
-void WidgetHandler::CheckRedraw(UINT widget_index) {
-   if (widget_index >= drawlist.size()) {return;}
+std::set<unsigned int> WidgetHandler::CheckRedraw(UINT widget_index) {
+   std::set<unsigned int> eset;
+   if (widget_index >= drawlist.size()) {return eset;}
    WidgetBase* cwidget = drawlist[widget_index];
    UINT cflags = cwidget->Flags();
    Rectangle carea = cwidget->OuterArea();
 
    if (!(cflags & NEEDS_REDRAW)) {
-      return;
+      return eset;
    }
    
    /// We're guaranteed that every widget behind us has been checked already
@@ -515,22 +516,67 @@ void WidgetHandler::CheckRedraw(UINT widget_index) {
    
    /// If we need to be redrawn, so does every widget in front of us
    
+   std::set<unsigned int> checkset;
    for (unsigned int i = widget_index + 1 ; i < drawlist.size() ; ++i) {
       WidgetBase* w = drawlist[i];
       if (carea.Overlaps(w->OuterArea())) {
-         w->SetRedrawFlag();
+         if (w->Flags().FlagOff(NEEDS_REDRAW)) {
+            w->SetRedrawFlag();
+            checkset.insert(i);
+         }
       }
    }
-   
+   return checkset;
 }
 
 
 
 void WidgetHandler::CheckRedraw() {
    /// Check from back to front
-   for (UINT i = 0 ; i < drawlist.size() ; ++i) {
-      CheckRedraw(i);
+   typedef std::set<unsigned int> WSET;
+   typedef list<Rectangle> RLIST;
+
+   WSET recheck;
+   for (unsigned int i = 0 ; i < drawlist.size() ; ++i) {
+      if (drawlist[i]->Flags().FlagOn(NEEDS_REDRAW)) {
+         recheck.insert(i);
+      }
    }
+   RLIST dirty = dbg_list;
+   dbg_list.clear();
+
+   RLIST new_dbg_list;
+   do {
+      WSET check = recheck;
+      recheck.clear();
+
+      /// Each widget that overlaps a dirty background area needs to be redrawn
+      for (RLIST::iterator it = dirty.begin() ; it != dirty.end() ; ++it) {
+         Rectangle r = *it;
+         for (UINT i = 0 ; i < drawlist.size() ; ++i) {
+            WidgetBase* w = drawlist[i];
+            Rectangle area = w->OuterArea();
+            if (r.Overlaps(area)) {
+               if (w->Flags().FlagOff(NEEDS_REDRAW)) {
+                  w->SetRedrawFlag();/// This may alter dbg_list 
+                  recheck.insert(i);
+               }
+            }
+         }
+      }
+      /// Each widget that needs redraw needs to check for causing other widgets to redraw
+      for (WSET::iterator it = check.begin() ; it != check.end() ; ++it) {
+         WSET newcheck = CheckRedraw(*it);/// This may alter dbg_list
+         recheck.insert(newcheck.begin() , newcheck.end());
+      }
+      /// Prepare the next set of dirty backgrounds
+      new_dbg_list.insert(new_dbg_list.end() , dirty.begin() , dirty.end());
+      dirty = dbg_list;
+      dbg_list.clear();
+      
+   } while (recheck.size() || dirty.size());
+   
+   dbg_list = new_dbg_list;
 }
 
 
@@ -829,7 +875,6 @@ EagleGraphicsContext* WidgetHandler::GetDrawWindow() {
 }
 
 
-#warning TODO : Buffer needs to use InnerArea
 
 bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 	bool success = true;
@@ -861,7 +906,7 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 	}
 	if (success) {
 	   RedrawBackgroundBuffer();
-#warning TODO : Something is funny here, when there is an indent, the widgets are offset
+
 	   Rectangle vrect(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight());
 	   
 	   cam.SetView(buffer , vrect);
@@ -1118,7 +1163,8 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
    
-   root_layout->WidgetBase::SetWidgetArea(Rectangle(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight()),false);
+   root_layout->WidgetBase::SetWidgetArea(
+      Rectangle(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight()) , false);
 }
 
 
