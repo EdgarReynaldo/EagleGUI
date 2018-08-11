@@ -100,61 +100,38 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
             that widget, as well as removing it from any widget that had it last.
       */
 
-      WidgetBase* hoverwidget = GetWidgetAt(mx,my);
-      if (hoverwidget != whover) {
-         if (whover) {
-            whover->SetHoverState(false);
-         }
-         if (hoverwidget) {
-            hoverwidget->SetHoverState(true);
-         }
-         whover = hoverwidget;
-      }
-      
-      if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-         if (e.mouse.button == 1) {
-            if (whover != wfocus) {
-               GiveWidgetFocus(whover , true);
-               if (wfocus) {
-///                  wfocus->SetFocusState(false);
-               }
-               if (whover) {
-///                  whover->SetFocusState(true);
-               }
-            }
-///            wfocus = whover;
-         }
-      }
-   }
-/**      
-      /// Only root gui checks for hover
-      if (!wparent) {
-         WidgetBase* new_whover = 0;
-         for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
-            WidgetBase* w = drawlist[i];
-            bool hover = w->OuterArea().Contains(mx,my);
-            if (hover) {
-               new_whover = w;
-               break;
-            }
-         }
-         if (new_whover != whover) {
+      if (!wparent) {/// Only root gui checks for hover and focus
+         WidgetBase* hoverwidget = GetWidgetAt(mx,my);
+         
+         /// Check widget hover
+         if (hoverwidget != whover) {
             if (whover) {
                whover->SetHoverState(false);
             }
-            if (new_whover) {
-///               new_whover->SetHoverState(true);
+            if (hoverwidget) {
+               hoverwidget->SetHoverState(true);
             }
-///            whover = new_whover;
+            whover = hoverwidget;
          }
-         /// Always set hover??? Need this to make some widgets work (like TextDecorator and Decorator)
-         if (new_whover) {
-            new_whover->SetHoverState(true);
+         
+         /// Check widget focus
+         if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+            if (e.mouse.button == 1) {
+               if (whover != wfocus) {
+                  GiveWidgetFocus(whover , true);
+                  if (wfocus) {
+   ///                  wfocus->SetFocusState(false);
+                  }
+                  if (whover) {
+   ///                  whover->SetFocusState(true);
+                  }
+               }
+   ///            wfocus = whover;
+            }
          }
-         whover = new_whover;
       }
    }
-*/
+
    bool gui_takes_focus = false;
    int msg;
    int retmsg = DIALOG_OKAY;
@@ -312,8 +289,8 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    if (widget == this) {return;}
    if (HasWidget(widget)) {return;}
 
-///   widget = widget->GetDecoratorRoot();
-   
+   EagleInfo() << StringPrintF("WidgetHandler::TrackWidget (%s)" , widget->FullName()) << std::endl;
+
    Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
    
    std::vector<WidgetBase*> layout_children;
@@ -329,23 +306,18 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    wlist.push_back(widget);
    inputlist.push_back(widget);
    drawlist.insert(drawlist.begin() , widget);
-   /** First widget always has the focus */
-   if (wlist.size() == 1) {
-      GiveWidgetFocus(widget);
-   } else {
-      if (widget->HasGui()) {
-         widget->GetGui()->GiveWidgetFocus(0,false);
-      }
-/**
-      WidgetHandler* wh = widget->GetGui();
-      if (wh) {
-         wh->GiveWidgetFocus(0,false);
-      }
-*/
-   }
-   SortDrawListByPriority();
+
+   /// Set these before setting the focus, otherwise it thinks it has no parent
    widget->SetParent(this);
+   widget->SetWidgetHandler(this);
    widget->SetBgRedrawFlag();
+
+   /** First widget to accept focus gets it */
+   if (!wfocus && widget->AcceptsFocus()) {
+      GiveWidgetFocus(widget , true);
+   }
+
+   SortDrawListByPriority();
 }
 
 
@@ -362,8 +334,7 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
       return;
    }
-   
-   /// TODO : I think this is fixed? NOTE : Uncomment the next line to crash
+
    EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget (%s)" , w->FullName()) << std::endl;
    
    if (!OwnsWidget(w)) {
@@ -380,24 +351,26 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
       for (unsigned int i = 0 ; i < layout_children.size() ; ++i) {
          StopTrackingWidget(layout_children[i]);
       }
-      widget_is_layout->SetWidgetHandler(0);
    }
    
    MakeAreaDirty(w->OuterArea());
    
+   if (wfocus == w) {
+      GiveWidgetFocus(0);/// The widget being removed had the focus
+   } else {
+      GiveWidgetFocus(wfocus);/// Reset the focus index
+   }
+
+   w->SetParent(0);
+   w->SetWidgetHandler(0);
+
    RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
    RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
    RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
 
-   if (wfocus == w) {
-      GiveWidgetFocus(0);
-   } else {
-      GiveWidgetFocus(wfocus);
-   }
-   
-   w->SetParent(0);
    if (w == root_layout) {
       root_layout = &dumb_layout;
+      SyncLayoutPos();
    }
 }
 
@@ -430,6 +403,17 @@ WLIT WidgetHandler::InputListIterator(WidgetBase* widget) {
    }
    return inputlist.end();
 }
+
+
+
+WLIT WidgetHandler::DrawListIterator(WidgetBase* widget) {
+   for (WLIT it = drawlist.begin() ; it != drawlist.end() ; ++it) {
+      if (*it == widget) {return it;}
+   }
+   return drawlist.end();
+}
+
+
 
 /**
 #warning TODO : CRASH IN CheckRedraw, endless loop
@@ -510,11 +494,9 @@ std::set<unsigned int> WidgetHandler::CheckRedraw(UINT widget_index) {
       return eset;
    }
    
-   /// We're guaranteed that every widget behind us has been checked already
+   /// If we need to be redrawn, so does every widget in front of us
    
    /// Check every widget in front of us for overlap with our area
-   
-   /// If we need to be redrawn, so does every widget in front of us
    
    std::set<unsigned int> checkset;
    for (unsigned int i = widget_index + 1 ; i < drawlist.size() ; ++i) {
@@ -536,16 +518,22 @@ void WidgetHandler::CheckRedraw() {
    typedef std::set<unsigned int> WSET;
    typedef list<Rectangle> RLIST;
 
+   /// Prime the list of widgets to check
    WSET recheck;
    for (unsigned int i = 0 ; i < drawlist.size() ; ++i) {
       if (drawlist[i]->Flags().FlagOn(NEEDS_REDRAW)) {
          recheck.insert(i);
       }
    }
+   
+   /// Prime the dirty background list - it may be altered by CheckRedraw or if a widget sets the BG_REDRAW flag
    RLIST dirty = dbg_list;
    dbg_list.clear();
 
+   /// For storing new areas that get marked as dirty by widget checks
    RLIST new_dbg_list;
+   
+   /// Run each list at least once
    do {
       WSET check = recheck;
       recheck.clear();
@@ -564,11 +552,13 @@ void WidgetHandler::CheckRedraw() {
             }
          }
       }
+
       /// Each widget that needs redraw needs to check for causing other widgets to redraw
       for (WSET::iterator it = check.begin() ; it != check.end() ; ++it) {
          WSET newcheck = CheckRedraw(*it);/// This may alter dbg_list
          recheck.insert(newcheck.begin() , newcheck.end());
       }
+
       /// Prepare the next set of dirty backgrounds
       new_dbg_list.insert(new_dbg_list.end() , dirty.begin() , dirty.end());
       dirty = dbg_list;
@@ -1067,7 +1057,6 @@ void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
    for (UINT i = 0 ; i < drawlist.size() ; ++i) {
       WidgetBase* w = drawlist[i];
       if (w->Flags().FlagOn(VISIBLE)) {
-///            Rectangle a = area.InnerArea();
          w->Display(win , 0 , 0);
       }
    }
@@ -1076,18 +1065,20 @@ void WidgetHandler::PerformFullRedraw(EagleGraphicsContext* win) {
 
 
 void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
+   
+   CheckRedraw();/// May affect dbg_list
+
    /** Draw dirty backgrounds first */
    dbg_list = ConsolidateRectangles(dbg_list);
-
-   CheckRedraw();
 
    win->SetFullCopyBlender();
    for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
       Rectangle& r = *it;
       win->DrawRegion(background , r , r.X() , r.Y());
    }
-   dbg_list.clear();
    win->RestoreLastBlendingState();
+   
+   dbg_list.clear();
 
    /** Only widgets with the NEEDS_REDRAW flag should actually redraw */
    for (UINT i = 0 ; i < drawlist.size() ; ++i) {
@@ -1110,8 +1101,6 @@ void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
    EAGLE_ASSERT(background->Valid());
 
    RemoveOldWidgets();
-
-///   if (!(WidgetBase::flags & NEEDS_REDRAW)) {return;}
 
    win->PushDrawingTarget(buffer);
    
@@ -1313,13 +1302,78 @@ void WidgetHandler::SetFocusState(bool state) {
 ///   - Keep track of the index of the widget with focus and check input forward from there
 ///      and draw backwards from the end to the focused widget.
 
+
+
+/**
+   /// Each widget handler stores the index of the widget with focus
+*/
+
+
+
+
+bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
+   
+   std::string name = "";
+   if (widget) {name = widget->FullName();}
+   EagleLog() << StringPrintF("Giving widget focus to [%s]\n" , name.c_str());
+   
+   if (!widget) {
+      /// Setting the widget focus to NONE
+      if (wfocus) {
+         /// Remove current focus
+         wfocus->SetFocusState(false);/// This propagates up the parent chain
+      }
+      wfocus = 0;
+      /// focus index should remain unchanged
+      return true;
+   }
+   
+   if (widget == this) {
+      return false;
+   }
+   
+   WidgetHandler* pwh = dynamic_cast<WidgetHandler*>(widget->GetParent());
+   
+   EAGLE_ASSERT(pwh);
+   
+   if (notify_parent && pwh && pwh != this) {
+      /// Send the request for focus up the parent widget handler chain
+      return pwh->GiveWidgetFocus(widget , true);
+   }
+   
+   EAGLE_ASSERT(HasWidget(widget));
+   
+   /// Remove old focus
+   if (wfocus) {
+      wfocus->SetFocusState(false);
+   }
+   
+   /// Set new focus
+   widget->SetFocusState(true);
+   
+   wfocus = widget;
+   
+   /// Things get tricky here, as we might not own the widget we're giving focus to
+   /// Start with the widget and work up the parent chain
+   WidgetBase* w = widget;
+
+   while (pwh) {
+      pwh->BringToFront(w);
+      w = pwh;
+      pwh = w->GetHandler();
+   }
+   return true;
+}
+/**
 bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
 
    std::string name = widget?widget->FullName():"";
    EagleInfo() << StringPrintF("Giving widget focus to widget at %p ('%s')" , widget , name.c_str()) << endl;
 
    if (!widget) {
-      SetFocusState(false);
+      if (wfocus) {
+         wfocus->SetFocusState(false);
+      }
       return true;
    }
 
@@ -1333,12 +1387,12 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
    
    
    if (HasWidget(widget) && widget->AcceptsFocus()) {
-/** TODO : WARNING : Do not enable this line, if you do it will break RemoveWidget because it depends
-              on being able to set the same focus again (this resets the focus_index properly).
-   if ((widget != wfocus) && HasWidget(widget) && widget->AcceptsFocus()) {
+/// TODO : WARNING : Do not enable this line, if you do it will break RemoveWidget because it depends
+///                  on being able to set the same focus again (this resets the focus_index properly).
+///   if ((widget != wfocus) && HasWidget(widget) && widget->AcceptsFocus()) {
       
-      TODO : I think this is fixed now, by the "if (wfocus && wfocus != widget)" line below
-*/      
+///      TODO : I think this is fixed now, by the "if (wfocus && wfocus != widget)" line below
+      
       /// Remove focus from previous widget
       if (wfocus && wfocus != widget) {
          /// The widget handler that owns the wfocus needs to be notified it has lost focus as well
@@ -1391,6 +1445,28 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
 }
 
 //*/
+
+
+
+void WidgetHandler::BringToFront(WidgetBase* w) {
+   EAGLE_ASSERT(w);
+   EAGLE_ASSERT(OwnsWidget(w));
+   
+   /// Move to front of input list
+   WLIT it = InputListIterator(w);
+   EAGLE_ASSERT(it != inputlist.end());
+   inputlist.erase(it);
+   inputlist.insert(inputlist.begin() , w);
+   focus_index = WidgetIndex(w);
+   
+   /// Move to back of draw list (the front of the drawing)
+   WLIT dit = DrawListIterator(w);
+   EAGLE_ASSERT(dit != drawlist.end());
+   drawlist.erase(dit);
+   drawlist.insert(drawlist.begin() , w);
+   SortDrawListByPriority();
+}
+
 
 
 void WidgetHandler::SetRedrawAllFlag() {

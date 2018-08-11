@@ -144,7 +144,7 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    if (cflags & NEEDS_REDRAW) {
       wparent->SetRedrawFlag();
    }
-   if (cflags & NEEDS_BG_REDRAW) {
+   if ((cflags & NEEDS_BG_REDRAW) || (cflags & VISIBLE)) {
       if (whandler) {
          whandler->MakeAreaDirty(OuterArea());
       }
@@ -154,11 +154,6 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    }
    if (cflags & HOVER) {
       wparent->SetHoverState(wflags.FlagOn(HOVER));
-   }
-   if (cflags & VISIBLE) {
-      if (whandler) {
-         whandler->MakeAreaDirty(OuterArea());
-      }
    }
 }
 

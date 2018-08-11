@@ -127,6 +127,7 @@ private :
    bool OwnsWidget(WidgetBase* widget);
    UINT WidgetIndex(WidgetBase* widget);
    WLIT InputListIterator(WidgetBase* widget);
+   WLIT DrawListIterator(WidgetBase* widget);
 
    /// TODO : Possibly rewrite check redraw to use two map<WidgetBase* , list<WidgetBase*> >'s
    /// TODO : for widgets in front of and behind each widget
@@ -214,6 +215,8 @@ public :
 
    bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);/// notify_parent for internal use only
 
+   void BringToFront(WidgetBase* w);
+   
    virtual void SetRedrawAllFlag();
    
    virtual bool HasGui();

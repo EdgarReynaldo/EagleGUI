@@ -257,6 +257,7 @@ Layout::Layout(std::string objclass , std::string objname) :
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP)
 {
+   zdepth = ZORDER_PRIORITY_LOW;
 }
 
 
@@ -270,11 +271,11 @@ Layout::~Layout() {
 
 
 
-Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) const {
+Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
    
    const WidgetBase* widget = GetWidget(slot);
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
    
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
@@ -284,26 +285,27 @@ Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidt
 
 
 
-Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const {
+Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
    return RequestWidgetArea(WidgetIndex(widget) , newx , newy , newwidth , newheight);
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) const {
+Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) {
    return RequestWidgetArea(widget_slot , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , Rectangle newarea) const {
+Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , Rectangle newarea) {
    return RequestWidgetArea(WidgetIndex(widget) , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
 Rectangle Layout::RequestWidgetArea(const WidgetBase* widget) const {
-   return RequestWidgetArea(WidgetIndex(widget) , INT_MAX , INT_MAX , INT_MAX , INT_MAX);
+#warning TODO : Think of a better hack than casting away const
+   return const_cast<Layout*>(this)->RequestWidgetArea(WidgetIndex(widget) , INT_MAX , INT_MAX , INT_MAX , INT_MAX);
 }
 
 

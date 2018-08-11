@@ -42,6 +42,8 @@ protected :
    
 public :
 
+   LayoutRectangle();
+
    LayoutRectangle(float x , float y , float w , float h);
    LayoutRectangle(Rectangle outer_area , Rectangle layout_area);
 

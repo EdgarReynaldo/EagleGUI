@@ -103,13 +103,13 @@ public :
 
    /// Pass INT_MAX for a parameter if you don't care about the position or size
    /// NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
-   Rectangle RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const;
+   Rectangle RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
 
-   Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea) const;
+   Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea);
 
-   Rectangle RequestWidgetArea(const WidgetBase* widget , Rectangle newarea) const;
+   Rectangle RequestWidgetArea(const WidgetBase* widget , Rectangle newarea);
 
    Rectangle RequestWidgetArea(const WidgetBase* widget) const;
    
