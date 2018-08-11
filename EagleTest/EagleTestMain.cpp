@@ -80,7 +80,9 @@ int main(int argc , char** argv) {
    tw1.SetWidgetArea(WIDGETAREA(tw1.OuterArea() , 3,5,7));
    tw2.SetWidgetArea(WIDGETAREA(tw2.OuterArea() , 7,5,3));
          
-   EagleLog() << rl1 << std::endl;
+   EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
+         
+   EagleLog() << gui2 << std::endl;
 
 ///   EagleEventHandler* q = sys->GetSystemQueue();
    
@@ -91,12 +93,17 @@ int main(int argc , char** argv) {
    
    while (!quit) {
 ///      if (redraw) {
-      if (1) {
+      if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
          gui2.Display(win , 0 , 0);
          win->FlipDisplay();
          redraw = false;
+      }
+      static int first = 1;
+      if (first) {
+         EagleLog() << gui2 << std::endl;
+         first = 0;
       }
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
