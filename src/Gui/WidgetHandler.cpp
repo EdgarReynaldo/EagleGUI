@@ -1463,7 +1463,7 @@ void WidgetHandler::BringToFront(WidgetBase* w) {
    WLIT dit = DrawListIterator(w);
    EAGLE_ASSERT(dit != drawlist.end());
    drawlist.erase(dit);
-   drawlist.insert(drawlist.begin() , w);
+   drawlist.push_back(w);
    SortDrawListByPriority();
 }
 
