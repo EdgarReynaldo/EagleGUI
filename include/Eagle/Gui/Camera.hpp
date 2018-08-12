@@ -131,6 +131,8 @@ public :
    int       W() const {return view_area.W();}
    int       H() const {return view_area.H();}
    
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+
 };
 /**
 

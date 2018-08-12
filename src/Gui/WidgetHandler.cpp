@@ -91,8 +91,10 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    if (IsMouseEvent(e)) {
 ///      e.mouse.x = mx;
 ///      e.mouse.y = my;
-      e.mouse.x = e.mouse.x + cam.X() - OuterArea().X();
-      e.mouse.y = e.mouse.y + cam.Y() - OuterArea().Y();
+///      e.mouse.x = e.mouse.x + cam.X() - OuterArea().X();
+///      e.mouse.y = e.mouse.y + cam.Y() - OuterArea().Y();
+      e.mouse.x = e.mouse.x + (cam.X() - warea.LeftIndent()) - OuterArea().X();
+      e.mouse.y = e.mouse.y + (cam.Y() - warea.TopIndent()) - OuterArea().Y();
 
       const int mx = e.mouse.x;
       const int my = e.mouse.y;
@@ -264,7 +266,10 @@ void WidgetHandler::OnAreaChanged() {
    }
    else {
       // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-      cam.SetView(buffer , InnerArea());
+      
+      Rectangle camview(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight());
+      
+      cam.SetView(buffer , camview);
    }
    SyncLayoutPos();
    clear_background = true;

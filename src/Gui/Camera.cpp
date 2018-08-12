@@ -120,7 +120,6 @@ Camera::Camera(std::string objclass , std::string objname) :
 
 
 
-
 void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
    EAGLE_ASSERT(win);
    
@@ -313,6 +312,13 @@ void Camera::AllowMiddleMouseButtonDrag(bool allow) {
 
 void Camera::TakesFocus(bool click_takes_focus) {
    take_focus = click_takes_focus;
+}
+
+
+
+std::ostream& Camera::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "Camera object : View = " << view_area << std::endl;
+   return WidgetBase::DescribeTo(os , indent);
 }
 
 
