@@ -49,37 +49,54 @@ int main(int argc , char** argv) {
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       EagleWarn() << "Failed to install some components." << std::endl;
    }
-   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , 1024 , 768 , EAGLE_OPENGL | EAGLE_WINDOWED);
-   
+   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , 1200 , 900 , EAGLE_OPENGL | EAGLE_WINDOWED);
+
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();
-   
-//   WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
-//   gui1.SetWidgetArea(Rectangle(62,84,900,600),false);
+
+   WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
+   gui1.SetWidgetArea(Rectangle(150,150,900,600),false);
    
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
 ///   gui2.SetWidgetArea(Rectangle(0,0,1024,768) , false);
-   gui2.SetWidgetArea(Rectangle(112,84,800,600) , false);
+   gui2.SetWidgetArea(Rectangle(130,60,640,480) , false);
    
-//   gui1.SetBackgroundColor(EagleColor(0,255,255));
-   gui2.SetBackgroundColor(EagleColor(255,0,255));
+   gui1.SetBackgroundColor(EagleColor(0,0,127));
+   gui2.SetBackgroundColor(EagleColor(0,127,0));
+   
+   gui1 << gui2;
    
    RelativeLayout rl1("RLAYOUT1");
-   rl1.Resize(2);
+   rl1.Resize(5);
    rl1.SetLayoutRectangle(0 , LayoutRectangle(0.2 , 0.2 , 0.6 , 0.2));
    rl1.SetLayoutRectangle(1 , LayoutRectangle(0.2 , 0.6 , 0.6 , 0.2));
+   rl1.SetLayoutRectangle(2 , LayoutRectangle(0.4 , 0.2 , 0.2 , 0.6));
+   rl1.SetLayoutRectangle(3 , LayoutRectangle(0.1 , 0.2 , 0.2 , 0.6));
+   rl1.SetLayoutRectangle(4 , LayoutRectangle(0.7 , 0.2 , 0.2 , 0.6));
    
    gui2.SetRootLayout(&rl1);
 //   gui1.AddWidget(&gui2);
    
-   TestWidget tw1("TESTWIDGET1") , tw2("TESTWIDGET2");
+   TestWidget tw1("TESTWIDGETH1");
+   TestWidget tw2("TESTWIDGETH2");
+   TestWidget tw3("TESTWIDGETV1");
+   TestWidget tw4("TESTWIDGETV2");
+   TestWidget tw5("TESTWIDGETV3");
    
    rl1.PlaceWidget(&tw1 , 0);
    rl1.PlaceWidget(&tw2 , 1);
+   rl1.PlaceWidget(&tw3 , 2);
+   rl1.PlaceWidget(&tw4 , 3);
+   rl1.PlaceWidget(&tw5 , 4);
    
    tw1.SetWidgetArea(WIDGETAREA(tw1.OuterArea() , 3,5,7));
    tw2.SetWidgetArea(WIDGETAREA(tw2.OuterArea() , 7,5,3));
+   tw3.SetWidgetArea(WIDGETAREA(tw3.OuterArea() , 2,4,6));
+   tw4.SetWidgetArea(WIDGETAREA(tw4.OuterArea() , 6,4,2));
+   tw5.SetWidgetArea(WIDGETAREA(tw5.OuterArea() , 5,5,5));
          
+///   gui2.SetWidgetArea(WIDGETAREA(gui2.OuterArea() , 20 , 20 , 20));
+   
    EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
          
    EagleLog() << gui2 << std::endl;
@@ -96,13 +113,13 @@ int main(int argc , char** argv) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         gui2.Display(win , 0 , 0);
+         gui1.Display(win , 0 , 0);
          win->FlipDisplay();
          redraw = false;
       }
       static int first = 1;
       if (first) {
-         EagleLog() << gui2 << std::endl;
+         EagleLog() << gui1 << std::endl;
          first = 0;
       }
       do {
@@ -114,19 +131,18 @@ int main(int argc , char** argv) {
             quit = true;
          }
          else if (ev.type == EAGLE_EVENT_TIMER) {
-            gui2.Update(ev.timer.eagle_timer_source->SPT());
+            gui1.Update(ev.timer.eagle_timer_source->SPT());
             /// redraw = true;
          }
          else {
-            EagleLog() << "GUI2 Handling event " << EagleEventName(ev.type) << std::endl;
-            gui2.HandleEvent(ev);
+            gui1.HandleEvent(ev);
          }
          
-         while (gui2.HasMessages()) {
-            WidgetMsg wmsg = gui2.TakeNextMessage();
+         while (gui1.HasMessages()) {
+            WidgetMsg wmsg = gui1.TakeNextMessage();
             (void)wmsg;
          }
-         if (gui2.Flags().FlagOn(NEEDS_REDRAW)) {
+         if (gui1.Flags().FlagOn(NEEDS_REDRAW)) {
             redraw = true;
          }
          
