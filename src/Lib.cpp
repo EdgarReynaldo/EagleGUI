@@ -14,8 +14,6 @@ using namespace Eagle;
 
 
 EagleLibrary* EagleLibrary::eagle_lib = 0;
-int EagleLibrary::create = 1;
-int EagleLibrary::destroy = 0;
 
 
 
@@ -35,7 +33,7 @@ EagleLibrary::~EagleLibrary() {
 
 
 void EagleLibrary::Shutdown() {
-   if (destroy) {
+   if (eagle_lib) {
       for (SMIT it = sys_map.begin() ; it != sys_map.end() ; ++it) {
          delete it->second;
       }
@@ -43,8 +41,6 @@ void EagleLibrary::Shutdown() {
 
       delete eagle_lib;
       eagle_lib = 0;
-      destroy = 0;
-      create = 1;
    }
 }
 
@@ -59,10 +55,8 @@ void EagleLibrary::ShutdownEagle() {
 
 
 EagleLibrary* EagleLibrary::Eagle() {
-   if (create) {
+   if (!eagle_lib) {
       eagle_lib = new EagleLibrary();
-      create = 0;
-      destroy = 1;
    }
    return eagle_lib;
 }

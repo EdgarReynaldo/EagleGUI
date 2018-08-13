@@ -26,8 +26,6 @@ protected :
    SYS_MAP sys_map;
    
    static EagleLibrary* eagle_lib;
-   static int create;
-   static int destroy;
    
    EagleLibrary();
    
