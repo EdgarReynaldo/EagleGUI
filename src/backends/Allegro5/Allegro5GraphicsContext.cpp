@@ -584,6 +584,12 @@ void Allegro5GraphicsContext::DrawTinted(EagleImage* img , int x , int y , Eagle
 
 
 
+void Allegro5GraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col) {
+   al_draw_tinted_bitmap_region(GetAllegroBitmap(img) , GetAllegroColor(col) , src.X() , src.Y() , src.W() , src.H() , x , y , 0);
+}
+
+
+
 void Allegro5GraphicsContext::ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color) {
    Allegro5Image* a5img = dynamic_cast<Allegro5Image*>(img);
    ALLEGRO_BITMAP* allegro_bmp = a5img->AllegroBitmap();

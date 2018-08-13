@@ -155,6 +155,8 @@ public :
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL);
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255));
 
+   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255));
+
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color);
 ///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 /// TODO ADD   virtual void Draw(EagleImage* src , EagleDrawingInfo info);
