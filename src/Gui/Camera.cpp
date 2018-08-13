@@ -120,27 +120,52 @@ Camera::Camera(std::string objclass , std::string objname) :
 
 
 
-void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
-   EAGLE_ASSERT(win);
+int Camera::PrivateHandleEvent(EagleEvent ee) {
+   if (!IsMouseEvent(ee)) {return DIALOG_OKAY;}
    
-   Rectangle r = InnerArea();
-   r.MoveBy(x,y);
-   Clipper clip(win->GetDrawingTarget() , r);
-
-   // center the viewed area on the display area
-   int ox = (r.W() - view_area.W())/2;
-   int oy = (r.H() - view_area.H())/2;
-   
-   win->DrawRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy);
+   int msx = ee.mouse.x;
+   int msy = ee.mouse.y;
+   if (Flags().FlagOn(ENABLED)) {
+      bool hover = OuterArea().Contains(msx,msy);
+      SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
+      if (hover) {
+         if (mmb_drag_enabled) {
+            if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && ee.mouse.button == 3) {///input_mouse_press(MMB)) {
+               drag = true;
+               startmx = msx;
+               startmy = msy;
+               startxpos = view_area.X();
+               startypos = view_area.Y();
+               return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
+            }
+         }
+      }
+      if (drag) {
+         int dx = msx - startmx;
+         int dy = msy - startmy;
+         SetDestination(startxpos - dx , startypos - dy);
+         SetViewPos(dest_x , dest_y);
+         return DIALOG_INPUT_USED;
+      }
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP && ee.mouse.button == 3) {///input_mouse_release(MMB)) {
+         EagleLog () << "TESTWIDGET : MMB up" << std::endl;
+         drag = false;
+      }
+   }
+   return DIALOG_OKAY;
 }
 
 
 
-int Camera::CheckInputs() {
+
+/**
+int Camera::PrivateCheckInputs() {
    int msx = mouse_x - AbsParentX();
    int msy = mouse_y - AbsParentY();
    if (Flags().FlagOn(ENABLED)) {
-      if (OuterArea().Contains(msx,msy)) {
+      bool hover = OuterArea().Contains(msx,msy);
+      SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
+      if (hover) {
          if (input_mouse_press(LMB)) {
             if (take_focus) {// workaround for WidgetHandler so it can take the focus instead
                return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
@@ -171,10 +196,28 @@ int Camera::CheckInputs() {
    }
    return DIALOG_OKAY;
 }
+*/
+
+
+void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
+   EAGLE_ASSERT(win);
+   
+   Rectangle r = InnerArea();
+   r.MoveBy(x,y);
+   Clipper clip(win->GetDrawingTarget() , r);
+
+   /// center the viewed area on the display area
+   int ox = (r.W() - view_area.W())/2;
+   int oy = (r.H() - view_area.H())/2;
+   
+   
+   EagleColor c = Flags().FlagOn(HOVER)?EagleColor(255,255,255,255):EagleColor(255,255,255,127);
+   win->DrawTintedRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy , c);
+}
 
 
 
-int Camera::Update (double tsec) {
+int Camera::PrivateUpdate (double tsec) {
    if (tsec < 0.0) {tsec = 0.0;}
    time_since_prev_pos += tsec;
    PerformMove();

@@ -316,13 +316,20 @@ public :
 
    /// image drawing operations
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
+
    void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
 
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL)=0;
+
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
    void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
+
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
+
+   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
+
+
 
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
 

@@ -217,6 +217,8 @@ int WidgetHandler::PrivateUpdate(double tsec) {
    int msg = 0;
    int retmsg = DIALOG_OKAY;
    
+   cam.Update(tsec);
+
    for (unsigned int i = 0 ; i < inputlist.size() ; ++i) {
       WidgetBase* widget = inputlist[i];
       msg = widget->Update(tsec);
@@ -245,7 +247,6 @@ int WidgetHandler::PrivateUpdate(double tsec) {
          AddToRemoveList(widget);
       }
    }
-   cam.Update(tsec);
    
    return msg;
 }
@@ -257,7 +258,7 @@ void WidgetHandler::OnAreaChanged() {
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
    WIDGETAREA wa = GetWidgetArea();
    Rectangle r = wa.OuterArea();
-   Rectangle rcam = wa.InnerArea();
+   Rectangle rcam(warea.LeftIndent() , warea.TopIndent() , wa.InnerAreaWidth() , wa.InnerAreaHeight());
    
    cam.SetWidgetArea(rcam);
 
@@ -1136,7 +1137,7 @@ void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos
 ///      cam.Display(win , xpos + a.X() , ypos + a.Y());
 
       win->SetPMAlphaBlender();
-      cam.Display(win , xpos , ypos);
+      cam.Display(win , xpos + OuterArea().X() , ypos + OuterArea().Y());
       win->RestoreLastBlendingState();
       
    }
@@ -1157,8 +1158,12 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
    
-   root_layout->WidgetBase::SetWidgetArea(
-      Rectangle(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight()) , false);
+   if (buffer && buffer->Valid()) {
+      int w = buffer->W() - (warea.OuterAreaWidth() - warea.InnerAreaWidth());
+      int h = buffer->H() - (warea.OuterAreaHeight() - warea.InnerAreaHeight());
+      Rectangle bufrect(warea.LeftIndent() , warea.TopIndent() , w , h);
+      root_layout->WidgetBase::SetWidgetArea(bufrect , false);
+   }
 }
 
 
