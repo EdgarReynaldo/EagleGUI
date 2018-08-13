@@ -44,7 +44,11 @@ int main(int argc , char** argv) {
    (void)argv;
    
    
-   Allegro5System* sys = GetAllegro5System();
+///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
+   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
+///   Allegro5System* sys = GetAllegro5System();
+   
+   
    
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       EagleWarn() << "Failed to install some components." << std::endl;
@@ -59,7 +63,9 @@ int main(int argc , char** argv) {
    
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
 ///   gui2.SetWidgetArea(Rectangle(0,0,1024,768) , false);
+   gui2.SetupBuffer(1280,960,win);
    gui2.SetWidgetArea(Rectangle(130,60,640,480) , false);
+   gui2.AllowMiddleMouseButtonDrag(true);
    
    gui1.SetBackgroundColor(EagleColor(0,0,127));
    gui2.SetBackgroundColor(EagleColor(0,127,0));
@@ -196,7 +202,7 @@ void TestWidget::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 int TestWidget::PrivateHandleEvent(EagleEvent ee) {
-   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && ee.mouse.button == 1) {
       if (OuterArea().Contains(ee.mouse.x , ee.mouse.y)) {
          return DIALOG_TAKE_FOCUS;
       }
