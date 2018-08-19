@@ -45,8 +45,8 @@ int main(int argc , char** argv) {
    
    
 ///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
-   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
-///   Allegro5System* sys = GetAllegro5System();
+///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
+   Allegro5System* sys = GetAllegro5System();
    
    
    
@@ -59,18 +59,22 @@ int main(int argc , char** argv) {
    win->FlipDisplay();
 
    WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
-   gui1.SetWidgetArea(Rectangle(150,150,900,600),false);
+   gui1.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
+///   gui1.SetWidgetArea(WIDGETAREA(0,0,0 , Rectangle(150,150,900,600)) , false);
    
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
-///   gui2.SetWidgetArea(Rectangle(0,0,1024,768) , false);
    gui2.SetupBuffer(1280,960,win);
-   gui2.SetWidgetArea(Rectangle(130,60,640,480) , false);
+   gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
+///   gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
+   gui1.AllowMiddleMouseButtonDrag(false);
    gui2.AllowMiddleMouseButtonDrag(true);
    
    gui1.SetBackgroundColor(EagleColor(0,0,127));
    gui2.SetBackgroundColor(EagleColor(0,127,0));
    
    gui1 << gui2;
+
+   EagleLog() << gui2.GetWidgetArea() << std::endl;
    
    RelativeLayout rl1("RLAYOUT1");
    rl1.Resize(5);
@@ -101,35 +105,51 @@ int main(int argc , char** argv) {
    tw4.SetWidgetArea(WIDGETAREA(tw4.OuterArea() , 6,4,2));
    tw5.SetWidgetArea(WIDGETAREA(tw5.OuterArea() , 5,5,5));
          
-///   gui2.SetWidgetArea(WIDGETAREA(gui2.OuterArea() , 20 , 20 , 20));
-   
    EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
          
-   EagleLog() << gui2 << std::endl;
-
-///   EagleEventHandler* q = sys->GetSystemQueue();
-   
    bool quit = false;
    bool redraw = true;
    
+   int mx = 0;
+   int my = 0;
+   
    sys->GetSystemTimer()->Start();
+   
+   EagleLog() << gui1 << std::endl;
    
    while (!quit) {
 ///      if (redraw) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
+         WidgetBase* hw = gui1.GetWidgetAt(mx,my);
+         std::string name = (hw?hw->FullName():"NULL");
+         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , 10 , 10 , EagleColor(255,255,255));
          gui1.Display(win , 0 , 0);
          win->FlipDisplay();
          redraw = false;
       }
-      static int first = 1;
-      if (first) {
-         EagleLog() << gui1 << std::endl;
-         first = 0;
-      }
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
+         if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
+            EagleInfo() << "Event " << EagleEventName(ev.type) << " received in main." << std::endl;
+         }
+         
+         if (ev.type == EAGLE_EVENT_KEY_DOWN) {
+            if (ev.keyboard.keycode >= EAGLE_KEY_1 && ev.keyboard.keycode <= EAGLE_KEY_4) {
+               int index = ev.keyboard.keycode - EAGLE_KEY_1;
+               Pos2I p(0,0);
+               p.MoveBy((index % 2 == 1)?640:0 , (index / 2 == 1)?480:0);
+               gui2.MoveViewTlxTo(p.X() , p.Y());
+            }
+         }
+         
+         if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
+            mx = ev.mouse.x;
+            my = ev.mouse.y;
+            redraw = true;
+         }
+         
          if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             quit = true;
          }
@@ -197,6 +217,8 @@ void TestWidget::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
       c2 = GetColor(FGCOL);
    }
    win->DrawFilledRectangle(r , (flags & HOVER)?c1:c2);
+   std::string n = ShortName();
+   win->DrawTextString(win->DefaultFont() , n , InnerArea().CX() , InnerArea().CY() , EagleColor(255,0,0) , HALIGN_CENTER , VALIGN_CENTER);
 }
 
 
