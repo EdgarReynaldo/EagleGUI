@@ -41,6 +41,10 @@ Allegro5TargetBitmap::~Allegro5TargetBitmap() {
 
 
 
+/// -------------------------      Allegro5Image     ----------------------------------------
+
+
+
 void Allegro5Image::SetClippingRectangle(Rectangle new_clip) {
 	Allegro5TargetBitmap a5target_bitmap(bmp);
 	al_set_clipping_rectangle(new_clip.X() , new_clip.Y() , new_clip.W() , new_clip.H());
@@ -55,17 +59,23 @@ void Allegro5Image::ResetClippingRectangle() {
 
 
 
-Allegro5Image::Allegro5Image(EagleGraphicsContext* owner , std::string objname) :
-      EagleImage(owner , "Allegro5Image" , objname),
+void Allegro5Image::SetParentContext(EagleGraphicsContext* owner_context) {
+   pcontext = owner_context;
+}
+
+
+
+Allegro5Image::Allegro5Image(std::string objname) :
+      EagleImage("Allegro5Image" , objname),
       bmp(0)
 {
    
 }
 
 
-
+/**
 Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
-      EagleImage((EagleGraphicsContext*)0 , "Allegro5Image" , StringPrintF("%s ALLEGRO_BITMAP* %p" , take_ownership?"Owner of":"Reference to" , bitmap)),
+      EagleImage("Allegro5Image" , StringPrintF("%s ALLEGRO_BITMAP* %p" , take_ownership?"Owner of":"Reference to" , bitmap)),
       bmp(0)
 {
    EAGLE_ASSERT(bitmap);
@@ -80,7 +90,7 @@ Allegro5Image::Allegro5Image(ALLEGRO_BITMAP* bitmap , bool take_ownership) :
 
 
 Allegro5Image::Allegro5Image(int width , int height , IMAGE_TYPE type) :
-      EagleImage((EagleGraphicsContext*)0 , "Allegro5Image" , "Allocated image"),
+      EagleImage("Allegro5Image" , "Allocated image"),
       bmp(0)
 {
    Allocate(width , height , type);
@@ -89,7 +99,7 @@ Allegro5Image::Allegro5Image(int width , int height , IMAGE_TYPE type) :
 
 
 Allegro5Image::Allegro5Image(std::string file , IMAGE_TYPE type) :
-      EagleImage((EagleGraphicsContext*)0 , "Allegro5Image" , file),
+      EagleImage("Allegro5Image" , file),
       bmp(0)
 {
    Load(file , type);
@@ -98,13 +108,13 @@ Allegro5Image::Allegro5Image(std::string file , IMAGE_TYPE type) :
 
 
 Allegro5Image::Allegro5Image(EagleImage* parent_bitmap , int x , int y , int width , int height) :
-      EagleImage((EagleGraphicsContext*)0 , "Allegro5Image" , "Sub image"),
+      EagleImage("Allegro5Image" , "SubImage"),
       bmp(0)
 {
    CreateSubBitmap(parent_bitmap , x , y , width , height);
 }
 
-
+*/
 
 Allegro5Image::~Allegro5Image() {
    Free();
@@ -112,30 +122,39 @@ Allegro5Image::~Allegro5Image() {
 
 
 
-// creation
+/// creation
 
-EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window) {
-   return Allegro5Image::Clone(parent_window , this);
+EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window , std::string iname) {
+   EagleImage* newimg = parent_window->EmptyImage(iname);
+   parent_window->DrawToBackBuffer();/// This sets the parent_window as the owning context for the call to Allocate
+   if (newimg->Allocate(W() , H() , ImageType())) {
+      parent_window->PushDrawingTarget(newimg);
+      parent_window->SetCopyBlender();
+      parent_window->Draw(this , 0.0f , 0.0f , DRAW_NORMAL);
+      parent_window->RestoreLastBlendingState();
+      parent_window->PopDrawingTarget();
+      return newimg;
+   }
+   /// else, fail
+   parent_window->FreeImage(newimg);
+   
+   return (EagleImage*)0;
 }
 
 
 
-EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window , EagleImage* a5img) {
-   /// TODO : Deep copy of base classes???
-   bool ret = false;
-   EagleImage* newimg = parent_window->EmptyImage();
-   parent_window->DrawToBackBuffer();/// This sets the parent_window as the owning context for the call to Allocate
-   if ((ret = newimg->Allocate(a5img->W() , a5img->H() , a5img->ImageType()))) {
-      parent_window->PushDrawingTarget(newimg);
-      /// TODO : Set overwrite blender
-      parent_window->Draw(a5img , 0.0f , 0.0f , DRAW_NORMAL);
-      /// TODO : Unset overwrite blender
-      parent_window->PopDrawingTarget();
-      return newimg;
+EagleImage* Allegro5Image::CreateSubBitmap(int x , int y , int width , int height , std::string iname) {
+   EAGLE_ASSERT(Valid());
+   if (!Valid()) {return (EagleImage*)0;}
+   ALLEGRO_BITMAP* sub = al_create_sub_bitmap(bmp , x , y , width , height);
+   if (!sub) {
+      return (EagleImage*)0;
    }
-   // else, fail
-   parent_window->FreeImage(newimg);
-   return 0;
+   Allegro5Image* subimg = new Allegro5Image(iname);
+   subimg->AdoptBitmap(sub);
+   subimg->pcontext = pcontext;
+   subimg->SetParent(this);
+   return subimg;
 }
 
 
@@ -158,7 +177,7 @@ bool Allegro5Image::Allocate(int width , int height , IMAGE_TYPE type) {
       EagleError() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
    }
    else {
-      parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
+      pcontext = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
    }
@@ -184,34 +203,11 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
    }
    else {
       source = file;
-      parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
+      pcontext = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
 ///      SetName(file);
       w = al_get_bitmap_width(bmp);
       h = al_get_bitmap_height(bmp);
       EagleInfo() << StringPrintF("Loaded image %s from file at size %d x %d." , file.c_str() , w , h) << std::endl;
-   }
-   return bmp;
-}
-
-
-
-bool Allegro5Image::CreateSubBitmap(EagleImage* parent_bitmap , int x , int y , int width , int height) {
-   EAGLE_ASSERT(parent_bitmap);
-   Free();
-   Allegro5Image* img = dynamic_cast<Allegro5Image*>(parent_bitmap);
-   EAGLE_ASSERT(img);
-   ALLEGRO_BITMAP* allegro_bitmap = img->AllegroBitmap();
-   EAGLE_ASSERT(allegro_bitmap);
-   
-   bmp = al_create_sub_bitmap(allegro_bitmap , x , y , width , height);
-   if (bmp) {
-      parent_context = parent_bitmap->ParentContext();
-      parent_bitmap->AddChild(this);
-      w = al_get_bitmap_width(bmp);
-      h = al_get_bitmap_height(bmp);
-   }
-   else {
-      EagleError() << "Failed to create sub bitmap from " << parent_bitmap << std::endl;
    }
    return bmp;
 }
@@ -227,12 +223,13 @@ bool Allegro5Image::Save(std::string filepath , std::string extension) {
 
 
 void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
-   Free();
    EAGLE_ASSERT(bitmap);
-   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
-   al_set_target_bitmap(bitmap);
-   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
-   al_set_target_bitmap(old_target);
+   Free();
+
+   image_source = OWNIT;
+
+///   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
+
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);
    h = al_get_bitmap_height(bmp);
@@ -242,7 +239,6 @@ void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
    if (al_get_bitmap_flags(bmp) & ALLEGRO_VIDEO_BITMAP) {
       image_type = VIDEO_IMAGE;
    }
-   image_source = OWNIT;
 }
 
 
@@ -250,10 +246,11 @@ void Allegro5Image::AdoptBitmap(ALLEGRO_BITMAP* bitmap) {
 void Allegro5Image::ReferenceBitmap(ALLEGRO_BITMAP* bitmap) {
    Free();
    EAGLE_ASSERT(bitmap);
-   ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
-   al_set_target_bitmap(bitmap);
-   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
-   al_set_target_bitmap(old_target);
+
+   image_source = REFERENCE_ONLY;
+
+///   parent_context = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());
+
    bmp = bitmap;
    w = al_get_bitmap_width(bmp);
    h = al_get_bitmap_height(bmp);
@@ -263,31 +260,22 @@ void Allegro5Image::ReferenceBitmap(ALLEGRO_BITMAP* bitmap) {
    if (al_get_bitmap_flags(bmp) & ALLEGRO_VIDEO_BITMAP) {
       image_type = VIDEO_IMAGE;
    }
-   image_source = REFERENCE_ONLY;
 }
 
 
 
 void Allegro5Image::Free() {
-   if (bmp && (image_source != REFERENCE_ONLY)) {
-      std::vector<EagleImage*> c = children.Ptrs();
-      for (unsigned int i = 0 ; i < c.size() ; ++i) {
-         EagleImage* img = c[i];
-         img->Free();
-      }
-      children.RemoveAll();
-      if (parent) {
-         parent->RemoveChild(this);
-      }
+   FreeChildren();
+   if (bmp && (image_source == OWNIT)) {
       EagleInfo() << "Destroying allegro bitmap at " << bmp << std::endl;
       al_destroy_bitmap(bmp);
-      bmp = 0;
-      w = 0;
-      h = 0;
-      image_type = MEMORY_IMAGE;
-      parent = 0;
-      parent_context = 0;
    }
+   bmp = 0;
+   w = 0;
+   h = 0;
+   image_type = MEMORY_IMAGE;
+   parent = 0;
+   pcontext = 0;
 };
 
 

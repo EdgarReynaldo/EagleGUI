@@ -505,6 +505,12 @@ std::ostream& Circle::DescribeTo(std::ostream& os , Indenter indent) const {
 /// --------------------------------      Rectangle class      ----------------------------------------
 
 
+
+
+const Rectangle BADRECTANGLE = Rectangle(-1,-1,-1,-1);
+
+
+
 using std::ostream;
 using std::endl;
 

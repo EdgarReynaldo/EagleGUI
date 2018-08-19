@@ -10,7 +10,7 @@
 #include <string>
 
 
-
+/**
 class Sound {
 public :
    virtual ~Sound() {}
@@ -29,7 +29,7 @@ public :
    virtual void FreeSound(Sound* s)=0;
 };
 
-
+*/
 
 
 #endif // Sound_HPP

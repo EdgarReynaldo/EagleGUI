@@ -113,6 +113,7 @@
 		<Unit filename=".gitignore" />
 		<Unit filename="EagleCopyright.txt" />
 		<Unit filename="EagleFAQ.txt" />
+		<Unit filename="EagleFeatures.txt" />
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="README.txt" />
@@ -121,6 +122,7 @@
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
+		<Unit filename="include/Eagle/Callbacks.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
 		<Unit filename="include/Eagle/Color.hpp" />
 		<Unit filename="include/Eagle/Conditions.hpp" />
@@ -167,19 +169,21 @@
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
-		<Unit filename="include/Eagle/Gui/TestWidget.hpp" />
 		<Unit filename="include/Eagle/Gui/Text.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetAttributes.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetBase2.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
-		<Unit filename="include/Eagle/Gui/WidgetDrawFuncs.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetContainer.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetDrawingFuncs.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetPainters.hpp" />
 		<Unit filename="include/Eagle/Image.hpp" />
 		<Unit filename="include/Eagle/Indenter.hpp" />
 		<Unit filename="include/Eagle/InputHandler.hpp" />
@@ -207,6 +211,7 @@
 		<Unit filename="include/Eagle/Random.hpp" />
 		<Unit filename="include/Eagle/ResourceLib.hpp" />
 		<Unit filename="include/Eagle/Resources.hpp" />
+		<Unit filename="include/Eagle/SharedMemory.hpp" />
 		<Unit filename="include/Eagle/Sound.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
@@ -219,6 +224,7 @@
 		<Unit filename="src/AnimationBase.cpp" />
 		<Unit filename="src/Area.cpp" />
 		<Unit filename="src/CXX11Mutexes.cpp" />
+		<Unit filename="src/Callbacks.cpp" />
 		<Unit filename="src/Clipboard.cpp" />
 		<Unit filename="src/Color.cpp" />
 		<Unit filename="src/Conditions.cpp" />
@@ -240,10 +246,22 @@
 		<Unit filename="src/Gui/Button/ScrollButton.cpp" />
 		<Unit filename="src/Gui/Button/TextButton.cpp" />
 		<Unit filename="src/Gui/Camera.cpp" />
-		<Unit filename="src/Gui/Decorator/Decorator.cpp" />
-		<Unit filename="src/Gui/Decorator/TextDecorator.cpp" />
-		<Unit filename="src/Gui/Factory/WidgetCreators.cpp" />
-		<Unit filename="src/Gui/Factory/WidgetFactory.cpp" />
+		<Unit filename="src/Gui/Decorator/Decorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Gui/Decorator/TextDecorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Gui/Factory/WidgetCreators.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Gui/Factory/WidgetFactory.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FillLayout.cpp" />
 		<Unit filename="src/Gui/Layout/FlowLayout.cpp" />
@@ -254,22 +272,31 @@
 		<Unit filename="src/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
-		<Unit filename="src/Gui/Menu.cpp" />
-		<Unit filename="src/Gui/Scripting/GuiScript.cpp" />
+		<Unit filename="src/Gui/Menu.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Gui/Scripting/GuiScript.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Gui/Scroller.cpp" />
-		<Unit filename="src/Gui/TestWidget.cpp" />
 		<Unit filename="src/Gui/Text/BasicText.cpp" />
 		<Unit filename="src/Gui/Text/GlobalText.cpp" />
 		<Unit filename="src/Gui/Text/LinkText.cpp" />
 		<Unit filename="src/Gui/Text/SelectText.cpp" />
 		<Unit filename="src/Gui/WidgetArea.cpp" />
+		<Unit filename="src/Gui/WidgetAttributes.cpp" />
 		<Unit filename="src/Gui/WidgetBase.cpp" />
 		<Unit filename="src/Gui/WidgetColorset.cpp" />
-		<Unit filename="src/Gui/WidgetDrawFuncs.cpp" />
+		<Unit filename="src/Gui/WidgetContainer.cpp" />
+		<Unit filename="src/Gui/WidgetDrawingFuncs.cpp" />
+		<Unit filename="src/Gui/WidgetFlags.cpp" />
 		<Unit filename="src/Gui/WidgetHandler.cpp" />
 		<Unit filename="src/Gui/WidgetMessage.cpp" />
+		<Unit filename="src/Gui/WidgetPainters.cpp" />
 		<Unit filename="src/Image.cpp" />
 		<Unit filename="src/Indenter.cpp" />
 		<Unit filename="src/InputHandler.cpp" />
@@ -282,7 +309,10 @@
 		<Unit filename="src/MousePointer.cpp" />
 		<Unit filename="src/Mutexes.cpp" />
 		<Unit filename="src/NamedParameters.cpp" />
-		<Unit filename="src/NinePatch.cpp" />
+		<Unit filename="src/NinePatch.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/Object.cpp" />
 		<Unit filename="src/ObjectInfo.cpp" />
 		<Unit filename="src/ObjectRegistry.cpp" />

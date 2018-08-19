@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2017+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,6 +25,9 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/Time.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/FileSystem.hpp"
+#include "Eagle/ResourceLib.hpp"
+
 
 #include <signal.h>
 
@@ -176,17 +179,19 @@ float EagleSystem::system_timer_rate = 1.0f/60.0f;
 
 EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    EagleObject(objclass , objname),
-   queues(true),
-   inputs(true),
-   timers(true),
-   threads(true),
-   mutexes(true),
-   clipboards(true),
+   queues(),
+   inputs(),
+   timers(),
+   threads(),
+   mutexes(),
+   clipboards(),
    input_handler(0),
    system_timer(0),
    system_queue(0),
    system_clipboard(0),
    window_manager(0),
+   file_system(0),
+   resource_library(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -213,13 +218,23 @@ void EagleSystem::Shutdown() {
       window_manager = 0;
    }
 
+   if (file_system) {
+      delete file_system;
+      file_system = 0;
+   }
+   
+   if (resource_library) {
+      delete resource_library;
+      resource_library = 0;
+   }
+
    /// TODO : Manage destruction order carefully...
-   inputs.FreeAll();
-   clipboards.FreeAll();
-   timers.FreeAll();
-   threads.FreeAll();
-   queues.FreeAll();
-   mutexes.FreeAll();
+   inputs.RemoveAll();
+   clipboards.RemoveAll();
+   timers.RemoveAll();
+   threads.RemoveAll();
+   queues.RemoveAll();
+   mutexes.RemoveAll();
 }
 
 
@@ -586,11 +601,29 @@ EagleWindowManager* EagleSystem::GetWindowManager() {
 
 
 
+FileSystem* EagleSystem::GetFileSystem() {
+   if (!file_system) {
+      file_system = CreateFileSystem();
+   }
+   return file_system;
+}
+
+
+
+ResourceLibrary* EagleSystem::GetResourceLibrary() {
+   if (!resource_library) {
+      resource_library = CreateResourceLibrary();
+   }
+   return resource_library;
+}
+
+
+
 EagleInputHandler* EagleSystem::CreateInputHandler(std::string objname) {
    EAGLE_ASSERT(system_up);
    EagleInputHandler* input = PrivateCreateInputHandler(objname);
    if (input) {
-      inputs.Add(input);
+      inputs.Add(HeapObject(input));
    }
    return input;
 }
@@ -601,7 +634,7 @@ EagleEventHandler* EagleSystem::CreateEventHandler(std::string objname , bool de
    EAGLE_ASSERT(system_up);
    EagleEventHandler* q = PrivateCreateEventHandler(objname , delay_events);
    if (q) {
-      queues.Add(q);
+      queues.Add(HeapObject(q));
    }
    return q;
 }
@@ -612,7 +645,7 @@ EagleTimer* EagleSystem::CreateTimer(std::string objname) {
    EAGLE_ASSERT(system_up);
    EagleTimer* timer = PrivateCreateTimer(objname);
    if (timer) {
-      timers.Add(timer);
+      timers.Add(HeapObject(timer));
    }
    return timer;
 }
@@ -637,7 +670,7 @@ EagleThread* EagleSystem::CreateThread(std::string objname , void* (*process)(Ea
    EAGLE_ASSERT(system_up);
    EagleThread* ethread = PrivateCreateThread(objname , process , data);
    if (ethread) {
-      threads.Add(ethread);
+      threads.Add(HeapObject(ethread));
    }
    return ethread;
 }
@@ -648,7 +681,7 @@ EagleMutex* EagleSystem::CreateMutex(std::string objname , bool recursive , bool
    EAGLE_ASSERT(system_up);
    EagleMutex* emutex = PrivateCreateMutex(objname , recursive , timed);
    if (emutex) {
-      mutexes.Add(emutex);
+      mutexes.Add(HeapObject(emutex));
    }
    return emutex;
 }
@@ -659,7 +692,7 @@ EagleClipboard* EagleSystem::CreateClipboard(std::string objname) {
    EAGLE_ASSERT(system_up);
    EagleClipboard* cb = PrivateCreateClipboard(objname);
    if (cb) {
-      clipboards.Add(cb);
+      clipboards.Add(HeapObject(cb));
    }
    return cb;
 }
@@ -667,19 +700,19 @@ EagleClipboard* EagleSystem::CreateClipboard(std::string objname) {
 
 
 void EagleSystem::FreeInputHandler(EagleInputHandler* handler) {
-   inputs.Free(handler);
+   inputs.Remove(handler);
 }
 
 
 
 void EagleSystem::FreeEventHandler(EagleEventHandler* event_handler) {
-   queues.Free(event_handler);
+   queues.Remove(event_handler);
 }
 
 
 
 void EagleSystem::FreeTimer(EagleTimer* timer) {
-   timers.Free(timer);
+   timers.Remove(timer);
 }
 
 
@@ -691,19 +724,19 @@ void EagleSystem::FreeGraphicsContext(EagleGraphicsContext* window) {
 
 
 void EagleSystem::FreeThread(EagleThread* thread) {
-   threads.Free(thread);
+   threads.Remove(thread);
 }
 
 
 
 void EagleSystem::FreeMutex(EagleMutex* mutex) {
-   mutexes.Free(mutex);
+   mutexes.Remove(mutex);
 }
 
 
 
 void EagleSystem::FreeClipboard(EagleClipboard* clipboard) {
-   clipboards.Free(clipboard);
+   clipboards.Remove(clipboard);
 }
 
 

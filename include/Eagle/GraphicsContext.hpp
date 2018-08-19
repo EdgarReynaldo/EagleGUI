@@ -179,13 +179,24 @@ public :
 class EagleSystem;
 class EagleThread;
 
+enum QUADRANT_DIR {
+   QUADRANT_NE = 0,
+   QUADRANT_NW = 1,
+   QUADRANT_SW = 2,
+   QUADRANT_SE = 3
+};
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
+   typedef std::unordered_set<EagleImage*> IMAGESET;
+   typedef std::unordered_set<EagleFont*> FONTSET;
 
+   typedef IMAGESET::iterator ISIT;
+   typedef FONTSET::iterator FSIT;
 
-
+   
+   
    int scrw;
    int scrh;
 
@@ -194,11 +205,11 @@ protected :
 
    std::list<EagleImage*> draw_target_stack;
 
-   PointerManager<EagleImage> images;
-   PointerManager<EagleFont>  fonts;
+   IMAGESET imageset;
+   FONTSET  fontset;
 
-   MousePointerManager* mp_manager;// Derived class is responsible for instantiating this object, b/c a virtual creation function
-                                   // cannot be called in a base class constructor
+   MousePointerManager* mp_manager;/// Derived class is responsible for instantiating this object, b/c a virtual creation function
+                                   /// cannot be called in a base class constructor
    float maxframes;
    float numframes;
    float total_frame_time;
@@ -279,6 +290,8 @@ public :
    virtual void DrawEllipse(int cx , int cy , int rx , int ry , int thickness , EagleColor c)=0;
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c)=0;
 
+   void         DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c);
+   
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c)=0;
 
@@ -291,6 +304,8 @@ public :
    virtual void DrawFilledRoundedRectangle(float x , float y , float w , float h , float rx , float ry , EagleColor c)=0;
    virtual void DrawCircle(float cx , float cy , float radius , float thickness , EagleColor c)=0;
    virtual void DrawFilledCircle(float cx , float cy , float radius , EagleColor c)=0;
+   virtual void DrawEllipse(float cx , float cy , float rx , float ry , float thickness , EagleColor c)=0;
+   virtual void DrawFilledEllipse(float cx , float cy , float rx , float ry , EagleColor c)=0;
    virtual void DrawTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , float thickness , EagleColor c)=0;
    virtual void DrawFilledTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , EagleColor c)=0;
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;
@@ -301,13 +316,20 @@ public :
 
    /// image drawing operations
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
+
    void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
 
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL)=0;
+
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
    void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
+
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
+
+   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
+
+
 
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
 
@@ -342,18 +364,24 @@ public :
 
    void DrawToBackBuffer();
 
-   /// image creation / loading / sub division
-   virtual EagleImage* EmptyImage()=0;
-   virtual EagleImage* CloneImage(EagleImage* clone)=0;
-   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE)=0;
+   /// Image creation / loading / sub division - these images are owned by the window
+   virtual EagleImage* EmptyImage(std::string iname = "Nemo")=0;
+
+   virtual EagleImage* CloneImage(EagleImage* clone , std::string iname = "Nemo")=0;
+   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;
+
+   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;
    virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height)=0;
+
    void                FreeImage(EagleImage* img);
+   void                FreeAllImages();
 
-   /// font loading
+   /// Font loading - these fonts are owned by the window
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   void               FreeFont(EagleFont* font);
 
+   void               FreeFont(EagleFont* font);
+   void               FreeAllFonts();
+   
    EagleFont* DefaultFont();
 
    std::string DefaultFontPath();

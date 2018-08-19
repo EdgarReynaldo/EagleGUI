@@ -33,12 +33,6 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
-LinkText::LinkText(std::string name) :
-   SelectText("LinkText" , name),
-   link_height(0.0f)
-{}
-
-
 
 int LinkText::LinkText::PrivateHandleEvent(EagleEvent e) {
    int ret = SelectText::PrivateHandleEvent(e);
@@ -69,13 +63,13 @@ int LinkText::PrivateCheckInputs() {
 void LinkText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    SelectText::PrivateDisplay(win,xpos,ypos);
 
-   if (flags & HOVER) {
+   if (Flags().FlagOn(HOVER)) {
       /// Draw underline for hyperlink
       for (unsigned int i = 0 ; i < lineareas.size() ; ++i) {
          const Rectangle& r = lineareas[i];
          float x = r.X() + xpos;
          float y = r.Y() + ypos + fontheight + ceil(link_height);
-         win->DrawFilledRectangle(x,y,(float)r.W(), link_height , WCols()[HLCOL]);
+         win->DrawFilledRectangle(x,y,(float)r.W(), link_height , GetColor(HLCOL));
       }
    }
 }
@@ -88,10 +82,19 @@ int LinkText::PrivateUpdate(double tsec) {
 
 
 
-void LinkText::SetHoverState(bool state) {
-   SelectText::SetHoverState(state);
-   SetBgRedrawFlag();
+void LinkText::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   (void)on;
+   if (f == HOVER) {
+      SetBgRedrawFlag();
+   }
 }
+
+
+
+LinkText::LinkText(std::string classname , std::string objname) :
+   SelectText(classname , objname),
+   link_height(0.0f)
+{}
 
 
 

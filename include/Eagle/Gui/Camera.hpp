@@ -90,18 +90,16 @@ public :
    Camera(std::string objclass = "Camera" , std::string objname = "Nemo");
    virtual ~Camera() {}
    
-   /// Override functions for WidgetBase
 protected :
-//   virtual int PrivateHandleEvent(EagleEvent e);
-   virtual int  CheckInputs();
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-public :
-   virtual int  Update(double tsec);
-   
-   virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
-   virtual void SetPrivateColorset(const WidgetColorset& colors);
 
-///   virtual void SetWidgetArea(int xpos , int ypos , int width , int height);
+   /// Override functions for WidgetBase
+
+   virtual int PrivateHandleEvent(EagleEvent ee);
+///   virtual int  PrivateCheckInputs();
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int  PrivateUpdate(double tsec);
+
+public :
 
    /// Member functions
    virtual void SetView(EagleImage* bmp , int x , int y , int w , int h);
@@ -126,11 +124,13 @@ public :
 
    /// Getters
    Rectangle ViewArea() const {return view_area;}
-   int       X() const {return view_area.X();}
-   int       Y() const {return view_area.Y();}
-   int       W() const {return view_area.W();}
-   int       H() const {return view_area.H();}
+   int       ViewX()    const {return view_area.X();}
+   int       ViewY()    const {return view_area.Y();}
+   int       ViewW()    const {return view_area.W();}
+   int       ViewH()    const {return view_area.H();}
    
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+
 };
 /**
 

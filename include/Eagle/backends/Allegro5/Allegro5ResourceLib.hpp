@@ -32,26 +32,18 @@ class Allegro5ResourceLibrary : public ResourceLibrary {
 
 protected :
    
+   static Allegro5ResourceLibrary* me;
    
 public :
-/**   
-   virtual RESOURCEID LoadFileResource(FilePath fp , RESOURCE_TYPE rt = RT_UNKNOWN);
-RESOURCEID Allegro5ResourceLibrary::LoadFileResource(FilePath fp , RESOURCE_TYPE rt) {
-   if (rt == RT_UNKNOWN) {
-      rt = DeduceResourceType(GetExt(fp.File()));
-   }
-   EAGLE_ASSERT((rt >= RT_IMAGE) && (rt < NUM_RT_TYPES));
-   RESLOADER rloader = resource_loaders[rt];
-   if (!rloader) {
-      throw EagleException(StringPrintF("Resource loader for %s is NULL!\n" , ResourceTypeString(rt)));
-   }
-   return rloader
-}
-*/
+
+   Allegro5ResourceLibrary();
+
 
 
    virtual std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);
 
+   
+   static Allegro5ResourceLibrary* Instance() {return me;}
 };
 
 

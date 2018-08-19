@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -30,135 +30,217 @@
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 
 
-
-enum MARGIN_CELL {
-   MARGIN_CELL_OUTSIDE      = -1,
-   MARGIN_CELL_TOPLEFT      = 0,
-   MARGIN_CELL_TOPMIDDLE    = 1,
-   MARGIN_CELL_TOPRIGHT     = 2,
-   MARGIN_CELL_MIDDLELEFT   = 3,
-   MARGIN_CELL_MIDDLEMIDDLE = 4,
-   MARGIN_CELL_MIDDLERIGHT  = 5,
-   MARGIN_CELL_BOTTOMLEFT   = 6,
-   MARGIN_CELL_BOTTOMMIDLE  = 7,
-   MARGIN_CELL_BOTTOMRIGHT   = 8
+enum WAREA_TYPE {
+   WAREA_TYPE_MARGIN  = 0,
+   WAREA_TYPE_BORDER  = 1,
+   WAREA_TYPE_PADDING = 2,
+   WAREA_TYPE_INNER   = 3
 };
 
-enum MARGIN_HCELL {
-	MARGIN_HCELL_LEFT = 0,
-	MARGIN_HCELL_CENTER = 1,
-	MARGIN_HCELL_RIGHT = 2
-};
-enum MARGIN_VCELL {
-	MARGIN_VCELL_TOP = 0,
-	MARGIN_VCELL_CENTER = 1,
-	MARGIN_VCELL_BOTTOM = 2
+enum BOX_TYPE {
+   BOX_TYPE_MARGIN  = 0,
+   BOX_TYPE_BORDER  = 1,
+   BOX_TYPE_PADDING = 2
 };
 
-class WidgetArea {
+enum CELL_AREA {
+   CELL_AREA_OUTSIDE      = -1,
+   CELL_AREA_TOPLEFT      = 0,
+   CELL_AREA_TOPMIDDLE    = 1,
+   CELL_AREA_TOPRIGHT     = 2,
+   CELL_AREA_MIDDLELEFT   = 3,
+   CELL_AREA_MIDDLEMIDDLE = 4,
+   CELL_AREA_MIDDLERIGHT  = 5,
+   CELL_AREA_BOTTOMLEFT   = 6,
+   CELL_AREA_BOTTOMMIDLE  = 7,
+   CELL_AREA_BOTTOMRIGHT   = 8
+};
 
-private :
+enum HCELL_AREA {
+	HCELL_LEFT = 0,
+	HCELL_CENTER = 1,
+	HCELL_RIGHT = 2
+};
+enum VCELL_AREA {
+	VCELL_TOP = 0,
+	VCELL_CENTER = 1,
+	VCELL_BOTTOM = 2
+};
 
-	// margins on left right top and bottom - 9 cells
-	int mleft;
-	int mright;
-	int mtop;
-	int mbot;
-	
-	Rectangle outer_area;
-	Rectangle inner_area;
 
-	EagleImage* cell_images[3][3];
-	
-	bool has_image_alpha;
-
+class BOXAREA {
 public :
+   int left;
+   int right;
+   int top;
+   int bottom;
+   
+   BOXAREA();
+   BOXAREA(int side);
+   BOXAREA(int hsize , int vsize);
 
-	WidgetArea();
-	WidgetArea(const WidgetArea& a);
+   
+   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
-   WidgetArea& operator=(const WidgetArea& a);
-
-   void MoveBy(int dx , int dy);
-	Rectangle OuterArea() const {return outer_area;}
-	Rectangle InnerArea() const {return inner_area;}
-	int       W() const {return outer_area.W();}
-	int       H() const {return outer_area.H();}
-	Rectangle   GetCellRectangle (MARGIN_CELL cell) const ;
-	Rectangle   GetCellRectangle (MARGIN_HCELL hcell , MARGIN_VCELL vcell) const ;
-	EagleImage* GetCellImage     (MARGIN_HCELL hcell , MARGIN_VCELL vcell) const ;
-	
-	void Paint(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell, EagleColor col , int x , int y) const ;
-	void PaintAll(EagleGraphicsContext* win , EagleColor col , int x , int y) const;
-	void PaintImage(EagleGraphicsContext* win , MARGIN_HCELL hcell , MARGIN_VCELL vcell , int x , int y , int flags) const;
-	void PaintImages(EagleGraphicsContext* win , int x , int y , int flags) const;
-	void SetImage(EagleImage* img , MARGIN_HCELL hcell , MARGIN_VCELL vcell);
-	void SetImages(EagleImage* imgs[3][3]);
-   void SetImagesHaveAlpha(bool has_alpha);
-
-   /// Changes inner area, but preserves margins
-	void SetOuterPos(int xpos , int ypos);
-	void SetOuterDim(unsigned int width , unsigned int height);
-	void SetOuterArea(Rectangle r);
-	void SetOuterArea(int xpos , int ypos , unsigned int width , unsigned int height);
-
-	
-	void SetInnerPos(int ixpos , int iypos);/// Changes absolute inner position, moves outer area, preserves margins
-   void SetInnerDimensions(unsigned int width , unsigned int height);/// Changes outer area, preserves margins
-	void SetInnerArea(int ixpos , int iypos , unsigned int iwidth , unsigned int iheight);/// Changes inner and outer area, preserves margins
-	
-	
-	void SetRelativeInnerPosition(int xpos , int ypos);/// Changes margins, probably not very useful
-	void SetRelativeInnerDimensions(unsigned int width , unsigned int height);/// Changes margins, probably not very useful
-	void SetRelativeInnerArea(Rectangle r);/// Changes margins!!!!
-	void SetRelativeInnerArea(int xpos , int ypos , unsigned int width , unsigned int height);/// changes margins!!!!
-   void SetFractionalInnerArea(float fx , float fy , float fw , float fh);/// Sets inner area based on fractions of outer area's width and height
-	
-	/// Changes position and outer area!!!
-	void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
-
-	/// Make room in outer area for inner area first!!!
-	void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
-	
-	int MaxHMargin() const {return outer_area.W() - inner_area.W();}
-	int MaxVMargin() const {return outer_area.H() - inner_area.H();}
-	
-	int MLeft()  const {return mleft;}
-	int MRight() const {return mright;}
-	int MTop()   const {return mtop;}
-	int MBot()   const {return mbot;}
-
-	int OuterX()   const {return outer_area.X();}
-	int OuterY()   const {return outer_area.Y();}
-	int OuterBRX() const {return outer_area.BRX();}
-	int OuterBRY() const {return outer_area.BRY();}
-	
-	int InnerX()   const {return inner_area.X();}
-	int InnerY()   const {return inner_area.Y();}
-	int InnerBRX() const {return inner_area.BRX();}
-	int InnerBRY() const {return inner_area.BRY();}
-	
-	bool HasImageAlpha() {return has_image_alpha;}
-
-   // GetCellIndex returns 0,1,2 , 3,4,5 , 6,7,8 or -1 for outside
-   int GetCellIndex(int px , int py);
-
-
-   bool Contains(int px , int py);
-   bool BorderContains(int px , int py);
-   bool SideContains(int px , int py);
-   bool CornerContains(int px , int py);
-
+   inline int Width() const {return left + right;}
+   inline int Height() const {return top + bottom;}
 
    std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
-   friend std::ostream& operator<<(std::ostream& os , const WidgetArea& wa);
+   friend std::ostream& operator<<(std::ostream& os , const BOXAREA& ba);
+};
+
+class NPAREA {
+public :
+   Pos2I pos;
+   int left;
+   int width;
+   int right;
+   int top;
+   int height;
+   int bottom;
+   
+   NPAREA();
+   NPAREA(Rectangle area , BOXAREA box);
+   
+   /// Paint functions
+
+   void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);
+   void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);
+   
+   /// Getters
+   
+   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
+   Rectangle GetRow(VCELL_AREA vcell) const;
+   Rectangle GetColumn(HCELL_AREA hcell) const;
+   
+   inline int Width() const {return left + width + right;}
+   inline int Height() const {return top + height + bottom;}
+   inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   friend std::ostream& operator<<(std::ostream& os , const NPAREA& np);
 
 };
 
 
+class WIDGETAREA {
 
+protected :
+
+   Pos2I pos;
+   BOXAREA margin;
+   BOXAREA border;
+   BOXAREA padding;
+   int inner_width;
+   int inner_height;
+
+
+
+   void SetBoxArea(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   void SetBoxArea(BOX_TYPE box , BOXAREA b);
+
+public :
+
+   WIDGETAREA();
+
+   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   
+   WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
+
+   
+
+   WIDGETAREA& operator=(const WIDGETAREA& wa);
+   
+   WIDGETAREA& MoveBy(Pos2I p);
+
+   /// Setters
+   
+   WIDGETAREA& SetBoxesContract(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesContract(Rectangle outerarea , int marginsize , int bordersize , int paddingsize);
+   WIDGETAREA& SetBoxesContract(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesContract(int marginsize , int bordersize , int paddingsize);
+
+   WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
+   WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize , Rectangle innerarea);
+   WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize);
+
+
+      
+   WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
+
+   WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
+
+	WIDGETAREA& SetOuterArea(Rectangle oa);
+	WIDGETAREA& SetInnerArea(Rectangle ia);
+
+   WIDGETAREA& SetWidgetArea(const WIDGETAREA& wa);
+
+   /// Getters
+   
+   NPAREA OuterNP() const;
+   NPAREA BorderNP() const;
+   NPAREA PaddingNP() const;
+   
+	Rectangle OuterArea()   const ;
+	Rectangle BorderArea()  const ;
+	Rectangle PaddingArea() const ;
+	Rectangle InnerArea()   const ;
+
+   Rectangle CellBox(BOX_TYPE box , CELL_AREA area) const;
+   Rectangle CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const;
+
+	
+	
+	int OuterAreaWidth()    const;
+	int OuterAreaHeight()   const;
+	int BorderAreaWidth()   const;
+	int BorderAreaHeight()  const;
+	int PaddingAreaWidth()  const;
+	int PaddingAreaHeight() const;
+	int InnerAreaWidth()    const;
+	int InnerAreaHeight()   const;
+
+	
+	int MarginWidth()   const;
+	int MarginHeight()  const;
+	int BorderWidth()   const;
+	int BorderHeight()  const;
+	int PaddingWidth()  const;
+	int PaddingHeight() const;
+
+	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;
+   BOXAREA GetAreaBox(BOX_TYPE btype) const;
+	
+	int LeftIndent() const;
+	int RightIndent() const;
+	int TopIndent() const;
+	int BottomIndent() const;
+	
+	
+	
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+
+   friend std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);
+
+};
+
+std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);
+
+
+typedef WIDGETAREA WidgetArea;
 
 
 
 #endif // EagleGuiWidgetArea_HPP
+
+
+
+
+
+

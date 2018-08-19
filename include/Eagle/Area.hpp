@@ -287,6 +287,8 @@ public :
    int Y()   const {return y;}
    int W()   const {return w;}
    int H()   const {return h;}
+   int Width() const {return W();}
+   int Height() const {return H();}
    int BRX() const {return brx;}
    int BRY() const {return bry;}
    int CX()  const {return (x + w/2);}
@@ -353,6 +355,8 @@ public :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
+
+extern const Rectangle BADRECTANGLE;
 
 /// Inline Rectangle:: class methods
 

@@ -117,15 +117,13 @@ protected :
 
    virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int  PrivateUpdate(double tsec);
+   virtual int PrivateUpdate(double tsec);
 
-   BasicButton(std::string objclass , std::string objname);
+   virtual void OnAreaChanged();
+
 
 public :
-   
-///   BasicButton();
-///   BasicButton(std::string name);
-   BasicButton(std::string objname = "Nemo");
+   BasicButton(std::string objclass = "BasicButton" , std::string objname = "Nemo");
    
    virtual ~BasicButton();
 
@@ -155,14 +153,16 @@ public :
    virtual bool Hover();
    
    virtual BUTTON_ACTION_TYPE ActionType() {return btn_action_type;}
-   
-   /// Functions forwarded from WidgetBase
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);/// Pass INT_MAX if you don't care
-	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
-	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
-   
 };
 
+
+#include <memory>
+#include "Eagle/SharedMemory.hpp"
+
+typedef SHAREDOBJECT<BasicButton> SHAREDBUTTON;
+
+SHAREDBUTTON StackButton(BasicButton* b);
+SHAREDBUTTON StackButton(BasicButton& b);
 
 
 #endif // Button_HPP

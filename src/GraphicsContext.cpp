@@ -220,8 +220,8 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       scrh(0),
       backbuffer(0),
       drawing_target(0),
-      images(true),
-      fonts(true),
+      imageset(),
+      fontset(),
       mp_manager(0),
       maxframes(60),
       numframes(0.0f),
@@ -229,7 +229,7 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       frame_times(),
       previoustime(0.0f),
       currenttime(0.0f),
-      default_font(0),
+      default_font(),
       default_font_path(eagle_default_font_path),
       default_font_size(eagle_default_font_size),
       default_font_flags(eagle_default_font_flags),
@@ -285,6 +285,21 @@ void EagleGraphicsContext::DrawRoundedRectangle(Rectangle r , int rx , int ry , 
 
 void EagleGraphicsContext::DrawFilledRoundedRectangle(Rectangle r , int rx , int ry , EagleColor c) {
    DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , rx , ry , c);
+}
+
+
+
+void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c) {
+   EagleImage* target = GetDrawingTarget();
+   target->PushClippingRectangle(r);
+   Pos2I corners[4] = {
+      Pos2I(r.X()   , r.BRY()), 
+      Pos2I(r.BRX() , r.BRY()), 
+      Pos2I(r.BRX() , r.Y()  ),
+      Pos2I(r.X()   , r.Y()  ) 
+   };
+   DrawFilledQuarterEllipse(Rectangle(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height()) , dir , c);
+   target->PopClippingRectangle();
 }
 
 
@@ -396,17 +411,59 @@ void EagleGraphicsContext::DrawToBackBuffer() {
 
 
 void EagleGraphicsContext::FreeImage(EagleImage* img) {
-   if (img) {
-      images.Free(img);
+      
+   ISIT it = imageset.find(img);
+   if (it != imageset.end()) {
+      delete img;
+      imageset.erase(it);
+      return;
    }
+   
+   /// If we get here, we don't own this image, what should we do?
+   /// If it is a sub bitmap, when the parent is destroyed, it will be destroyed, should we bother?
+   /// This image might have been freed already
+   /// Best bet is to do nothing. There won't be any memory leak, just a memory waste until its used
+   
+/** Not necessary
+   if (!img) {return;}
+   EagleImage* parent = img->Parent();
+   if (parent) {
+      /// This is a sub bitmap, we don't own it
+      parent->FreeChild(img);
+      return;
+   }
+*/
+}
+
+
+
+void EagleGraphicsContext::FreeAllImages() {
+   IMAGESET iset = imageset;
+   for (ISIT it = iset.begin() ; it != iset.end() ; ++it) {
+      FreeImage(*it);
+   }
+   EAGLE_ASSERT(imageset.empty());
 }
 
 
 
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
-   if (font) {
-      fonts.Free(font);
+   if (!font) {return;}
+   FSIT it = fontset.find(font);
+   if (it != fontset.end()) {
+      delete font;
+      fontset.erase(it);
    }
+}
+
+
+
+void EagleGraphicsContext::FreeAllFonts() {
+   FONTSET fset = fontset;
+   for (FSIT it = fset.begin() ; it != fset.end() ; ++it) {
+      FreeFont(*it);
+   }
+   EAGLE_ASSERT(fontset.empty());
 }
 
 

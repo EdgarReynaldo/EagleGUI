@@ -111,20 +111,20 @@ void BasicButton::FreeClickArea() {
 
 int BasicButton::PrivateCheckInputs() {
 
-   UINT retmsg = DIALOG_OKAY;
+   unsigned int retmsg = DIALOG_OKAY;
    bool activated = false;
    bool released = false;
 
    int msx = mouse_x;
    int msy = mouse_y;
-   WidgetHandler* whandler = 0;
+   WidgetHandler* handler = 0;
    
    if (wparent) {
-      whandler = dynamic_cast<WidgetHandler*>(wparent);
+      handler = dynamic_cast<WidgetHandler*>(wparent);
    }
-   if (whandler) {
-      msx = whandler->GetMouseX();
-      msy = whandler->GetMouseY();
+   if (handler) {
+      msx = handler->GetMouseX();
+      msy = handler->GetMouseY();
    }
 ///   int msx = mouse_x - AbsParentX();// This won't work becase it doesn't include the parent gui's camera position
 ///   int msy = mouse_y - AbsParentY();// see above
@@ -148,7 +148,7 @@ int BasicButton::PrivateCheckInputs() {
          if (input_mouse_release(LMB)) {released = true;}
       }
       if (released) {
-         SetButtonState(Flags() & HOVER , true);
+         SetButtonState(Flags().FlagOn(HOVER) , true);
          user_activated = false;
          focuskey_activated = false;
          pointer_activated = false;
@@ -165,58 +165,19 @@ int BasicButton::PrivateCheckInputs() {
       activated = true;
       if (btn_action_type == SPRING_BTN) {user_activated = true;}
    
-   } else if ((Flags() & HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
+   } else if (Flags().FlagOn(HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
       
       activated = true;
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
       
-   } else if (input_mouse_press(LMB) && area.InnerArea().Contains(msx,msy)) {
-      
+   } else if (input_mouse_press(LMB) && InnerArea().Contains(msx,msy)) {
       if (click_area) {
-         if (click_area->Contains(msx - area.InnerArea().X() , msy - area.InnerArea().Y())) {
+         if (click_area->Contains(msx - InnerArea().X() , msy - InnerArea().Y())) {
             activated = true;
             EagleInfo() <<  "Click area activated." << std::endl;
             if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
          }
       }
-/**
-      else {
-         Rectangle r = area.InnerArea();
-         switch (btn_shape) {
-            case RECTANGLE_BTN :
-               activated = true;
-               if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-               break;
-            case CIRCLE_BTN :
-               {
-                  Circle c(r.X() + r.W()/2 , r.Y() + r.H()/2 , rad_a);
-                  if (c.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-            case ROUNDED_BTN :
-               {
-                  RoundedRectangle rr(InnerArea() , rad_a , rad_b , 1.0f);
-                  if (rr.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-            case ELLIPSE_BTN :
-               {
-                  Ellipse e(InnerArea());
-                  if (e.Contains(msx,msy)) {
-                     activated = true;
-                     if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
-                  }
-               }
-               break;
-         }
-      }
-//*/
    }
    just_activated = false;
    if (activated) {// click or key press has activated the button action
@@ -235,8 +196,8 @@ int BasicButton::PrivateCheckInputs() {
             break;
          default : throw EagleException("BasicButton::PrivateCheckInputs - btn_action_type unknown");break;
       }
-      SetButtonState(Flags() & HOVER , up);
-      if (WidgetBase::Flags() & ALLOW_CLOSE) {
+      SetButtonState(Flags().FlagOn(HOVER) , up);
+      if (Flags().FlagOn(ALLOW_CLOSE)) {
          retmsg |= DIALOG_CLOSE;
       }
    }
@@ -251,17 +212,17 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
       int xoffset = InnerArea().X() + xpos;
       int yoffset = InnerArea().Y() + ypos;
       click_area->MoveBy(xoffset , yoffset);
+      WidgetColorset wc = WidgetColors();
       if (Up()) {
-         click_area->Fill(win , WCols()[MGCOL]);
-         click_area->Draw(win , WCols()[FGCOL]);
+         click_area->Fill(win , wc[MGCOL]);
+         click_area->Draw(win , wc[FGCOL]);
       }
       else {
-         click_area->Fill(win , WCols()[BGCOL]);
-         click_area->Draw(win , WCols()[MGCOL]);
+         click_area->Fill(win , wc[BGCOL]);
+         click_area->Draw(win , wc[MGCOL]);
       }
       click_area->MoveBy(-xoffset , -yoffset);
    }
-   ClearRedrawFlag();
 }
 
 
@@ -269,7 +230,7 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
 int BasicButton::PrivateUpdate(double tsec) {
    if (btn_action_type == SPRING_BTN) {
       bool up = (btn_state%2) == 0;
-      bool hover = Flags() & HOVER;
+      bool hover = Flags().FlagOn(HOVER);
       
       if (!up) {
          repeat_elapsed += tsec;
@@ -301,36 +262,14 @@ int BasicButton::PrivateUpdate(double tsec) {
 
 
 
-BasicButton::BasicButton(std::string objclass , std::string objname) :
-      WidgetBase(objclass , objname),
-      btn_action_type(SPRING_BTN),
-      btn_class(BUTTON_CLASS_PLAIN),
-      btn_state(BUTTON_UP),
-      click_area(0),
-      delete_area_ptr(false),
-      use_default_click_area(true),
-      input_group(),
-      pointer_input(false),
-      spring_duration(SPRING_BTN_DURATION),
-      down_time_left(0.0),
-      repeat_delay(SPRING_BTN_REPEAT_DELAY),
-      repeat_rate(1.0/SPRING_BTN_NUM_REPEAT_PER_SEC),
-      repeat_elapsed(0.0),
-      repeat_previous(0.0),
-      user_activated(false),
-      focuskey_activated(false),
-      pointer_activated(false),
-      just_activated(false),
-      hover_message_enabled(false),
-      held_message_enabled(false)
-{
-   UseDefaultClickArea(true);
+void BasicButton::OnAreaChanged() {
+   UseDefaultClickArea(use_default_click_area);
 }
 
 
 
-BasicButton::BasicButton(std::string objname) :
-      WidgetBase("BasicButton" , objname),
+BasicButton::BasicButton(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
       btn_action_type(SPRING_BTN),
       btn_class(BUTTON_CLASS_PLAIN),
       btn_state(BUTTON_UP),
@@ -366,7 +305,7 @@ BasicButton::~BasicButton() {
 
 void BasicButton::SetButtonType(BUTTON_ACTION_TYPE type) {
    btn_action_type = type;
-   bool hover = Flags() & HOVER;
+   bool hover = Flags().FlagOn(HOVER);
    bool up = true;
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
 }
@@ -388,7 +327,7 @@ void BasicButton::SetSpringDuration(double duration) {
 
 void BasicButton::SetButtonUpState(bool button_up) {
    bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
+   bool hover = (unsigned int)Flags() & HOVER;
    if (up != button_up) {
       up = button_up;
       SetButtonState(hover , up);
@@ -400,7 +339,7 @@ void BasicButton::SetButtonUpState(bool button_up) {
 
 void BasicButton::ToggleButton() {
    bool up = btn_state % 2 == 0;
-   bool hover = Flags() & HOVER;
+   bool hover = (unsigned int)Flags() & HOVER;
    up = !up;
    SetButtonState(hover , up);
    SetBgRedrawFlag();
@@ -428,7 +367,7 @@ void BasicButton::UseDefaultClickArea(bool use_default) {
 
 
 void BasicButton::SetButtonState(bool hover , bool up) {
-   bool oldhover = Flags() & HOVER;
+   bool oldhover = (unsigned int)Flags() & HOVER;
    bool oldup = (btn_state % 2 == 0);
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
@@ -517,24 +456,16 @@ bool BasicButton::Hover() {
 
 
 
-void BasicButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
-   UseDefaultClickArea(use_default_click_area);
+SHAREDBUTTON StackButton(BasicButton* b) {
+   return StackObject(b);
 }
 
 
 
-void BasicButton::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsExpandFromInner(left , right , top , bottom);
-   UseDefaultClickArea(use_default_click_area);
+SHAREDBUTTON StackButton(BasicButton& b) {
+   return StackObject(&b);
 }
 
-
-
-void BasicButton::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left , right , top , bottom);
-   UseDefaultClickArea(use_default_click_area);
-}
 
 
 

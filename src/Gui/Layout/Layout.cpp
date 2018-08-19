@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -24,7 +24,9 @@
 
 #include "Eagle/Gui/Layout/Layout.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
+
 #include "Eagle/StringWork.hpp"
+
 #include <sstream>
 using std::stringstream;
 
@@ -59,7 +61,7 @@ std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes) {
 /// ------------------------------------     Layout     ------------------------------------------
 
 
-int Layout::WidgetIndex(WidgetBase* widget) const {
+int Layout::WidgetIndex(const WidgetBase* widget) const {
    if (!widget) {return -1;}
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
       if (widget == wchildren[i]) {
@@ -71,7 +73,16 @@ int Layout::WidgetIndex(WidgetBase* widget) const {
 
 
 
-WidgetBase* Layout::GetWidget(int slot)  const {
+WidgetBase* Layout::GetWidget(int slot) {
+   if (slot < 0 || slot >= (int)wchildren.size()) {
+      return 0;
+   }
+   return wchildren[slot];
+}
+
+
+
+const WidgetBase* Layout::GetWidget(int slot) const {
    if (slot < 0 || slot >= (int)wchildren.size()) {
       return 0;
    }
@@ -103,18 +114,13 @@ void Layout::ReserveSlots(int nslots) {
          EmptySlot(i);
       }
    }
-   wchildren.resize(nslots , 0);
+   wchildren.resize(nslots , (WidgetBase*)0);
 }
 
 
 
 void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
    
-/** NOTE : This will not work right, and will prevent decorators from working properly.
-   while (widget->GetDecoratorParent()) {
-      widget = widget->GetDecoratorParent();
-   }
-*/   
    RemoveWidgetFromLayout(wchildren[slot]);
    wchildren[slot] = widget;
    RepositionChild(slot);
@@ -123,7 +129,7 @@ void Layout::ReplaceWidget(WidgetBase* widget , int slot) {
       if (whandler) {
          whandler->TrackWidget(widget);
       }
-      widget->SetOwnerLayout(this);
+      widget->SetLayoutOwner(this);
    }
 }
 
@@ -136,7 +142,7 @@ void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy ,
    EAGLE_ASSERT(newwidth);
    EAGLE_ASSERT(newheight);
    
-   int wflags = widget->Flags();
+   unsigned int flags = (unsigned int)widget->Flags();
    
    Rectangle w = widget->OuterArea();
    
@@ -165,11 +171,11 @@ void Layout::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy ,
       }
    }
    
-   if (!(wflags & MOVEABLE)) {
+   if (!(flags & MOVEABLE)) {
       *newx = w.X();
       *newy = w.Y();
    }
-   if (!(wflags & RESIZEABLE)) {
+   if (!(flags & RESIZEABLE)) {
       *newwidth = w.W();
       *newheight = w.H();
    }
@@ -198,9 +204,6 @@ void Layout::RepositionAllChildren() {
 void Layout::RepositionChild(int slot) {
    WidgetBase* widget = GetWidget(slot);
    if (!widget) {
-      EAGLE_DEBUG(
-         EagleInfo() << "INFO : Layout::RepositionChild - Attempt to reposition NULL widget" << std::endl;
-      );
       return;
    }
    widget->SetWidgetArea(RequestWidgetArea(slot , INT_MAX , INT_MAX , INT_MAX , INT_MAX) , false);
@@ -208,24 +211,21 @@ void Layout::RepositionChild(int slot) {
 
 
 
-Layout::Layout(std::string objclass , std::string objname) :
-      WidgetBase(objclass , objname),
-      attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
-      halign(HALIGN_LEFT),
-      valign(VALIGN_TOP),
-      wchildren(),
-      whandler(0)
-{
-   SetDisplayPriority(LOW_DISPLAY_PRIORITY);
+void Layout::RemoveWidgetFromLayout(WidgetBase* widget) {
+   if (!widget) {
+      return;
+   }
+
+   if (whandler) {
+      whandler->StopTrackingWidget(widget);
+      widget->SetLayoutOwner(0);
+   }
 }
 
 
 
-Layout::~Layout() {
-   /// Okay to call detach and clear layout in our destructor, as no virtual methods are called :
-   /// (ClearLayout calls RemoveWidget, PlaceWidget, ReplaceWidget , RemoveWidgetFromLayout)
-   DetachFromGui();
-   ClearWidgets();
+void Layout::OnAreaChanged() {
+   RepositionAllChildren();
 }
 
 
@@ -250,57 +250,32 @@ void Layout::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
 
 
 
-void Layout::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
-   RepositionAllChildren();
+Layout::Layout(std::string objclass , std::string objname) :
+      WidgetBase(objclass , objname),
+      wchildren(),
+      attributes(LAYOUT_ALLOWS_RESIZE_AND_REPOSITION),
+      halign(HALIGN_LEFT),
+      valign(VALIGN_TOP)
+{
+   zdepth = ZORDER_PRIORITY_LOW;
 }
 
 
 
-
-/// Changes position and outer area!!!
-void Layout::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
-   RepositionAllChildren();
+Layout::~Layout() {
+   /// Okay to call detach and clear layout in our destructor, as no virtual methods are called :
+   /// (ClearLayout calls RemoveWidget, PlaceWidget, ReplaceWidget , RemoveWidgetFromLayout)
+   DetachFromGui();
+   ClearWidgets();
 }
 
 
 
-/// Make room in outer area for inner area first!!!
-void Layout::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
-   RepositionAllChildren();
-}
-
-
-
-/**
-void Layout::TakeOverLayoutFrom(Layout* l) {
-   ClearLayout();
-	if (l) {
-		wchildren = l->wchildren;
-		l->ClearLayout();
-		for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-			WidgetBase* w = wchildren[i];
-			if (w) {
-            w->SetLayout(this);
-            if (whandler) {
-               whandler->TrackWidget(w);
-            }
-			}
-		}
-		RepositionAllChildren();
-	}
-}
-//*/
-
-
-
-Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) const {
+Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
    
-   WidgetBase* widget = GetWidget(slot);
+   const WidgetBase* widget = GetWidget(slot);
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
    
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
@@ -310,26 +285,27 @@ Rectangle Layout::RequestWidgetArea(int slot , int newx , int newy , int newwidt
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget , int newx , int newy , int newwidth , int newheight) const {
+Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight) {
    return RequestWidgetArea(WidgetIndex(widget) , newx , newy , newwidth , newheight);
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) const {
+Rectangle Layout::RequestWidgetArea(int widget_slot , Rectangle newarea) {
    return RequestWidgetArea(widget_slot , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget , Rectangle newarea) const {
+Rectangle Layout::RequestWidgetArea(const WidgetBase* widget , Rectangle newarea) {
    return RequestWidgetArea(WidgetIndex(widget) , newarea.X() , newarea.Y() , newarea.W() , newarea.H());
 }
 
 
 
-Rectangle Layout::RequestWidgetArea(WidgetBase* widget) const {
-   return RequestWidgetArea(WidgetIndex(widget) , INT_MAX , INT_MAX , INT_MAX , INT_MAX);
+Rectangle Layout::RequestWidgetArea(const WidgetBase* widget) const {
+#warning TODO : Think of a better hack than casting away const
+   return const_cast<Layout*>(this)->RequestWidgetArea(WidgetIndex(widget) , INT_MAX , INT_MAX , INT_MAX , INT_MAX);
 }
 
 
@@ -388,19 +364,6 @@ void Layout::ClearWidgets() {
 
 
 
-void Layout::RemoveWidgetFromLayout(WidgetBase* widget) {
-   if (!widget) {
-      return;
-   }
-
-   if (whandler) {
-      whandler->StopTrackingWidget(widget);
-      widget->SetOwnerLayout(0);
-   }
-}
-
-
-
 void Layout::DetachFromGui() {
    if (whandler) {
       whandler->StopTrackingWidget(this);/// This will remove us and all of our widgets from the widgethandler's tracker mechanism
@@ -418,12 +381,6 @@ void Layout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 
 
-void Layout::SetGuiHandler(WidgetHandler* handler) {
-   whandler = handler;
-}
-
-
-
 void Layout::SetWChildren(std::vector<WidgetBase*> new_children) {
    ClearWidgets();
    Resize(new_children.size());
@@ -434,20 +391,20 @@ void Layout::SetWChildren(std::vector<WidgetBase*> new_children) {
 
 
 
-std::vector<WidgetBase*> Layout::WChildren() const {
-   
-   /// It's okay to preserve null children
+std::vector<WidgetBase*> Layout::ChildrenVector() const {
    return wchildren;
+}
 
-   /// Some widgets may be NULL so we can't just copy the vector
-   std::vector<WidgetBase*> children;
-   children.reserve(wchildren.size());
+
+
+std::vector<WidgetBase*> Layout::WChildren() const {
+   std::vector<WidgetBase*> real;
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
       if (wchildren[i]) {
-         children.push_back(wchildren[i]);
+         real.push_back(wchildren[i]);
       }
    }
-   return children;
+   return real;
 }
 
 
@@ -471,10 +428,9 @@ std::vector<WidgetBase*> Layout::Descendants() const {
 }
 
 
-
 Layout* Layout::RootLayout() {
-   if (layout) {
-      return layout->RootLayout();
+   if (wlayout) {
+      return wlayout->RootLayout();
    }
    return this;
 }
@@ -482,8 +438,8 @@ Layout* Layout::RootLayout() {
 
 
 const Layout* Layout::RootLayout() const {
-   if (layout) {
-      return layout->RootLayout();
+   if (wlayout) {
+      return wlayout->RootLayout();
    }
    return this;
 }
@@ -491,13 +447,7 @@ const Layout* Layout::RootLayout() const {
 
 
 bool Layout::IsRootLayout() const {
-   return layout == 0;
-}
-
-
-
-WidgetHandler* Layout::WHandler() const {
-   return whandler;
+   return wlayout == 0;
 }
 
 
@@ -516,7 +466,7 @@ std::ostream& Layout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << StringPrintF("WChildren (%d) : " , (int)wchildren.size()) << std::endl;
    ++indent;
    for (int i = 0 ; i < (int)wchildren.size() ; ++i) {
-      WidgetBase* w = wchildren[i];
+      const WidgetBase* w = wchildren[i];
       if (w) {
          os << indent << StringPrintF("#%d (%s) " , i , w->FullName());
          os << "Requested Area = " << RequestWidgetArea(w) << std::endl;

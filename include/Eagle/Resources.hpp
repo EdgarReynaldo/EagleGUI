@@ -1,4 +1,23 @@
 
+/**
+ *
+ *     _______       ___       ____      __       _______       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_    \ \ \_____
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\    \ \_____ \
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_    \/ ____\ \
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\     /\______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/     \/______/
+ *
+ *
+ *    EAGLE 5
+ *    Edgar's Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2018+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ */
 
 
 
@@ -6,9 +25,17 @@
 #define Resources_HPP
 
 #include "Eagle/File.hpp"
+#include "Eagle/MemFile.hpp"
+#include "Eagle/SharedMemory.hpp"
+
+
+#include <memory>
+
 
 
 typedef unsigned int RESOURCEID;
+
+extern const RESOURCEID BADRESOURCEID;
 
 RESOURCEID NextRid();/// Not thread safe - TODO
 
@@ -30,40 +57,57 @@ class ResourceBase {
 protected :
    RESOURCEID rid;
    RESOURCE_TYPE rtype;
-   void* pres;
-
+   
+//   FilePath filepath;
+//   MemFile memfile;
+   
    ResourceBase(const ResourceBase& r);/// copying is prohibited
    ResourceBase& operator=(const ResourceBase& r);/// assignment is prohibited
 
 public :
 ///   ResourceBase();
    ResourceBase(RESOURCE_TYPE rt = RT_UNKNOWN);
+
    virtual ~ResourceBase() {}
 
+   /// Getters
    RESOURCEID RID() {return rid;}
    RESOURCE_TYPE RType() {return rtype;}
-   void* Resource() {return pres;}
 
+   /// Virtual methods
    virtual bool LoadFromFile(FilePath fp)=0;
-///   virtual bool LoadFromMemory(MemFile mf)=0;
+   virtual bool LoadFromMemory(MemFile mf)=0;
+   virtual bool Loaded()=0;
 };
 
 
+class EagleImage;
 
 class ImageResource : public ResourceBase {
+protected :
+   SHAREDOBJECT<EagleImage> image;
+   
 public :
    ImageResource() :
-         ResourceBase(RT_IMAGE)
+         ResourceBase(RT_IMAGE),
+         image()
    {}
+   SHAREDOBJECT<EagleImage> GetImage() {return image;}
 };
 
 
+class EagleFont;
 
 class FontResource : public ResourceBase {
+protected :
+   SHAREDOBJECT<EagleFont> font;
+   
 public :
    FontResource() :
-         ResourceBase(RT_FONT)
+         ResourceBase(RT_FONT),
+         font()
    {}
+   SHAREDOBJECT<EagleFont> GetFont() {return font;}
 };
 
 

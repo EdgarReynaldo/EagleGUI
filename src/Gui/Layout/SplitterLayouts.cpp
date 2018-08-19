@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -21,15 +21,51 @@
 
 
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
-
-#include "Eagle/Gui/WidgetDrawFuncs.hpp"
-
+#include "Eagle/GraphicsContext.hpp"
 #include "Eagle/StringWork.hpp"
 
 
 
+
+
+
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , const WidgetColorset& colors) {
+   DefaultSplitterDrawFunction(window , divider_rect , horizontal , colors[HLCOL] , colors[SDCOL]);
+}
+
+
+
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , EagleColor hlcol , EagleColor sdcol) {
+   float x = divider_rect.X();
+   float y = divider_rect.Y();
+   float w = divider_rect.W();
+   float h = divider_rect.H();
+   window->DrawFilledRectangle(x,y,w,h,hlcol);
+//   EagleInfo() << StringPrintF("DefaultSplitterDrawFunction x,y,w,h = %d,%d,%d x %d\n",
+//                              (int)x,(int)y,(int)w,(int)h);
+   if (horizontal) {
+      // horizontal bar
+      window->DrawFilledRectangle(x,y,w,h/4.0,sdcol);
+      window->DrawFilledRectangle(x,y+3.0*h/4.0,w,h/4.0,sdcol);
+   }
+   else {
+      // vertical bar
+      window->DrawFilledRectangle(x,y,w/4.0,h,sdcol);
+      window->DrawFilledRectangle(x+3.0*w/4.0,y,w/4.0,h,sdcol);
+   }
+}
+
+
+
+void TwoWaySplitter::ReserveSlots(int nslots) {
+   (void)nslots;
+   Layout::ReserveSlots(2);
+}
+
+
+
 Rectangle TwoWaySplitter::GetHandleArea() {
-   Rectangle r = area.InnerArea();
+   Rectangle r = InnerArea();
    int x = r.X();
    int y = r.Y();
    int w = r.W();
@@ -172,14 +208,12 @@ void TwoWaySplitter::PrivateDisplay(EagleGraphicsContext* win , int xpos , int y
 
 //   EagleInfo() << StringPrintF("TwoWaySplitter::PrivateDisplay handle x,y,w,h = %d , %d , %d x %d , xpos,ypos = %d , %d\n" ,
 //                              handle.X(),handle.Y(),handle.W(),handle.H(),xpos,ypos);
-   (*draw_func)(win , handle , splitter_type , WCols());
-   ClearRedrawFlag();
+   (*draw_func)(win , handle , splitter_type , WidgetColors());
 }
 
 
 
-void TwoWaySplitter::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos , ypos , width , height,notify_layout);
+void TwoWaySplitter::OnAreaChanged() {
    SetDividerPercent(divider_percent);
 }
 
@@ -203,8 +237,9 @@ int TwoWaySplitter::AbsMinHeight() {
    
 
 
-void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
+void TwoWaySplitter::PlaceWidget(SHAREDWIDGET widget , int slot) {
    if ((slot != 0) && (slot != 1)) {
+      
       throw EagleException(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , slot));
    }
    Layout::PlaceWidget(widget , slot);
@@ -212,7 +247,7 @@ void TwoWaySplitter::PlaceWidget(WidgetBase* widget , int slot) {
 
 
 
-int TwoWaySplitter::AddWidget(WidgetBase* widget) {
+int TwoWaySplitter::AddWidget(SHAREDWIDGET widget) {
    if (NextFreeSlot() == -1) {
       throw EagleException("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
    }
@@ -231,13 +266,13 @@ Rectangle TwoWaySplitter::RequestWidgetArea(int widget_slot , int newx , int new
       throw EagleException(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , widget_slot));
    }
 
-   WidgetBase* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
    
    if (!widget) {
       return Rectangle(-1,-1,-1,-1);
    }
 
-   Rectangle r(area.InnerArea());
+   Rectangle r = InnerArea();
    int x = r.X();
    int y = r.Y();
    int w = r.W();
@@ -287,9 +322,9 @@ void TwoWaySplitter::SetDividerPosActual(int divpos) {
 
 void TwoWaySplitter::SetDividerSize(int divsize) {
    if (divsize < 2) {divsize = 2;}
-   int maxdiv = area.InnerArea().W();
+   int maxdiv = InnerArea().W();
    if (splitter_type == SPLITTER_HORIZONTAL) {
-      maxdiv = area.InnerArea().H();
+      maxdiv = InnerArea().H();
    }
    if (divsize > maxdiv) {divsize = maxdiv;}
    divider_size = divsize;
@@ -300,9 +335,9 @@ void TwoWaySplitter::SetDividerSize(int divsize) {
 
 void TwoWaySplitter::SetDividerPos(int divpos) {
    if (divpos < 0) {divpos = 0;}
-   int maxdiv = area.InnerArea().W() - divider_size;
+   int maxdiv = InnerArea().W() - divider_size;
    if (splitter_type == SPLITTER_HORIZONTAL) {
-      maxdiv = area.InnerArea().H() - divider_size;
+      maxdiv = InnerArea().H() - divider_size;
    }
    if (divpos > maxdiv) {divpos = maxdiv;}
    divider_percent = divider_position / (float)maxdiv;// |  x     |
@@ -317,9 +352,9 @@ void TwoWaySplitter::SetDividerPercent(float percent) {
    
    divider_percent = percent;
    
-   float maxdiv = area.InnerArea().W() - divider_size;
+   float maxdiv = InnerArea().W() - divider_size;
    if (splitter_type == SPLITTER_HORIZONTAL) {
-      maxdiv = area.InnerArea().H() - divider_size;
+      maxdiv = InnerArea().H() - divider_size;
    }
    
    int divpos = (int)(maxdiv*divider_percent);

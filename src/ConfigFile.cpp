@@ -4,10 +4,11 @@
 
 #include "Eagle/ConfigFile.hpp"
 
+#include "Eagle/Lib.hpp"
+#include "Eagle/System.hpp"
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/StringWork.hpp"
-
 
 
 #include <sstream>
@@ -300,7 +301,11 @@ bool ConfigFile::LoadFromFile(const char* path) {
 
    Clear();
    
-   FSInfo finfo = GetFileInfo(std::string(path));
+   EagleSystem* sys = Eagle::EagleLibrary::System("Any");
+   
+   EAGLE_ASSERT(sys);
+
+   FSInfo finfo = sys->GetFileSystem()->GetFileInfo(std::string(path));
    
    std::string fpath = finfo.Path();
    
@@ -345,14 +350,20 @@ bool ConfigFile::LoadFromFile(const char* path) {
 
 
 bool ConfigFile::SaveToFile(const char* path) {
-   FSInfo info = GetFileInfo(path);
-   if (info.Exists() && !info.Mode().CanWrite()) {
+
+   EagleSystem* sys = Eagle::EagleLibrary::System("Any");
+   
+   EAGLE_ASSERT(sys);
+
+   FSInfo finfo = sys->GetFileSystem()->GetFileInfo(std::string(path));
+   
+   if (finfo.Exists() && !finfo.Mode().CanWrite()) {
       throw EagleException(StringPrintF("ConfigFile::SaveToFile - file %s is read only!\n" , path));
    }
    
    UpdateContents();
    
-   std::ofstream fout(info.Path() , std::ios_base::out);
+   std::ofstream fout(finfo.Path() , std::ios_base::out);
    if (!fout.good()) {
       return false;
    }

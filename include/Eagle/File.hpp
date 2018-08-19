@@ -30,6 +30,9 @@
 #include <ctime>
 #include <memory>
 
+#include "Eagle/Indenter.hpp"
+
+
 
 enum FS_MODE_FLAGS {
    FS_MODE_READ    = 1 << 0,
@@ -66,7 +69,8 @@ protected :
 
 public :
    FilePath(std::string path);/// This uses SanitizePath, so it can be as dumb as you want
-
+   
+   
    std::string Drive();
    std::string Folder();
    std::string File();
@@ -90,7 +94,7 @@ public :
    FSInfo(FilePath path);
    FSInfo(FilePath path , bool exists , FSMode mode , 
           time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
-
+   virtual ~FSInfo() {}
           
              
    std::string Path() {return fpath.Path();}
@@ -105,28 +109,48 @@ public :
 
 
 class File;
+class ArchiveFile;
+
+
 
 class Folder {
+public :
+   typedef std::map<std::string , std::shared_ptr<File>> FILEMAP;
+   typedef std::map<std::string , std::shared_ptr<ArchiveFile>> ARCHIVEMAP;
+   typedef std::map<std::string , std::shared_ptr<Folder>> SUBFOLDERMAP;
+
 protected :
    Folder* parent;
    FSInfo finfo;
    std::string fname;
-   std::map<std::string , std::shared_ptr<File>> files;
-   std::map<std::string , std::shared_ptr<Folder>> subfolders;
+
+   FILEMAP files;
+   ARCHIVEMAP archives;
+   SUBFOLDERMAP subfolders;
 
    friend class FileSystem;
    
-   void RegisterFile(File* f);
-   void RegisterSubFolder(Folder* f);
+   void RegisterFile(std::shared_ptr<File> f);
+   void RegisterArchiveFile(std::shared_ptr<ArchiveFile> af);
+   void RegisterSubFolder(std::shared_ptr<Folder> f);
    
 public :
    Folder(FSInfo info);
    
+   virtual ~Folder();
+   
    Folder* Parent() {return parent;}
    FSInfo Info() {return finfo;}
-   std::string Path() {return finfo.Path();}
+
+   virtual std::string Path() {return finfo.Path();}
    std::string Name() {return fname;}
    
+   FILEMAP Files() {return files;}
+   ARCHIVEMAP Archives() {return archives;}
+   SUBFOLDERMAP SubFolders() {return subfolders;}
+   
+   void PrintContents(Indenter indent = Indenter(0,3));/// This is virtual for achive folders
+   void PrintContentsAbsolute();
 };
 
 
@@ -152,16 +176,28 @@ public :
    
    File(FSInfo info);
    
+   void SetParent(Folder* parent_folder);
+   
    FSInfo Info() {return finfo;}
    std::string Name() {return fname;}
    std::string Ext() {return fext;}
    
+   std::string Path() {return finfo.Path();}
 };
 
 
 class ArchiveFile : public File , public Folder {
    
+public :
+///   ArchiveFile(FSInfo fsinfo);
+   ArchiveFile(FSInfo fsinfo) :
+         File(fsinfo),
+         Folder(fsinfo)
+   {
+      
+   }
    
+   virtual std::string Path() {return this->File::finfo.Path();}
 };
 
 

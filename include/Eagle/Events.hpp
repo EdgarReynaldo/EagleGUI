@@ -146,7 +146,7 @@ struct MOUSE_EVENT_DATA {
    int dy;
    int dz;
    int dw;
-   unsigned int button;// numbers from 1,2,3...
+   unsigned int button;/// numbers from 1,2,3.../// TODO : make these correspond to an enum like LMB,RMB,MMB,ETC
 
    MOUSE_EVENT_DATA() :
          x(-1),
@@ -272,6 +272,8 @@ struct VIDEO_EVENT_DATA {
    AVSTATE avstate;
 };
 
+class WidgetBase;
+
 struct WIDGET_EVENT_DATA {
    WidgetBase* from;
    unsigned int topic;
@@ -366,14 +368,10 @@ bool IsUserEvent(EagleEvent e);
 int EagleEventGroupType(EagleEvent e);
 
 
+EagleEvent MakeEagleEvent(WidgetMsg msg);
 
-class EagleEventFilter {
-   int types_to_keep;
-   int types_to_filter;
 
-   EagleGraphicsContext* windows_to_keep;
 
-};
 
 
 
@@ -404,7 +402,7 @@ public :
    EagleEventSource();
    virtual ~EagleEventSource();
 
-   virtual void EmitEvent(EagleEvent e , EagleThread* thread); 
+   virtual void EmitEvent(EagleEvent e , EagleThread* thread);
 
    bool HasListeners() {return !listeners.empty();}
 
@@ -431,7 +429,7 @@ public :
    EagleEventListener();
    virtual ~EagleEventListener();
 
-   virtual void RespondToEvent(EagleEvent e , EagleThread* thread)=0;
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = 0)=0;
 
    virtual void ListenTo(EagleEventSource* s);
    virtual void StopListeningTo(EagleEventSource* s);

@@ -24,36 +24,24 @@ enum BUTTON_STATE {
 class IconButton : public BasicButton {
 
 protected :
-/**
-   EagleImage** upimage;
-   EagleImage** downimage;
-   EagleImage** hoverupimage;
-   EagleImage** hoverdownimage;
-//*/
    EagleImage* original_images[4];/// These are just for reference, but they are used when the button size changes
 ///   EagleImage* scaled_images[4];/// We own these, they are scaled to fit the inner area
 
-   /// BUTTON_STATE btn_state
    Rectangle click_rect;
-   
+
+      
 
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
+   virtual void OnAreaChanged();
 
-   IconButton(std::string classname , std::string objname);
 public :
    
-   IconButton(std::string object_name);
-   ~IconButton() {}
+   IconButton(std::string classname = "IconButton" , std::string objname = "Nemo");
+
+   virtual ~IconButton() {}
    
    virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
-   
-   
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-
-   
-
-
 };
 
 #endif // IconButton_HPP

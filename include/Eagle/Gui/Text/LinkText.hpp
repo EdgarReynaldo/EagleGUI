@@ -24,17 +24,17 @@ protected :
 
    float link_height;
    
-public :
 
-   LinkText(std::string name = "Nemo");
-   
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
-   virtual void SetHoverState(bool state);
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
 
+public :
+   LinkText(std::string classname = "LinkText" , std::string name = "Nemo");
+   
    virtual void SetFont(EagleFont* font);
 
    virtual void SetLineSpacing(int vspacing);

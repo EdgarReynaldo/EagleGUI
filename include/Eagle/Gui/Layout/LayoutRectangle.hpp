@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -41,6 +41,8 @@ protected :
    float fx,fy,fw,fh;
    
 public :
+
+   LayoutRectangle();
 
    LayoutRectangle(float x , float y , float w , float h);
    LayoutRectangle(Rectangle outer_area , Rectangle layout_area);

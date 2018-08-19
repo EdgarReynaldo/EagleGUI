@@ -9,6 +9,11 @@
 #include "allegro5/allegro.h"
 
 
+
+extern const int ALLEGRO5_REGISTERED;
+
+
+
 class Allegro5System : public EagleSystem {
 
 private :
@@ -36,6 +41,8 @@ private :
    EagleClipboard*       PrivateCreateClipboard      (std::string objname);
 
    EagleWindowManager*   PrivateCreateWindowManager();
+   FileSystem*           PrivateCreateFileSystem();
+   ResourceLibrary*      PrivateCreateResourceLibrary();
 
    friend class EagleLibrary;
 

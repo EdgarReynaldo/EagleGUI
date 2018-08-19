@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,14 +31,14 @@
 #include "Eagle/Gui/Camera.hpp"
 
 #include "Eagle/Exception.hpp"
+#include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
-
 
 #include <vector>
 #include <list>
 #include <map>
-
+#include <set>
 
 
 /// Used by WidgetHandler::TakeNextMessage to signify an empty message queue
@@ -54,7 +54,6 @@ REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);
 
 
 
-
 class WidgetHandler : public WidgetBase {
 	
 protected :
@@ -65,10 +64,7 @@ protected :
    typedef std::list<WidgetMsg> MESSAGEQUEUE;
    typedef MESSAGEQUEUE::iterator MQIT;
 
-///   typedef std::map<WidgetBase* , bool> MEMTRACKER;
-///   typedef MEMTRACKER::iterator MTIT;
 
-protected :
 
    EagleGraphicsContext* gwindow;
 
@@ -82,19 +78,15 @@ protected :
 
    Camera          cam;
    bool            shrink_buffer_on_resize;
-//   int             realw;
-//   int             realh;
 
    DumbLayout      dumb_layout;
-   /// ~dumblayout calls StopTrackingWidget which calls Widgethandler functions during its destructor...
    Layout*         root_layout;
 
    WIDGETLIST      wlist;
-   WIDGETLIST      inputlist;// in order from top to bottom, not necessarily the reverse of drawlist's order
-   WIDGETLIST      drawlist;// in order from back to front
+   WIDGETLIST      inputlist;/// in order from top to bottom, not necessarily the reverse of drawlist's order
+   WIDGETLIST      drawlist;/// in order from back to front
 
    WIDGETLIST      removelist;
-//   MEMTRACKER      memtrack;
 
    int             focus_index;
    bool            focus_start;
@@ -104,24 +96,43 @@ protected :
    
    MESSAGEQUEUE    mque;
    bool            clear_background;
+   bool            always_clear;
 
    InputGroup      focus_cycle_forward;
    InputGroup      focus_cycle_backward;
 
-///   FOCUS_DRAW_TYPE focus_type;
+   std::list<Rectangle> dbg_list;///dirty background rectangle list
+   
+   
+protected :
 
-   std::list<Rectangle> dbg_list;//dirty background rectangle list
+   /// Widgetbase functions
+   virtual int  PrivateHandleEvent(EagleEvent e);// Only handle events not handled in CheckInputs here
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int PrivateUpdate(double tsec);
+
+   virtual void OnAreaChanged();
+   virtual void OnColorChanged();
+
+   /// New API, for layout class to use privately
+   friend class Layout;
    
-   
+   void TrackWidget(WidgetBase* widget);
+   void StopTrackingWidget(WidgetBase* widget);
+
+
+
 private :
-
+   typedef unsigned int UINT;
+   
    bool OwnsWidget(WidgetBase* widget);
    UINT WidgetIndex(WidgetBase* widget);
    WLIT InputListIterator(WidgetBase* widget);
+   WLIT DrawListIterator(WidgetBase* widget);
 
    /// TODO : Possibly rewrite check redraw to use two map<WidgetBase* , list<WidgetBase*> >'s
    /// TODO : for widgets in front of and behind each widget
-   void CheckRedraw(UINT widget_index);
+   std::set<unsigned int> CheckRedraw(UINT widget_index);
    void CheckRedraw();
 
    void SortDrawListByPriority();// sorts from least drawing priority to highest drawing priority
@@ -130,6 +141,7 @@ private :
    void RemoveOldWidgets();
    
    void RedrawBackgroundBuffer();
+
 
 
 public :
@@ -147,10 +159,14 @@ public :
 
 
    /// Constructors
-   WidgetHandler(EagleGraphicsContext* window , std::string objname = "Nemo");
+   WidgetHandler(EagleGraphicsContext* window , std::string classname = "WidgetHandler" , std::string objname = "Nemo");
    
    ~WidgetHandler();
 
+   /// Add a message to the widget event queue
+   virtual void QueueUserMessage(const WidgetMsg& wmsg);// For the top level WidgetHandlers to store messages to the user from 
+                                                        // the widgets it is handling. Messages are passed up the chain using
+                                                        // the parent pointer.
 	/// Sets up drawing background and buffer to draw to.
 	void SetDrawWindow(EagleGraphicsContext* window);
 	EagleGraphicsContext* GetDrawWindow();
@@ -167,86 +183,69 @@ public :
    WidgetMsg TakeNextMessage();
    void      ClearMessages();// Clears the message queue of any messages remaining
 
-
-
-   /// New API, for layout class to use privately
-protected :
-   friend class Layout;
-   
-   void TrackWidget(WidgetBase* widget);
-   void StopTrackingWidget(WidgetBase* widget);
-
-public :
-   
    /// Functions for working with the base layout
    Layout* GetRootLayout() {return root_layout;}
    void SetRootLayout(Layout* l);
    
+   /// Functions for adding widgets to the handler - automatically added to the layout
    void AddWidget(WidgetBase* widget);
    WidgetHandler& operator<<(WidgetBase* widget);
    WidgetHandler& operator<<(WidgetBase& widget);
+
    void RemoveWidget(WidgetBase* widget);
    void ClearLayout();// Removes all widgets from the dialog and destroys the ones marked for deletion. Global WH's should probably call this.
 
-   /// Widgetbase functions
-protected :
-   virtual int  PrivateHandleEvent(EagleEvent e);// Only handle events not handled in CheckInputs here
-   virtual int  PrivateCheckInputs();// Called automatically by HandleEvent and? by system during gui update.
 
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
    /// Helper functions
    void PerformFullRedraw(EagleGraphicsContext* win);
    void PerformPartialRedraw(EagleGraphicsContext* win);
 
-public :
-
    void DrawBuffer(EagleGraphicsContext* win);
    void DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos);
 
-protected :
-   
-   virtual int  PrivateUpdate(double tsec);
-
-public :
-   virtual void QueueUserMessage(const WidgetMsg& wmsg);// For the top level WidgetHandlers to store messages to the user from 
-                                                        // the widgets it is handling. Messages are passed up the chain using
-                                                        // the parent pointer.
-
-
-   virtual void SetColorset(const WidgetColorset& colors , bool set_descendants_colors = false);
-   
    virtual void SetBackgroundColor(const EagleColor color);
 
    void SyncLayoutPos();
    void SyncCamera();
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-
-	/// Changes position and outer area!!!
-	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
-
 
    virtual void SetRedrawFlag();/// TODO : SetBgRedrawFlag() when necessary
    void SetFullRedraw();
 
    virtual void SetFocusState(bool state);
 
-   virtual bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);// notify_parent for internal use only
+   bool GiveWidgetFocus(WidgetBase* widget , bool notify_parent = true);/// notify_parent for internal use only
 
+   void BringToFront(WidgetBase* w);
+   
    virtual void SetRedrawAllFlag();
    
    virtual bool HasGui();
    virtual WidgetHandler* GetGui();
 
-
-   void SetGlobalBackgroundDrawType(BG_DRAW_TYPE type , bool for_all_guis = true);
-   void SetGlobalFocusDrawType(FOCUS_DRAW_TYPE type , bool for_all_guis = true);
-   void SetGlobalBackgroundPainter(BackgroundPainter* painter , bool for_all_guis = true);
-   void SetGlobalFocusPainter(FocusPainter* painter , bool for_all_guis = true);
-   
+   /// Used by widgets to mark old dirty areas that need to be refreshed
    void MakeAreaDirty(Rectangle dirty_area);
 
 
+   /// Getters
+   WidgetBase*   CurrentFocus();
+   WidgetBase*   CurrentHover();
+
+   EagleImage* BackgroundBitmap();/// For drawing the background only, pair with MakeAreaDirty().
+   EagleImage* BufferBitmap();/// For saving purposes only. Don't draw to this, or destroy it.
+
+
+   bool AreaFree(Rectangle r , WidgetBase* widget);
+   
+   bool InView(WidgetBase* w);
+   
+   WidgetBase* GetWidgetAt(const int absx , const int absy);
+   
+   
+   
+   int GetMouseX();// returns mouse x relative to gui's inner area
+   int GetMouseY();// returns mouse y relative to gui's inner area
+   
    /// Camera control
    void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
    void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
@@ -258,23 +257,7 @@ public :
 
    void AllowMiddleMouseButtonDrag(bool allow);// false by default, drag moves the view
 
-   /// Getters
-   WidgetBase*   CurrentFocus();
-   WidgetBase*   CurrentHover();
-
-   EagleImage* BackgroundBitmap() {return background;}// For drawing the background only, pair with MakeAreaDirty().
-   EagleImage* BufferBitmap() {return buffer;}// For saving purposes only. Don't draw to this, or destroy it.
-
-
-   bool AreaFree(Rectangle r , WidgetBase* widget);
-   bool InView(WidgetBase* w);
-   WidgetBase* GetWidgetAt(int x , int y);
-   
-   int GetMouseX();// returns mouse x relative to gui's inner area
-   int GetMouseY();// returns mouse y relative to gui's inner area
-   
-   
-   
+   /// Messages from camera
    const WidgetMsg ViewMovedMessage() {return WidgetMsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);}
    const WidgetMsg ViewDestReachedMessage() {return WidgetMsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);}
 

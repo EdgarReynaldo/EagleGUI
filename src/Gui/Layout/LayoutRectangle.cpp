@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,11 +25,20 @@
 
 
 
+LayoutRectangle::LayoutRectangle() :
+      fx(0.0),
+      fy(0.0),
+      fw(1.0),
+      fh(1.0)
+{}
+
+
+
 LayoutRectangle::LayoutRectangle(float x , float y , float w , float h) :
-   fx(x),
-   fy(y),
-   fw(w),
-   fh(h) 
+      fx(x),
+      fy(y),
+      fw(w),
+      fh(h) 
 {}
 
 

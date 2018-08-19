@@ -70,6 +70,9 @@ protected :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
+   virtual void OnAreaChanged();
+
+
 public :
    BasicScroller(std::string objclass = "BasicScroller" , std::string objname = "Nemo");
    
@@ -82,7 +85,7 @@ public :
    void SetScrollDirection(bool is_horizontal_scroller);
    void SetupView(int total_length_of_view , int actual_length_in_view);
 
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+///   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
    
    int GetScrollValue() {return scroll_val;}
    

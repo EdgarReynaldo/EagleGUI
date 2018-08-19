@@ -17,6 +17,7 @@ protected :
 public :
    
    MemFile(FSInfo info) : File(info) {}
+   ~MemFile() {Clear();}
    
    void Clear() {fmem.clear();}
    
@@ -25,6 +26,7 @@ public :
    
    unsigned char* Begin();
    unsigned char* End();
+   unsigned int Size() {return fmem.size();}
 };
 
 

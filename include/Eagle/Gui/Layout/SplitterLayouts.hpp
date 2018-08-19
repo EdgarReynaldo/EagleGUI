@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2014+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -59,10 +59,8 @@ protected :
    int owned_pointer_count;
    
    
-   virtual void ReserveSlots(int nslots) {
-      (void)nslots;
-      Layout::ReserveSlots(2);
-   }
+
+   virtual void ReserveSlots(int nslots);
 
 public :
    Rectangle GetHandleArea();
@@ -75,21 +73,21 @@ public :
    /// WidgetBase
 
 protected :
-   int PrivateHandleEvent(EagleEvent e);
-   int PrivateCheckInputs();
-   void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int PrivateHandleEvent(EagleEvent e);
+   virtual int PrivateCheckInputs();
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+
+   virtual void OnAreaChanged();
 
 public :   
-
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
 
    virtual int AbsMinWidth();
    virtual int AbsMinHeight();
 
    /// LayoutBase
 
-   virtual void PlaceWidget(WidgetBase* widget , int slot);
-   virtual int AddWidget(WidgetBase* widget);
+   virtual void PlaceWidget(SHAREDWIDGET widget , int slot);
+   virtual int AddWidget(SHAREDWIDGET widget);
 
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
 
@@ -107,6 +105,10 @@ public :
 };
 
 
+/// Miscellaneous drawing functions
+
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , EagleColor hlcol , EagleColor sdcol);
+void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divider_rect , bool horizontal , const WidgetColorset& colors);
 
 /*
 class ThreeWaySplitter {
@@ -114,9 +116,9 @@ class ThreeWaySplitter {
 private :
    SPLITTER_TYPE splitter_type;
    
-   WidgetBase* first;
-   WidgetBase* second;
-   WidgetBase* third;
+   SHAREDWIDGET first;
+   SHAREDWIDGET second;
+   SHAREDWIDGET third;
 
 
 protected :

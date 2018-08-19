@@ -141,7 +141,7 @@ EagleLogger& EagleLogger::EagleCriticalLog() {
 
 const char* EagleLogger::LogPrefixStr(EAGLE_LOGGING_LEVEL l) {
    static const char* loglevelstrs[5] = {
-      "EAGLE INFO     : ",
+      "",
       "EAGLE WARN     : ",
       "EAGLE ERROR    : ",
       "EAGLE CRITICAL : ",

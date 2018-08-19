@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2016+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -39,17 +39,17 @@ Rectangle GridLayout::RequestWidgetRectangle(WidgetBase* widget) const {
 
 Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
 
-   WidgetBase* widget = GetWidget(slot_index);
+   const WidgetBase* widget = GetWidget(slot_index);
 
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
 
    int col = slot_index % ncols;
    int row = slot_index / ncols;
 
-   int basex = area.InnerArea().X() + col*(colwidth + colhspace);
-   int basey = area.InnerArea().Y() + row*(rowheight + rowvspace);
+   int basex = InnerArea().X() + col*(colwidth + colhspace);
+   int basey = InnerArea().Y() + row*(rowheight + rowvspace);
    
    int wwidth = widget->OuterArea().W();
    int wheight = widget->OuterArea().H();
@@ -88,9 +88,9 @@ Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
          basey += cellvpad;
          
          wwidth = colwidth - 2*cellhpad;
-         if (wwidth < widget->MinWidth()) {wwidth = widget->MinWidth();}
+         if (wwidth < widget->AbsMinWidth()) {wwidth = widget->AbsMinWidth();}
          wheight = rowheight - 2*cellvpad;
-         if (wheight < widget->MinHeight()) {wheight = widget->MinHeight();}
+         if (wheight < widget->AbsMinHeight()) {wheight = widget->AbsMinHeight();}
          break;
       default : EAGLE_ASSERT(0);break;
    }
@@ -104,14 +104,21 @@ Rectangle GridLayout::RequestWidgetRectangle(int slot_index) const {
 void GridLayout::CalculateGrid() {
    colwidth = 0;
    rowheight = 0;
-   int tw = area.InnerArea().W();
-   int th = area.InnerArea().H();
+   int tw = InnerArea().W();
+   int th = InnerArea().H();
    if (tw > 0 && ncols > 0) {
       colwidth = (tw - (ncols - 1)*colhspace)/ncols;
    }
    if (th > 0 && nrows > 0) {
       rowheight = (th - (nrows - 1)*rowvspace)/nrows;
    }
+}
+
+
+
+void GridLayout::OnAreaChanged() {
+   CalculateGrid();
+   RepositionAllChildren();
 }
 
 
@@ -138,18 +145,10 @@ GridLayout::~GridLayout() {
 
 
 
-void GridLayout::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos , ypos , width , height , notify_layout);
-   CalculateGrid();
-   RepositionAllChildren();
-}
-
-
-
 Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
-   WidgetBase* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
    Rectangle cell_rect = RequestWidgetRectangle(widget_slot);
    newx = cell_rect.X();
@@ -216,7 +215,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
 
 
 
-void GridLayout::SetPadding(unsigned int hpad , unsigned int vpad) {
+void GridLayout::SetGlobalPadding(unsigned int hpad , unsigned int vpad) {
 	cellhpad = hpad;
 	cellvpad = vpad;
 	RepositionAllChildren();
@@ -224,14 +223,14 @@ void GridLayout::SetPadding(unsigned int hpad , unsigned int vpad) {
 
 
 
-void GridLayout::SetSpacing(unsigned int hspace , unsigned int vspace) {
+void GridLayout::SetGlobalSpacing(unsigned int hspace , unsigned int vspace) {
    colhspace = hspace;
    rowvspace = vspace;
    if (ncols > 0) {
-      colwidth = area.InnerArea().W() - (ncols-1)*hspace;
+      colwidth = InnerArea().W() - (ncols-1)*hspace;
    }
    if (nrows > 0) {
-      rowheight = area.InnerArea().H() - (nrows - 1)*vspace;
+      rowheight = InnerArea().H() - (nrows - 1)*vspace;
    }
    RepositionAllChildren();
 }

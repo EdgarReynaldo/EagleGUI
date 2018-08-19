@@ -5,6 +5,8 @@
 #ifndef Menu_HPP
 #define Menu_HPP
 
+#error MENU NOT COMPLETE
+
 #include "Eagle/Gui/WidgetBase.hpp"
 
 #include "Eagle/Gui/Button/BasicButton.hpp"

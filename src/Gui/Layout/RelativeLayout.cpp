@@ -47,43 +47,58 @@ RelativeLayout::~RelativeLayout() {
 
 
 
-Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
+Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    
-   (void)newx;
-   (void)newy;
-   (void)newwidth;
-   (void)newheight;
-   
-   WidgetBase* widget = GetWidget(widget_slot);
+   const WidgetBase* widget = GetWidget(widget_slot);
+   Rectangle r = widget->OuterArea();
    
    if (!widget) {
-      return Rectangle(-1,-1,-1,-1);
+      return BADRECTANGLE;
    }
    
-   LayoutRectangle layout_rect = layout_rectangles[widget_slot];
+   if (newx == INT_MAX && newy == INT_MAX && newwidth == INT_MAX && newheight == INT_MAX) {
+      /// Just return the stored layout position
+      return LayoutArea(InnerArea() , layout_rectangles[widget_slot]);
+   }
    
-   return LayoutArea(area.InnerArea() , layout_rect);
+   if (newx == INT_MAX) {newx = r.X();}
+   if (newy == INT_MAX) {newy = r.Y();}
+   if (newwidth == INT_MAX) {newwidth = r.W();}
+   if (newheight == INT_MAX) {newheight = r.H();}
+   
+   AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
+   
+   Rectangle cl = InnerArea();
+   if (newx < cl.X()) {newx = cl.X();}
+   if (newy < cl.Y()) {newy = cl.Y();}
+   if (newx > cl.BRX()) {newx = cl.BRX();}
+   if (newy > cl.BRY()) {newy = cl.BRY();}
+   if (newx + newwidth >= cl.BRX()) {newwidth = cl.BRX() - newx;}
+   if (newy + newheight >= cl.BRY()) {newheight = cl.BRY() - newy;}
+   
+   Rectangle clipped(newx,newy,newwidth,newheight);
+   
+   EAGLE_ASSERT(clipped.Area());/// Probably don't want to set an area with zero height or width
+
+   LayoutRectangle lr(warea.InnerArea() , clipped);
+   layout_rectangles[widget_slot] = lr;
+   return LayoutArea(InnerArea() , lr);
 }
 
 
 
 void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot) {
-   Layout::PlaceWidget(0 , slot);
-   if (widget) {
-      LayoutRectangle lrect(InnerArea() , widget->OuterArea());
-      PlaceWidget(widget , slot , lrect);
-   }
+   PlaceWidget(widget , slot , layout_rectangles[slot]);/// Use the stored layout rectangle
 }
 
 
 
 int RelativeLayout::AddWidget(WidgetBase* widget) {
-   int new_slot = Layout::AddWidget(0);
+   LayoutRectangle lr;
    if (widget) {
-      LayoutRectangle lrect(InnerArea() , widget->OuterArea());
-      PlaceWidget(widget , new_slot , lrect);
+      lr = LayoutRectangle(InnerArea() , widget->OuterArea());
    }
-   return new_slot;
+   return AddWidget(widget , lr);
 }
 
 
@@ -99,11 +114,9 @@ void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle
 
 int RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
    int new_slot = Layout::AddWidget(0);
-   if (widget) {
-      EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
-      layout_rectangles[new_slot] = lrect;
-      PlaceWidget(widget , new_slot , lrect);
-   }
+   EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
+   layout_rectangles[new_slot] = lrect;
+   PlaceWidget(widget , new_slot , lrect);
    return new_slot;
 }
 
@@ -131,6 +144,13 @@ Rectangle RelativeLayout::SetLayoutRectangle(WidgetBase* widget , LayoutRectangl
 
 
 
+std::ostream& RelativeLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "[" << FullName() << "]" << std::endl;
+   for (int i = 0 ; i < GetLayoutSize() ; ++i) {
+      os << indent << "LR#" << i << " : " << layout_rectangles[i] << std::endl;
+   }
+   return Layout::DescribeTo(os,indent);
+}
 
 
 

@@ -29,6 +29,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/SharedMemory.hpp"
 
 #include <map>
 
@@ -59,10 +60,16 @@ enum WIDGETCOLOR {
    FGCOL   = 3,
    HLCOL   = 4,
    TXTCOL  = 5,
-   HVRCOL  = 6
+   HVRCOL  = 6,
+   PADCOL  = 7,
+   BORDCOL = 8,
+   MARGCOL = 9
 };
-#define EAGLE_NUMCOLORS 7
+#define EAGLE_NUMCOLORS 10
 //*/
+
+std::string WidgetColorName(WIDGETCOLOR wc);
+WIDGETCOLOR WidgetColorFromName(std::string name);
 
 
 
@@ -111,9 +118,13 @@ public :
 class ColorRegistry {
    
    std::map<std::string , EagleColor> named_colors;
-   std::map<std::string , WidgetColorset> named_colorsets;
+   std::map<std::string , SHAREDOBJECT<WidgetColorset> > named_colorsets;
    
 public :
+   
+   ColorRegistry() : named_colors() , named_colorsets() {}
+   
+   static ColorRegistry* GlobalColorRegistry();
    
    /// EagleColors
    bool HasColor(std::string name);
@@ -125,20 +136,19 @@ public :
    /// WidgetColorsets
    bool HasColorset(std::string name);
    
-   WidgetColorset& GetColorsetByName(std::string name);
+   SHAREDOBJECT<WidgetColorset> GetColorsetByName(std::string name);
+   SHAREDOBJECT<WidgetColorset> GetDefaultColorset() {return GetColorsetByName("Default");}
    
    void RegisterColorset(std::string name , const WidgetColorset& wc);
    
 };
-
-extern ColorRegistry color_registry;
 
 bool HasColor(std::string name);
 EagleColor GetColorByName(std::string name);
 void RegisterColor(std::string name , const EagleColor& color);
 
 bool HasColorset(std::string name);
-WidgetColorset GetColorsetByName(std::string name);
+SHAREDOBJECT<WidgetColorset> GetColorsetByName(std::string name);
 void RegisterColorset(std::string name , const WidgetColorset& wc);
 
 

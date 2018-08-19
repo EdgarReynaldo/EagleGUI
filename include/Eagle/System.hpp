@@ -75,6 +75,10 @@ std::string PrintEagleInitState(int state);
 std::string PrintFailedEagleInitStates(int desired_state , int actual_state);
 
 
+class FileSystem;
+class ResourceLibrary;
+
+
 
 class EagleSystem : public EagleObject {
 
@@ -98,6 +102,12 @@ protected :
 
    EagleWindowManager* window_manager;
 
+   FileSystem* file_system;
+   
+   ResourceLibrary* resource_library;
+   
+   
+   
    bool system_up;
    bool images_up;
    bool fonts_up;
@@ -136,9 +146,16 @@ protected :
    virtual EagleClipboard*       PrivateCreateClipboard      (std::string objname)=0;
 
    virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
+   virtual FileSystem*           PrivateCreateFileSystem()=0;
+   virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
 
+   FileSystem* CreateFileSystem() {return PrivateCreateFileSystem();}
+   
+   ResourceLibrary* CreateResourceLibrary() {return PrivateCreateResourceLibrary();}
+   
+   
 public :
 
    EagleSystem(std::string objclass = "EagleSystem" , std::string objname = "Nemo");
@@ -190,6 +207,9 @@ public :
    EagleTimer*         GetSystemTimer();
    EagleClipboard*     GetSystemClipboard();
    EagleWindowManager* GetWindowManager();
+   
+   FileSystem*         GetFileSystem();
+   ResourceLibrary*    GetResourceLibrary();
 
 	EagleInputHandler*    CreateInputHandler(std::string objname = "Nemo");
 	

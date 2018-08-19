@@ -62,27 +62,17 @@ protected :
    void ResetRadii();
    void ResetClickArea();
 
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+
+   virtual void OnAreaChanged();
+
 public :
    /// GuiButton area is determined from the button shape, and the radii are set accordingly
-   GuiButton(std::string name = "Nemo");
+   GuiButton(std::string classname = "GuiButton" , std::string name = "Nemo");
 
    virtual ~GuiButton() {}
 
-protected :
-
-   virtual int  PrivateCheckInputs();
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual int  PrivateUpdate(double tsec);
-
-public :
-
-
-   // /* Does not set any redraw flag */ - OLD:Sets redraw flag and (false) sets bg redraw flag
-
    virtual void SetRedrawFlag();// Shortcut to SetNeedsRedrawState(true)
-   
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-
 
    /// Setters
    void SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_type , BUTTON_CLASS button_class);

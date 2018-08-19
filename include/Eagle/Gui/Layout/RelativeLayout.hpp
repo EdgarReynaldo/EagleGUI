@@ -42,7 +42,7 @@ public :
    RelativeLayout(std::string name = "Nemo");
    ~RelativeLayout();
 
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) ;
    
    /// TODO : For some reason these two functions are invisible - the overloaded PlaceWidget and AddWidget below
    ///        hide them so here we make them explicitly visible again :
@@ -56,6 +56,7 @@ public :
    Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
    Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
 
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 

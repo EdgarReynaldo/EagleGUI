@@ -60,7 +60,7 @@ private :
 public :
    
 ///   EagleObject();
-   EagleObject(std::string objclass , std::string objname , bool log = true);
+   EagleObject(std::string objclass , std::string objname = "Nemo" , bool log = true);
    
    EagleObject(const EagleObject& rhs);/// Generates warning about name duplication
    

@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -27,19 +27,25 @@
 #include "Eagle/StringWork.hpp"
 
 
-EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclass , std::string objname) :
-      EagleObject(objclass , objname),
-      parent_context(owner_context),
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children(false),
-      clip_rects()
-{
-   
+
+EagleImage* Clone(EagleGraphicsContext* parent_window , EagleImage* img , std::string iname) {
+   return img->Clone(parent_window , iname);
+}
+
+
+
+EagleImage* CreateSubImage(EagleImage* img , int sx , int sy , int sw , int sh , std::string iname) {
+   return img->CreateSubBitmap(sx,sy,sw,sh , iname);
+}
+
+
+
+/// -----------------------      EagleImage      -------------------------------
+
+
+
+void EagleImage::SetParent(EagleImage* parent_image) {
+   parent = parent_image;
 }
 
 
@@ -47,24 +53,67 @@ EagleImage::EagleImage(EagleGraphicsContext* owner_context , std::string objclas
 void EagleImage::AddChild(EagleImage* child) {
    EAGLE_ASSERT(child);
    child->SetParent(this);
-   children.Add(child);
+   children.insert(child);
 }
 
 
 
 void EagleImage::RemoveChild(EagleImage* child) {
    EAGLE_ASSERT(child);
-   children.Remove(child);
-   child->SetParent(0);
+   IMGIT it = children.find(child);
+   EAGLE_ASSERT(it != children.end());
+   children.erase(it);
+   /// child removes itself upon destruction - don't call child methods
+   ///child->SetParent(0);/// BAD, UNNECESSARY
 }
 
 
 
-void EagleImage::SetParent(EagleImage* parent_image) {
-///   EAGLE_ASSERT(parent_image);
-   parent = parent_image;
+EagleImage::EagleImage(std::string objclass , std::string objname) :
+      EagleObject(objclass , objname),
+      pcontext(0),
+      w(0),
+      h(0),
+      image_type(MEMORY_IMAGE),
+      image_source(ALLOCATED),
+      source(),
+      parent(0),
+      children(),
+      clip_rects()
+{
+   
 }
 
+
+
+EagleImage::~EagleImage() {
+   /// Can't free children here, as our parents derived class destructor has already run
+   /// Must do it in derived class destructors....
+   (void)0;
+   if (parent) {
+      parent->RemoveChild(this);
+   }
+}
+
+
+
+void EagleImage::FreeChildren() {
+   IMGSET imgs = children;/// Must make a copy as children is altered by destruction of each child which calls RemoveChild
+   for (IMGIT it = imgs.begin() ; it != imgs.end() ; ++it) {
+      delete *it;
+   }
+   EAGLE_ASSERT(children.size() == 0);
+}
+
+
+
+void EagleImage::FreeChild(EagleImage* child) {
+   IMGIT it = children.find(child);
+   if (it != children.end()) {
+      delete child;/// ~EagleImage calls RemoveChild
+   }
+   EAGLE_ASSERT(children.find(child) == children.end());
+}
 
 
 void EagleImage::PushClippingRectangle(Rectangle new_clip) {
@@ -88,6 +137,11 @@ void EagleImage::PopClippingRectangle() {
 
 
 
+
+/// ----------------     Clipper      ------------------------
+
+
+
 Clipper::Clipper(EagleImage* image , Rectangle clip)
 {
 	EAGLE_ASSERT(image);
@@ -105,45 +159,4 @@ Clipper::~Clipper() {
 
 
 
-/**
-EagleImage::EagleImage(int width , int height , IMAGE_TYPE type) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   Allocate(width , height , type);
-}
-
-
-
-EagleImage::EagleImage(std::string file , IMAGE_TYPE type) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   Load(file , type);
-}
-
-
-
-EagleImage::EagleImage(EagleImage* parent , int x , int y , int width , int height) :
-      w(0),
-      h(0),
-      image_type(MEMORY_IMAGE),
-      image_source(ALLOCATED),
-      source(),
-      parent(0),
-      children()
-{
-   CreateSubBitmap(parent , x , y , width , height);
-}
-*/
 

@@ -2,6 +2,7 @@
 
 
 #include "Eagle/Gui/Button/CheckBox.hpp"
+#include "Eagle/GraphicsContext.hpp"
 
 
 
@@ -48,7 +49,7 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
          bool hover = i/2;
          EagleImage* img = win->CreateImage(OuterArea().W() , OuterArea().H());
          win->PushDrawingTarget(img);
-         draw_func(win , Rectangle(0 , 0 , img->W() , img->H()) , 0 , 0 , WCols() , up , hover);
+         draw_func(win , Rectangle(0 , 0 , img->W() , img->H()) , 0 , 0 , WidgetColors() , up , hover);
          cb_images[i] = img;
          win->PopDrawingTarget();
          IconButton::SetImages(cb_images[0] , cb_images[1] , cb_images[2] , cb_images[3]);
@@ -61,11 +62,10 @@ void BasicCheckBox::RefreshImages(EagleGraphicsContext* win) {
 
 void BasicCheckBox::FreeImages() {
    for (int i = 0 ; i < 4 ; ++i) {
-      EagleImage* img = cb_images[i];
-      if (img) {
-         delete img;
+      if (cb_images[i]) {
+         delete cb_images[i];
+         cb_images[i] = 0;
       }
-      cb_images[i] = 0;
    }
    current = false;
 }
@@ -81,15 +81,19 @@ void BasicCheckBox::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
 
 
 
+void BasicCheckBox::OnAreaChanged() {
+   IconButton::OnAreaChanged();
+   current = false;
+}
+
+
+
 BasicCheckBox::BasicCheckBox(std::string objname) :
       IconButton("BasicCheckBox" , objname),
       draw_func(DefaultCBDrawFunc),
       cb_images(),
       current(false)
 {
-   for (int i = 0 ; i < 4 ; ++i) {
-      cb_images[i] = 0;
-   }
    SetButtonType(TOGGLE_BTN);
 }
 
@@ -97,19 +101,6 @@ BasicCheckBox::BasicCheckBox(std::string objname) :
 
 BasicCheckBox::~BasicCheckBox() {
    FreeImages();
-}
-
-
-
-void BasicCheckBox::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   int oldw = OuterArea().W();
-   int oldh = OuterArea().H();
-   IconButton::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   if ((oldw != OuterArea().W()) || (oldh != OuterArea().H())) {
-      if (draw_func) {
-         current = false;
-      }
-   }
 }
 
 

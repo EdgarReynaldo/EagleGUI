@@ -8,10 +8,11 @@
 
 #include "Eagle/Gui/WidgetBase.hpp"
 
-class BasicScroller;
-class BasicScrollButton;
 #include "Eagle/Gui/Scroller.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
+
+#include "Eagle/SharedMemory.hpp"
+
 
 
 class BasicScrollBar : public WidgetBase {
@@ -28,9 +29,9 @@ protected:
    BasicScrollButton basic_scroll_button_up_or_left;
    BasicScrollButton basic_scroll_button_down_or_right;
    
-   BasicScroller* scroller;
-   BasicScrollButton* up_or_left_button;
-   BasicScrollButton* down_or_right_button;
+   SHAREDOBJECT<BasicScroller> scroller;
+   SHAREDOBJECT<BasicScrollButton> up_or_left_button;
+   SHAREDOBJECT<BasicScrollButton> down_or_right_button;
    
    bool is_horizontal;
    
@@ -38,7 +39,6 @@ protected:
    
    void ResetHandleArea();
    void ResetScrollBarArea();
-   void CheckRedraw();
    
    
    virtual int PrivateHandleEvent(EagleEvent e);
@@ -46,13 +46,16 @@ protected:
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
+   virtual void QueueUserMessage(const WidgetMsg& wmsg);
+
+   virtual void OnAreaChanged();
+
 public :
    BasicScrollBar(std::string objclass = "BasicScrollBar" , std::string name = "Nemo");
    
-   virtual void QueueUserMessage(const WidgetMsg& wmsg);
-
-   void SetScrollWidgets(BasicScroller* pbasic_scroller , 
-                         BasicScrollButton* pbasic_up_or_left_button , BasicScrollButton* pbasic_down_or_right_button);
+   void SetScrollWidgets(SHAREDOBJECT<BasicScroller> pbasic_scroller , 
+                         SHAREDOBJECT<BasicScrollButton> pbasic_up_or_left_button ,
+                         SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button);
 
    void SetScrollLength(int max_scroll);
    void SetScrollPercent(float new_percent);
@@ -63,8 +66,6 @@ public :
    void SetScrollDirection(bool is_horizontal_scroller);
    void SetupView(int total_length_of_view , int actual_length_in_view);
 
-   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
-      
    int GetScrollValue() {return scroller->GetScrollValue();}
    
 };

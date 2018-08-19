@@ -155,6 +155,8 @@ public :
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL);
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255));
 
+   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255));
+
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color);
 ///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 /// TODO ADD   virtual void Draw(EagleImage* src , EagleDrawingInfo info);
@@ -178,24 +180,23 @@ public :
    virtual void ReleaseDrawing();
    virtual void SetDrawingTarget(EagleImage* dest);
 
-   /// image creation / loading / sub division
-   EagleImage* EmptyImage();
-   EagleImage* AdoptImage(ALLEGRO_BITMAP* img);
-   EagleImage* ReferenceImage(ALLEGRO_BITMAP* img);
-   EagleImage* CloneImage(EagleImage* img);
-   EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE);
-   EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE);
-   EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height);
+   /// Image creation, these functions return a new image owned by the window
+   EagleImage* EmptyImage(std::string iname = "Nemo");
 
-   /// font loading
+   EagleImage* AdoptImage(ALLEGRO_BITMAP* img , std::string iname = "Nemo");
+   EagleImage* ReferenceImage(ALLEGRO_BITMAP* img , std::string iname = "Nemo");
+
+   EagleImage* CloneImage(EagleImage* img , std::string iname = "Nemo");
+   EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo");
+
+   EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo");
+   EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE);
+
+   /// Font loading, this function returns a new font owned by the window
    EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE);
 
    ALLEGRO_DISPLAY* AllegroDisplay() {return display;}
 
-/*   NO, register directly below <.>
-   /// Allegro event source
-   void ReadEvents();
-*/
    Transformer* GetTransformer();
 
    virtual void MakeDisplayCurrent();

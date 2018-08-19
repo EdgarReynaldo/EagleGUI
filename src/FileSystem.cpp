@@ -2,6 +2,21 @@
 
 
 
+#include "Eagle/Platform.hpp"
+
+#ifndef EAGLE_NATIVE_PATH_SEP
+   #error No path separator defined for eagle!
+#endif // EAGLE_NATIVE_PATH_SEP
+
+/// For _getcwd and getcwd
+#ifdef EAGLE_WIN32
+   #include <direct.h>
+#else
+   #include <unistd.h>
+#endif
+
+
+
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/File.hpp"
 #include "Eagle/FileWork.hpp"
@@ -10,98 +25,39 @@
 
 
 
-/// ----------------------------      FileSystem     ----------------------------------------
 
 
 
-FileSystem::FSCREATOR FileSystem::CreateFunc = 0;
-FileSystem::FSDESTRUCTOR FileSystem::DestroyFunc = FileSystem::DestroyFileSystem;
-FileSystem* FileSystem::fsys = 0;
 
-
-
-void FileSystem::DestroyFileSystem() {
-   if (fsys) {
-      delete fsys;
-   }
-   fsys = 0;
+char NativePathSeparator() {
+   return EAGLE_NATIVE_PATH_SEP;
 }
 
 
 
-
-void FileSystem::RegisterFile(Folder* parent , File* file) {
-   EAGLE_ASSERT(parent);
-   EAGLE_ASSERT(file);
-   parent->RegisterFile(file);
-}
-
-
-
-void FileSystem::RegisterSubFolder(Folder* parent , Folder* sub) {
-   EAGLE_ASSERT(parent);
-   EAGLE_ASSERT(sub);
-   parent->RegisterSubFolder(sub);
-}
-
-
-
-FileSystem* FileSystem::Instance() {
-   if (fsys) {
-      return fsys;
-   }
-   else {
-      if (!CreateFunc) {
-         throw EagleException("FileSystem::Instance - no filesystem creation function registered!\n");
-      }
-      fsys = CreateFunc();
-      if (fsys) {
-         atexit(DestroyFileSystem);
-      }
-   }
-   return fsys;
-}
+/// Global utility functions
 
 
 
 std::string GetFileName(std::string path) {
-   return FileSystem::Instance()->GetFileName(path);
+   
+   unsigned int index = path.find_last_of("\\/");
+   
+   if (index == std::string::npos) {
+      return path;
+   }
+   
+   return path.substr(index + 1);
 }
 
 
 
-std::string GetFileExt(std::string name) {
-   return FileSystem::Instance()->GetFileExt(name);
-}
-
-
-
-FSInfo GetFileInfo(FilePath path) {
-   return FileSystem::Instance()->GetFileInfo(path);
-}
-
-
-
-FSInfo GetFileInfo(std::string path) {
-   return GetFileInfo(FilePath(path));
-}
-
-
-
-FSInfo GetFileInfo(const char* path) {
-   return GetFileInfo(FilePath(std::string(path)));
-}
-
-
-
-std::shared_ptr<Folder> ReadFolder(FilePath fpath) {
-   return FileSystem::Instance()->ReadFolder(fpath);
-}
-
-
-
-std::shared_ptr<File> ReadFile(FilePath fpath) {
-   return FileSystem::Instance()->ReadFile(fpath);
+std::string GetFileExt(std::string filename) {
+   unsigned int index = filename.find_last_of('.');
+   if (index == std::string::npos) {
+      return "";
+   }
+   return filename.substr(index + 1);
 }
 
 
@@ -128,8 +84,14 @@ std::vector<std::string> ExplodePath(std::string path) {
 
 
 
+
 std::vector<std::string> GetAbsolutePath(std::string path) {
-   EAGLE_ASSERT(path.size());
+
+
+   if (!path.size()) {
+      return ExplodePath(GetCWD());
+   }
+
    /// CWD/./../../abc/..
    /// Filter all references to the current directory
    std::vector<std::string> paths = ExplodePath(path);
@@ -191,7 +153,7 @@ std::string SanitizePath(std::string path) {
    for (int i = 0 ; i < (int)abspath.size() ; ++i) {
       p += path[i];
       if (i != (int)abspath.size() - 1) {
-         p += PathSeparator();
+         p += "/";/// DONT USE NativePathSeparator();
       }
    }
    return p;
@@ -199,20 +161,66 @@ std::string SanitizePath(std::string path) {
 
 
 
-char PathSeparator() {
-   return FileSystem::Instance()->PathSeparator();
-}
-
-
-
-bool ChangeDirectory(std::string dir) {
-   return FileSystem::Instance()->ChangeDirectory(dir);
-}
-
-
-
 std::string CurrentDirectory() {
-   return FileSystem::Instance()->CurrentDirectory();
+   const int SIZE = 512;
+   char buf[SIZE];
+#ifdef EAGLE_WIN32
+   _getcwd(buf , SIZE - 1);
+#else
+   getcwd(buf , SIZE - 1)
+#endif
+   return buf;
+}
+
+
+std::string GetCWD() {return CurrentDirectory();}
+
+
+
+/// ----------------------------      FileSystem     ----------------------------------------
+
+
+
+FileSystem::FileSystem() : 
+      drives(),
+      archive_mounted(false),
+      mount_file_path(std::string(""))
+{}
+
+
+
+void FileSystem::RegisterFile(Folder* parent , std::shared_ptr<File> file) {
+   EAGLE_ASSERT(parent);
+   EAGLE_ASSERT(file);
+   parent->RegisterFile(file);
+}
+
+
+
+void FileSystem::RegisterArchiveFile(Folder* parent , std::shared_ptr<ArchiveFile> afile) {
+   EAGLE_ASSERT(parent);
+   EAGLE_ASSERT(afile);
+   parent->RegisterArchiveFile(afile);
+}
+
+
+
+void FileSystem::RegisterSubFolder(Folder* parent , std::shared_ptr<Folder> sub) {
+   EAGLE_ASSERT(parent);
+   EAGLE_ASSERT(sub);
+   parent->RegisterSubFolder(sub);
+}
+
+
+
+FSInfo FileSystem::GetFileInfo(std::string path) {
+   return GetFileInfo(FilePath(path));
+}
+
+
+
+FSInfo FileSystem::GetFileInfo(const char* path) {
+   return GetFileInfo(FilePath(std::string(path)));
 }
 
 

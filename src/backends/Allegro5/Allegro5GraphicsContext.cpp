@@ -59,7 +59,7 @@ void Allegro5GraphicsContext::PrivateFlipDisplay() {
 Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width , int height , int flags) :
       EagleGraphicsContext("Allegro5GraphicsContext" , objname),
       display(0),
-      realbackbuffer(this , "A5GC::realbackbuffer"),
+      realbackbuffer("A5GC::realbackbuffer"),
       blender_op(ALLEGRO_ADD),
       blender_src(ALLEGRO_ONE),
       blender_dest(ALLEGRO_INVERSE_ALPHA),
@@ -137,6 +137,9 @@ bool Allegro5GraphicsContext::Valid() {
 
 void Allegro5GraphicsContext::Destroy() {
 
+   FreeAllImages();
+   FreeAllFonts();
+   
    if (display) {
 
        EagleEvent ee;
@@ -146,7 +149,6 @@ void Allegro5GraphicsContext::Destroy() {
 
        EmitEvent(ee , 0);
 
-       images.FreeAll();
 
       /// Block until after drawing is done and releases the lock,
       /// or acquire the lock before drawing and prevent it
@@ -228,14 +230,18 @@ void Allegro5GraphicsContext::LoadDefaultFont() {
       FreeFont(default_font);
       default_font = new Allegro5Font(al_create_builtin_font());
       if (!default_font->Valid()) {
+         EagleError() << "Failed to create built in font for fallback. No Default Font available." << std::endl;
          delete default_font;
          default_font = 0;
       }
       else {
          EagleWarn() << "Using allegro's built in font for default font" << std::endl;
-         fonts.Add(default_font);
       }
    }
+   if (default_font) {
+      fontset.insert(default_font);
+   }
+   
    EagleInfo() << StringPrintF("Allegro5GraphicsContext::LoadDefaultFont : Default font is %s , size %d\n" ,
                               (default_font && default_font->Valid())?"Valid":"Invalid" , default_font->Height()) << std::endl;
 }
@@ -578,6 +584,12 @@ void Allegro5GraphicsContext::DrawTinted(EagleImage* img , int x , int y , Eagle
 
 
 
+void Allegro5GraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col) {
+   al_draw_tinted_bitmap_region(GetAllegroBitmap(img) , GetAllegroColor(col) , src.X() , src.Y() , src.W() , src.H() , x , y , 0);
+}
+
+
+
 void Allegro5GraphicsContext::ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color) {
    Allegro5Image* a5img = dynamic_cast<Allegro5Image*>(img);
    ALLEGRO_BITMAP* allegro_bmp = a5img->AllegroBitmap();
@@ -748,79 +760,74 @@ void Allegro5GraphicsContext::SetDrawingTarget(EagleImage* dest) {
 
 
 
-EagleImage* Allegro5GraphicsContext::EmptyImage() {
-   EagleImage* img = new Allegro5Image(this , "NewImage");
-   images.Add(img);
+EagleImage* Allegro5GraphicsContext::EmptyImage(std::string iname) {
+   Allegro5Image* nimg = new Allegro5Image(iname);
+   imageset.insert(nimg);
+   return nimg;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::AdoptImage(ALLEGRO_BITMAP* img , std::string iname) {
+   /// TODO : Conversion to new context?
+   Allegro5Image* nimg = dynamic_cast<Allegro5Image*>(EmptyImage(iname));
+   nimg->AdoptBitmap(img);
+   return nimg;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::ReferenceImage(ALLEGRO_BITMAP* img , std::string iname) {
+   Allegro5Image* nimg = dynamic_cast<Allegro5Image*>(EmptyImage(iname));
+   nimg->ReferenceBitmap(img);
+   return nimg;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::CloneImage(EagleImage* img , std::string iname) {
+   EagleImage* clone = dynamic_cast<Allegro5Image*>(img->Clone(this , iname));
+   if (clone) {
+      imageset.insert(clone);
+   }
+   return clone;
+}
+
+
+
+EagleImage* Allegro5GraphicsContext::CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname) {
+   EagleImage* img = parent->CreateSubBitmap(x , y , width , height , iname);
+   /// imgset.insert(img); parent is responsible for destroying this image, not us
    return img;
 }
 
 
 
-EagleImage* Allegro5GraphicsContext::AdoptImage(ALLEGRO_BITMAP* img) {
-   /// TODO : Conversion to new context?
-   EagleImage* eagle_image = new Allegro5Image(img , true);
-   images.Add(eagle_image);
-   return eagle_image;
-}
-
-
-
-EagleImage* Allegro5GraphicsContext::ReferenceImage(ALLEGRO_BITMAP* img) {
-   EagleImage* eagle_image = new Allegro5Image(img , false);
-   images.Add(eagle_image);
-   return eagle_image;
-}
-
-
-
-EagleImage* Allegro5GraphicsContext::CloneImage(EagleImage* img) {
-   Allegro5Image* newimg = new Allegro5Image(this , "CloneImage");
-   newimg->Allocate(img->W() , img->H() , img->ImageType());
-
-   PushDrawingTarget(newimg);
-
-   SetCopyBlender();
-   Draw(img , 0.0f , 0.0f);
-   RestoreLastBlendingState();
-
-   PopDrawingTarget();
-
-   images.Add(newimg);
-   return newimg;
-}
-
-
-
 // image creation / loading / sub division
-EagleImage* Allegro5GraphicsContext::CreateImage(int width , int height , IMAGE_TYPE type) {
-   EagleImage* eagle_image = new Allegro5Image(width , height , type);
-   images.Add(eagle_image);
-   return eagle_image;
+EagleImage* Allegro5GraphicsContext::CreateImage(int width , int height , IMAGE_TYPE type , std::string iname) {
+   EagleImage* img = EmptyImage(iname);
+   img->Allocate(width , height , type);
+   return img;
 }
 
 
 
 EagleImage* Allegro5GraphicsContext::LoadImageFromFile(std::string file , IMAGE_TYPE type) {
-   EagleImage* eagle_image = new Allegro5Image(file , type);
-   images.Add(eagle_image);
-   return eagle_image;
-}
-
-
-
-EagleImage* Allegro5GraphicsContext::CreateSubImage(EagleImage* parent , int x , int y , int width , int height) {
-   EagleImage* eagle_image = new Allegro5Image(parent , x , y , width , height);
-   images.Add(eagle_image);
-   return eagle_image;
+   EagleImage* img = EmptyImage(file);
+   img->Load(file , type);
+   return img;
 }
 
 
 
 EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int flags , IMAGE_TYPE type) {
-   EagleFont* eagle_font = new Allegro5Font(file , height , flags , file , type);
-   fonts.Add(eagle_font);
-
-   return eagle_font;
+   Allegro5Font* font = new Allegro5Font(file , height , flags , file , type);
+   if (font->Valid()) {
+      fontset.insert(font);
+      return font;
+   }
+   delete font;
+   return (EagleFont*)0;
 }
 
 

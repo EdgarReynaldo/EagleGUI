@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2013+ by Edgar Reynaldo
+ *    Copyright 2009-2018+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -27,7 +27,8 @@
 
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"
-
+#include "Eagle/GraphicsContext.hpp"
+#include "Eagle/StringWork.hpp"
 
 
 using std::string;
@@ -119,33 +120,62 @@ Camera::Camera(std::string objclass , std::string objname) :
 
 
 
-
-void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
-   EAGLE_ASSERT(win);
+int Camera::PrivateHandleEvent(EagleEvent ee) {
+   if (!IsMouseEvent(ee)) {return DIALOG_OKAY;}
    
-   if (view_bmp && (flags & VISIBLE)) {
-      Rectangle r = area.InnerArea();
-      r.MoveBy(x,y);
-      Clipper(win->GetDrawingTarget() , r);
-   
-      // center the viewed area on the display area
-      int ox = (r.W() - view_area.W())/2;
-      int oy = (r.H() - view_area.H())/2;
-      
-//      EagleInfo() << "View area = " << view_area << std::endl;
-      
-      win->DrawRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy);
+   if (ee.type != EAGLE_EVENT_MOUSE_AXES) {
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+         string s = StringPrintF(" BTN %d down" , ee.mouse.button);
+         EagleLog () << "Camera :" << s << std::endl;
+      }
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+         string s = StringPrintF(" BTN %d up" , ee.mouse.button);
+         EagleLog () << "Camera :" << s << std::endl;
+      }
    }
-   ClearRedrawFlag();
+   
+   int msx = ee.mouse.x;
+   int msy = ee.mouse.y;
+   if (Flags().FlagOn(ENABLED)) {
+      bool hover = OuterArea().Contains(msx,msy);
+      SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
+      if (hover) {
+         if (mmb_drag_enabled) {
+            if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && ee.mouse.button == 3) {///input_mouse_press(MMB)) {
+               drag = true;
+               startmx = msx;
+               startmy = msy;
+               startxpos = view_area.X();
+               startypos = view_area.Y();
+               return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
+            }
+         }
+      }
+      if (drag) {
+         int dx = msx - startmx;
+         int dy = msy - startmy;
+         SetDestination(startxpos - dx , startypos - dy);
+         SetViewPos(dest_x , dest_y);
+      }
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP && ee.mouse.button == 3) {
+         drag = false;
+         return DIALOG_INPUT_USED;
+      }
+   }
+   return DIALOG_OKAY;
 }
 
 
 
-int Camera::CheckInputs() {
+
+/**
+int Camera::PrivateCheckInputs() {
    int msx = mouse_x - AbsParentX();
    int msy = mouse_y - AbsParentY();
-   if (flags & ENABLED) {
-      if (area.OuterArea().Contains(msx,msy)) {
+   if (Flags().FlagOn(ENABLED)) {
+      bool hover = OuterArea().Contains(msx,msy);
+      SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
+      if (hover) {
          if (input_mouse_press(LMB)) {
             if (take_focus) {// workaround for WidgetHandler so it can take the focus instead
                return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
@@ -176,10 +206,28 @@ int Camera::CheckInputs() {
    }
    return DIALOG_OKAY;
 }
+*/
+
+
+void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
+   EAGLE_ASSERT(win);
+   
+   Rectangle r = InnerArea();
+   r.MoveBy(x,y);
+   Clipper clip(win->GetDrawingTarget() , r);
+
+   /// center the viewed area on the display area
+   int ox = (r.W() - view_area.W())/2;
+   int oy = (r.H() - view_area.H())/2;
+   
+   
+   EagleColor c = Flags().FlagOn(HOVER)?EagleColor(255,255,255,255):EagleColor(255,255,255,127);
+   win->DrawTintedRegion(view_bmp , view_area , r.X() + ox , r.Y() + oy , c);
+}
 
 
 
-int Camera::Update (double tsec) {
+int Camera::PrivateUpdate (double tsec) {
    if (tsec < 0.0) {tsec = 0.0;}
    time_since_prev_pos += tsec;
    PerformMove();
@@ -187,7 +235,7 @@ int Camera::Update (double tsec) {
 }
 
 
-
+/**
 /// Don't remove these two function - they serve to prevent redraw on color change
 void Camera::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
    wcols = colors;
@@ -204,7 +252,7 @@ void Camera::SetPrivateColorset(const WidgetColorset& colors) {
    // purposely don't set redraw flag
    return;
 }
-
+//*/
 
 
 void Camera::SetView(EagleImage* bmp , Rectangle area_to_view) {
@@ -317,6 +365,13 @@ void Camera::AllowMiddleMouseButtonDrag(bool allow) {
 
 void Camera::TakesFocus(bool click_takes_focus) {
    take_focus = click_takes_focus;
+}
+
+
+
+std::ostream& Camera::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "Camera object : View = " << view_area << " on image " << (view_bmp?view_bmp:(EagleImage*)0) << std::endl;
+   return WidgetBase::DescribeTo(os , indent);
 }
 
 

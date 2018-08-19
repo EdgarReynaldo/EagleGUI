@@ -19,7 +19,7 @@ using namespace std;
 
 #include "Eagle/StringWork.hpp"
 
-#include "Eagle/Gui/Decorators/TextDecorator.hpp"
+///#include "Eagle/Gui/Decorators/TextDecorator.hpp"
 
 #include <cstdlib>
 
@@ -82,7 +82,7 @@ int BasicText::PrivateCheckInputs() {
 
 
 void BasicText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   DrawText(win , xpos , ypos , WCols()[TXTCOL]);
+   DrawText(win , xpos , ypos , GetColor(TXTCOL));
 }
 
 
@@ -90,6 +90,12 @@ void BasicText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) 
 int BasicText::PrivateUpdate(double tsec) {
    (void)tsec;
    return DIALOG_OKAY;
+}
+
+
+
+void BasicText::OnAreaChanged() {
+   Refresh();
 }
 
 
@@ -214,20 +220,14 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
 
 
 
-void BasicText::SetWidgetArea(int x , int y , int w , int h , bool notify_layout) {
-   WidgetBase::SetWidgetArea(x,y,w,h,notify_layout);
-   Refresh();
-}
-
-
 void BasicText::ShrinkWrap() {
    
    scale_to_fit = false;
    
-   WidgetArea a = area;
-   a.SetInnerArea(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , totalheight + 2*vpadding);
+   WidgetArea wa = GetWidgetArea();
+   wa.SetInnerArea(Rectangle(textx - hpadding , texty - vpadding , maxwidth + 2*hpadding , totalheight + 2*vpadding));
    
-   WidgetBase::SetWidgetArea(a.OuterArea());
+   SetWidgetArea(wa);
 }
 
 
@@ -235,20 +235,6 @@ void BasicText::ShrinkWrap() {
 void BasicText::ScaleToFit(bool scale) {
    scale_to_fit = scale;
    SetRedrawFlag();
-}
-
-
-
-void BasicText::SetMarginsExpandFromInner(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsExpandFromInner(left,right,top,bottom);
-   Refresh();
-}
-
-
-
-void BasicText::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
-   Refresh();
 }
 
 
@@ -278,12 +264,6 @@ void BasicText::SetText(std::string textstr , EagleFont* font) {
       fontheight = 0;
    }
    Refresh();
-   
-   TextDecorator* text_decorator = dynamic_cast<TextDecorator*>(GetDecoratorParent());
-   
-   if (text_decorator) {
-      text_decorator->RepositionText();
-   }
 }
 
 

@@ -5,10 +5,11 @@
 #ifndef DumbText_HPP
 #define DumbText_HPP
 
+#include "Eagle/Gui/Alignment.hpp"
 #include "Eagle/Gui/Text/GlobalText.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
-
+#include "Eagle/Transforms.hpp"
 
 
 class BasicText : public WidgetBase {
@@ -44,7 +45,8 @@ protected :
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
    virtual int PrivateUpdate(double tsec);
 
-   
+   virtual void OnAreaChanged();
+
 protected :
    BasicText(std::string objclass , std::string objname);
 
@@ -53,11 +55,10 @@ public :
    BasicText(std::string objname = "Nemo");
    BasicText(EagleFont* font , std::string label ,
              HALIGNMENT hal = HALIGN_CENTER, VALIGNMENT val = VALIGN_CENTER , int hpad = 0, int vpad = 0 , int vspacing = 0);
+
    virtual ~BasicText(){}
 
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);
-
-   void SetWidgetArea(int x , int y , int w , int h , bool notify_layout = true);
 
    /// Shrink wrap : Changes area so it exactly fits the text
    void ShrinkWrap();
@@ -65,14 +66,6 @@ public :
    void ScaleToFit(bool scale);
    
    
-	/// Changes position and outer area!!!
-	virtual void SetMarginsExpandFromInner(int left , int right , int top , int bottom);
-
-	/// Make room in outer area for inner area first!!!
-	virtual void SetMarginsContractFromOuter(int left , int right , int top , int bottom);
-
-
-
    virtual void SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
                           std::string textstr , EagleFont* font);
    

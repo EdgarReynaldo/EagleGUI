@@ -20,7 +20,7 @@ void BasicScrollButton::Reset() {
 
 void BasicScrollButton::ResetTriangle() {
    Triangle* t = &our_click_area;
-   const Rectangle r = area.InnerArea();
+   const Rectangle r = InnerArea();
    int x1 = 0;
    int y1 = 0;
    int x2 = 0;
@@ -74,17 +74,105 @@ void BasicScrollButton::ResetTriangle() {
 
 void BasicScrollButton::SyncButtonArea() {
    scroll_button->WidgetBase::SetWidgetArea(InnerArea() , false);
-   if (scroll_button == &our_basic_button) {
+   if ((BasicButton*)scroll_button == &our_basic_button) {
       ResetTriangle();
    }
 }
 
 
 
+int BasicScrollButton::PrivateHandleEvent(EagleEvent e) {
+   return scroll_button->HandleEvent(e);
+}
+
+
+
+
+void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   if (scroll_button.get() == &our_basic_button) {
+      Triangle t = our_click_area;
+      t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
+      WidgetColorset wc = WidgetColors();
+      if (scroll_button->Up()) {
+         t.Fill(win , wc[MGCOL]);
+         t.Draw(win , 3.0 , wc[HLCOL]);
+      }
+      else {
+         t.Fill(win , wc[BGCOL]);
+         t.Draw(win , 3.0 , wc[FGCOL]);
+      }
+   }
+   else {
+      scroll_button->Display(win,xpos,ypos);
+   }
+   scroll_button->ClearRedrawFlag();
+   ClearRedrawFlag();
+}
+
+
+
+int BasicScrollButton::PrivateUpdate(double tsec) {
+   return scroll_button->Update(tsec);
+}
+
+
+
+void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
+
+   const WidgetMsg clickmessage(scroll_button.get() , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+   const WidgetMsg heldmessage(scroll_button.get() , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+
+   const WidgetMsg releasemessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
+
+   if ((wmsg == clickmessage) || (wmsg == heldmessage)) {
+      Scroll();
+   }
+
+   if (wmsg == clickmessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
+   }
+   else if (wmsg == heldmessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
+   }
+   else if (wmsg == releasemessage) {
+      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
+   }
+   WidgetBase::QueueUserMessage(wmsg);
+}
+
+
+
+void BasicScrollButton::OnAreaChanged() {
+   scroll_button->SetWidgetArea(GetWidgetArea() , false);
+   SyncButtonArea();
+}
+
+
+
+void BasicScrollButton::OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v) {
+   scroll_button->SetAttribute(a , v);
+}
+
+
+
+void BasicScrollButton::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   (void)f;
+   (void)on;
+   scroll_button->SetWidgetFlags(Flags());
+}
+
+
+/**
+void BasicScrollButton::OnColorChanged() {
+   scroll_button->SetWidgetColorset(GetWidgetColorset());/// Shouldn't need to do this, scroll_button inherits the colors from us
+}
+//*/
+
+
 BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
       our_basic_button("BSB::our_basic_button"),
-      scroll_button(0),
+      scroll_button(),
       our_scrollbar(0),
       increment(1),
       scroll_up_or_left(true),
@@ -97,7 +185,7 @@ BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname)
 
 
 void BasicScrollButton::UseBasicButton() {
-   UseButton(&our_basic_button);
+   UseButton(StackButton(our_basic_button));
    ResetTriangle();
    our_basic_button.SetClickArea(&our_click_area , false);
 }
@@ -105,7 +193,7 @@ void BasicScrollButton::UseBasicButton() {
 
 
 
-void BasicScrollButton::UseButton(BasicButton* button) {
+void BasicScrollButton::UseButton(SHAREDBUTTON button) {
    if (!button) {
       UseBasicButton();
    }
@@ -140,109 +228,8 @@ void BasicScrollButton::SetScrollDirection(bool up_or_left , bool horizontal) {
 
 
 
-int BasicScrollButton::PrivateHandleEvent(EagleEvent e) {
-   return scroll_button->HandleEvent(e);
-}
 
 
-
-
-int BasicScrollButton::PrivateCheckInputs() {
-   return DIALOG_OKAY;
-}
-
-
-
-void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (scroll_button == &our_basic_button) {
-      Triangle t = our_click_area;
-      t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
-      if (scroll_button->Up()) {
-         t.Fill(win , WCols()[MGCOL]);
-         t.Draw(win , 3.0 , WCols()[HLCOL]);
-      }
-      else {
-         t.Fill(win , WCols()[BGCOL]);
-         t.Draw(win , 3.0 , WCols()[FGCOL]);
-      }
-   }
-   else {
-      scroll_button->Display(win,xpos,ypos);
-   }
-   scroll_button->ClearRedrawFlag();
-   ClearRedrawFlag();
-}
-
-
-
-int BasicScrollButton::PrivateUpdate(double tsec) {
-   return scroll_button->Update(tsec);
-}
-
-
-
-void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
-
-   const WidgetMsg clickmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
-   const WidgetMsg heldmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
-
-   const WidgetMsg releasemessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
-
-   if ((wmsg == clickmessage) || (wmsg == heldmessage)) {
-      Scroll();
-   }
-
-   if (wmsg == clickmessage) {
-      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
-   }
-   else if (wmsg == heldmessage) {
-      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HELD));
-   }
-   else if (wmsg == releasemessage) {
-      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
-   }
-   WidgetBase::QueueUserMessage(wmsg);
-}
-
-      
-
-
-void BasicScrollButton::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
-   scroll_button->SetColorset(colors , set_descendants_colors);
-}
-
-
-
-void BasicScrollButton::SetPrivateColorset(const WidgetColorset& colors) {
-   scroll_button->SetPrivateColorset(colors);
-}
-
-
-
-void BasicScrollButton::UseColorset(bool use_public_colorset) {
-   scroll_button->UseColorset(use_public_colorset);
-}
-
-
-
-void BasicScrollButton::UsePrivateColorset(bool use_priv_colorset) {
-   scroll_button->UsePrivateColorset(use_priv_colorset);
-}
-
-
-
-
-void BasicScrollButton::SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout) {
-   WidgetBase::SetWidgetArea(xpos,ypos,width,height,notify_layout);
-   SyncButtonArea();
-}
-
-
-
-void BasicScrollButton::SetMarginsContractFromOuter(int left , int right , int top , int bottom) {
-   WidgetBase::SetMarginsContractFromOuter(left,right,top,bottom);
-   SyncButtonArea();
-}
 
 
 
