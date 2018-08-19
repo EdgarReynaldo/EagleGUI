@@ -28,7 +28,7 @@
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/GraphicsContext.hpp"
-
+#include "Eagle/StringWork.hpp"
 
 
 using std::string;
@@ -123,6 +123,17 @@ Camera::Camera(std::string objclass , std::string objname) :
 int Camera::PrivateHandleEvent(EagleEvent ee) {
    if (!IsMouseEvent(ee)) {return DIALOG_OKAY;}
    
+   if (ee.type != EAGLE_EVENT_MOUSE_AXES) {
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+         string s = StringPrintF(" BTN %d down" , ee.mouse.button);
+         EagleLog () << "Camera :" << s << std::endl;
+      }
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+         string s = StringPrintF(" BTN %d up" , ee.mouse.button);
+         EagleLog () << "Camera :" << s << std::endl;
+      }
+   }
+   
    int msx = ee.mouse.x;
    int msy = ee.mouse.y;
    if (Flags().FlagOn(ENABLED)) {
@@ -145,11 +156,10 @@ int Camera::PrivateHandleEvent(EagleEvent ee) {
          int dy = msy - startmy;
          SetDestination(startxpos - dx , startypos - dy);
          SetViewPos(dest_x , dest_y);
-         return DIALOG_INPUT_USED;
       }
-      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP && ee.mouse.button == 3) {///input_mouse_release(MMB)) {
-         EagleLog () << "TESTWIDGET : MMB up" << std::endl;
+      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP && ee.mouse.button == 3) {
          drag = false;
+         return DIALOG_INPUT_USED;
       }
    }
    return DIALOG_OKAY;
@@ -360,7 +370,7 @@ void Camera::TakesFocus(bool click_takes_focus) {
 
 
 std::ostream& Camera::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << "Camera object : View = " << view_area << std::endl;
+   os << indent << "Camera object : View = " << view_area << " on image " << (view_bmp?view_bmp:(EagleImage*)0) << std::endl;
    return WidgetBase::DescribeTo(os , indent);
 }
 

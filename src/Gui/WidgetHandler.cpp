@@ -60,22 +60,10 @@ const unsigned int TOPIC_GUI = NextFreeTopicId();
 
 
 
-/// TODO : Alter mouse event for relative mouse coordinates
-int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
+int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    if (!(wlist.size())) {
       return DIALOG_OKAY;
    }
-
-   /// GUIs can take the focus too
-   if (wparent && OuterArea().Contains(mouse_x , mouse_y) && input_mouse_press(LMB)) {
-      /// TODO : this is kind of a relic of a gui being a window... but they're not anymore, sort of
-      /// TODO : Leave this to the EagleGuiWindow subclass
-//      gui_takes_focus = true;
-   }
-
-
-
-
 
    /**
       Since WidgetHandlers have their own buffer, they need to offset the position they pass to their
@@ -83,28 +71,30 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       This way, every widget that is called will have the relative mouse position on their target bitmap, and
       they won't have to adjust it.
    */
+   EagleEvent rel_event = e;
+   EagleEvent cam_event = e;
+   /// Relative mouse position
+   if (IsMouseEvent(e)) {
+      /// Mouse position relative to buffer
+      rel_event.mouse.x = e.mouse.x + (cam.ViewX() - InnerArea().X());
+      rel_event.mouse.y = e.mouse.y + (cam.ViewY() - InnerArea().Y());
+      /// Mouse position relative to camera
+///      cam_event.mouse.x = e.mouse.x - InnerArea().X();
+///      cam_event.mouse.y = e.mouse.y - InnerArea().Y();
+///      cam_event.mouse.x = e.mouse.x;
+///      cam_event.mouse.y = e.mouse.y;
+   }
 
    /// Need to get mouse position relative to buffer
 ///   const int mx = GetMouseX();/// I don't know if these work, they should do the same thing, but maybe mouse_x and mouse_y are wrong.
 ///   const int my = GetMouseY();
    
    if (IsMouseEvent(e)) {
-///      e.mouse.x = mx;
-///      e.mouse.y = my;
-///      e.mouse.x = e.mouse.x + cam.X() - OuterArea().X();
-///      e.mouse.y = e.mouse.y + cam.Y() - OuterArea().Y();
-      e.mouse.x = e.mouse.x + (cam.X() - warea.LeftIndent()) - OuterArea().X();
-      e.mouse.y = e.mouse.y + (cam.Y() - warea.TopIndent()) - OuterArea().Y();
-
-      const int mx = e.mouse.x;
-      const int my = e.mouse.y;
-      /** WidgetHandlers will check whether the mouse is hovering over one of the widgets, and set the hover flag for
-            that widget, as well as removing it from any widget that had it last.
-      */
-
+      /// WidgetHandlers will check whether the mouse is hovering over one of the widgets, and set the hover flag for
+      /// that widget, as well as removing it from any widget that had it last.
       if (!wparent) {/// Only root gui checks for hover and focus
-         WidgetBase* hoverwidget = GetWidgetAt(mx,my);
-         
+         WidgetBase* hoverwidget = GetWidgetAt(e.mouse.x , e.mouse.y);
+                  
          /// Check widget hover
          if (hoverwidget != whover) {
             if (whover) {
@@ -121,14 +111,7 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
             if (e.mouse.button == 1) {
                if (whover != wfocus) {
                   GiveWidgetFocus(whover , true);
-                  if (wfocus) {
-   ///                  wfocus->SetFocusState(false);
-                  }
-                  if (whover) {
-   ///                  whover->SetFocusState(true);
-                  }
                }
-   ///            wfocus = whover;
             }
          }
       }
@@ -139,16 +122,14 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    int retmsg = DIALOG_OKAY;
    bool focus_taken = false;
 
-   /**
-      Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
-   */
 
+   /// Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
    for (UINT index = 0 ; index < inputlist.size() ; ++index) {
       WidgetBase* widget = inputlist[index];
 
       if (!(widget->Flags().FlagOn(ENABLED))) {continue;}
 
-      msg = widget->HandleEvent(e);
+      msg = widget->HandleEvent(rel_event);
 
       /// Warning - All messages not related to a dialog will be ignored.
       /// Use QueueUserMessage or RaiseEvent for user notifications instead.
@@ -177,8 +158,8 @@ int  WidgetHandler::PrivateHandleEvent(EagleEvent e) {
          return retmsg;
       }
    }
-   
-   msg = cam.HandleEvent(e);
+   /// Camera is at IndentX,IndentY
+   msg = cam.HandleEvent(cam_event);
    if (msg & DIALOG_INPUT_USED) {
       retmsg |= DIALOG_INPUT_USED;
       return retmsg;
@@ -203,6 +184,8 @@ void WidgetHandler::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 
+///   Pos2I pos(warea.InnerArea().X() + xpos , warea.InnerArea().Y() + ypos);/// wrong
+   
    DrawBuffer(win);
    
    DrawToWindow(win , xpos , ypos);
@@ -257,21 +240,18 @@ int WidgetHandler::PrivateUpdate(double tsec) {
 void WidgetHandler::OnAreaChanged() {
    /// INFO : Use OuterArea for camera. Camera is always at 0,0,OuterWidth,OuterHeight
    WIDGETAREA wa = GetWidgetArea();
-   Rectangle r = wa.OuterArea();
-   Rectangle rcam(warea.LeftIndent() , warea.TopIndent() , wa.InnerAreaWidth() , wa.InnerAreaHeight());
+   Rectangle r = wa.InnerArea();
    
-   cam.SetWidgetArea(rcam);
+   cam.SetWidgetArea(InnerArea());
 
    if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
       SetupBuffer(r.W() , r.H() , gwindow);
    }
    else {
-      // buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-      
-      Rectangle camview(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight());
-      
-      cam.SetView(buffer , camview);
+      /// buffer has excess size but we don't shrink the buffer, so reset the camera to our area
    }
+   SyncCamera();
+
    SyncLayoutPos();
    clear_background = true;
 }
@@ -775,13 +755,13 @@ WidgetHandler::WidgetHandler(EagleGraphicsContext* window , std::string classnam
 		inputlist(),
 		drawlist(),
 		removelist(),
-//		memtrack(),
 		focus_index(-1),
 		focus_start(true),
 		wfocus(0),
 		whover(0),
 		mque(),
 		clear_background(true),
+		always_clear(false),
 		focus_cycle_forward(input_key_press(EAGLE_KEY_TAB) && input_key_held(EAGLE_KEY_NO_MOD)),
 		focus_cycle_backward(input_key_press(EAGLE_KEY_TAB) && input_key_held(EAGLE_KEY_ONLY_SHIFT)),
 		dbg_list()
@@ -902,9 +882,10 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 	}
 	if (success) {
 	   RedrawBackgroundBuffer();
-
-	   Rectangle vrect(warea.LeftIndent() , warea.TopIndent() , warea.InnerAreaWidth() , warea.InnerAreaHeight());
-	   
+      /// Set default view for camera
+      /// We may not know our size or camera position yet, so set the full view of the bitmap
+      /// Successive resizes will not shrink the view, so check if our area is set
+	   Rectangle vrect(0 , 0 , w , h);
 	   cam.SetView(buffer , vrect);
 	}
 	return success;
@@ -915,7 +896,7 @@ bool WidgetHandler::SetupBuffer(int w , int h , EagleGraphicsContext* window) {
 void WidgetHandler::SetBufferShrinkOnResize(bool buffer_shrink_on_resize) {
    if (shrink_buffer_on_resize != buffer_shrink_on_resize) {
       if (buffer_shrink_on_resize) {
-         Rectangle r = OuterArea();
+         Rectangle r = InnerArea();
          if ((buffer->W() > r.W()) || (buffer->H() > r.H())) {
             SetupBuffer(r.W() , r.H() , gwindow);
          }
@@ -1110,6 +1091,10 @@ void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
 
    win->PushDrawingTarget(buffer);
    
+   if (always_clear) {
+      clear_background = true;
+   }
+   
    if (clear_background) {
       PerformFullRedraw(win);
       clear_background = false;
@@ -1124,25 +1109,16 @@ void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
 
 
 
+#warning TODO : IMPORTANT : FIX CAMERA CODE FOR WIDGETHANDLER
 void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos) {
    
    if (Flags().FlagOn(VISIBLE)) {
-         
       cam.SetRedrawFlag();
    
-///      win->DrawRegion(buffer , Rectangle(0,0,buffer->W(),buffer->H()) , xpos , ypos);
-      //** TODO : IMPORTANT : FIX CAMERA CODE FOR WIDGETHANDLER
-///      win->SetPMAlphaBlender();
-///      Rectangle a = area.InnerArea();
-///      cam.Display(win , xpos + a.X() , ypos + a.Y());
-
       win->SetPMAlphaBlender();
-      cam.Display(win , xpos + OuterArea().X() , ypos + OuterArea().Y());
+      cam.Display(win , xpos , ypos);
       win->RestoreLastBlendingState();
-      
    }
-   
-   ClearRedrawFlag();
 }
 
 
@@ -1158,10 +1134,9 @@ void WidgetHandler::SetBackgroundColor(const EagleColor color) {
 void WidgetHandler::SyncLayoutPos() {
    EAGLE_ASSERT(root_layout->IsRootLayout());
    
+   /// Layout is always at 0,0,buffer->w,buffer->h, so all children widgets are drawn correctly on the buffer
    if (buffer && buffer->Valid()) {
-      int w = buffer->W() - (warea.OuterAreaWidth() - warea.InnerAreaWidth());
-      int h = buffer->H() - (warea.OuterAreaHeight() - warea.InnerAreaHeight());
-      Rectangle bufrect(warea.LeftIndent() , warea.TopIndent() , w , h);
+      Rectangle bufrect(0 , 0 , buffer->W() , buffer->H());
       root_layout->WidgetBase::SetWidgetArea(bufrect , false);
    }
 }
@@ -1169,7 +1144,14 @@ void WidgetHandler::SyncLayoutPos() {
 
 
 void WidgetHandler::SyncCamera() {
-   cam.SetViewArea(cam.ViewArea());
+   /// Reset the camera position as best we can
+   Rectangle v = cam.ViewArea();
+   int iw = warea.InnerAreaWidth();
+   int ih = warea.InnerAreaHeight();
+   if ((v.W() >= iw) || (v.H() >= ih)) {
+      v.SetDimensions((v.W() >= iw)?iw:v.W() , (v.H() >= ih)?ih:v.H());
+   }
+   cam.SetViewArea(v);
 }
 
 
@@ -1553,6 +1535,43 @@ bool WidgetHandler::InView(WidgetBase* w) {
 
 
 /// Returns top most widget at x,y
+
+
+
+WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
+   
+   /// If the absolute position is outside of our area
+   if (!OuterArea().Contains(absx , absy)) {
+      return (WidgetBase*)0;
+   }
+   if (!InnerArea().Contains(absx , absy)) {
+      return this;
+   }
+   /// Make the position relative to the buffer
+   int relx = absx - InnerArea().X();
+   int rely = absy - InnerArea().Y();
+   
+   /// Account for the camera
+   relx += cam.ViewX();
+   rely += cam.ViewY();
+   
+   /// Search drawlist from front to back
+   for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
+      WidgetBase* w = drawlist[i];
+      if (w->OuterArea().Contains(relx , rely)) {
+         WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
+         if (!wh) {
+            return w;
+         }
+         return wh->GetWidgetAt(relx , rely);
+      }
+   }
+   
+   /// We know the widget is inside our area, and outside of all others
+   return this;
+}
+
+/**
 WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
@@ -1568,7 +1587,7 @@ WidgetBase* WidgetHandler::GetWidgetAt(int x , int y) {
    if (OuterArea().Contains(x,y)) {return this;}
    return 0;
 }
-
+*/
 
 
 int WidgetHandler::GetMouseX() {
@@ -1586,7 +1605,7 @@ int WidgetHandler::GetMouseX() {
       absx += AbsParentX();
    }
    
-   const int cx = cam.X();
+   const int cx = cam.ViewX();
    
    return (mx - absx) + cx;
 /**   
@@ -1620,7 +1639,7 @@ int WidgetHandler::GetMouseY() {
       absy += AbsParentY();
    }
    
-   const int cy = cam.Y();
+   const int cy = cam.ViewY();
    
    return (my - absy) + cy;
 
@@ -1683,7 +1702,7 @@ void WidgetHandler::AllowMiddleMouseButtonDrag(bool allow) {
 
 
 std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << "WidgetHandler class object - address " << this << " {" << endl;
+   os << indent << "WidgetHandler class object [" << FullName() << "] {" << endl;
    ++indent;
    os << indent << "Buffer Data :" << endl;
    ++indent;

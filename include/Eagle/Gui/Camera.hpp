@@ -124,10 +124,10 @@ public :
 
    /// Getters
    Rectangle ViewArea() const {return view_area;}
-   int       X() const {return view_area.X();}
-   int       Y() const {return view_area.Y();}
-   int       W() const {return view_area.W();}
-   int       H() const {return view_area.H();}
+   int       ViewX()    const {return view_area.X();}
+   int       ViewY()    const {return view_area.Y();}
+   int       ViewW()    const {return view_area.W();}
+   int       ViewH()    const {return view_area.H();}
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 

@@ -96,6 +96,7 @@ protected :
    
    MESSAGEQUEUE    mque;
    bool            clear_background;
+   bool            always_clear;
 
    InputGroup      focus_cycle_forward;
    InputGroup      focus_cycle_backward;
@@ -235,8 +236,12 @@ public :
 
 
    bool AreaFree(Rectangle r , WidgetBase* widget);
+   
    bool InView(WidgetBase* w);
-   WidgetBase* GetWidgetAt(int x , int y);
+   
+   WidgetBase* GetWidgetAt(const int absx , const int absy);
+   
+   
    
    int GetMouseX();// returns mouse x relative to gui's inner area
    int GetMouseY();// returns mouse y relative to gui's inner area
