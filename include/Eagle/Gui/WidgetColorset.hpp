@@ -60,9 +60,12 @@ enum WIDGETCOLOR {
    FGCOL   = 3,
    HLCOL   = 4,
    TXTCOL  = 5,
-   HVRCOL  = 6
+   HVRCOL  = 6,
+   PADCOL  = 7,
+   BORDCOL = 8,
+   MARGCOL = 9
 };
-#define EAGLE_NUMCOLORS 7
+#define EAGLE_NUMCOLORS 10
 //*/
 
 std::string WidgetColorName(WIDGETCOLOR wc);

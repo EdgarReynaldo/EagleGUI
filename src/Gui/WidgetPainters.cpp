@@ -70,11 +70,11 @@ void WidgetPainterBasic::PaintBackground() {
    
    NPAREA np;
    np = wa.OuterNP();
-   np.PaintOutsideSolid(window , EagleColor(255,0,0));
+   np.PaintOutsideSolid(window , wc[MARGCOL]);
    np = wa.BorderNP();
-   np.PaintOutsideSolid(window , EagleColor(0,255,0));
+   np.PaintOutsideSolid(window , wc[BORDCOL]);
    np = wa.PaddingNP();
-   np.PaintOutsideSolid(window , EagleColor(0,0,255));
+   np.PaintOutsideSolid(window , wc[PADCOL]);
    
    
    

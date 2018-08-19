@@ -37,7 +37,10 @@ std::string WidgetColorName(WIDGETCOLOR wc) {
       "FGCOL",
       "HLCOL",
       "TXTCOL",
-      "HVRCOL"
+      "HVRCOL",
+      "PADCOL",
+      "BORDCOL",
+      "MARGCOL"
    };
    return names[wc];
 }
@@ -52,7 +55,10 @@ WIDGETCOLOR WidgetColorFromName(std::string name) {
       "FGCOL",
       "HLCOL",
       "TXTCOL",
-      "HVRCOL"
+      "HVRCOL",
+      "PADCOL",
+      "BORDCOL",
+      "MARGCOL"
    };
    for (int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {
       if (name.compare(names[i]) == 0) {
@@ -72,7 +78,10 @@ EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
    EagleColor(192 , 192 , 192 , 255),
    EagleColor(255 , 255 , 255 , 255),
    EagleColor(255 , 255 , 255 , 255),
-   EagleColor(255 , 255 , 255 , 255)
+   EagleColor(255 , 255 , 255 , 255),
+   EagleColor(255 , 0   , 0   , 255),
+   EagleColor(0   , 255 , 0   , 255),
+   EagleColor(0   , 0   , 255 , 255)
 };
 
 
@@ -105,8 +114,8 @@ std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) con
    const EagleColor* c = wcolorset;
    os << indent << "WidgetColorset : " << std::endl;
    ++indent;
-   os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "]" << std::endl;
-   os << indent << "FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "] TXTCOL = [" << c[TXTCOL] << "] HVRCOL = [" << c[HVRCOL] << "]" << std::endl;
+   os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "] FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "]" << std::endl;
+   os << indent << "TXTCOL = [" << c[TXTCOL] << "] HVRCOL = [" << c[HVRCOL] << "] PADCOL = [" << c[PADCOL] << "] BORDCOL = [" << c[BORDCOL] << "] MARGCOL = [" << c[MARGCOL] << "]" << std::endl;
    --indent;
    return os;
 }
