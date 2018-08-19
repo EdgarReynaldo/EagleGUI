@@ -43,7 +43,6 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
-   
 ///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
 ///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
    Allegro5System* sys = GetAllegro5System();
@@ -60,12 +59,10 @@ int main(int argc , char** argv) {
 
    WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
    gui1.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
-///   gui1.SetWidgetArea(WIDGETAREA(0,0,0 , Rectangle(150,150,900,600)) , false);
    
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
    gui2.SetupBuffer(1280,960,win);
    gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
-///   gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
    gui1.AllowMiddleMouseButtonDrag(false);
    gui2.AllowMiddleMouseButtonDrag(true);
    
@@ -74,8 +71,6 @@ int main(int argc , char** argv) {
    
    gui1 << gui2;
 
-   EagleLog() << gui2.GetWidgetArea() << std::endl;
-   
    RelativeLayout rl1("RLAYOUT1");
    rl1.Resize(5);
    rl1.SetLayoutRectangle(0 , LayoutRectangle(0.2 , 0.2 , 0.6 , 0.2));
@@ -114,8 +109,6 @@ int main(int argc , char** argv) {
    int my = 0;
    
    sys->GetSystemTimer()->Start();
-   
-   EagleLog() << gui1 << std::endl;
    
    while (!quit) {
 ///      if (redraw) {
