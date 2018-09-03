@@ -156,13 +156,5 @@ public :
 };
 
 
-#include <memory>
-#include "Eagle/SharedMemory.hpp"
-
-typedef SHAREDOBJECT<BasicButton> SHAREDBUTTON;
-
-SHAREDBUTTON StackButton(BasicButton* b);
-SHAREDBUTTON StackButton(BasicButton& b);
-
 
 #endif // Button_HPP

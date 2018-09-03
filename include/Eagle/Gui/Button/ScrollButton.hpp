@@ -19,7 +19,7 @@ class BasicScrollButton : public WidgetBase {
 protected :
    BasicButton our_basic_button;
 
-   SHAREDBUTTON scroll_button;
+   BasicButton* scroll_button;
    BasicScrollBar* our_scrollbar;
    
    int increment;
@@ -54,7 +54,7 @@ public :
    ~BasicScrollButton() {}
 
    void UseBasicButton();
-   void UseButton(SHAREDBUTTON button);
+   void UseButton(BasicButton* button);
    void SetScrollBar(BasicScrollBar* scrollbar);/// For scrollbars to use
    void SetIncrement(int new_increment);
    virtual void SetScrollDirection(bool up_or_left , bool horizontal);

@@ -98,6 +98,7 @@ void WidgetBase::OnColorChanged() {
 
 void WidgetBase::OnSelfAreaChanged(WIDGETAREA new_widget_area) {
    if (whandler) {
+      /// Make the old widget area dirty
       whandler->MakeAreaDirty(warea.OuterArea());
    }
    warea = new_widget_area;

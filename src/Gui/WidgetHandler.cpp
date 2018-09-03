@@ -800,7 +800,7 @@ WidgetHandler::~WidgetHandler() {
 
 
 
-void WidgetHandler::QueueUserMessage(const WidgetMsg& wmsg) {
+void WidgetHandler::QueueUserMessage(WidgetMsg wmsg) {
    
    const WidgetMsg cammovemsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);
 
@@ -1558,7 +1558,8 @@ WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
    /// Search drawlist from front to back
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
-      if (w->OuterArea().Contains(relx , rely)) {
+      bool visible = w->Flags().FlagOn(VISIBLE);
+      if (visible && w->OuterArea().Contains(relx , rely)) {
          WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
          if (!wh) {
             return w;

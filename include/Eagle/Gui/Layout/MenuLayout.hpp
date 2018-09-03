@@ -37,7 +37,7 @@ enum MENU_LAYOUT_DIRECTION {
 };
 
 
-class MenuLayout : public GridLayout {
+class ClassicMenuLayout : public GridLayout {
    
    MENU_LAYOUT_DIRECTION layout_direction;
 
@@ -45,8 +45,13 @@ class MenuLayout : public GridLayout {
    
 public :
    
-   MenuLayout(std::string objname = "Nemo");
+   ClassicMenuLayout(std::string objname = "Nemo");
    
+   
+   
+   
+   
+   /// Classic menu options
    
    void ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new_direction = MENU_VERTICAL);
    

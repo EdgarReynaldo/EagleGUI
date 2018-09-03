@@ -123,17 +123,6 @@ Camera::Camera(std::string objclass , std::string objname) :
 int Camera::PrivateHandleEvent(EagleEvent ee) {
    if (!IsMouseEvent(ee)) {return DIALOG_OKAY;}
    
-   if (ee.type != EAGLE_EVENT_MOUSE_AXES) {
-      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-         string s = StringPrintF(" BTN %d down" , ee.mouse.button);
-         EagleLog () << "Camera :" << s << std::endl;
-      }
-      if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-         string s = StringPrintF(" BTN %d up" , ee.mouse.button);
-         EagleLog () << "Camera :" << s << std::endl;
-      }
-   }
-   
    int msx = ee.mouse.x;
    int msy = ee.mouse.y;
    if (Flags().FlagOn(ENABLED)) {

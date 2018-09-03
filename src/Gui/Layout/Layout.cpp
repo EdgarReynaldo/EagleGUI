@@ -258,6 +258,7 @@ Layout::Layout(std::string objclass , std::string objname) :
       valign(VALIGN_TOP)
 {
    zdepth = ZORDER_PRIORITY_LOW;
+   SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
 }
 
 

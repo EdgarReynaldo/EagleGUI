@@ -58,7 +58,7 @@ string GetButtonActionTypeText(BUTTON_ACTION_TYPE type) {
 }
 
 
-
+/// Lazy TODO why do these use stringstreams? :/
 string GetButtonClassText(BUTTON_CLASS _class) {
    stringstream ss;
    switch (_class) {
@@ -453,20 +453,5 @@ bool BasicButton::Up() {
 bool BasicButton::Hover() {
    return ButtonHover(btn_state);
 }
-
-
-
-SHAREDBUTTON StackButton(BasicButton* b) {
-   return StackObject(b);
-}
-
-
-
-SHAREDBUTTON StackButton(BasicButton& b) {
-   return StackObject(&b);
-}
-
-
-
 
 

@@ -122,7 +122,24 @@ void GridLayout::OnAreaChanged() {
 }
 
 
+/*
 
+	int ncols;
+	int nrows;
+	int size;
+	
+	int colwidth;
+	int rowheight;
+	
+	int cellhpad;
+	int cellvpad;
+	
+	int colhspace;
+	int rowvspace;
+	
+	GRID_OPTIONS options;
+
+*/
 GridLayout::GridLayout(int numcolumns , int numrows , std::string objclass , std::string objname) :
       Layout(objclass , objname),
 		ncols(0),
@@ -132,6 +149,8 @@ GridLayout::GridLayout(int numcolumns , int numrows , std::string objclass , std
 		rowheight(0),
 		cellhpad(0),
 		cellvpad(0),
+		colhspace(0),
+		rowvspace(0), 
 		options(GRID_FILL_CELL)
 {
 	ResizeGrid(numcolumns , numrows);
@@ -145,7 +164,7 @@ GridLayout::~GridLayout() {
 
 
 
-Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
+Rectangle GridLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    const WidgetBase* widget = GetWidget(widget_slot);
    if (!widget) {
       return BADRECTANGLE;
@@ -170,6 +189,9 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
 
 	if (newsize == 0) {
       ClearWidgets();
+      nrows = 0;
+      ncols = 0;
+      size = 0;
 	}
    else {
       std::vector<WidgetBase*> keep_widgets((unsigned int)newsize , (WidgetBase*)0);
@@ -185,7 +207,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
          if (row >= newrows) {
             for (col = 0 ; col < oldcols ; ++col) {
                oldindex = row*oldcols + col;
-               RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
+               RemoveWidgetFromLayout(wchildren[oldindex]);/// Places NULL in its slot
             }
          }
          else {
@@ -193,7 +215,7 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
                oldindex = row*oldcols + col;
                /// If the current column is outside the new grid, remove the widget in the current row and column
                if (col >= newcolumns) {
-                  RemoveWidgetFromLayout(wchildren[oldindex]);/// Optionally frees widget and places NULL in its slot
+                  RemoveWidgetFromLayout(wchildren[oldindex]);/// Places NULL in its slot
                }
                else {
                   newindex = row*newcolumns + col;
@@ -204,13 +226,12 @@ void GridLayout::ResizeGrid(int newcolumns , int newrows) {
          }
       }
       wchildren = keep_widgets;
+      ncols = newcolumns;
+      nrows = newrows;
+      size = newsize;
+      CalculateGrid();
       RepositionAllChildren();
    }
-	
-	ncols = newcolumns;
-	nrows = newrows;
-	size = newsize;
-	CalculateGrid();
 }
 
 
@@ -226,12 +247,7 @@ void GridLayout::SetGlobalPadding(unsigned int hpad , unsigned int vpad) {
 void GridLayout::SetGlobalSpacing(unsigned int hspace , unsigned int vspace) {
    colhspace = hspace;
    rowvspace = vspace;
-   if (ncols > 0) {
-      colwidth = InnerArea().W() - (ncols-1)*hspace;
-   }
-   if (nrows > 0) {
-      rowheight = InnerArea().H() - (nrows - 1)*vspace;
-   }
+   CalculateGrid();
    RepositionAllChildren();
 }
 
@@ -243,6 +259,15 @@ Rectangle GridLayout::GetCellRectangle(int cellx , int celly) {
    int w = colwidth - 2*cellhpad;
    int h = rowheight - 2*cellvpad;
    return Rectangle(x,y,w,h);
+}
+
+
+
+std::ostream& GridLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << ncols << " by " << nrows << " Grid Layout " << FullName() << std::endl;
+   os << indent << colwidth << " by " << rowheight << " cell area. Padding " << cellhpad << " by " << cellvpad;
+   os << " , spacing " << colhspace << " by " << rowvspace << std::endl;
+   return Layout::DescribeTo(os , indent);
 }
 
 

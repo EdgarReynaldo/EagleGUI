@@ -89,7 +89,6 @@ void GuiButton::ResetClickArea() {
 void GuiButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    DrawGuiButtonShape(win , this , xpos , ypos);
    DrawGuiButtonText(win , this , xpos , ypos);
-   ClearRedrawFlag();
 }
 
 
@@ -138,7 +137,6 @@ void GuiButton::SetButtonType(BUTTON_SHAPE shape , BUTTON_ACTION_TYPE action_typ
 
 void GuiButton::SetLabel(string label_text) {
    text = label_text;
-   SetShortName(text);
    SetBgRedrawFlag();
 }
 
@@ -286,7 +284,7 @@ void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int
 
 
 void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int y) {
-   if (!btn || !win) {
+   if (!btn && !win) {
       throw EagleException("Null win and Null btn passed to DrawGuiButtonText.\n");
    }
    else if (!btn) {
@@ -312,247 +310,6 @@ void DrawGuiButtonText(EagleGraphicsContext* win , GuiButton* btn , int x , int 
    }
    
 }
-
-
-
-
-
-
-/// --------------------------------     HoverGuiButton     --------------------------------
-
-/*
-
-HoverGuiButton::HoverGuiButton(std::string name) :
-      GuiButton(name)
-{}
-
-
-
-HoverGuiButton::HoverGuiButton(std::string name , BUTTON_SHAPE shape , BTN_ACTION_TYPE atype , FONT* textfont , 
-                         std::string label , const InputGroup& input , const Rectangle& position , UINT wflags) :
-      GuiButton(name , shape , atype , textfont , label , input , position , wflags)
-{}
-
-
-
-void HoverGuiButton::DisplayOn(BITMAP* bmp , int x , int y) {
-   if (flags & HOVER) {
-      if (up) {
-         Rectangle r = area;
-         r.MoveBy(x,y);
-         switch (btn_shape) {
-            case RECTANGLE_BTN : 
-               r.DrawGuiRectUp(bmp , WCols()[BGCOL] , WCols()[SDCOL]);
-               break;
-            case CIRCLE_BTN : 
-               r.DrawGuiCircleUp(bmp , rad_a , WCols()[BGCOL] , WCols()[SDCOL]);
-               break;
-            case ROUNDED_BTN :
-               r.DrawGuiRoundedUp(bmp , rad_a , WCols()[BGCOL] , WCols()[SDCOL]);
-               break;
-            case ELLIPSE_BTN : 
-               r.DrawGuiEllipseUp(bmp , WCols()[BGCOL] , WCols()[SDCOL]);
-               break;
-         }
-      }
-      else {
-         GuiButton::DisplayOn(bmp , x , y);
-      }
-   }
-   else {
-      GuiButton::DisplayOn(bmp , x , y);
-   }
-}
-
-
-   
-void HoverGuiButton::SetHoverState (bool state) {
-   WidgetBase::SetHoverState(state);
-   SetRedrawFlag();
-}
-  
-*/
-
-
-
-
-
-
-
-
-
-
-
-/* TODO : OLD REMOVE
-
-
-
-#include "Eagle/Gui/GuiButton.hpp"
-#include "Eagle/InputHandler.hpp"
-
-
-
-const unsigned int TOPIC_BUTTON = NextFreeTopicId();
-
-
-
-GuiButtonBase::GuiButtonBase() :
-      down(false),
-      hover(false),
-      selected(false),
-      upimage(0),
-      downimage(0),
-      hoverimage(0),
-      selectedimage(0),
-      text(""),
-      font(0)
-{
-   outer_color = EagleColor(0,64,64);
-   down_color = EagleColor(0,127,127);
-   up_color = EagleColor(0,0,255);
-   hover_color = EagleColor(0,192,192);
-   selected_color = EagleColor(0,255,0);
-   text_color = EagleColor(255,255,255);
-   text_color2 = EagleColor(0,0,255);
-}
-
-
-
-GuiButtonBase::GuiButtonBase(std::string text_str , EagleFont* text_font) :
-      down(false),
-      hover(false),
-      selected(false),
-      upimage(0),
-      downimage(0),
-      hoverimage(0),
-      selectedimage(0),
-      text(text_str),
-      font(text_font)
-{
-   outer_color = EagleColor(0,64,64);
-   down_color = EagleColor(0,127,127);
-   up_color = EagleColor(0,0,255);
-   hover_color = EagleColor(0,192,192);
-   selected_color = EagleColor(0,255,0);
-   text_color = EagleColor(255,255,255);
-   text_color2 = EagleColor(0,0,255);
-}
-
-
-
-int GuiButtonBase::PrivateHandleEvent(EagleEvent e) {
-   (void)e;
-   return DIALOG_OKAY;
-}
-
-
-
-int GuiButtonBase::CheckInputs() {
-   if (input_mouse_release(LMB) && down) {
-      RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_RELEASED));
-      down = false;
-      SetRedrawFlag();
-   }
-   if (area.OuterArea().Contains(mouse_x , mouse_y)) {
-       if (!hover) {
-         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_HOVER));
-         SetRedrawFlag();
-       }
-       hover = true;
-      if (input_mouse_press(LMB)) {
-         RaiseEvent(WidgetMsg(this , TOPIC_BUTTON , BUTTON_CLICKED));
-         down = true;
-         SetRedrawFlag();
-      }
-   }
-   else {
-      if (hover) {
-         hover = false;
-         SetRedrawFlag();
-      }
-   }
-   return DIALOG_OKAY;
-}
-
-
-
-void GuiButtonBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-
-
-//   virtual void DrawTextString(EagleFont* font , std::string s , float x , float y , EagleColor c ,
-//                               TEXT_HDRAWING_FLAGS halign = DRAW_TEXT_LEFT ,
-//                               TEXT_VDRAWING_FLAGS valign = DRAW_TEXT_TOP)=0;
-
-//   virtual void DrawFilledRoundedRectangle(float x , float y , float w , float h , float rx , float ry , EagleColor c)=0;
-
-
-
-   Rectangle r = area.OuterArea();
-   Rectangle r2 = area.InnerArea();
-   r.MoveBy(xpos,ypos);
-   r2.MoveBy(xpos,ypos);
-   
-   
-   if (flags & NEEDS_REDRAW) {
-         
-      if (selected) {
-         win->DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , 10 , 5 , outer_color);
-         win->DrawFilledRoundedRectangle(r2.X() , r2.Y() , r2.W() , r2.H() , 10 , 5 , selected_color);
-         win->DrawTextString(font , text , r.X() + r.W()/2 , r.Y() + r.H()/2 , text_color , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-      }
-      if (down) {
-         win->DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , 10 , 5 , outer_color);
-         win->DrawFilledRoundedRectangle(r2.X() , r2.Y() , r2.W() , r2.H() , 10 , 5 , down_color);
-         win->DrawTextString(font , text , r.X() + r.W()/2 , r.Y() + r.H()/2 , text_color , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-      }
-      else {
-         if (hover) {
-            win->DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , 10 , 5 , outer_color);
-            win->DrawFilledRoundedRectangle(r2.X() , r2.Y() , r2.W() , r2.H() , 10 , 5 , hover_color);
-            win->DrawTextString(font , text , r.X() + r.W()/2 , r.Y() + r.H()/2 , text_color , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-         }
-         else {
-            win->DrawFilledRoundedRectangle(r.X() , r.Y() , r.W() , r.H() , 10 , 5 , outer_color);
-            win->DrawFilledRoundedRectangle(r2.X() , r2.Y() , r2.W() , r2.H() , 10 , 5 , up_color);
-            win->DrawTextString(font , text , r.X() + r.W()/2 , r.Y() + r.H()/2 , text_color2 , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-         }
-      }
-   }
-   
-   ClearRedrawFlag();
-}
-
-
-
-int GuiButtonBase::Update(double tsec) {
-   (void)tsec;
-   return DIALOG_OKAY;
-}
-
-
-
-/// Highlight GuiButton
-
-
-void HighlightGuiButton::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   
-   Rectangle r = area.OuterArea();
-   r.MoveBy(xpos , ypos);
-   
-   if (hover) {
-      if (selected) {
-         win->DrawFilledRectangle(r.X() , r.Y() , r.W() , r.H() , selected_color);
-      }
-      win->DrawRectangle(r.X() + 5 , r.Y() + 5  , r.W() - 10 , r.H() - 10 , 10 , hover_color);
-   }
-   else {
-      
-   }
-   win->DrawTextString(font , text , r.X() + r.W()/2 , r.Y() + r.H()/2 , text_color , DRAW_TEXT_CENTER , DRAW_TEXT_VCENTER);
-}
-
-*/
-
 
 
 

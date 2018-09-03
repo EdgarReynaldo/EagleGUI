@@ -89,7 +89,7 @@ int BasicScrollButton::PrivateHandleEvent(EagleEvent e) {
 
 
 void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (scroll_button.get() == &our_basic_button) {
+   if (scroll_button == &our_basic_button) {
       Triangle t = our_click_area;
       t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
       WidgetColorset wc = WidgetColors();
@@ -119,8 +119,8 @@ int BasicScrollButton::PrivateUpdate(double tsec) {
 
 void BasicScrollButton::QueueUserMessage(const WidgetMsg& wmsg) {
 
-   const WidgetMsg clickmessage(scroll_button.get() , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
-   const WidgetMsg heldmessage(scroll_button.get() , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
+   const WidgetMsg clickmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+   const WidgetMsg heldmessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_HELD);
 
    const WidgetMsg releasemessage(scroll_button , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
 
@@ -185,7 +185,7 @@ BasicScrollButton::BasicScrollButton(std::string objclass , std::string objname)
 
 
 void BasicScrollButton::UseBasicButton() {
-   UseButton(StackButton(our_basic_button));
+   UseButton(&our_basic_button);
    ResetTriangle();
    our_basic_button.SetClickArea(&our_click_area , false);
 }
@@ -193,7 +193,7 @@ void BasicScrollButton::UseBasicButton() {
 
 
 
-void BasicScrollButton::UseButton(SHAREDBUTTON button) {
+void BasicScrollButton::UseButton(BasicButton* button) {
    if (!button) {
       UseBasicButton();
    }

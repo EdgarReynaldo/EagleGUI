@@ -73,7 +73,7 @@ public :
 	virtual ~GridLayout();
 
    /// LayoutBase
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const;
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
    /// GridLayout
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed
@@ -83,8 +83,9 @@ public :
 
    Rectangle GetCellRectangle(int cellx , int celly);
 
-   virtual std::string GetWidgetClassName() {return "GridLayout object";}
+   virtual std::string GetWidgetClassName() {return "GridLayout";}
 
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
 
 
