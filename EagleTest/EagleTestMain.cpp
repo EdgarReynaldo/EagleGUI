@@ -47,16 +47,81 @@ int main(int argc , char** argv) {
 ///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
    Allegro5System* sys = GetAllegro5System();
    
-   
+   int sw = 1200;
+   int sh = 900;
    
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       EagleWarn() << "Failed to install some components." << std::endl;
    }
-   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , 1200 , 900 , EAGLE_OPENGL | EAGLE_WINDOWED);
+   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
 
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();
 
+   
+   WidgetHandler gui(win , "Gui" , "gui");
+   
+   gui.SetWidgetArea(Rectangle(0,0,sw,sh) , false);
+   
+   
+   RelativeLayout rl("RLayout");
+   
+   gui.SetRootLayout(&rl);
+   
+   std::vector<WidgetBase*> hbtns = {
+      new GuiButton("GuiButton" , "Menu button #1"),
+      new GuiButton("GuiButton" , "Menu button #2"),
+      new GuiButton("GuiButton" , "Menu button #3"),
+      new GuiButton("GuiButton" , "Menu button #4")
+   };
+
+   std::vector<WidgetBase*> vbtns = {
+      new GuiButton("GuiButton" , "Menu button #5"),
+      new GuiButton("GuiButton" , "Menu button #6"),
+      new GuiButton("GuiButton" , "Menu button #7"),
+      new GuiButton("GuiButton" , "Menu button #8")
+   };
+
+   for (int i = 0 ; i < (int)hbtns.size() ; ++i) {
+      GuiButton* hb = dynamic_cast<GuiButton*>(hbtns[i]);
+      GuiButton* vb = dynamic_cast<GuiButton*>(vbtns[i]);
+
+      hb->SetFont(win->DefaultFont());
+      hb->SetInputGroup(input_key_press(EAGLE_KEY_1 + i));
+      hb->SetLabel(StringPrintF("Button #%d" , i + 1));
+
+      vb->SetFont(win->DefaultFont());
+      vb->SetInputGroup(input_key_press(EAGLE_KEY_5 + i));
+      vb->SetLabel(StringPrintF("Button #%d" , i + 5));
+   }
+   
+   ClassicMenuLayout vmenu("VMenu");
+   ClassicMenuLayout hmenu("HMenu");
+   
+   rl.Resize(2);
+
+   rl.SetLayoutRectangle(0 , LayoutRectangle(0.0 , 0.0 , 0.8 , 0.05));
+   rl.SetLayoutRectangle(1 , LayoutRectangle(0.4 , 0.15 , 0.2 , 0.7));
+
+   rl.PlaceWidget(&hmenu , 0);
+   rl.PlaceWidget(&vmenu , 1);
+
+   vmenu.ResizeMenu(4 , MENU_VERTICAL);
+   hmenu.ResizeMenu(4 , MENU_HORIZONTAL);
+   
+   vmenu.SetWChildren(vbtns);
+   hmenu.SetWChildren(hbtns);
+   
+   vmenu.SetGlobalSpacing(0,20);
+   
+   
+   
+   
+   
+   EagleLog() << gui << std::endl;
+   
+   /**
+   
    WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
    gui1.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
    
@@ -99,6 +164,8 @@ int main(int argc , char** argv) {
    tw3.SetWidgetArea(WIDGETAREA(tw3.OuterArea() , 2,4,6));
    tw4.SetWidgetArea(WIDGETAREA(tw4.OuterArea() , 6,4,2));
    tw5.SetWidgetArea(WIDGETAREA(tw5.OuterArea() , 5,5,5));
+   
+   */
          
    EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
          
@@ -110,15 +177,17 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
+   
+   
    while (!quit) {
 ///      if (redraw) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         WidgetBase* hw = gui1.GetWidgetAt(mx,my);
+         gui.Display(win , 0 , 0);
+         WidgetBase* hw = gui.GetWidgetAt(mx,my);
          std::string name = (hw?hw->FullName():"NULL");
-         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , 10 , 10 , EagleColor(255,255,255));
-         gui1.Display(win , 0 , 0);
+         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , sw - 10 , sh - win->DefaultFont()->Height() - 5 , EagleColor(255,255,255) , HALIGN_RIGHT , VALIGN_TOP);
          win->FlipDisplay();
          redraw = false;
       }
@@ -130,10 +199,12 @@ int main(int argc , char** argv) {
          
          if (ev.type == EAGLE_EVENT_KEY_DOWN) {
             if (ev.keyboard.keycode >= EAGLE_KEY_1 && ev.keyboard.keycode <= EAGLE_KEY_4) {
+/*
                int index = ev.keyboard.keycode - EAGLE_KEY_1;
                Pos2I p(0,0);
                p.MoveBy((index % 2 == 1)?640:0 , (index / 2 == 1)?480:0);
                gui2.MoveViewTlxTo(p.X() , p.Y());
+*/
             }
          }
          
@@ -150,18 +221,18 @@ int main(int argc , char** argv) {
             quit = true;
          }
          else if (ev.type == EAGLE_EVENT_TIMER) {
-            gui1.Update(ev.timer.eagle_timer_source->SPT());
+            gui.Update(ev.timer.eagle_timer_source->SPT());
             /// redraw = true;
          }
          else {
-            gui1.HandleEvent(ev);
+            gui.HandleEvent(ev);
          }
          
-         while (gui1.HasMessages()) {
-            WidgetMsg wmsg = gui1.TakeNextMessage();
-            (void)wmsg;
+         while (gui.HasMessages()) {
+            WidgetMsg wmsg = gui.TakeNextMessage();
+            EagleLog() << "Widget Message [" << wmsg << "]" << std::endl;
          }
-         if (gui1.Flags().FlagOn(NEEDS_REDRAW)) {
+         if (gui.Flags().FlagOn(NEEDS_REDRAW)) {
             redraw = true;
          }
          

@@ -47,6 +47,11 @@ TODO : Milestones necessary for development
 
 1. Finish basic widget set
 
+   TODO : Layouts
+      a - StickyLayout (refs another widget and "sticks" to it, so they move together)
+      b - ScrollAreaLayout - make it a layout instead of a widget? Might save some work.
+      c - MenuLayout, like a StickyLayout
+      
    TODO : Widgets in production
       a - Drop down list (might want ScrollArea first)
       b - Radio Button
