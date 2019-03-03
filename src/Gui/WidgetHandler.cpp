@@ -817,6 +817,7 @@ void WidgetHandler::QueueUserMessage(WidgetMsg wmsg) {
 }
 
 
+
 void WidgetHandler::SetDrawWindow(EagleGraphicsContext* window) {
    EAGLE_ASSERT(window);
    
@@ -1559,7 +1560,8 @@ WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
       bool visible = w->Flags().FlagOn(VISIBLE);
-      if (visible && w->OuterArea().Contains(relx , rely)) {
+///      if (visible && w->OuterArea().Contains(relx , rely)) {
+      if (true && w->OuterArea().Contains(relx , rely)) {
          WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
          if (!wh) {
             return w;

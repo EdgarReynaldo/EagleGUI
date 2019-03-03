@@ -51,13 +51,6 @@ private :
 	
 	GRID_OPTIONS options;
 	
-
-/**
-   virtual void RepositionAllChildren();
-   virtual void RepositionChild(int slot);
-	void RepositionChild(int cellx , int celly);
-//*/
-
 protected :
 	
    Rectangle RequestWidgetRectangle(WidgetBase* widget) const;
@@ -75,6 +68,8 @@ public :
    /// LayoutBase
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
+   virtual void Resize(unsigned int nsize) {throw EagleException("Use ResizeGrid instead!");}
+
    /// GridLayout
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed
 

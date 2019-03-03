@@ -113,6 +113,7 @@ int main(int argc , char** argv) {
    hmenu.SetWChildren(hbtns);
    
    vmenu.SetGlobalSpacing(0,20);
+   hmenu.SetGlobalSpacing(10,0);
    
    
    

@@ -98,7 +98,7 @@ void PinLayout::ReserveSlots(int nslots) {
 
 /// newx and newy are always ignored. You must set the pin position yourself. The position returned depends solely on
 /// the new width and height and the old pin position.
-Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) const {
+Rectangle PinLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    (void)newx;
    (void)newy;
    

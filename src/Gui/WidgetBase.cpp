@@ -30,6 +30,10 @@ const unsigned int TOPIC_DIALOG = NextFreeTopicId();
 
 
 
+REGISTERED_WIDGET_MESSAGE(TOPIC_DIALOG , DIALOG_I_MOVED);
+
+
+
 /// ---------------------     WidgetBase      --------------------------
 
 

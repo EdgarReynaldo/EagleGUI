@@ -384,7 +384,7 @@ void Layout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 void Layout::SetWChildren(std::vector<WidgetBase*> new_children) {
    ClearWidgets();
-   Resize(new_children.size());
+   ReserveSlots(new_children.size());
    for (int i = 0 ; i < (int)new_children.size() ; ++i) {
       PlaceWidget(new_children[i] , i);
    }

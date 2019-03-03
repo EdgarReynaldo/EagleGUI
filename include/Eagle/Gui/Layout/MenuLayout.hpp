@@ -48,6 +48,7 @@ public :
    ClassicMenuLayout(std::string objname = "Nemo");
    
    
+   virtual void Resize(unsigned int nsize);
    
    
    
@@ -60,6 +61,17 @@ public :
 };
 
 
+class ClassicMenuBarLayout : public GridLayout {
+   
+   
+   virtual int PrivateHandleEvent(EagleEvent ee);
+   
+public :
+   ClassicMenuBarLayout(std::string objname = "Nemo");
+
+   virtual void Resize(unsigned int nsize);
+
+};
 
 
 

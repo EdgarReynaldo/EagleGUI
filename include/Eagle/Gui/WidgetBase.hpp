@@ -53,11 +53,9 @@ enum WIDGET_ZORDER_PRIORITY {
 };
 
 
-extern const unsigned int TOPIC_DIALOG;
 
-/// DIALOG_MSGS = Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
-
-enum DIALOG_MSGS {
+/// DIALOG_RETURN_VALUE = Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
+enum DIALOG_RETURN_VALUE {
    DIALOG_OKAY       = 0x00,/// Also used to signify that there are no messages for the WidgetHandler::TakeNextMessage function.
    DIALOG_CLOSE      = 0x01,
    DIALOG_REDRAW_ALL = 0x02,/// For when the background needs to be cleared / redrawn
@@ -66,6 +64,19 @@ enum DIALOG_MSGS {
    DIALOG_DISABLED   = 0x10,/// Returned when you try to update or check the inputs of a disabled dialog.
    DIALOG_REMOVE_ME  = 0x20
 };
+
+
+extern const unsigned int TOPIC_DIALOG;
+
+
+enum DIALOG_MSGS {
+   DIALOG_NONE    = 0,
+   DIALOG_I_MOVED = 1
+};
+
+
+
+REGISTER_WIDGET_MESSAGE(TOPIC_DIALOG , DIALOG_I_MOVED);
 
 
 

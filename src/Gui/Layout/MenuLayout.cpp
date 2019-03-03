@@ -13,6 +13,13 @@ ClassicMenuLayout::ClassicMenuLayout(std::string objname) :
 
 
 
+void ClassicMenuLayout::Resize(unsigned int nsize) {
+   ResizeMenu(nsize , layout_direction);
+   return;
+}
+
+
+
 void ClassicMenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new_direction) {
    layout_direction = new_direction;
    std::vector<WidgetBase*> cvec = ChildrenVector();
@@ -37,5 +44,23 @@ void ClassicMenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new
 
 
 
+/// -------------------------     ClassicMenuBarLayout     ------------------------
 
 
+
+int ClassicMenuBarLayout::PrivateHandleEvent(EagleEvent ee) {
+   return DIALOG_OKAY;
+}
+
+
+
+ClassicMenuBarLayout::ClassicMenuBarLayout(std::string objname) : 
+      GridLayout(0,0,"ClassicMenuBarLayout" , objname)
+{}
+
+
+
+void ClassicMenuBarLayout::Resize(unsigned int nsize) {
+   ResizeGrid(nsize , 1);
+   return;
+}

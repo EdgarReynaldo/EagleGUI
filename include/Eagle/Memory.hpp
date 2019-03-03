@@ -17,11 +17,3 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  */
-
-
-class Memory
-
-
-
-   bool ReadFileIntoMemory();
-   bool WriteFileToDisk();

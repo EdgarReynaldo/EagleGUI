@@ -114,7 +114,7 @@ public :
    Rectangle RequestWidgetArea(const WidgetBase* widget) const;
    
    
-   void Resize(unsigned int nsize);
+   virtual void Resize(unsigned int nsize);
 
    /// Adding widgets to layout
    
@@ -154,7 +154,7 @@ public :
    int GetLayoutSize() const ;
    
    
-   virtual bool AcceptsFocus() {return false;}
+   virtual bool AcceptsFocus() {return true;}
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
