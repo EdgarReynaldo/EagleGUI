@@ -162,6 +162,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
@@ -272,6 +273,7 @@
 		<Unit filename="src/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Gui/Layout/SplitterLayouts.cpp" />
+		<Unit filename="src/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Gui/Menu.cpp">
 			<Option compile="0" />
 			<Option link="0" />
@@ -343,6 +345,7 @@
 				<doxyfile_dot />
 				<general />
 			</DoxyBlocks>
+			<fortran_project />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
