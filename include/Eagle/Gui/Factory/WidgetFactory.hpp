@@ -17,7 +17,7 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
-
+#include "Eagle/Gui/Scripting/Parsing.hpp"
 #include "Eagle/Gui/Scripting/GuiScript.hpp"
 
 class WidgetFactory;
@@ -117,7 +117,7 @@ WIDGET_TYPE* CreateWidget(const EGSDeclaration& dec , WIDGET_TYPE** pwidget_stor
 
 template <class WIDGET_TYPE>
 WIDGET_TYPE* CreateWidget(std::string widget_class_name , std::string object_name , std::string parameters , WIDGET_TYPE** pwidget_store) {
-   return CreateWidget<WIDGET_TYPE>(widget_class_name , object_name , AttributeValueMap(parameters) , pwidget_store);
+   return CreateWidget<WIDGET_TYPE>(widget_class_name , object_name , ParseAttributeSet(parameters) , pwidget_store);
 }
 
 #endif // WidgetFactory_HPP

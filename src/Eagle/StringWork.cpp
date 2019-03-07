@@ -134,6 +134,40 @@ std::vector<std::string> SplitByDelimiterString(std::string string_to_split , co
 
 
 
+std::string ReadStringUntil(const std::string& str , const char stop) {
+   std::string result = "";
+   const char* s = str.c_str();
+   char duh[2] = {'\0' , '\0'};
+   while (*s && *s != stop) {
+      duh[0] = *s;
+      result.append(duh);
+      ++s;
+   }
+   return result;
+}
+
+
+
+/** Skips characters in expr string until openchar is reached, 
+ *  then reads chars until closechar is reached or the end of the string.
+ */
+std::string GetArgumentList(const std::string& expr , const char openchar , const char closechar) {
+   std::string result = "";
+   int index = 0;
+   const int end = expr.size();
+   while (index < end && expr[index] != openchar) {++index;}
+   ++index;/// skip openchar
+   char duh[2] = {'\0' , '\0'};
+   while (index < end && expr[index] != closechar) {
+      duh[0] = expr[index];
+      result.append(duh);
+      ++index;
+   }
+   return result;
+}
+
+
+
 // returns pointer to one past end of quoted string, returns null on failure
 const char* CopyQuotedString(const char* start_quote , string& s) {
    s = "";

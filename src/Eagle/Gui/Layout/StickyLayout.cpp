@@ -127,9 +127,8 @@ void StickyPositionBase::SetAnchor(WidgetBase* anchor , ANCHOR_POS apos , HALIGN
 
 Pos2I StickyPositionBase::GetAnchorPoint() {
    if (!anchor_widget) {return GetOffset();}
-   if (!posfunc) {return GetOffset();}
-   
-   Pos2I anchor = standard_pos_funcs[anchor_pos](w);
+
+   Pos2I anchor = standard_pos_funcs[anchor_pos](anchor_widget);
    anchor.MoveBy(GetOffset());
    return anchor;
 }
@@ -142,13 +141,13 @@ WidgetBase* StickyPositionBase::AnchorWidget() {
 
 
 
-HALIGNMENT GetHorizontalAlignment() {
+HALIGNMENT StickyPositionBase::GetHorizontalAlignment() {
    return halign;
 }
 
 
 
-VALIGNMENT GetVerticalAlignment() {
+VALIGNMENT StickyPositionBase::GetVerticalAlignment() {
    return valign;
 }
 
@@ -159,12 +158,14 @@ VALIGNMENT GetVerticalAlignment() {
 
 
 int StickyLayout::PrivateHandleEvent(EagleEvent ee) {
-   if (ee.type == EAGLE_EVENT_WIDGET && ee.Topic() == TOPIC_DIALOG && ee.Messages() == DIALOG_I_MOVED) {
-      WidgetBase* from = ee.wmsg.From();
-      for (int i = 0 ; i < (int)anchors.size() ; ++i) {
-         WidgetBase* awidget = anchors[i].AnchorWidget();
-         if (awidget == from) {
-            RepositionChild(i);
+   if (ee.type == EAGLE_EVENT_WIDGET) {
+      if (ee.widget.topic == TOPIC_DIALOG && ee.widget.msgs == DIALOG_I_MOVED) {
+         WidgetBase* from = ee.widget.from;
+         for (int i = 0 ; i < (int)anchors.size() ; ++i) {
+            WidgetBase* awidget = anchors[i].AnchorWidget();
+            if (awidget == from) {
+               RepositionChild(i);
+            }
          }
       }
    }
@@ -174,7 +175,7 @@ int StickyLayout::PrivateHandleEvent(EagleEvent ee) {
 
 
 
-bool StickyLayout::ReserveSlots(int nslots) {
+void StickyLayout::ReserveSlots(int nslots) {
    anchors.resize(nslots);
    RepositionAllChildren();
 }
@@ -197,13 +198,13 @@ Rectangle StickyLayout::RequestWidgetArea(int widget_slot , int newx , int newy 
    if (newwidth == INT_MAX) {newwidth = r.W();}
    if (newheight == INT_MAX) {newheight = r.H();}
    
-   StickyPosition sp = anchors[i];
+   StickyPosition sp = anchors[widget_slot];
    Pos2I anchor = sp.GetAnchorPoint();
-   HALIGNMENT halign = sp.GetHorizontalAlignment();
-   VALIGNMENT valign = sp.GetVerticalAlignment();
+   HALIGNMENT halign2 = sp.GetHorizontalAlignment();
+   VALIGNMENT valign2 = sp.GetVerticalAlignment();
    
-   anchor.MoveBy((halign == HALIGN_RIGHT)?-r.W():(halign == HALIGN_CENTER)?-r.W()/2:0 ,
-                 (valign == VALIGN_BOTTOM)?-r.H():(valign == VALIGN_CENTER)?-r.H()/2:0);
+   anchor.MoveBy((halign2 == HALIGN_RIGHT)?-r.W():(halign2 == HALIGN_CENTER)?-r.W()/2:0 ,
+                 (valign2 == VALIGN_BOTTOM)?-r.H():(valign2 == VALIGN_CENTER)?-r.H()/2:0);
    
    return Rectangle(anchor.X() , anchor.Y() , newwidth , newheight);
 }
@@ -229,15 +230,16 @@ int StickyLayout::AddWidget(WidgetBase* w) {
 void StickyLayout::PlaceWidget(WidgetBase* w , int slot , StickyPosition sp) {
    EAGLE_ASSERT(slot >= 0 && slot < (int)anchors.size());
    anchors[slot] = sp;
-   Layout::PlaceWidget(w , slot);
+   LayoutBase::PlaceWidget(w , slot);
 }
 
 
 
 int StickyLayout::AddWidget(WidgetBase* w , StickyPosition sp) {
-   int newslot = Layout::AddWidget(w);
+   int newslot = LayoutBase::AddWidget(w);
    anchors[newslot] = sp;
    RepositionChild(newslot);
+   return newslot;
 }
 
 

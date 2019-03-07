@@ -141,7 +141,7 @@ void GridLayout::OnAreaChanged() {
 
 */
 GridLayout::GridLayout(int numcolumns , int numrows , std::string objclass , std::string objname) :
-      Layout(objclass , objname),
+      LayoutBase(objclass , objname),
 		ncols(0),
 		nrows(0),
 		size(0),
@@ -267,7 +267,7 @@ std::ostream& GridLayout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << ncols << " by " << nrows << " Grid Layout " << FullName() << std::endl;
    os << indent << colwidth << " by " << rowheight << " cell area. Padding " << cellhpad << " by " << cellvpad;
    os << " , spacing " << colhspace << " by " << rowvspace << std::endl;
-   return Layout::DescribeTo(os , indent);
+   return LayoutBase::DescribeTo(os , indent);
 }
 
 

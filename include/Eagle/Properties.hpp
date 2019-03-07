@@ -2,7 +2,7 @@
 
 
 
-
+#error DEPRECATED
 
 #ifndef Properties_HPP
 #define Properties_HPP

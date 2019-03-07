@@ -29,7 +29,7 @@
 
 
 DumbLayout::DumbLayout(std::string objname) : 
-   Layout("DumbLayout" , objname)
+   LayoutBase("DumbLayout" , objname)
 {
    (void)0;
 }

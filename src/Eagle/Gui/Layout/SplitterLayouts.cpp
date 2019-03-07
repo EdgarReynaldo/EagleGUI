@@ -59,7 +59,7 @@ void DefaultSplitterDrawFunction(EagleGraphicsContext* window , Rectangle divide
 
 void TwoWaySplitter::ReserveSlots(int nslots) {
    (void)nslots;
-   Layout::ReserveSlots(2);
+   LayoutBase::ReserveSlots(2);
 }
 
 
@@ -86,7 +86,7 @@ Rectangle TwoWaySplitter::GetHandleArea() {
 
 
 TwoWaySplitter::TwoWaySplitter(SPLITTER_TYPE stype , EagleGraphicsContext* window , std::string objname) : 
-      Layout("TwoWaySplitter" , objname),
+      LayoutBase("TwoWaySplitter" , objname),
       splitter_type(stype),
       draw_func(DefaultSplitterDrawFunction),
       divider_size(4),
@@ -242,7 +242,7 @@ void TwoWaySplitter::PlaceWidget(SHAREDWIDGET widget , int slot) {
       
       throw EagleException(StringPrintF("ERROR : TwoWaySplitter::PlaceWidget - Slot %d is invalid." , slot));
    }
-   Layout::PlaceWidget(widget , slot);
+   LayoutBase::PlaceWidget(widget , slot);
 }
 
 
@@ -251,7 +251,7 @@ int TwoWaySplitter::AddWidget(SHAREDWIDGET widget) {
    if (NextFreeSlot() == -1) {
       throw EagleException("ERROR : TwoWaySplitter::AddWidget - No free slots available.");
    }
-   return Layout::AddWidget(widget);
+   return LayoutBase::AddWidget(widget);
 }
 
 

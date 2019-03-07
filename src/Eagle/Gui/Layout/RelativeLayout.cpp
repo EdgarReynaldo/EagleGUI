@@ -27,14 +27,14 @@
 
 
 void RelativeLayout::ReserveSlots(int nslots) {
-   Layout::ReserveSlots(nslots);
+   LayoutBase::ReserveSlots(nslots);
    layout_rectangles.resize(wchildren.size() , LayoutRectangle(0,0,1,1));
 }
 
 
 
 RelativeLayout::RelativeLayout(std::string objname) :
-      Layout("RelativeLayout" , objname),
+      LayoutBase("RelativeLayout" , objname),
       layout_rectangles()
 {}
 
@@ -107,13 +107,13 @@ void RelativeLayout::PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle
    EAGLE_ASSERT(slot >= 0 && slot < GetLayoutSize());
    layout_rectangles[slot] = lrect;
 
-   Layout::PlaceWidget(widget , slot);
+   LayoutBase::PlaceWidget(widget , slot);
 }
 
 
 
 int RelativeLayout::AddWidget(WidgetBase* widget , LayoutRectangle lrect) {
-   int new_slot = Layout::AddWidget(0);
+   int new_slot = LayoutBase::AddWidget(0);
    EAGLE_ASSERT(new_slot >= 0 && new_slot < GetLayoutSize());
    layout_rectangles[new_slot] = lrect;
    PlaceWidget(widget , new_slot , lrect);
@@ -149,7 +149,7 @@ std::ostream& RelativeLayout::DescribeTo(std::ostream& os , Indenter indent) con
    for (int i = 0 ; i < GetLayoutSize() ; ++i) {
       os << indent << "LR#" << i << " : " << layout_rectangles[i] << std::endl;
    }
-   return Layout::DescribeTo(os,indent);
+   return LayoutBase::DescribeTo(os,indent);
 }
 
 

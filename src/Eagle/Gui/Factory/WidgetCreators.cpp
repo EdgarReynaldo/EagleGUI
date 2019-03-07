@@ -151,13 +151,15 @@ WidgetBase* CreateTextButtonWidget(std::string object_name , std::AttributeValue
 */
 
 /// Right now only NAME , POS, DIM, and AREA are supported
-void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& attribute_map) {
+void ApplyWidgetBaseAttributes(WidgetBase* widget , const AttributeValueMap& avmap) {
    
    if (!widget) {
       throw EagleException("ApplyWidgetBaseAtributes : widget is NULL.\n");
    }
    
-   widget = widget->GetDecoratorRoot();
+   const ATTVALMAP& attribute_map = avmap.GetAttributeValueMap();
+   
+///   widget = widget->GetDecoratorRoot();/// TODO : FIXME : ???
    
    map<string , string>::const_iterator cit = attribute_map.end();
    
@@ -173,7 +175,9 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       if (2 != sscanf(cstr , "%d,%d" , &x , &y)) {
          throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (POS) Failed to read x,y pair from (%s)\n" , cstr));
       }
-      widget->SetWidgetPos(x,y);
+      Rectangle warea = widget->OuterArea();
+      warea.SetPos(x,y);
+      widget->SetWidgetArea(warea);
    }
    if ((cit = attribute_map.find("DIM")) != attribute_map.end()) {
       cstr = cit->second.c_str();
@@ -181,8 +185,8 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       if (2 != sscanf(cstr , "%d,%d" , &w , &h)) {
          throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (DIM) Failed to read w,h pair from (%s)\n" , cstr));
       }
-      int x = widget->Area().OuterArea().X();
-      int y = widget->Area().OuterArea().Y();
+      int x = widget->OuterArea().X();
+      int y = widget->OuterArea().Y();
       if (w < 0 || h < 0) {
          if (w < 0) {
             w = abs(w);
@@ -192,9 +196,10 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
             h = abs(h);
             y = y - h;
          }
-         widget->SetWidgetPos(x,y);
       }
-      widget->SetWidgetDimensions(w,h);
+      widget->SetWidgetArea(Rectangle(x,y,w,h));
+//      Pos(x,y);
+//      widget->SetWidgetDimensions(w,h);
    }
    if ((cit = attribute_map.find("AREA")) != attribute_map.end()) {
       cstr = cit->second.c_str();
@@ -202,14 +207,16 @@ void ApplyWidgetBaseAttributes(WidgetBase* widget , const map<string , string>& 
       if (4 != sscanf(cstr , "%d,%d,%d,%d" , &x , &y , &w , &h)) {
          throw EagleException(StringPrintF("ApplyWidgetBaseAtributes:: (AREA) Failed to read x,y,w,h set from (%s)\n" , cstr));
       }
-      widget->SetWidgetArea(x,y,w,h);
+      widget->SetWidgetArea(Rectangle(x,y,w,h));
    }
    
 }
 
 
 
-void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std::string>& attribute_map) {
+void ApplyTextAttributes(WidgetBase* widget ,  const AttributeValueMap& avmap) {
+   
+   const ATTVALMAP& attribute_map = avmap.GetAttributeValueMap();
    
    BasicText* text_widget = dynamic_cast<BasicText*>(widget);
    
@@ -223,7 +230,8 @@ void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std:
       text_widget->SetText(cit->second);
    }
    if ((cit = attribute_map.find("FONT")) != attribute_map.end()) {
-      text_widget->SetFont(GetFont(cit->second));
+      throw EagleException("Cannot apply attribute FONT at this time.");
+///      text_widget->SetFont(GetFont(cit->second));/// TODO : FIXME : IMPLEMENT
    }
    if ((cit = attribute_map.find("SHRINKWRAP")) != attribute_map.end()) {
       if (strcmp(cit->second.c_str() , "YES") == 0) {
@@ -235,7 +243,6 @@ void ApplyTextAttributes(WidgetBase* widget ,  const std::map<std::string , std:
 
 
 void SetWidgetBaseParameters(WidgetBase* widget , string widget_parameters) {
-   map<string , string> attribute_map = ParseAttributeSet(widget_parameters);
-   ApplyWidgetBaseAttributes(widget , attribute_map);
+   ApplyWidgetBaseAttributes(widget , ParseAttributeSet(widget_parameters));
 }
 

@@ -37,7 +37,7 @@ typedef void (*SPLITTER_DRAW_FUNC) (EagleGraphicsContext* window , Rectangle div
 
 
 
-class TwoWaySplitter : public Layout {
+class TwoWaySplitter : public LayoutBase {
    
 protected :
    SPLITTER_TYPE splitter_type;

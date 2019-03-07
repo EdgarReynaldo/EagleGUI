@@ -1,11 +1,13 @@
 
 
 
+#error MENU NOT COMPLETE
+
+
 
 #ifndef Menu_HPP
 #define Menu_HPP
 
-#error MENU NOT COMPLETE
 
 #include "Eagle/Gui/WidgetBase.hpp"
 

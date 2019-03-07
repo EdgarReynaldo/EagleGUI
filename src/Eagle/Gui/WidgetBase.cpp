@@ -223,6 +223,17 @@ void WidgetBase::QueueUserMessage(WidgetMsg wmsg) {
 
 
 
+void WidgetBase::SetAttributes(const AttributeValueMap& avmap) {
+   const ATTVALMAP& avpairs = avmap.GetAttributeValueMap();
+   ATTVALMAP::const_iterator it = avpairs.begin();
+   while (it != avpairs.end()) {
+      SetAttribute(it->first , it->second);
+      ++it;
+   }
+}
+
+
+
 void WidgetBase::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
    OnSelfAttributeChanged(a,v);
 }
@@ -322,7 +333,7 @@ bool WidgetBase::InheritsAttribute(const ATTRIBUTE& a) const {
    }
    if (wlayout && wlayout->HasAttribute(a)) {return true;}
    if (whandler && whandler->HasAttribute(a)) {return true;}
-   if (ATTRIBUTEVALUEMAP::GlobalAttributeMap()->HasAttribute(a)) {return true;}
+   if (AttributeValueMap::GlobalAttributeMap()->HasAttribute(a)) {return true;}
    return false;
 }
 
@@ -359,8 +370,8 @@ VALUE WidgetBase::GetAttributeValue(const ATTRIBUTE& a) const {
    if (whandler && whandler->HasAttribute(a)) {
       return whandler->GetAttributeValue(a);
    }
-   if (ATTRIBUTEVALUEMAP::GlobalAttributeMap()->HasAttribute(a)) {
-      return ATTRIBUTEVALUEMAP::GlobalAttributeMap()->GetAttributeValue(a);
+   if (AttributeValueMap::GlobalAttributeMap()->HasAttribute(a)) {
+      return AttributeValueMap::GlobalAttributeMap()->GetAttributeValue(a);
    }
    return "";
 }
@@ -462,7 +473,7 @@ void WidgetBase::ClearRedrawFlag() {
 
 
 
-void WidgetBase::SetLayoutOwner(Layout* l) {
+void WidgetBase::SetLayoutOwner(LayoutBase* l) {
    wlayout = l;
 }
 

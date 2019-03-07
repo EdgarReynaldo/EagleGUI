@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2018+ by Edgar Reynaldo
+ *    Copyright 2009-2019+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -47,11 +47,11 @@ void RemoveKnownAttribute(const ATTRIBUTE& a);
 
 
 
-class ATTRIBUTEVALUEMAP {
+class AttributeValueMap {
    
 public :
    
-   class ATTRIBUTESET {
+   class AttributeSet {
       std::unordered_set<ATTRIBUTE> attset;
    public :
       bool HasAttribute(const ATTRIBUTE& a);
@@ -65,8 +65,10 @@ protected :
    
 public :
    
-   static ATTRIBUTEVALUEMAP* GlobalAttributeMap();
-   static ATTRIBUTESET* KnownAttributes();
+   
+   
+   static AttributeValueMap* GlobalAttributeMap();
+   static AttributeSet* KnownAttributes();
    
    inline bool HasAttribute(const ATTRIBUTE& a) const;
    VALUE GetDefinedAttributeValue(const ATTRIBUTE& a) const;
@@ -76,42 +78,49 @@ public :
    inline void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    inline void RemoveAttribute(const ATTRIBUTE& a);
 
+   const ATTVALMAP& GetAttributeValueMap() const {return attributes;}
+   
+   void Clear() {attributes.clear();}
+   bool Empty() {return attributes.empty();}
+   
    std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
-   friend std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm);
+   std::string ToString() const;
+   
+   friend std::ostream& operator<<(std::ostream& os , const AttributeValueMap& avm);
 };
 
 
 
-std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm);
+std::ostream& operator<<(std::ostream& os , const AttributeValueMap& avm);
 
 
 
-inline bool ATTRIBUTEVALUEMAP::HasAttribute(const ATTRIBUTE& a) const {
+inline bool AttributeValueMap::HasAttribute(const ATTRIBUTE& a) const {
    return attributes.find(a) != attributes.end();
 }
 
 
 
-inline VALUE& ATTRIBUTEVALUEMAP::operator[](const ATTRIBUTE& a) {
+inline VALUE& AttributeValueMap::operator[](const ATTRIBUTE& a) {
    return attributes[a];
 }
 
 
 
-inline VALUE ATTRIBUTEVALUEMAP::GetAttributeValue(const ATTRIBUTE& a) {
+inline VALUE AttributeValueMap::GetAttributeValue(const ATTRIBUTE& a) {
    return operator[](a);
 }
 
 
 
-inline void ATTRIBUTEVALUEMAP::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
+inline void AttributeValueMap::SetAttribute(const ATTRIBUTE& a , const VALUE& v) {
    attributes[a] = v;
 }
 
 
 
-inline void ATTRIBUTEVALUEMAP::RemoveAttribute(const ATTRIBUTE& a) {
+inline void AttributeValueMap::RemoveAttribute(const ATTRIBUTE& a) {
    if (HasAttribute(a)) {
       attributes.erase(attributes.find(a));
    }

@@ -49,6 +49,7 @@ void ClassicMenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new
 
 
 int ClassicMenuBarLayout::PrivateHandleEvent(EagleEvent ee) {
+   (void)ee;
    return DIALOG_OKAY;
 }
 

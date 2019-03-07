@@ -33,7 +33,7 @@ enum GRID_OPTIONS {
 
 
 
-class GridLayout : public Layout {
+class GridLayout : public LayoutBase {
 	
 private :
 	int ncols;
@@ -68,7 +68,7 @@ public :
    /// LayoutBase
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
-   virtual void Resize(unsigned int nsize) {throw EagleException("Use ResizeGrid instead!");}
+   virtual void Resize(unsigned int nsize) {(void)nsize;throw EagleException("Use ResizeGrid instead!");}
 
    /// GridLayout
 	void ResizeGrid(int numcolumns , int numrows);/// Preserves top left of grid, frees widgets removed

@@ -1,6 +1,6 @@
 
 
-
+#error TEXT DECORATOR NOT IN USE
 
 #ifndef TextDecorator_HPP
 #define TextDecorator_HPP

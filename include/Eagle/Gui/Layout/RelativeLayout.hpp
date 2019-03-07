@@ -29,7 +29,7 @@
 
 
 
-class RelativeLayout : public Layout {
+class RelativeLayout : public LayoutBase {
 
 protected :
 

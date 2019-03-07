@@ -36,7 +36,7 @@ public :
 
 
 
-class PinLayout : public Layout {
+class PinLayout : public LayoutBase {
    
 protected :
 

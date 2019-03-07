@@ -80,7 +80,7 @@ void WidgetFactory::RegisterWidgetCreationFunction(std::string widget_class_name
 
 
 WidgetBase* WidgetFactory::CreateWidgetBaseObject(std::string widget_class_name , std::string object_name , std::string widget_parameters) {
-   return CreateWidgetBaseObject(widget_class_name , object_name , AttributeValueMap(widget_parameters));
+   return CreateWidgetBaseObject(widget_class_name , object_name , ParseAttributeSet(widget_parameters));
 }
 
 
@@ -207,7 +207,7 @@ void FreeAllWidgets() {
 
 
 WidgetBase* CreateWidgetObject(std::string widget_class_name , std::string object_name , std::string widget_parameters) {
-   return CreateWidgetObject(widget_class_name , object_name , AttributeValueMap(widget_parameters));
+   return CreateWidgetObject(widget_class_name , object_name , ParseAttributeSet(widget_parameters));
 }
 
 

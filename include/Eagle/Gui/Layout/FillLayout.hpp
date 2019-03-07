@@ -11,7 +11,7 @@
 
 
 
-class FillLayout : public Layout {
+class FillLayout : public LayoutBase {
    
    virtual void ReserveSlots(int nslots);
 

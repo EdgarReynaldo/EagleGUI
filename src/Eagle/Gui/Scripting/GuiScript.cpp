@@ -435,11 +435,12 @@ EagleColor* EagleGuiScript::GetColor(std::string name) {
 
 
 
-WidgetColorset* EagleGuiScript::GetColorset(std::string name) {
+SHAREDOBJECT<WidgetColorset> EagleGuiScript::GetColorset(std::string name) {
    if (colreg->HasColorset(name)) {
-      return &colreg->GetColorsetByName(name);
+      return colreg->GetColorsetByName(name);
    }
-   return 0;
+///   throw EagleException(StringPrintF("EagleGuiScript::GetColorset - color registry does not have colorset %s\n." , name.c_str()));
+   return HeapObject((WidgetColorset*)0);/// TODO : to throw or not to throw
 }
 
 

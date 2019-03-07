@@ -13,7 +13,7 @@
  *    EAGLE
  *    Edgar's Agile Gui Library and Extensions
  *
- *    Copyright 2009-2018+ by Edgar Reynaldo
+ *    Copyright 2009-2019+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -29,45 +29,49 @@
 
 
 
+#include <sstream>
+
+
+
 /// Global functions
 
 
 
 bool IsKnownAttribute(const ATTRIBUTE& a) {
-   return ATTRIBUTEVALUEMAP::KnownAttributes()->HasAttribute(a);
+   return AttributeValueMap::KnownAttributes()->HasAttribute(a);
 }
 
 
 
 void RegisterKnownAttribute(const ATTRIBUTE& a) {
-   ATTRIBUTEVALUEMAP::KnownAttributes()->AddAttribute(a);
+   AttributeValueMap::KnownAttributes()->AddAttribute(a);
 }
 
 
 
 void RemoveKnownAttribute(const ATTRIBUTE& a) {
-   ATTRIBUTEVALUEMAP::KnownAttributes()->RemoveAttribute(a);
+   AttributeValueMap::KnownAttributes()->RemoveAttribute(a);
 }
 
 
 
-/// ATTRIBUTESET
+/// AttributeSet
 
 
 
-bool ATTRIBUTEVALUEMAP::ATTRIBUTESET::HasAttribute(const ATTRIBUTE& a) {
+bool AttributeValueMap::AttributeSet::HasAttribute(const ATTRIBUTE& a) {
    return attset.find(a) != attset.end();
 }
 
 
 
-void ATTRIBUTEVALUEMAP::ATTRIBUTESET::AddAttribute(const ATTRIBUTE& a) {
+void AttributeValueMap::AttributeSet::AddAttribute(const ATTRIBUTE& a) {
    attset.insert(a);
 }
 
 
 
-void ATTRIBUTEVALUEMAP::ATTRIBUTESET::RemoveAttribute(const ATTRIBUTE& a) {
+void AttributeValueMap::AttributeSet::RemoveAttribute(const ATTRIBUTE& a) {
    if (HasAttribute(a)) {
       attset.erase(attset.find(a));
    }
@@ -75,25 +79,25 @@ void ATTRIBUTEVALUEMAP::ATTRIBUTESET::RemoveAttribute(const ATTRIBUTE& a) {
 
 
 
-/// ATTRIBUTEVALUEMAP
+/// AttributeValueMap
 
 
 
-ATTRIBUTEVALUEMAP* ATTRIBUTEVALUEMAP::GlobalAttributeMap() {
-   static ATTRIBUTEVALUEMAP global_attribute_map;
+AttributeValueMap* AttributeValueMap::GlobalAttributeMap() {
+   static AttributeValueMap global_attribute_map;
    return &global_attribute_map;
 }
 
 
 
-ATTRIBUTEVALUEMAP::ATTRIBUTESET* ATTRIBUTEVALUEMAP::KnownAttributes() {
-   static ATTRIBUTESET aset;
+AttributeValueMap::AttributeSet* AttributeValueMap::KnownAttributes() {
+   static AttributeSet aset;
    return &aset;
 }
 
 
 
-VALUE ATTRIBUTEVALUEMAP::GetDefinedAttributeValue(const ATTRIBUTE& a) const {
+VALUE AttributeValueMap::GetDefinedAttributeValue(const ATTRIBUTE& a) const {
    if (!HasAttribute(a)) {
       throw EagleException(StringPrintF("GetDefinedAttributeValue attribute '%s' unknown!!!\n" , a.c_str()));
    }
@@ -103,20 +107,27 @@ VALUE ATTRIBUTEVALUEMAP::GetDefinedAttributeValue(const ATTRIBUTE& a) const {
 
 
 
-std::ostream& ATTRIBUTEVALUEMAP::DescribeTo(std::ostream& os , Indenter indent) const {
+std::ostream& AttributeValueMap::DescribeTo(std::ostream& os , Indenter indent) const {
 
-   os << indent;
+   os << indent << ToString();
 
-   ATTVALMAP::const_iterator it = attributes.begin();
-   while (it != attributes.end()) {
-      os << it->first << ":" << it->second << ";";
-   }
    return os;
 }
 
 
 
-std::ostream& operator<<(std::ostream& os , const ATTRIBUTEVALUEMAP& avm) {
+std::string AttributeValueMap::ToString() const {
+   std::stringstream ss;
+   ATTVALMAP::const_iterator it = attributes.begin();
+   while (it != attributes.end()) {
+      ss << it->first << ":" << it->second << ";";
+   }
+   return ss.str();
+}
+
+
+
+std::ostream& operator<<(std::ostream& os , const AttributeValueMap& avm) {
    return avm.DescribeTo(os);
 }
 

@@ -74,7 +74,8 @@ protected :
 public :
 
    StickyPositionBase();
-                      
+   virtual ~StickyPositionBase() {}
+   
    void SetAnchor(WidgetBase* anchor , ANCHOR_POS apos , HALIGNMENT halignment , VALIGNMENT valignment , Pos2I offset = Pos2I());
 
    Pos2I GetAnchorPoint();
@@ -98,7 +99,7 @@ typedef StickyPositionBase StickyPosition;
 
 
 
-class StickyLayout : public Layout , public EagleEventListener {
+class StickyLayout : public LayoutBase , public EagleEventListener {
    
    std::vector<StickyPosition> anchors;
    

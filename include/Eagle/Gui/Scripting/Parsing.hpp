@@ -1,4 +1,23 @@
 
+/**
+ *
+ *     _______       ___       ____      __       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    EAGLE
+ *    Edgar's Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ */
 
 
 
@@ -9,7 +28,7 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
-#include "Eagle/Properties.hpp"
+#include "Eagle/Gui/WidgetAttributes.hpp"
 
 #include <map>
 #include <string>
@@ -17,12 +36,7 @@
 
 
 
-typedef std::map<std::string , std::string> ATTRIBUTE_VALUE_MAP;
-typedef ATTRIBUTE_VALUE_MAP::iterator AVMIT;
-
-
-
-ATTRIBUTE_VALUE_MAP ParseAttributeSet(std::string attribute_value_set);/// throw (EagleException);
+AttributeValueMap ParseAttributeSet(std::string attribute_value_set);
 
 /// Valid attributes for an EagleColor are RGB, RGBA, FRGB, and FRGBA. 
 /// Value takes form of parenthesis enclosed comma separated list of values.
@@ -30,8 +44,10 @@ ATTRIBUTE_VALUE_MAP ParseAttributeSet(std::string attribute_value_set);/// throw
 EagleColor lavender = RGB(127,64,255)
 */
 
-/// Declaration follows format [RGB | RGBA | FRGB | FRGBA](%n,%n,%n[,%n]) eg. RGB(255,255,255) or FRGB(1.0,1.0,1.0)
-EagleColor ParseColor(std::string color_dec);/// throw (EagleException);
+/// Declaration follows format [RGB | RGBA | FRGB | FRGBA](%n,%n,%n[,%n]) eg. RGB(255,255,255) or FRGBA(1.0,1.0,1.0,1.0)
+EagleColor ParseColor(const std::string color_dec);
+
+
 
 /// Valid format for a WidgetColorset declaration
 /**
@@ -41,7 +57,6 @@ BGCOL : dark-gray
 */
 
 WidgetColorset ParseWidgetColorset(const AttributeValueMap& avmap);
-WidgetColorset ParseWidgetColorset(const ATTRIBUTE_VALUE_MAP& avmap);/// throw (EagleException);
 
 
 #endif // Parsing_HPP

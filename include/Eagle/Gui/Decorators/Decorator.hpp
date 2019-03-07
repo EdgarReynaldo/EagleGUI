@@ -1,11 +1,9 @@
 
-
+#error DECORATOR NOT IN USE
 
 #ifndef Decorator_HPP
 #define Decorator_HPP
 
-
-#error DECORATOR NOT IN USE
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/FillLayout.hpp"

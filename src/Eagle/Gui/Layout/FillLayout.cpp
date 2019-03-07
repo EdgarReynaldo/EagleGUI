@@ -11,13 +11,13 @@
 
 void FillLayout::ReserveSlots(int nslots) {
    (void)nslots;
-   Layout::ReserveSlots(1);
+   LayoutBase::ReserveSlots(1);
 }
 
 
 
 FillLayout::FillLayout(std::string objname) :
-      Layout("FillLayout" , objname)
+      LayoutBase("FillLayout" , objname)
 {}
 
 
@@ -38,7 +38,7 @@ void FillLayout::PlaceWidget(SHAREDWIDGET widget , int slot) {
       throw EagleException(StringPrintF("FillLayout::PlaceWidget : slot #%d is not valid. Only slot #0 is valid.\n" , slot));
    }
    else {
-      Layout::PlaceWidget(widget , 0);
+      LayoutBase::PlaceWidget(widget , 0);
    }
 }
 
@@ -49,7 +49,7 @@ int FillLayout::AddWidget(SHAREDWIDGET widget) {
       throw EagleException("FillLayout::AddWidget : FillLayout already full!\n");
    }
    else {
-      Layout::PlaceWidget(widget , 0);
+      LayoutBase::PlaceWidget(widget , 0);
       return 0;
    }
    return -1;/// Invalid slot
@@ -58,7 +58,7 @@ int FillLayout::AddWidget(SHAREDWIDGET widget) {
 
 
 std::ostream& FillLayout::DescribeTo(std::ostream& os , Indenter indent) const {
-   return Layout::DescribeTo(os , indent);
+   return LayoutBase::DescribeTo(os , indent);
 }
 
 

@@ -41,14 +41,27 @@ extern unsigned int STRINGPRINTF_BUFFER_SIZE;
 
 std::string StringPrintF(const char* format_str , ...) PRINTF_FORMAT_STYLE;/// 1024 character limit!
 
+
+
 int CountNewLines(std::string s);
 
 std::vector<std::string> SplitByNewLines(std::string s);
 
 std::vector<std::string> SplitByDelimiterString(std::string string_to_split , const std::string token);
 
+
+
+std::string ReadStringUntil(const std::string& str , const char stop);
+
+/** Skips characters in expr string until openchar is reached, then reads chars until closechar is reached or the end of the string */
+std::string GetArgumentList(const std::string& expr , const char openchar , const char closechar);
+
+
+
 // returns pointer to one past end of quoted string, returns null on failure
 const char* CopyQuotedString(const char* start_quote , std::string& s);
+
+
 
 const char* SkipWhiteSpace(const char* str);
 void TrimTrailingWhiteSpace(char* str);

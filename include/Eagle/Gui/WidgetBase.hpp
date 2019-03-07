@@ -41,7 +41,7 @@
 
 
 
-class Layout;
+class LayoutBase;
 class WidgetHandler;
 
 enum WIDGET_ZORDER_PRIORITY {
@@ -89,11 +89,11 @@ protected :
    /// Separate
    WIDGETAREA warea;
    WidgetFlags wflags;
-   ATTRIBUTEVALUEMAP wattributes;
+   AttributeValueMap wattributes;
 
    /// References only
    WidgetBase* wparent;
-   Layout* wlayout;
+   LayoutBase* wlayout;
    WidgetHandler* whandler;
    
    /// Can be shared
@@ -157,6 +157,7 @@ WidgetBase(std::string classname , std::string objname) :
 
    /// Setters
 
+   void SetAttributes(const AttributeValueMap& avmap);
    void SetAttribute(const ATTRIBUTE& a , const VALUE& v);
    void RemoveAttribute(const ATTRIBUTE& a);
 
@@ -206,7 +207,7 @@ WidgetBase(std::string classname , std::string objname) :
 
    void ClearRedrawFlag();
    
-   void SetLayoutOwner(Layout* l);
+   void SetLayoutOwner(LayoutBase* l);
    void SetWidgetHandler(WidgetHandler* wh);
    void SetParent(WidgetBase* p);
    
@@ -223,7 +224,7 @@ WidgetBase(std::string classname , std::string objname) :
    WidgetHandler* RootHandler();
    
    WidgetBase*    GetParent()  {return wparent;}
-   Layout*        GetLayout()  {return wlayout;}
+   LayoutBase*    GetLayout()  {return wlayout;}
    WidgetHandler* GetHandler() {return whandler;}
    
    bool HasGui();

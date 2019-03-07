@@ -80,7 +80,7 @@ protected :
    bool            shrink_buffer_on_resize;
 
    DumbLayout      dumb_layout;
-   Layout*         root_layout;
+   LayoutBase*     root_layout;
 
    WIDGETLIST      wlist;
    WIDGETLIST      inputlist;/// in order from top to bottom, not necessarily the reverse of drawlist's order
@@ -115,7 +115,7 @@ protected :
    virtual void OnColorChanged();
 
    /// New API, for layout class to use privately
-   friend class Layout;
+   friend class LayoutBase;
    
    void TrackWidget(WidgetBase* widget);
    void StopTrackingWidget(WidgetBase* widget);
@@ -184,8 +184,8 @@ public :
    void      ClearMessages();// Clears the message queue of any messages remaining
 
    /// Functions for working with the base layout
-   Layout* GetRootLayout() {return root_layout;}
-   void SetRootLayout(Layout* l);
+   LayoutBase* GetRootLayout() {return root_layout;}
+   void SetRootLayout(LayoutBase* l);
    
    /// Functions for adding widgets to the handler - automatically added to the layout
    void AddWidget(WidgetBase* widget);

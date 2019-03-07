@@ -27,7 +27,7 @@
 
 
 
-class DumbLayout : public Layout {
+class DumbLayout : public LayoutBase {
 
 public :
 	DumbLayout(std::string name = "Nemo");

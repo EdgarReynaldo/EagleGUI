@@ -82,7 +82,7 @@ std::ostream& operator<<(std::ostream& os , const Pin& pin) {
 
 
 PinLayout::PinLayout(std::string objname) :
-      Layout("PinLayout" , objname),
+      LayoutBase("PinLayout" , objname),
       pins()
 {
 }
@@ -90,7 +90,7 @@ PinLayout::PinLayout(std::string objname) :
 
 
 void PinLayout::ReserveSlots(int nslots) {
-   Layout::ReserveSlots(nslots);
+   LayoutBase::ReserveSlots(nslots);
    pins.resize(wchildren.size());
 }
 
@@ -221,7 +221,7 @@ std::ostream& PinLayout::DescribeTo(std::ostream& os , Indenter indent) const {
       os << indent << "Pin #" << i << "[" << pins[i] << "]" << std::endl;
    }
    --indent;
-   Layout::DescribeTo(os , indent);
+   LayoutBase::DescribeTo(os , indent);
    return os;
 }
 

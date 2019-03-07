@@ -18,7 +18,7 @@ protected :
 
    
 
-   Layout* radio_layout;
+   LayoutBase* radio_layout;
 
 public :
    

@@ -41,7 +41,7 @@ enum FLOW_FAVORED_DIRECTION {
 };
 
 
-class FlowLayout : public Layout {/// TODO : IMPLEMENT ME!
+class FlowLayout : public LayoutBase {/// TODO : IMPLEMENT ME!
 
 protected :
 	

@@ -37,10 +37,10 @@ std::string WidgetColorName(WIDGETCOLOR wc) {
       "FGCOL",
       "HLCOL",
       "TXTCOL",
-      "HVRCOL",
-      "PADCOL",
-      "BORDCOL",
-      "MARGCOL"
+      "HVRCOL",  /// EXTENDED
+      "PADCOL",  /// EXTENDED
+      "BORDCOL", /// EXTENDED
+      "MARGCOL"  /// EXTENDED
    };
    return names[wc];
 }

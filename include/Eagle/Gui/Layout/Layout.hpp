@@ -47,7 +47,7 @@ enum LAYOUT_ATTRIBUTES {
 std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
 
 
-class Layout : public WidgetBase {
+class LayoutBase : public WidgetBase {
 
 protected :
    
@@ -93,8 +93,8 @@ protected :
    
 public :
    
-   Layout(std::string objclass , std::string objname);
-   virtual ~Layout();
+   LayoutBase(std::string objclass , std::string objname);
+   virtual ~LayoutBase();
    
 
 
@@ -146,8 +146,8 @@ public :
    std::vector<WidgetBase*> WChildren() const ;/// Only real children
    std::vector<WidgetBase*> Descendants() const ;/// Only real descendants
    
-   Layout* RootLayout();
-   const Layout* RootLayout() const;
+   LayoutBase* RootLayout();
+   const LayoutBase* RootLayout() const;
    
    bool IsRootLayout() const;
    

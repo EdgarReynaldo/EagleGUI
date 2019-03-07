@@ -89,8 +89,8 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    EAGLE_ASSERT((src_inner.H() > 0) && (src_inner.H() < src_outer.H()));
 
    /// Make sure the left and right and top and bottom margins are positive
-   EAGLE_ASSERT((src_area.MLeft() > 0) && (src_area.MRight() > 0));
-   EAGLE_ASSERT((src_area.MTop() > 0) && (src_area.MBot() > 0));
+   EAGLE_ASSERT((src_area.LeftIndent() > 0) && (src_area.RightIndent() > 0));
+   EAGLE_ASSERT((src_area.TopIndent() > 0) && (src_area.BottomIndent() > 0));
    
 /// Don't uncomment following line : Users may want a different area, in case of sprite sheets
 ///   src_area.MoveBy(-(src_area.OuterArea().X()) , -(src_area.OuterArea().Y()));
@@ -115,9 +115,10 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
          np[y][x] = 0;
-         MARGIN_VCELL vcell = (MARGIN_VCELL)y;
-         MARGIN_HCELL hcell = (MARGIN_HCELL)x;
-         Rectangle src = src_area.GetCellRectangle(hcell , vcell);
+         VCELL_AREA vcell = (VCELL_AREA)y;
+         HCELL_AREA hcell = (HCELL_AREA)x;
+         NPAREA nparea = src_area.BorderNP();
+         Rectangle src = nparea.GetNPCell(hcell , vcell);
          EagleLog() << StringPrintF("Drawing Image : [%d][%d]" , y , x) << std::endl;
          EagleLog() << "Src = [" << src << "]" << std::endl;
          EagleImage* img = win->CreateImage(src.W() , src.H() , VIDEO_IMAGE);

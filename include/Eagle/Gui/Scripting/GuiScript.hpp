@@ -10,12 +10,10 @@
 #include <vector>
 #include <map>
 
-#include "Eagle/Properties.hpp"
+#include "Eagle/Gui/WidgetAttributes.hpp"
+#include "Eagle/Gui/WidgetColorset.hpp"
 
-class EagleColor;
-class WidgetColorset;
-class ColorRegistry;
-class WIDGETBASE;
+
 
 /**
 
@@ -44,11 +42,11 @@ ATTRIBUTE : VALUE
 CLASSNAME OBJECTNAME =
 ATTRIBUTE : VALUE ; ATTRIBUTE : VALUE
 
-EagleColor white = RGBA:255,255,255,255;
+EagleColor white = RGBA(255,255,255,255)
 
 WidgetColorset colorset1 =
-SDCOL : RGBA : 0,0,0,255
-HLCOL : FRGBA:1.0,1.0,1.0 , 1.0
+SDCOL : RGBA(0,0,0,255)
+HLCOL : FRGBA(1.0,1.0,1.0,1.0)
 TXTCOL : white
 
 
@@ -91,6 +89,7 @@ public :
 };
 
 
+class WidgetBase;
 
 class EagleGuiScript {
 
@@ -122,7 +121,7 @@ protected:
 
    ColorRegistry* colreg;
 
-   std::map<int , WIDGETBASE*> wmap;
+   std::map<int , WidgetBase*> wmap;
 
 
 
@@ -167,9 +166,9 @@ public :
    bool SaveScriptAs(std::string script_file_name);
 
    EagleColor* GetColor(std::string name);
-   WidgetColorset* GetColorset(std::string name);
+   SHAREDOBJECT<WidgetColorset> GetColorset(std::string name);
 
-   WIDGETBASE* GetWidget(std::string name);
+   WidgetBase* GetWidget(std::string name);
 
 
 

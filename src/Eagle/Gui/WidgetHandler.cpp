@@ -277,7 +277,7 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
 
    EagleInfo() << StringPrintF("WidgetHandler::TrackWidget (%s)" , widget->FullName()) << std::endl;
 
-   Layout* widget_is_layout = dynamic_cast<Layout*>(widget);
+   LayoutBase* widget_is_layout = dynamic_cast<LayoutBase*>(widget);
    
    std::vector<WidgetBase*> layout_children;
    
@@ -329,7 +329,7 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    }
    EAGLE_ASSERT(OwnsWidget(w));
    
-   Layout* widget_is_layout = dynamic_cast<Layout*>(w);
+   LayoutBase* widget_is_layout = dynamic_cast<LayoutBase*>(w);
    std::vector<WidgetBase*> layout_children;
    
    if (widget_is_layout) {
@@ -971,7 +971,7 @@ void WidgetHandler::ClearMessages() {
 
 
 
-void WidgetHandler::SetRootLayout(Layout* l) {
+void WidgetHandler::SetRootLayout(LayoutBase* l) {
    if (!l) {
       SetRootLayout(&dumb_layout);
       return;
@@ -1560,7 +1560,7 @@ WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
       bool visible = w->Flags().FlagOn(VISIBLE);
-///      if (visible && w->OuterArea().Contains(relx , rely)) {
+///      if (visible && w->OuterArea().Contains(relx , rely)) {/// TODO : FIXME?
       if (true && w->OuterArea().Contains(relx , rely)) {
          WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
          if (!wh) {
