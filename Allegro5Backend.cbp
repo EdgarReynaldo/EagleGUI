@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Allegro5Backend" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="cbbuild/bin/eagle_a5_debug" imp_lib="cbbuild/lib/libeagle_a5_debug.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Debug" />
+				<Option external_deps="cbbuild/lib/libeagle_debug.dll.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+				<Linker>
+					<Add option="-leagle_debug.dll" />
+					<Add option="-lallegro_monolith-debug.dll" />
+					<Add option="-lphysfs.dll" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="cbbuild/bin/eagle_a5" imp_lib="cbbuild/lib/libeagle_a5.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Release" />
+				<Option external_deps="cbbuild/lib/libeagle.dll.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-leagle.dll" />
+					<Add option="-lallegro_monolith.dll" />
+					<Add option="-lphysfs.dll" />
+				</Linker>
+			</Target>
+			<Target title="Profiling">
+				<Option output="cbbuild/bin/eagle_a5_profile" imp_lib="cbbuild/lib/libeagle_a5_profile.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
+				<Option external_deps="cbbuild/lib/libeagle_profile.dll.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-pg" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add option="-leagle_profile.dll" />
+					<Add option="-lallegro_monolith" />
+					<Add option="-lphysfs.dll" />
+				</Linker>
+			</Target>
+			<Target title="DebugStatic">
+				<Option output="cbbuild/lib/eagle_a5_debug-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Debug" />
+				<Option external_deps="cbbuild/lib/libeagle_debug-static.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DALLEGRO_STATICLINK" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+				</Compiler>
+			</Target>
+			<Target title="ReleaseStatic">
+				<Option output="cbbuild/lib/eagle_a5-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Release" />
+				<Option external_deps="cbbuild/lib/libeagle-static.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DALLEGRO_STATICLINK" />
+				</Compiler>
+			</Target>
+			<Target title="ProfilingStatic">
+				<Option output="cbbuild/lib/eagle_a5_profile-static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Profiling" />
+				<Option external_deps="cbbuild/lib/libeagle_profile-static.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-DALLEGRO_STATICLINK" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+				</Linker>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Debug;Release;Profiling;DebugStatic;ReleaseStatic;ProfilingStatic;" />
+			<Add alias="Dynamic" targets="Debug;Release;Profiling;" />
+			<Add alias="Static" targets="DebugStatic;ReleaseStatic;ProfilingStatic;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wshadow" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-Wformat" />
+			<Add option="-DNOGDI" />
+			<Add directory="include" />
+			<Add directory="Allegro5/include" />
+		</Compiler>
+		<Linker>
+			<Add directory="cbbuild/lib" />
+			<Add directory="Allegro5/lib" />
+		</Linker>
+		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Conditions.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5EventHandler.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5FileSystem.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Font.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Image.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5MousePointer.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Mutex.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5ResourceLib.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Resources.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Sound.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5System.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Threads.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Conditions.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5EventHandler.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5FileSystem.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Font.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5GraphicsContext.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Image.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5InputHandler.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5MousePointer.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Mutex.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5ResourceLib.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Resources.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Sound.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5System.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Threads.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Timer.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5Transform.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5WindowManager.cpp" />
+		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+			<fortran_project />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
