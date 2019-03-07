@@ -55,7 +55,6 @@
 #include "Eagle/ObjectInfo.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/Position.hpp"
-#include "Eagle/Properties.hpp"
 #include "Eagle/Sound.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
