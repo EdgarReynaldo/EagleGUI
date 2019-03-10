@@ -221,7 +221,6 @@
 		<Unit filename="include/Eagle/Timer.hpp" />
 		<Unit filename="include/Eagle/Transforms.hpp" />
 		<Unit filename="include/Eagle/WindowManager.hpp" />
-		<Unit filename="src/CMakeLists.txt" />
 		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
@@ -321,7 +320,7 @@
 		<Unit filename="src/Eagle/Timer.cpp" />
 		<Unit filename="src/Eagle/Transforms.cpp" />
 		<Unit filename="src/Eagle/WindowManager.cpp" />
-		<Unit filename="src/backends/CMakeLists.txt" />
+		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
 		<Extensions>
 			<code_completion />
 			<debugger />
