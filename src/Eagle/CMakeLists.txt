@@ -42,8 +42,8 @@ foreach(dir ${incdirs})
    list (APPEND includefiles ${headershpp} ${headersh})
 endforeach(dir)
 
-set(EAGLE_SOURCE_FILES ${sourcefiles})
-set(EAGLE_HEADER_FILES ${includefiles})
+set(EAGLE_SOURCE_FILES ${sourcefiles} PARENT_SCOPE)
+set(EAGLE_HEADER_FILES ${includefiles} PARENT_SCOPE)
 
 
 
