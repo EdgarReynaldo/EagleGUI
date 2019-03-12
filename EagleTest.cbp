@@ -139,17 +139,18 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add directory="include" />
-			<Add directory="Allegro5/include" />
+			<Add directory="Allegro525/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="Allegro5/lib" />
+			<Add directory="Allegro525/lib" />
 		</Linker>
 		<Unit filename="EagleTest/EagleTestMain.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
 			<envvars />
+			<fortran_project />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

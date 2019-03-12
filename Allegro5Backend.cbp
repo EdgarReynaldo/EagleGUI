@@ -118,11 +118,11 @@
 			<Add option="-Wformat" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
-			<Add directory="Allegro5/include" />
+			<Add directory="Allegro525/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="Allegro5/lib" />
+			<Add directory="Allegro525/lib" />
 		</Linker>
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
