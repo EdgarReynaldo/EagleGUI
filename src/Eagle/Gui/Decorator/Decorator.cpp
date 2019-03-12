@@ -1,4 +1,5 @@
 
+#if 0
 
 #include "Eagle/Gui/WidgetHandler.hpp"
 
@@ -1036,4 +1037,5 @@ void Decorator::DecorateWidget(WidgetBase* widget) {
 
 //*/
 
+#endif // 0
 

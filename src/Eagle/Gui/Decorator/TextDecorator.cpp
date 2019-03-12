@@ -1,5 +1,5 @@
 
-
+#if 0
 
 #include "Eagle/Gui/Text.hpp"
 
@@ -325,3 +325,4 @@ std::ostream& TextDecorator::DescribeTo(std::ostream& os , Indenter indent) cons
 
 
 
+#endif

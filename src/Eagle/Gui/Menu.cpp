@@ -1,7 +1,7 @@
 
 
 
-
+/**
 #include "Eagle/Gui/Menu.hpp"
 #include "Eagle/Gui/Button/CheckBox.hpp"
 #include "Eagle/InputHandler.hpp"
@@ -122,7 +122,7 @@ void ExampleMenuItem::PrivateDisplay(EagleGraphicsContext* win , int xpos , int 
       Rectangle arrow = LayoutArea(InnerArea() , LayoutRectangle(0.9 , 0.0 , 0.1 , 1.0));
       DrawMenuArrow(win , arrow , WCols());
       if (sub_menu->IsOpen()) {
-         /** Let the GUI handle displaying the other menus */
+         /// Let the GUI handle displaying the other menus
 ///         sub_menu->Display(win , OuterArea().X() + xpos , OuterArea().Y() + ypos);
       }
    }
@@ -435,4 +435,6 @@ WidgetMsg Menu::ItemToggleMsg    (int item_num) {
 }
 
 
+
+//*/
 
