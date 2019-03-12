@@ -14,7 +14,7 @@ DEBUG :
  - turns on debugging (enables EAGLE_ASSERT() and EAGLE_DEBUG() statements)
 EAGLE_LOG :
  - turns on debugging log (enables EagleLog() statements inside eagle)
- - does NOT enable user logging - for that you need TurnLogOn()
+ - does NOT enable user logging - for that you need EnableLog()
 EAGLE_ASSERT_EXCEPTION :
  - turns on assertion failure when throwing EagleError exceptions,
  - which allows you to get a backtrace because the debugger will catch an
@@ -38,6 +38,7 @@ EAGLE_ASSERT(exp);
 
 EAGLE_DEBUG(exp)
  - exp will only execute when DEBUG is defined. Useful for keeping release code clean.
+ - Danger : This code will NOT run during Release mode! Means you can't use it directly with init routines.
 ASSERT_EXCEPTION();
  - Meant for causing a divide by zero crash. Useful for getting a backtrace.
  - Divides by zero when EAGLE_ASSERT_EXCEPTION is defined, or does nothing if not
