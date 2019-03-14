@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/GenericEagleProjectDebug" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/EagleDebug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
 				<Option type="1" />
@@ -24,7 +24,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/GenericEagleProject" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/Eagle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Release/" />
 				<Option type="1" />
@@ -40,7 +40,7 @@
 				</Linker>
 			</Target>
 			<Target title="DebugStatic">
-				<Option output="cbbuild/bin/GenericEagleProjectDebugStatic" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/EagleDebugStatic" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Static/Debug/" />
 				<Option type="1" />
@@ -87,7 +87,7 @@
 				</Linker>
 			</Target>
 			<Target title="ReleaseStatic">
-				<Option output="cbbuild/bin/GenericEagleProjectStatic" prefix_auto="1" extension_auto="1" />
+				<Option output="cbbuild/bin/EagleStatic" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="cbbuild/bin" />
 				<Option object_output="cbbuild/obj/Static/Release/" />
 				<Option type="1" />
@@ -139,16 +139,17 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add directory="include" />
-			<Add directory="Allegro5/include" />
+			<Add directory="Allegro525/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="Allegro5/lib" />
+			<Add directory="Allegro525/lib" />
 		</Linker>
 		<Extensions>
 			<code_completion />
 			<debugger />
 			<envvars />
+			<fortran_project />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
