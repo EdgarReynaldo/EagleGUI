@@ -59,6 +59,7 @@
 					<Add option="-lallegro_monolith-debug-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
+					<Add option="-lwebp" />
 					<Add option="-lFLAC" />
 					<Add option="-ltheora" />
 					<Add option="-lvorbisfile" />
@@ -97,12 +98,15 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-leagle_a5-static" />
 					<Add option="-leagle-static" />
 					<Add option="-lallegro_monolith-static" />
-					<Add option="-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
+					<Add option="-lwebp" />
 					<Add option="-lFLAC" />
 					<Add option="-ltheora" />
 					<Add option="-lvorbisfile" />
@@ -128,8 +132,6 @@
 					<Add option="-ladvapi32" />
 					<Add option="-lws2_32" />
 					<Add option="-lshlwapi" />
-					<Add option="-static-libstdc++" />
-					<Add option="-static-libgcc" />
 				</Linker>
 			</Target>
 		</Build>
