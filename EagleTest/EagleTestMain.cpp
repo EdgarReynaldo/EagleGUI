@@ -100,7 +100,7 @@ int main(int argc , char** argv) {
    
    rl.Resize(2);
 
-   rl.SetLayoutRectangle(0 , LayoutRectangle(0.0 , 0.0 , 0.8 , 0.05));
+   rl.SetLayoutRectangle(0 , LayoutRectangle(0.0 , 0.0 , 0.5 , 0.05));
    rl.SetLayoutRectangle(1 , LayoutRectangle(0.4 , 0.15 , 0.2 , 0.7));
 
    rl.PlaceWidget(&hmenu , 0);
