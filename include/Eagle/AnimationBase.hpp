@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,6 +16,10 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file AnimationBase.hpp
+ * @brief Animation interface
+ *
+ * Header file for the AnimationBase class and related functions.
  */
 
 
@@ -25,14 +29,16 @@
 
 #include "Eagle/Events.hpp"
 
-
-
+/*! @brief Animation attribute values
+ *  
+ *  EAGLE_ANIMATION_TYPE describes the playback attributes of an animation.
+ */
 enum EAGLE_ANIMATION_TYPE {
-   ANIMATION_ONCE_FORWARDS = 0,
-   ANIMATION_ONCE_BACKWARDS = 1,
-   ANIMATION_ONCE_FORWARDS_AND_BACKWARDS = 2,
-   ANIMATION_REPEAT_FORWARDS = 3,
-   ANIMATION_REPEAT_BACKWARDS = 4,
+   ANIMATION_ONCE_FORWARDS                 = 0,
+   ANIMATION_ONCE_BACKWARDS                = 1,
+   ANIMATION_ONCE_FORWARDS_AND_BACKWARDS   = 2,
+   ANIMATION_REPEAT_FORWARDS               = 3,
+   ANIMATION_REPEAT_BACKWARDS              = 4,
    ANIMATION_REPEAT_FORWARDS_AND_BACKWARDS = 5
 };
 
@@ -51,14 +57,13 @@ bool AnimationPingPong(EAGLE_ANIMATION_TYPE t);
  * number of loops, the duration of each loop, and the number of frames per loop
  * and then you're ready to animate. Call the AnimationBase::Init function to get setup and then
  * AnimationBase::AdvanceAnimationTime, AnimationBase::SetAnimationTime, or 
- * AnimationBase::SetAnimationPercent.
+ * AnimationBase::SetAnimationPercent to alter the playback time.
  * 
  * When you need to find out the normalized animation percent or frame number, call
  * AnimationBase::GetFrameNum or AnimationBase::GetNormalizedPercent. The frame number 
  * is equivalent to :
  * 
  *     (int)(GetNormalizedPercent()*GetNumFrames())
- * 
  * 
  */
 
@@ -84,7 +89,7 @@ protected :
 
    ANIMATION_EVENT_DATA GetEventData();
       
-   virtual void OnSetAnimationPercent()=0;
+   virtual void OnSetAnimationPercent()=0;///< Pure virtual function that is called when the animation percent changes.
    virtual void OnLoopComplete() {}///< Override this virtual function to respond to loop completion events.
    virtual void OnComplete() {}///< Override this virtual function to respond to animation complete events.
 

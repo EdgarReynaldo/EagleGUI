@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,6 +16,10 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file AnimationBase.cpp
+ * @brief Animation implementation
+ * 
+ * Implementation file for the AnimationBase class and related functions.
  */
 
 
@@ -68,8 +72,10 @@ ANIMATION_EVENT_DATA AnimationBase::GetEventData() {
 }
 
 
-/*! \brief Called when a loop is complete.
- *  Also calls the protected virtual callback AnimationBase::OnLoopComplete().*/
+/*! 
+ *  Called when a loop is complete.
+ *  Also calls the protected virtual callback AnimationBase::OnLoopComplete().
+ */
 
 void AnimationBase::LoopComplete() {
    OnLoopComplete();
@@ -83,8 +89,10 @@ void AnimationBase::LoopComplete() {
 
 
 
-/*! \brief Called when the animationis complete.
- *  Also calls the protected virtual callback AnimationBase::OnComplete().*/
+/*!
+ *  Called when the animationis complete.
+ *  Also calls the protected virtual callback AnimationBase::OnComplete().
+ */
 
 void AnimationBase::Complete() {
    OnComplete();
@@ -157,8 +165,9 @@ void AnimationBase::Init(int num_frames , int num_loops , double loop_time , EAG
 }
 
 
-/*! \brief Resets the animation. Shortcut for `SetAnimationTime(0.0);`.
- *  
+/*! \brief Resets the animation. Shortcut for `SetAnimationTime(0.0);`. 
+ * 
+ * See @ref SetAnimationTime
  */
 
 void AnimationBase::ResetAnimation() {
@@ -167,9 +176,7 @@ void AnimationBase::ResetAnimation() {
 
 
 
-/*! \brief Sets the animation time which directly corresponds to a number of seconds.
- *  
- */
+/*! \brief Sets the animation time which directly corresponds to a number of seconds. */
 
 void AnimationBase::SetAnimationTime(double t) {
    animation_time = t;
@@ -198,10 +205,10 @@ void AnimationBase::AdvanceAnimationTime(double dt) {
  *  when advancing the animation time.
  *  AnimationBase::Complete will be called when the animation is complete.
  *  
- *  Each function will emit an event. Use an <EagleEventQueue> to listen
- *  for events from this object.
+ *  Each function will emit an event. Use an EagleEventQueue or
+ *  EagleEventListener to listen for events from this object.
  *  
- *     event_queue.ListenTo(&animation_object);
+ *      event_queue.ListenTo(&animation_object);
  *  
  *  @retval None This function cannot fail.
  */
@@ -235,9 +242,7 @@ void AnimationBase::SetAnimationPercent(double percent) {
 
 
 
-/*! \brief Returns the animation percentage.
- *  
- */
+/*! \brief Returns the animation percentage. */
 
 double AnimationBase::GetAnimationPercent() {
    return animation_percent;
@@ -245,9 +250,7 @@ double AnimationBase::GetAnimationPercent() {
 
 
 
-/*! \brief Returns the normalized animation percent from [0.0 to 1.0).
- *  
- */
+/*! \brief Returns the normalized animation percent from [0.0 to 1.0). */
 
 double AnimationBase::GetNormalizedPercent() {
    double pct = GetAnimationPercent();
