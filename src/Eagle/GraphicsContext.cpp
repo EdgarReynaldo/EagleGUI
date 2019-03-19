@@ -1,5 +1,5 @@
 
-/*
+/**
  *
  *     _______       ___       ____      __       _______
  *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
@@ -10,10 +10,9 @@
  *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
- *    EAGLE
- *    Edgar's Agile Gui Library and Extensions
+ *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2015+ by Edgar Reynaldo
+ *    Copyright 2009-2019+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *

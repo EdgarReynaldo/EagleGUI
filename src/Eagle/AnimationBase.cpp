@@ -1,11 +1,30 @@
 
+/**
+ *
+ *     _______       ___       ____      __       _______
+ *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ */
+
 
 #include "Eagle/AnimationBase.hpp"
-#include "Eagle/Exception.hpp"
 
 #include <cmath>
 
 
+/*! \brief Returns whether or not the animation type repeats. */
 
 bool AnimationRepeats(EAGLE_ANIMATION_TYPE t) {
    return t >= ANIMATION_REPEAT_FORWARDS;
@@ -13,11 +32,15 @@ bool AnimationRepeats(EAGLE_ANIMATION_TYPE t) {
 
 
 
+/*! \brief Returns whether or not the animation type plays forwards. */
+
 bool AnimationForward(EAGLE_ANIMATION_TYPE t) {
    return ((t == ANIMATION_ONCE_FORWARDS) || (t == ANIMATION_REPEAT_FORWARDS));
 }
 
 
+
+/*! \brief Returns whether or not the animation type plays backwards. */
 
 bool AnimationBackward(EAGLE_ANIMATION_TYPE t) {
    return ((t == ANIMATION_ONCE_BACKWARDS) || (t == ANIMATION_REPEAT_BACKWARDS));
@@ -25,11 +48,16 @@ bool AnimationBackward(EAGLE_ANIMATION_TYPE t) {
 
 
 
+/*! \brief Returns whether or not the animation type plays forwards and backwards. */
+
 bool AnimationPingPong(EAGLE_ANIMATION_TYPE t) {
    return ((t == ANIMATION_ONCE_FORWARDS_AND_BACKWARDS) || (t == ANIMATION_REPEAT_FORWARDS_AND_BACKWARDS));
 }
 
 
+
+
+/*! \brief Fills in the ANIMATION_EVENT_DATA structure with appropriate values. */
 
 ANIMATION_EVENT_DATA AnimationBase::GetEventData() {
    ANIMATION_EVENT_DATA d;
@@ -40,6 +68,8 @@ ANIMATION_EVENT_DATA AnimationBase::GetEventData() {
 }
 
 
+/*! \brief Called when a loop is complete.
+ *  Also calls the protected virtual callback AnimationBase::OnLoopComplete().*/
 
 void AnimationBase::LoopComplete() {
    OnLoopComplete();
@@ -48,10 +78,13 @@ void AnimationBase::LoopComplete() {
    e.source = this;
    e.window = 0;
    e.animation = GetEventData();
-   EmitEvent(e , our_thread);
+   EmitEvent(e , 0);/// TODO : thread???
 }
 
 
+
+/*! \brief Called when the animationis complete.
+ *  Also calls the protected virtual callback AnimationBase::OnComplete().*/
 
 void AnimationBase::Complete() {
    OnComplete();
@@ -60,10 +93,15 @@ void AnimationBase::Complete() {
    e.source = this;
    e.window = 0;
    e.animation = GetEventData();
-   EmitEvent(e , our_thread);
+   EmitEvent(e , 0);/// TODO : thread?
 }
 
 
+/*! \brief Sets up an empty animation object.
+ *  
+ *  Call AnimationBase::Init(int,int,double,EAGLE_ANIMATION_TYPE) to initialize the object with data.
+ *  
+ */
 
 AnimationBase::AnimationBase() :
       EagleEventSource(),
@@ -75,15 +113,39 @@ AnimationBase::AnimationBase() :
       nloops(1),
       loop_num(0),
       nframes(1),
-      frame_num(0),
-      our_thread(0)
+      frame_num(0)
+{
+   
+}
+
+
+/*! \brief Empty destructor.
+ * 
+ */
+
+AnimationBase::~AnimationBase() 
 {
    
 }
 
 
 
-void AnimationBase::Init(double loop_time , int num_loops , EAGLE_ANIMATION_TYPE play_type , int num_frames) {
+/*! \brief Init sets up the animation's required information.
+ *  
+ *  @param num_frames The number of frames per loop.
+ *  @param num_loops The number of times to loop.
+ *  @param loop_time The duration of each loop.
+ *  @param play_type What kind of animation to setup.
+ *  
+ *  The loop time is always positive, the number of loops is
+ *  always at least 1 and the number of frames is always at
+ *  least 1.
+ *  
+ *  @retval None The function is always successful.
+ *  
+ */
+
+void AnimationBase::Init(int num_frames , int num_loops , double loop_time , EAGLE_ANIMATION_TYPE play_type) {
    if (loop_time <= 0.0) {loop_time = 1.0;}
    if (num_loops < 1) {num_loops = 1;}
    if (num_frames < 1) {num_frames = 1;}
@@ -95,12 +157,19 @@ void AnimationBase::Init(double loop_time , int num_loops , EAGLE_ANIMATION_TYPE
 }
 
 
+/*! \brief Resets the animation. Shortcut for `SetAnimationTime(0.0);`.
+ *  
+ */
 
 void AnimationBase::ResetAnimation() {
    SetAnimationTime(0.0);
 }
 
 
+
+/*! \brief Sets the animation time which directly corresponds to a number of seconds.
+ *  
+ */
 
 void AnimationBase::SetAnimationTime(double t) {
    animation_time = t;
@@ -109,11 +178,33 @@ void AnimationBase::SetAnimationTime(double t) {
 
 
 
+/*! \brief Advances the animation time by dt.
+ *  @param dt The delta time to advance the animation by.
+ *  
+ *  The delta time may be negative to 'rewind'.
+ */
+
 void AnimationBase::AdvanceAnimationTime(double dt) {
    SetAnimationTime(animation_time + dt);
 }
 
 
+
+/*! \brief Sets the elapsed percentage of the animation.
+ *
+ * @param percent Equal to animation time divided by loop duration.
+ *  
+ *  AnimationBase::LoopComplete will be called for each loop completed
+ *  when advancing the animation time.
+ *  AnimationBase::Complete will be called when the animation is complete.
+ *  
+ *  Each function will emit an event. Use an <EagleEventQueue> to listen
+ *  for events from this object.
+ *  
+ *     event_queue.ListenTo(&animation_object);
+ *  
+ *  @retval None This function cannot fail.
+ */
 
 void AnimationBase::SetAnimationPercent(double percent) {
 
@@ -144,11 +235,19 @@ void AnimationBase::SetAnimationPercent(double percent) {
 
 
 
+/*! \brief Returns the animation percentage.
+ *  
+ */
+
 double AnimationBase::GetAnimationPercent() {
    return animation_percent;
 }
 
 
+
+/*! \brief Returns the normalized animation percent from [0.0 to 1.0).
+ *  
+ */
 
 double AnimationBase::GetNormalizedPercent() {
    double pct = GetAnimationPercent();
@@ -171,11 +270,19 @@ double AnimationBase::GetNormalizedPercent() {
 
 
 
+/*! \brief Returns the animation time.
+ *  
+ */
+
 double AnimationBase::GetAnimationTime() {
    return animation_time;
 }
 
 
+
+/*! \brief Returns the duration of each loop in seconds.
+ *  
+ */
 
 double AnimationBase::GetDuration() {
    return loop_duration;
@@ -183,17 +290,49 @@ double AnimationBase::GetDuration() {
 
 
 
+/*! \brief Returns the number of loops specified in AnimationBase::Init(int,int,double,EAGLE_ANIMATION_TYPE).
+ *  
+ */
+
 int AnimationBase::GetNumLoops() {
    return nloops;
 }
 
 
 
+/*! \brief Returns the current loop number.
+ *  
+ */
+
 int AnimationBase::GetLoopNum() {
    return (int)animation_percent;
 }
 
 
+
+/*! \brief Returns the number of frames specified in AnimationBase::Init(int,int,double,EAGLE_ANIMATION_TYPE).
+ *  
+ */
+
+int AnimationBase::GetNumFrames() {
+   return nframes;
+}
+
+
+
+/*! \brief Returns the current frame number.
+ *  
+ */
+
+int AnimationBase::GetFrameNum() {
+   return frame_num;
+}
+
+
+
+/*! \brief Returns the current animation type specified in AnimationBase::Init(int,int,double,EAGLE_ANIMATION_TYPE)
+ *  
+ */
 
 EAGLE_ANIMATION_TYPE AnimationBase::GetAnimationType() {
    return animation_type;

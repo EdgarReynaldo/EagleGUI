@@ -10,8 +10,7 @@
  *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
- *    EAGLE
- *    Edgar's Agile Gui Library and Extensions
+ *    Eagle Agile Gui Library and Extensions
  *
  *    Copyright 2009-2019+ by Edgar Reynaldo
  *
