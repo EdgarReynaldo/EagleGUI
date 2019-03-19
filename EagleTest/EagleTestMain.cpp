@@ -58,7 +58,14 @@ int main(int argc , char** argv) {
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();
 
+   std::string bgfile = "stallions.jpg";
+   EagleImage* bg = win->LoadImageFromFile(bgfile);
+   if (!bg || (bg && !bg->Valid())) {
+      EagleError() << StringPrintF("Failed to load %s from disk.\n" , bgfile.c_str());
+      return -8;
+   }
    
+/**   
    WidgetHandler gui(win , "Gui" , "gui");
    
    gui.SetWidgetArea(Rectangle(0,0,sw,sh) , false);
@@ -120,22 +127,22 @@ int main(int argc , char** argv) {
    
    
    EagleLog() << gui << std::endl;
+//*/   
+//**
    
-   /**
-   
-   WidgetHandler gui1(win , "WidgetHandler" , "GUI1");
-   gui1.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
+   WidgetHandler gui(win , "WidgetHandler" , "GUI1");
+   gui.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
    
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
    gui2.SetupBuffer(1280,960,win);
    gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
-   gui1.AllowMiddleMouseButtonDrag(false);
+   gui.AllowMiddleMouseButtonDrag(false);
    gui2.AllowMiddleMouseButtonDrag(true);
    
-   gui1.SetBackgroundColor(EagleColor(0,0,127));
+   gui.SetBackgroundColor(EagleColor(0,0,127));
    gui2.SetBackgroundColor(EagleColor(0,127,0));
    
-   gui1 << gui2;
+   gui << gui2;
 
    RelativeLayout rl1("RLAYOUT1");
    rl1.Resize(5);
@@ -166,7 +173,7 @@ int main(int argc , char** argv) {
    tw4.SetWidgetArea(WIDGETAREA(tw4.OuterArea() , 6,4,2));
    tw5.SetWidgetArea(WIDGETAREA(tw5.OuterArea() , 5,5,5));
    
-   */
+//*/
          
    EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
          
@@ -185,6 +192,7 @@ int main(int argc , char** argv) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
+         win->DrawStretchedRegion(bg , 0 , 0 , bg->W() , bg->H() , 0 , 0 , sw , sh);
          gui.Display(win , 0 , 0);
          WidgetBase* hw = gui.GetWidgetAt(mx,my);
          std::string name = (hw?hw->FullName():"NULL");
