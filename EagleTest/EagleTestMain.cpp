@@ -192,11 +192,11 @@ int main(int argc , char** argv) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         win->DrawStretchedRegion(bg , 0 , 0 , bg->W() , bg->H() , 0 , 0 , sw , sh);
+         win->DrawStretched(bg , Rectangle(0 , 0 , sw , sh));
          gui.Display(win , 0 , 0);
          WidgetBase* hw = gui.GetWidgetAt(mx,my);
          std::string name = (hw?hw->FullName():"NULL");
-         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , sw - 10 , sh - win->DefaultFont()->Height() - 5 , EagleColor(255,255,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , sw - 10 , sh - win->DefaultFont()->Height() - 5 , EagleColor(0,0,0) , HALIGN_RIGHT , VALIGN_TOP);
          win->FlipDisplay();
          redraw = false;
       }
