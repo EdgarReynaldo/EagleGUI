@@ -48,6 +48,8 @@ protected :
    bool moving;
    int mxstart;
    int mystart;
+   int mdxtotal;
+   int mdytotal;
    Pos2I anchorpt;
    Pos2I movept;
    int anchorw;
@@ -77,6 +79,8 @@ WidgetMover(std::string objname) :
       moving(false),
       mxstart(-1),
       mystart(-1),
+      mdxtotal(0),
+      mdytotal(0),
       anchorpt(),
       movept(),
       anchorw(0),
