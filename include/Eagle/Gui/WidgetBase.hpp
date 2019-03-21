@@ -211,6 +211,9 @@ WidgetBase(std::string classname , std::string objname) :
    virtual int AbsMinWidth() const;
    virtual int AbsMinHeight() const;
    
+///   virtual Pos2I ViewPos() const;
+   virtual Pos2I ViewPos() const {return Pos2I(0,0);}
+   
    Pos2I AbsParentPos() const;
    int AbsParentX() const;
    int AbsParentY() const;

@@ -56,12 +56,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             if (anchorw) {
                /// horizontal sizing
                if (size_corner == CELL_AREA_MIDDLELEFT) {
-                  /// moving right edge
-                  newarea.SetArea(oldarea.X() , oldarea.Y() , anchorw + mdx , oldarea.H());
-               }
-               if (size_corner == CELL_AREA_MIDDLERIGHT) {
                   /// moving left edge
                   newarea.SetArea(oldarea.X() + mdx , oldarea.Y() , anchorw - mdx , oldarea.H());
+               }
+               if (size_corner == CELL_AREA_MIDDLERIGHT) {
+                  /// moving right edge
+                  newarea.SetArea(oldarea.X() , oldarea.Y() , anchorw + mdx , oldarea.H());
                }
             }
             if (anchorh) {
@@ -79,7 +79,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          }
          else {
             /// diagonal sizing
-            Pos2I newcorner = movept.MoveBy(mdx , mdy);
+            Pos2I newcorner = movept.MovedBy(mdx , mdy);
             newarea.SetCorners(anchorpt.X() , anchorpt.Y() , newcorner.X() , newcorner.Y());
             mwidget->SetWidgetArea(newarea , true);
          }
@@ -99,8 +99,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                   mwidget = hwidget;
                   original_area = mwidget->GetWidgetArea();
                   /// We need the absolute position here
-                  abs_area = original_area;
-                  abs_area.MoveBy(mwidget->AbsParentPos());
+                  abs_area = mwidget->AbsoluteArea();
                }
             }
          }
@@ -194,8 +193,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          mxstart = e.mouse.x;
          mystart = e.mouse.y;
          original_area = mwidget->GetWidgetArea();
-         abs_area = original_area;
-         abs_area.MoveBy(mwidget->AbsParentPos());/// We now have the original absolute area
+         abs_area = mwidget->AbsoluteArea();
          if (e.mouse.button == 1) {
             if (mwidget) {/// If we are over a widget
                if (moving_enabled && mwidget->Flags().FlagOn(MOVEABLE)) {
