@@ -39,10 +39,18 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
    
    const Pos2I mabs = AbsParentPos().MovedBy(e.mouse.x , e.mouse.y);
    
-   const int mdx = e.mouse.x - mxstart;
-   const int mdy = e.mouse.y - mystart;
+   /// Only use dx and dy from the mouse event, because the relative mouse xy may change if our root moves b/c that moves us
+   /// and the relative mouse position given to us in mouse.x and mouse.y
+   if (e.type == EAGLE_EVENT_MOUSE_AXES) {
+      mdxtotal += e.mouse.dx;
+      mdytotal += e.mouse.dy;
+   }
+   
+   const int mdx = mdxtotal;
+   const int mdy = mdytotal;
    
    if (e.type == EAGLE_EVENT_MOUSE_AXES) {
+      /// TODO : FIXME : This doesn't work for the root gui
       if (moving) {
          Rectangle newarea = original_area.OuterArea();
          newarea.MoveBy(mdx , mdy);
@@ -192,6 +200,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
       if (!moving && !sizing) {/// so we don't interrupt ourselves
          mxstart = e.mouse.x;
          mystart = e.mouse.y;
+         mdxtotal = 0;
+         mdytotal = 0;
          original_area = mwidget->GetWidgetArea();
          abs_area = mwidget->AbsoluteArea();
          if (e.mouse.button == 1) {
