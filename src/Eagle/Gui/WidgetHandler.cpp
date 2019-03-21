@@ -243,7 +243,10 @@ void WidgetHandler::OnAreaChanged() {
    
    cam.SetWidgetArea(InnerArea());
 
-   if (!buffer || (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || shrink_buffer_on_resize) {
+   if (!buffer || 
+       (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || 
+        shrink_buffer_on_resize) 
+   {
       SetupBuffer(r.W() , r.H() , gwindow);
    }
    else {
@@ -1142,18 +1145,31 @@ void WidgetHandler::SyncLayoutPos() {
 }
 
 
+void WidgetHandler::SyncCamera() {
+   /// Reset the camera position as best we can
+   Rectangle oldview = cam.ViewArea();
+   const int iw = InnerArea().W();
+   const int ih = InnerArea().H();
+   
+   /// Make the camera view as large as possible
+   cam.SetViewArea(oldview.X() , oldview.Y() , iw , ih);
+}
 
+
+
+#if 0 /// OLD
 void WidgetHandler::SyncCamera() {
    /// Reset the camera position as best we can
    Rectangle v = cam.ViewArea();
    int iw = warea.InnerAreaWidth();
    int ih = warea.InnerAreaHeight();
    if ((v.W() >= iw) || (v.H() >= ih)) {
-      v.SetDimensions((v.W() >= iw)?iw:v.W() , (v.H() >= ih)?ih:v.H());
+      v.SetDimensions((v.W() >= iw)?iw:v.W() ,
+                      (v.H() >= ih)?ih:v.H());
    }
    cam.SetViewArea(v);
 }
-
+#endif
 
 
 void WidgetHandler::SetRedrawFlag() {
