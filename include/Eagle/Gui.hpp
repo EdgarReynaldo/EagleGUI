@@ -41,6 +41,7 @@
 ///#include "Gui/WidgetDrawFuncs.hpp"
 #include "Gui/WidgetHandler.hpp"
 #include "Gui/WidgetMessage.hpp"
+#include "Gui/WidgetMover.hpp"
 
 #include "Gui/Scripting/GuiScript.hpp"
 

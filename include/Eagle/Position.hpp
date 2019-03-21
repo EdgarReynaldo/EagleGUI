@@ -45,8 +45,12 @@ public :
    Pos2T(const TYPE& x , const TYPE& y) : tx(x) , ty(y) {}
    
    void SetPos(TYPE xpos , TYPE ypos)    {tx = xpos;ty=ypos;}
+
    Pos2T& MoveBy(TYPE dx , TYPE dy)      {SetPos(tx + dx , ty + dy);return *this;}
    Pos2T& MoveBy(const Pos2T& p)         {return MoveBy(p.X() , p.Y());}
+   
+   Pos2T MovedBy(TYPE dx , TYPE dy) const {Pos2T p = *this;return p.MoveBy(dx,dy);}
+   Pos2T MovedBy(const Pos2T& p)    const {Pos2T p2 = *this;return p2.MoveBy(p);}
 
    bool operator==(const Pos2T& p) const {return ((p.tx == tx) && (p.ty == ty));}
    

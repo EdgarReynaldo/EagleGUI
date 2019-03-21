@@ -25,6 +25,11 @@
 
 
 
+CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell) {
+   return (CELL_AREA)(vcell*3 + hcell);
+}
+
+
 
 /// BOXAREA
 
@@ -159,6 +164,30 @@ void NPAREA::PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c) {
          }
       }
    }
+}
+
+
+
+CELL_AREA NPAREA::GetCellArea(int xpos , int ypos) const {
+   if (((xpos >= pos.X()) && (xpos <= pos.X() + left + width + right)) &&
+       ((ypos >= pos.Y()) && (ypos <= pos.Y() + top + height + bottom))) {
+      HCELL_AREA hcell = HCELL_LEFT;
+      if (xpos >= pos.X() + left) {
+         hcell = HCELL_CENTER;
+      }
+      if (xpos >= pos.X() + left + width) {
+         hcell = HCELL_RIGHT;
+      }
+      VCELL_AREA vcell = VCELL_TOP;
+      if (ypos >= pos.Y() + top) {
+         vcell = VCELL_CENTER;
+      }
+      if (ypos >= pos.Y() + top + height) {
+         vcell = VCELL_BOTTOM;
+      }
+      return GetCell(hcell,vcell);
+   }
+   return CELL_AREA_OUTSIDE;
 }
 
 

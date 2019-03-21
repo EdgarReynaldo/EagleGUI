@@ -101,8 +101,7 @@ protected :
    InputGroup      focus_cycle_backward;
 
    std::list<Rectangle> dbg_list;///dirty background rectangle list
-   
-   
+       
 protected :
 
    /// Widgetbase functions
@@ -250,11 +249,11 @@ public :
    void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
    void AccMoveViewBy(int dx , int dy , double time = 0.0);// decelerated move by position delta
    
-   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);// set velocity move to position, instant move if time = 0.0
-   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);// set velocity move to position, instant move if time = 0.0
-   void MoveViewBy(int dx , int dy , double time = 0.0);// set velocity move by position delta
+   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);///< set velocity move to position, instant move if time = 0.0
+   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< set velocity move to position, instant move if time = 0.0
+   void MoveViewBy(int dx , int dy , double time = 0.0);///< Set velocity move by position delta
 
-   void AllowMiddleMouseButtonDrag(bool allow);// false by default, drag moves the view
+   void AllowMiddleMouseButtonScroll(bool allow);///< false by default, scroll moves the camera view
 
    /// Messages from camera
    const WidgetMsg ViewMovedMessage() {return WidgetMsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);}

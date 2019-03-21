@@ -116,7 +116,7 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       }
    }
 
-   bool gui_takes_focus = false;
+///   bool gui_takes_focus = false;/// unused
    int msg;
    int retmsg = DIALOG_OKAY;
    bool focus_taken = false;
@@ -171,9 +171,9 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    if (focus_cycle_backward) {
       CycleFocusBackward();
    }
-   if (gui_takes_focus) {
-      return DIALOG_TAKE_FOCUS;
-   }
+///   if (gui_takes_focus) {
+///      return DIALOG_TAKE_FOCUS;
+///   }
    return retmsg;
 }
 
@@ -1697,8 +1697,8 @@ void WidgetHandler::MoveViewBy(int dx , int dy , double time) {
 
 
 
-void WidgetHandler::AllowMiddleMouseButtonDrag(bool allow) {
-   cam.AllowMiddleMouseButtonDrag(allow);
+void WidgetHandler::AllowMiddleMouseButtonScroll(bool allow) {
+   cam.AllowMiddleMouseButtonScroll(allow);
 }
 
 

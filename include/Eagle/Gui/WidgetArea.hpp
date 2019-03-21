@@ -43,15 +43,15 @@ enum BOX_TYPE {
 };
 
 enum CELL_AREA {
-   CELL_AREA_OUTSIDE      = -1,
-   CELL_AREA_TOPLEFT      = 0,
-   CELL_AREA_TOPMIDDLE    = 1,
-   CELL_AREA_TOPRIGHT     = 2,
-   CELL_AREA_MIDDLELEFT   = 3,
-   CELL_AREA_MIDDLEMIDDLE = 4,
-   CELL_AREA_MIDDLERIGHT  = 5,
-   CELL_AREA_BOTTOMLEFT   = 6,
-   CELL_AREA_BOTTOMMIDLE  = 7,
+   CELL_AREA_OUTSIDE       = -1,
+   CELL_AREA_TOPLEFT       = 0,
+   CELL_AREA_TOPMIDDLE     = 1,
+   CELL_AREA_TOPRIGHT      = 2,
+   CELL_AREA_MIDDLELEFT    = 3,
+   CELL_AREA_MIDDLEMIDDLE  = 4,
+   CELL_AREA_MIDDLERIGHT   = 5,
+   CELL_AREA_BOTTOMLEFT    = 6,
+   CELL_AREA_BOTTOMMIDDLE  = 7,
    CELL_AREA_BOTTOMRIGHT   = 8
 };
 
@@ -66,6 +66,8 @@ enum VCELL_AREA {
 	VCELL_BOTTOM = 2
 };
 
+
+CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell);
 
 class BOXAREA {
 public :
@@ -109,6 +111,8 @@ public :
    void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);
    
    /// Getters
+   
+   CELL_AREA GetCellArea(int xpos , int ypos) const;
    
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
    Rectangle GetRow(VCELL_AREA vcell) const;
