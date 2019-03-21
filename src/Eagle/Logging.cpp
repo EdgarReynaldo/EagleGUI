@@ -98,9 +98,10 @@ EagleLogger::EagleLogger() :
    if (!mtx.Create(true , false)) {
       throw EagleException("Failed to create EagleLogger::mtx mutex");
    }
-
-   AddOutput(cout);
-
+   
+   EAGLE_DEBUG(
+      AddOutput(cout);
+   );
 #ifndef EAGLE_LOG
    TurnLogOff();
 #endif
