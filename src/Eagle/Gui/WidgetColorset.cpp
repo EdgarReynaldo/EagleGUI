@@ -214,6 +214,9 @@ bool ColorRegistry::HasColorset(std::string name) {
 
 
 SHAREDOBJECT<WidgetColorset> ColorRegistry::GetColorsetByName(std::string name) {
+   if (!name.size()) {
+      name = "Default";
+   }
    std::map<std::string , SHAREDOBJECT<WidgetColorset> >::iterator it = named_colorsets.find(name);
    if (it == named_colorsets.end()) {
       throw EagleException(StringPrintF("WidgetColorset '%s' not found in color registry.\n" , name.c_str()));
