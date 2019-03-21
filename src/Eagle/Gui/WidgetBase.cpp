@@ -545,8 +545,7 @@ WidgetBase* WidgetBase::Root() {
 
 
 WidgetHandler* WidgetBase::RootHandler() {
-   WidgetBase* w = Root();
-   return w->whandler;
+   return dynamic_cast<WidgetHandler*>(Root());
 }
 
 

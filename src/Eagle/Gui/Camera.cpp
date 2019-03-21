@@ -111,7 +111,7 @@ Camera::Camera(std::string objclass , std::string objname) :
       startxpos(0),
       startypos(0),
       drag(false),
-      mmb_drag_enabled(true),
+      mmb_scroll_enabled(true),
       take_focus(true)
 {
    
@@ -128,7 +128,7 @@ int Camera::PrivateHandleEvent(EagleEvent ee) {
       bool hover = OuterArea().Contains(msx,msy);
       SetWidgetFlags(Flags().SetNewFlag(HOVER , hover));
       if (hover) {
-         if (mmb_drag_enabled) {
+         if (mmb_scroll_enabled) {
             if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && ee.mouse.button == 3) {///input_mouse_press(MMB)) {
                drag = true;
                startmx = msx;
@@ -169,7 +169,7 @@ int Camera::PrivateCheckInputs() {
                return DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
             }
          }
-         if (mmb_drag_enabled) {
+         if (mmb_scroll_enabled) {
             if (input_mouse_press(MMB)) {
                drag = true;
                startmx = mouse_x;
@@ -345,8 +345,8 @@ void Camera::MoveViewBy(int dx , int dy , double time) {
 
 
 
-void Camera::AllowMiddleMouseButtonDrag(bool allow) {
-   mmb_drag_enabled = allow;
+void Camera::AllowMiddleMouseButtonScroll(bool allow) {
+   mmb_scroll_enabled = allow;
 }
 
 

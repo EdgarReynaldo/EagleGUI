@@ -222,8 +222,10 @@ bool MousePointerManager::AcquireMousePointer(void* caller , MOUSE_POINTER_TYPE 
    bool ret = SelectMousePointerDirect(new_pointer);
 
    if (ret) {
-      std::pair<void* , MousePointer**> mouse_owner(caller , new_pointer);
-      mouse_owners.push_back(mouse_owner);
+      if (mouse_owners.back().first != caller) {
+         std::pair<void* , MousePointer**> mouse_owner(caller , new_pointer);
+         mouse_owners.push_back(mouse_owner);
+      }
       current_pointer = new_pointer;
    }
    return ret;
@@ -237,7 +239,7 @@ void MousePointerManager::ReleaseMousePointer(const void* caller) {
    EAGLE_ASSERT(mouse_owners.size());// There should always be at least one mouse owner in the deque
 
    if (mouse_owners.back().first == caller) {
-      // The pointer is in use, so we need to pop_back and then re-select, otherwise, just remove
+      /// The pointer is in use, so we need to pop_back and then re-select, otherwise, just remove
       mouse_owners.pop_back();
       EAGLE_ASSERT(mouse_owners.size());
       MousePointer** oldmp = mouse_owners.back().second;
@@ -247,12 +249,13 @@ void MousePointerManager::ReleaseMousePointer(const void* caller) {
       return;
    }
 
-   // remove the topmost instance of the owner's mouse pointer, but only one so Acquire and Release pairs match up
+   /// remove the topmost instance of the owner's mouse pointer, but only one so Acquire and Release pairs match up
    std::list< std::pair<void* , MousePointer**> >::reverse_iterator it = mouse_owners.rbegin();
    while (it != mouse_owners.rend()) {
       if (caller == it->first) {
          ///it = mouse_owners.erase(it);// no erase member that takes a reverse_iterator :PPP
-         // This is dumb, but forward iterate through the list to meet the other iterator
+         /// This is dumb, but forward iterate through the list to meet the other iterator
+         /// TODO : This is also broken FIXME
          std::list< std::pair<void* , MousePointer**> >::iterator it2 = mouse_owners.begin();
          while (*it != *it2) {
             ++it2;

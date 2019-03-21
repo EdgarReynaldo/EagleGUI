@@ -156,7 +156,7 @@ struct MOUSE_EVENT_DATA {
          dy(0),
          dz(0),
          dw(0),
-         button(-1)
+         button(0)
    {}
 };
 

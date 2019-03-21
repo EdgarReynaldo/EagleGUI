@@ -327,6 +327,12 @@ void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src ,
 
 
 
+void EagleGraphicsContext::DrawStretched(EagleImage* img , Rectangle dest , int flags) {
+   DrawStretchedRegion(img , Rectangle(0,0,img->W(),img->H()) , dest , flags);
+}
+
+
+
 void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
                             HALIGNMENT halign , VALIGNMENT valign) {
    EAGLE_ASSERT(font);

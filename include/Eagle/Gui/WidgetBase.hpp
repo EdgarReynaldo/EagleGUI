@@ -39,7 +39,6 @@
 #include "Eagle/Gui/WidgetContainer.hpp"
 
 
-
 class LayoutBase;
 class WidgetHandler;
 
@@ -101,7 +100,6 @@ protected :
    
    /// Visual ordering
    int zdepth;
-   
 
    
 

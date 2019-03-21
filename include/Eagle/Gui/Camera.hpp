@@ -76,7 +76,7 @@ protected :
    int startxpos;
    int startypos;
    bool drag;
-   bool mmb_drag_enabled;
+   bool mmb_scroll_enabled;
    bool take_focus;
    
 
@@ -118,8 +118,8 @@ public :
    void MoveViewBy(int dx , int dy , double time = 0.0);// set velocity move by position delta
 
    /// Setters
-   void AllowMiddleMouseButtonDrag(bool allow);
-   void TakesFocus(bool click_takes_focus);// default setting is true
+   void AllowMiddleMouseButtonScroll(bool allow);///< Whether to allow middle mouse button drag scrolling of the view
+   void TakesFocus(bool click_takes_focus);///< Default setting is true
 
 
    /// Getters

@@ -133,11 +133,17 @@ int main(int argc , char** argv) {
    WidgetHandler gui(win , "WidgetHandler" , "GUI1");
    gui.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
    
+   WidgetMover wmover("Widget mover");
+   wmover.SetWidgetArea(Rectangle(-1000,-1000,1,1) , false);
+   wmover.SetHotKey(input_key_held(EAGLE_KEY_LSHIFT) && input_key_press(EAGLE_KEY_ENTER));
+   wmover.SetAbilities(true , true);
+   gui << wmover;
+   
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
    gui2.SetupBuffer(1280,960,win);
    gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
-   gui.AllowMiddleMouseButtonDrag(false);
-   gui2.AllowMiddleMouseButtonDrag(true);
+   gui.AllowMiddleMouseButtonScroll(false);
+   gui2.AllowMiddleMouseButtonScroll(true);
    
    gui.SetBackgroundColor(EagleColor(0,0,127));
    gui2.SetBackgroundColor(EagleColor(0,127,0));
@@ -185,18 +191,17 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
-   
-   
    while (!quit) {
 ///      if (redraw) {
       if (redraw) {
          win->DrawToBackBuffer();
          win->Clear(EagleColor(0,0,0));
-         win->DrawStretchedRegion(bg , 0 , 0 , bg->W() , bg->H() , 0 , 0 , sw , sh);
+         win->DrawStretched(bg , Rectangle(0 , 0 , sw , sh));
          gui.Display(win , 0 , 0);
-         WidgetBase* hw = gui.GetWidgetAt(mx,my);
+///         WidgetBase* hw = gui.GetWidgetAt(mx,my);
+         WidgetBase* hw = wmover.GetMoveWidget();
          std::string name = (hw?hw->FullName():"NULL");
-         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , sw - 10 , sh - win->DefaultFont()->Height() - 5 , EagleColor(255,255,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(win->DefaultFont() , StringPrintF("Widget at %d,%d is [%s]" , mx , my , name.c_str()) , sw - 10 , sh - win->DefaultFont()->Height() - 5 , EagleColor(0,0,0) , HALIGN_RIGHT , VALIGN_TOP);
          win->FlipDisplay();
          redraw = false;
       }
