@@ -186,6 +186,7 @@
 		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetMover.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetPainters.hpp" />
 		<Unit filename="include/Eagle/Image.hpp" />
 		<Unit filename="include/Eagle/Indenter.hpp" />
@@ -290,6 +291,7 @@
 		<Unit filename="src/Eagle/Gui/WidgetFlags.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetHandler.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetMessage.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetMover.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetPainters.cpp" />
 		<Unit filename="src/Eagle/Image.cpp" />
 		<Unit filename="src/Eagle/Indenter.cpp" />
