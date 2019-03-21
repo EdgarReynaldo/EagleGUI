@@ -56,12 +56,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             if (anchorw) {
                /// horizontal sizing
                if (size_corner == CELL_AREA_MIDDLELEFT) {
-                  /// moving right edge
-                  newarea.SetArea(oldarea.X() , oldarea.Y() , anchorw + mdx , oldarea.H());
-               }
-               if (size_corner == CELL_AREA_MIDDLERIGHT) {
                   /// moving left edge
                   newarea.SetArea(oldarea.X() + mdx , oldarea.Y() , anchorw - mdx , oldarea.H());
+               }
+               if (size_corner == CELL_AREA_MIDDLERIGHT) {
+                  /// moving right edge
+                  newarea.SetArea(oldarea.X() , oldarea.Y() , anchorw + mdx , oldarea.H());
                }
             }
             if (anchorh) {
@@ -79,7 +79,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          }
          else {
             /// diagonal sizing
-            Pos2I newcorner = movept.MoveBy(mdx , mdy);
+            Pos2I newcorner = movept.MovedBy(mdx , mdy);
             newarea.SetCorners(anchorpt.X() , anchorpt.Y() , newcorner.X() , newcorner.Y());
             mwidget->SetWidgetArea(newarea , true);
          }
@@ -94,11 +94,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             /// Not on blacklist
             if (wlist.empty() || (wlist.find(hwidget) != wlist.end())) {
                /// On whitelist, or no whitelist
-               mwidget = hwidget;
-               if (mwidget) {
+               if (hwidget &&
+                   (hwidget->Flags().FlagOn(MOVEABLE) || hwidget->Flags().FlagOn(RESIZEABLE))) {
+                  mwidget = hwidget;
                   original_area = mwidget->GetWidgetArea();
                   /// We need the absolute position here
-                  original_area.MoveBy(mwidget->AbsParentPos());
+                  abs_area = mwidget->AbsoluteArea();
                }
             }
          }
@@ -111,12 +112,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          pointer_type = POINTER_NORMAL;
          
          if (mwidget) {
-            CELL_AREA mcell = original_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
-            CELL_AREA bcell = original_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
+            CELL_AREA mcell = abs_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
+            CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
             
             EAGLE_DEBUG(
-               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
-               EagleInfo() << "area = " << original_area << std::endl;
+///               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
+///               EagleInfo() << "area = " << abs_area << std::endl;
             );
             
             if (mcell != CELL_AREA_OUTSIDE) {
@@ -133,7 +134,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                      POINTER_S,
                      POINTER_SE
                   };
-                  if (sizing_enabled) {
+                  if (sizing_enabled && mwidget->Flags().FlagOn(RESIZEABLE)) {
                      pointer_type = mptrs[mcell];
                   }
                }
@@ -141,7 +142,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                   /// We're inside the border area
                   if (bcell != CELL_AREA_MIDDLEMIDDLE) {
                      /// Hovering over a border cell, show grab mouse icon
-                     if (moving_enabled) {
+                     if (moving_enabled && mwidget->Flags().FlagOn(MOVEABLE)) {
                         pointer_type = POINTER_GRAB;
                      }
                   }
@@ -192,11 +193,11 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          mxstart = e.mouse.x;
          mystart = e.mouse.y;
          original_area = mwidget->GetWidgetArea();
-         original_area.MoveBy(mwidget->AbsParentPos());/// We now have the original absolute area
+         abs_area = mwidget->AbsoluteArea();
          if (e.mouse.button == 1) {
             if (mwidget) {/// If we are over a widget
-               if (moving_enabled) {
-                  CELL_AREA bcell = original_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
+               if (moving_enabled && mwidget->Flags().FlagOn(MOVEABLE)) {
+                  CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
                   if ((bcell != CELL_AREA_OUTSIDE) && (bcell != CELL_AREA_MIDDLEMIDDLE)) {
                      /// User clicked on our border
                      moving = true;
@@ -207,8 +208,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                      return DIALOG_INPUT_USED;
                   }
                }
-               if (sizing_enabled) {
-                  CELL_AREA mcell = original_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
+               if (sizing_enabled && mwidget->Flags().FlagOn(RESIZEABLE)) {
+                  CELL_AREA mcell = abs_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
                   if ((mcell != CELL_AREA_OUTSIDE) && (mcell != CELL_AREA_MIDDLEMIDDLE)) {
                      /// User clicked on our margin
                      size_corner = mcell;

@@ -1661,6 +1661,12 @@ int WidgetHandler::GetMouseY() {
 
 
 
+Pos2I WidgetHandler::ViewPos() const {
+   return Pos2I(cam.ViewX() , cam.ViewY());
+}
+
+
+
 void WidgetHandler::AccMoveViewTlxTo(int xpos , int ypos , double time) {
    cam.AccMoveViewTlxTo(xpos , ypos , time);
 }

@@ -503,11 +503,13 @@ int WidgetBase::AbsMinHeight() const {
 
 
 Pos2I WidgetBase::AbsParentPos() const {
+   /// TODO : FIXME : This doesn't account for camera view in guis
    WidgetBase* p = wparent;
    Pos2I pos(0,0);
    while (p) {
       Rectangle r = p->InnerArea();
       pos.MoveBy(r.X() , r.Y());
+      pos.MoveBy(-p->ViewPos());
       p = p->wparent;
    }
    return pos;

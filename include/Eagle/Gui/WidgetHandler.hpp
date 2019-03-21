@@ -239,11 +239,13 @@ public :
    
    WidgetBase* GetWidgetAt(const int absx , const int absy);
    
-   
-   
    int GetMouseX();// returns mouse x relative to gui's inner area
    int GetMouseY();// returns mouse y relative to gui's inner area
    
+   
+   virtual Pos2I ViewPos() const;
+
+
    /// Camera control
    void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
    void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0

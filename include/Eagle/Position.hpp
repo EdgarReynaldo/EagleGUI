@@ -56,17 +56,14 @@ public :
    
    Pos2T operator-(const Pos2T& p) const {
       return Pos2T(tx - p.X() , ty - p.Y());
-      return *this;
    }
 
    Pos2T operator+(const Pos2T& p) const {
       return Pos2T(tx + p.X() , ty + p.Y());
-      return *this;
    }
    
-   Pos2T& operator-() const {
-      *this = Pos2T(-tx , -ty);
-      return *this;
+   Pos2T operator-() const {
+      return Pos2T(-tx , -ty);
    }
    
    Pos2T& operator-=(const Pos2T& add) {return MoveBy(-add);}

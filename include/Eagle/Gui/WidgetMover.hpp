@@ -40,6 +40,7 @@ protected :
    bool active;
 
    WIDGETAREA original_area;
+   WIDGETAREA abs_area;
    CELL_AREA size_corner;
    bool sizing_enabled;
    bool moving_enabled;
@@ -68,6 +69,7 @@ WidgetMover(std::string objname) :
       hotkey(input_key_held(EAGLE_KEY_LSHIFT) && input_key_press(EAGLE_KEY_ENTER)),
       active(false),
       original_area(),
+      abs_area(),
       size_corner(CELL_AREA_OUTSIDE),
       sizing_enabled(false),
       moving_enabled(false),
