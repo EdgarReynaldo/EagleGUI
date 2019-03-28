@@ -162,7 +162,7 @@ ColorRegistry* ColorRegistry::GlobalColorRegistry() {
 
 
 #define REGISTER_COLOR(name , red , green , blue , alpha) \
-   RegisteredColor registered_color_##name(#name , red , green , blue , alpha);
+   RegisteredColor RC_##name(#name , red , green , blue , alpha);
    
 REGISTER_COLOR(clear       , 1.0f  , 1.0f  , 1.0f  , 0.0f);
 REGISTER_COLOR(white       , 1.0f  , 1.0f  , 1.0f  , 1.0f);
