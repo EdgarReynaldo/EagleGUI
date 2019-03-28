@@ -503,13 +503,12 @@ int WidgetBase::AbsMinHeight() const {
 
 
 Pos2I WidgetBase::AbsParentPos() const {
-   /// TODO : FIXME : This doesn't account for camera view in guis
    WidgetBase* p = wparent;
    Pos2I pos(0,0);
    while (p) {
       Rectangle r = p->InnerArea();
       pos.MoveBy(r.X() , r.Y());
-      pos.MoveBy(-p->ViewPos());
+      pos.MoveBy(-p->ViewPos());/// Offset the position by the parent's view position
       p = p->wparent;
    }
    return pos;
@@ -565,6 +564,7 @@ WidgetHandler* WidgetBase::GetGui() {
 
 
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
+   /// TODO : FIXME : Out of date
    os << indent << "WIDGETBASE : [" << FullName() << "] {" << std::endl;
    ++indent;
    os << indent << "WAREA = [" << warea << "]" << std::endl;

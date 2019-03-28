@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,8 +16,10 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Scroller.hpp
+ * @brief The interface for a simple Scroller base class
+ * 
  */
-
 
 
 
@@ -31,16 +33,28 @@
 
 
 
-extern const int TOPIC_SCROLL_WIDGET;
+extern const unsigned int TOPIC_SCROLL_WIDGET;///< The topic returned by all events from BasicScroller objects
 
-extern const int SCROLL_VALUE_CHANGED;
+extern const int SCROLL_VALUE_CHANGED;///< The only message BasicScroller objects currently send
+
+REGISTER_WIDGET_MESSAGE(TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);///< Register our widget message
 
 
 
-REGISTER_WIDGET_MESSAGE(TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
+extern double SCROLLER_REPEAT_DELAY;///< A lazy global that sets the scroller repeat delay
+extern double SCROLLER_NUM_REPEAT_PER_SEC;///< A lazy global that sets the number of scroll repeats per second,
+                                          ///< starting after the delay
 
-extern double SCROLLER_REPEAT_DELAY;
-extern double SCROLLER_NUM_REPEAT_PER_SEC;
+
+
+/*! \class BasicScroller
+ *  @brief Basic scroller widget
+ *
+ * Derive your scroller widgets from the Scroller base class, and it will work with ScrollBar objects.
+ * 
+ */
+
+
 
 class BasicScroller : public WidgetBase {
 
@@ -95,18 +109,21 @@ protected :
 public :
    BasicScroller(std::string objclass = "BasicScroller" , std::string objname = "Nemo");
    
-   void SetScrollLength(int max_scroll);
-   void SetScrollPercent(float new_percent);
-   void SetScroll(int value);
-   void ScrollBy(int amt);
-   void ScrollBy(float percent);
+   // Setters
 
-   void SetScrollDirection(bool is_horizontal_scroller);
-   void SetupView(int total_length_of_view , int actual_length_in_view);
+   void SetScrollLength(int max_scroll);///< Set the maximum scroll value, or the virtual length of the scroller
+   void SetScrollPercent(float new_percent);///< Set the percentage of scroll
+   void SetScroll(int value);///< Set the scroll value directly
+   void ScrollBy(int amt);///< Scroll the view by amt
+   void ScrollBy(float percent);///< Scroll by x percent
 
-///   virtual void SetWidgetArea(int xpos , int ypos , int width , int height , bool notify_layout = true);
+   void SetScrollDirection(bool is_horizontal_scroller);///< Pass true to make this a horizontal scroller, and false for vertical
+   void SetupView(int total_length_of_view , int actual_length_in_view);///< Setup the view length, and how much is shown
+
+
+   // Getters
    
-   int GetScrollValue() {return scroll_val;}
+   int GetScrollValue() {return scroll_val;}///< Get the current scroller value
    
    
    

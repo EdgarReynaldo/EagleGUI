@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,6 +16,11 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file WidgetArea.hpp
+ * @brief This file contains the interfaces for the different types of widget areas
+ * 
+ * Include this header to get access to the BOXAREA, NPAREA, and WIDGETAREA classes
+ * 
  */
 
 
@@ -29,45 +34,62 @@
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 
 
+
 enum WAREA_TYPE {
-   WAREA_TYPE_MARGIN  = 0,
-   WAREA_TYPE_BORDER  = 1,
-   WAREA_TYPE_PADDING = 2,
-   WAREA_TYPE_INNER   = 3
+   WAREA_TYPE_MARGIN  = 0,///< This widget area refers to the margin, the outermost box in the CSS model
+   WAREA_TYPE_BORDER  = 1,///< This widget area refers to the border, the second outermost box in the CSS model
+   WAREA_TYPE_PADDING = 2,///< This widget area refers to the padding, the third outermost box in the CSS model
+   WAREA_TYPE_INNER   = 3 ///< This widget area refers to the client area, the innermost box in the CSS model
 };
+
+
 
 enum BOX_TYPE {
-   BOX_TYPE_MARGIN  = 0,
-   BOX_TYPE_BORDER  = 1,
-   BOX_TYPE_PADDING = 2
+   BOX_TYPE_MARGIN  = 0,///< This box type refers to the margin box
+   BOX_TYPE_BORDER  = 1,///< This box type refers to the border box
+   BOX_TYPE_PADDING = 2 ///< This box type refers to the padding box
 };
+
+
 
 enum CELL_AREA {
-   CELL_AREA_OUTSIDE       = -1,
-   CELL_AREA_TOPLEFT       = 0,
-   CELL_AREA_TOPMIDDLE     = 1,
-   CELL_AREA_TOPRIGHT      = 2,
-   CELL_AREA_MIDDLELEFT    = 3,
-   CELL_AREA_MIDDLEMIDDLE  = 4,
-   CELL_AREA_MIDDLERIGHT   = 5,
-   CELL_AREA_BOTTOMLEFT    = 6,
-   CELL_AREA_BOTTOMMIDDLE  = 7,
-   CELL_AREA_BOTTOMRIGHT   = 8
+   CELL_AREA_OUTSIDE       = -1,///< This cell area is outside the nine patch
+   CELL_AREA_TOPLEFT       = 0, ///< This is the top left cell
+   CELL_AREA_TOPMIDDLE     = 1, ///< This is the top middle cell
+   CELL_AREA_TOPRIGHT      = 2, ///< This is the top right cell
+   CELL_AREA_MIDDLELEFT    = 3, ///< This is the middle left cell
+   CELL_AREA_MIDDLEMIDDLE  = 4, ///< This is the middle middle cell
+   CELL_AREA_MIDDLERIGHT   = 5, ///< This is the middle right cell
+   CELL_AREA_BOTTOMLEFT    = 6, ///< This is the bottom leftcell
+   CELL_AREA_BOTTOMMIDDLE  = 7, ///< This is the bottom middle cell
+   CELL_AREA_BOTTOMRIGHT   = 8  ///< This is the bottom right cell
 };
+
+
 
 enum HCELL_AREA {
-	HCELL_LEFT = 0,
-	HCELL_CENTER = 1,
-	HCELL_RIGHT = 2
+	HCELL_LEFT = 0,  ///< This refers to the left most horizontal cell
+	HCELL_CENTER = 1,///< This refers to the center most horizontal cell
+	HCELL_RIGHT = 2  ///< This refers to the right most horizontal cell
 };
+
+
+
 enum VCELL_AREA {
-	VCELL_TOP = 0,
-	VCELL_CENTER = 1,
-	VCELL_BOTTOM = 2
+	VCELL_TOP = 0,   ///< This refers to the top most vertical cell
+	VCELL_CENTER = 1,///< This refers to the center most vertical cell
+	VCELL_BOTTOM = 2 ///< This refers to the bottom most vertical cell
 };
 
 
-CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell);
+
+CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell);///< Returns the corresponding CELL_AREA for the hcell and vcell passed in
+
+
+
+/*! \class BOXAREA
+ *  \brief The BOXAREA class holds the information needed to create a nine patch around a rectangle
+ */
 
 class BOXAREA {
 public :
@@ -76,21 +98,31 @@ public :
    int top;
    int bottom;
    
-   BOXAREA();
-   BOXAREA(int side);
-   BOXAREA(int hsize , int vsize);
+   BOXAREA();///< Default constructor that initializes everything to 0
+   BOXAREA(int side);///< Side constructor - each side will have the value passed
+   BOXAREA(int hsize , int vsize);///< Constructor for horizontal size and vertical size
 
    
-   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
-   void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);///< Explicit constructor that specifies l,r,t,and b
 
-   inline int Width() const {return left + right;}
-   inline int Height() const {return top + bottom;}
+   void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);///< Set the top, left, bottom, and right sizes
 
-   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   inline int Width() const {return left + right;}///< Returns the width (left + right)
+   inline int Height() const {return top + bottom;}///< Returns the height (top + bottom)
 
-   friend std::ostream& operator<<(std::ostream& os , const BOXAREA& ba);
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes the BOXAREA to the stream
+
+   friend std::ostream& operator<<(std::ostream& os , const BOXAREA& ba);///< Stream output
 };
+
+
+
+/*! \class NPAREA
+ *  \brief The NPAREA class holds the information needed to store the attributes of a nine patch area
+ * 
+ * The NPAREA class is to facilitate creating and painting nine patch areas
+ * 
+ */
 
 class NPAREA {
 public :
@@ -102,32 +134,37 @@ public :
    int height;
    int bottom;
    
-   NPAREA();
-   NPAREA(Rectangle area , BOXAREA box);
+   NPAREA();///< Default empty constructor initializes to zero
+   NPAREA(Rectangle area , BOXAREA box);///< Constructs the Nine patch area so that area is the OuterArea, and box defines the margins
    
    /// Paint functions
 
-   void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);
-   void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);
+   void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color
+   void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color that is rounded
    
    /// Getters
    
-   CELL_AREA GetCellArea(int xpos , int ypos) const;
+   CELL_AREA GetCellArea(int xpos , int ypos) const;///< Returns the CELL_AREA specified by the passed position values
    
-   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;
-   Rectangle GetRow(VCELL_AREA vcell) const;
-   Rectangle GetColumn(HCELL_AREA hcell) const;
+   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;///< Gets the rectangle for a specified cell
+   Rectangle GetRow(VCELL_AREA vcell) const;///< Gets the row rectangle for a specified VCELL_AREA
+   Rectangle GetColumn(HCELL_AREA hcell) const;///< Gets the column rectangle for a specified HCELL_AREA
    
-   inline int Width() const {return left + width + right;}
-   inline int Height() const {return top + height + bottom;}
-   inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}
+   inline int Width() const {return left + width + right;}///< Returns the total width of the nine patch
+   inline int Height() const {return top + height + bottom;}///< Returns the total height of the nine patch
+   inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}///< Returns the outer area of the nine patch
 
-   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes the nine patch object to a stream
 
-   friend std::ostream& operator<<(std::ostream& os , const NPAREA& np);
+   friend std::ostream& operator<<(std::ostream& os , const NPAREA& np);///< Stream output
 
 };
 
+
+
+/*! \class WIDGETAREA
+ *  \brief The WIDGETAREA class holds the information needed to implement the CSS Box model for Widgets
+ */
 
 class WIDGETAREA {
 
@@ -147,93 +184,115 @@ protected :
 
 public :
 
-   WIDGETAREA();
+   WIDGETAREA();///< Empty constructor
 
+   /*! \brief Constructs a widget area from an outer area and margin, border, and padding boxes */
    WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
    
+   /*! \brief Constructs a widget area from an inner area and surrounding margin, border, and padding boxes */
    WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
 
    
 
-   WIDGETAREA& operator=(const WIDGETAREA& wa);
+   WIDGETAREA& operator=(const WIDGETAREA& wa);///< Copies wa
    
-   WIDGETAREA& MoveBy(Pos2I p);
+   WIDGETAREA& MoveBy(Pos2I p);///< Moves the object by p.x , p.y
+   WIDGETAREA MovedBy(Pos2I p);///< Returns a copy of the object, moved by p.x , p.y
 
    /// Setters
    
+   /*! \brief Sets the widget area from an outer area and margin, border, and padding boxes */
    WIDGETAREA& SetBoxesContract(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+
+   /*! \brief Sets the widget area from an outer area and uniform margin, border, and padding sizes */
    WIDGETAREA& SetBoxesContract(Rectangle outerarea , int marginsize , int bordersize , int paddingsize);
+   
+   /*! \brief Sets the margin, border, and padding boxes used for this area, contracting from the outer area */
    WIDGETAREA& SetBoxesContract(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+
+   /*! \brief Sets a uniform margin, border, and padding size used for this area, contracting from the outer area */
    WIDGETAREA& SetBoxesContract(int marginsize , int bordersize , int paddingsize);
 
+   /*! \brief Sets the area using margin, border, and padding boxes, expanding from the inner area */
    WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
+
+   /*! \brief Sets the area using uniform margin, border, and padding sizes, expanding from the inner area */
    WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize , Rectangle innerarea);
+
+   /*! \brief Sets the margin, border, and padding boxes, expanding from the stored inner area */
    WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+
+   /*! \brief Sets a uniform margin, border, and padding size, expanding from the stored inner area */
    WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize);
 
 
-      
+   /*! \brief Sets the specified box dimensions, contracting from the stored outer area */
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+
+   /*! \brief Sets the specified box, contracting from the stored outer area */
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
 
+   /*! \brief Sets the specified box dimensions, expanding from the stored inner area */
    WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+
+   /*! \brief Sets the specified box, expanding from the stored inner area */
    WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
 
+   /*! \brief Sets the outer area to oa, preserving margin, border, and padding boxes if possible */
 	WIDGETAREA& SetOuterArea(Rectangle oa);
+
+   /*! \brief Sets the inner area to ia, preserving margin, border, and padding boxes */
 	WIDGETAREA& SetInnerArea(Rectangle ia);
 
+	/*! \brief Sets a new widget area */
    WIDGETAREA& SetWidgetArea(const WIDGETAREA& wa);
 
    /// Getters
    
-   NPAREA OuterNP() const;
-   NPAREA BorderNP() const;
-   NPAREA PaddingNP() const;
+   NPAREA OuterNP() const;///< Returns the nine patch for the outer area (the margin)
+   NPAREA BorderNP() const;///< Returns the nine patch for the border area
+   NPAREA PaddingNP() const;///< Returns the nine patch for the padding area
    
-	Rectangle OuterArea()   const ;
-	Rectangle BorderArea()  const ;
-	Rectangle PaddingArea() const ;
-	Rectangle InnerArea()   const ;
+	Rectangle OuterArea()   const ;///< Returns the whole outer area
+	Rectangle BorderArea()  const ;///< Returns the border area
+	Rectangle PaddingArea() const ;///< Returns the padding area
+	Rectangle InnerArea()   const ;///< Returns only the innermost area
 
-   Rectangle CellBox(BOX_TYPE box , CELL_AREA area) const;
-   Rectangle CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const;
+   Rectangle CellBox(BOX_TYPE box , CELL_AREA area) const;///< Returns the rectangle of the specified box and cell
+   Rectangle CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell) const;///< Returns the rectangle of the specified box and cells
 
-	
-	
-	int OuterAreaWidth()    const;
-	int OuterAreaHeight()   const;
-	int BorderAreaWidth()   const;
-	int BorderAreaHeight()  const;
-	int PaddingAreaWidth()  const;
-	int PaddingAreaHeight() const;
-	int InnerAreaWidth()    const;
-	int InnerAreaHeight()   const;
+	int OuterAreaWidth()    const;///< Returns the outer area width
+	int OuterAreaHeight()   const;///< Returns the outer area height
+	int BorderAreaWidth()   const;///< Returns the border area width
+	int BorderAreaHeight()  const;///< Returns the border area height
+	int PaddingAreaWidth()  const;///< Returns the padding area width
+	int PaddingAreaHeight() const;///< Returns the padding area height
+	int InnerAreaWidth()    const;///< Returns the inner area width
+	int InnerAreaHeight()   const;///< Returns the inner area height
 
 	
-	int MarginWidth()   const;
-	int MarginHeight()  const;
-	int BorderWidth()   const;
-	int BorderHeight()  const;
-	int PaddingWidth()  const;
-	int PaddingHeight() const;
+	int MarginWidth()   const;///< Returns the combined size of the left and right margins
+	int MarginHeight()  const;///< Returns the combined size of the top and bottom margins
+	int BorderWidth()   const;///< Returns the combined size of the left and right borders
+	int BorderHeight()  const;///< Returns the combined size of the top and bottom borders
+	int PaddingWidth()  const;///< Returns the combined size of the left and right padding
+	int PaddingHeight() const;///< Returns the combined size of the top and bottom padding
 
-	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;
-   BOXAREA GetAreaBox(BOX_TYPE btype) const;
+	Rectangle GetAreaRectangle(WAREA_TYPE atype) const;///< Returns the rectangle corresponding to atype
+   BOXAREA GetAreaBox(BOX_TYPE btype)           const;///< Returns the BOXAREA specified by btype
 	
-	int LeftIndent() const;
-	int RightIndent() const;
-	int TopIndent() const;
-	int BottomIndent() const;
+	int LeftIndent()   const;///< Returns the sum of the left margin, border, and padding combined
+	int RightIndent()  const;///< Returns the sum of the right margin, border, and padding combined
+	int TopIndent()    const;///< Returns the sum of the top margin, border, and padding combined
+	int BottomIndent() const;///< Returns the sum of the bottom margin, border, and padding combined
 	
-	
-	
-   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes the widget area to a stream
 
-   friend std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);
+   friend std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);///< Stream output
 
 };
 
-std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);
+std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);///< Allows you to stream widget areas
 
 
 typedef WIDGETAREA WidgetArea;
@@ -241,9 +300,6 @@ typedef WIDGETAREA WidgetArea;
 
 
 #endif // EagleGuiWidgetArea_HPP
-
-
-
 
 
 

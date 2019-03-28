@@ -302,6 +302,14 @@ WIDGETAREA& WIDGETAREA::MoveBy(Pos2I p) {
 
 
 
+WIDGETAREA WIDGETAREA::MovedBy(Pos2I p) {
+   WIDGETAREA ret = *this;
+   ret.MoveBy(p);
+   return ret;
+}
+
+
+
 WIDGETAREA& WIDGETAREA::operator=(const WIDGETAREA& wa) {
    SetWidgetArea(wa);
    return *this;
