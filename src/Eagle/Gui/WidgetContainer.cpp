@@ -40,6 +40,10 @@ WIDGETCONTAINER::~WIDGETCONTAINER() {
 
 
 EAGLE_ID WIDGETCONTAINER::Register(SHAREDWIDGET sw) {
+   /// TODO : FIXME : This will crash if sw is null or invalid
+   if (!sw) {
+      return EAGLE_ID_INVALID;
+   }
    EAGLE_ID id = sw->GetEagleId();
    cmap[id] = sw;
    return id;

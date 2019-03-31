@@ -28,13 +28,18 @@
 
 
 
-static int next_id = 0;
 
-static int NextId() {
+static unsigned int next_id = 0;
+
+
+
+static unsigned int NextId() {
    return next_id++;
 }
 
-int CurrentId() {
+
+
+unsigned int CurrentId() {
    return next_id;
 }
 

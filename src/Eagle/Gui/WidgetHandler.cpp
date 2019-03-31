@@ -789,15 +789,6 @@ WidgetHandler::~WidgetHandler() {
    root_layout->DetachFromGui();
    
    root_layout = &dumb_layout;
-/**
-   if (root_layout == &dumb_layout) {
-      root_layout->ClearLayout();
-   }
-   else {
-      StopTrackingWidget(root_layout);
-      root_layout = 0;
-   }
-//*/
 }
 
 
@@ -1112,7 +1103,6 @@ void WidgetHandler::DrawBuffer(EagleGraphicsContext* win) {
 
 
 
-#warning TODO : IMPORTANT : FIX CAMERA CODE FOR WIDGETHANDLER
 void WidgetHandler::DrawToWindow(EagleGraphicsContext* win , int xpos , int ypos) {
    
    if (Flags().FlagOn(VISIBLE)) {

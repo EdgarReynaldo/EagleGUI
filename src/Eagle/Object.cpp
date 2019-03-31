@@ -30,7 +30,7 @@
 
 
 
-const EAGLE_ID EAGLE_ID_UNASSIGNED = -1;
+const EAGLE_ID EAGLE_ID_UNASSIGNED = ~0;
 
 
 
@@ -48,7 +48,7 @@ void EagleObject::Unregister() {
 
 
 EagleObject::EagleObject(std::string objclass , std::string objname , bool log) :
-      id(EAGLE_ID_UNASSIGNED),
+      id(EAGLE_ID_INVALID),
       log_registration(log),
       our_info()
 {

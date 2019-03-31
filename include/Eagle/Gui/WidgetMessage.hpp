@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,6 +16,9 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file WidgetMessage.hpp
+ * @brief Interface for working with widget messages.
+ * 
  */
 
 
@@ -31,54 +34,77 @@
 
 
 
-std::string GetMessageString(unsigned int topic , int message);
+std::string GetMessageString(unsigned int topic , int message);///< Get a message string for the specified topic and message
 
 
+/*! \brief The RegisteredWidgetMessage class registers a new message when created */
 
 class RegisteredWidgetMessage {
 
 public :   
-   unsigned int topic;
-   std::string topic_str;
-   int message;
-   std::string message_str;
+   unsigned int topic;     ///< An unsigned integer holding the topic identifier
+   std::string topic_str;  ///< A string representation of the topic
+   int message;            ///< The integer message
+   std::string message_str;///< A string representation of the message
 
    RegisteredWidgetMessage(unsigned int _topic , std::string _topic_str , int _message , std::string _message_str);
    
 };
 
+/*! \brief REGISTER_WIDGET_MESSAGE is a macro to declare an external widget message. Pair
+           with REGISTERED_WIDGET_MESSAGE in a source file to finish the definition. */
+
 #define REGISTER_WIDGET_MESSAGE(topic , msg) \
    extern RegisteredWidgetMessage RWM_##topic_##msg
 
+/*! \brief REGISTERED_WIDGET_MESSAGE defines the widget message so it can be referred to elsewhere */
+   
 #define REGISTERED_WIDGET_MESSAGE(topic , msg) \
    RegisteredWidgetMessage RWM_##topic_##msg(topic , #topic , msg , #msg)
 
 
-class WidgetMessageMapCleaner {
+   
+extern const unsigned int TOPIC_NONE;/// TOPIC used to indicate no topic
 
-public :
-   ~WidgetMessageMapCleaner();
+extern const int MESSAGE_NONE;/// MESSAGE used to indicate no message
 
-};
-
+REGISTER_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);/// Empty widget message used to signify no message
 
 
-/** Returns the next available message id value to prevent message collision.
+
+/*! \brief Returns the next available message id value to prevent message collision.
+
    Use TOPIC_* naming with
-
+   ```
    static const unsigned int TOPIC_WHATEVER = NextFreeTopicId();
+   ```
 */
+
 unsigned int NextFreeTopicId();
-
-extern const unsigned int TOPIC_NONE;
-
-extern const int MESSAGE_NONE;
-
-REGISTER_WIDGET_MESSAGE(TOPIC_NONE , MESSAGE_NONE);
 
 
 
 class WidgetBase;
+
+/*! \brief The WidgetMessage class helps users distinguish between messages between different widgets.
+ * 
+ * Typical usage examples :
+ * ```
+ *     const WidgetMsg play(&button1 , TOPIC_BUTTON , BTN_CLICKED);
+ *     
+ *     while (gui->HasMessages()) {
+ *        WidgetMsg wmsg = gui.TakeNextMessage();
+ *        if (wmsg == play) {Play();}
+ *     }
+ *     
+ *     const WidgetMsg quit_btn_close(&quit_button , TOPIC_DIALOG , DIALOG_CLOSE);
+ *     
+ *     WidgetMsg wmsg = Gui->CheckInputs(mx,my);
+ *     
+ *     if (wmsg == quit_btn_close) {Quit();}
+ * ```
+ * TODO : Separate out inline functions
+ */
 
 class WidgetMsg {
 
@@ -86,66 +112,53 @@ public :
    
 typedef unsigned int UINT;
 
-   WidgetBase* from; // Address of the widget returning this message.
-   UINT        topic;// Whatever this is in regards to, like it being about a dialog. Each widget class is
-                     // assigned a value for this field from the NextFreeTopicId function.
-   int         msgs; // Bitfield for setting message flags, or single message id. Up to the widget class.
+   WidgetBase* from; ///< Address of the widget returning this message.
+   UINT        topic;///< Whatever this is in regards to, like it being about a dialog. Each widget class is
+                     ///< assigned a value for this field from the NextFreeTopicId function.
+   int         msgs; ///< Bitfield for setting message flags, or single message id. Up to the widget class.
 
 
    friend class WIDGET_EVENT_DATA;
 
 
 
-   WidgetMsg();
-   WidgetMsg(WidgetBase* widget_address , UINT widget_topic , int messages);
-   WidgetMsg(const WidgetMsg& wmsg);
+   WidgetMsg();///< Empty widget message constructor
+   WidgetMsg(WidgetBase* widget_address , UINT widget_topic , int messages);///< Stores the specified widget, topic, and message in this
+   WidgetMsg(const WidgetMsg& wmsg);///< WidgetMsg copy constructor
 
    ~WidgetMsg() {}
    
-   inline WidgetBase* From()       const {return from;}
-   inline UINT        Topic()      const {return topic;}
-   inline int         Message()   const  {return msgs;}
-   inline int         Messages()   const {return msgs;}
-   inline std::string      MessageStr() const {return GetMessageString(topic,msgs);}
+   inline WidgetBase*  From()       const {return from;} ///< Returns the widget that this message originated from
+   inline unsigned int Topic()      const {return topic;}///< Returns the topic of the widget message
+   inline int          Message()    const {return msgs;} ///< Returns the message
+   inline int          Messages()   const {return msgs;} ///< Returns the messages
+
+   inline std::string      MessageStr() const {return GetMessageString(topic,msgs);}///< Returns a string holding the widget message
    
-   inline bool IsAbout(const WidgetBase* widget , UINT widget_topic) const {
+   inline bool IsAbout(const WidgetBase* widget , UINT widget_topic) const {///< Returns true if this message is about the specified
+                                                                            ///< widget and topic
       return ((from == widget) && (topic == widget_topic));
    }
    
-   inline bool IsMessageTopic(UINT widget_topic , int message) const {
+   inline bool IsMessageTopic(UINT widget_topic , int message) const {///< Returns true if this message matches the topic and message passed
       return ((topic == widget_topic) && (msgs == message));
    }
    
-   inline WidgetMsg& operator=(const WidgetMsg& wmsg) {
+   inline WidgetMsg& operator=(const WidgetMsg& wmsg) {///< Widget msg assignment operator
       from  = wmsg.from;
       topic = wmsg.topic;
       msgs  = wmsg.msgs;
       return (*this);
    }
    
-   inline bool operator==(const WidgetMsg& wmsg) const {
+   inline bool operator==(const WidgetMsg& wmsg) const {///< WidgetMsg equivalence operator
       return ((from == wmsg.from) && (topic == wmsg.topic) && (msgs == wmsg.msgs));
    }
 
-   friend std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg);
+   friend std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg);///< For stream output
 
 };
 
-/**
-const WidgetMsg play(&button1 , WBUTTON , BTN_CLICKED);
-
-while (gui->HasMessages()) {
-   WidgetMsg wmsg = gui.TakeNextMessage();
-   if (wmsg == play) {Play();}
-}
-
-const WidgetMsg quit_btn_close(&quit_button , TOPIC_DIALOG , DIALOG_CLOSE);
-
-WidgetMsg wmsg = Gui->CheckInputs(mx,my);
-
-if (wmsg == quit_btn_close) {Quit();}
-
-//*/
 
 #endif // EagleGuiWidgetMsg_HPP
 

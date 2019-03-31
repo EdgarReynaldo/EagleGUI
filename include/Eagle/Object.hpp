@@ -32,8 +32,8 @@
 #include "Eagle/ObjectInfo.hpp"
 
 
-typedef int EAGLE_ID;
-extern const EAGLE_ID EAGLE_ID_UNASSIGNED;
+typedef unsigned int EAGLE_ID;
+extern const EAGLE_ID EAGLE_ID_INVALID;
 
 
 class EagleLogGuard;
