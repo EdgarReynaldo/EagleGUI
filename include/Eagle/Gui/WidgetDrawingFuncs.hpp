@@ -44,6 +44,5 @@ typedef void (*WIDGETPAINTFUNC)(EagleGraphicsContext* win , const WidgetBase* wi
 
 
 
-
 #endif // WidgetDrawingFuncs_HPP
 

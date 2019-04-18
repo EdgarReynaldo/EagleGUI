@@ -141,6 +141,7 @@ public :
 
    void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color
    void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color that is rounded
+   void PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);
    
    /// Getters
    
@@ -252,6 +253,10 @@ public :
    NPAREA OuterNP() const;///< Returns the nine patch for the outer area (the margin)
    NPAREA BorderNP() const;///< Returns the nine patch for the border area
    NPAREA PaddingNP() const;///< Returns the nine patch for the padding area
+   
+   BOXAREA MarginBox()  const;///< Returns the margin box
+   BOXAREA BorderBox()  const;///< Returns the border box
+   BOXAREA PaddingBox() const;///< Returns the padding box
    
 	Rectangle OuterArea()   const ;///< Returns the whole outer area
 	Rectangle BorderArea()  const ;///< Returns the border area

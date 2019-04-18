@@ -469,7 +469,8 @@ void WidgetHandler::CheckRedraw() {
    }
 }
 //*/
-#warning TODO : Working on CheckRedraw
+
+
 
 std::set<unsigned int> WidgetHandler::CheckRedraw(UINT widget_index) {
    std::set<unsigned int> eset;

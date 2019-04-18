@@ -55,6 +55,7 @@ WIDGETCOLOR WidgetColorFromName(std::string name) {
       "FGCOL",
       "HLCOL",
       "TXTCOL",
+      "FCSCOL",
       "HVRCOL",
       "PADCOL",
       "BORDCOL",
@@ -72,16 +73,17 @@ WIDGETCOLOR WidgetColorFromName(std::string name) {
 
 
 EagleColor default_eagle_color_array[EAGLE_NUMCOLORS] = {
-   EagleColor(0   , 0   , 0   , 255),
-   EagleColor(64  , 64  , 64  , 255),
-   EagleColor(128 , 128 , 128 , 255),
-   EagleColor(192 , 192 , 192 , 255),
-   EagleColor(255 , 255 , 255 , 255),
-   EagleColor(255 , 255 , 255 , 255),
-   EagleColor(255 , 255 , 255 , 255),
-   EagleColor(255 , 0   , 0   , 255),
-   EagleColor(0   , 255 , 0   , 255),
-   EagleColor(0   , 0   , 255 , 255)
+   EagleColor(0   , 0   , 0   , 255),/// SDCOL
+   EagleColor(64  , 64  , 64  , 255),/// BGCOL
+   EagleColor(128 , 128 , 128 , 255),/// MGCOL
+   EagleColor(192 , 192 , 192 , 255),/// FGCOL
+   EagleColor(255 , 255 , 255 , 255),/// HLCOL
+   EagleColor(255 , 255 , 255 , 255),/// TXTCOL
+   EagleColor(255 , 255 , 255 , 255),/// FCSCOL
+   EagleColor(255 , 255 , 255 , 255),/// HVRCOL
+   EagleColor(255 , 0   , 0   , 255),/// PADCOL
+   EagleColor(0   , 255 , 0   , 255),/// BORDCOL
+   EagleColor(0   , 0   , 255 , 255) /// MARGCOL
 };
 
 
@@ -114,8 +116,8 @@ std::ostream& WidgetColorset::DescribeTo(std::ostream& os , Indenter indent) con
    const EagleColor* c = wcolorset;
    os << indent << "WidgetColorset : " << std::endl;
    ++indent;
-   os << indent << "SDCOL = [" << c[SDCOL] << "] BGCOL = [" << c[BGCOL] << "] MGCOL = [" << c[MGCOL] << "] FGCOL = [" << c[FGCOL] << "] HLCOL = [" << c[HLCOL] << "]" << std::endl;
-   os << indent << "TXTCOL = [" << c[TXTCOL] << "] HVRCOL = [" << c[HVRCOL] << "] PADCOL = [" << c[PADCOL] << "] BORDCOL = [" << c[BORDCOL] << "] MARGCOL = [" << c[MARGCOL] << "]" << std::endl;
+   os << indent << "SDCOL[" << c[SDCOL] << "] BGCOL[" << c[BGCOL] << "] MGCOL[" << c[MGCOL] << "] FGCOL[" << c[FGCOL] << "] HLCOL[" << c[HLCOL] << "]" << std::endl;
+   os << indent << "FCSCOL[" << c[FCSCOL] << "] TXTCOL[" << c[TXTCOL] << "] HVRCOL[" << c[HVRCOL] << "] PADCOL[" << c[PADCOL] << "] BORDCOL[" << c[BORDCOL] << "] MARGCOL[" << c[MARGCOL] << "]" << std::endl;
    --indent;
    return os;
 }

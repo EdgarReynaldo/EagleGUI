@@ -51,7 +51,7 @@ MESSAGE_MAP* GetMessageMap() {
 string GetMessageString(unsigned int topic , int message) {
    MESSAGE_MAP* mm = GetMessageMap();
    MESSAGE_MAP::iterator mit = mm->find(MESSAGE_KEY(topic,message));
-   if (mit == message_map->end()) {
+   if (mit == mm->end()) {
       return "Message unknown";
    }
    string s;
@@ -73,7 +73,7 @@ RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , string _t
    if (mm->find(MESSAGE_KEY(topic,message)) != mm->end()) {
       throw EagleException(StringPrintF("Message [%s] already registered!\n" , GetMessageString(topic,message).c_str()));
    }
-   mm.insert(std::pair<MESSAGE_KEY , MESSAGE_VALUE>(MESSAGE_KEY(topic,message) , MESSAGE_VALUE(topic_str , message_str)));
+   mm->insert(std::pair<MESSAGE_KEY , MESSAGE_VALUE>(MESSAGE_KEY(topic,message) , MESSAGE_VALUE(topic_str , message_str)));
 }
 
 

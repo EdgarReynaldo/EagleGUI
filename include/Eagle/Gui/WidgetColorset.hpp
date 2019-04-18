@@ -51,13 +51,14 @@ enum WIDGETCOLOR {
    FGCOL   = 3,///< Foreground color
    HLCOL   = 4,///< Highlight color
    TXTCOL  = 5,///< Text color
-   HVRCOL  = 6,///< Hover color
-   PADCOL  = 7,///< Padding color
-   BORDCOL = 8,///< Border color
-   MARGCOL = 9 ///< Margin color
+   FCSCOL  = 6,///< Focus color
+   HVRCOL  = 7,///< Hover color
+   PADCOL  = 8,///< Padding color
+   BORDCOL = 9,///< Border color
+   MARGCOL = 10///< Margin color
 };
 
-#define EAGLE_NUMCOLORS 10
+#define EAGLE_NUMCOLORS 11
 
 std::string WidgetColorName(WIDGETCOLOR wc);///< Gets the name for this #WIDGETCOLOR
 WIDGETCOLOR WidgetColorFromName(std::string name);///< Gets the #WIDGETCOLOR for this name
@@ -83,8 +84,8 @@ public :
    EagleColor& operator[] (const WIDGETCOLOR& wc) {return wcolorset[wc];}///< Provides array style access to the EagleColor array
    const EagleColor& operator[] (const WIDGETCOLOR& wc) const {return wcolorset[wc];}///< Returns a const reference to the specified EagleColor
 
-///   EagleColor& operator[] (int wc) {return wcolorset[wc];}
-///   const EagleColor& operator[] (int wc) const {return wcolorset[wc];}
+   EagleColor& operator[] (int wc) {return wcolorset[wc];}
+   const EagleColor& operator[] (int wc) const {return wcolorset[wc];}
    
    std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    

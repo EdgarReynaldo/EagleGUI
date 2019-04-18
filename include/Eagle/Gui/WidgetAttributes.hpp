@@ -112,7 +112,7 @@ inline VALUE& AttributeValueMap::operator[](const ATTRIBUTE& a) {
 
 
 inline VALUE AttributeValueMap::GetAttributeValue(const ATTRIBUTE& a) const {
-   AVMIT it = attributes.find(a);
+   ATTVALMAP::const_iterator it = attributes.find(a);
    if (it != attributes.end()) {
       return it->second;
    }

@@ -27,12 +27,12 @@
 #include <string>
 #include <map>
 
+#include "Eagle/Area.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/Container.hpp"
-///#include "Eagle/Area.hpp"
 #include "Eagle/MousePointer.hpp"
 ///#include "Eagle/System.hpp"
 #include "Eagle/Transforms.hpp"
@@ -313,6 +313,8 @@ public :
 										 float x3 , float y3 , EagleColor c3 ,
 										 float x4 , float y4 , EagleColor c4)=0;
 
+   /// TODO : Consistent naming
+										 										 
    /// image drawing operations
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
 
@@ -329,6 +331,11 @@ public :
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
 
    virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
+
+   void DrawImageCenter (EagleImage* img , Rectangle dest , int flags);///< Centers the image, no scaling is performed
+   void DrawImageFit    (EagleImage* img , Rectangle dest , int flags);///< Maintains aspect and stretches to fit
+   void DrawImageCover  (EagleImage* img , Rectangle dest , int flags);///< Maintains aspect and stretches to cover
+   void DrawImageStretch(EagleImage* img , Rectangle dest , int flags);///< Stretches the image to fill
 
 
 

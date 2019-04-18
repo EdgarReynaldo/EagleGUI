@@ -333,6 +333,62 @@ void EagleGraphicsContext::DrawStretched(EagleImage* img , Rectangle dest , int 
 
 
 
+void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , int flags) {
+   EAGLE_ASSERT(img && img->Valid());
+
+   Clipper clip(img , dest);
+
+   Draw(img , dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , int flags) {
+   EAGLE_ASSERT(img && img->Valid() && img->Area());
+
+   
+   const double hratio = dest.W() / (double)img->W();
+   const double vratio = dest.W() / (double)img->H();
+   const double minratio = (hratio < vratio)?hratio:vratio;
+   
+   const double imgw = img->W() * minratio;
+   const double imgh = img->H() * minratio;
+   
+   Rectangle dest2(dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , imgw , imgh);
+   
+   Clipper clip(img , dest);
+   
+   DrawStretched(img , dest2 , flags);
+   
+}
+
+
+
+void EagleGraphicsContext::DrawImageCover(EagleImage* img , Rectangle dest , int flags) {
+   EAGLE_ASSERT(img && img->Valid() && img->Area());
+
+   const double hratio = dest.W() / (double)img->W();
+   const double vratio = dest.W() / (double)img->H();
+   const double maxratio = (hratio > vratio)?hratio:vratio;
+
+   const double imgw = img->W() * maxratio;
+   const double imgh = img->H() * maxratio;
+   
+   Rectangle dest2(dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , imgw , imgh);
+   
+   Clipper clip(img , dest);
+   
+   DrawStretched(img , dest2 , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawImageStretch(EagleImage* img , Rectangle dest , int flags) {
+   DrawStretched(img , dest , flags);
+}
+
+
+
 void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
                             HALIGNMENT halign , VALIGNMENT valign) {
    EAGLE_ASSERT(font);
