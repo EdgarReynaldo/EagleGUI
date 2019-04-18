@@ -125,8 +125,8 @@ int main(int argc , char** argv) {
    gui << gui2;
 
    /// We can have transparent backgrounds in our gui
-   gui.SetBackgroundColor(EagleColor(0,0,0,0));
-   gui2.SetBackgroundColor(EagleColor(0,0,0,0));
+   gui.SetBackgroundColor(EagleColor(0,127,0,255));
+   gui2.SetBackgroundColor(EagleColor(0,0,127,255));
    
    /// A RelativeLayout allows us to keep relative positions and sizes of our widgets
    RelativeLayout rl1("RLAYOUT1");

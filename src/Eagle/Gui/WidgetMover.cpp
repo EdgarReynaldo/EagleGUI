@@ -198,8 +198,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
        (e.mouse.button == 1)) /// only if LMB is pressed
    {
       if (!moving && !sizing) {/// so we don't interrupt ourselves
-         mxstart = e.mouse.x;
-         mystart = e.mouse.y;
+//         mxstart = e.mouse.x;
+//         mystart = e.mouse.y;
          mdxtotal = 0;
          mdytotal = 0;
          original_area = mwidget->GetWidgetArea();

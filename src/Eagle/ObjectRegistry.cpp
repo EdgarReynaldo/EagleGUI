@@ -28,13 +28,18 @@
 
 
 
-static int next_id = 0;
 
-static int NextId() {
+static unsigned int next_id = 0;
+
+
+
+static unsigned int NextId() {
    return next_id++;
 }
 
-int CurrentId() {
+
+
+unsigned int CurrentId() {
    return next_id;
 }
 
@@ -82,31 +87,31 @@ int GetNameCount(std::string name) {
 
 
 
-EagleObject* GetObjectById(int eid) {
+EagleObject* GetObjectById(EAGLE_ID eid) {
    return EagleObjectRegistry::Instance()->Object(eid);
 }
 
 
 
-bool GetValidById(int eid) {
+bool GetValidById(EAGLE_ID eid) {
    return EagleObjectRegistry::Instance()->Valid(eid);
 }
 
 
 
-std::string GetShortNameById(int eid) {
+std::string GetShortNameById(EAGLE_ID eid) {
    return EagleObjectRegistry::Instance()->ShortName(eid);
 }
 
 
 
-std::string GetClassNameById(int eid) {
+std::string GetClassNameById(EAGLE_ID eid) {
    return EagleObjectRegistry::Instance()->ClassName(eid);
 }
 
 
 
-std::string GetFullNameById(int eid) {
+std::string GetFullNameById(EAGLE_ID eid) {
    return EagleObjectRegistry::Instance()->FullName(eid);
 }
 
@@ -179,7 +184,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    
    int id_index = -1;
    
-   if (eid != EAGLE_ID_UNASSIGNED) {
+   if (eid != EAGLE_ID_INVALID) {
       /// In this case all we are doing is assigning a new name to the object
       
       LockOurMutex();
@@ -240,7 +245,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
 
 
 void EagleObjectRegistry::Unregister(EAGLE_ID eid) {
-   EAGLE_ASSERT(eid != EAGLE_ID_UNASSIGNED);
+   EAGLE_ASSERT(eid != EAGLE_ID_INVALID);
    
    LockOurMutex();
    
@@ -433,7 +438,7 @@ EagleObjectInfo EagleObjectRegistry::Info(EAGLE_ID eid) {
 
 
 EagleObjectInfo EagleObjectRegistry::FindInfoByAddress(EagleObject* object) {
-   EAGLE_ID id = EAGLE_ID_UNASSIGNED;
+   EAGLE_ID id = EAGLE_ID_INVALID;
    
    LockOurMutex();
    

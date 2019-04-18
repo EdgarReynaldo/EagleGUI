@@ -106,6 +106,7 @@ Pos2I GetWidgetPositionBottomRight(WidgetBase* w) {
 
 StickyPositionBase::StickyPositionBase() :
       anchor_widget(0),
+      widget_to_move(0),
       poffset(),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),

@@ -34,21 +34,24 @@ using std::pair;
 
 
 
-
-WidgetMessageMapCleaner map_cleaner;/// This needs to be here to free the message map, don't remove
-
-typedef map<pair<unsigned int,int>,pair<string,string> > MESSAGE_MAP; 
 typedef pair<unsigned int,int> MESSAGE_KEY;
 typedef pair<string,string> MESSAGE_VALUE;
 
-MESSAGE_MAP* message_map = 0;
+typedef map<MESSAGE_KEY,MESSAGE_VALUE> MESSAGE_MAP; 
+
+
+
+MESSAGE_MAP* GetMessageMap() {
+   static MESSAGE_MAP mm;
+   return &mm;
+}
 
 
 
 string GetMessageString(unsigned int topic , int message) {
-   EAGLE_ASSERT(message_map);
-   MESSAGE_MAP::iterator mit = message_map->find(MESSAGE_KEY(topic,message));
-   if (mit == message_map->end()) {
+   MESSAGE_MAP* mm = GetMessageMap();
+   MESSAGE_MAP::iterator mit = mm->find(MESSAGE_KEY(topic,message));
+   if (mit == mm->end()) {
       return "Message unknown";
    }
    string s;
@@ -66,45 +69,29 @@ RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , string _t
       message(_message),
       message_str(_message_str)
 {
-   static int init = 1;
-   if (init) {
-      message_map = new MESSAGE_MAP();
-      init = 0;
-   }
-   if (message_map->find(MESSAGE_KEY(topic,message)) != message_map->end()) {
+   MESSAGE_MAP* mm = GetMessageMap();
+   if (mm->find(MESSAGE_KEY(topic,message)) != mm->end()) {
       throw EagleException(StringPrintF("Message [%s] already registered!\n" , GetMessageString(topic,message).c_str()));
    }
-   (*message_map)[MESSAGE_KEY(topic,message)] = MESSAGE_VALUE(topic_str , message_str);
+   mm->insert(std::pair<MESSAGE_KEY , MESSAGE_VALUE>(MESSAGE_KEY(topic,message) , MESSAGE_VALUE(topic_str , message_str)));
 }
 
 
 
-WidgetMessageMapCleaner::~WidgetMessageMapCleaner() {
-   static int destruct = 1;
-   if (destruct) {
-      delete message_map;
-      message_map = 0;
-      destruct = 0;
-   }
-}
+
+extern const unsigned int TOPIC_NONE = 0;
 
 
 
-#define NONE 0
 unsigned int NextFreeTopicId() {
-   static unsigned int id = NONE;
+   static unsigned int id = TOPIC_NONE;
    id += 1;
    return id;
 }
 
 
 
-extern const unsigned int TOPIC_NONE = NextFreeTopicId();
-
-
-
 const int MESSAGE_NONE = 0;
-
 
 
 
@@ -116,7 +103,7 @@ WidgetMsg::WidgetMsg() :
       from(0),
       topic(TOPIC_NONE),
       msgs(MESSAGE_NONE)
-   {}
+{}
 
 
 
@@ -124,7 +111,7 @@ WidgetMsg::WidgetMsg(WidgetBase* widget_address , UINT widget_topic , int messag
       from(widget_address),
       topic(widget_topic),
       msgs(message)
-   {}
+{}
 
 
 
@@ -132,13 +119,15 @@ WidgetMsg::WidgetMsg(const WidgetMsg& wmsg) :
       from(wmsg.from),
       topic(wmsg.topic),
       msgs(wmsg.msgs)
-   {}
+{}
 
    
 
 std::ostream& operator<<(std::ostream& os , const WidgetMsg& wmsg) {
-   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << StringPrintF("] from %s at %p",wmsg.from?wmsg.from->FullName():"NULL" , wmsg.from);
+   os << "Message [" << GetMessageString(wmsg.topic , wmsg.msgs) << 
+         StringPrintF("] from %s at %p",wmsg.from?wmsg.from->FullName():"NULL" , wmsg.from);
    return os;
 }
+
 
 

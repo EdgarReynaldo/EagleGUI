@@ -625,7 +625,6 @@ void Rectangle::Fill(EagleGraphicsContext* win , EagleColor color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
    win->DrawFilledRectangle(x , y , w , h , color);
-///   rectfill(bmp , x , y , brx , bry , color);
 }
 
 
@@ -633,18 +632,12 @@ void Rectangle::Fill(EagleGraphicsContext* win , EagleColor color) const {
 void Rectangle::DrawInnerFrame(EagleGraphicsContext* win , unsigned int width , EagleColor color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
-   const int len = width - 1;
-   win->DrawFilledRectangle(x         , y         , brx     , y + len     , color);
-   win->DrawFilledRectangle(x         , y + width , x + len , bry - width , color);
-   win->DrawFilledRectangle(brx - len , y + width , brx     , bry - width , color);
-   win->DrawFilledRectangle(x         , bry - len , brx     , bry         , color);
-
-/** Old
-   ASSERT(bmp);
-   for (unsigned int i = 0 ; i < width ; ++i) {
-      rect(bmp , x + i , y + i , brx - i , bry - i , color);
-   }
-//*/
+   if (width < 1) {return;}
+   
+   win->DrawFilledRectangle(x             , y         , x + w , y + width     , color);/// Top rectangle
+   win->DrawFilledRectangle(x             , y + h     , x + w , y + h - w     , color);/// Bottom rectangle
+   win->DrawFilledRectangle(x             , y + width , x     , y + h - width , color);/// Left rectangle
+   win->DrawFilledRectangle(x + w - width , y + width , x + w , y + h - width , color);/// Right rectangle
 }
 
 

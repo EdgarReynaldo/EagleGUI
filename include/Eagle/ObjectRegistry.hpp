@@ -111,8 +111,8 @@ class EagleObjectRegistry {
    ADDRESSMAP* paddressmap;
    NAMEMAP* pnamemap;
 
-   int start_id;
-   int stop_id;
+   unsigned int start_id;
+   unsigned int stop_id;
    
    int destruct_count;
 

@@ -168,6 +168,16 @@ void NPAREA::PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c) {
 
 
 
+void NPAREA::PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer , EagleColor inner) {
+   NPAREA outernp(Area() , BOXAREA(left/2 , right/2 , top/2 , bottom/2));
+   NPAREA innernp(outernp.GetNPCell(HCELL_CENTER , VCELL_CENTER) , 
+                  BOXAREA(left - left/2 , right - right/2 , top - top/2 , bottom - bottom/2));
+   innernp.PaintOutsideSolid(win , inner);
+   outernp.PaintOutsideSolid(win , outer);
+}
+
+
+
 CELL_AREA NPAREA::GetCellArea(int xpos , int ypos) const {
    if (((xpos >= pos.X()) && (xpos <= pos.X() + left + width + right)) &&
        ((ypos >= pos.Y()) && (ypos <= pos.Y() + top + height + bottom))) {
@@ -298,6 +308,14 @@ WIDGETAREA::WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbo
 WIDGETAREA& WIDGETAREA::MoveBy(Pos2I p) {
    pos.MoveBy(p);
    return *this;
+}
+
+
+
+WIDGETAREA WIDGETAREA::MovedBy(Pos2I p) {
+   WIDGETAREA ret = *this;
+   ret.MoveBy(p);
+   return ret;
 }
 
 
@@ -449,6 +467,18 @@ NPAREA WIDGETAREA::BorderNP() const {
 
 NPAREA WIDGETAREA::PaddingNP() const {
    return NPAREA(PaddingArea() , GetAreaBox(BOX_TYPE_PADDING));
+}
+
+
+
+BOXAREA WIDGETAREA::MarginBox()  const {
+   return margin;
+}
+BOXAREA WIDGETAREA::BorderBox()  const {
+   return border;
+}
+BOXAREA WIDGETAREA::PaddingBox() const {
+   return padding;
 }
 
 

@@ -16,6 +16,11 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file WidgetMover.hpp
+ * @brief A simple widget to control other widget's positions and areas
+ * 
+ * 
+ * 
  */
 
 
@@ -23,10 +28,14 @@
 #ifndef WidgetMover_HPP
 #define WidgetMover_HPP
 
+
+
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/MousePointer.hpp"
+
 #include <set>
+
 
 
 class WidgetMover : public WidgetBase {
@@ -77,8 +86,8 @@ WidgetMover(std::string objname) :
       moving_enabled(false),
       sizing(false),
       moving(false),
-      mxstart(-1),
-      mystart(-1),
+//      mxstart(-1),
+//      mystart(-1),
       mdxtotal(0),
       mdytotal(0),
       anchorpt(),
@@ -92,13 +101,17 @@ WidgetMover(std::string objname) :
    
 }
          
-   void SetAbilities(bool can_move , bool can_size);
-   void SetHotKey(InputGroup ig);
-   void WhiteList(WidgetBase* widget);
-   void BlackList(WidgetBase* widget);
+   void SetAbilities(bool can_move , bool can_size);///< Whether to allow moving or sizing
+   void SetHotKey(InputGroup ig);///< Set the hot key for activation of the widget mover
+   void WhiteList(WidgetBase* widget);///< Add a widget to the whitelist
+   void BlackList(WidgetBase* widget);///< Add a widget to the blacklist
    
-   WidgetBase* GetMoveWidget() {return mwidget;}
+   WidgetBase* GetMoveWidget() {return mwidget;}///< The widget currently being moved
 };
 
+
+
 #endif // WidgetMover_HPP
+
+
 

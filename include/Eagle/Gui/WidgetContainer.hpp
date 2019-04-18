@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,13 +16,15 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file WidgetContainer.hpp
+ * @brief Simple container for widgets, using shared pointers
+ * 
  */
 
 
 
 #ifndef WidgetContainer_HPP
 #define WidgetContainer_HPP
-
 
 
 
@@ -39,6 +41,7 @@ class WidgetBase;
 typedef SHAREDOBJECT<WidgetBase> SHAREDWIDGET;
 
 
+/*! \brief Simple class to store widget references */
 
 class WIDGETCONTAINER {
 public :
@@ -50,21 +53,24 @@ protected :
    
 public :   
    
-   WIDGETCONTAINER();
+   WIDGETCONTAINER();///< Create an empty container
    ~WIDGETCONTAINER();
    
-   EAGLE_ID Register(SHAREDWIDGET sw);
-   void Remove(EAGLE_ID id);
-   void Clear();
+   EAGLE_ID Register(SHAREDWIDGET sw);///< Register this shared widget with the container
+   void     Remove(EAGLE_ID id);      ///< Remove the reference to this widget
+   void     Clear();                  ///< Empty the container
 
-   SHAREDWIDGET FindById(EAGLE_ID id);
+   SHAREDWIDGET FindById(EAGLE_ID id);///< Get a shared pointer to the specified object
    
-   SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}
+   SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}///< Shortcut to FindById
 };
 
 
 typedef WIDGETCONTAINER WidgetContainer;
 
 
+
 #endif // WidgetContainer_HPP
+
+
 

@@ -123,8 +123,11 @@ void WidgetBase::OnSelfAttributeChanged(ATTRIBUTE a , VALUE v) {
 
 void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    unsigned int diff = FlagDiff(wflags , new_widget_flags);
-   if (diff & (VISIBLE | HOVER | HASFOCUS)) {
+   if (diff & VISIBLE) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
+   }
+   if (diff & (HOVER | HASFOCUS)) {
+      new_widget_flags.AddFlag(NEEDS_BG_REDRAW);
    }
    if (new_widget_flags.FlagOn(NEEDS_BG_REDRAW)) {
       new_widget_flags.AddFlag(NEEDS_REDRAW);
@@ -146,7 +149,7 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    if (!wparent) {return;}
    
    if (cflags & NEEDS_REDRAW) {
-      wparent->SetRedrawFlag();
+      SetRedrawFlag();
    }
    if ((cflags & NEEDS_BG_REDRAW) || (cflags & VISIBLE)) {
       if (whandler) {
@@ -181,7 +184,7 @@ WidgetBase::~WidgetBase() {
 
 int WidgetBase::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_TIMER) {
-      Update(ee.timer.eagle_timer_source->SPT());
+///      Update(ee.timer.eagle_timer_source->SPT());
    }
    return (PrivateCheckInputs() | PrivateHandleEvent(ee));
 }
@@ -503,13 +506,12 @@ int WidgetBase::AbsMinHeight() const {
 
 
 Pos2I WidgetBase::AbsParentPos() const {
-   /// TODO : FIXME : This doesn't account for camera view in guis
    WidgetBase* p = wparent;
    Pos2I pos(0,0);
    while (p) {
       Rectangle r = p->InnerArea();
       pos.MoveBy(r.X() , r.Y());
-      pos.MoveBy(-p->ViewPos());
+      pos.MoveBy(-p->ViewPos());/// Offset the position by the parent's view position
       p = p->wparent;
    }
    return pos;
@@ -565,6 +567,7 @@ WidgetHandler* WidgetBase::GetGui() {
 
 
 std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
+   /// TODO : FIXME : Out of date
    os << indent << "WIDGETBASE : [" << FullName() << "] {" << std::endl;
    ++indent;
    os << indent << "WAREA = [" << warea << "]" << std::endl;

@@ -27,7 +27,7 @@
 #include "Eagle/Gui/Scripting/Parsing.hpp"
 
 
-WidgetPainter default_widget_painter(HeapObject<WidgetPainterBase>(new WidgetPainterBasic()));
+WidgetPainter default_widget_painter(HeapObject<WidgetPainterBase>(new WidgetPainterBase()));
 
 
 
@@ -35,11 +35,97 @@ WidgetPainter default_widget_painter(HeapObject<WidgetPainterBase>(new WidgetPai
 
 
 
+void WidgetPainterBase::PaintCSSModel() {
+   
+   NPAREA np;
+   np = warea.OuterNP();
+   np.PaintOutsideSolid(window , (*wcolors)[MARGCOL]);
+   np = warea.BorderNP();
+   np.PaintOutsideSolid(window , (*wcolors)[BORDCOL]);
+   np = warea.PaddingNP();
+   np.PaintOutsideSolid(window , (*wcolors)[PADCOL]);
+}
+
+
+
+void WidgetPainterBase::PaintFill() {
+   NPAREA border = warea.BorderNP();
+   border.PaintOutsideSolid(window , (*wcolors)[BORDCOL]);
+}
+
+
+
+void WidgetPainterBase::PaintRounded() {
+   NPAREA border = warea.BorderNP();
+   border.PaintOutsideRounded(window , (*wcolors)[BORDCOL]);
+}
+
+
+
+void WidgetPainterBase::PaintContrast(EagleColor outer , EagleColor inner) {
+   NPAREA border = warea.BorderNP();
+   border.PaintOutsideContrast(window , outer , inner);
+}
+
+
+
+void WidgetPainterBase::PaintCustom() {
+   (void)0;
+}
+
+
+
+void WidgetPainterBase::PaintFocusHighlight() {
+   EagleColor hl = (*wcolors)[HLCOL];
+   EagleColor col(hl.fR() , hl.fG() , hl.fB() , 0.5);
+   window->DrawFilledRectangle(warea.OuterArea() , col);
+}
+
+
+
+void WidgetPainterBase::PaintFocusOutline() {
+   BOXAREA b = warea.MarginBox();
+   BOXAREA outlinebox(b.left/2 , b.right/2 , b.top/2 , b.bottom/2);
+   NPAREA np(warea.OuterArea() , outlinebox);
+   np.PaintOutsideSolid(window , (*wcolors)[HLCOL]);
+   
+}
+
+
+
+void WidgetPainterBase::PaintFocusDotted() {
+   /// TODO : Implement a shader for this
+   throw EagleException("WidgetPainterBase::PaintFocusDotted not implemented yet!\n");
+}
+
+
+
+void WidgetPainterBase::PaintFocusContrast() {
+   warea.OuterNP().PaintOutsideContrast(window , (*wcolors)[HLCOL] , (*wcolors)[SDCOL]);
+}
+
+
+
+void WidgetPainterBase::PaintFocusDDotted() {
+   /// TODO : Implement a shader for this
+   throw EagleException("WidgetPainterBase::PaintFocusDDotted not implemented yet!\n");
+}
+
+
+
+void WidgetPainterBase::PaintFocusCustom() {
+   (void)0;
+}
+
+
+
 WidgetPainterBase::WidgetPainterBase() : 
       window(0),
       widget(0),
-      xoffset(0),
-      yoffset(0)
+      warea(),
+      wcolors(),
+      bgtype(BG_AREA_EMPTY),
+      ftype(FOCUS_AREA_OUTLINE)
 {}      
 
 
@@ -49,56 +135,82 @@ void WidgetPainterBase::GetPainterReady(EagleGraphicsContext* win , const Widget
    EAGLE_ASSERT(w);
    window = win;
    widget = w;
-   xoffset = xpos;
-   yoffset = ypos;
+   warea = w->GetWidgetArea();
+   warea.MoveBy(Pos2I(xpos , ypos));
+   wcolors = w->GetWidgetColorset();
 }
 
 
 
-
-/// --------------      WidgetPainterBasic     ------------------------
-
-
-
-void WidgetPainterBasic::PaintBackground() {
-   const WidgetColorset& wc = widget->WidgetColors();
-   WidgetArea wa = widget->GetWidgetArea();
-   wa.MoveBy(Pos2I(xoffset , yoffset));
+void WidgetPainterBase::PaintBackground() {
+   if (bgtype == BG_AREA_EMPTY || bgtype == NUM_BG_AREA_TYPES) {return;}
    
-   /// Paint background
-   
-   NPAREA np;
-   np = wa.OuterNP();
-   np.PaintOutsideSolid(window , wc[MARGCOL]);
-   np = wa.BorderNP();
-   np.PaintOutsideSolid(window , wc[BORDCOL]);
-   np = wa.PaddingNP();
-   np.PaintOutsideSolid(window , wc[PADCOL]);
-   
-   
-   
-   
-/**
-   /// TODO : Implement
-   VALUE v = widget->GetAttributeValue("BorderColor");
-   if (v.length()) {
-      EagleColor c = ParseColor(v);
-      NPAREA border = wa.BorderNP();
-      border.PaintOutsideSolid(window , c);
+   switch(bgtype) {
+   case BG_AREA_CSSMODEL :
+      PaintCSSModel();
+      break;
+   case BG_AREA_FILL :
+      PaintFill();
+      break;
+   case BG_AREA_ROUNDED :
+      PaintRounded();
+      break;
+   case BG_AREA_CONTRAST :
+      PaintContrast((*wcolors)[HLCOL] , (*wcolors)[SDCOL]);
+      break;
+   case BG_AREA_RCONTRAST :
+      PaintContrast((*wcolors)[SDCOL] , (*wcolors)[HLCOL]);
+      break;
+   default :
+      break;
    }
-//*/
 }
 
 
 
-void WidgetPainterBasic::PaintFocus() {
-   return;
-   const WidgetColorset& wc = widget->WidgetColors();
-   WidgetArea wa = widget->GetWidgetArea();
-   wa.MoveBy(Pos2I(xoffset , yoffset));
-   EagleColor hl = wc[HLCOL];
-   EagleColor col(hl.fR() , hl.fG() , hl.fB() , 0.5);
-   window->DrawFilledRectangle(wa.OuterArea() , col);
+/*! \brief FOCUS_AREA_PAINT_TYPE controls how the focus is drawn for a widget 
+
+enum FOCUS_AREA_PAINT_TYPE {
+   FOCUS_AREA_INVISIBLE = 0,
+   FOCUS_AREA_HIGHLIGHT = 1,
+   FOCUS_AREA_OUTLINE   = 2,
+   FOCUS_AREA_DOTTED    = 3,
+   FOCUS_AREA_CONTRAST  = 4,
+   FOCUS_AREA_DDOTTED   = 5,
+   FOCUS_AREA_CUSTOM    = 6,
+   NUM_FOCUS_AREA_TYPES = 7
+};
+
+*/
+
+
+
+void WidgetPainterBase::PaintFocus() {
+   switch (ftype) {
+   case FOCUS_AREA_INVISIBLE :
+      return;
+      break;
+   case FOCUS_AREA_HIGHLIGHT :
+      PaintFocusHighlight();
+      break;
+   case FOCUS_AREA_OUTLINE :
+      PaintFocusOutline();
+      break;
+   case FOCUS_AREA_DOTTED :
+      PaintFocusDotted();
+      break;
+   case FOCUS_AREA_CONTRAST :
+      PaintFocusContrast();
+      break;
+   case FOCUS_AREA_DDOTTED :
+      PaintFocusDDotted();
+      break;
+   case FOCUS_AREA_CUSTOM :
+      PaintFocusCustom();
+      break;
+   default :
+      break;
+   }
 }
 
 

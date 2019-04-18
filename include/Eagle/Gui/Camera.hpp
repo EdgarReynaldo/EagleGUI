@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,8 +16,10 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Camera.hpp
+ * @brief A simple widget class to view a bitmap. Includes scrolling, timed view movement, and zooming.
+ * 
  */
-
 
 
 
@@ -34,7 +36,7 @@
 extern const unsigned int TOPIC_CAMERA;
 
 enum CAMERA_MSGS {
-   CAMERA_VIEW_MOVED   = 0,
+   CAMERA_VIEW_MOVED        = 0,
    CAMERA_VIEW_DEST_REACHED = 1
 };
 
@@ -56,9 +58,9 @@ REGISTER_WIDGET_MESSAGE(TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
 
 class Camera : public WidgetBase {
 protected :
-   EagleImage* view_bmp;
+   EagleImage* view_bmp;///< The image to view
    
-   Rectangle view_area;// What is shown of view_bmp
+   Rectangle view_area;///< What is shown of the viewed image
    
    double prev_x;
    double prev_y;
@@ -106,30 +108,30 @@ public :
    virtual void SetViewArea(int x , int y , int w , int h);
 
 
-   void SetView(EagleImage* bmp , Rectangle area_to_view);
+   void SetView(EagleImage* bmp , Rectangle area_to_view);///< Set the image to view and the area of the image to view
    void SetViewArea(Rectangle area_to_view);// view must be set first
 
-   void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
-   void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);// decelerated move to position, instant move if time = 0.0
-   void AccMoveViewBy(int dx , int dy , double time = 0.0);// decelerated move by position delta
+   void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Decelerated move to position, instant move if time = 0.0
+   void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Decelerated move to position, instant move if time = 0.0
+   void AccMoveViewBy(int dx , int dy , double time = 0.0);          ///< Decelerated move by position delta
    
-   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);// set velocity move to position, instant move if time = 0.0
-   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);// set velocity move to position, instant move if time = 0.0
-   void MoveViewBy(int dx , int dy , double time = 0.0);// set velocity move by position delta
+   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Set velocity move to position, instant move if time = 0.0
+   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Set velocity move center to position, instant move if time = 0.0
+   void MoveViewBy(int dx , int dy , double time = 0.0);          ///< Set velocity move by position delta
 
    /// Setters
    void AllowMiddleMouseButtonScroll(bool allow);///< Whether to allow middle mouse button drag scrolling of the view
-   void TakesFocus(bool click_takes_focus);///< Default setting is true
+   void TakesFocus(bool click_takes_focus);      ///< Whether a mouse click on us will take the focus. Default setting is true
 
 
    /// Getters
-   Rectangle ViewArea() const {return view_area;}
-   int       ViewX()    const {return view_area.X();}
-   int       ViewY()    const {return view_area.Y();}
-   int       ViewW()    const {return view_area.W();}
-   int       ViewH()    const {return view_area.H();}
+   Rectangle ViewArea() const {return view_area;}    ///< Returns the view rectangle
+   int       ViewX()    const {return view_area.X();}///< Returns the view left x
+   int       ViewY()    const {return view_area.Y();}///< Returns the view top y
+   int       ViewW()    const {return view_area.W();}///< Returns the view width
+   int       ViewH()    const {return view_area.H();}///< Returns the view height
    
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Stream output
 
 };
 /**
