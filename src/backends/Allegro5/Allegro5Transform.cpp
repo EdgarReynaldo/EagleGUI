@@ -113,6 +113,18 @@ TransformBase* Allegro5TransformBase::Clone() {
 
 
 
+void Allegro5TransformBase::ApplyTransformation(double& destx , double& desty , double& destz) {
+   float x = destx;
+   float y = desty;
+   float z = destz;
+   al_transform_coordinates_3d(&t , &x , &y , &z);
+   destx = (double)x;
+   desty = (double)y;
+   destz = (double)z;
+}
+
+
+
 /// ---------------------      Allegro5Transformer      -----------------------------------
 
 

@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,7 +16,14 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ *
+ *
+ *
+ * @file IconButton.hpp
+ * @brief Generic class for icon buttons and ninepatches
+ * 
  */
+
 
 
 
@@ -28,20 +35,17 @@
 #include "Eagle/Image.hpp"
 #include "Eagle/StringWork.hpp"
 
-/**
-enum BUTTON_STATE {
-   BUTTON_UP = 0,
-   BUTTON_DOWN = 1,
-   BUTTON_HOVER_UP = 2,
-   BUTTON_HOVER_DOWN = 3
-};
-//*/
+
+
+/**! @class IconButton
+ *   @brief A simple class to draw icon buttons in 4 different states
+ */
 
 class IconButton : public BasicButton {
 
 protected :
-   EagleImage* original_images[4];/// These are just for reference, but they are used when the button size changes
-///   EagleImage* scaled_images[4];/// We own these, they are scaled to fit the inner area
+   EagleImage* original_images[4];///< These are just for reference, but they are used when the button size changes
+///   EagleImage* scaled_images[4];///< We own these, they are scaled to fit the inner area
 
    Rectangle click_rect;
 
@@ -57,7 +61,16 @@ public :
 
    virtual ~IconButton() {}
    
-   virtual void SetImages(EagleImage* upimage , EagleImage* downimage , EagleImage* hoverupimage , EagleImage* hoverdownimage);
+   virtual void SetImages(EagleImage* upimage ,
+                          EagleImage* downimage , 
+                          EagleImage* hoverupimage , 
+                          EagleImage* hoverdownimage);///< References these image states for the button
 };
 
+
+
+
 #endif // IconButton_HPP
+
+
+

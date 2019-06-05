@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,17 +16,20 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Layout.hpp
+ * @brief The base interface for the Layout classes
+ * 
  */
-
-
 
 #ifndef EagleGuiLayout_HPP
 #define EagleGuiLayout_HPP
 
 
+
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 #include "Eagle/Gui/Alignment.hpp"
+
 
 
 #include <iostream>
@@ -35,27 +38,34 @@
 
 
 
+/**! @enum LAYOUT_ATTRIBUTES
+ *   @brief Stores the abilities of the current layout
+ */
 enum LAYOUT_ATTRIBUTES {
-   LAYOUT_ALLOWS_NOTHING               = 0,
-   LAYOUT_ALLOWS_REPOSITION            = 1 << 0,
-   LAYOUT_ALLOWS_RESIZE                = 1 << 1,
-   LAYOUT_ALLOWS_RESIZE_AND_REPOSITION = 3
+   LAYOUT_ALLOWS_NOTHING               = 0,     ///< This layout doesn't allow resizing or repositioning
+   LAYOUT_ALLOWS_REPOSITION            = 1 << 0,///< This layout only allows you to move widgets, not resize
+   LAYOUT_ALLOWS_RESIZE                = 1 << 1,///< This layout only allows you to resize widgets??? That would move them dummy???
+   LAYOUT_ALLOWS_RESIZE_AND_REPOSITION = (LAYOUT_ALLOWS_REPOSITION | LAYOUT_ALLOWS_RESIZE)///< This layout allows resizing and repositioning
 };
 
 
-std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);
+std::string PrintLayoutAttributes(LAYOUT_ATTRIBUTES attributes);///< Helper function to print LAYOUT_ATTRIBUTES
 
+
+/**! @class LayoutBase
+ *   @brief The virtual base class for all layouts
+ */
 
 class LayoutBase : public WidgetBase {
 
 protected :
    
-   std::vector<WidgetBase*> wchildren;/// We do not own these
+   std::vector<WidgetBase*> wchildren;///< Our widget children. We do not own these.
 
-   LAYOUT_ATTRIBUTES attributes;
+   LAYOUT_ATTRIBUTES attributes;///< The stored attributes of this layout
    
-   HALIGNMENT halign;
-   VALIGNMENT valign;
+   HALIGNMENT halign;///< The horizontal alignment in use
+   VALIGNMENT valign;///< The vertical alignment in use
 
 
 
@@ -113,7 +123,7 @@ public :
    Rectangle RequestWidgetArea(const WidgetBase* widget) const;
    
    
-   virtual void Resize(unsigned int nsize);
+   virtual void Resize(unsigned int nsize);///< Virtual function to resize the layout's widget storage
 
    /// Adding widgets to layout
    

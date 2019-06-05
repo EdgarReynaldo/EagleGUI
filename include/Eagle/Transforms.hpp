@@ -48,6 +48,8 @@ public :
    virtual TransformBase* GetProjectionMatrix()=0;
    
    virtual TransformBase* Clone()=0;
+   
+   virtual void ApplyTransformation(double& destx , double& desty , double& destz)=0;
 };
 
 
@@ -81,6 +83,7 @@ public :
    Transform& GetViewMatrix();
    Transform& GetProjectionMatrix();
    
+   void ApplyTransformation(double& destx , double& desty , double& destz);
 };
 
 
