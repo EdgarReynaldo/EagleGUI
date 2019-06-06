@@ -22,15 +22,13 @@
  * A scroll bar class that contains a scroll area with a draggable handle and two scroll buttons with a variable
  * layout orientation. Default widgets are provided, but as always, you can derive new ones with your own
  * desired behavior and then make the ScrollBar class use them. Simply derive from @ref BasicScroller and @ref BasicScrollButton
- * and pass pointers to your widgets to the ScrollBar::SetScrollWidgets function.
+ * and pass pointers to your widgets to the @sa ScrollBar::SetScrollWidgets function.
  * 
  */
 
-
-
-
 #ifndef ScrollBar_HPP
 #define ScrollBar_HPP
+
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
@@ -41,6 +39,9 @@
 #include "Eagle/SharedMemory.hpp"
 
 
+/**! @class BasicScrollBar
+ *   @brief A basic scroll bar class that you can use custom scrollers and scroll buttons with
+ */
 
 class BasicScrollBar : public WidgetBase {
    
@@ -78,12 +79,13 @@ protected:
    virtual void OnAreaChanged();///< Overridden @ref WidgetBase::OnAreaChanged
 
 public :
-   BasicScrollBar(std::string objclass = "BasicScrollBar" , std::string name = "Nemo");///< Basic constructor takes a class name and object name
+   ///< Basic scroll bar constructor takes a class name and object name
+   BasicScrollBar(std::string objclass = "BasicScrollBar" , std::string name = "Nemo");
    
+   ///< Set the widgets to use in the scroll bar. Pass 0 (NULL) to use the default scroller or default scroll button widget
    void SetScrollWidgets(SHAREDOBJECT<BasicScroller> pbasic_scroller , 
                          SHAREDOBJECT<BasicScrollButton> pbasic_up_or_left_button ,
-                         SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button);///< Set the widgets to use in the scroll bar,
-                                                                                      ///  pass 0 to use the default
+                         SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button);
 
    void SetScrollLength(int max_scroll);///< Set how long you want the scroll bar to be in whole numbers, this will affect the precision
    void SetScrollPercent(float new_percent);///< Set the exact scroll percentage for the view
@@ -99,5 +101,8 @@ public :
 };
 
 
+
 #endif // ScrollBar_HPP
+
+
 

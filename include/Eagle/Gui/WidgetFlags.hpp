@@ -34,7 +34,9 @@
 
 
 
-/*! WIDGET_FLAGS defines the flags used by widgets */
+/**! @enum WIDGET_FLAGS
+ *   @brief Defines the flags used by widgets
+ */
 
 enum WIDGET_FLAGS {
    FLAGS_NONE      = 0x000, ///< No flags set
@@ -50,11 +52,18 @@ enum WIDGET_FLAGS {
    NUM_WIDGET_FLAGS = 10
 };
 
-std::string WidgetFlagString(unsigned int flags);///< Get a string representation of the set flags
+
+
+///< Get a string representation of the flags that are set
+std::string WidgetFlagString(unsigned int flags);
 
 
 
-/*! \brief WidgetFlags stores the commonly used widget flags */
+/**! @class WidgetFlags
+ *   @brief Stores the commonly used widget flags
+ *   
+ *   Provides a way to track changes to a set of widget flags
+ */
 
 class WidgetFlags {
 
@@ -104,15 +113,18 @@ public :
 };
 
 
-std::ostream& operator<<(std::ostream& os , const WidgetFlags& wf);///< Output a WidgetFlags object to a stream
 
-unsigned int FlagDiff(const WidgetFlags& wf1 , const WidgetFlags& wf2);///< Return the bitwise difference between the flag sets
+///< Output a WidgetFlags object to a stream
+std::ostream& operator<<(std::ostream& os , const WidgetFlags& wf);
+
+
+
+///< Helper function for the @ref WidgetFlags class. Returns the bitwise difference between the flag sets (uses XOR)
+unsigned int FlagDiff(const WidgetFlags& wf1 , const WidgetFlags& wf2);
+
 
 
 #endif // WidgetFlags_HPP
-
-
-
 
 
 

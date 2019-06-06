@@ -36,6 +36,7 @@ class EagleGraphicsContext;
 class WidgetBase;
 class WidgetColorset;
 
+#error TODO : WORKING HERE
 
 /*! \brief BG_AREA_PAINT_TYPE controls how the background of a widget is painted */
 

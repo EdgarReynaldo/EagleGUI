@@ -21,22 +21,22 @@
  * 
  */
 
-
-
 #ifndef EagleGuiWidgetHandler_HPP
 #define EagleGuiWidgetHandler_HPP
 
 
+
+#include "Eagle/Exception.hpp"
+#include "Eagle/Image.hpp"
+#include "Eagle/GraphicsContext.hpp"
+#include "Eagle/InputHandler.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/Layout.hpp"
 #include "Eagle/Gui/Layout/DumbLayout.hpp"
 #include "Eagle/Gui/Camera.hpp"
 
-#include "Eagle/Exception.hpp"
-#include "Eagle/Image.hpp"
-#include "Eagle/GraphicsContext.hpp"
-#include "Eagle/InputHandler.hpp"
+
 
 #include <vector>
 #include <list>
@@ -45,17 +45,20 @@
 
 
 
-
 extern const WidgetMsg NoMessages;///< Used by WidgetHandler::TakeNextMessage to signify an empty message queue
 
 
 
-extern const unsigned int TOPIC_GUI;///< Main gui topic value, 
+extern const unsigned int TOPIC_GUI;///< Main gui topic value
 
 
 
 
-/*! \brief GUI_MSGS - A simple enum for gui message values */
+/**! @enum GUI_MSGS
+ *   @brief A simple enum for gui message values
+ *  
+ *   Currently unused
+ */
 
 enum GUI_MSGS {
    GUI_RESIZED = 0///< Only gui message right now
@@ -67,7 +70,9 @@ REGISTER_WIDGET_MESSAGE(TOPIC_GUI , GUI_RESIZED);///< You can check for this @re
 
 
 
-/*! \brief The WidgetHandler class supports all aspects of handling widgets and serves as the main GUI object 
+/*! @class WidgetHandler
+ *  @brief The WidgetHandler class supports all aspects of handling widgets and serves as the main GUI object 
+ *  See also @ref WidgetBase
  *
  * WidgetHandler handles routine widget tasks like collected input and drawing and events. Handles z order, focus, 
  * tabbed focus changes, background images or colors, transparency, dirty rectangle buffering mechanism,

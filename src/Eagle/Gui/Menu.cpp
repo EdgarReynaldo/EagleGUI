@@ -27,7 +27,7 @@
 #include "Eagle/Font.hpp"
 
 
-const int TOPIC_MENU_MESSAGE = NextFreeTopicId();
+const unsigned int TOPIC_MENU_MESSAGE = NextFreeTopicId();
 
 
 

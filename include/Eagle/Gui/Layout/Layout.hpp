@@ -110,16 +110,26 @@ public :
 
    /// Layout
 
-   /// Pass INT_MAX for a parameter if you don't care about the position or size
-   /// NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
+   ///< Virtual function for layouts to override as necessary, returns the area the layout would use for the widget
+   /*! Pass INT_MAX for a parameter if you don't care about the position or size
+    *  NOTE : These functions do NOT change the widget's area, they only return the area that the layout would give it
+    */
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
+   ///< A shortcut to the virtual function
+   ///< @sa RequestWidgetArea(int,int,int,int,int)
    Rectangle RequestWidgetArea(const WidgetBase* widget , int newx , int newy , int newwidth , int newheight);
 
+   ///< A shortcut to the virtual function
+   ///< @sa RequestWidgetArea(int,int,int,int,int)
    Rectangle RequestWidgetArea(int widget_slot , Rectangle newarea);
 
+   ///< A shortcut to the virtual function
+   ///< @sa RequestWidgetArea(int,int,int,int,int)
    Rectangle RequestWidgetArea(const WidgetBase* widget , Rectangle newarea);
 
+   ///< A shortcut to the virtual function
+   ///< @sa RequestWidgetArea(int,int,int,int,int)
    Rectangle RequestWidgetArea(const WidgetBase* widget) const;
    
    
@@ -127,54 +137,59 @@ public :
 
    /// Adding widgets to layout
    
-   /// Widget may be null for PlaceWidget
    /// Both replace the widget (Addwidget replaces a null widget) and call RepositionChild
 
+   ///< Widget may be null for PlaceWidget, make sure to use a valid slot
+   /*! @sa LayoutBase::GetLayoutSize */
    virtual void PlaceWidget(WidgetBase* w , int slot);
+
+   ///< Adds a widget to the layout
    virtual int AddWidget(WidgetBase* w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
 
    /// Removal of widgets
 
+   ///< Removes a widget from the specified slot if any exists
    void EmptySlot(int slot);/// Remove a widget from the layout
 
+   ///< Remove a widget by address
    void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
 
+   ///< Remove all widgets
    void ClearWidgets();/// Remove all widgets from layout
    
+   ///< To remove the layout from the GUI
    void DetachFromGui();/// Call this in Layout derived class's destructor
    
-
+   ///< Virtual function to set the specified alignments for this layout
    virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
 
-   
-   
+   ///< Shortcut to pass widgets from one layout to another
    virtual void SetWChildren(std::vector<WidgetBase*> new_children);
 
-   // Getters
-   std::vector<WidgetBase*> ChildrenVector() const ;/// Some children may be NULL!
-   std::vector<WidgetBase*> WChildren() const ;/// Only real children
-   std::vector<WidgetBase*> Descendants() const ;/// Only real descendants
-   
-   LayoutBase* RootLayout();
-   const LayoutBase* RootLayout() const;
-   
-   bool IsRootLayout() const;
-   
-   int GetLayoutSize() const ;
-   
-   
-   virtual bool AcceptsFocus() {return true;}
+   /// Getters
 
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+   ///< Get a copy of the widgets in storage (note : some slots may be NULL!)
+   std::vector<WidgetBase*> ChildrenVector() const ;///< Some children may be NULL!
+   std::vector<WidgetBase*> WChildren() const ;///< Only real children
+   std::vector<WidgetBase*> Descendants() const ;///< Only real descendants
+   
+   LayoutBase* RootLayout();///< Get the root layout
+   const LayoutBase* RootLayout() const;///< Get the root layout
+   
+   bool IsRootLayout() const;///< True if we are the root layout
+   
+   int GetLayoutSize() const ;///< Returns the currently allocated storage size for widget children
+   
+   
+   virtual bool AcceptsFocus() {return true;}///< Layouts are generally invisible, but will accept the focus
+
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describe this layout to a stream
 };
 
 
 
 
 #endif // EagleGuiLayout_HPP
-
-
-
 
 
 

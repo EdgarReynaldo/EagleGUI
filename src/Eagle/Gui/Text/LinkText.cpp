@@ -22,30 +22,33 @@
 
 #include "Eagle/Platform.hpp"
 
+#include "Eagle/Gui/WidgetHandler.hpp"
+
 #include "Eagle/Gui/Text/GlobalText.hpp"
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/Gui/Text/LinkText.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"
-#include "Eagle/Gui/WidgetHandler.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 
 #include <cstdlib>
-
 #include <cstring>
-
 #include <cmath>
 
 
+
 const int LINK_LAUNCHED = GetNextFreeTextMessageId();
+
+
 
 REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
 /// ------------------------------     LinkText     -----------------------------------
-
 
 
 

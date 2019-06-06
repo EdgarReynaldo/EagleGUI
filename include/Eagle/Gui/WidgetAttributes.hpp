@@ -23,8 +23,6 @@
  * 
  */
 
- 
-
 #ifndef WidgetAttributes_HPP
 #define WidgetAttributes_HPP
 
@@ -67,8 +65,6 @@ protected :
    ATTVALMAP attributes;///< Where the attribute value pairs are stored
    
 public :
-   
-   
    
    static AttributeValueMap* GlobalAttributeMap();///< Returns the global attribute map
    static AttributeSet* KnownAttributes();///< Returns a set of the known attributes
@@ -136,4 +132,6 @@ inline void AttributeValueMap::RemoveAttribute(const ATTRIBUTE& a) {
 
 
 #endif // WidgetAttributes_HPP
+
+
 

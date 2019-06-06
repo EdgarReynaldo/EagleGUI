@@ -37,7 +37,9 @@
 std::string GetMessageString(unsigned int topic , int message);///< Get a message string for the specified topic and message
 
 
-/*! \brief The RegisteredWidgetMessage class registers a new message when created */
+/*! @class RegisteredWidgetMessage
+ *  @brief This class registers a new message upon creation 
+ */
 
 class RegisteredWidgetMessage {
 
@@ -86,7 +88,8 @@ unsigned int NextFreeTopicId();
 
 class WidgetBase;
 
-/*! \brief The WidgetMessage class helps users distinguish between messages between different widgets.
+/*! @class WidgetMsg
+ *  @brief The WidgetMsg class helps users distinguish between messages between different widgets.
  * 
  * Typical usage examples :
  * ```
@@ -160,5 +163,7 @@ typedef unsigned int UINT;
 };
 
 
+
 #endif // EagleGuiWidgetMsg_HPP
+
 

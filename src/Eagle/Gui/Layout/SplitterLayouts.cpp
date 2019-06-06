@@ -369,4 +369,14 @@ void TwoWaySplitter::SetMouseWindow(EagleGraphicsContext* window) {
 
 
 
+void TwoWaySplitter::SetDrawFunction(SPLITTER_DRAW_FUNC func) {
+   if (func) {
+      draw_func = func;
+      SetRedrawFlag();
+   }
+}
+
+
+
+
 

@@ -33,7 +33,7 @@
 ///#include "Gui/Menu.hpp"
 #include "Gui/ScrollBar.hpp"
 #include "Gui/Scroller.hpp"
-#include "Gui/Text.hpp"
+#include "Gui/TextWidgets.hpp"
 
 #include "Gui/WidgetArea.hpp"
 #include "Gui/WidgetBase.hpp"

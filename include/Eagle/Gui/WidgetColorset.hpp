@@ -17,14 +17,9 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file WidgetColorset.hpp
- * @brief This file contains the interface for working with widget color sets
- * 
- * 
- * 
+ * @brief This file contains the interface for working with widget color sets and registering colors and colorsets
  * 
  */
-
-
 
 #ifndef EagleGuiWidgetColorset_HPP
 #define EagleGuiWidgetColorset_HPP
@@ -36,38 +31,46 @@
 #include "Eagle/Exception.hpp"
 #include "Eagle/SharedMemory.hpp"
 
+
+
 #include <map>
 
 
-/*! \brief WIDGETCOLOR enumerates the standard color scheme for a widget and its corresponding place in a @ref WidgetColorset
+
+/*! @enum WIDGETCOLOR 
+ *  @brief Enumerates the standard color scheme for a widget and its corresponding place in a @ref WidgetColorset
  *
  * WIDGETCOLOR ranges from darkest (SDCOL shadow color) to lightest (HLCOL highlight color), with a few extras for
  * hover, and the CSS box model's margin, border, and padding areas.
  */
+
 enum WIDGETCOLOR {
-   SDCOL   = 0,///< Shadow color
-   BGCOL   = 1,///< Background color
-   MGCOL   = 2,///< Middle ground color
-   FGCOL   = 3,///< Foreground color
-   HLCOL   = 4,///< Highlight color
-   TXTCOL  = 5,///< Text color
-   FCSCOL  = 6,///< Focus color
-   HVRCOL  = 7,///< Hover color
-   PADCOL  = 8,///< Padding color
-   BORDCOL = 9,///< Border color
-   MARGCOL = 10///< Margin color
+   SDCOL   = 0, ///< Shadow color
+   BGCOL   = 1, ///< Background color
+   MGCOL   = 2, ///< Middle ground color
+   FGCOL   = 3, ///< Foreground color
+   HLCOL   = 4, ///< Highlight color
+   TXTCOL  = 5, ///< Text color
+   FCSCOL  = 6, ///< Focus color
+   HVRCOL  = 7, ///< Hover color
+   PADCOL  = 8, ///< Padding color
+   BORDCOL = 9, ///< Border color
+   MARGCOL = 10,///< Margin color
+   LASTCOL = 10 ///< For setting the number of colors
 };
 
-#define EAGLE_NUMCOLORS 11
 
-std::string WidgetColorName(WIDGETCOLOR wc);///< Gets the name for this #WIDGETCOLOR
-WIDGETCOLOR WidgetColorFromName(std::string name);///< Gets the #WIDGETCOLOR for this name
+#define EAGLE_NUMCOLORS (LASTCOL + 1)
+
+std::string WidgetColorName(WIDGETCOLOR wc);///< Gets the name for this @ref WIDGETCOLOR
+WIDGETCOLOR WidgetColorFromName(std::string name);///< Gets the @ref WIDGETCOLOR for this name
 
 
 
-
-/*! \brief The WidgetColorset is simply an array of EagleColor objects, and provides easy access to their value */
-
+/**! @class WidgetColorset
+ *   @brief The WidgetColorset is simply an array of EagleColor objects, and provides easy access to their value
+ */
+ 
 class WidgetColorset {
 
 protected :
@@ -75,14 +78,21 @@ protected :
 
 public :
 
-   WidgetColorset();///< Default constructor, uses the default_eagle_color_array for values
-   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);///< Initialize this color set with an array of EagleColor objects
+   ///< Default constructor, uses the default_eagle_color_array for values
+   WidgetColorset();
 
-   WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);///< Assign this colorset's values to those specified in colorset
+   ///< Initialize this color set with an array of EagleColor objects
+   WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
+
+   ///< Assigns our colorset's values to those specified in colorset
+   WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
    
 
-   EagleColor& operator[] (const WIDGETCOLOR& wc) {return wcolorset[wc];}///< Provides array style access to the EagleColor array
-   const EagleColor& operator[] (const WIDGETCOLOR& wc) const {return wcolorset[wc];}///< Returns a const reference to the specified EagleColor
+   ///< Provides array style access to the EagleColor array, bounds are not checked
+   EagleColor& operator[] (const WIDGETCOLOR& wc) {return wcolorset[wc];}
+
+   ///< Returns a const reference to the specified EagleColor, for constant WidgetColorset objects
+   const EagleColor& operator[] (const WIDGETCOLOR& wc) const {return wcolorset[wc];}
 
    EagleColor& operator[] (int wc) {return wcolorset[wc];}
    const EagleColor& operator[] (int wc) const {return wcolorset[wc];}
@@ -98,10 +108,11 @@ extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];///< A global color
 
 
 
-/*! \brief The RegisteredColor class provides a simple way to register and map colors to names 
- *         using the ColorRegistry::GlobalColorRegistry() object.
+/*! @class RegisteredColor
+ *  @brief The RegisteredColor class provides a simple way to register and map colors to names 
+ *  using the @ref ColorRegistry::GlobalColorRegistry() object.
  *
- * Any RegisteredColor objects you create will register themselves with the global color registry.
+ *  Any RegisteredColor objects you create will register themselves with the global color registry.
  */
 
 class RegisteredColor {
@@ -114,7 +125,8 @@ public :
 
 
 
-/*! \brief The ColorRegistry class stores colors for use by the gui system and other users
+/*! @class ColorRegistry
+ *  @brief The ColorRegistry class stores colors for use by the gui system and other users
  * 
  *  Pre-defined colors are clear, white, black, light_gray, medium_gray, dark_gray,
  *  red, orange, yellow, lime_green , green, neon_green, cyan, sky_blue, blue, purple, magenta, and fuchsia
@@ -151,7 +163,6 @@ public :
    void RegisterColorset(std::string name , const WidgetColorset& wc);///< Registers or overwrites the named colorset with wc
    
 };
-
 
 
 

@@ -172,7 +172,7 @@
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
-		<Unit filename="include/Eagle/Gui/Text.hpp" />
+		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />

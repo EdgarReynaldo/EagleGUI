@@ -19,47 +19,52 @@
  * @file Scroller.hpp
  * @brief The interface for a simple Scroller base class
  * 
+ * Includes a scroller only, this is not a scroll bar. @ref BasicScrollBar
  */
-
-
 
 #ifndef Scroller_HPP
 #define Scroller_HPP
 
 
+
 #include "Eagle/Gui/WidgetBase.hpp"
+
+
 
 #include <string>
 
 
 
-extern const unsigned int TOPIC_SCROLL_WIDGET;///< The topic returned by all events from BasicScroller objects
+///< The default topic returned by all events from BasicScroller objects
+extern const unsigned int TOPIC_SCROLL_WIDGET;
 
-extern const int SCROLL_VALUE_CHANGED;///< The only message BasicScroller objects currently send
+///< The only message ID that a BasicScroller object currently sends
+extern const int SCROLL_VALUE_CHANGED;
 
-REGISTER_WIDGET_MESSAGE(TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);///< Register our widget message
+///< Registers the SCROLL_VALUE_CHANGED message ID for the TOPIC_SCROLL_WIDGET topic
+REGISTER_WIDGET_MESSAGE(TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
 
 
 
-extern double SCROLLER_REPEAT_DELAY;///< A lazy global that sets the scroller repeat delay
-extern double SCROLLER_NUM_REPEAT_PER_SEC;///< A lazy global that sets the number of scroll repeats per second,
-                                          ///< starting after the delay
+///< A lazy global that sets the scroller repeat delay
+extern double SCROLLER_REPEAT_DELAY;
+
+///< A lazy global that sets the number of scroll repeats per second, starting after the delay
+extern double SCROLLER_NUM_REPEAT_PER_SEC;
 
 
 
 /*! \class BasicScroller
  *  @brief Basic scroller widget
  *
- * Derive your scroller widgets from the Scroller base class, and it will work with ScrollBar objects.
- * 
+ * Derive your scroller widgets from the Scroller base class, and it will work with @ref BasicScrollBar objects.
  */
-
-
 
 class BasicScroller : public WidgetBase {
 
 public :
    /// DIAGNOSTIC purposes only
+
    float GetStartPercent() {return start_percent;}
    float GetScrollPercent() {return scroll_percent;}
    
@@ -111,29 +116,38 @@ public :
    
    // Setters
 
-   void SetScrollLength(int max_scroll);///< Set the maximum scroll value, or the virtual length of the scroller
-   void SetScrollPercent(float new_percent);///< Set the percentage of scroll
-   void SetScroll(int value);///< Set the scroll value directly
-   void ScrollBy(int amt);///< Scroll the view by amt
-   void ScrollBy(float percent);///< Scroll by x percent
+   ///< Set the maximum scroll value, or the virtual length of the scroller
+   void SetScrollLength(int max_scroll);
 
-   void SetScrollDirection(bool is_horizontal_scroller);///< Pass true to make this a horizontal scroller, and false for vertical
-   void SetupView(int total_length_of_view , int actual_length_in_view);///< Setup the view length, and how much is shown
+   ///< Set the percentage of scroll
+   void SetScrollPercent(float new_percent);
+
+   ///< Set the scroll value directly
+   void SetScroll(int value);
+
+   ///< Scroll the view by amt
+   void ScrollBy(int amt);
+   
+   ///< Scroll by x percent
+   void ScrollBy(float percent);
+
+   ///< Pass true to make this a horizontal scroller, and false for vertical
+   void SetScrollDirection(bool is_horizontal_scroller);
+
+   ///< Setup the view length, and how much is shown
+   void SetupView(int total_length_of_view , int actual_length_in_view);
 
 
-   // Getters
+   /// Getters
    
-   int GetScrollValue() {return scroll_val;}///< Get the current scroller value
-   
-   
-   
+   ///< Get the current scroller value
+   int GetScrollValue() {return scroll_val;}
 };
 
 
 
 
-
-
 #endif // Scroller_HPP
+
 
 

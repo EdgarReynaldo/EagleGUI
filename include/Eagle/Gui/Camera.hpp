@@ -21,8 +21,6 @@
  * 
  */
 
-
-
 #ifndef Camera_H
 #define Camera_H
 
@@ -33,28 +31,50 @@
 
 
 
-extern const unsigned int TOPIC_CAMERA;
+extern const unsigned int TOPIC_CAMERA;///< The default topic for camera classes
+
+/**! @enum CAMERA_MSGS
+ *   @brief An enum representing the different message IDs a camera may queue
+ */
 
 enum CAMERA_MSGS {
-   CAMERA_VIEW_MOVED        = 0,
-   CAMERA_VIEW_DEST_REACHED = 1
+   CAMERA_VIEW_MOVED        = 0,///< A message ID indicating the camera view moved or is moving
+   CAMERA_VIEW_DEST_REACHED = 1 ///< A message ID indicating the camera view has reached its destination
 };
 
 
+///< Registers the CAMERA_VIEW_MOVED message for the TOPIC_CAMERA topic
 REGISTER_WIDGET_MESSAGE(TOPIC_CAMERA , CAMERA_VIEW_MOVED);
+
+///< Registers the CAMERA_VIEW_DEST_REACHED message for the TOPIC_CAMERA topic
 REGISTER_WIDGET_MESSAGE(TOPIC_CAMERA , CAMERA_VIEW_DEST_REACHED);
 
-extern const unsigned int TOPIC_ZOOM_CAMERA;
 
+
+extern const unsigned int TOPIC_ZOOM_CAMERA;///< The default topic for zoom cameras
+
+/**! @enum ZOOM_CAMERA_MSGS
+ *   @brief An enum representing the different messages a zoom camera may send
+ */
 enum ZOOM_CAMERA_MSGS {
-   CAMERA_ZOOM_CHANGED      = 0,
-   CAMERA_ZOOM_DEST_REACHED = 1
+   CAMERA_ZOOM_CHANGED      = 0,///< The zoom changed or is changing
+   CAMERA_ZOOM_DEST_REACHED = 1 ///< The zoom destination has been reached
 };
 
+///< Registers the CAMERA_ZOOM_CHANGED message for the TOPIC_ZOOM_CAMERA topic
 REGISTER_WIDGET_MESSAGE(TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_CHANGED);
+
+///< Registers the CAMERA_ZOOM_DEST_REACHED message for the TOPIC_ZOOM_CAMERA topic 
 REGISTER_WIDGET_MESSAGE(TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
 
 
+
+/**! @class Camera
+ *   @brief A simple widget class to store a changeable view of an image
+ *
+ *   @sa WidgetHandler
+ *   Used by the WidgetHandler class to change the view of its buffer
+ */
 
 class Camera : public WidgetBase {
 protected :
@@ -94,7 +114,7 @@ public :
    
 protected :
 
-   /// Override functions for WidgetBase
+   /// WidgetBase overrides
 
    virtual int PrivateHandleEvent(EagleEvent ee);
 ///   virtual int  PrivateCheckInputs();
@@ -104,40 +124,54 @@ protected :
 public :
 
    /// Member functions
+   
+   ///< Sets the view area and the image to view
    virtual void SetView(EagleImage* bmp , int x , int y , int w , int h);
+   
+   ///< Sets the view area for an already specified image
    virtual void SetViewArea(int x , int y , int w , int h);
 
-
+   ///< Shortcut function to @sa SetView(EagleImage*,int,int,int,int)
    void SetView(EagleImage* bmp , Rectangle area_to_view);///< Set the image to view and the area of the image to view
+
+   ///< Shortcut function to @sa SetViewArea(int,int,int,int)
    void SetViewArea(Rectangle area_to_view);// view must be set first
 
-   void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Decelerated move to position, instant move if time = 0.0
-   void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Decelerated move to position, instant move if time = 0.0
-   void AccMoveViewBy(int dx , int dy , double time = 0.0);          ///< Decelerated move by position delta
+   void AccMoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Decelerated move to position, instant move if time == 0.0
+   void AccMoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Decelerated move to position, instant move if time == 0.0
+   void AccMoveViewBy(int dx , int dy , double time = 0.0);          ///< Decelerated move by position delta, instant move if time == 0.0
    
-   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Set velocity move to position, instant move if time = 0.0
-   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Set velocity move center to position, instant move if time = 0.0
-   void MoveViewBy(int dx , int dy , double time = 0.0);          ///< Set velocity move by position delta
+   void MoveViewTlxTo(int xpos , int ypos , double time = 0.0);   ///< Set velocity move to position, instant move if time == 0.0
+   void MoveViewCenterTo(int xpos , int ypos , double time = 0.0);///< Set velocity move center to position, instant move if time == 0.0
+   void MoveViewBy(int dx , int dy , double time = 0.0);          ///< Set velocity move by position delta, instant move if time == 0.0
 
    /// Setters
+
    void AllowMiddleMouseButtonScroll(bool allow);///< Whether to allow middle mouse button drag scrolling of the view
    void TakesFocus(bool click_takes_focus);      ///< Whether a mouse click on us will take the focus. Default setting is true
 
-
    /// Getters
+
    Rectangle ViewArea() const {return view_area;}    ///< Returns the view rectangle
    int       ViewX()    const {return view_area.X();}///< Returns the view left x
    int       ViewY()    const {return view_area.Y();}///< Returns the view top y
    int       ViewW()    const {return view_area.W();}///< Returns the view width
    int       ViewH()    const {return view_area.H();}///< Returns the view height
    
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Stream output
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describes this widget to a stream
 
 };
-/**
 
 
-/// Camera that uses a sub bitmap of the viewing area
+
+/**! @class SBCamera
+ *   @brief A sub bitmap camera? TODO : AM I USEFUL? Or should someone just use a sub bitmap with the Camera class?
+ *
+ *   Camera that uses a sub bitmap of the viewing area
+ */
+
+/** TODO : UPDATE
+ 
 class SBCamera : public Camera {
 protected :
    BITMAP* sbcam;

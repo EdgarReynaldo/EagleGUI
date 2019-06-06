@@ -19,13 +19,11 @@
  * @file Text.hpp
  * @brief Main include file for text widgets
  * 
- * Include this header to access the different kinds of text widgets available in Eagle
+ * Include this header to access all of the different kinds of text widgets available in Eagle
  */
 
-
-
-#ifndef TEXT_HPP
-#define TEXT_HPP
+#ifndef TextWidgets_HPP
+#define TextWidgets_HPP
 
 
 
@@ -36,4 +34,8 @@
 
 
 
-#endif // TEXT_HPP
+
+#endif // TextWidgets_HPP
+
+
+

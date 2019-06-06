@@ -23,8 +23,6 @@
  * 
  */
 
-
-
 #ifndef Layouts_HPP
 #define Layouts_HPP
 
@@ -41,5 +39,9 @@
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
 
 
+
+
 #endif // Layouts_HPP
+
+
 

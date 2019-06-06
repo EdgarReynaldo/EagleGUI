@@ -25,20 +25,16 @@
  * 
  */
 
-
-
 #ifndef WidgetBaseNew_HPP
 #define WidgetBaseNew_HPP
 
 
-#include <memory>
-#include <map>
 
 #include "Eagle/Object.hpp"
 #include "Eagle/Events.hpp"
+#include "Eagle/SharedMemory.hpp"
 
 #include "Eagle/Gui/WidgetMessage.hpp"
-
 #include "Eagle/Gui/WidgetArea.hpp"
 #include "Eagle/Gui/WidgetFlags.hpp"
 #include "Eagle/Gui/WidgetAttributes.hpp"
@@ -47,17 +43,21 @@
 #include "Eagle/Gui/WidgetContainer.hpp"
 
 
+/// Some forward declarations
+
 class LayoutBase;
 class WidgetHandler;
 
 
 
-/*! \brief Provides a small range of z depth for widgets
+/*! @enum WIDGET_ZORDER_PRIORITY
+ *  @brief This enum provides a small range of z depth for widgets, to enable layering
  *  
  *  WIDGET_ZORDER_PRIORITY controls the z order for widgets used by a @ref WidgetHandler.
- *  Widgets with a higher priority appear closer to the screen and lower priority widgets
+ *  Widgets with a higher priority appear closer to the viewer and lower priority widgets
  *  are sorted beneath them.
  */
+
 enum WIDGET_ZORDER_PRIORITY {
    ZORDER_PRIORITY_LOWEST = 0,
    ZORDER_PRIORITY_LOW    = 64,
@@ -68,7 +68,8 @@ enum WIDGET_ZORDER_PRIORITY {
 
 
 
-/*! \brief Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
+/*! @enum DIALOG_RETURN_VALUE
+ *  @brief Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
  * 
  * Valid values are any bitwise OR'ed combination of the following flags :
  */
@@ -84,9 +85,12 @@ enum DIALOG_RETURN_VALUE {
 };
 
 
-extern const unsigned int TOPIC_DIALOG;///< Default topic to specify this message relates to a dialog
+///< Default topic ID to specify this message relates to a dialog. @ref WidgetMessage
+extern const unsigned int TOPIC_DIALOG;
 
-/*! \brief The DIALOG_MSGS enum is currently unused */
+/**! @enum DIALOG_MSGS
+ *   @brief An enum to keep track of the different kinds of messages a dialog may send
+ */
 enum DIALOG_MSGS {
    DIALOG_NONE    = 0,
    DIALOG_I_MOVED = 1
@@ -94,13 +98,16 @@ enum DIALOG_MSGS {
 
 
 
+///< Registers the DIALOG_I_MOVED message ID with the TOPIC_DIALOG topic
 REGISTER_WIDGET_MESSAGE(TOPIC_DIALOG , DIALOG_I_MOVED);
 
 
 
-/*! \brief The main widget class for Eagle
+/*! @class WidgetBase
+/*! @brief The main widget class for Eagle
  * 
- * WidgetBase holds the code and data common to all widgets.
+ *  WidgetBase holds the code and data common to all widgets.
+ *  A WidgetBase object is also an @ref EagleObject and an @ref EagleEventSource
  */
 
 class WidgetBase : public EagleObject , public EagleEventSource {
@@ -258,20 +265,25 @@ WidgetBase(std::string classname , std::string objname) :
    LayoutBase*    GetLayout()  const {return wlayout;} ///< Returns this widget's layout owner
    WidgetHandler* GetHandler() const {return whandler;}///< Returns this widget's widget handler
    
-   bool HasGui();/// Returns true if this is a widget handler
-   virtual WidgetHandler* GetGui();///< Returns a pointer to this widget cast as a WidgetHandler*
+   bool HasGui();/// Returns true if this widget is also a widget handler or uses one
+   virtual WidgetHandler* GetGui();///< Returns a pointer to this widget dynamically cast as a WidgetHandler*
    
-   int ZValue() const {return zdepth;}///< Gets the z priority. See #WIDGET_ZORDER_PRIORITY 
+   int ZValue() const {return zdepth;}///< Gets the z priority. See @ref WIDGET_ZORDER_PRIORITY 
    
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    
 };
 
-bool DrawPriorityIsLess(const WidgetBase* w1 , const WidgetBase* w2);///< Global function to compare z order of widgets
+
+
+///< Global function to compare z order of widgets, for sorting by depth
+bool DrawPriorityIsLess(const WidgetBase* w1 , const WidgetBase* w2);
+
 
 
 
 #endif // WidgetBaseNew_HPP
+
 
 

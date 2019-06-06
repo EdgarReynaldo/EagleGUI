@@ -19,12 +19,12 @@
  * @file Button.hpp
  * @brief Include this header to access all of Eagle's different button classes
  * 
+ * Including this header will gives you access to all the different button types
  */
-
-
 
 #ifndef Button_HPP
 #define Button_HPP
+
 
 
 #include "Button/BasicButton.hpp"

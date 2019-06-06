@@ -74,6 +74,9 @@ void WidgetBase::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 void WidgetBase::OnAreaChanged() {
+   WidgetMsg msg(this , TOPIC_DIALOG , DIALOG_I_MOVED);
+   EagleEvent e = MakeEagleEvent(msg);
+   EmitEvent(e , 0);
    (void)0;
 }
 

@@ -23,21 +23,19 @@
  * 
  */
 
-
-
 #ifndef BasicIcon_HPP
 #define BasicIcon_HPP
 
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Image.hpp"
+#include "Eagle/SharedMemory.hpp"
 
 
-/*!
- * \class BasicIcon
- *
- * BasicIcon is a simple class to display an image centered or stretched to fill its inner area.
- * 
+
+/*! @class BasicIcon
+ *  @brief BasicIcon is a simple class to display an image centered or stretched to fill its inner area.
  */
 
 class BasicIcon : public WidgetBase {
@@ -59,10 +57,11 @@ public :
    
    virtual ~BasicIcon() {}
    
-   void SetStretch(bool stretch);///< Whether to stretch the image to fill the area
+   void SetStretch(bool stretch);///< True if the image should be stretched to fill the widget area
    void SetImage(SHAREDIMAGE new_image);///< Set the icon image
    
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Stream output
+   ///< Output this widget to a stream
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
 };
 

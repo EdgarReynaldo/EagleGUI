@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,12 +16,14 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Menu.hpp
+ * @brief The interface for Eagle's menu classes
+ *
+ * TODO : COMPLETE ME
+ * In the mean time, you can use MenuLayout and ClassicMenuLayout classes to achieve simple menu's (non-nesting)
  */
 
-
 #error MENU NOT COMPLETE
-
-
 
 #ifndef Menu_HPP
 #define Menu_HPP
@@ -37,7 +39,7 @@
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 
 
-extern const int TOPIC_MENU_MESSAGE;
+extern const unsigned int TOPIC_MENU_MESSAGE;
 
 //REGISTER_WIDGET_MESSAGE(topic , msg)
 

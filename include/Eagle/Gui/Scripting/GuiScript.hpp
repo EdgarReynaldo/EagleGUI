@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,72 +16,67 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file GuiScript.hpp
+ * @brief The interface for working with .egs eagle gui script files (text files)
+ *
+ *  TODO : This is a Work In Progress^TM, it is not complete
+ *
+ *  Specification for an EagleGuiScript file (.egs). File is text, with declarations for EagleColor's, WidgetColorsets, and Widgets
+ *
+ *  Currently, there are two sections available in an .egs script. There is a "Declarations" section and a "Functions" section.
+ *
+ *  Declarations follow the format of a class name followed by whitespace then by the object name, optional whitespace,
+ *  and an equals sign. The following lines consist of attribute name and value pairs separated by a colon.
+ *  Each line is treated as a set of attribute value pairs. You may separate these pairs by a newline or by a semi colon,
+ *  but they must be kept separate. Atrributes and values may be surrounded by whitespace, which will be trimmed.
+ *  A newline by itself signals the end of the object definition. Generally, value strings must not contain whitespace.
+ *  Anything after an equals sign and before a separate newline will be parsed as attribute value pair sets.
+ *
+ *  Supported class names include EagleColor, WidgetColorset, or any Widget class name
+ *
+ *  New section named "Commands" which includes commands to create relationships between widgets
+ * 
+ *  [Declarations]
+ *
+ *  CLASSNAME OBJECTNAME = ATTRIBUTE:VALUE ; ATTRIBUTE:VALUE;
+ *  ATTRIBUTE : VALUE
+ *
+ *  CLASSNAME OBJECTNAME =
+ *  ATTRIBUTE : VALUE ; ATTRIBUTE : VALUE
+ *
+ *  EagleColor white = RGBA(255,255,255,255)
+ *
+ *  WidgetColorset colorset1 =
+ *  SDCOL : RGBA(0,0,0,255)
+ *  HLCOL : FRGBA(1.0,1.0,1.0,1.0)
+ *  TXTCOL : white
+ *
+ * [Commands]
+ *  LAYOUT_CHILDREN root_layout = {abc,def,ghi,jkl,mno,pqr,stu,vwx,yz}
+ *  GUI_LAYOUT gui = root_layout
+ *
+ *  LAYOUT_CHILD_RELATIVE root_layout = widget:%f,%f,%f,%f
+ *
+ *  METHOD OBJECT = ARGUMENTS
+ *
+ *  [Functions] TODO : Implment GuiScript2 scriptability
  */
-
-
-
 
 #ifndef GuiScript_HPP
 #define GuiScript_HPP
 
 
-#include <string>
-#include <vector>
-#include <map>
 
 #include "Eagle/Gui/WidgetAttributes.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 
 
 
-/**
-
-Specification for an EagleGuiScript file (.egs). File is text, with declarations for EagleColor's, WidgetColorsets, and Widgets
-
-Currently, there are two sections available in an .egs script. There is a "Declarations" section and a "Functions" section.
-
-Declarations follow the format of a class name followed by whitespace then by the object name, optional whitespace,
-and an equals sign. The following lines consist of attribute name and value pairs separated by a colon.
-Each line is treated as a set of attribute value pairs. You may separate these pairs by a newline or by a semi colon,
-but they must be kept separate. Atrributes and values may be surrounded by whitespace, which will be trimmed.
-A newline by itself signals the end of the object definition. Generally, value strings must not contain whitespace.
-Anything after an equals sign and before a separate newline will be parsed as attribute value pair sets.
-
-Supported class names include EagleColor, WidgetColorset, or any Widget class name
-
-New section named "Commands" which includes commands to create relationships between widgets
+#include <string>
+#include <vector>
+#include <map>
 
 
-
-[Declarations]
-
-CLASSNAME OBJECTNAME = ATTRIBUTE:VALUE ; ATTRIBUTE:VALUE;
-ATTRIBUTE : VALUE
-
-CLASSNAME OBJECTNAME =
-ATTRIBUTE : VALUE ; ATTRIBUTE : VALUE
-
-EagleColor white = RGBA(255,255,255,255)
-
-WidgetColorset colorset1 =
-SDCOL : RGBA(0,0,0,255)
-HLCOL : FRGBA(1.0,1.0,1.0,1.0)
-TXTCOL : white
-
-
-
-[Commands]
-LAYOUT_CHILDREN root_layout = {abc,def,ghi,jkl,mno,pqr,stu,vwx,yz}
-GUI_LAYOUT gui = root_layout
-
-LAYOUT_CHILD_RELATIVE root_layout = widget:%f,%f,%f,%f
-
-METHOD OBJECT = ARGUMENTS
-
-[Functions]
-
-
-*/
 
 class EGSDeclaration {
 
