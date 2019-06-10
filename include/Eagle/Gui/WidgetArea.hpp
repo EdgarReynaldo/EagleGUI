@@ -172,6 +172,10 @@ public :
    CELL_AREA GetCellArea(int xpos , int ypos) const;///< Returns the CELL_AREA specified by the passed position values
    
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;///< Gets the rectangle for a specified cell
+   Rectangle GetNPCell(CELL_AREA cell) const ;///< Gets the rectangle for a specified cell
+Rectangle NPAREA::GetNPCell(CELL_AREA cell) const {
+   
+}
    Rectangle GetRow(VCELL_AREA vcell) const;///< Gets the row rectangle for a specified VCELL_AREA
    Rectangle GetColumn(HCELL_AREA hcell) const;///< Gets the column rectangle for a specified HCELL_AREA
    
