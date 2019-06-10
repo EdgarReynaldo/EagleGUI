@@ -32,7 +32,9 @@ void PaintNPOutsideFill   (EagleGraphicsContext* win , NPAREA np , EagleColor pc
 void PaintNPOutsideRounded(EagleGraphicsContext* win , NPAREA np , EagleColor pcol , EagleColor scol , void* unused);
 
 ///< Paint the outside area of the specified nine patch with a contrasting border. Primary color is the outer color.
+///< PaintNPOutsideRContrast reverses the colors, so pcol will be the inner color
 void PaintNPOutsideContrast(EagleGraphicsContext* win , NPAREA np , EagleColor pcol , EagleColor scol , void* unused);
+void PaintNPOutsideRContrast(EagleGraphicsContext* win , NPAREA np , EagleColor pcol , EagleColor scol , void* unused);
 
 ///< Paint the outside area of the specified nine patch with a contrasting border as a gradient. Primary color is the outer color.
 ///< The corners will be beveled on the diagonals like an octagon

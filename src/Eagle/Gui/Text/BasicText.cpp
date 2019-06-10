@@ -30,7 +30,7 @@ using namespace std;
 
 
 #include "Eagle/Platform.hpp"
-#include "Eagle/Gui/Text.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"

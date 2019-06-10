@@ -100,11 +100,11 @@ Pos2I GetWidgetPositionBottomRight(WidgetBase* w) {
 
 
 
-/// -------------------      StickyPositionBase    ------------------------------
+/// -------------------      StickyPosition    ------------------------------
 
 
 
-StickyPositionBase::StickyPositionBase() :
+StickyPosition::StickyPosition() :
       anchor_widget(0),
       widget_to_move(0),
       poffset(),
@@ -115,7 +115,7 @@ StickyPositionBase::StickyPositionBase() :
 
 
 
-void StickyPositionBase::SetAnchor(WidgetBase* anchor , ANCHOR_POS apos , HALIGNMENT halignment , VALIGNMENT valignment , Pos2I offset) {
+void StickyPosition::SetAnchor(WidgetBase* anchor , ANCHOR_POS apos , HALIGNMENT halignment , VALIGNMENT valignment , Pos2I offset) {
    anchor_widget = anchor;
    poffset = offset;
    halign = halignment;
@@ -125,7 +125,7 @@ void StickyPositionBase::SetAnchor(WidgetBase* anchor , ANCHOR_POS apos , HALIGN
 
 
 
-Pos2I StickyPositionBase::GetAnchorPoint() {
+Pos2I StickyPosition::GetAnchorPoint() {
    if (!anchor_widget) {return GetOffset();}
 
    Pos2I anchor = standard_pos_funcs[anchor_pos](anchor_widget);
@@ -135,19 +135,19 @@ Pos2I StickyPositionBase::GetAnchorPoint() {
 
 
 
-WidgetBase* StickyPositionBase::AnchorWidget() {
+WidgetBase* StickyPosition::AnchorWidget() {
    return anchor_widget;
 }
 
 
 
-HALIGNMENT StickyPositionBase::GetHorizontalAlignment() {
+HALIGNMENT StickyPosition::GetHorizontalAlignment() {
    return halign;
 }
 
 
 
-VALIGNMENT StickyPositionBase::GetVerticalAlignment() {
+VALIGNMENT StickyPosition::GetVerticalAlignment() {
    return valign;
 }
 

@@ -166,6 +166,7 @@ public :
    void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color
    void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color that is rounded
    void PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);///< Paints a two tone margin
+   void PaintOutsideGradient(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);///< Paints a gradient border
    
    /// Getters
    
@@ -173,9 +174,7 @@ public :
    
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;///< Gets the rectangle for a specified cell
    Rectangle GetNPCell(CELL_AREA cell) const ;///< Gets the rectangle for a specified cell
-Rectangle NPAREA::GetNPCell(CELL_AREA cell) const {
-   
-}
+
    Rectangle GetRow(VCELL_AREA vcell) const;///< Gets the row rectangle for a specified VCELL_AREA
    Rectangle GetColumn(HCELL_AREA hcell) const;///< Gets the column rectangle for a specified HCELL_AREA
    

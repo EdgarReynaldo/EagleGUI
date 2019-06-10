@@ -204,6 +204,7 @@
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
 		<Unit filename="include/Eagle/NamedParameters.hpp" />
 		<Unit filename="include/Eagle/NinePatch.hpp" />
+		<Unit filename="include/Eagle/NinePatchPainters.hpp" />
 		<Unit filename="include/Eagle/Object.hpp" />
 		<Unit filename="include/Eagle/ObjectInfo.hpp" />
 		<Unit filename="include/Eagle/ObjectRegistry.hpp" />
@@ -306,6 +307,7 @@
 		<Unit filename="src/Eagle/Mutexes.cpp" />
 		<Unit filename="src/Eagle/NamedParameters.cpp" />
 		<Unit filename="src/Eagle/NinePatch.cpp" />
+		<Unit filename="src/Eagle/NinePatchPainters.cpp" />
 		<Unit filename="src/Eagle/Object.cpp" />
 		<Unit filename="src/Eagle/ObjectInfo.cpp" />
 		<Unit filename="src/Eagle/ObjectRegistry.cpp" />

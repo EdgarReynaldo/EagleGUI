@@ -104,7 +104,7 @@ REGISTER_WIDGET_MESSAGE(TOPIC_DIALOG , DIALOG_I_MOVED);
 
 
 /*! @class WidgetBase
-/*! @brief The main widget class for Eagle
+ *  @brief The main widget class for Eagle
  * 
  *  WidgetBase holds the code and data common to all widgets.
  *  A WidgetBase object is also an @ref EagleObject and an @ref EagleEventSource

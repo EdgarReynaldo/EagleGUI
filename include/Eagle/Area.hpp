@@ -288,7 +288,9 @@ public :
    int H()      const {return h;}
    int Width()  const {return W();}
    int Height() const {return H();}
+   int RX()     const {return brx;}
    int BRX()    const {return brx;}
+   int BY()     const {return bry;}
    int BRY()    const {return bry;}
    int CX()     const {return (x + w/2);}
    int CY()     const {return (y + h/2);}
