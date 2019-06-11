@@ -5,5 +5,6 @@
 		<Project filename="Allegro5Backend.cbp" />
 		<Project filename="EagleTest.cbp" />
 		<Project filename="../CHAI/ChaiClient.cbp" />
+		<Project filename="../allegro5/test/CreateDisplay/DisplayTest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -61,17 +61,28 @@ add_library(EagleObjects OBJECT ${EAGLE_SOURCE_FILES} ${EAGLE_HEADER_FILES})
 target_include_directories(EagleObjects PRIVATE ${EAGLE_INCLUDE_DIR})
 target_compile_options(EagleObjects PRIVATE "-std=c++11")
 
+
+
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    target_compile_definitions(EagleObjects PRIVATE DEBUG)
    target_compile_definitions(EagleObjects PRIVATE EAGLE_LOG)
    target_compile_definitions(EagleObjects PRIVATE EAGLE_ASSERT_EXCEPTION)
+   target_compile_options(EagleObjects PRIVATE "-g")
 endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 
 if (${EAGLE_SHARED_LIBRARY_BUILD})
-   add_library(EagleShared SHARED $<TARGET_OBJECTS:EagleObjects>)
+   if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+      add_library(EagleDebugShared SHARED $<TARGET_OBJECTS:EagleObjects>)
+   else()
+      add_library(EagleShared SHARED $<TARGET_OBJECTS:EagleObjects>)
+   endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 endif (${EAGLE_SHARED_LIBRARY_BUILD})
 
 if (${EAGLE_STATIC_LIBRARY_BUILD})
-   add_library(EagleStatic STATIC $<TARGET_OBJECTS:EagleObjects>)
+   if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+      add_library(EagleDebugStatic STATIC $<TARGET_OBJECTS:EagleObjects>)
+   else()
+      add_library(EagleStatic STATIC $<TARGET_OBJECTS:EagleObjects>)
+   endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 endif (${EAGLE_STATIC_LIBRARY_BUILD})
 
