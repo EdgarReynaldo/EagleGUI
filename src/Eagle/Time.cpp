@@ -89,7 +89,13 @@ ProgramTime ProgramTime::Now() {
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
 #elif defined EAGLE_LINUX
     timespec ts;
-    int ret = clock_gettime(CLOCK_REALTIME , &ts);
+    clkid_t CLOCK;
+    #if defined _POSIX_TIMERS and defined _POSIX_MONOTONIC_CLOCK
+      CLOCK = CLOCK_MONOTONIC;
+    #else
+      CLOCK = CLOCK_REALTIME;
+    #endif ///defined _POSIX_TIMERS and defined _POSIX_MONOTONIC_CLOCK
+    int ret = clock_gettime(CLOCK_MONOTONIC , &ts);
     (void)ret;
     EAGLE_ASSERT(ret == 0);
     double rt = (double)ts.tv_sec + (double)ts.tv_nsec / pow(10 , 9);
