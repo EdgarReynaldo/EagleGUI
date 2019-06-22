@@ -1,4 +1,6 @@
 cbbuild/bin/**
+cbbuild/lib/**
+cbbuild/obj
 data
 bin
 build
