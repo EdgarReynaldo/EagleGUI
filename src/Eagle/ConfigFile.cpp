@@ -166,6 +166,12 @@ std::vector<ConfigLine*>::const_iterator ConfigSection::GetConfigIteratorConst(s
 
 
 
+ConfigSection::ConfigSection() :
+      clines()
+{}
+
+
+
 ConfigLine* ConfigSection::FindConfig(std::string key) {
    std::vector<ConfigLine*>::iterator it = GetConfigIterator(key);
    if (it != clines.end()) {
