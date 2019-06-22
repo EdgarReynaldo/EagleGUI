@@ -1,0 +1,6 @@
+cbbuild/bin/**
+data
+bin
+build
+FontViewers
+msvcbuild
