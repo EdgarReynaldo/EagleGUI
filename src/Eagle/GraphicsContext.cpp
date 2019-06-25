@@ -212,6 +212,12 @@ void EagleDrawingInfo::ClearSettings() {
 
 
 
+/**! @fn EagleGraphicsContext::EagleGraphicsContext <std::string , std::string>
+ *   
+ *   NOTE : derived class needs to instantiate mp_manager
+ *   NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
+ *   NOTE : derived class needs to instantiate window_mutex
+ */
 EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
       EagleEventSource(),
@@ -234,11 +240,7 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       default_font_flags(eagle_default_font_flags),
       our_thread(0),
       window_mutex(0)
-{
-   /// NOTE: derived class needs to instantiate mp_manager
-   /// NOTE : derived class needs to create default font inside DerivedGraphicsContext::Create
-   /// NOTE : derived class needs to instantiate window_mutex
-}
+{}
 
 
 

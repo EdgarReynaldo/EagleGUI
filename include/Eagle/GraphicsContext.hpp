@@ -198,12 +198,23 @@ public :
 class EagleSystem;
 class EagleThread;
 
+
+/**! @enum QUADRANT_DIR
+ *   @brief For drawing certain quadrants of an ellipse
+ */
+
 enum QUADRANT_DIR {
-   QUADRANT_NE = 0,
-   QUADRANT_NW = 1,
-   QUADRANT_SW = 2,
-   QUADRANT_SE = 3
+   QUADRANT_NE = 0,///< Northeast quadrant
+   QUADRANT_NW = 1,///< Northwest quadrant
+   QUADRANT_SW = 2,///< Southwest quadrant
+   QUADRANT_SE = 3 ///< Southeast quadrant
 };
+
+
+
+/**! @class EagleGraphicsContext
+ *   @brief A graphics context allows you to create and draw to and work with windows (a display)
+ */
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
@@ -250,84 +261,199 @@ protected :
 
 public :
 
-   EagleGraphicsContext(std::string objclass , std::string objname);/// See NOTES In GraphicsContext.cpp
+   /**! @fn EagleGraphicsContext::EagleGraphicsContext <std::string , std::string>
+    *   @brief See NOTES In GraphicsContext.cpp
+    */
+   EagleGraphicsContext(std::string objclass , std::string objname);
 
    virtual ~EagleGraphicsContext() {}
 
-   bool StartDrawing(EagleThread* draw_thread);
-   void CompleteDrawing(EagleThread* draw_thread);
+   bool StartDrawing(EagleThread* draw_thread);///< Only necessary for multi-threaded programs, will lock the drawing mutex
+   void CompleteDrawing(EagleThread* draw_thread);///< Only necessary for multi-threaded programs, will unlock the drawing mutex
 
 
-   float GetFPS();
+   float GetFPS();///< Get the floating point frames per second
 
-   virtual EagleSystem* GetSystem()=0;
+   virtual EagleSystem* GetSystem()=0;///< Get the system that owns us
 
-   void SetOurThread(EagleThread* t) {our_thread = t;}
+   void SetOurThread(EagleThread* t) {our_thread = t;}///< Sets our thread, so multiple displays don't try to draw at the same time
    
-   /// creation/destruction
-   virtual bool Create(int width , int height , int flags)=0;/// Responsible for creating Font.cpp:default_font
+   /// creation / destruction
+
+   /**! @fn Create <int , int , int> @fn Valid @fn Destroy
+    *   @brief Basic creation and destruction functions
+    *
+    *   Pure virtual functions to create an EagleGraphicsContext, check its validity, and destroy it.
+    *   Implement in your driver's derived graphics context class
+    */
+   
+   virtual bool Create(int width , int height , int flags)=0;///< Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;
    virtual void Destroy()=0;
+
+   ///< Acknowledge a window resize event for this display
    virtual void AcknowledgeResize()=0;
 
-   /// Query
-   int Width() {return scrw;}
-   int Height() {return scrh;}
-   virtual int XPos()=0;
-   virtual int YPos()=0;
+   /// Query the display
+   
+   int Width() {return scrw;}///< Get this display's width
+   int Height() {return scrh;}///< Get this display's height
+   virtual int XPos()=0;///< Get this display's x position
+   virtual int YPos()=0;///< Get this display's y position
 
-   /// clears target bitmap
+   ///< Clears target bitmap to the specified color. Default is opaque black.
    virtual void Clear(EagleColor c = EagleColor(0,0,0))=0;
 
    /// Blender setting functions
-   virtual void SetCopyBlender()=0;
-   virtual void SetFullCopyBlender()=0;
-   virtual void SetPMAlphaBlender()=0;
-   virtual void SetNoPMAlphaBlender()=0;
-   virtual void RestoreLastBlendingState()=0;
+   
+   virtual void SetCopyBlender()=0;///< Set a copy blender mode (TODO : respects alpha? but doesn't copy it)
+   virtual void SetFullCopyBlender()=0;///< Set a (full) copy blender mode (includes alpha channel)
+   virtual void SetPMAlphaBlender()=0;///< Set a premultiplied alpha blender if you're using premultiplied textures or colors
+   virtual void SetNoPMAlphaBlender()=0;///< Set a non premultiplied alpha blender if your alpha changes or you need it
+   virtual void RestoreLastBlendingState()=0;///< Restore the most recently used blending state before this one
 
-   /// basic drawing operations
+   /// Basic integral drawing operations
+   
+   ///< Fills the pixel at x,y with c
    virtual void PutPixel(int x , int y , EagleColor c)=0;
 
+   ///< Draws a line from x1,y1 to x2,y2 with color c
    virtual void DrawLine(int x1 , int y1 , int x2 , int y2 , EagleColor c)=0;
 
+   /**! @fn DrawRectangle <int , int , int , int , int , EagleColor>
+    *   @brief Draws a rectangle at x,y of size w,h at the specified thickness in color c)
+    */
    virtual void DrawRectangle(int x , int y , int w , int h , int thickness , EagleColor c)=0;
+
+   /**! @fn DrawRectangle <Rectangle , int , EagleColor>
+    *   @brief Draws a rectangle r at the specified thickness in color c)
+    */
    void         DrawRectangle(Rectangle r , int thickness , EagleColor c);
 
+   /**! @fn DrawFilledRectangle
+    *   @brief Draws a filled rectangle, specifying either x,y,w,h or Rectangle r in color c
+    */
    virtual void DrawFilledRectangle(int x , int y , int w , int h , EagleColor c)=0;
    void         DrawFilledRectangle(Rectangle r , EagleColor c);
 
+   /**! @fn DrawRoundedRectangle
+    *   @brief Draws a rounded rectangle, specifying either x,y,w,h or Rectangle r in color c with radii rx and ry
+    */
    virtual void DrawRoundedRectangle(int x , int y , int w , int h , int rx , int ry , EagleColor c)=0;
    void         DrawRoundedRectangle(Rectangle r , int rx , int ry , EagleColor c);
 
+   /**! @fn DrawFilledRoundedRectangle
+    *   @brief Draws a filled rounded rectangle, specifying either x,y,w,h or Rectangle r in color c with radii rx and ry
+    */
    virtual void DrawFilledRoundedRectangle(int x , int y , int w , int h , int rx , int ry , EagleColor c)=0;
    void         DrawFilledRoundedRectangle(Rectangle r , int rx , int ry , EagleColor c);
 
+   /**! @fn DrawCircle <int,int,int,int,EagleColor>
+    *   @brief Draws a circle with the specified center, radius, thickness, and color
+    */
    virtual void DrawCircle(int cx , int cy , int radius , int thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledCircle <int,int,int,EagleColor>
+    *   @brief Draws a filled circle with the specified center, radius, thickness, and color
+    */
    virtual void DrawFilledCircle(int cx , int cy , int radius , EagleColor c)=0;
 
+   /**! @fn DrawEllipse <int,int,int,int,int,EagleColor>
+    *   @brief Draws an ellipse with the specified center, radii, thickness, and color
+    */
    virtual void DrawEllipse(int cx , int cy , int rx , int ry , int thickness , EagleColor c)=0;
+   
+   /**! @fn DrawEllipse <int,int,int,int,int,EagleColor>
+    *   @brief Draws a filled ellipse with the specified center, radii, and color
+    */
    virtual void DrawFilledEllipse(int cx , int cy , int rx , int ry , EagleColor c)=0;
 
+   /**! @fn DrawFilledQuarterEllipse <Rectangle , QUADRANT_DIR , EagleColor>
+    *   @brief Draws a quarter ellipse in the specified quadrant of rectangle r in color c
+    */
    void         DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR dir , EagleColor c);
    
+   /**! @fn DrawTriangle <int,int,int,int,int,int,int,EagleColor>
+    *   @brief Draws a triangle with the specified corners, thickness, and color
+    */
    virtual void DrawTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , int thickness , EagleColor c)=0;
+
+   /**! @fn DrawTriangle <int,int,int,int,int,int,int,EagleColor>
+    *   @brief Draws a filled triangle with the specified corners, and color
+    */
    virtual void DrawFilledTriangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3 , EagleColor c)=0;
 
-   // precise drawing operations
+   /// Sub Pixel Precise drawing operations
+   
+   /**! @fn PutPixel <float,float,EagleColor>
+    *   @brief Draws a 1.0 x 1.0 pixel centered on x,y in color c
+    */
    virtual void PutPixel(float x , float y , EagleColor c)=0;
+
+   /**! @fn DrawLine <float,float,float,float,float,EagleColor>
+    *   @brief Draws a line from x1,y1 to x2,y2 with the specified thickness and color
+    */
    virtual void DrawLine(float x1 , float y1 , float x2 , float y2 , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawRectangle <float,float,float,float,float,EagleColor>
+    *   @brief Draws an outlined rectangle of the specified thickness centered directly on the specified coordinates in color c
+    */
    virtual void DrawRectangle(float x , float y , float w , float h , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledRectangle <float,float,float,float,EagleColor>
+    *   @brief Draws a filled rectangle at x,y of size w,h in color c
+    */
    virtual void DrawFilledRectangle(float x , float y , float w , float h , EagleColor c)=0;
+
+   /**! @fn DrawRoundedRectangle <float,float,float,float,float,float,float,EagleColor>
+    *   @brief Draws a rounded rectangle inside the specified rectangle using the 
+    *          specified corner radii rx and ry of specified thickness in color c
+    */
    virtual void DrawRoundedRectangle(float x , float y , float w , float h , float rx , float ry , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledRoundedRectangle <float,float,float,float,float,float,EagleColor>
+    *   @brief Draws a filled rounded rectangle inside the specified area using the specified corner radii rx and ry in color c
+    */
    virtual void DrawFilledRoundedRectangle(float x , float y , float w , float h , float rx , float ry , EagleColor c)=0;
+
+   /**! @fn DrawCircle <float,float,float,float,EagleColor>
+    *   @brief Draws a circular outline of specified thickness centered at cx,cy of specified radius and color c
+    */
    virtual void DrawCircle(float cx , float cy , float radius , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledCircle <float,float,float,EagleColor>
+    *   @brief Draws a filled circle centered at cx,cy of specified radius and color c
+    */
    virtual void DrawFilledCircle(float cx , float cy , float radius , EagleColor c)=0;
+
+   /**! @fn DrawEllipse <float,float,float,float,float,EagleColor>
+    *   @brief Draws an elliptical outline centered on cx,cy of radii rx and ry and specified thickness and color c
+    */
    virtual void DrawEllipse(float cx , float cy , float rx , float ry , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledEllipse <float,float,float,float,EagleColor>
+    *   @brief Draws a filled ellipse centered on cx,cy of radii rx and ry in color c
+    */
    virtual void DrawFilledEllipse(float cx , float cy , float rx , float ry , EagleColor c)=0;
+
+   /**! @fn DrawTriangle <float,float,float,float,float,float,float,EagleColor>
+    *   @brief Draws a triangular outline with the three specified corner points and thickness in color c
+    */
    virtual void DrawTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , float thickness , EagleColor c)=0;
+
+   /**! @fn DrawFilledTriangle <float,float,float,float,float,float,EagleColor>
+    *   @brief Draws a filled triangle with the three specified corners in color c
+    */
    virtual void DrawFilledTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , EagleColor c)=0;
+
+   /**! @fn DrawShadedRectangle <const Rectangle*,EagleColor,EagleColor,EagleColor,EagleColor>
+    *   @brief Draws a shaded axis aligned rectangle using the specified corner colors
+    */
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;
+
+   /**! @fn DrawShadedQuad <float,float,EagleColor,float,float,EagleColor,float,float,EagleColor,float,float,EagleColor>
+    *   @brief Draws a shaded quad using the specified corners and corner colors
+    */
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,
 										 float x3 , float y3 , EagleColor c3 ,
@@ -336,20 +462,45 @@ public :
    /// TODO : Consistent naming
 										 										 
    /// image drawing operations
+
+   /**! @fn Draw <EagleImage* , float , float , int>
+    *   @brief Draws an @ref EagleImage via pointer to x,y with the specified @ref IMAGE_DISPLAY_FLAGS flags
+    */
    virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
 
+   /**! @fn Draw <EagleImage* , float , float , HALIGNMENT , VALIGNMENT , int>
+    *   @brief Draws an @ref EagleImage via pointer to x,y with the specified horizontal and vertical alignment and flags.
+    */
    void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
 
+   /**! @fn DrawRegion <EagleImage* , Rectangle , float , float , int>
+    *   @brief Draw the specified src rectangle of the image at x,y with the specified flags
+    */
    virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL)=0;
 
+   /**! @fn DrawStretchedRegion <EagleImage* , float , float , float , float , float , float , float , float , int>
+    *   @brief Draw the source rectangle stretched to fit the destination rectangle using the specified flags
+    */
    virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
                                                       float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
+   /**! @fn DrawStretchedRegion <EagleImage* , Rectangle , Rectangle , int>
+    *   @brief Same as @ref DrawStretchedRegion <EagleImage*,float,float,float,float,float,float,float,float,int>
+    */
    void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 
+   /**! @fn DrawStretched <EagleImage* , Rectangle , int>
+    *   @brief Draws the specified image to the destination rectangle stretched as necessary to fit using the specified flags
+    */
    void         DrawStretched(EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);
    
+   /**! @fn DrawTinted <EagleImage* , int , int , EagleColor>
+    *   @brief Draws the specified image using the specified tint color at x,y
+    */
    virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
 
+   /**! @fn DrawTintedRegion <EagleImage*,Rectangle,float,float,EagleColor>
+    *   @brief Same as @ref DrawStretchedRegion but tinted col
+    */
    virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
 
    void DrawImageCenter (EagleImage* img , Rectangle dest , int flags);///< Centers the image, no scaling is performed
@@ -358,113 +509,157 @@ public :
    void DrawImageStretch(EagleImage* img , Rectangle dest , int flags);///< Stretches the image to fill
 
 
-
+   ///< Converts the specified color in the specified image to alpha zero, clear
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
 
-/// TODO? : virtual void Draw(EagleImage* src , EagleDrawingInfo info = EagleDrawingInfo())=0;
-
    /// text drawing operations
+
+   /**! @brief Draws the specified text in color c at x,y using the specified font and alignment */
    virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                                HALIGNMENT halign = HALIGN_LEFT ,
                                VALIGNMENT valign = VALIGN_TOP)=0;
 
+   /**! @brief Draws the specified multi-line text in color c at x,y using the specified font and alignment */
    void DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
                                HALIGNMENT halign = HALIGN_LEFT ,
                                VALIGNMENT valign = VALIGN_TOP);
 
 
+   /**! @brief Draws the specified gui text in color c at x,y using the specified font and alignment 
+    *   Gui text has any character after an ampersand underlined
+    */
    void DrawGuiTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                           HALIGNMENT halign = HALIGN_LEFT ,
                           VALIGNMENT valign = VALIGN_TOP);
 
 
    /// getters
-   virtual EagleImage* GetBackBuffer()=0;
-   virtual EagleImage* GetScreen()=0;
-   virtual EagleImage* GetDrawingTarget()=0;
+
+   virtual EagleImage* GetBackBuffer()=0;///< Pure virtual function to get the back buffer
+   virtual EagleImage* GetScreen()=0;///< Pure virtual function to get the screen (usu. the same as the back buffer)
+   virtual EagleImage* GetDrawingTarget()=0;///< Pure virtual function to get the current drawing target
 
    /// utilities
-   void FlipDisplay();/// Overload PrivateFlipDisplay to affect this
 
-   virtual void HoldDrawing()=0;
-   virtual void ReleaseDrawing()=0;
-   virtual void SetDrawingTarget(EagleImage* dest)=0;
+   void FlipDisplay();///< Flip the display and show its contents on screen. Overload @ref PrivateFlipDisplay to affect this
 
-   void DrawToBackBuffer();
+   virtual void HoldDrawing()=0;///< Pure virtual function to hold the drawing
+   virtual void ReleaseDrawing()=0;///< Pure virtual function to resume drawing
+   virtual void SetDrawingTarget(EagleImage* dest)=0;///< Pure virtual function to set the drawing target
+
+   void DrawToBackBuffer();///< Sets the drawing target to the backbuffer for this display
 
    /// Image creation / loading / sub division - these images are owned by the window
+
+   ///< Create an empty image
    virtual EagleImage* EmptyImage(std::string iname = "Nemo")=0;
 
+   ///< Clone an image
    virtual EagleImage* CloneImage(EagleImage* clone , std::string iname = "Nemo")=0;
+   
+   ///< Create a sub image from an existing EagleImage
    virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;
 
+   ///< Create an image of the specified width, height, @redf IMAGE_TYPE , and name
    virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;
+
+   ///< Load an image from file using the specified @ref IMAGE_TYPE
    virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
 
-   void                FreeImage(EagleImage* img);
-   void                FreeAllImages();
+   void                FreeImage(EagleImage* img);///< Frees any references this window has to the image and destroys it
+   void                FreeAllImages();///< Frees all images owned by this display
 
    /// Font loading - these fonts are owned by the window
+
+   ///< Pure virtual function to load a font from a file with the specified height, @ref FONT_LOADING_FLAGS , and @ref IMAGE_TYPE
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
 
-   void               FreeFont(EagleFont* font);
-   void               FreeAllFonts();
+   void               FreeFont(EagleFont* font);///< Frees any references this window has to the font and destroys it
+   void               FreeAllFonts();///< Frees all fonts owned by this window
    
+   /**! @fn DefaultFont <>
+    *   @brief Get a pointer to the default font
+    *   
+    *   The default font is created using the default font file, size, and flags. See @ref EagleFont and
+    *   @ref Font.hpp
+    */
    EagleFont* DefaultFont();
 
-   std::string DefaultFontPath();
-   int DefaultFontSize();
-   int DefaultFontFlags();
+   std::string DefaultFontPath();///< Returns the path used by the default font
+   int DefaultFontSize();///< Returns the size used by the default font
+   int DefaultFontFlags();///< Returns the flags used by the default font
 
    /// mouse control
-///   MousePointerManager* GetMousePointerManager() {return mp_manager;}
 
+   ///< Show the mouse on this display
    void ShowMouse();
+   
+   ///< Hide the mouse on this display
    void HideMouse();
 
+   /**! @fn AcquireMousePointer <void*,MOUSE_POINTER_TYPE,bool>
+    *   @brief Take ownership of the mouse pointer
+    *   
+    *   @param caller The address of the object that wants to take ownership of the mouse pointer
+    *   @param ptype The type of pointer to use
+    *   @param use_system_pointer Whether or not to use a system pointer, or a user supplied one
+    *   
+    *   Call @ref ReleaseMousePointer when you are finished using the pointer
+    */   
    bool AcquireMousePointer(void* caller , MOUSE_POINTER_TYPE ptype , bool use_system_pointer);
+   
+   /**! @fn ReleaseMousePointer <const void*>
+    *   @brief Releases the lock on the mouse pointer from the specified owner address
+    *   @param caller The address passed to @ref AcquireMousePointer as caller
+    */
    void ReleaseMousePointer(const void* caller);
-   void ReAcquireMouse();// call when window loses and regains focus if there is more than one, as the mp is shared
 
-   bool SetCustomPointer(MousePointerInfo info);
+   void ReAcquireMouse();///< Call when your window loses and regains focus if there is more than one, as the mp is shared
+
+   bool SetCustomPointer(MousePointerInfo info);///< Sets a custom mouse pointer using the specified @ref MousePointerInfo
+   
 ///   void SetCustomPointerSet(MousePointerSet* pointer_set);
 
-   void SetMousePosition(int mousex , int mousey);
+   void SetMousePosition(int mousex , int mousey);///< Sets the mouse position relative to the display
 
+   /// drawing target
 
-   // drawing target
-   void PushDrawingTarget(EagleImage* img);
-   void PopDrawingTarget();
+   void PushDrawingTarget(EagleImage* img);///< Pushes a new drawing target onto the drawing stack
+   void PopDrawingTarget();///< Pops an image off the drawing stack, and restores the previous one, reverting to the back buffer when empty
 
-   virtual Transformer* GetTransformer()=0;
+   virtual Transformer* GetTransformer()=0;///< Pure virtual function to get the Transformer object for this window
 
-public :
-   virtual void MakeDisplayCurrent()=0;
-
+   virtual void MakeDisplayCurrent()=0;///< Pure virtual function to make the display current in multi threaded applications
 };
 
 
 
-#include "Eagle/Position2.hpp"
+/**! @class DrawingTargeter
+ *   @brief Simple class to automatically push and pop drawing targets onto the drawing target stack
+ *   
+ *   Usage :
+ *   
+ *   ```
+ *       {
+ *           DrawingTargeter drawing_targeter(my_win , my_image);/// pushes my_image onto my_win's drawing stack
+ *           /// Draw to my_image
+ *       }/// drawing_targeter goes out of scope and pops my_image off the drawing stack
+ *   ```
+ */
 
-
-/// Simple class to automatically push and pop drawing targets onto the drawing target stack
-/// DrawingTargeter drawing_targeter(my_win , my_image);// pushes my_image onto my_win's drawing stack
-/// Draw to my_image
-/// drawing_targeter goes out of scope and pops my_image off the drawing stack
 class DrawingTargeter {
 
 private :
    EagleGraphicsContext* win;
 
 public :
-   DrawingTargeter(EagleGraphicsContext* window , EagleImage* target_image);// pushes target_image onto the drawing stack
-   ~DrawingTargeter();// pops target image off drawing stack automatically when this goes out of scope.
-
-
+   DrawingTargeter(EagleGraphicsContext* window , EagleImage* target_image);///< pushes target_image onto the drawing stack
+   ~DrawingTargeter();///< pops target image off drawing stack automatically when this goes out of scope.
 };
 
 
 
 #endif // EagleGraphics_HPP
+
+
 
