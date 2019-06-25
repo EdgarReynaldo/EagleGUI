@@ -411,18 +411,6 @@ void EagleEventHandler::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
-void EagleEventHandler::ListenTo(EagleEventSource* s) {
-   ListenTo(s , 0);
-}
-
-
-
-void EagleEventHandler::StopListeningTo(EagleEventSource* s) {
-   StopListeningTo(s , 0);
-}
-
-
-
 void EagleEventHandler::ListenTo(EagleEventSource* s , EagleThread* t) {
    LockOurMutex(t);
    EagleEventListener::ListenTo(s);

@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,16 +16,22 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file GraphicsContext.hpp
+ * @brief The interface for all graphics context objects
+ * 
+ * An EagleGraphicsContext represents a display (window) object. It allows you to draw to and work with display objects.
  */
-
-
 
 #ifndef EagleGraphics_HPP
 #define EagleGraphics_HPP
 
+
+
 #include <list>
 #include <string>
 #include <map>
+
+
 
 #include "Eagle/Area.hpp"
 #include "Eagle/Color.hpp"
@@ -34,36 +40,50 @@
 #include "Eagle/Font.hpp"
 #include "Eagle/Container.hpp"
 #include "Eagle/MousePointer.hpp"
-///#include "Eagle/System.hpp"
 #include "Eagle/Transforms.hpp"
 
 
-/// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
+#include "Eagle/Gui/Alignment.hpp"
+
+
+
+
+/**! @enum EAGLE_DISPLAY_FLAGS
+ *   @brief This enum allows you to choose options for a display. Use bitwise or to combine flags.
+ *
+ *   TODO : Convert EAGLE_DISPLAY_FLAGS into ALLEGRO_FLAGS
+ */
+
 enum EAGLE_DISPLAY_FLAGS {
-   EAGLE_WINDOWED                    = 1 << 0,
-   EAGLE_FULLSCREEN                  = 1 << 1,
-   EAGLE_OPENGL                      = 1 << 2,
-   EAGLE_DIRECT3D                    = 1 << 3,
-   EAGLE_RESIZABLE                   = 1 << 4,
-   EAGLE_NOFRAME                     = 1 << 5,
-   EAGLE_GENERATE_EXPOSE_EVENTS      = 1 << 6,
-   EAGLE_OPENGL_3_0                  = 1 << 7,
-   EAGLE_OPENGL_FORWARD_COMPATIBLE   = 1 << 8,
-   EAGLE_FULLSCREEN_WINDOW           = 1 << 9,
-   EAGLE_MINIMIZED                   = 1 << 10,
-   EAGLE_USE_PROGRAMMABLE_PIPELINE   = 1 << 11
+   EAGLE_WINDOWED                    = 1 << 0, ///< Make this display windowed
+   EAGLE_FULLSCREEN                  = 1 << 1, ///< Make this display fullscreen
+   EAGLE_OPENGL                      = 1 << 2, ///< Use OpenGL for this display
+   EAGLE_DIRECT3D                    = 1 << 3, ///< Use Direct3D for this display
+   EAGLE_RESIZABLE                   = 1 << 4, ///< Make this display resizable (only works in windowed mode)
+   EAGLE_NOFRAME                     = 1 << 5, ///< Make this display frameless
+   EAGLE_GENERATE_EXPOSE_EVENTS      = 1 << 6, ///< Generate expose events on this display
+   EAGLE_OPENGL_3_0                  = 1 << 7, ///< Require OpenGL 3.0 or better
+   EAGLE_OPENGL_FORWARD_COMPATIBLE   = 1 << 8, ///< Require forward OpenGL compatibility
+   EAGLE_FULLSCREEN_WINDOW           = 1 << 9, ///< Make this display a full screen window
+   EAGLE_MINIMIZED                   = 1 << 10,///< Start this display minimized
+   EAGLE_USE_PROGRAMMABLE_PIPELINE   = 1 << 11 ///< Provide your own shader pipeline for this display
 };
 
+
+
+/**! @enum IMAGE_DRAWING_FLAGS
+ *   @brief Determines the mirroring type for drawing this image
+ */
 
 enum IMAGE_DRAWING_FLAGS {
-   DRAW_NORMAL = 0,
-   DRAW_HFLIP = 1,
-   DRAW_VFLIP = 2,
-   DRAW_HVFLIP = 3
+   DRAW_NORMAL = 0,///< Draw normally, default value
+   DRAW_HFLIP  = 1,///< Draw this image flipped horizontally (left to right)
+   DRAW_VFLIP  = 2,///< Draw this image flipped vertically (top to bottom)
+   DRAW_HVFLIP = 3 ///< Draw this image flipped horizontally and vertically (same as rotating 180 degrees or by PI)
 };
 
 
-#include "Eagle/Gui/Alignment.hpp"
+
 
 extern unsigned int GUI_TEXT_LINE_SPACING;/// TODO : Find better alternative
 

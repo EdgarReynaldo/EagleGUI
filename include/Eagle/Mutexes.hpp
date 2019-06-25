@@ -74,8 +74,6 @@ protected :
       std::recursive_timed_mutex* mtx_recursive_timed;
    } MTX;
 
-///   bool locked;
-
    int lock_count;
    EagleThread* owner;
    bool log;
