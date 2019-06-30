@@ -28,10 +28,32 @@
 
 
 
-NinePatch::NinePatch() : imgs() {
+NinePatch::NinePatch() : 
+      imgs(),
+      window(0)
+{
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
          imgs[y][x] = 0;
+      }
+   }
+}
+
+
+
+NinePatch::~NinePatch() {
+   Free();
+}
+
+
+
+void NinePatch::Free() {
+   if (window) {
+      for (unsigned int i = 0 ; i < 9 ; ++i) {
+         if (images[i/3][i%3]) {
+            window->FreeImage(images[i/3][i%3]);
+         }
+         images[i/3][i%3] = 0;
       }
    }
 }
@@ -57,9 +79,11 @@ NinePatch::NinePatch(const NinePatch& np) {
 
 
 NinePatch& NinePatch::operator=(const NinePatch& np) {
+   Free();
+   window = np.window;
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
-         imgs[y][x] = np[y][x];
+         imgs[y][x] = window->CloneImage(np.imgs[y][x] , StringPrintF("NP#%d" , y*3 + x));
       }
    }
    return *this;
@@ -132,6 +156,22 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
    win->RestoreLastBlendingState();
 
    return np;
+}
+
+
+
+void NinePatch::Draw(NPAREA dest_area , int xoffset , int yoffset) {
+   if (window) {
+      for (int y = 0 ; y < 3 ; ++y) {
+         for (int x = 0 ; x < 3 ; ++x) {
+            VCELL_AREA vcell = (VCELL_AREA)y;
+            HCELL_AREA hcell = (HCELL_AREA)x;
+            Rectangle dest = dest_area.GetNPCell(hcell , vcell);
+            dest.MoveBy(xoffset , yoffset);
+            window->DrawStretched(imgs[y][x] , dest , DRAW_NORMAL);
+         }
+      }
+   }
 }
 
 
