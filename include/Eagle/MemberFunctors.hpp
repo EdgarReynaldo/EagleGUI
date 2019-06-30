@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,19 +16,21 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file MemberFunctors.hpp
+ * @brief The interface for working with functors and callbacks
+ *
+ *    
+ *    TODO : Questionable usefulness. Revisit some day.
+ *    CREDITS : These class method functors donated graciously by RickyLee from allegro.cc, who also got these
+ *    CREDITS : from someone else on allegro.cc. All hail www.allegro.cc.
+ *
+ *    Rewritten by Edgar Reynaldo for lousy stylistic reasons.
  */
-
-
-
-/**
-   CREDITS : These class method functors donated graciously by RickyLee from allegro.cc, who also got these
-   CREDITS : from someone else on allegro.cc. All hail www.allegro.cc.
-
-   Rewritten by Edgar Reynaldo for lousy stylistic reasons.
-*/
 
 #ifndef EagleMemberFunctors_HPP
 #define EagleMemberFunctors_HPP
+
+
 
 #include "Container.hpp"
 

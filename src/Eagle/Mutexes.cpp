@@ -171,25 +171,25 @@ bool EagleMutex::Recursive() {
 
 
 void EagleMutex::DoLock(std::string callfunc) {
-   DoLock(0 , callfunc);
+   DoLock(MAIN_THREAD , callfunc);
 }
 
 
 
 bool EagleMutex::DoLockWaitFor(std::string callfunc , double timeout) {
-   return DoLockWaitFor(0 , callfunc , timeout);
+   return DoLockWaitFor(MAIN_THREAD , callfunc , timeout);
 }
 
 
 
 bool EagleMutex::DoTryLock(std::string callfunc) {
-   return DoTryLock(0 , callfunc);
+   return DoTryLock(MAIN_THREAD , callfunc);
 }
 
 
 
 void EagleMutex::DoUnLock(std::string callfunc) {
-   DoUnLock(0 , callfunc);
+   DoUnLock(MAIN_THREAD , callfunc);
 }
 
 
