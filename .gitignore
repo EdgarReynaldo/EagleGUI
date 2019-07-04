@@ -1,8 +1,8 @@
-cbbuild/bin/**
-cbbuild/lib/**
+cbbuild/bin
+cbbuild/lib
 cbbuild/obj
 data
 bin
-build
+build/**
 FontViewers
 msvcbuild
