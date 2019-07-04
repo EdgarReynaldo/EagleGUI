@@ -140,10 +140,6 @@ protected :
    
 public :
    ConfigFile();///< Empty constructor
-ConfigFile::ConfigFile() :
-      contents(""),
-      sectionmap()
-{}
    
    void Clear();///< Clear this ConfigFile's string @ref contents
       

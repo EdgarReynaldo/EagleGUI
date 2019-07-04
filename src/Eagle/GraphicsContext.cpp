@@ -537,7 +537,7 @@ EagleFont* EagleGraphicsContext::DefaultFont() {
 
 
 
-string EagleGraphicsContext::DefaultFontPath() {
+std::string EagleGraphicsContext::DefaultFontPath() {
    return default_font_path;
 }
 

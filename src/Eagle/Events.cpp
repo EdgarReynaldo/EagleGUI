@@ -135,7 +135,7 @@ bool IsUserEvent(EagleEvent e) {
 
 
 
-int EagleEventGroupType(EagleEvent e) {
+EAGLE_EVENT_GROUP_TYPE EagleEventGroupType(EagleEvent e) {
    if (e.type == EAGLE_EVENT_NONE) {
       return EAGLE_EVENT_TYPE_NONE;
    }
@@ -153,7 +153,7 @@ int EagleEventGroupType(EagleEvent e) {
    else {
       type = EAGLE_UNDEFINED_EVENT_TYPE;
    }
-   return type;
+   return (EAGLE_EVENT_GROUP_TYPE)type;
 }
 
 

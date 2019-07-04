@@ -28,6 +28,6 @@ Pos2F VectorF(const Pos2F& p , float r , float theta) {
 
 
 
-Pos2D Vector(const Pos2D& p , double r , double theta) {
+Pos2D VectorD(const Pos2D& p , double r , double theta) {
    return Pos2D(p.X() + r*cos(theta) , p.Y() + r*sin(theta));
 }

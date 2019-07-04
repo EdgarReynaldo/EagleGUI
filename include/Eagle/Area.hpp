@@ -445,9 +445,10 @@ inline AreaBase& Rectangle::MoveBy(int dx    , int dy) {
    return *this;
 }
 
-inline Rectangle Rectangle::MoveBy(const Pos2I& p) {
-   MoveBy(p.X() , p.Y());
-   return *this;
+inline Rectangle Rectangle::MovedBy(const Pos2I& p) {
+   Rectangle r = *this;
+   r.MoveBy(p.X() , p.Y());
+   return r;
 }
 
 

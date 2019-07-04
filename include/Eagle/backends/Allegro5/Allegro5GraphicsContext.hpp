@@ -1,4 +1,24 @@
 
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5GraphicsContext.hpp
+ * @brief The interface for the Allegro 5 graphics driver
+ */
 
 #ifndef Allegro5GraphicsContext_HPP
 #define Allegro5GraphicsContext_HPP
@@ -11,8 +31,6 @@
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
-///#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
-
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
@@ -20,11 +38,8 @@
 #include <vector>
 
 
-//#ifdef LoadImage
-//   #warning "LoadImage already defined @@@"
-//#endif
 
-ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float v , ALLEGRO_COLOR ac);
+ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float v , ALLEGRO_COLOR ac);///< Helper function
 
 
 
@@ -36,16 +51,15 @@ typedef struct BLENDER {
 
 
 
-EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display);
+EagleGraphicsContext* GetAssociatedContext(ALLEGRO_DISPLAY* display);///< Get the associated window from an ALLEGRO_DISPLAY*
 
 
-EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);
+EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);///< Get a display event from an ALLEGRO_EVENT
 
 
-///void* A5WindowProcess(EagleThread* thread , void* context);
-
-
-
+/**! @class Allegro5GraphicsContext
+ *   @brief The Allegro 5 graphics driver
+ */
 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
 
@@ -75,9 +89,9 @@ private :
    void ResetBackBuffer();
    virtual void PrivateFlipDisplay();
 
-   friend class Allegro5WindowManager;
+   friend class Allegro5WindowManager;///< To create a window, use the window manager
 
-   Allegro5GraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0);
+   Allegro5GraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0);///< Private constructor!
 
 public :
 
@@ -108,10 +122,11 @@ public :
    void SetPMAlphaBlender();
    void SetNoPMAlphaBlender();
    void RestoreLastBlendingState();
-protected:
 
+protected:
    void StoreBlender();
    void RestoreBlender();
+
 public :
 
 
@@ -205,3 +220,6 @@ public :
 
 
 #endif // Allegro5GraphicsContext_HPP
+
+
+

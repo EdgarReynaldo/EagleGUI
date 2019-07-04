@@ -28,7 +28,7 @@
 
 #include <iostream>
 
-
+extern bool pre_multiply_alpha;
 
 void PreMultiplyAlpha(bool on);///< Set to on to pre multiply alpha when creating an EagleColor object
 

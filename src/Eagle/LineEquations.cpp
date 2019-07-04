@@ -48,7 +48,7 @@ GLE2D::GLE2D(Pos2D p , double theta_rad) :
       spos(p),
       epos()
 {
-   epos = Vector(spos , 1000.0 , theta_rad);
+   epos = VectorD(spos , 1000.0 , theta_rad);
    SetABC();
 }
 

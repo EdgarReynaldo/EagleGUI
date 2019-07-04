@@ -509,7 +509,7 @@ int EagleObjectRegistry::GetNameCount(std::string name) {
 
 
 
-EOBINFO EagleObjectRegistry::GetRegistryCopy() {
+EagleObjectRegistry::EOBINFO EagleObjectRegistry::GetRegistryCopy() {
    EOBINFO regcopy;
    LockOurMutex();
    if (pinfo) {

@@ -315,6 +315,13 @@ void ConfigFile::UpdateContents() {
 
 
 
+ConfigFile::ConfigFile() :
+      contents(""),
+      sectionmap()
+{}
+
+
+
 void ConfigFile::Clear() {
    sectionmap.clear();
    contents = "";

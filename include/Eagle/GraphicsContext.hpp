@@ -633,6 +633,8 @@ public :
 };
 
 
+#include "Eagle/Position2.hpp"
+
 
 /**! @class DrawingTargeter
  *   @brief Simple class to automatically push and pop drawing targets onto the drawing target stack

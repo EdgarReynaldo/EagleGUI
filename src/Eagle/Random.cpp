@@ -18,29 +18,37 @@
  *
  */
 
-
-
 #include "Eagle/Random.hpp"
+#include "Eagle/Math.hpp"
+
+
 
 #include <climits>
 
+
+
+MTRNG::MTRNG() : 
+      mt()
+{
+   Seed();
+}
+
+
+
 void MTRNG::Seed(unsigned int s) {
-   wtf.seed(s);
-   (void)s;
+   mt.seed(s);
 }
 
 
 
 MTRNG::MTYPE MTRNG::Generate() {
-   return wtf();
+   return mt();
 }
 
 
 
 unsigned int MTRNG::URand() {
-   double d = DRand();
-   return (unsigned int)(d*UINT_MAX);
-///   return wtf() & 0xffffffff;
+   return (unsigned int)(mt());
 }
 
 
@@ -58,7 +66,14 @@ float MTRNG::FRand() {
 
 
 double MTRNG::DRand() {
-   return (double)wtf()/wtf.max();
+   ///< A double is 8 bytes of precision, and our rng outputs 4 bytes at a time, combine two random numbers to make a double
+   MTYPE hiword = mt();
+   MTYPE loword = mt();
+   double d = ((unsigned long long)hiword << 32) | (unsigned long long)loword; 
+   if (std::isinf(d) || std::isnan(d)) {
+      return DRand();///< Try again
+   }
+   return d;
 }
 
 
@@ -75,14 +90,14 @@ unsigned int MTRNG::Rand1toN(unsigned int n) {
 
 
 
-float MTRNG::Percent() {
-   return FRand();
+float MTRNG::FPercent() {
+   return (float)DPercent();
 }
 
 
 
 double MTRNG::DPercent() {
-   return DRand();
+   return (double)mt()/mt.max();
 }
 
 

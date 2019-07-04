@@ -190,9 +190,11 @@ const char* joy_button_to_name(int button) {
       "JSBTN16"
    };
    return joy_button_names[button];
-}
+};
 
-VALUE_TO_NAME_FUNC value_to_name_func[NUM_INPUT_SRCS] = {
+
+
+const VALUE_TO_NAME_FUNC value_to_name_func[NUM_INPUT_SRCS] = {
    keycode_to_name,
    mouse_button_to_name,
    joy_button_to_name,
@@ -320,7 +322,7 @@ int ReadKey(EagleEventHandler* queue) {
    EAGLE_ASSERT(queue);
    EagleEvent ev;
    do {
-      ev = queue->WaitForEvent(0);
+      ev = queue->WaitForEvent(MAIN_THREAD);
       if (ev.type == EAGLE_EVENT_KEY_DOWN) {
          return ev.keyboard.keycode;
       }
@@ -873,7 +875,7 @@ void EagleInputHandler::RecordInputPress(EagleEventHandler* queue , Input* input
 //   al_flush_event_queue(queue);
    while (1) {
       EagleEvent ev;
-      ev = queue->WaitForEvent(0);
+      ev = queue->WaitForEvent(MAIN_THREAD);
       HandleInputEvent(ev);
       Input i;
       if (AnyInputPressed(&i)) {

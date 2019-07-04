@@ -976,9 +976,10 @@ RoundedRectangle::RoundedRectangle(Rectangle r , const RoundedRectangle& rr) :
 
 
 RoundedRectangle& RoundedRectangle::operator=(const RoundedRectangle& rr) {
-   *this::Rectangle = (dynamic_cast<Rectangle&>(rr);
+   dynamic_cast<Rectangle&>(*this) = dynamic_cast<const Rectangle&>(rr);
    hrad = rr.hrad;
    vrad = rr.vrad;
+   return *this;
 }
 
 

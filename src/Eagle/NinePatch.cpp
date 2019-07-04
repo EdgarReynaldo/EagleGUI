@@ -50,10 +50,10 @@ NinePatch::~NinePatch() {
 void NinePatch::Free() {
    if (window) {
       for (unsigned int i = 0 ; i < 9 ; ++i) {
-         if (images[i/3][i%3]) {
-            window->FreeImage(images[i/3][i%3]);
+         if (imgs[i/3][i%3]) {
+            window->FreeImage(imgs[i/3][i%3]);
          }
-         images[i/3][i%3] = 0;
+         imgs[i/3][i%3] = 0;
       }
    }
 }

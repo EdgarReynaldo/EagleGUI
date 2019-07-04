@@ -1,33 +1,31 @@
 
-/*
+/**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
- *    EAGLE
- *    Edgar's Agile Gui Library and Extensions
+ *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2017+ by Edgar Reynaldo
+ *    Copyright 2009-2019+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Allegro5Mutex.hpp
+ * @brief The interface for an Allegro 5 mutex
  */
 
-
-#error "Allegro 5 Mutex is deprecated"
-
-/**
+#error "Allegro 5 Mutex is deprecated. Use CXX11Mutex class instead"
 
 #ifndef Allegro5Mutex_HPP
 #define Allegro5Mutex_HPP
 
-
+/**
 
 #include "Eagle/Mutexes.hpp"
 
@@ -58,9 +56,11 @@ public :
 };
 
 
+//*/
+
+
 
 #endif // Allegro5Mutex_HPP
 
-//*/
 
 

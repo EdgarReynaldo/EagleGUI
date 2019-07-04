@@ -49,7 +49,7 @@ enum EAGLE_LOGGING_LEVEL {
    EAGLE_LOG_ERROR    = 2,///< Error
    EAGLE_LOG_CRITICAL = 3,///< Critical error
    EAGLE_LOG_NONE     = 4 ///< Don't log anything;
-
+};
 
 /**! @class EagleLogger
  *   @brief The EagleLogger class is responsible for sending output to the log.

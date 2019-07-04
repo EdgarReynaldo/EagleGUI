@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,13 +16,17 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file System.hpp
+ * @brief The interface for the @ref EagleSystem base class, which constitutes the base of every system driver in Eagle
+ *
+ *
+ *
+ *
  */
-
-
-
 
 #ifndef EagleSystem_HPP
 #define EagleSystem_HPP
+
 
 
 #include "Eagle/Color.hpp"
@@ -37,24 +41,38 @@
 
 
 
+/**! @enum EAGLE_INIT_STATE
+ *   @brief This enum is for flags that you can pass to @ref System::Initialize
+ * 
+ *   Bitwise OR these flags together to specify the system components you wish to initialize
+ */
+
 enum EAGLE_INIT_STATE {
-   EAGLE_NOT_INSTALLED =   0,
-   EAGLE_SYSTEM =     1 << 0,
-   EAGLE_IMAGES =     1 << 1,
-   EAGLE_FONTS =      1 << 2,
-   EAGLE_TTF_FONTS =  1 << 3,
-   EAGLE_AUDIO =      1 << 4,
-   EAGLE_SHADERS =    1 << 5,
-   EAGLE_PRIMITIVES = 1 << 6,
-   EAGLE_KEYBOARD =   1 << 7,
-   EAGLE_MOUSE =      1 << 8,
-   EAGLE_JOYSTICK =   1 << 9,
-   EAGLE_TOUCH =      1 << 10
+   EAGLE_NOT_INSTALLED =   0, ///< Nothing installed yet
+   EAGLE_SYSTEM =     1 << 0, ///< Install the system
+   EAGLE_IMAGES =     1 << 1, ///< Support images
+   EAGLE_FONTS =      1 << 2, ///< Support fonts
+   EAGLE_TTF_FONTS =  1 << 3, ///< Support ttf fonts
+   EAGLE_AUDIO =      1 << 4, ///< Support audio
+   EAGLE_SHADERS =    1 << 5, ///< Support shaders
+   EAGLE_PRIMITIVES = 1 << 6, ///< Support primitive drawing
+   EAGLE_KEYBOARD =   1 << 7, ///< Install the keyboard
+   EAGLE_MOUSE =      1 << 8, ///< Install the mouse
+   EAGLE_JOYSTICK =   1 << 9, ///< Install the joystick
+   EAGLE_TOUCH =      1 << 10,///< Install the touch driver
+
+   EAGLE_STANDARD_INPUT  = EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK,
+   EAGLE_STANDARD_SYSTEM = EAGLE_SYSTEM | EAGLE_IMAGES | EAGLE_FONTS | EAGLE_TTF_FONTS | EAGLE_AUDIO | EAGLE_PRIMITIVES,
+   EAGLE_STANDARD_SETUP  = EAGLE_STANDARD_INPUT | EAGLE_STANDARD_SYSTEM,
+
+   EAGLE_FULL_INPUT      = EAGLE_STANDARD_INPUT | EAGLE_TOUCH,
+   EAGLE_FULL_SYSTEM     = EAGLE_STANDARD_SYSTEM | EAGLE_SHADERS,
+   EAGLE_FULL_SETUP      = EAGLE_FULL_INPUT | EAGLE_FULL_SYSTEM
 };
 
 
 
-extern const char* const eagle_init_state_strs[12];
+extern const char* const eagle_init_state_strs[12];///< To convert an EAGLE_INIT_STATE bit flag to a string
 
 
 
@@ -62,23 +80,24 @@ class EagleSystem;
 
 
 
-///extern EagleSystem* eagle_system;
+extern EagleEvent most_recent_system_event;///< A copy of the most recent system event
 
-extern EagleEvent most_recent_system_event;
 
-extern const int EAGLE_STANDARD_INPUT;// keyboard mouse joystick
-extern const int EAGLE_STANDARD_SYSTEM;// system images fonts ttf fonts audio
-extern const int EAGLE_GENERAL_SETUP;// standard system and input together
-extern const int EAGLE_FULL_SETUP;// all bits on!
 
-std::string PrintEagleInitState(int state);
-std::string PrintFailedEagleInitStates(int desired_state , int actual_state);
+std::string PrintEagleInitState(int state);///< Print out the init flags
+
+std::string PrintFailedEagleInitStates(int desired_state , int actual_state);///< Print out the failed init flags
+
 
 
 class FileSystem;
 class ResourceLibrary;
 
 
+
+/**! @class EagleSystem
+ *   @brief The base class for all system drivers in Eagle
+ */
 
 class EagleSystem : public EagleObject {
 
@@ -159,12 +178,20 @@ protected :
 public :
 
    EagleSystem(std::string objclass = "EagleSystem" , std::string objname = "Nemo");
-   virtual ~EagleSystem() {}// Call Shutdown from your destructor please
 
-   virtual void Shutdown();// Call EagleSystem::Shutdown from your overridden Shutdown methods please...
+   virtual ~EagleSystem() {}///< Call Shutdown from your destructor please
+
+   virtual void Shutdown();///< Call EagleSystem::Shutdown from your overridden Shutdown methods please...
 
 
 
+   /**! @fn Initialize <int>
+    *   @brief The main start up function for Eagle
+    *   @param state
+    *   Pass any combination of @ref EAGLE_INIT_STATE flags here, and those subsystems will be initialized.
+    *   @retval The actual state of the system, composed of a bit field of successful EAGLE_INIT_STATE flags
+    */
+    
    virtual int Initialize(int state);
 
    bool InitializeSystem();
@@ -229,29 +256,46 @@ public :
    void FreeMutex(EagleMutex* mutex);
    void FreeClipboard(EagleClipboard* clipboard);
 
-/*
-	void RegisterKeyboardInput(EagleEventHandler* queue);
-	void RegisterMouseInput   (EagleEventHandler* queue);
-	void RegisterJoystickInput(EagleEventHandler* queue);
-	void RegisterTouchInput   (EagleEventHandler* queue);
 
-   void RegisterInputs(EagleEventHandler* queue);
 
-*/
-
+   ///< Returns true if there are no system events waiting in the system queue
    bool UpToDate();
+
+   /**! @fn UpdateSystemState
+    *   @brief Sends one event to the input handler and updates itself 
+    *   @retval The event processed 
+    */
    EagleEvent UpdateSystemState();/// Keep calling this until UpToDate() returns true!
-   EagleEvent WaitForSystemEventAndUpdateState();   /// If you don't install any input or create any displays
-                                                    /// WaitForSystemEventAndUpdateState might never return
+
+   /**! @fn WaitForSystemEventAndUpdateState
+    *   @brief
+    *
+    *   If you don't install any input or create any displays
+    *   WaitForSystemEventAndUpdateState might never return
+    */
+   EagleEvent WaitForSystemEventAndUpdateState();
+   
+   /**! @fn TimedWaitForSystemEventAndUpdateState <double>
+    *   @param timeout Duration to wait in seconds
+    *   @brief Waits up to @ref timeout seconds for an event and updates state if one is received.
+    *   @retval The event processed
+    */
    EagleEvent TimedWaitForSystemEventAndUpdateState(double timeout);
 
-	static double GetProgramTime();// Seconds since system initialization
+	/**! @fn Rest <double>
+	 *   @brief Rest for @ref time seconds
+	 *   @param time Duration to wait in seconds
+	 * 
+	 *   Pure virtual function. Must be implemented by system driver
+	 */
+	virtual void Rest(double time)=0;
 
-	virtual void Rest(double time)=0;// Rest for time seconds
-
-	EagleGraphicsContext* GetActiveWindow();
+	EagleGraphicsContext* GetActiveWindow();///< Get the active graphics context
 	
-	virtual const char* GetSystemName()=0;
+	virtual const char* GetSystemName()=0;///< Pure virtual function to get the driver name
+
+	static double GetProgramTime();///< Seconds since program start
+
 };
 
 
