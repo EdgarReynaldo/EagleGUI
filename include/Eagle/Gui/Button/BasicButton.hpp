@@ -104,6 +104,9 @@ extern double SPRING_BTN_REPEAT_DELAY;///< How long until the button starts repe
 extern double SPRING_BTN_NUM_REPEAT_PER_SEC;///< Number of repeats in a second
 
 
+/**! @class BasicButton
+ *   @brief The base class for all buttons in Eagle
+ */
 
 class BasicButton : public WidgetBase {
    

@@ -215,7 +215,7 @@ public :
    WIDGETAREA();///< Empty constructor
 
    ///< Constructs a widget area from an outer area and margin, border, and padding boxes */
-   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox = BOXAREA() , BOXAREA borderbox = BOXAREA() , BOXAREA paddingbox = BOXAREA());
    
    ///< Constructs a widget area from an inner area and surrounding margin, border, and padding boxes */
    WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);

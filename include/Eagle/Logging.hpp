@@ -119,6 +119,14 @@ public :
    void AddOutput(std::ostream& output);
    void RemoveOutput(std::ostream& output);///< Remove an output stream from the list of outputs
 
+   static void AddOutputStream(std::ostream& output) {
+      Instance().AddOutput(output);
+   }
+   static void RemoveOutputStream(std::ostream& output) {
+      Instance().RemoveOutput(output);
+   }
+   
+   
    /**! @typedef MANIP
     *   @brief A typedef for working with ostream manipulator objects
     */

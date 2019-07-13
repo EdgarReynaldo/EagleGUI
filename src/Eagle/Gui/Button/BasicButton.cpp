@@ -139,7 +139,8 @@ int BasicButton::PrivateCheckInputs() {
    WidgetHandler* handler = 0;
    
    if (wparent) {
-      handler = dynamic_cast<WidgetHandler*>(wparent);
+      handler = RootHandler();
+      handler = dynamic_cast<WidgetHandler*>(wparent);/// TODO : BUG : FIXME : What about if a gui is NOT our parent???
    }
    if (handler) {
       msx = handler->GetMouseX();
