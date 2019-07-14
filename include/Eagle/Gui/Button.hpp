@@ -30,7 +30,7 @@
 #include "Button/BasicButton.hpp"
 #include "Button/GuiButton.hpp"
 #include "Button/IconButton.hpp"
-#include "Button/RadioButton.hpp"
+#include "Button/RadioGroup.hpp"
 #include "Button/ScrollButton.hpp"
 
 
