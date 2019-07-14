@@ -196,10 +196,19 @@ int Slider::GetSliderMax() {
 
 
 double Slider::GetPercent() {
-   if (invert) {
-      return 1.0 - slider_percent;
-   }
    return slider_percent;
+}
+
+
+
+double Slider::GetInverted() {
+   return 1.0 - slider_percent;
+}
+
+
+
+double Slider::GetActual() {
+   return (invert?GetInverted():GetPercent());
 }
 
 
@@ -398,19 +407,37 @@ int Slider2D::GetSliderYMax() {
 
 
 double Slider2D::GetXPercent() {
-   if (invertx) {
-      return 1.0 - slider_xpercent;
-   }
    return slider_xpercent;
 }
 
 
 
 double Slider2D::GetYPercent() {
-   if (inverty) {
-      return 1.0 - slider_ypercent;
-   }
    return slider_ypercent;
+}
+
+
+
+double Slider2D::GetXInverted() {
+   return 1.0 - slider_xpercent;
+}
+
+
+
+double Slider2D::GetYInverted() {
+   return 1.0 - slider_ypercent;
+}
+
+
+
+double Slider2D::GetXActual() {
+   return (invertx?GetXInverted():GetXPercent());
+}
+
+
+
+double Slider2D::GetYActual() {
+   return (inverty?GetYInverted():GetYPercent());
 }
 
 

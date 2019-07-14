@@ -85,6 +85,8 @@ public :
    int GetSliderMax();
 
    double GetPercent();///< [0.0,1.0]
+   double GetInverted();///< [0.0,1.0]
+   double GetActual();///< [0.0,1.0]
 
    void SetInversion(bool invert_me);///< Pass true to invert (use right to left or use bottom to top)
    void SetOrientation(bool horizontal_slider);///< Pass true to use a horizontal scrollbar, false for vertical
@@ -150,6 +152,10 @@ public :
 
    double GetXPercent();///< [0.0,1.0]
    double GetYPercent();///< [0.0,1.0]
+   double GetXInverted();///< [0.0,1.0]
+   double GetYInverted();///< [0.0,1.0]
+   double GetXActual();///< [0.0,1.0]
+   double GetYActual();///< [0.0,1.0]
 
    void SetInversion(bool invert_x , bool invert_y);///< Pass true to invert x and/or y (use right to left or use bottom to top)
 };
