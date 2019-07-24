@@ -35,7 +35,7 @@
 #include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/Gui/Button/GuiButton.hpp"
 #include "Eagle/Gui/Button/IconButton.hpp"
-#include "Eagle/Gui/Button/RadioButton.hpp"
+#include "Eagle/Gui/Button/RadioGroup.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 #include "Eagle/Gui/Button/TextButton.hpp"
 

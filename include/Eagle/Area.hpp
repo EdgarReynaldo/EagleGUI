@@ -315,6 +315,18 @@ public :
          bry(r.bry)
    {}
 
+   
+   bool operator==(const Rectangle& rhs) {
+      return ((x == rhs.x) &&
+              (y == rhs.y) &&
+              (w == rhs.w) &&
+              (h == rhs.h));
+   }
+   
+   bool operator!=(const Rectangle& rhs) {
+      return !(*this == rhs);
+   }
+   
    virtual std::vector<Rectangle*> CreateBoundingRectangles() const;
    virtual AreaBase* Clone() const;// returns a newed copy of itself
 
