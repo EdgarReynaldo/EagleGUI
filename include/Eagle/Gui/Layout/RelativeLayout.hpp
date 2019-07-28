@@ -44,7 +44,7 @@ protected :
 
 public :
    
-   RelativeLayout(std::string name = "Nemo");
+   RelativeLayout(std::string classname = "RelativeLayout" , std::string name = "Nemo");
    ~RelativeLayout();
 
    ///< @sa LayoutBase::RequestWidgetArea

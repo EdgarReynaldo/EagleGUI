@@ -142,6 +142,7 @@ public :
    
    ///< Get the current scroller value
    int GetScrollValue() {return scroll_val;}
+   int GetScrollMax() {return total_length;}
 };
 
 

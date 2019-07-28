@@ -230,8 +230,6 @@ WidgetBase(std::string classname , std::string objname) :
    Rectangle InnerArea() const;///< Returns the widget's inner rectangle
 
    WidgetFlags Flags() const;///< Returns the widget's flags
-   inline bool FlagOn(WIDGET_FLAGS f) {return (unsigned int)Flags() & f;}///< Whether flag f is on
-   inline bool FlagOff(WIDGET_FLAGS f) {return (unsigned int)Flags() & ~f;}///< Whether flag f is off
 
    SHAREDOBJECT<WidgetColorset> GetWidgetColorset() const;///< Returns the widget colorset in use via a shared pointer
    const WidgetColorset& WidgetColors() const;///< Returns a const reference to this widget's colors

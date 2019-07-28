@@ -97,7 +97,7 @@ public :
    void SetupView(int total_length_of_view , int actual_length_in_view);///< Setup view length and amount shown
 
    int GetScrollValue() {return scroller->GetScrollValue();}///< Retrieve the current integer scroll value
-   
+   int GetScrollMax() {return scroller->GetScrollMax();}
 };
 
 

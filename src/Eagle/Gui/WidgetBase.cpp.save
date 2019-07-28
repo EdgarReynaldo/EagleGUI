@@ -210,18 +210,18 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    if (Flags().FlagOn(VISIBLE)) {
       WidgetPainter wp = GetWidgetPainter();
       
-      Clipper clip(win->GetDrawingTarget() , OuterArea());
+      Clipper(win->GetDrawingTarget() , OuterArea());
       
       if (wp) {
          wp->GetPainterReady(win , this , xpos , ypos);
          wp->PaintBackground();
-         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
+         PrivateDisplay(win , xpos - GetScrollX() , ypos - G);
          if (wflags.FlagOn(HASFOCUS)) {
             wp->PaintFocus();
          }
       }
       else {
-         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
+         PrivateDisplay(win , xpos - viewx , ypos - viewy);
       }
    }
    ClearRedrawFlag();
@@ -294,18 +294,6 @@ void WidgetBase::SetFocusState(bool focus) {
 
 
   
-void WidgetBase::SetVisibleState(bool visible) {
-   SetWidgetFlags(Flags().SetNewFlag(VISIBLE , visible));
-}
-
-
-
-void WidgetBase::SetEnabledState(bool enabled) {
-   SetWidgetFlags(Flags().SetNewFlag(ENABLED , enabled));
-}
-
-
-
 void WidgetBase::SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset) {
    OnSelfColorChanged(cset);
 }
