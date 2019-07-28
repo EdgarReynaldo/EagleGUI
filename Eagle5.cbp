@@ -163,6 +163,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/NPLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/ScrollArea.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
@@ -172,6 +173,7 @@
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
+		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/Slider.hpp" />
 		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
@@ -273,6 +275,7 @@
 		<Unit filename="src/Eagle/Gui/Layout/MenuLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/RelativeLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/ScrollArea.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
