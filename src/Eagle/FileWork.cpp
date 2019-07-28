@@ -54,7 +54,7 @@ std::istream& GetLinePN(std::istream& is , std::string& s) {
 
 FILE* GetLinePN(FILE* f , std::string& s) {
    s = "";
-   if (!f || feof(f) || ferror(f)) {return f;}
+   if (!f || feof(f) || ferror(f)) {return 0;}
    int c;
    while ((c = fgetc(f)) != EOF) {
       if (c == '\r') {// WINDOWS OR OSX

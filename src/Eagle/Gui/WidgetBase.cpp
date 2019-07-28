@@ -74,6 +74,9 @@ void WidgetBase::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 void WidgetBase::OnAreaChanged() {
+   WidgetMsg msg(this , TOPIC_DIALOG , DIALOG_I_MOVED);
+   EagleEvent e = MakeEagleEvent(msg);
+   EmitEvent(e , 0);
    (void)0;
 }
 
@@ -186,6 +189,12 @@ int WidgetBase::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_TIMER) {
 ///      Update(ee.timer.eagle_timer_source->SPT());
    }
+   
+   if (IsMouseEvent(ee)) {
+      ee.mouse.x += GetScrollX();
+      ee.mouse.y += GetScrollY();
+   }
+   
    return (PrivateCheckInputs() | PrivateHandleEvent(ee));
 }
 
@@ -200,16 +209,19 @@ int WidgetBase::Update(double dt) {
 void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    if (Flags().FlagOn(VISIBLE)) {
       WidgetPainter wp = GetWidgetPainter();
+      
+      Clipper clip(win->GetDrawingTarget() , OuterArea());
+      
       if (wp) {
          wp->GetPainterReady(win , this , xpos , ypos);
          wp->PaintBackground();
-         PrivateDisplay(win , xpos , ypos);
+         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
          if (wflags.FlagOn(HASFOCUS)) {
             wp->PaintFocus();
          }
       }
       else {
-         PrivateDisplay(win , xpos , ypos);
+         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
       }
    }
    ClearRedrawFlag();
@@ -282,6 +294,18 @@ void WidgetBase::SetFocusState(bool focus) {
 
 
   
+void WidgetBase::SetVisibleState(bool visible) {
+   SetWidgetFlags(Flags().SetNewFlag(VISIBLE , visible));
+}
+
+
+
+void WidgetBase::SetEnabledState(bool enabled) {
+   SetWidgetFlags(Flags().SetNewFlag(ENABLED , enabled));
+}
+
+
+
 void WidgetBase::SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset) {
    OnSelfColorChanged(cset);
 }

@@ -17,16 +17,18 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file WidgetArea.hpp
- * @brief This file contains the interfaces for the different types of widget areas
+ * @brief This file contains the interfaces for the different types of widget areas used in Eagle
  * 
- * Include this header to get access to the BOXAREA, NPAREA, and WIDGETAREA classes
- * 
+ * Include this header to get access to the @ref BOXAREA, @ref NPAREA, and @ref WIDGETAREA classes
+ *
+ * Eagle widgets use the CSS Box model. See here for details : https://www.w3schools.com/Css/css_boxmodel.asp
+ * Note: A WIDGETAREA includes the margin, border, padding, and inner (client) areas
+ * Note: A BOXAREA only defines the edges of a box, not the box itself, ie. left/right/top/bottom values
  */
-
-
 
 #ifndef EagleGuiWidgetArea_HPP
 #define EagleGuiWidgetArea_HPP
+
 
 
 #include "Eagle/Area.hpp"
@@ -35,6 +37,10 @@
 
 
 
+/**! @enum WAREA_TYPE
+ *   @brief This enum specifies the type of widget area being referred to, whether it is
+ *          the margin, the border, the padding, or the inner area of a widget.
+ */
 enum WAREA_TYPE {
    WAREA_TYPE_MARGIN  = 0,///< This widget area refers to the margin, the outermost box in the CSS model
    WAREA_TYPE_BORDER  = 1,///< This widget area refers to the border, the second outermost box in the CSS model
@@ -43,7 +49,9 @@ enum WAREA_TYPE {
 };
 
 
-
+/**! @enum BOX_TYPE
+ *   @brief Whether this box refers to the margin box, the border box, or the padding box
+ */
 enum BOX_TYPE {
    BOX_TYPE_MARGIN  = 0,///< This box type refers to the margin box
    BOX_TYPE_BORDER  = 1,///< This box type refers to the border box
@@ -51,7 +59,9 @@ enum BOX_TYPE {
 };
 
 
-
+/**! @enum CELL_AREA
+ *   @brief This enum defines the 10 possible areas of a nine patch cell (left/center/right)/(top/vcenter/bottom) or outside
+ */
 enum CELL_AREA {
    CELL_AREA_OUTSIDE       = -1,///< This cell area is outside the nine patch
    CELL_AREA_TOPLEFT       = 0, ///< This is the top left cell
@@ -66,15 +76,20 @@ enum CELL_AREA {
 };
 
 
-
+/**! @enum HCELL_AREA
+ *   @brief Simple enum to specify the left, center, or right cell of a nine patch area
+ */
 enum HCELL_AREA {
-	HCELL_LEFT = 0,  ///< This refers to the left most horizontal cell
+	HCELL_LEFT   = 0,///< This refers to the left most horizontal cell
 	HCELL_CENTER = 1,///< This refers to the center most horizontal cell
-	HCELL_RIGHT = 2  ///< This refers to the right most horizontal cell
+	HCELL_RIGHT  = 2 ///< This refers to the right most horizontal cell
 };
 
 
 
+/**! @enum VCELL_AREA
+ *   @brief Simple enum to specify the top, vcenter, or bottom cell of a nine patch area
+ */
 enum VCELL_AREA {
 	VCELL_TOP = 0,   ///< This refers to the top most vertical cell
 	VCELL_CENTER = 1,///< This refers to the center most vertical cell
@@ -83,7 +98,8 @@ enum VCELL_AREA {
 
 
 
-CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell);///< Returns the corresponding CELL_AREA for the hcell and vcell passed in
+///< Translates a horizontal and vertical cell specification into a @ref CELL_AREA value
+CELL_AREA GetCell(HCELL_AREA hcell , VCELL_AREA vcell);
 
 
 
@@ -98,14 +114,23 @@ public :
    int top;
    int bottom;
    
-   BOXAREA();///< Default constructor that initializes everything to 0
-   BOXAREA(int side);///< Side constructor - each side will have the value passed
-   BOXAREA(int hsize , int vsize);///< Constructor for horizontal size and vertical size
-
+   /// Constructors
    
-   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);///< Explicit constructor that specifies l,r,t,and b
+   ///< Default constructor that initializes everything to 0
+   BOXAREA();
 
-   void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);///< Set the top, left, bottom, and right sizes
+   ///< Side constructor - each side will have the value passed
+   BOXAREA(int side);
+
+   ///< Constructor for horizontal size and vertical size
+   BOXAREA(int hsize , int vsize);
+
+   ///< Explicit constructor that specifies left, right, top, and bottom size values
+   BOXAREA(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
+
+
+   ///< Set the top, left, bottom, and right sizes
+   void Set(unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
    inline int Width() const {return left + right;}///< Returns the width (left + right)
    inline int Height() const {return top + bottom;}///< Returns the height (top + bottom)
@@ -121,7 +146,6 @@ public :
  *  \brief The NPAREA class holds the information needed to store the attributes of a nine patch area
  * 
  * The NPAREA class is to facilitate creating and painting nine patch areas
- * 
  */
 
 class NPAREA {
@@ -141,13 +165,16 @@ public :
 
    void PaintOutsideSolid(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color
    void PaintOutsideRounded(EagleGraphicsContext* win , EagleColor c);///< Paint the margin of the nine patch a solid color that is rounded
-   void PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);
+   void PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);///< Paints a two tone margin
+   void PaintOutsideGradient(EagleGraphicsContext* win , EagleColor outer , EagleColor inner);///< Paints a gradient border
    
    /// Getters
    
    CELL_AREA GetCellArea(int xpos , int ypos) const;///< Returns the CELL_AREA specified by the passed position values
    
    Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;///< Gets the rectangle for a specified cell
+   Rectangle GetNPCell(CELL_AREA cell) const ;///< Gets the rectangle for a specified cell
+
    Rectangle GetRow(VCELL_AREA vcell) const;///< Gets the row rectangle for a specified VCELL_AREA
    Rectangle GetColumn(HCELL_AREA hcell) const;///< Gets the column rectangle for a specified HCELL_AREA
    
@@ -187,14 +214,13 @@ public :
 
    WIDGETAREA();///< Empty constructor
 
-   /*! \brief Constructs a widget area from an outer area and margin, border, and padding boxes */
-   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
+   ///< Constructs a widget area from an outer area and margin, border, and padding boxes */
+   WIDGETAREA(Rectangle outerarea , BOXAREA marginbox = BOXAREA() , BOXAREA borderbox = BOXAREA() , BOXAREA paddingbox = BOXAREA());
    
-   /*! \brief Constructs a widget area from an inner area and surrounding margin, border, and padding boxes */
+   ///< Constructs a widget area from an inner area and surrounding margin, border, and padding boxes */
    WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
 
    
-
    WIDGETAREA& operator=(const WIDGETAREA& wa);///< Copies wa
    
    WIDGETAREA& MoveBy(Pos2I p);///< Moves the object by p.x , p.y
@@ -202,50 +228,50 @@ public :
 
    /// Setters
    
-   /*! \brief Sets the widget area from an outer area and margin, border, and padding boxes */
+   ///< Sets the widget area from an outer area and margin, border, and padding boxes
    WIDGETAREA& SetBoxesContract(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
 
-   /*! \brief Sets the widget area from an outer area and uniform margin, border, and padding sizes */
+   ///< Sets the widget area from an outer area and uniform margin, border, and padding sizes
    WIDGETAREA& SetBoxesContract(Rectangle outerarea , int marginsize , int bordersize , int paddingsize);
    
-   /*! \brief Sets the margin, border, and padding boxes used for this area, contracting from the outer area */
+   ///< Sets the margin, border, and padding boxes used for this area, contracting from the outer area
    WIDGETAREA& SetBoxesContract(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
 
-   /*! \brief Sets a uniform margin, border, and padding size used for this area, contracting from the outer area */
+   ///< Sets a uniform margin, border, and padding size used for this area, contracting from the outer area
    WIDGETAREA& SetBoxesContract(int marginsize , int bordersize , int paddingsize);
 
-   /*! \brief Sets the area using margin, border, and padding boxes, expanding from the inner area */
+   ///< Sets the area using margin, border, and padding boxes, expanding from the inner area
    WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox , Rectangle innerarea);
 
-   /*! \brief Sets the area using uniform margin, border, and padding sizes, expanding from the inner area */
+   ///< Sets the area using uniform margin, border, and padding sizes, expanding from the inner area
    WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize , Rectangle innerarea);
 
-   /*! \brief Sets the margin, border, and padding boxes, expanding from the stored inner area */
+   ///< Sets the margin, border, and padding boxes, expanding from the stored inner area
    WIDGETAREA& SetBoxesExpand(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox);
 
-   /*! \brief Sets a uniform margin, border, and padding size, expanding from the stored inner area */
+   ///< Sets a uniform margin, border, and padding size, expanding from the stored inner area
    WIDGETAREA& SetBoxesExpand(int marginsize , int bordersize , int paddingsize);
 
 
-   /*! \brief Sets the specified box dimensions, contracting from the stored outer area */
+   ///< Sets the specified box dimensions, contracting from the stored outer area
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
-   /*! \brief Sets the specified box, contracting from the stored outer area */
+   ///< Sets the specified box, contracting from the stored outer area
    WIDGETAREA& SetBoxAreaContractFromOuter(BOX_TYPE box , BOXAREA b);
 
-   /*! \brief Sets the specified box dimensions, expanding from the stored inner area */
+   ///< Sets the specified box dimensions, expanding from the stored inner area
    WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , unsigned int l , unsigned int r , unsigned int t , unsigned int b);
 
-   /*! \brief Sets the specified box, expanding from the stored inner area */
+   ///< Sets the specified box, expanding from the stored inner area
    WIDGETAREA& SetBoxAreaExpandFromInner(BOX_TYPE box , BOXAREA b);
 
-   /*! \brief Sets the outer area to oa, preserving margin, border, and padding boxes if possible */
+   ///< Sets the outer area to oa, preserving margin, border, and padding boxes if possible
 	WIDGETAREA& SetOuterArea(Rectangle oa);
 
-   /*! \brief Sets the inner area to ia, preserving margin, border, and padding boxes */
+   ///< Sets the inner area to ia, preserving margin, border, and padding boxes
 	WIDGETAREA& SetInnerArea(Rectangle ia);
 
-	/*! \brief Sets a new widget area */
+	///< Sets a new widget area
    WIDGETAREA& SetWidgetArea(const WIDGETAREA& wa);
 
    /// Getters
@@ -297,7 +323,10 @@ public :
 
 };
 
+
+
 std::ostream& operator<<(std::ostream& os , const WIDGETAREA& wa);///< Allows you to stream widget areas
+
 
 
 typedef WIDGETAREA WidgetArea;

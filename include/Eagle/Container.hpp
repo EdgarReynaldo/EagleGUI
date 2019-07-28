@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,20 +16,22 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Container.hpp
+ * @brief Simple container of shared pointers for ease of storage and removal
  */
-
-
 
 #ifndef EagleContainer_HPP
 #define EagleContainer_HPP
 
 
-#include <vector>
 
 #include "Eagle/SharedMemory.hpp"
 
+#include <vector>
 
 
+
+/**! @brief Removes a single unique object of class Type from a class ListType container */
 template <class Type , class ListType>
 void RemoveUniqueFromList(ListType& list , Type obj_to_remove) {
    for (typename ListType::iterator it = list.begin() ; it != list.end() ; ++it) {
@@ -42,26 +44,41 @@ void RemoveUniqueFromList(ListType& list , Type obj_to_remove) {
 
 
 
+/**! @class PointerManager<Type>
+ *   @brief A simple templated class for managing shared pointers
+ */
+
 template <class Type>
 class PointerManager {
 
 protected :
+   /**! @typedef PTYPE
+    *   @brief A shared object of template class @ref Type
+    */
    typedef SHAREDOBJECT<Type> PTYPE;
+   
+   /**! @typedef PTRLIST
+    *   @brief A vector of @ref PTYPE objects
+    */
    typedef std::vector<PTYPE> PTRLIST;
+   
+   /**! @typedef PLIT
+    *   @brief A @ref PTRLIST iterator
+    */
    typedef typename PTRLIST::iterator PLIT;
 
 private :
-   PTRLIST ptrs;
+   PTRLIST ptrs;///< The pointer list
    
-   PLIT GetListIterator(Type* ptype);
+   PLIT GetListIterator(Type* ptype);///< Get an iterator for the specified pointer
 
 public :
-   PointerManager();
-   ~PointerManager();
+   PointerManager();///< Empty constructor
+   ~PointerManager();///< Destructor that clears the shared pointer list
 
-   PTYPE Add(PTYPE sp);
-   void Remove(Type* sp);
-   void RemoveAll();   
+   PTYPE Add(PTYPE sp);///< Add a @ref PTYPE object to the list
+   void Remove(Type* sp);///< Remove a @ref Type pointer from the list
+   void RemoveAll();///< Empty the list
 };
 
 
@@ -126,10 +143,6 @@ void PointerManager<Type>::RemoveAll() {
 
 
 #endif // EagleContainer_HPP
-
-
-
-
 
 
 

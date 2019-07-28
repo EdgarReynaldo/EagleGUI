@@ -203,7 +203,7 @@ int TwoWaySplitter::PrivateCheckInputs() {
 void TwoWaySplitter::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    Rectangle handle = GetHandleArea();
 
-   handle.MoveBy(Pos2I(xpos,ypos));
+   handle.MoveBy(xpos,ypos);
 
 //   EagleInfo() << StringPrintF("TwoWaySplitter::PrivateDisplay handle x,y,w,h = %d , %d , %d x %d , xpos,ypos = %d , %d\n" ,
 //                              handle.X(),handle.Y(),handle.W(),handle.H(),xpos,ypos);
@@ -366,6 +366,16 @@ void TwoWaySplitter::SetMouseWindow(EagleGraphicsContext* window) {
    /// TODO : Release from old window if necessary?
    mouse_window = window;
 }
+
+
+
+void TwoWaySplitter::SetDrawFunction(SPLITTER_DRAW_FUNC func) {
+   if (func) {
+      draw_func = func;
+      SetRedrawFlag();
+   }
+}
+
 
 
 

@@ -16,24 +16,15 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file Text.hpp
- * @brief Main include file for text widgets
- * 
- * Include this header to access the different kinds of text widgets available in Eagle
+ * @file SFXGenerator.hpp
+ * @brief For generating sound effects
  */
 
 
 
-#ifndef TEXT_HPP
-#define TEXT_HPP
+#ifndef SFXGenerator_HPP
+#define SFXGenerator_HPP
 
 
 
-#include "Eagle/Gui/Text/GlobalText.hpp"
-#include "Eagle/Gui/Text/BasicText.hpp"
-#include "Eagle/Gui/Text/SelectText.hpp"
-#include "Eagle/Gui/Text/LinkText.hpp"
-
-
-
-#endif // TEXT_HPP
+#endif // SFXGenerator_HPP

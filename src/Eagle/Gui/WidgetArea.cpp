@@ -177,6 +177,108 @@ void NPAREA::PaintOutsideContrast(EagleGraphicsContext* win , EagleColor outer ,
 }
 
 
+void NPAREA::PaintOutsideGradient(EagleGraphicsContext* win , EagleColor outer , EagleColor inner) {
+   for (int i = 0 ; i < 9 ; ++i) {
+      CELL_AREA c = (CELL_AREA)i;
+
+      if (c == CELL_AREA_MIDDLEMIDDLE) {continue;}/// Skip the middle cell
+
+      HCELL_AREA hc = (HCELL_AREA)(i%3);
+      VCELL_AREA vc = (VCELL_AREA)(i/3);
+
+      Rectangle r = GetNPCell(hc,vc);
+
+      bool isleft = (hc == HCELL_LEFT);
+      bool istop = (vc == VCELL_TOP);
+
+      /// The colors for the corners of our shaded quad
+      EagleColor cornercols[2][2];/// Top left, top right, bottom left, bottom right
+      
+      switch (c) {
+      case CELL_AREA_MIDDLELEFT :
+      case CELL_AREA_MIDDLERIGHT:
+      case CELL_AREA_TOPMIDDLE :
+      case CELL_AREA_BOTTOMMIDDLE:
+         {
+            if (hc == HCELL_LEFT) {
+               cornercols[0][0] = outer;///< top left
+               cornercols[1][0] = outer;///< bottom left
+               cornercols[0][1] = inner;///< top right
+               cornercols[1][1] = inner;///< bottom right
+            }
+            else if (hc == HCELL_CENTER) {
+               /// Top or bottom
+               if (vc == VCELL_TOP) {
+                  cornercols[0][0] = outer;///< top left
+                  cornercols[0][1] = outer;///< top right
+                  cornercols[1][0] = inner;///< bottom left
+                  cornercols[1][1] = inner;///< bottom right
+               }
+               else if (vc == VCELL_BOTTOM) {
+                  cornercols[0][0] = inner;///< top left
+                  cornercols[0][1] = inner;///< top right
+                  cornercols[1][0] = outer;///< bottom left
+                  cornercols[1][1] = outer;///< bottom right
+               }
+            }
+            else if (hc == HCELL_RIGHT) {/// right
+               cornercols[0][0] = inner;///< top left
+               cornercols[1][0] = inner;///< bottom left
+               cornercols[0][1] = outer;///< top right
+               cornercols[1][1] = outer;///< bottom right
+            }
+         }
+         break;
+      /// Paint the corners using a shaded quad, this will create beveled edges, not a rounded rectangle
+      case CELL_AREA_TOPLEFT :
+      case CELL_AREA_TOPRIGHT :
+      case CELL_AREA_BOTTOMLEFT :
+      case CELL_AREA_BOTTOMRIGHT :
+         {
+            if (isleft) {
+               if (istop) {/// top left
+                  cornercols[0][0] = outer;/// top left
+                  cornercols[0][1] = outer;///col;/// top right
+                  cornercols[1][0] = outer;/// bottom left
+                  cornercols[1][1] = inner;/// bottom right
+               }
+               else {/// bottom left
+                  cornercols[0][0] = outer;/// top left
+                  cornercols[0][1] = inner;/// top right
+                  cornercols[1][0] = outer;/// bottom left
+                  cornercols[1][1] = outer;/// bottom right
+               }
+            }
+            else {
+               if (istop) {/// top right
+                  cornercols[0][0] = outer;/// top left
+                  cornercols[0][1] = outer;/// top right
+                  cornercols[1][0] = inner;/// bottom left
+                  cornercols[1][1] = outer;/// bottom right
+               }
+               else {/// bottom right
+                  cornercols[0][0] = inner;/// top left
+                  cornercols[0][1] = outer;/// top right
+                  cornercols[1][0] = outer;/// bottom left
+                  cornercols[1][1] = outer;/// bottom right
+               }
+            }
+         }
+         break;
+      default :
+         break;
+      };
+
+      win->DrawShadedQuad(
+            r.X()  , r.Y()  , cornercols[0][0] ,
+            r.X()  , r.BY() , cornercols[1][0] ,
+            r.RX() , r.BY() , cornercols[1][1] ,
+            r.RX() , r.Y()  , cornercols[0][1]  
+      );
+   }
+}
+
+
 
 CELL_AREA NPAREA::GetCellArea(int xpos , int ypos) const {
    if (((xpos >= pos.X()) && (xpos <= pos.X() + left + width + right)) &&
@@ -213,6 +315,15 @@ Rectangle NPAREA::GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const {
       p2.MoveBy(cellwidths[i] , 0);
    }
    return Rectangle(p2.X() , p2.Y() , cellwidths[hcell + 1] , cellheights[vcell + 1]);
+}
+
+
+
+Rectangle NPAREA::GetNPCell(CELL_AREA cell) const {
+   if (cell == CELL_AREA_OUTSIDE) {
+      return BADRECTANGLE;
+   }
+   return GetNPCell((HCELL_AREA)(cell % 3) , (VCELL_AREA)(cell / 3));
 }
 
 

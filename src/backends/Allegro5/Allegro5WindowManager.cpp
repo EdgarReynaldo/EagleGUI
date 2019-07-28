@@ -9,9 +9,7 @@
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/StringWork.hpp"
 
-
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
-///#include "Eagle/backends/Allegro5/Allegro5Mutex.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 
 
@@ -162,7 +160,7 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
       if (ev.type == EAGLE_EVENT_WM_CLOSE_WINDOW) {
          a5win = (Allegro5GraphicsContext*)ev.user.data1;
          ee.window = a5win;
-         ee.type = EAGLE_EVENT_WM_CLOSE_WINDOW;
+         ee.type = (EAGLE_EVENT_TYPE)EAGLE_EVENT_WM_CLOSE_WINDOW;
          ee.display.x = a5win->XPos();
          ee.display.y = a5win->YPos();
          ee.display.width = a5win->Width();
@@ -172,7 +170,7 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
       }
       else if (ev.type == EAGLE_EVENT_WM_DESTROY) {
 ///         Allegro5WindowManager wm = (Allegro5WindowManager*)ev.user.data1;
-         ee.type = EAGLE_EVENT_WM_DESTROY;
+         ee.type = (EAGLE_EVENT_TYPE)EAGLE_EVENT_WM_DESTROY;
          ee.window = 0;
          return ee;
       }
@@ -368,15 +366,6 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
    return window;
 }
 
-
-/**
-void Allegro5WindowManager::AcknowledgeDrawingHalt(EagleGraphicsContext* window) {
-   ALLEGRO_EVENT ev;
-   ev.type = EAGLE_EVENT_DISPLAY_HALT_DRAWING_ACKNOWLEDGED;
-   ev.user.data1 = (intptr_t)window;/// TODO : Not safe for 64 bit pointers
-   al_emit_user_event(&response_event_source , &ev , 0);
-}
-//*/
 
 
 Allegro5WindowManager* GetAllegro5WindowManager() {

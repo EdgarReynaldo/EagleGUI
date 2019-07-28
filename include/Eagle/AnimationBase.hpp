@@ -29,10 +29,12 @@
 
 #include "Eagle/Events.hpp"
 
-/*! @brief Animation attribute values
+/*! @enum EAGLE_ANIMATION_TYPE
+ *  @brief Animation attribute values
  *  
  *  EAGLE_ANIMATION_TYPE describes the playback attributes of an animation.
  */
+
 enum EAGLE_ANIMATION_TYPE {
    ANIMATION_ONCE_FORWARDS                 = 0,
    ANIMATION_ONCE_BACKWARDS                = 1,
@@ -44,10 +46,10 @@ enum EAGLE_ANIMATION_TYPE {
 
 
 
-bool AnimationRepeats(EAGLE_ANIMATION_TYPE t);
-bool AnimationForward(EAGLE_ANIMATION_TYPE t);
-bool AnimationBackward(EAGLE_ANIMATION_TYPE t);
-bool AnimationPingPong(EAGLE_ANIMATION_TYPE t);
+bool AnimationRepeats(EAGLE_ANIMATION_TYPE t);///< True if the animation type repeats
+bool AnimationForward(EAGLE_ANIMATION_TYPE t);///< True if the animation type plays forward
+bool AnimationBackward(EAGLE_ANIMATION_TYPE t);///< True if the animation type plays backward
+bool AnimationPingPong(EAGLE_ANIMATION_TYPE t);///< True if the animation type plays back and forth
 
 
 /*! \class AnimationBase
@@ -55,12 +57,12 @@ bool AnimationPingPong(EAGLE_ANIMATION_TYPE t);
  * 
  * The AnimationBase class makes animation easy. All you do is tell it the
  * number of loops, the duration of each loop, and the number of frames per loop
- * and then you're ready to animate. Call the AnimationBase::Init function to get setup and then
- * AnimationBase::AdvanceAnimationTime, AnimationBase::SetAnimationTime, or 
- * AnimationBase::SetAnimationPercent to alter the playback time.
+ * and then you're ready to animate. Call the @ref AnimationBase::Init function to get setup and then
+ * @ref AnimationBase::AdvanceAnimationTime, @ref AnimationBase::SetAnimationTime, or 
+ * @ref AnimationBase::SetAnimationPercent to alter the playback time.
  * 
  * When you need to find out the normalized animation percent or frame number, call
- * AnimationBase::GetFrameNum or AnimationBase::GetNormalizedPercent. The frame number 
+ * @ref AnimationBase::GetFrameNum or @ref AnimationBase::GetNormalizedPercent. The frame number 
  * is equivalent to :
  * 
  *     (int)(GetNormalizedPercent()*GetNumFrames())
@@ -104,29 +106,29 @@ public :
    
    void Init(int num_frames , int num_loops , double loop_time , EAGLE_ANIMATION_TYPE play_type = ANIMATION_ONCE_FORWARDS);
    
-   void ResetAnimation();
+   void ResetAnimation();///< Resets the animation playback to the beginning
 
-   void SetAnimationTime(double t);
-   void AdvanceAnimationTime(double dt);
+   void SetAnimationTime(double t);///< Lets you set the playback time of the animation
+   void AdvanceAnimationTime(double dt);///< Advances or retreats the animation time by dt
 
-   void SetAnimationPercent(double percent);
+   void SetAnimationPercent(double percent);///< Sets the percentage of completion [0.0,1.0] or higher
    
 
-   double GetAnimationPercent();
-   double GetNormalizedPercent();/// [0.0 , 1.0)
-   double GetAnimationTime();
-   double GetDuration();
-   int    GetNumLoops();
-   int    GetLoopNum();
-   int    GetNumFrames();
-   int    GetFrameNum();
+   double GetAnimationPercent();///< Gets the percent of playback time passed, may be higher than one for looping animations
+   double GetNormalizedPercent();///< Gets the normalized percentage of the playback time from [0.0 , 1.0)
+   double GetAnimationTime();///< Returns how many seconds the animation has been playing for (the time index)
+   double GetDuration();///< Returns the duration in seconds of a single loop
+   int    GetNumLoops();///< Returns the number of loops specified
+   int    GetLoopNum();///< Returns the current loop number
+   int    GetNumFrames();///< Returns the number of frames per loop
+   int    GetFrameNum();///< Returns the current frame number
    
-   EAGLE_ANIMATION_TYPE GetAnimationType();
+   EAGLE_ANIMATION_TYPE GetAnimationType();///< Returns the type of animation
 
-   bool Repeats()   {return AnimationRepeats(GetAnimationType());}
-   bool Forwards()  {return AnimationForward(GetAnimationType());}
-   bool Backwards() {return AnimationBackward(GetAnimationType());}
-   bool PingPong()  {return AnimationPingPong(GetAnimationType());}
+   bool Repeats()   {return AnimationRepeats(GetAnimationType());}///< Whether this animation repeats
+   bool Forwards()  {return AnimationForward(GetAnimationType());}///< Whether this animation plays forward
+   bool Backwards() {return AnimationBackward(GetAnimationType());}///< Whether this animation plays backward
+   bool PingPong()  {return AnimationPingPong(GetAnimationType());}///< Whether this animation plays back and forth
    
 };
 
@@ -134,4 +136,8 @@ public :
 
 
 #endif // AnimationBase_HPP
+
+
+
+
 

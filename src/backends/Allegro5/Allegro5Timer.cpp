@@ -19,7 +19,7 @@ enum EAGLE_TIMER_MESSAGE_TYPE {
 
 
 
-void* TimerProcess(EagleThread* ethread , void* etimer) {
+void* Allegro5TimerProcess(EagleThread* ethread , void* etimer) {
    EagleTimer* eagle_timer = (EagleTimer*)etimer;
    Allegro5Timer* eagle_a5_timer = dynamic_cast<Allegro5Timer*>(eagle_timer);
    EAGLE_ASSERT(eagle_a5_timer);
@@ -131,8 +131,8 @@ bool Allegro5Timer::Create(double seconds_per_tick) {
       al_register_event_source(process_queue , al_get_timer_event_source(timer));
       al_register_event_source(process_queue , &timer_event_source);
       al_register_event_source(timer_queue , &process_event_source);
-      /// MUST create TimerProcess thread AFTER registering event sources or it will wait forever
-      ethread->Create(TimerProcess , this);
+      /// MUST create Allegro5TimerProcess thread AFTER registering event sources or it will wait forever
+      ethread->Create(Allegro5TimerProcess , this);
 
       // wait for thread to synchronize
 
@@ -285,19 +285,4 @@ bool Allegro5Timer::Valid() {
 }
 
 
-
-long long int Allegro5Timer::Count() {
-   if (timer) {return al_get_timer_count(timer);}
-   return -1;
-}
-
-
-
-void Allegro5Timer::RegisterTimerInput(EagleEventHandler* event_handler) {
-   if (!event_handler) {return;}
-
-   event_handler->ListenTo(this);
-   
-///   SubscribeListener(event_handler);/// TODO Convert to an event source
-}
 

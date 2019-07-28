@@ -22,30 +22,33 @@
 
 #include "Eagle/Platform.hpp"
 
+#include "Eagle/Gui/WidgetHandler.hpp"
+
 #include "Eagle/Gui/Text/GlobalText.hpp"
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/Gui/Text/LinkText.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"
-#include "Eagle/Gui/WidgetHandler.hpp"
+#include "Eagle/StringWork.hpp"
+
 
 
 #include <cstdlib>
-
 #include <cstring>
-
 #include <cmath>
 
 
+
 const int LINK_LAUNCHED = GetNextFreeTextMessageId();
+
+
 
 REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
 /// ------------------------------     LinkText     -----------------------------------
-
 
 
 
@@ -145,7 +148,7 @@ void LinkText::SetLineSpacing(int vspacing) {
 void LinkText::LaunchLink() {
    /// TODO : Should probably do more to sanitize the input. Who knows what someone might run if they
    /// TODO : know about the system calls?
-   string s1 = text;
+   std::string s1 = text;
    bool link = false;
    if (strncmp(s1.c_str() , "http://" , 7) == 0) {
       /// Should have a web address here
@@ -162,7 +165,7 @@ void LinkText::LaunchLink() {
    if (link) {
       /// TODO : Launching links only works on Windows, there is no code for other platforms yet
 #ifdef EAGLE_WIN32
-      string s2 = string("start ") + s1;
+      std::string s2 = std::string("start ") + s1;
       system(s2.c_str());
 #endif
       RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , LINK_LAUNCHED));

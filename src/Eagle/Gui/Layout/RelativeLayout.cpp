@@ -32,8 +32,8 @@ void RelativeLayout::ReserveSlots(int nslots) {
 
 
 
-RelativeLayout::RelativeLayout(std::string objname) :
-      LayoutBase("RelativeLayout" , objname),
+RelativeLayout::RelativeLayout(std::string classname , std::string objname) :
+      LayoutBase(classname , objname),
       layout_rectangles()
 {}
 
@@ -68,12 +68,12 @@ Rectangle RelativeLayout::RequestWidgetArea(int widget_slot , int newx , int new
    AdjustWidgetArea(widget , &newx , &newy , &newwidth , &newheight);
    
    Rectangle cl = InnerArea();
-   if (newx < cl.X()) {newx = cl.X();}
-   if (newy < cl.Y()) {newy = cl.Y();}
-   if (newx > cl.BRX()) {newx = cl.BRX();}
-   if (newy > cl.BRY()) {newy = cl.BRY();}
-   if (newx + newwidth >= cl.BRX()) {newwidth = cl.BRX() - newx;}
-   if (newy + newheight >= cl.BRY()) {newheight = cl.BRY() - newy;}
+   if (newx < cl.X()) {newx = cl.X();}/// Fit left
+   if (newy < cl.Y()) {newy = cl.Y();}/// Fit top
+   if (newx > cl.BRX()) {newx = cl.BRX();}/// Fit right
+   if (newy > cl.BRY()) {newy = cl.BRY();}/// Fit bottom
+   if (newx + newwidth > cl.BRX()) {newwidth = cl.BRX() - newx + 1;}/// Adjust width
+   if (newy + newheight > cl.BRY()) {newheight = cl.BRY() - newy + 1;}/// Adjust height
    
    Rectangle clipped(newx,newy,newwidth,newheight);
    

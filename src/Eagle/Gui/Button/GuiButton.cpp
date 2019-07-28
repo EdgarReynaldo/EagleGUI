@@ -257,6 +257,7 @@ void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int
    Rectangle r = btn->InnerArea();
    r.MoveBy(x,y);
    WidgetColorset wc = btn->WidgetColors();
+   /// TODO : Add hover coloring?
    switch(btn->ButtonShape()) {
       case RECTANGLE_BTN : 
          up?

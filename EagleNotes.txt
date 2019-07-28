@@ -47,6 +47,8 @@ TODO : Milestones necessary for development
 
 1. Finish basic widget set
 
+   TODO : Make the file system useful for creating files and checking if they exist
+
    TODO : Layouts
       a - StickyLayout (refs another widget and "sticks" to it, so they move together)
       b - ScrollAreaLayout - make it a layout instead of a widget? Might save some work.

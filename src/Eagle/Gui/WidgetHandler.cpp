@@ -806,6 +806,7 @@ void WidgetHandler::QueueUserMessage(WidgetMsg wmsg) {
    if (wparent) {
       WidgetBase::QueueUserMessage(wmsg);
    } else {
+      EmitEvent(MakeEagleEvent(wmsg));
       mque.push_back(wmsg);
    }
 }

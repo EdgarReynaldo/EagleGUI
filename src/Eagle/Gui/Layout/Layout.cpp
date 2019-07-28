@@ -156,7 +156,7 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
    }
    else {
       int mw = widget->AbsMinWidth();
-      if (*newwidth < mw) {
+      if (*newwidth < abs(mw)) {
          *newwidth = mw;
       }
    }
@@ -165,7 +165,7 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
    }
    else {
       int mh = widget->AbsMinHeight();
-      if (*newheight < mh) {
+      if (*newheight < abs(mh)) {
          *newheight = mh;
       }
    }
@@ -187,6 +187,15 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
       *newwidth = w.W();
       *newheight = w.H();
    }
+   
+   /// Handle rectangles with negative width or height
+   Rectangle r;
+   r.SetCorners(*newx , *newy , *newx + *newwidth - 1 , *newy + *newheight - 1);
+   *newx = r.X();
+   *newy = r.Y();
+   *newwidth = (r.W()>0)?r.W():1;
+   *newheight = (r.H()>0)?r.H():1;
+   
 }
 
 

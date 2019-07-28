@@ -17,13 +17,9 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file WidgetMover.hpp
- * @brief A simple widget to control other widget's positions and areas
- * 
- * 
+ * @brief This file holds the interface for the @ref WidgetMover class
  * 
  */
-
-
 
 #ifndef WidgetMover_HPP
 #define WidgetMover_HPP
@@ -34,9 +30,14 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/MousePointer.hpp"
 
+
+
 #include <set>
 
 
+/**! @class WidgetMover
+ *   @brief A simple widget to control other widget's positions and areas graphically using the mouse pointer
+ */
 
 class WidgetMover : public WidgetBase {
    

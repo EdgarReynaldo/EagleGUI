@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,7 +16,15 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file ResourceLib.hpp
+ * @brief The main interface for working with resources and resource files in Eagle
+ * 
+ * TODO : Incomplete
  */
+
+#ifndef ResourceLib_HPP
+#define ResourceLib_HPP
+
 
 
 #include <set>
@@ -24,8 +32,9 @@
 #include <string>
 #include <memory>
 
-#include "Eagle/Resources.hpp"
 
+
+#include "Eagle/Resources.hpp"
 #include "Eagle/SharedMemory.hpp"
 
 
@@ -60,4 +69,11 @@ public :
 ///   virtual RESOURCEID LoadResourceFromFile(FilePath fp)=0;
 ///   virtual RESOURCEID LoadResourceFromMemory(const MemFile* memfile)=0;
 };
+
+
+
+
+#endif // ResourceLib_HPP
+
+
 

@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,23 +16,38 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Position.hpp
+ * @brief Simple template class for working with 2D objects of various types of precision
+ * 
+ *
+ * Pos2T is a template class for holding an x and y position in any given precision.
+ *
+ * Pos2I is Pos2T<int>
+ * Pos2F is Pos2T<float>
+ * Pos2D is Pos2T<double>
+ *
+ * You can add and subtract and apply scalar multiplication. You can get angles between points, draw lines and (TODO : Arrows) and more.
  */
-
-
 
 #ifndef Position2T_HPP
 #define Position2T_HPP
 
+
+
 #include <iostream>
 #include <cmath>
+
+
 
 #include "Eagle/Color.hpp"
 
 
 class EagleGraphicsContext;
-///#include "Eagle/GraphicsContext.hpp"
 
 
+/**! @class Pos2T <TYPE>
+ *   @brief A template class for holding 2D points
+ */
 
 template <class TYPE>
 class Pos2T {
@@ -72,16 +87,12 @@ public :
    Pos2T operator*(double scale) {return Pos2T(scale*tx , scale*ty);}
    Pos2T& operator*=(double scale) {*this = *this * scale;return *this;}
    
-///   void Draw(EagleGraphicsContext* win , EagleColor color) const;
-
    void DrawLineTo(EagleGraphicsContext* win , const Pos2T& p , EagleColor color) const;
    void DrawLineTo(EagleGraphicsContext* win , const Pos2T& p , double thickness , EagleColor color) const ;
 
-/*
+   double DistanceToPoint(const Pos2T& p) const {return sqrt((p.X() - tx)*(p.X() - tx) + (p.Y() - ty)*(p.Y() - ty));}
+   double DistanceToPoint(TYPE xpos , TYPE ypos) const {return sqrt((xpos - tx)*(xpos - tx) + (ypos - ty)*(ypos - ty));}
 
-   double DistanceToPoint(const Pos2T& p) const;
-   double DistanceToPoint(TYPE xpos , TYPE ypos) const;
-*/
    double AngleToPoint(const Pos2T& p) const {return atan2(p.Y() - ty , p.X() - tx);}
    double AngleToPoint(TYPE x , TYPE y) const {return atan2(y - ty , x - tx);}
 
@@ -103,15 +114,25 @@ std::ostream& operator<<(std::ostream& os , const Pos2T<TYPE>& p) {
    return os;
 }
 
+
+
 template <class TYPE>
 Pos2T<TYPE> operator*(double scale , const Pos2T<TYPE>& p) {return Pos2T<TYPE>(scale*p.X() , scale*p.Y());}
+
+
 
 typedef Pos2T<int> Pos2I;
 typedef Pos2T<float> Pos2F;
 typedef Pos2T<double> Pos2D;
 
 Pos2F VectorF(const Pos2F& p , float r , float theta);
-Pos2D Vector(const Pos2D& p , double r , double theta);
+Pos2D VectorD(const Pos2D& p , double r , double theta);
+
+
+
 
 #endif // Position2T_HPP
+
+
+
 

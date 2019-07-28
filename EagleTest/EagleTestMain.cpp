@@ -117,17 +117,17 @@ int main(int argc , char** argv) {
    
    /// Inner gui
    WidgetHandler gui2(win , "WidgetHandler" , "GUI2");
-   gui2.SetupBuffer(1280,960,win);
-   gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(130,60,640,480)) , false);
+   gui2.SetupBuffer(800,600,win);
+   gui2.SetWidgetArea(WIDGETAREA(5,10,15 , Rectangle(100,30,640,480)) , false);
    gui.AllowMiddleMouseButtonScroll(false);
    gui2.AllowMiddleMouseButtonScroll(true);
 
    gui << gui2;
 
    /// We can have transparent backgrounds in our gui
-   gui.SetBackgroundColor(EagleColor(0,127,0,255));
-   gui2.SetBackgroundColor(EagleColor(0,0,127,255));
-   
+   gui.SetBackgroundColor(EagleColor(127,127,127,255));
+   gui2.SetBackgroundColor(EagleColor(127,127,127,255));
+
    /// A RelativeLayout allows us to keep relative positions and sizes of our widgets
    RelativeLayout rl1("RLAYOUT1");
    rl1.Resize(5);

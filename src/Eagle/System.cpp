@@ -165,13 +165,6 @@ EagleEvent most_recent_system_event = EagleEvent();
 
 
 
-const int EAGLE_STANDARD_INPUT = EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK | EAGLE_TOUCH;
-const int EAGLE_STANDARD_SYSTEM = EAGLE_SYSTEM | EAGLE_IMAGES | EAGLE_FONTS | EAGLE_TTF_FONTS | EAGLE_AUDIO;
-const int EAGLE_GENERAL_SETUP = EAGLE_STANDARD_INPUT | EAGLE_STANDARD_SYSTEM;
-const int EAGLE_FULL_SETUP = EAGLE_GENERAL_SETUP | EAGLE_SHADERS | EAGLE_PRIMITIVES;
-
-
-
 float EagleSystem::system_timer_rate = 1.0f/60.0f;
 
 
@@ -251,8 +244,6 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_SHADERS)    {InitializeShaders();}
    if (state & EAGLE_PRIMITIVES) {InitializePrimitives();}
 
-   state |= EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK | EAGLE_TOUCH;/// Kludge making them non-optional TODO : DO something about it
-
    if (state & EAGLE_KEYBOARD)   {InstallKeyboard();}
    if (state & EAGLE_MOUSE)      {InstallMouse();}
    if (state & EAGLE_JOYSTICK)   {InstallJoystick();}
@@ -309,7 +300,7 @@ bool EagleSystem::FinalizeSystem() {
       if (system_timer->Valid()) {
          SetInputTimer(system_timer);
          if (system_queue) {
-            system_timer->RegisterTimerInput(system_queue);
+            system_queue->ListenTo(system_timer);
          }
       }
    }
@@ -815,7 +806,7 @@ EagleEvent EagleSystem::UpdateSystemState() {
 EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   EagleEvent e = system_queue->WaitForEvent(0);
+   EagleEvent e = system_queue->WaitForEvent(MAIN_THREAD);
    most_recent_system_event = e;
    input_handler->HandleInputEvent(e);
    return e;
@@ -826,7 +817,7 @@ EagleEvent EagleSystem::WaitForSystemEventAndUpdateState() {
 EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
    EAGLE_ASSERT(system_up);
    EAGLE_ASSERT(system_queue);
-   EagleEvent e = system_queue->WaitForEvent(timeout , 0);
+   EagleEvent e = system_queue->WaitForEvent(timeout , MAIN_THREAD);
    if (e.type == EAGLE_EVENT_NONE) {return e;}
    most_recent_system_event = e;
    input_handler->HandleInputEvent(e);
@@ -835,14 +826,14 @@ EagleEvent EagleSystem::TimedWaitForSystemEventAndUpdateState(double timeout) {
 
 
 
-double EagleSystem::GetProgramTime() {
-   return ProgramTime::Elapsed();
+EagleGraphicsContext* EagleSystem::GetActiveWindow() {
+   return window_manager->GetActiveWindow();
 }
 
 
 
-EagleGraphicsContext* EagleSystem::GetActiveWindow() {
-   return window_manager->GetActiveWindow();
+double EagleSystem::GetProgramTime() {
+   return (double)ProgramTime::Now() - ProgramTime::ProgramStart();
 }
 
 

@@ -1,6 +1,24 @@
 
-
-
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5ResourceLibrary.hpp
+ * @brief The Allegro 5 implementation of the ResourceLibrary
+ */
 
 #ifndef Allegro5ResourceLib_HPP
 #define Allegro5ResourceLib_HPP
@@ -13,20 +31,10 @@
 #include <vector>
 
 
-/**
-enum RESOURCE_TYPE {
-   RT_UNKNOWN   = 0,
-   RT_IMAGE     = 1,/// bmp png jpg tga
-   RT_FONT      = 2,/// ttf bmp
-   RT_AUDIO     = 3,/// ogg wav
-   RT_VIDEO     = 4,/// ogv
-   RT_ARCHIVE   = 5,/// zip, 7z
-   RT_BINFILE   = 6,/// dat bin
-   RT_TEXTFILE  = 7,/// txt
-   NUM_RT_TYPES = 8
-};
-*/
 
+/**! @class Allegro5ResourceLibrary
+ *   @brief The Allegro 5 implementation of the ResourceLibrary
+ */
 
 class Allegro5ResourceLibrary : public ResourceLibrary {
 
@@ -49,4 +57,6 @@ public :
 
 
 #endif // Allegro5ResourceLib_HPP
+
+
 

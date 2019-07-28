@@ -1,4 +1,24 @@
 
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5System.hpp
+ * @brief The interface for the Allegro 5 system driver
+ */
 
 #ifndef Allegro5_System_HPP
 #define Allegro5_System_HPP
@@ -10,9 +30,13 @@
 
 
 
-extern const int ALLEGRO5_REGISTERED;
+extern const int ALLEGRO5_REGISTERED;///< TODO : This doesn't work in a DLL, because it doesn't exist until the DLL is loaded
 
 
+
+/**! @class Allegro5System
+ *   @brief The Allegro 5 system driver class
+ */
 
 class Allegro5System : public EagleSystem {
 
@@ -53,21 +77,24 @@ private :
 public :
    ~Allegro5System();
 
-   void Shutdown();
+   void Shutdown();///< Shutdown the Allegro 5 system driver
 
-   double GetProgramTime();
-   void Rest(double time);
+   void Rest(double time);///< rests for 'time' seconds
 
-   EagleGraphicsContext* GetGraphicsContext(ALLEGRO_DISPLAY* allegro_display);
+   EagleGraphicsContext* GetGraphicsContext(ALLEGRO_DISPLAY* allegro_display);///< Get the graphics context for a given ALLEGRO_DISPLAY*
 
-	const char* GetSystemName();
+	const char* GetSystemName();///< Get the system name
 
-   static int RegisterSystem();
+   static int RegisterSystem();///< Registers the Allegro 5 system driver with Eagle, called automatically
 };
 
-///EagleSystem* CreateA5System();
 
-Allegro5System* GetAllegro5System();
+
+Allegro5System* GetAllegro5System();///< Get the Allegro 5 system driver
+
+
 
 #endif // Allegro5_System_HPP
+
+
 

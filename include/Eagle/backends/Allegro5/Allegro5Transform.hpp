@@ -1,17 +1,40 @@
 
-
-
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2019+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5Transform.hpp
+ * @brief The interface for working with Allegro 5 transforms
+ */
 
 #ifndef Allegro5Transform_HPP
 #define Allegro5Transform_HPP
 
 
-#include "Eagle/Transforms.hpp"
 
+#include "Eagle/Transforms.hpp"
 
 #include "allegro5/allegro.h"
 
 
+/**! @fn Allegro5TransformBase
+ *   @brief A concrete implementation of the @ref TransformBase class
+ *   
+ *   For public methods, see @ref Transform
+ */
 
 class Allegro5TransformBase : public TransformBase {
    
@@ -48,11 +71,16 @@ public :
 
    virtual TransformBase* Clone();
 
+   virtual void ApplyTransformation(double& destx , double& desty , double& destz);
 };
 
 
 
-
+/**! @class Allegro5Transformer
+ *   @brief The Allegro 5 implementation of the @ref Transformer class
+ *   
+ *   See @ref Transformer for public methods
+ */
 
 class Allegro5Transformer : public Transformer {
    
@@ -70,16 +98,12 @@ public :
    virtual void ResetTransformStack(EagleGraphicsContext* win);
    virtual void RebaseTransformStack(EagleGraphicsContext* win);
 
-   
    Allegro5Transformer();
-
-   /// See Transformer base class for member functions
-   
 };
 
 
 
-
-
-
 #endif // Allegro5Transform_HPP
+
+
+

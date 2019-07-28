@@ -21,8 +21,6 @@
  * 
  */
 
-
-
 #ifndef WidgetContainer_HPP
 #define WidgetContainer_HPP
 
@@ -31,17 +29,27 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/SharedMemory.hpp"
 
+
+
 #include <map>
 
 
 
 class WidgetBase;
 
+/**! @typedef SHAREDWIDGET
+ *   @brief Simple typedef to make working with shared pointers to widgets easier
+ *   @sa SHAREDOBJECT
+ */
 
 typedef SHAREDOBJECT<WidgetBase> SHAREDWIDGET;
 
 
-/*! \brief Simple class to store widget references */
+
+
+/*! @class WIDGETCONTAINER
+ *  @brief Simple class to store widget references
+ */
 
 class WIDGETCONTAINER {
 public :
@@ -56,7 +64,7 @@ public :
    WIDGETCONTAINER();///< Create an empty container
    ~WIDGETCONTAINER();
    
-   EAGLE_ID Register(SHAREDWIDGET sw);///< Register this shared widget with the container
+   EAGLE_ID Register(SHAREDWIDGET sw);///< Register this shared widget with the container, returns the EAGLE_ID of the widget
    void     Remove(EAGLE_ID id);      ///< Remove the reference to this widget
    void     Clear();                  ///< Empty the container
 
@@ -64,6 +72,7 @@ public :
    
    SHAREDWIDGET operator[] (EAGLE_ID id) {return FindById(id);}///< Shortcut to FindById
 };
+
 
 
 typedef WIDGETCONTAINER WidgetContainer;

@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,24 +16,33 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file GridLayout.hpp
+ * @brief The interface for the grid layout
+ * 
  */
-
-
 
 #ifndef GridLayout_HPP
 #define GridLayout_HPP
 
 
+
 #include "Eagle/Gui/Layout/Layout.hpp"
 
 
-
+/**! @enum GRID_OPTIONS
+ *   @brief Whether to align with the cell, or to fill it
+ */
 enum GRID_OPTIONS {
-	GRID_ALIGNMENT_ONLY = 0,
-	GRID_FILL_CELL = 1
+	GRID_ALIGNMENT_ONLY = 0,///< Only align contained widgets with the cell, do not resize them
+	GRID_FILL_CELL      = 1 ///< Fill the cells with the widgets
 };
 
 
+/**! @class GridLayout
+ *   @brief A grid based layout
+ *
+ * TODO : Extend the GridLayout by creating a GridCell class that stores its own padding and such?
+ */
 
 class GridLayout : public LayoutBase {
 	
@@ -84,6 +93,8 @@ public :
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
 };
+
+
 
 
 #endif // GridLayout_HPP

@@ -886,10 +886,11 @@ void Rectangle::DrawShaded(EagleGraphicsContext* win , EagleColor tlcol , EagleC
 
 
    
-void Rectangle::DrawGradientFrameTo(EagleGraphicsContext* win , const Rectangle* r2 , EagleColor start_color , EagleColor finish_color) const {
+void Rectangle::DrawGradientFrameTo(EagleGraphicsContext* win , const Rectangle& r , EagleColor start_color , EagleColor finish_color) const {
 	EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 	const Rectangle* r1 = this;
+	const Rectangle* r2 = &r;
 	float tlx1 = r1->X();
 	float tly1 = r1->Y();
 	float brx1 = r1->X() + r1->W();
@@ -956,12 +957,30 @@ RoundedRectangle::RoundedRectangle(Rectangle r , float hrad_percent , float vrad
 
 
 
+RoundedRectangle::RoundedRectangle(const RoundedRectangle& rr) :
+      Rectangle(),
+      hrad(0),
+      vrad(0)
+{
+   *this = rr;
+}
+
+
+
 RoundedRectangle::RoundedRectangle(Rectangle r , const RoundedRectangle& rr) :
       Rectangle(r),
       hrad(rr.hrad),
       vrad(rr.vrad)
-///      thickness(rr.thickness)
 {}
+
+
+
+RoundedRectangle& RoundedRectangle::operator=(const RoundedRectangle& rr) {
+   dynamic_cast<Rectangle&>(*this) = dynamic_cast<const Rectangle&>(rr);
+   hrad = rr.hrad;
+   vrad = rr.vrad;
+   return *this;
+}
 
 
 

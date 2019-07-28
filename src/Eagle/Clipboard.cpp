@@ -34,13 +34,13 @@ EagleClipboard::EagleClipboard(std::string objclass , std::string objname) :
 
 
 
-void EagleClipboard::CopyToClipboard(string str) {
+void EagleClipboard::CopyToClipboard(std::string str) {
    clipboard_string = str;
 }
 
 
 
-string EagleClipboard::GetClipboardString() {
+std::string EagleClipboard::GetClipboardString() {
    return clipboard_string;
 }
 

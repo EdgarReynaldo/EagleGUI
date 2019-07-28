@@ -21,8 +21,6 @@
  * 
  */
 
- 
- 
 #ifndef WidgetPainters_HPP
 #define WidgetPainters_HPP
 
@@ -32,12 +30,18 @@
 #include "Eagle/Gui/WidgetArea.hpp"
 
 
+
+/// Forward declarations of classes we'll be using
+
 class EagleGraphicsContext;
 class WidgetBase;
 class WidgetColorset;
 
 
-/*! \brief BG_AREA_PAINT_TYPE controls how the background of a widget is painted */
+
+/*! @enum BG_AREA_PAINT_TYPE
+    @brief BG_AREA_PAINT_TYPE controls how the background of a widget is painted
+*/
 
 enum BG_AREA_PAINT_TYPE {
    BG_AREA_EMPTY         = 0,///< No background will be painted
@@ -47,10 +51,14 @@ enum BG_AREA_PAINT_TYPE {
    BG_AREA_CONTRAST      = 4,///< Paints contrasted border
    BG_AREA_RCONTRAST     = 5,///< Paints contrasted border with reversed colors
    BG_AREA_CUSTOM        = 6,///< For your own custom paint routine
-   NUM_BG_AREA_TYPES     = 7
+   NUM_BG_AREA_TYPES     = 7 ///< The maximum number of background area types
 };
 
-/*! \brief FOCUS_AREA_PAINT_TYPE controls how the focus is drawn for a widget */
+
+
+/*! @enum FOCUS_AREA_PAINT_TYPE
+    @brief FOCUS_AREA_PAINT_TYPE controls how the focus is drawn for a widget
+*/
 
 enum FOCUS_AREA_PAINT_TYPE {
    FOCUS_AREA_INVISIBLE = 0,///< Do not draw any focus
@@ -64,7 +72,9 @@ enum FOCUS_AREA_PAINT_TYPE {
 };
 
 
-/*! \brief The WidgetPainterBase class is an abstract base class with pure virtual methods to draw the background
+
+/*! @class WidgetPainterBase
+ *  @brief The WidgetPainterBase class is an abstract base class with pure virtual methods to draw the background
  *         and focus of a widget
  */
 
@@ -82,8 +92,8 @@ protected :
    FOCUS_AREA_PAINT_TYPE ftype;
 
    
-   virtual void PaintCSSModel();
-   virtual void PaintFill();
+   virtual void PaintCSSModel();///< Overload this to paint the entire CSS model and boxes
+   virtual void PaintFill();    ///< Overload this to 
    virtual void PaintRounded();
    virtual void PaintContrast(EagleColor outer , EagleColor inner);
    virtual void PaintCustom();
@@ -114,6 +124,12 @@ typedef SHAREDOBJECT<WidgetPainterBase> WidgetPainter;///< A WidgetPainter is a 
 
 
 extern WidgetPainter default_widget_painter;///< This is the default widget painter, unless otherwise specified, all widgets use it
+
+
+
+
+
+
 
 
 

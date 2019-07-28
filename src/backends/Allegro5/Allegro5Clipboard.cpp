@@ -2,7 +2,6 @@
 
 
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
-#include "Eagle/Exception.hpp"
 #include "Eagle/Lib.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
@@ -15,7 +14,7 @@ Allegro5Clipboard::Allegro5Clipboard(std::string objname) :
 
 
 
-void Allegro5Clipboard::CopyToClipboard(string str) {
+void Allegro5Clipboard::CopyToClipboard(std::string str) {
    EagleClipboard::CopyToClipboard(str);
    /// Allegro 5 stuff here
    EagleGraphicsContext* win = Eagle::EagleLibrary::System("Allegro5")->GetWindowManager()->GetActiveWindow();
@@ -30,7 +29,7 @@ void Allegro5Clipboard::CopyToClipboard(string str) {
 
 
 
-string Allegro5Clipboard::GetClipboardString() {
+std::string Allegro5Clipboard::GetClipboardString() {
    /// Allegro 5 stuff here
    EagleGraphicsContext* win = Eagle::EagleLibrary::System("Allegro5")->GetWindowManager()->GetActiveWindow();
    EAGLE_ASSERT(win);

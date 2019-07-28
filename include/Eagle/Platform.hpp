@@ -1,13 +1,13 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
@@ -16,8 +16,9 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file Platform.hpp
+ * @brief The header for making things nice and neat and cross platform
  */
-
 
 #ifndef Eagle_Platform_HPP
 #define Eagle_Platform_HPP
@@ -61,13 +62,18 @@
 #endif
 
 /// Make sure EAGLE_LINK_TYPE is defined
+
 #if !defined (EAGLE_LINK_TYPE)
    #define EAGLE_LINK_TYPE
 #endif
 
+
+
 #if !defined EAGLE_CALL_TYPE
    #define EAGLE_CALL_TYPE __stdcall__
 #endif
+
+
 
 /// Native path separator definitions
 #if defined _WIN32
@@ -82,17 +88,7 @@
    #define EAGLE_OTHER_PATH_SEP '\\'
 #endif
 
-/**
-#if defined _MSC_VER
-   #if !defined __FUNCSIG__
-      #error "__FUNCSIG__ is not defined"
-   #endif
-   #define EAGLE__FUNC __FUNCSIG__
-#else
-   #include <cassert>
-   #define EAGLE__FUNC __PRETTY_FUNCTION__
-#endif //
-//*/
+
 
 #if defined __FUNCSIG__
    #define EAGLE__FUNC __FUNCSIG__

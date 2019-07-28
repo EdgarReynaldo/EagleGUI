@@ -214,10 +214,10 @@ bool Allegro5Image::Load(std::string file , IMAGE_TYPE type) {
 
 
 
-bool Allegro5Image::Save(std::string filepath , std::string extension) {
-   filepath.append(".");
-   filepath.append(extension);
-   return al_save_bitmap(filepath.c_str() , bmp);
+bool Allegro5Image::Save(std::string filename , std::string extension) {
+   filename.append(".");
+   filename.append(extension);
+   return al_save_bitmap(filename.c_str() , bmp);
 }
 
 

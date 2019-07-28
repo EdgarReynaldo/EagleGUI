@@ -221,7 +221,7 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
       if (caret_line >= 0 && caret_pos > -1) {
          
          Rectangle r = lineareas[caret_line];
-         string s = lines[caret_line].substr(0 , caret_pos);
+         std::string s = lines[caret_line].substr(0 , caret_pos);
          
          float x = r.X() + xpos + text_font->Width(s.c_str());
          float y = r.Y() + ypos;
@@ -374,8 +374,8 @@ void SelectText::RefreshSelection() {
       selected_text = lines[select_line_start].substr(select_left , select_right - select_left);
    }
    else {
-      string s1 = lines[select_line_start];
-      string s2 = lines[select_line_close];
+      std::string s1 = lines[select_line_start];
+      std::string s2 = lines[select_line_close];
       for (int i = select_line_start ; i <= select_line_close ; ++i) {
          if (i == select_line_start) {
                selected_text = s1.substr(select_left);
@@ -385,7 +385,7 @@ void SelectText::RefreshSelection() {
                selected_text += s2.substr(0 , select_right);
          }
          else {
-            string s3 = lines[i];
+            std::string s3 = lines[i];
             selected_text += s3;
             selected_text += '\n';
          }
@@ -448,7 +448,7 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
             }
          }
       }
-      string linestr = lines[*plinenum];
+      std::string linestr = lines[*plinenum];
       Rectangle r = lineareas[*plinenum];
       int lx = r.X();
       int rx = r.BRX();
@@ -461,8 +461,8 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
       else {
          *pstrpos = 0;
          for (int index = 0; index < (int)linestr.size() ; ++index) {
-            string sub = linestr.substr(0 , (unsigned int)index);
-            string sub2 = linestr.substr(0 , (unsigned int)index + 1);
+            std::string sub = linestr.substr(0 , (unsigned int)index);
+            std::string sub2 = linestr.substr(0 , (unsigned int)index + 1);
             float xpos = lx + text_font->Width(sub.c_str());
             float xpos2 = lx + text_font->Width(sub2.c_str());
             float cx = (xpos + xpos2) / 2.0;
@@ -504,12 +504,12 @@ Rectangle SelectText::GetSelectionArea(int linenum , int leftchar , int rightcha
    EAGLE_ASSERT(text_font && text_font->Valid());
    
    Rectangle r = lineareas[linenum];
-   string s = lines[linenum];
+   std::string s = lines[linenum];
 
    int tx = r.X();
    int ty = r.Y();
 
-   string s1,s2;
+   std::string s1,s2;
    s1 = s.substr(0,leftchar);
    s2 = s.substr(0,rightchar);
    int w1 = text_font->Width(s1.c_str());
@@ -575,7 +575,7 @@ void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
    Rectangle r = lineareas[old_caret_line];
    int lx = r.X();
    
-   string os = lines[old_caret_line];
+   std::string os = lines[old_caret_line];
    int caretx = lx + text_font->Width(os.substr(0 , caret_pos).c_str());
 
    Rectangle r2 = lineareas[caret_line];
@@ -583,7 +583,7 @@ void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
    int nrx = r2.BRX();
 
    int new_caret_pos = -1;
-   string ns = lines[caret_line];
+   std::string ns = lines[caret_line];
 
    if (caretx < nlx) {
       new_caret_pos = 0;

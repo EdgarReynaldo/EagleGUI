@@ -135,7 +135,7 @@ bool IsUserEvent(EagleEvent e) {
 
 
 
-int EagleEventGroupType(EagleEvent e) {
+EAGLE_EVENT_GROUP_TYPE EagleEventGroupType(EagleEvent e) {
    if (e.type == EAGLE_EVENT_NONE) {
       return EAGLE_EVENT_TYPE_NONE;
    }
@@ -153,7 +153,7 @@ int EagleEventGroupType(EagleEvent e) {
    else {
       type = EAGLE_UNDEFINED_EVENT_TYPE;
    }
-   return type;
+   return (EAGLE_EVENT_GROUP_TYPE)type;
 }
 
 
@@ -407,18 +407,6 @@ void EagleEventHandler::RespondToEvent(EagleEvent e , EagleThread* thread) {
    if (!emitter_delay && HasListeners()) {
       EmitEvent(e , thread);
    }
-}
-
-
-
-void EagleEventHandler::ListenTo(EagleEventSource* s) {
-   ListenTo(s , 0);
-}
-
-
-
-void EagleEventHandler::StopListeningTo(EagleEventSource* s) {
-   StopListeningTo(s , 0);
 }
 
 

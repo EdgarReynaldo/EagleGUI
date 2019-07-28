@@ -19,19 +19,18 @@
  * @file WidgetDrawingFuncs.hpp
  * @brief Not currently used
  * 
+ * Some typedefs for painting functions
  */
 
-
-
 #error UNUSED
-
-
 
 #ifndef WidgetDrawingFuncs_HPP
 #define WidgetDrawingFuncs_HPP
 
 
+
 #include "Eagle/Gui/WidgetArea.hpp"
+
 
 
 typedef void (*RECTPAINTFUNC)(EagleGraphicsContext* win , const Rectangle& r , const WidgetColorset& wc , int xpos , int ypos);
@@ -45,4 +44,6 @@ typedef void (*WIDGETPAINTFUNC)(EagleGraphicsContext* win , const WidgetBase* wi
 
 
 #endif // WidgetDrawingFuncs_HPP
+
+
 

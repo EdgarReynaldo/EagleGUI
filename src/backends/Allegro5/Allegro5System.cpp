@@ -229,12 +229,6 @@ void Allegro5System::Shutdown() {
 
 
 
-double Allegro5System::GetProgramTime() {
-   return al_get_time();
-}
-
-
-
 void Allegro5System::Rest(double time) {
    al_rest(time);
 }

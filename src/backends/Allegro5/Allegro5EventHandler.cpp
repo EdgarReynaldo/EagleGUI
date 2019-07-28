@@ -22,28 +22,6 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
 
    ee.window = GetAllegro5WindowManager()->GetActiveWindow();
 
-
-/*
-   EAGLE_EVENT_TYPE type;
-
-   EagleEventSource* source;
-
-   EagleGraphicsContext* window;
-
-   double timestamp;// In seconds since program started
-   union {
-      KEYBOARD_EVENT_DATA keyboard;// keycode display unicode modifiers repeat
-      MOUSE_EVENT_DATA mouse;// x y z w dx dy dz dw button display
-      JOYSTICK_EVENT_DATA joystick;// id stick axis button pos
-      TOUCH_EVENT_DATA touch;// display id x y dx dy primary
-      TIMER_EVENT_DATA timer;// source count
-      DISPLAY_EVENT_DATA display;// source x y width height orientation
-      WIDGET_EVENT_DATA widget;
-      USER_EVENT_DATA data;
-   };
-
-*/
-
    switch (ev.type) {
       case ALLEGRO_EVENT_JOYSTICK_AXIS :
       case ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN :
@@ -270,7 +248,7 @@ void Allegro5EventHandler::Destroy() {
       ev.user.source = &main_source;
       ev.user.data1 = CLOSE_EVENT_THREAD;
       EagleInfo() << StringPrintF("Allegro5EventHandler::Destroy (this = %p) - emitting close event to EagleThread %p" , this , event_thread) << std::endl;
-      al_emit_user_event(&main_source , &ev , NULL);// tell event thread to close
+      al_emit_user_event(&main_source , &ev , NULL);/// tell event thread to close
       event_thread->FinishThread();
    }
 
@@ -310,10 +288,9 @@ bool Allegro5EventHandler::Valid() {
 }
 
 
+
 void Allegro5EventHandler::RespondToEvent(EagleEvent ee , EagleThread* thread) {
    EagleEventHandler::RespondToEvent(ee , thread);// emits and queues message
-   /// now wake any threads waiting on us
-///   cond_var->BroadcastCondition();
 }
 
 

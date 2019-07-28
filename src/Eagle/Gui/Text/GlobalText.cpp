@@ -30,12 +30,12 @@
 
 
 
-const int TOPIC_TEXT_WIDGET = NextFreeTopicId();
+const unsigned int TOPIC_TEXT_WIDGET = NextFreeTopicId();
 
 
 
-int GetNextFreeTextMessageId() {
-   static int i = 0;
+unsigned int GetNextFreeTextMessageId() {
+   static unsigned int i = 0;
    return i++;
 }
 
