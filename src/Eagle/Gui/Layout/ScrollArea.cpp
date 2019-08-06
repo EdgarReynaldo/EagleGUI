@@ -189,6 +189,38 @@ void ScrollArea::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+int ScrollArea::PrivateHandleEvent(EagleEvent ee) {
+   int ret = DIALOG_OKAY;
+   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (ee.mouse.button == 3) {
+         Rectangle viewport = GetViewRectangle();
+         if (viewport.Contains(ee.mouse.x , ee.mouse.y)) {
+            drag = true;
+            anchorx = ee.mouse.x;
+            anchory = ee.mouse.y;
+            anchorxscroll = hscrollbar->GetScrollValue();
+            anchoryscroll = vscrollbar->GetScrollValue();
+            ret |= DIALOG_INPUT_USED;
+         }
+      }
+   }
+   if (ee.type == EAGLE_EVENT_MOUSE_AXES) {
+      if (drag) {
+         int dx = ee.mouse.x - anchorx;
+         int dy = ee.mouse.y - anchory;
+         hscrollbar->SetScroll(anchorxscroll - dx);
+         vscrollbar->SetScroll(anchoryscroll - dy);
+         ret |= DIALOG_INPUT_USED;
+      }
+   }
+   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+      if (ee.mouse.button == 3) {drag = false;}
+   }
+   return ret;
+}
+
+
+
 void ScrollArea::OnAreaChanged() {
    ResetScrollbars();
    LayoutBase::OnAreaChanged();

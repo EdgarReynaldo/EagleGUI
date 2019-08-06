@@ -50,6 +50,12 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    ScrollView our_scroll_view;
    
+   bool drag;
+   int anchorx;
+   int anchory;
+   int anchorxscroll;
+   int anchoryscroll;
+
 
 
    virtual void ReserveSlots(int nslots);
@@ -60,7 +66,9 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
-   virtual void OnAreaChanged();///< Override to react to changes in this widget's area
+   virtual int PrivateHandleEvent(EagleEvent ee);
+
+   virtual void OnAreaChanged();
    virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
    
 public :
@@ -77,7 +85,12 @@ public :
          onleft(false),
          ontop(false),
          our_scroll_widget(0),
-         our_scroll_view()
+         our_scroll_view(),
+         drag(false),
+         anchorx(0),
+         anchory(0),
+         anchorxscroll(0),
+         anchoryscroll(0)
    {
       Resize(3);
       SetScrollBars((BasicScrollBar*)0 , (BasicScrollBar*)0);
