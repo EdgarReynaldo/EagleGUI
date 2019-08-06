@@ -52,11 +52,9 @@ void ScrollArea::ResetScrollbars() {
       int vmax = vfit?our_area.H():their_area.H();
       int vmin = vfit?their_area.H():our_area.H();
       
-      hscrollbar->SetupView(hmax - hmin , hmin);
-      hscrollbar->SetScrollLength(hmax - hmin);
+      hscrollbar->SetupView(hmax , hmin);
 
-      vscrollbar->SetupView(vmax - vmin , vmin);
-      vscrollbar->SetScrollLength(vmax - vmin);
+      vscrollbar->SetupView(vmax , vmin);
 
       EaglePrefix("SCROLLAREA") << StringPrintF("H min %d max %d V min %d max %d\n" , hmin , hmax , vmin , vmax);
       

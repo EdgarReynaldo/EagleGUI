@@ -276,6 +276,7 @@ void BasicScroller::SetupView(int total_length_of_view , int actual_length_in_vi
    total_length = total_length_of_view;
    length_in_view = actual_length_in_view;
 
+   SetScrollLength(total_length_of_view - actual_length_in_view);
 ///   SetScrollLength(total_length);
    SetScrollPercent(0.0f);
 }

@@ -87,7 +87,7 @@ public :
                          SHAREDOBJECT<BasicScrollButton> pbasic_up_or_left_button ,
                          SHAREDOBJECT<BasicScrollButton> pbasic_down_or_right_button);
 
-   void SetScrollLength(int max_scroll);///< Set how long you want the scroll bar to be in whole numbers, this will affect the precision
+//   void SetScrollLength(int max_scroll);///< Set how long you want the scroll bar to be in whole numbers, this will affect the precision
    void SetScrollPercent(float new_percent);///< Set the exact scroll percentage for the view
    void SetScroll(int value);///< Set the integer value for the scroll, which is limited to scroll length as specified in SetScrollLength
    void ScrollBy(int amt);///< Scroll by amt units

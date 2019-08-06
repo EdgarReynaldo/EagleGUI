@@ -116,8 +116,6 @@ int main(int argc , char** argv) {
    hscroller.SetupView(100,25);
    vscroller.SetupView(100,25);
    
-   hscroller.SetScrollLength(1000);
-   vscroller.SetScrollLength(1000);
 /*
    int hx = 0;
    int hy = 0;
@@ -173,7 +171,7 @@ int main(int argc , char** argv) {
    scrollview.SetScrollbarPosition(true , true);
    scrollview.PlaceWidget(&stallion_icon , 2);
    
-   rl.AddWidget(&scrollview , LayoutRectangle(0.3,0.3,0.6,0.6));
+   rl.AddWidget(&scrollview , LayoutRectangle(0,0,1,1));
 ///   scrollview.SetWidgetArea(Rectangle(150 , 100 , 600 , 400) , false);
 ///   gui.GiveWidgetFocus(&scrollview);
 //*/   

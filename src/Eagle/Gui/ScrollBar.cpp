@@ -183,13 +183,13 @@ void BasicScrollBar::SetScrollWidgets(SHAREDOBJECT<BasicScroller> pbasic_scrolle
 }
 
 
-
+/**
 void BasicScrollBar::SetScrollLength(int max_scroll) {
    scroller->SetScrollLength(max_scroll);
    ResetHandleArea();
    SetRedrawFlag();
 }
-
+//*/
 
 
 void BasicScrollBar::SetScrollPercent(float new_percent) {
