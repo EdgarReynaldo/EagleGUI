@@ -1,6 +1,7 @@
 
 
 
+#include "Eagle.hpp"
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "allegro5/allegro_color.h"
 
@@ -62,8 +63,203 @@ void TestWidget::OnFlagChanged(WIDGET_FLAGS f , bool on) {
 }
 
 
-
 int main(int argc , char** argv) {
+   EnableLog();
+   
+   SendOutputToFile("Eagle.log" , "" , false);
+   
+   (void)argc;
+   (void)argv;
+   
+///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
+///   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
+   Allegro5System* sys = GetAllegro5System();
+   
+   int sw = 1200;
+   int sh = 900;
+   
+   if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
+      EagleWarn() << "Failed to install some components." << std::endl;
+   }
+   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   
+   win->Clear(EagleColor(0,255,255));
+   win->FlipDisplay();
+
+   std::string bgfile = "stallions.jpg";
+   EagleImage* bg = win->LoadImageFromFile(bgfile);
+   if (!bg || (bg && !bg->Valid())) {
+      EagleError() << StringPrintF("Failed to load %s from disk.\n" , bgfile.c_str());
+      return -1;
+   }
+   
+   /// Setup some custom colors for our margin, border, and padding
+   SHAREDOBJECT<WidgetColorset> pwc = GetColorsetByName("Default");
+   EAGLE_ASSERT(pwc);
+   WidgetColorset& wc = *pwc.get();
+   wc[PADCOL] = EagleColor(127,127,127,255);
+   wc[BORDCOL] = EagleColor(255,255,255,255);
+   wc[MARGCOL] = EagleColor(0,0,0,255);
+   
+   
+   /// Outer root gui
+   WidgetHandler gui(win , "WidgetHandler" , "GUI1");
+   gui.SetWidgetArea(WIDGETAREA(10 , 15 , 25 , Rectangle(150,150,900,600)) , false);
+   
+   
+   BasicScrollBar hscroller("BasicScrollBar" , "hscroller");
+   BasicScrollBar vscroller("BasicScrollBar" , "vscroller");
+
+   hscroller.SetScrollDirection(true);
+   vscroller.SetScrollDirection(false);
+   
+   hscroller.SetupView(100,25);
+   vscroller.SetupView(100,25);
+   
+   hscroller.SetScrollLength(1000);
+   vscroller.SetScrollLength(1000);
+/*
+   int hx = 0;
+   int hy = 0;
+   BasicScrollButton bsbleft;
+   BasicScrollButton bsbright;
+   BasicScrollButton bsbup;
+   BasicScrollButton bsbdown;
+   
+   bsbleft.SetScrollDirection(true , true);
+   bsbright.SetScrollDirection(false , true);
+   bsbup.SetScrollDirection(true , false);
+   bsbdown.SetScrollDirection(false , false);
+//*/
+/*
+   BasicButton bsbleft;
+   BasicButton bsbright;
+   BasicButton bsbup;
+   BasicButton bsbdown;
+//*/   
+
+   RelativeLayout rl;
+   
+/*
+   rl.AddWidget(&hscroller , LayoutRectangle(0.3,0.1,0.6,0.2));
+   rl.AddWidget(&vscroller , LayoutRectangle(0.1,0.3,0.2,0.6));
+
+   rl.AddWidget(&bsbleft , LayoutRectangle(0.4,0.5,0.1,0.1));
+   rl.AddWidget(&bsbright , LayoutRectangle(0.6,0.5,0.1,0.1));
+   rl.AddWidget(&bsbup , LayoutRectangle(0.5,0.4,0.1,0.1));
+   rl.AddWidget(&bsbdown , LayoutRectangle(0.5,0.6,0.1,0.1));
+   
+   BasicText hlabel;
+   BasicText vlabel;
+   
+   hlabel.SetFont(win->DefaultFont());
+   vlabel.SetFont(win->DefaultFont());
+   
+   rl.AddWidget(&hlabel , LayoutRectangle(0.6 , 0.05 , 0.3 , 0.1));
+   rl.AddWidget(&vlabel , LayoutRectangle(0.05 , 0.6 , 0.1 , 0.3));
+   
+   gui.SetRootLayout(&rl);
+*/   
+//**   
+   BasicIcon stallion_icon;
+   stallion_icon.SetImage(StackObject(bg));
+   
+   stallion_icon.SetWidgetArea(Rectangle(0,0,bg->W() , bg->H()) , false);
+   
+   ScrollArea scrollview("IconScroller");
+   
+   
+//   scrollview.SetScrollbarPosition(false , false);
+   scrollview.SetScrollbarPosition(true , true);
+   scrollview.PlaceWidget(&stallion_icon , 2);
+   
+   rl.AddWidget(&scrollview , LayoutRectangle(0.3,0.3,0.6,0.6));
+///   scrollview.SetWidgetArea(Rectangle(150 , 100 , 600 , 400) , false);
+///   gui.GiveWidgetFocus(&scrollview);
+//*/   
+
+   gui.SetRootLayout(&rl);
+
+   EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
+   EagleLog() << gui << std::endl << std::endl;
+   EagleLog() << "******* SETUP COMPLETE ********" << std::endl;
+         
+   bool quit = false;
+   bool redraw = true;
+   
+//   int mx = 0;
+//   int my = 0;
+   
+   sys->GetSystemTimer()->Start();
+   
+   while (!quit) {
+      if (redraw) {
+         win->DrawToBackBuffer();
+         win->Clear(EagleColor(0,0,0));
+
+         gui.Display(win , 0 , 0);
+         win->FlipDisplay();
+         redraw = false;
+      }
+      do {
+         EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
+         if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
+            /// Log non timer and non mouse axes events
+            EagleInfo() << "Event " << EagleEventName(ev.type) << " received in main." << std::endl;
+         }
+         
+         /// Event handling
+         if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            quit = true;
+         }
+         else if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+            quit = true;
+         }
+         else if (ev.type == EAGLE_EVENT_TIMER) {
+            gui.Update(ev.timer.eagle_timer_source->SPT());
+            redraw = true;
+         }
+         else {
+            gui.HandleEvent(ev);
+         }
+         
+         /// Check our gui for messages
+         while (gui.HasMessages()) {
+            WidgetMsg wmsg = gui.TakeNextMessage();
+            EagleLog() << "Widget Message [" << wmsg << "]" << std::endl;
+            ///const WidgetMsg scrollbar_msg(this , TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED);
+            if (wmsg.IsMessageTopic(TOPIC_SCROLL_WIDGET , SCROLL_VALUE_CHANGED)) {
+               std::string name = wmsg.from->ShortName();
+               EagleLog() << StringPrintF("Message from widget %s at %p (h = %p , v = %p)\n" ,
+                                           name.c_str() , wmsg.from , &hscroller , &vscroller);
+               if (wmsg.from == &hscroller) {
+//                  hlabel.SetText(StringPrintF("%d" , hscroller.GetScrollValue()));
+               }
+               else if (wmsg.from == &vscroller) {
+//                  vlabel.SetText(StringPrintF("%d" , vscroller.GetScrollValue()));
+               }
+            }
+         }
+         if (gui.FlagOn(NEEDS_REDRAW)) {
+            redraw = true;
+         }
+         
+      } while (!sys->UpToDate());
+   }
+   
+///   sys->GetSystemQueue()->WaitForEvent(EAGLE_EVENT_KEY_DOWN , 0);
+   
+   EagleLog() << "Exited main loop." << std::endl;
+   
+///   sys->Shutdown();
+   atexit(Eagle::EagleLibrary::ShutdownEagle);
+
+   return 0;
+}
+
+
+
+int main2(int argc , char** argv) {
 
    EnableLog();
    
@@ -223,6 +419,5 @@ int main(int argc , char** argv) {
 
    return 0;
 }
-
 
 

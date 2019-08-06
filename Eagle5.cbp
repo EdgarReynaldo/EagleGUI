@@ -173,6 +173,7 @@
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
+		<Unit filename="include/Eagle/Gui/ScrollView.hpp" />
 		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/Slider.hpp" />
@@ -286,6 +287,7 @@
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Eagle/Gui/ScrollBar.cpp" />
+		<Unit filename="src/Eagle/Gui/ScrollView.cpp" />
 		<Unit filename="src/Eagle/Gui/Scroller.cpp" />
 		<Unit filename="src/Eagle/Gui/Slider.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
