@@ -436,6 +436,10 @@ public :
 
 extern const Rectangle BADRECTANGLE;///< BADRECTANGLE stores invalid values for comparision with functions that return a Rectangle
 
+Rectangle Overlap(const Rectangle& r1 , const Rectangle& r2);///< Returns the rectangle of overlap or BADRECTANGLE if none
+
+
+
 /// Inline Rectangle:: class methods
 
 inline void Rectangle::RenewCornerPos() {

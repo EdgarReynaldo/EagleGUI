@@ -58,7 +58,8 @@ void BasicScroller::ResetHandleArea() {
    else {
       scroll_handle_layout = LayoutRectangle(0.0f , start_val , 1.0f , handle_length_percent);
    }
-   scroll_handle_area = LayoutArea(scroller_area.InnerArea() , scroll_handle_layout);
+   Rectangle inner = InnerArea();
+   scroll_handle_area = LayoutArea(inner , scroll_handle_layout);
    
    SetBgRedrawFlag();
 }
@@ -71,7 +72,7 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
       int msx = e.mouse.x;
       int msy = e.mouse.y;
       if (InnerArea().Contains(msx,msy)) {
-         retmsg |= DIALOG_TAKE_FOCUS;
+         retmsg |= DIALOG_TAKE_FOCUS | DIALOG_INPUT_USED;
          if (scroll_handle_area.Contains(msx,msy)) {
             mouse_drag_handle = true;
             start_mouse_x = msx;
@@ -117,10 +118,10 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
          int delta = horizontal_scroller?dx:dy;
          int length = 0;
          if (horizontal_scroller) {
-            length = (scroller_area.InnerArea().W() - scroll_handle_area.W());
+            length = (InnerArea().W() - scroll_handle_area.W());
          }
          else if (!horizontal_scroller) {
-            length = (scroller_area.InnerArea().H() - scroll_handle_area.H());
+            length = (InnerArea().H() - scroll_handle_area.H());
          }
          if (length == 0) {length = 1;}
          float percent = (float)delta/length;
@@ -132,6 +133,7 @@ int BasicScroller::PrivateHandleEvent(EagleEvent e) {
          down = false;
          if (mouse_drag_handle) {
             mouse_drag_handle = false;
+            retmsg |= DIALOG_INPUT_USED;
          }
       }
    }
@@ -153,7 +155,7 @@ void BasicScroller::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    WidgetColorset wc = WidgetColors();
    
 ///   painter.PaintBackground(win , scroller_area , wc , xpos , ypos);
-   Rectangle r = scroller_area.InnerArea();
+   Rectangle r = InnerArea();
    r.MoveBy(xpos,ypos);
    win->DrawFilledRectangle(r , wc[SDCOL]);
    Rectangle r2 = scroll_handle_area;
@@ -187,7 +189,6 @@ int BasicScroller::PrivateUpdate(double tsec) {
 
 
 void BasicScroller::OnAreaChanged() {
-   scroller_area.SetOuterArea(InnerArea());
    ResetHandleArea();
 }
 
@@ -195,7 +196,6 @@ void BasicScroller::OnAreaChanged() {
 
 BasicScroller::BasicScroller(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
-      scroller_area(),
       scroll_handle_layout(0.0f,0.0f,1.0f,1.0f),
       scroll_handle_area(),
       scroll_max(1),
@@ -214,7 +214,6 @@ BasicScroller::BasicScroller(std::string objclass , std::string objname) :
       repeat_elapsed(0.0),
       repeat_previous(0.0)
 {
-   scroller_area.SetWidgetArea(GetWidgetArea().SetBoxAreaContractFromOuter(BOX_TYPE_MARGIN , 5,5,5,5));
 }
 
 
@@ -229,7 +228,7 @@ void BasicScroller::SetScrollLength(int max_scroll) {
 
 void BasicScroller::SetScrollPercent(float new_percent) {
    if (new_percent < 0.0f) {new_percent = 0.0f;}
-   if (new_percent >= 1.0f) {new_percent = 1.0f;}
+   if (new_percent > 1.0f) {new_percent = 1.0f;}
    scroll_percent = new_percent;
    scroll_val = (int)(scroll_percent*scroll_max);
    ResetHandleArea();
@@ -277,6 +276,7 @@ void BasicScroller::SetupView(int total_length_of_view , int actual_length_in_vi
    total_length = total_length_of_view;
    length_in_view = actual_length_in_view;
 
+///   SetScrollLength(total_length);
    SetScrollPercent(0.0f);
 }
 

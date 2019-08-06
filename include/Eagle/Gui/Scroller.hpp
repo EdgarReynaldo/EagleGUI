@@ -70,7 +70,7 @@ public :
    
 protected :
    
-   WidgetArea scroller_area;
+//   WidgetArea scroller_area;
    
    LayoutRectangle scroll_handle_layout;
    Rectangle scroll_handle_area;

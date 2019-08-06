@@ -37,6 +37,7 @@
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
+#include "Eagle/Gui/Layout/ScrollArea.hpp"
 
 
 

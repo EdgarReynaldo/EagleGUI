@@ -41,7 +41,6 @@
 #include "Eagle/Gui/WidgetPainters.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetContainer.hpp"
-#include "Eagle/Gui/Scrollable.hpp"
 
 /// Some forward declarations
 
@@ -110,7 +109,7 @@ REGISTER_WIDGET_MESSAGE(TOPIC_DIALOG , DIALOG_I_MOVED);
  *  A WidgetBase object is also an @ref EagleObject and an @ref EagleEventSource
  */
 
-class WidgetBase : public EagleObject , public EagleEventSource , public IScrollable {
+class WidgetBase : public EagleObject , public EagleEventSource {
 
 protected :
    /// For sub widgets
@@ -165,7 +164,6 @@ public :
 WidgetBase(std::string classname , std::string objname) :
       EagleObject(classname , objname),
       EagleEventSource(),
-      IScrollable(),
       widgets(),
       warea(),
       wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE | NEEDS_REDRAW),
@@ -188,7 +186,7 @@ WidgetBase(std::string classname , std::string objname) :
    void Display(EagleGraphicsContext* win , int xpos , int ypos);///< Displays the specified widget on the graphics window at x,y
    
    /// Parent messaging
-   virtual void QueueUserMessage(WidgetMsg wmsg);///< Used to queue user messages by widgets to their widget handler
+   virtual void QueueUserMessage(const WidgetMsg& wmsg);///< Used to queue user messages by widgets to their widget handler
 
    /// Setters
 

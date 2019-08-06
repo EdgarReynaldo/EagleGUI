@@ -116,6 +116,16 @@ void EagleImage::FreeChild(EagleImage* child) {
 
 
 void EagleImage::PushClippingRectangle(Rectangle new_clip) {
+   if (clip_rects.size()) {
+      Rectangle outer = clip_rects.back();
+      if (!(outer.Contains(new_clip))) {
+         Rectangle overlap = Overlap(outer , new_clip);
+         if (overlap == BADRECTANGLE) {
+            return;
+         }
+         new_clip = overlap;
+      }
+   }
 	clip_rects.push_back(new_clip);
 	SetClippingRectangle(new_clip);
 }

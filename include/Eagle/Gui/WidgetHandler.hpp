@@ -187,10 +187,11 @@ public :
    
    ~WidgetHandler();
 
-   /// Add a message to the widget event queue
-   virtual void QueueUserMessage(WidgetMsg wmsg);///< For the top level WidgetHandlers to store messages to the user from 
-                                                 ///< the widgets it is handling. Messages are passed up the chain using
-                                                 ///< the parent pointer.
+   ///< For the top level WidgetHandlers to store messages to the user from 
+   ///< the widgets it is handling. Messages are passed up the chain using
+   ///< the parent pointer.
+   virtual void QueueUserMessage(const WidgetMsg& wmsg) override;///< Add a message to the widget event queue
+
 
 	/// Sets up drawing background and buffer to draw to.
 	void SetDrawWindow(EagleGraphicsContext* window);///< Sets the window to draw into

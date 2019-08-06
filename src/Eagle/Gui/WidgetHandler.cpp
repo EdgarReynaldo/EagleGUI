@@ -794,7 +794,7 @@ WidgetHandler::~WidgetHandler() {
 
 
 
-void WidgetHandler::QueueUserMessage(WidgetMsg wmsg) {
+void WidgetHandler::QueueUserMessage(const WidgetMsg& wmsg) {
    
    const WidgetMsg cammovemsg(&cam , TOPIC_CAMERA , CAMERA_VIEW_MOVED);
 

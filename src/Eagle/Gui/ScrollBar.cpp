@@ -33,21 +33,22 @@ void BasicScrollBar::ResetHandleArea() {
 
 
 void BasicScrollBar::ResetScrollBarArea() {
+   Rectangle inner = InnerArea();
    if (is_horizontal) {
-      LayoutRectangle left_button_layout(0.0,0.0,0.1,1.0);
-      LayoutRectangle right_button_layout(0.9,0.0,0.1,1.0);
-      LayoutRectangle scroller_layout(0.1,0.0,0.8,1.0);
-      up_or_left_button->SetWidgetArea(LayoutArea(InnerArea() , left_button_layout) , false);
-      down_or_right_button->SetWidgetArea(LayoutArea(InnerArea() , right_button_layout) , false);
-      scroller->SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
+      Rectangle left_button_area  = LayoutArea(inner , LayoutRectangle(0.0 , 0.0 , 0.1 , 1.0));
+      Rectangle right_button_area = LayoutArea(inner , LayoutRectangle(0.9 , 0.0 , 0.1 , 1.0));
+      Rectangle scroll_area       = LayoutArea(inner , LayoutRectangle(0.1 , 0.0 , 0.8 , 1.0));
+      up_or_left_button->SetWidgetArea   (left_button_area  , false);
+      down_or_right_button->SetWidgetArea(right_button_area , false);
+      scroller->SetWidgetArea            (scroll_area       , false);
    }
    else {
-      LayoutRectangle up_button_layout(0.0,0.0,1.0,0.1);
-      LayoutRectangle down_button_layout(0.0,0.9,1.0,0.1);
-      LayoutRectangle scroller_layout(0.0,0.1,1.0,0.8);
-      up_or_left_button->SetWidgetArea(LayoutArea(InnerArea() , up_button_layout) , false);
-      down_or_right_button->SetWidgetArea(LayoutArea(InnerArea() , down_button_layout) , false);
-      scroller->SetWidgetArea(LayoutArea(InnerArea() , scroller_layout) , false);
+      Rectangle up_button_area   = LayoutArea(inner , LayoutRectangle(0.0 , 0.0 , 1.0 , 0.1));
+      Rectangle down_button_area = LayoutArea(inner , LayoutRectangle(0.0 , 0.9 , 1.0 , 0.1));
+      Rectangle scroll_area      = LayoutArea(inner , LayoutRectangle(0.0 , 0.1 , 1.0 , 0.8));
+      up_or_left_button->SetWidgetArea   (up_button_area   , false);
+      down_or_right_button->SetWidgetArea(down_button_area , false);
+      scroller->SetWidgetArea            (scroll_area      , false);
    }
    ResetHandleArea();
 }
@@ -56,9 +57,11 @@ void BasicScrollBar::ResetScrollBarArea() {
 
 int BasicScrollBar::PrivateHandleEvent(EagleEvent e) {
    int ret = DIALOG_OKAY;
-   ret |= scroller->HandleEvent(e);
    ret |= up_or_left_button->HandleEvent(e);
    ret |= down_or_right_button->HandleEvent(e);
+   if (!(ret & DIALOG_INPUT_USED)) {
+      ret |= scroller->HandleEvent(e);
+   }
    return ret;
 }
 

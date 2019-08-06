@@ -20,9 +20,14 @@
  * @brief This file holds the interface for scrolling layouts
  */
 
+#ifndef ScrollArea_HPP
+#define ScrollArea_HPP
+
+
+
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/ScrollBar.hpp"
-
+#include "Eagle/Gui/ScrollView.hpp"
 
 
 /**! @class ScrollArea
@@ -43,6 +48,8 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    WidgetBase* our_scroll_widget;
    
+   ScrollView our_scroll_view;
+   
 
 
    virtual void ReserveSlots(int nslots);
@@ -53,6 +60,9 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
+   virtual void OnAreaChanged();///< Override to react to changes in this widget's area
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
+   
 public :
    
 //   ScrollArea(std::string name="Nemo");
@@ -66,12 +76,26 @@ public :
          scrollbarsize(10),
          onleft(false),
          ontop(false),
-         our_scroll_widget(0)
+         our_scroll_widget(0),
+         our_scroll_view()
    {
+      Resize(3);
       SetScrollBars((BasicScrollBar*)0 , (BasicScrollBar*)0);
+      LayoutBase::PlaceWidget(&our_scroll_view , 2);
+      SetWidgetFlags(Flags().AddFlag(VISIBLE));
+      ListenTo(&our_scroll_view);
    }
    
+   ~ScrollArea() {DetachFromGui();}
+   
    void SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScrollBar* verticalscrollbar);
+//   void SetViewWidget(WidgetBase* widget_to_view);
+   void SetViewWidget(WidgetBase* widget_to_view) {
+      our_scroll_view.SetOurWidget(widget_to_view);
+      our_scroll_widget = widget_to_view;
+      RepositionChild(2);
+   }
+   
    
    void SetScrollbarPosition(bool on_top , bool on_left);///< Pass true for left/top, false for right/bottom
    void SetHScrollbarPosition(bool on_top);///< Pass true to place the horizontal scrollbar on the top, false on the bottom
@@ -80,44 +104,23 @@ public :
    /// LayoutBase
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
-   virtual void Resize(unsigned int nsize);///< Virtual function to resize the layout's widget storage
-   virtual void PlaceWidget(WidgetBase* w , int slot);
+   virtual void Resize(unsigned int nsize);///< No need to call, does nothing. Size is always 3.
+
+   virtual void PlaceWidget(WidgetBase* w , int slot);///< Gives our scroll view widget a child widget
    virtual int AddWidget(WidgetBase* w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
    
-   /// WidgetBase
+   virtual bool AcceptsFocus() override {return true;}
+   
+   /// WidgetBase 
+   
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);///< Draws the background and filler object in the corner
 };
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif // ScrollArea_HPP
 
 
 

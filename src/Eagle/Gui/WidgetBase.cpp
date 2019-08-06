@@ -190,11 +190,6 @@ int WidgetBase::HandleEvent(EagleEvent ee) {
 ///      Update(ee.timer.eagle_timer_source->SPT());
    }
    
-   if (IsMouseEvent(ee)) {
-      ee.mouse.x += GetScrollX();
-      ee.mouse.y += GetScrollY();
-   }
-   
    return (PrivateCheckInputs() | PrivateHandleEvent(ee));
 }
 
@@ -210,18 +205,22 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    if (Flags().FlagOn(VISIBLE)) {
       WidgetPainter wp = GetWidgetPainter();
       
-      Clipper clip(win->GetDrawingTarget() , OuterArea());
+      EagleImage* img = win->GetDrawingTarget();
+      
+      Rectangle cliprect = OuterArea();
+      
+      Clipper clip(img , cliprect);
       
       if (wp) {
          wp->GetPainterReady(win , this , xpos , ypos);
          wp->PaintBackground();
-         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
+         PrivateDisplay(win , xpos , ypos);
          if (wflags.FlagOn(HASFOCUS)) {
             wp->PaintFocus();
          }
       }
       else {
-         PrivateDisplay(win , xpos - GetScrollX() , ypos - GetScrollY());
+         PrivateDisplay(win , xpos , ypos);
       }
    }
    ClearRedrawFlag();
@@ -229,7 +228,7 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 
-void WidgetBase::QueueUserMessage(WidgetMsg wmsg) {
+void WidgetBase::QueueUserMessage(const WidgetMsg& wmsg) {
    if (wparent) {
       wparent->QueueUserMessage(wmsg);
    }

@@ -74,7 +74,7 @@ protected:
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);///< Overridden @ref WidgetBase::PrivateDisplay
    virtual int PrivateUpdate(double tsec);///< Overridden @ref WidgetBase::PrivateUpdate
 
-   virtual void QueueUserMessage(const WidgetMsg& wmsg);///< Overridden @ref WidgetBase::QueueUserMessage
+   virtual void QueueUserMessage(const WidgetMsg& wmsg) override;///< Overridden @ref WidgetBase::QueueUserMessage
 
    virtual void OnAreaChanged();///< Overridden @ref WidgetBase::OnAreaChanged
 
@@ -98,6 +98,19 @@ public :
 
    int GetScrollValue() {return scroller->GetScrollValue();}///< Retrieve the current integer scroll value
    int GetScrollMax() {return scroller->GetScrollMax();}
+   
+   
+//   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
+//std::ostream& BasicScrollBar::DescribeTo(std::ostream& os , Indenter indent) const {
+std::ostream& DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "BasicScrollBar :" << std::endl;
+   WidgetBase::DescribeTo(os,indent);
+   os << indent << "BasicScrollButtonUpOrLeft :" << std::endl;
+   basic_scroll_button_up_or_left.DescribeTo(os , indent);
+   os << indent << "BasicScrollButtonDownOrRight :" << std::endl;
+   basic_scroll_button_down_or_right.DescribeTo(os , indent);
+   return os;
+}
 };
 
 

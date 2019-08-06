@@ -140,7 +140,7 @@ int BasicButton::PrivateCheckInputs() {
    
    if (wparent) {
       handler = RootHandler();
-      handler = dynamic_cast<WidgetHandler*>(wparent);/// TODO : BUG : FIXME : What about if a gui is NOT our parent???
+///      handler = dynamic_cast<WidgetHandler*>(wparent);/// TODO : BUG : FIXME : What about if a gui is NOT our parent???
    }
    if (handler) {
       msx = handler->GetMouseX();
@@ -181,23 +181,31 @@ int BasicButton::PrivateCheckInputs() {
 
 
    if (input_group) {
+
       EagleInfo() << "input_group active" << std::endl;
       activated = true;
       if (btn_action_type == SPRING_BTN) {user_activated = true;}
-   
+
    } else if (Flags().FlagOn(HASFOCUS) && (input_key_press(EAGLE_KEY_SPACE) || input_key_press(EAGLE_KEY_ENTER))) {
-      
+
       activated = true;
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
-      
-   } else if (input_mouse_press(LMB) && InnerArea().Contains(msx,msy)) {
-      if (click_area) {
-         if (click_area->Contains(msx - InnerArea().X() , msy - InnerArea().Y())) {
-            activated = true;
+
+   } else if (input_mouse_press(LMB)) {
+
+      if (InnerArea().Contains(msx,msy)) {
+         activated = true;/// If there is no click area we use the whole button
+         if (click_area) {
+            if (!(click_area->Contains(msx - InnerArea().X() , msy - InnerArea().Y()))) {
+               activated = false;
+            }
+         }
+         if (activated) {
             EagleInfo() <<  "Click area activated." << std::endl;
             if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
          }
       }
+
    }
    just_activated = false;
    if (activated) {// click or key press has activated the button action

@@ -22,6 +22,10 @@
 
 #include "Eagle/Gui/Layout/ScrollArea.hpp"
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
+
+#include "Eagle/StringWork.hpp"
+
 
 
 void ScrollArea::ReserveSlots(int nslots) {
@@ -33,10 +37,31 @@ void ScrollArea::ReserveSlots(int nslots) {
 
 void ScrollArea::ResetScrollbars() {
    if (our_scroll_widget) {
-      /// Determine which scroll bars are visible
-      Rectangle our_area = InnerArea();
+
+      Rectangle our_area = GetViewRectangle();
       Rectangle their_area = our_scroll_widget->OuterArea();
-      if (their_area.H() > our_area.H()) {
+
+      bool hfit = their_area.W() <= our_area.W();
+      bool vfit = their_area.H() <= our_area.H();
+
+      /// The total view is the larger of the viewed widget size and our view rectangle
+      /// The view in length is the smaller of the viewed widget and our view rectangle
+      int hmax = hfit?our_area.W():their_area.W();
+      int hmin = hfit?their_area.W():our_area.W();
+
+      int vmax = vfit?our_area.H():their_area.H();
+      int vmin = vfit?their_area.H():our_area.H();
+      
+      hscrollbar->SetupView(hmax - hmin , hmin);
+      hscrollbar->SetScrollLength(hmax - hmin);
+
+      vscrollbar->SetupView(vmax - vmin , vmin);
+      vscrollbar->SetScrollLength(vmax - vmin);
+
+      EaglePrefix("SCROLLAREA") << StringPrintF("H min %d max %d V min %d max %d\n" , hmin , hmax , vmin , vmax);
+      
+      /// Determine which scroll bars are visible
+      if (!vfit) {
          /// Need to show the vertical scrollbar
          vscrollbar->SetEnabledState(true);
          vscrollbar->SetVisibleState(true);
@@ -47,7 +72,7 @@ void ScrollArea::ResetScrollbars() {
             hscrollbar->SetVisibleState(true);
          }
       }
-      else if (their_area.W() > our_area.W()) {
+      else if (!hfit) {
          /// Need to show the horizontal scrollbar
          hscrollbar->SetEnabledState(true);
          hscrollbar->SetVisibleState(true);
@@ -65,6 +90,9 @@ void ScrollArea::ResetScrollbars() {
       hscrollbar->SetEnabledState(false);
       vscrollbar->SetEnabledState(false);
    }
+
+   hscrollbar->SetScrollPercent(0.0f);
+   vscrollbar->SetScrollPercent(0.0f);
 }
 
 
@@ -90,8 +118,14 @@ Rectangle ScrollArea::GetViewRectangle() {
 
 void ScrollArea::SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScrollBar* verticalscrollbar) {
    
-   if (hscrollbar) {StopListeningTo(hscrollbar);}
-   if (vscrollbar) {StopListeningTo(vscrollbar);}
+   if (hscrollbar) {
+      hscrollbar->SetParent(0);
+      StopListeningTo(hscrollbar);
+   }
+   if (vscrollbar) {
+      vscrollbar->SetParent(0);
+      StopListeningTo(vscrollbar);
+   }
    
    if (horizontalscrollbar == 0) {horizontalscrollbar = &basic_hscrollbar;}
    if (verticalscrollbar == 0) {verticalscrollbar = &basic_vscrollbar;}
@@ -105,10 +139,13 @@ void ScrollArea::SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScroll
    ListenTo(hscrollbar);
    ListenTo(vscrollbar);
    
-   ResetScrollbars();
+   hscrollbar->SetParent(this);
+   vscrollbar->SetParent(this);
    
    LayoutBase::PlaceWidget(hscrollbar , 0);
    LayoutBase::PlaceWidget(vscrollbar , 1);
+
+   ResetScrollbars();
    
    RepositionChild(2);
 }
@@ -144,11 +181,28 @@ void ScrollArea::RespondToEvent(EagleEvent e , EagleThread* thread) {
          if (our_scroll_widget) {
             /// Do we need to offset this? A widget is centered, and then scroll applies
             /// Yes, it needs to be offset, because the scroll could be negative (to the left)
-            int sx = hscrollbar->GetScrollX() - hscrollbar->GetScrollMax()/2;
-            int sy = vscrollbar->GetScrollY() - vscrollbar->GetScrollMax()/2;
-            our_scroll_widget->SetScrollOffset(sx,sy);///< This will set the redraw flag on our widget
+            int sx = hscrollbar->GetScrollValue();
+            int sy = vscrollbar->GetScrollValue();
+            our_scroll_view.SetScrollOffset(sx,sy);///< This will set the redraw flag on our widget
          }
       }
+   }
+}
+
+
+
+void ScrollArea::OnAreaChanged() {
+   ResetScrollbars();
+   LayoutBase::OnAreaChanged();
+}
+
+
+
+void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   /// If we have the focus, bring the scroll bars to the top
+   if ((f & HASFOCUS) && on) {
+      GetHandler()->GiveWidgetFocus(GetWidget(0));
+      GetHandler()->GiveWidgetFocus(GetWidget(1));
    }
 }
 
@@ -162,43 +216,7 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
 
    /// Slot 2 is reserved for the widget to view, give it the leftover room
    if (widget_slot == 2) {
-      /// The widget in view is always centered
-      int wx = InnerArea().CX();
-      int wy = InnerArea().CY();
-      int ww = 0;
-      int wh = 0;
-
-      WidgetBase* w = GetWidget(2);
-
-      if (!w) {
-         return BADRECTANGLE;
-      }
-   
-      /// Find out how much room is left for the scrollbars and where they are at
-      ww = w->InnerArea().W();
-      wh = w->InnerArea().H();
-      if (widget_slot == 2) {
-         if (newwidth != INT_MAX) {
-            ww = newwidth;
-         }
-         if (newheight != INT_MAX) {
-            wh = newheight;
-         }
-      }
-      if (hscrollbar->FlagOn(VISIBLE)) {
-         if (onleft) {
-            wx += scrollbarsize;
-         }
-      }
-      if (vscrollbar->FlagOn(VISIBLE)) {
-         if (ontop) {
-            wy += scrollbarsize;
-         }
-      }
-      /// We always center the widget, it will handle its scroll position by itself
-      wx -= (ww/2);
-      wy -= (wh/2);
-      return Rectangle(wx,wy,ww,wh);
+      return GetViewRectangle();
    }
    
    /// Slots 0 and 1 are reserved for the scrollbars, and they can take up space used for the widget
@@ -216,8 +234,12 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
       int wy = InnerArea().Y();
       int ww = InnerArea().W();
       int wh = scrollbarsize;
+
       if (vscrollbar->FlagOn(VISIBLE)) {
          ww -= scrollbarsize;
+         if (onleft) {
+            wx += scrollbarsize;
+         }
       }
       if (!onleft) {
          wx = InnerArea().BRX() - scrollbarsize;
@@ -232,6 +254,9 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
       int wh = InnerArea().H();
       if (hscrollbar->FlagOn(VISIBLE)) {
          wh -= scrollbarsize;
+         if (ontop) {
+            wy += scrollbarsize;
+         }
       }
       if (!ontop) {
          wy = InnerArea().BRY() - scrollbarsize;
@@ -253,37 +278,25 @@ void ScrollArea::Resize(unsigned int nsize) {
 void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
    if (w == hscrollbar) {
       slot = 0;
+      LayoutBase::PlaceWidget(w , slot);
    }
    else if (w == vscrollbar) {
       slot = 1;
+      LayoutBase::PlaceWidget(w , slot);
    }
    else {
       slot = 2;
       our_scroll_widget = w;
+      our_scroll_view.SetOurWidget(our_scroll_widget);
    }
-   LayoutBase::PlaceWidget(w , slot);
 
    /// Our scroll max depends on the size of the widget being viewed
    if (w && (slot == 2)) {
-      Rectangle wrect = w->OuterArea();
-      Rectangle view = GetViewRectangle();
-
-      /// The total view is the larger of the viewed widget size and our view rectangle
-      /// The view in length is the smaller of the viewed widget and our view rectangle
-      
-      bool hfit = wrect.W() <= view.W();
-      bool vfit = wrect.H() <= view.H();
-      
-      int hmax = hfit?view.W():wrect.W();
-      int hmin = hfit?wrect.W():view.W();
-
-      int vmax = vfit?view.H():wrect.H();
-      int vmin = vfit?wrect.H():view.H();
-      
-      hscrollbar->SetupView(hmax , hmin);
-      vscrollbar->SetupView(vmax , vmin);
-      hscrollbar->SetScrollPercent(0.5f);
-      vscrollbar->SetScrollPercent(0.5f);
+      ResetScrollbars();
+      /// Yes, it needs to be offset, because the scroll could be negative (to the left)
+      int sx = hscrollbar->GetScrollValue();
+      int sy = vscrollbar->GetScrollValue();
+      our_scroll_view.SetScrollOffset(sx,sy);///< This will set the redraw flag on our widget
    }
 }
 

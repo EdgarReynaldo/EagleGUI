@@ -829,7 +829,7 @@ int WIDGETAREA::BottomIndent() const {
 
 
 std::ostream& WIDGETAREA::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << "WIDGETAREA(OuterArea = " << OuterArea() << " , margin = " << margin << " , border = " << border << " , padding = " << padding << " , InnerArea = " << InnerArea() << ")" << std::endl;
+   os << indent << "WIDGETAREA(OuterArea = " << OuterArea() << " , margin = " << margin << " , border = " << border << " , padding = " << padding << " , InnerArea = " << InnerArea() << ")";
    return os;
 }
 

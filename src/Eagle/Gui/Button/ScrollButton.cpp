@@ -216,6 +216,7 @@ void BasicScrollButton::UseBasicButton() {
 void BasicScrollButton::UseButton(BasicButton* button) {
    if (!button) {
       UseBasicButton();
+      return;
    }
    EAGLE_ASSERT(button);
    scroll_button = button;

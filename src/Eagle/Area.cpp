@@ -929,6 +929,21 @@ std::ostream& Rectangle::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
+Rectangle Overlap(const Rectangle& r1 , const Rectangle& r2) {
+   if (!Overlaps(r1,r2)) {return BADRECTANGLE;}
+   int lx = (r1.X() > r2.X())?r1.X():r2.X();
+   int ty = (r1.Y() > r2.Y())?r1.Y():r2.Y();
+
+   int rx = (r1.BRX() < r2.BRX())?r1.BRX():r2.BRX();
+   int by = (r1.BRY() < r2.BRY())?r1.BRY():r2.BRY();
+   
+   Rectangle r;
+   r.SetCorners(lx,ty,rx,by);
+   return r;
+}
+
+
+
 /// ----------------------------------     RoundedRectangle    -----------------------------
 
 
