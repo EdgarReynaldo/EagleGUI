@@ -89,7 +89,7 @@ ProgramTime ProgramTime::Now() {
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
 #elif defined EAGLE_LINUX
     timespec ts;
-    clkid_t CLOCK;
+    clockid_t CLOCK;
     #if defined _POSIX_TIMERS and defined _POSIX_MONOTONIC_CLOCK
       CLOCK = CLOCK_MONOTONIC;
     #else
