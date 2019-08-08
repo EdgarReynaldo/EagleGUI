@@ -21,7 +21,7 @@ set(incdirs
 
 set(includefiles)
 
-list (APPEND includefiles "${EAGLE_INCLUDE_DIR}/Eagle/backends/Allegro5backend.hpp")
+list (APPEND includefiles "${EAGLE_INCLUDE_DIR}/Eagle/backends/Allegro5Backend.hpp")
 
 foreach(dir ${incdirs})
    file (GLOB headershpp "${EAGLE_INCLUDE_DIR}/${dir}*.hpp")
