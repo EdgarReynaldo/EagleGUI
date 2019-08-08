@@ -785,10 +785,10 @@ int WIDGETAREA::PaddingHeight() const {
 
 Rectangle WIDGETAREA::GetAreaRectangle(WAREA_TYPE atype) const {
    static Rectangle (WIDGETAREA::*AREAFUNC[4])() const = {
-      &OuterArea,
-      &BorderArea,
-      &PaddingArea,
-      &InnerArea
+      &WIDGETAREA::OuterArea,
+      &WIDGETAREA::BorderArea,
+      &WIDGETAREA::PaddingArea,
+      &WIDGETAREA::InnerArea
    };
    return (this->*AREAFUNC[atype])();
 }
