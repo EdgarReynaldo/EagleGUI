@@ -186,7 +186,7 @@ std::string CurrentDirectory() {
 #ifdef EAGLE_WIN32
    _getcwd(buf , SIZE - 1);
 #else
-   getcwd(buf , SIZE - 1)
+   getcwd(buf , SIZE - 1);
 #endif
    return buf;
 }
