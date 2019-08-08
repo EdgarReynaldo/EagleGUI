@@ -632,7 +632,9 @@ Rectangle WIDGETAREA::CellBox(BOX_TYPE box , VCELL_AREA vcell , HCELL_AREA hcell
    typedef Rectangle (WIDGETAREA::*AREAFUNC)() const;
    if ((vcell == VCELL_CENTER) && (hcell == HCELL_CENTER)) {
       AREAFUNC areafunc[3] = {
-         BorderArea,PaddingArea,InnerArea
+         &WIDGETAREA::BorderArea,
+         &WIDGETAREA::PaddingArea,
+         &WIDGETAREA::InnerArea
       };
       AREAFUNC afunc = areafunc[cellz];
       
