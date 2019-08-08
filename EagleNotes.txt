@@ -74,11 +74,13 @@ TODO : Milestones necessary for development
    COMPLETE : 
       A - BasicButton , GuiButton , IconButton
       B - BasicText , SelectText , LinkText
-      C - ScrollButton , Scroller, ScrollBar
-      D - Camera
+      C - ScrollButton , Scroller, ScrollBar, ScrollView , ScrollArea
+      D - Slider , Slider2D
+      E - Camera
       E - DumbLayout , GridLayout , RelativeLayout , SplitterLayouts , PinLayout , NPLayout
 
 2. Create documentation - doxygen looks best for this
+- WIP
 
 3. Make the library work with MSVC (Not looking forward to this)
    A - DECLSPEC DLLEXPORT necessary for MSVC when building without .def files
