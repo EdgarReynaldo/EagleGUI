@@ -243,7 +243,8 @@ public :
 	EagleEventHandler*    CreateEventHandler(std::string objname = "Nemo" , bool delay_events = false);
 
 	EagleTimer*           CreateTimer          (std::string objname = "Nemo");
-   EagleGraphicsContext* CreateGraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0);
+   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags);
+   EagleGraphicsContext* CreatePopupWindow    (std::string objname , int width , int height , int flags);
    EagleThread*          CreateThread         (std::string objname = "Nemo" , void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
    EagleMutex*           CreateMutex          (std::string objname = "Nemo" , bool recursive = false , bool timed = false);
    EagleClipboard*       CreateClipboard      (std::string objname = "Nemo");

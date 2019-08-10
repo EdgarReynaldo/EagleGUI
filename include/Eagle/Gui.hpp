@@ -44,6 +44,8 @@
 #include "Gui/Scroller.hpp"
 #include "Gui/TextWidgets.hpp"
 
+#include "Gui/PopupWindow.hpp"
+
 #include "Gui/Scripting/GuiScript.hpp"
 
 #include "Gui/Factory/WidgetCreators.hpp"

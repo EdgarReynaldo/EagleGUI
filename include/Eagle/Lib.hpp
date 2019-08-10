@@ -79,7 +79,7 @@ public :
    /**! @fn System <std::string>
     *   @brief Get the system for the specified driver string
     *    
-    *   Driver strings supported are : "Allegro5"
+    *   Driver strings supported are : "Allegro5" and "Any"
     */
    
    static EagleSystem* System(std::string driver);

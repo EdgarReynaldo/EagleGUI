@@ -29,6 +29,51 @@
 #include <vector>
 using std::vector;
 
+#include <sstream>
+
+
+
+std::string PrintDisplayFlags(int flags) {
+   std::stringstream ss;
+   ss.clear();
+   
+   const char* flagnames[NUM_EAGLE_DISPLAY_FLAGS] = {
+      "EAGLE_WINDOWED",
+      "EAGLE_FULLSCREEN",
+      "EAGLE_OPENGL",
+      "EAGLE_DIRECT3D",
+      "EAGLE_RESIZABLE",
+      "EAGLE_NOFRAME",
+      "EAGLE_GENERATE_EXPOSE_EVENTS",
+      "EAGLE_OPENGL_3_0",
+      "EAGLE_OPENGL_FORWARD_COMPATIBLE",
+      "EAGLE_MINIMIZED",
+      "EAGLE_USE_PROGRAMMABLE_PIPELINE"
+   };
+   
+   ss << "[";
+   if (!flags) {
+      ss << "NONE]";
+      return ss.str();
+   }
+   int count = 0;
+   for (unsigned int i = 0 ; i < NUM_EAGLE_DISPLAY_FLAGS ; ++i) {
+      if (flags & (1 << i)) {
+         ++count;
+      }
+   }
+   for (unsigned int i = 0 ; i < NUM_EAGLE_DISPLAY_FLAGS ; ++i) {
+      if (flags & (1 << i)) {
+         ss << flagnames[i];
+         --count;
+         if (count > 0) {
+            ss << " | ";
+         }
+      }
+   }
+   ss << "]";
+   return ss.str();
+}
 
 
 

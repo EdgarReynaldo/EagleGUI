@@ -595,6 +595,12 @@ public :
    virtual void SetWindowPosition(int screenx , int screeny)=0;
    virtual void ShowWindow()=0;
    virtual void HideWindow()=0;
+   virtual void ShowWindow();
+   virtual void HideWindow();
+void ShowWindow() {
+   
+}
+void HideWindow() {
    
    /// mouse control
 

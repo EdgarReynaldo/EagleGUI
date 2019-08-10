@@ -648,10 +648,18 @@ EagleGraphicsContext* EagleSystem::CreateGraphicsContext(std::string objname , i
    if (win) {
       if (system_queue) {
          system_queue->ListenTo(win);
-///         win->RegisterDisplayInput(system_queue);
       }
    }
    return win;
+}
+
+
+
+EagleGraphicsContext* EagleSystem::CreatePopupWindow(std::string objname , int width , int height , int flags) {
+   flags |= EAGLE_NOFRAME;/// Specify no frame
+   flags &= ~EAGLE_FULLSCREEN;/// Remove fullscreen
+   flags |= EAGLE_WINDOWED;/// Always windowed
+   return CreateGraphicsContext(objname , width , height , flags);
 }
 
 

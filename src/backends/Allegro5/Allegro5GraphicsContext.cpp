@@ -843,4 +843,37 @@ void Allegro5GraphicsContext::MakeDisplayCurrent() {
 }
 
 
+void Allegro5GraphicsContext::SetWindowPosition(int screenx , int screeny) {
+   al_set_window_position(display , screenx , screeny);
+}
+
+
+#ifdef EAGLE_WIN32
+   #include "allegro5/allegro_windows.h"
+   #include "windows.h"
+   
+#endif
+
+void Allegro5GraphicsContext::ShowWindow() {
+#ifdef EAGLE_WIN32
+   HWND window = al_get_win_window_handle(display);
+   ::ShowWindow(window , SW_SHOW);
+#else
+   #warning ShowWindow is undefined on this platform. It will fail silently.
+#endif
+}
+
+
+
+void Allegro5GraphicsContext::HideWindow() {
+#ifdef EAGLE_WIN32
+   HWND window = al_get_win_window_handle(display);
+   ::ShowWindow(window , SW_HIDE);
+#else
+   #warning ShowWindow is undefined on this platform. It will fail silently.
+#endif
+}
+
+
+
 
