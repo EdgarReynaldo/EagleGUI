@@ -190,6 +190,11 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
+   SHAREDOBJECT<PopupWindow> popup = CreatePopupTextWindow(100 , 100 , ALLEGRO_OPENGL , "Hello popup" , win->DefaultFont());
+   
+   popup->Hide();
+   bool popup_hidden = true;
+   
    while (!quit) {
       if (redraw) {
          win->DrawToBackBuffer();
@@ -204,6 +209,16 @@ int main(int argc , char** argv) {
          if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
             /// Log non timer and non mouse axes events
             EagleInfo() << "Event " << EagleEventName(ev.type) << " received in main." << std::endl;
+         }
+         
+         if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_F1) {
+            popup_hidden = !popup_hidden;
+            if (popup_hidden) {
+               popup->Hide();
+            }
+            else {
+               popup->Show();
+            }
          }
          
          /// Event handling

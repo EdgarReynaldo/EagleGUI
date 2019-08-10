@@ -111,13 +111,14 @@
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename=".gitignore" />
+		<Unit filename="BUILD.txt" />
 		<Unit filename="CMakeLists.txt" />
 		<Unit filename="EagleCopyright.txt" />
 		<Unit filename="EagleFAQ.txt" />
 		<Unit filename="EagleFeatures.txt" />
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
-		<Unit filename="README.txt" />
+		<Unit filename="READMEmd" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
@@ -169,6 +170,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu.hpp" />
+		<Unit filename="include/Eagle/Gui/PopupWindow.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
@@ -284,6 +286,7 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="src/Eagle/Gui/PopupWindow.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Eagle/Gui/ScrollBar.cpp" />
