@@ -113,7 +113,7 @@ void EagleWindowManager::CloseWindows() {
 
 
 
-EagleGraphicsContext* EagleWindowManager::CreateWindow(std::string objname , int width , int height , int flags) {
+EagleGraphicsContext* EagleWindowManager::CreateEagleWindow(std::string objname , int width , int height , int flags) {
    EagleGraphicsContext* window = PrivateCreateWindow(objname , width , height , flags);
    if (window) {
       if (!window->Valid()) {
