@@ -81,7 +81,7 @@ int main(int argc , char** argv) {
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       EagleWarn() << "Failed to install some components." << std::endl;
    }
-   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->GetWindowManager()->CreateEagleWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();
@@ -189,10 +189,12 @@ int main(int argc , char** argv) {
 //   int my = 0;
    
    sys->GetSystemTimer()->Start();
+   const char* txt = "Hello Popup";
+   PopupText ptext(sw/2 - 50 , sh/2 - 10 , EAGLE_OPENGL , std::string(txt) , win->DefaultFont());
    
-   SHAREDOBJECT<PopupWindow> popup = CreatePopupTextWindow(100 , 100 , ALLEGRO_OPENGL , "Hello popup" , win->DefaultFont());
+   EagleInfo() << ptext << std::endl;
    
-   popup->Hide();
+   ptext.Hide();
    bool popup_hidden = true;
    
    while (!quit) {
@@ -202,10 +204,21 @@ int main(int argc , char** argv) {
 
          gui.Display(win , 0 , 0);
          win->FlipDisplay();
+         if (!popup_hidden) {
+            ptext.Display();
+         }
          redraw = false;
       }
       do {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
+         
+         if (!popup_hidden) {
+            if (ptext.HandleEvent(ev) & DIALOG_INPUT_USED) {
+               continue;
+            }
+         }
+         
+         
          if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
             /// Log non timer and non mouse axes events
             EagleInfo() << "Event " << EagleEventName(ev.type) << " received in main." << std::endl;
@@ -214,10 +227,10 @@ int main(int argc , char** argv) {
          if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_F1) {
             popup_hidden = !popup_hidden;
             if (popup_hidden) {
-               popup->Hide();
+               ptext.Hide();
             }
             else {
-               popup->Show();
+               ptext.Show();
             }
          }
          
@@ -291,7 +304,7 @@ int main2(int argc , char** argv) {
    if (EAGLE_FULL_SETUP != sys->Initialize(EAGLE_FULL_SETUP)) {
       EagleWarn() << "Failed to install some components." << std::endl;
    }
-   EagleGraphicsContext* win = sys->GetWindowManager()->CreateWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   EagleGraphicsContext* win = sys->GetWindowManager()->CreateEagleWindow("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    
    win->Clear(EagleColor(0,255,255));
    win->FlipDisplay();

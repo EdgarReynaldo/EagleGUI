@@ -41,6 +41,13 @@ typedef map<MESSAGE_KEY,MESSAGE_VALUE> MESSAGE_MAP;
 
 
 
+unsigned int NextFreeTopicId() {
+   static unsigned int id = 0;
+   return id++;
+}
+
+
+
 MESSAGE_MAP* GetMessageMap() {
    static MESSAGE_MAP mm;
    return &mm;
@@ -79,15 +86,7 @@ RegisteredWidgetMessage::RegisteredWidgetMessage(unsigned int _topic , string _t
 
 
 
-extern const unsigned int TOPIC_NONE = 0;
-
-
-
-unsigned int NextFreeTopicId() {
-   static unsigned int id = TOPIC_NONE;
-   id += 1;
-   return id;
-}
+extern const unsigned int TOPIC_NONE = NextFreeTopicId();
 
 
 
