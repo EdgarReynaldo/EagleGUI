@@ -188,15 +188,22 @@ int main(int argc , char** argv) {
 //   int mx = 0;
 //   int my = 0;
    
-   sys->GetSystemTimer()->Start();
+   EagleFont* pfont = win->LoadFont("verdana.ttf" , -32);
+   EAGLE_ASSERT(pfont && pfont->Valid());
+   
    const char* txt = "Hello Popup";
-   PopupText ptext(sw/2 - 50 , sh/2 - 10 , EAGLE_OPENGL , std::string(txt) , win->DefaultFont());
+   
+   EagleInfo() << "[" << txt << "] dim = " << pfont->Width(txt) << " x " << pfont->Height() << std::endl;
+   
+   PopupText ptext(sw/2 - 50 , sh/2 - 10 , EAGLE_OPENGL , std::string(txt) , pfont);
    
    EagleInfo() << ptext << std::endl;
    
    ptext.Hide();
    bool popup_hidden = true;
    
+   sys->GetSystemTimer()->Start();
+
    while (!quit) {
       if (redraw) {
          win->DrawToBackBuffer();
@@ -213,12 +220,12 @@ int main(int argc , char** argv) {
          EagleEvent ev = sys->WaitForSystemEventAndUpdateState();
          
          if (!popup_hidden) {
-            if (ptext.HandleEvent(ev) & DIALOG_INPUT_USED) {
-               continue;
+            if (ev.window != win) {
+               if (ptext.HandleEvent(ev) & DIALOG_INPUT_USED) {
+                  continue;
+               }
             }
          }
-         
-         
          if (ev.type != EAGLE_EVENT_TIMER && ev.type != EAGLE_EVENT_MOUSE_AXES) {
             /// Log non timer and non mouse axes events
             EagleInfo() << "Event " << EagleEventName(ev.type) << " received in main." << std::endl;
@@ -231,6 +238,8 @@ int main(int argc , char** argv) {
             }
             else {
                ptext.Show();
+               EagleInfo() << "Giving focus to " << 
+                  sys->GetWindowManager()->GiveWindowFocus(ptext.OurWindow()->GetEagleId()) << std::endl;
             }
          }
          

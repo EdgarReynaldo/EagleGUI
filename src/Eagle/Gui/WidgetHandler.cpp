@@ -243,16 +243,18 @@ void WidgetHandler::OnAreaChanged() {
    
    cam.SetWidgetArea(InnerArea());
 
-   if (!buffer || 
-       (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || 
-        shrink_buffer_on_resize) 
-   {
-      SetupBuffer(r.W() , r.H() , gwindow);
+   if (gwindow) {
+      if (!buffer || 
+          (buffer && ((buffer->W() < r.W()) || (buffer->H() < r.H()))) || 
+           shrink_buffer_on_resize) 
+      {
+         SetupBuffer(r.W() , r.H() , gwindow);
+      }
+      else {
+         /// buffer has excess size but we don't shrink the buffer, so reset the camera to our area
+      }
+      SyncCamera();
    }
-   else {
-      /// buffer has excess size but we don't shrink the buffer, so reset the camera to our area
-   }
-   SyncCamera();
 
    SyncLayoutPos();
    clear_background = true;
@@ -929,8 +931,12 @@ void WidgetHandler::UseBackgroundColor(EagleColor col) {
 void WidgetHandler::FreeImageBuffers() {
    
    if (gwindow) {
-      gwindow->FreeImage(buffer);
-      gwindow->FreeImage(background);
+      if (buffer) {
+         gwindow->FreeImage(buffer);
+      }
+      if (background) {
+         gwindow->FreeImage(background);
+      }
    }
    buffer = 0;
    background = 0;

@@ -47,6 +47,7 @@ PopupWindow::~PopupWindow() {
 
 void PopupWindow::FreePopupWindow() {
    if (our_system && our_window) {
+      FreeImageBuffers();
       our_system->FreeGraphicsContext(our_window);
       our_window = 0;
    }
@@ -68,8 +69,8 @@ void PopupWindow::CreatePopupWindow(int sx , int sy , int width , int height , i
                                         width , height , flagstr.c_str()));
    }
    our_window->SetWindowPosition(sx , sy);
-   SetupBuffer(width , height , our_window);
    SetWidgetArea(Rectangle(0 , 0 , width , height) , false);
+   SetupBuffer(width , height , our_window);
 
 }
 
@@ -100,10 +101,11 @@ PopupText::PopupText(int sx , int sy , int flags , std::string message , EagleFo
       PopupWindow("Any" , "TextPopupWindow"),
       text(font , message , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , font->Height()/2)
 {
+   Rectangle t = text.TextArea();
+   CreatePopupWindow(sx , sy , t.W() + 4 , t.H() + 4 , flags);
+   text.SetWidgetArea(Rectangle(0 , 0 , t.W() + 4 , t.H() + 4) , false);
    text.ShrinkWrap();
    AddWidget(&text);
-   text.SetWidgetArea(Rectangle(0 , 0 , text.OuterArea().W() , text.OuterArea().H()) , false);
-   CreatePopupWindow(sx , sy , text.OuterArea().W() , text.OuterArea().H() , flags);
 }
 
 

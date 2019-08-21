@@ -57,6 +57,16 @@ public :
    
    
    EagleGraphicsContext* OurWindow() {return our_window;}
+   
+//   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const {
+      os << indent << "OurPopupWindow :" << std::endl;
+      ++indent;
+      our_window->DescribeTo(os , indent);
+      --indent;
+      WidgetHandler::DescribeTo(os , indent);
+      return os;
+   }
 };
 
 class PopupText : public PopupWindow {

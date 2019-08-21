@@ -52,7 +52,7 @@ void BasicText::RefreshTextPosition() {
    
    int lineheight = fontheight + linespacing;
    maxwidth = 0;
-   totalheight = lineheight*nlines + linespacing*(nlines-1);
+   totalheight = fontheight*nlines + linespacing*(nlines-1);
 
    lineareas.clear();
    
@@ -79,7 +79,7 @@ void BasicText::RefreshTextPosition() {
          maxwidth = w;
          textx = x;
       }
-      lineareas.push_back(Rectangle(x,y,w,lineheight));
+      lineareas.push_back(Rectangle(x,y,w,fontheight));
       y += lineheight;
    }
    SetBgRedrawFlag();
