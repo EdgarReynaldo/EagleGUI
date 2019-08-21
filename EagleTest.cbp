@@ -18,8 +18,8 @@
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-leagle_a5_debug.dll" />
-					<Add option="-leagle_debug.dll" />
+					<Add option="-lEagleA5DebugShared.dll" />
+					<Add option="-lEagleDebugShared.dll" />
 					<Add option="-lallegro_monolith-debug.dll" />
 				</Linker>
 			</Target>
@@ -34,8 +34,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-leagle_a5.dll" />
-					<Add option="-leagle.dll" />
+					<Add option="-lEagleA5Shared.dll" />
+					<Add option="-lEagleShared.dll" />
 					<Add option="-lallegro_monolith.dll" />
 				</Linker>
 			</Target>
@@ -54,8 +54,8 @@
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-leagle_a5_debug-static" />
-					<Add option="-leagle_debug-static" />
+					<Add option="-lEagleA5DebugStatic" />
+					<Add option="-lEagleDebugStatic" />
 					<Add option="-lallegro_monolith-debug-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
@@ -101,8 +101,8 @@
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-leagle_a5-static" />
-					<Add option="-leagle-static" />
+					<Add option="-lEagleA5Static" />
+					<Add option="-lEagleStatic" />
 					<Add option="-lallegro_monolith-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
@@ -141,11 +141,11 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add directory="include" />
-			<Add directory="Allegro525/include" />
+			<Add directory="../Allegro525/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="cbbuild/lib" />
-			<Add directory="Allegro525/lib" />
+			<Add directory="../Allegro525/lib" />
 		</Linker>
 		<Unit filename="EagleTest/EagleTestMain.cpp" />
 		<Unit filename="cbbuild/bin/Eagle.log" />
