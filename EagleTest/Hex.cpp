@@ -403,6 +403,10 @@ void HexGrid::DrawGrid(EagleGraphicsContext* win , int xpos , int ypos , std::ma
          double x = lx + dx*col;
          HexTile* tile = &grid[row][col];
          tile->DrawFilled(win , x , ly , colors[tile->owner]);
+         if (tile->owner) {
+            std::string s = StringPrintF("%d" , tile->owner);
+            win->DrawTextString(win->DefaultFont() , s , x , ly , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+         }
       }
    }
    /// Draw team influence
@@ -525,9 +529,14 @@ void HexGame::HandleEvent(EagleEvent ee) {
    }
    if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
       if (hover) {
-         if (hover->owner == 0) {
-            Claim(hover , turn + 1);
-            turn = (turn + 1)%NumPlayers();
+         if (ee.mouse.button == 1) {
+            if (hover->owner == 0) {
+               Claim(hover , turn + 1);
+               turn = (turn + 1)%NumPlayers();
+            }
+         }
+         else if (ee.mouse.button == 2) {
+            Claim(hover , 0);
          }
       }
    }
@@ -538,16 +547,10 @@ void HexGame::HandleEvent(EagleEvent ee) {
 void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
    hgrid.DrawGrid(win , xpos + x , ypos + y , teamcolors);
    if (hover) {
-      if (hgrid.grid.size() && hgrid.grid[0].size()) {
-         double x2 = x + xpos + 1.5*rad*hx;
-         double y2 = y + ypos + hy*rad*root3 + ((hx % 2 == 0)?0.0:-rad*0.5*root3);
-         HexTile& tile = hgrid.grid[0][0];
-         if (tile.owner == 0) {
-            tile.DrawFilled(win,x2,y2,al_map_rgba(127,127,127,127));
-         }
-         else {
-            tile.DrawFilled(win,x2,y2,teamcolors[tile.owner]);
-         }
+      double x2 = x + xpos + 1.5*rad*hx;
+      double y2 = y + ypos + hy*rad*root3 + ((hx % 2 == 0)?0.0:-rad*0.5*root3);
+      if (hover->owner == 0) {
+         hover->DrawFilled(win,x2,y2,teamcolors[turn + 1]);
       }
    }
 }
