@@ -16,7 +16,7 @@
 enum HEXCORNER {
    HC_EAST         = 0,
    HC_SOUTHEAST    = 1,
-   HC_SOUTHWEST     = 2,
+   HC_SOUTHWEST    = 2,
    HC_WEST         = 3,
    HC_NORTHWEST    = 4,
    HC_NORTHEAST    = 5,
@@ -29,7 +29,7 @@ enum HEXDIRECTION {
    HD_SOUTH     = 2,
    HD_SOUTHWEST = 3,
    HD_NORTHWEST = 4,
-   HD_NORTH = 5,
+   HD_NORTH     = 5,
    NUM_HEX_DIRECTIONS = 6
 };
 
@@ -50,22 +50,26 @@ public :
 };
 
 
-
+typedef std::pair<int , unsigned int> OWNER_TTY_PAIR;
 class HexTile {
    static Hexagon proto;
 
    int owner;
-   std::unordered_set<int> maxinfluence;
-   std::unordered_set<int> border;
+   std::unordered_set<int> maxinfluence;/// 1 or more players influence this tile
+   std::unordered_set<OWNER_TTY_PAIR> border_ttys;/// Border territories
    std::vector<HexTile*> neighbors;
+   
+   unsigned int tid;/// Territory id
+   
 
    friend class HexGrid;
    friend class HexGame;
+   friend class Territory;
    
    void CalcBorders();
    
 public :
-   HexTile() : owner(0) , maxinfluence() , border() , neighbors(6 , NULL) {}
+   HexTile() : owner(0) , maxinfluence() , border_ttys() , neighbors(6 , NULL) , tid((unsigned int)-1) {}
    
 //   void SetRadius(double r);
    void SetRadius(double r) {
@@ -75,6 +79,12 @@ public :
    void DrawFilled(EagleGraphicsContext* win , double x , double y , ALLEGRO_COLOR color);
    void DrawOutline(EagleGraphicsContext* win , double x , double y , ALLEGRO_COLOR color);
 };
+
+
+
+std::unordered_set<HexTile*> GetAdjoiningTiles(HexTile* start);/// O(N)
+
+std::unordered_set<HexTile*> GetBorders(std::unordered_set<HexTile*> tty);/// O(N)
 
 
 
@@ -101,6 +111,97 @@ public :
 
 
 
+class Territory {
+   int owner;
+   unsigned int tid;/// Territory id ('a' + tid)
+   
+   std::unordered_set<HexTile*> tlist;/// Territory list
+   std::unordered_set<HexTile*> blist;/// Border list
+   
+   
+   
+public :
+
+//   Territory(HexTile* tile);
+   Territory(HexTile* tile) :
+         owner(0),
+         tid(BADTID),
+         tlist(),
+         blist()
+   {}
+
+   std::map<HexTile* , unsigned int> AddTile(HexTile* tile);
+   std::map<HexTile* , unsigned int> RemoveTile(HexTile* tile);
+   
+   bool Contains(HexTile* tile);
+   bool Borders(HexTile* tile);
+   
+   void Absorb(Territory* ot);
+   void Absorb(Territory* ot) {
+      if (!ot) {return;}
+      tlist.insert(ot->tlist.begin() , ot->tlist.end());
+      ot->tlist.clear();
+   }
+   void SetTerritory(std::unordered_set<HexTile*> tset);
+   void SetTerritory(std::unordered_set<HexTile*> tset) {
+      tlist = tset;
+      CalcBorderSet();
+   }
+};
+
+
+class TerritoryList {
+   int owner;
+   std::map<unsigned int , Territory> tlist;/// <territory id , Territory>
+
+
+
+   unsigned int GetNewTerritoryId();///< Return first free tid
+
+   friend class Player;
+   friend class HexGame;
+   
+public :
+      
+   static const unsigned int BADTID;
+
+   TerritoryList();
+   TerritoryList() :
+         owner(-1),
+         tlist()
+   {}
+      
+   unsigned int AddTile(HexTile* tile);/// Returns territory id
+   void RemoveTile(HexTile* tile);
+
+   bool Contains(HexTile* tile);
+   bool Borders(HexTile* tile);
+
+   
+};
+
+const unsigned int TerritoryList::BADTID = (unsigned int)-1;
+
+class TerritoryMap {
+
+   std::map<int , TerritoryList> tmap;/// < owner , tlist>
+
+public :
+   
+
+};
+
+
+
+class Player {
+   
+   TerritoryList* our_turf;
+public :
+      
+};
+
+
+
 class HexGame {
    static const double root3;
    
@@ -118,6 +219,13 @@ class HexGame {
    
    HexTile* hover;
    int hx,hy;
+   
+   std::map<int , Player> players;
+   
+   
+   
+   
+   
    
    void Claim(HexTile* tile , int owner);
    
@@ -261,7 +369,7 @@ void HexTile::CalcBorders() {
       if (!n) {continue;}
 
       if (n->owner != 0) {
-         border.insert(owner);
+         border_ttys.insert(OWNER_TTY_PAIR(owner,n->tid));
          infmap[n->owner]++;
 
          if (infmap[n->owner] > maxcount) {
@@ -288,6 +396,86 @@ void HexTile::DrawOutline(EagleGraphicsContext* win , double x , double y , ALLE
    proto.DrawOutline(win , x , y , color);
 }
 
+
+
+std::unordered_set<HexTile*>& GetAdjoiningTiles(std::unordered_set<HexTile*>& tset , HexTile* prev);
+
+
+
+std::unordered_set<HexTile*> GetAdjoiningTiles(HexTile* start) {
+   std::unordered_set<HexTile*> tset;
+   tset.insert(start);
+   GetAdjoiningTiles(tset , start);
+   return tset;
+}
+
+
+
+std::unordered_set<HexTile*>& GetAdjoiningTiles(std::unordered_set<HexTile*>& tset , HexTile* prev) {
+   unsigned int owner = prev->owner;
+   std::vector<HexTile*>& nb = prev->neighbors;
+   
+   /// For (every neighbor of every tile in the territory) = O(6N)
+   for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+      HexTile* nt = nb[i];
+      if (!nt) {continue;}
+      if (nt->owner == owner) {
+         if (tset.find(nt) == tset.end()) {
+            tset.insert(nt);
+            GetAdjoiningTiles(tset , nt);
+         }
+      }
+   }
+   return tset;
+}
+
+
+
+std::unordered_set<HexTile*> GetBordersN(std::unordered_set<HexTile*> tty);
+std::unordered_set<HexTile*> GetBorders1(std::unordered_set<HexTile*> tty);
+
+std::unordered_set<HexTile*> GetBorders(std::unordered_set<HexTile*> tty);
+std::unordered_set<HexTile*> GetBorders(std::unordered_set<HexTile*> tty) {
+   
+}
+
+std::unordered_set<HexTile*> GetBordersN(std::unordered_set<HexTile*> tty) {
+   /// Brute force network traversal , O(N)
+   
+   std::unordered_set<HexTile*> borders;
+   if (tty.empty()) {
+      return borders;
+   }
+
+   std::unordered_set<HexTile*>::iterator it = tty.begin();
+   while (it != tty.end()) {
+
+      /// BAD Algorithm - For (every neighbor of every tile) = O(6N);
+      std::vector<HexTile*>& nb = (*it)->neighbors;
+      for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+         HexTile* tile = nb[i];
+         if (!tile) {continue;}
+         borders.insert(tile);
+      }
+      ++it;
+
+   }
+   /// Remove the territory from the borders O(N)
+   it = tty.begin();
+   while (it != tty.end()) {
+      std::unordered_set<HexTile*>::iterator bit = borders.find(*it);
+      if (bit != borders.end()) {
+         borders.erase(bit);
+      }
+      ++it;
+   }
+   
+   return borders;
+}
+
+std::unordered_set<HexTile*> GetBorders1(std::unordered_set<HexTile*> tty) {
+   
+}
 
 
 /// ------------------------    HexGrid     -------------------------
@@ -446,6 +634,219 @@ void HexGrid::DrawGrid(EagleGraphicsContext* win , int xpos , int ypos , std::ma
          grid[row][col].DrawOutline(win , x , ly , al_map_rgb(255,255,255));
       }
    }
+}
+
+
+
+/// ------------------------     Territory     -----------------------------
+
+
+
+std::map<HexTile* , unsigned int> Territory::AddTile(HexTile* tile) {
+   std::map<HexTile* , unsigned int> tilemap;
+   /// BAD tile
+   if (!tile) {
+      return tilemap;/// Empty map, no adjoining territories owned by us
+   }
+   
+   /// An owned tile can't be part of a border
+   std::unordered_set<HexTile*>::iterator it = blist.find(tile);
+   if (it != blist.end()) {
+      blist.erase(tile);
+   }
+
+   /// Add the tile to our territory list
+   tlist.insert(tile);
+
+   /// Add the neighbors to our border if they are unowned
+   std::vector<HexTile*>& nb = tile->neighbors;
+   for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+      HexTile* t = nb[i];
+      if (!t) {continue;}
+      if (t->owner == 0) {
+         blist.insert(t);
+      }
+   }
+}
+
+
+
+std::map<HexTile* , unsigned int> Territory::RemoveTile(HexTile* tile) {
+   std::map<HexTile* , unsigned int> tilemap;/// Nothing removed, no connections
+   /// BAD tile
+   if (!tile) {
+      return tilemap;
+   }
+   
+   /// Remove the tile from the territory
+   std::unordered_set<HexTile*>::iterator it1 = tlist.find(tile);
+   if (it1 != tlist.end()) {
+      tlist.erase(it1);
+   }
+   
+   /// If we are bordered by any tiles owned by us, we are now part of the border
+   std::vector<HexTile*>& nb = tile->neighbors;
+   for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+      HexTile* t = nb[i];
+      if (!t) {continue;}
+      if (t->owner == tile->owner) {
+         tilemap[t] = t->tid;
+         blist.insert(tile);
+         break;
+      }
+   }
+   return tilemap;
+}
+
+
+
+bool Territory::Contains(HexTile* tile) {
+   return tlist.find(tile) != tlist.end();
+}
+
+
+
+bool Territory::Borders(HexTile* tile) {
+   return blist.find(tile) != blist.end();
+}
+
+
+
+/// ------------------------     TerritoryList     -----------------------------
+
+
+
+unsigned int TerritoryList::GetNewTerritoryId() {
+   unsigned int id = 0;
+   if (tlist.find(id) != tlist.end()) {
+      /// Already on list, skip id
+      ++id;
+   }
+   return id;
+}
+
+
+
+unsigned int TerritoryList::AddTile(HexTile* tile) {
+   if (!tile) {return BADTID;}
+   
+   unsigned int towner = tile->owner;
+   
+   if (Contains(tile) != BADTID) {
+      /// Already on our territory list
+      return BADTID;
+   }
+   std::unordered_set<unsigned int> borderset = Borders(tile);
+   unsigned int newid = BADTID;
+   Territory newtty;
+   newtty.AddTile(tile);
+   if (borderset.empty()) {
+      /// Isolated territory, spawn new
+      newid = GetNewTerritoryId();
+   }
+   else {
+      /// This is on the border of at least one of our territories
+      newid = *borderset.begin();
+   }
+   for (std::unordered_set<unsigned int>::iterator it = borderset.begin() ; it != borderset.end() ; ++it) {
+      Territory* territory = &tlist[*it];
+      newtty.Absorb(territory);
+      tlist.erase(tlist.find(*it));
+   }
+   newtty.SetTerritoryId(newid);
+   tlist[newid] = newtty;
+   return newid;
+}
+   
+
+
+void TerritoryList::RemoveTile(HexTile* tile) {
+   if (!tile) {return;}
+   
+   unsigned int TTYID = Contains(tile);
+   if (TTYID == BADTID) {
+      /// None of our territories contain this tile
+      EAGLE_ASSERT(TTYID != BADTID);
+      return;
+   }
+   
+   std::unordered_set<HexTile*> nbset;
+   std::vector<HexTile*>& nb = tile->neighbors;
+   for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+      HexTile* btile = nb[i];
+      if (!btile) {
+         continue;
+      }
+      if (tile->owner != btile->owner) {
+         nb[i] = 0;
+      }
+      else {
+         nbset.insert(btile);
+      }
+   }
+   /// nbmap now holds a list of neighboring territories owned by us
+   /// Each of those territories may be linked to a unique territory,
+   /// And removing this tile may create up to 3 unique regions
+   
+
+   /// Find connected territories
+   std::vector<std::unordered_set<HexTile*> > tset;
+   for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+      if (nb[i]) {
+         tset.push_back(GetAdjoiningTiles(nb[i]));/// Expensive traversal of grid network
+      }
+   }
+   
+   std::unordered_set< std::unordered_set<HexTile*> > territoryset;
+   
+   /// We now have several sets of tiles, if any are equivalent, you know they belong to the same territory
+   for (unsigned int i = 0 i < tset.size() ; ) {
+      /// Filter unique territories
+      if (territoryset.find(tset[i]) == territoryset.end()) {
+         territoryset.insert(tset[i]);
+      }
+   }
+   
+   /// Erase the old territory
+   tlist.erase(tlist.find(tile->tid));
+   
+   /// Create a new territory for each unique set
+   std::unordered_set< std::unordered_set<HexTile*> >::iterator it = territoryset.begin();
+   while (it != territoryset.end()) {
+      Territory tty;
+      tty.tid = GetNewTerritoryId();
+      tty.owner = tile->owner;
+      tty.SetTerritory(*it);
+      tlist[tty.tid] = tty;
+      ++it;
+   }
+}
+
+
+
+unsigned int TerritoryList::Contains(HexTile* tile) {
+   std::map<unsigned int , Territory>::iterator it= tlist.begin();
+   while (it != tlist.end()) {
+      if (it->second.Contains(tile)) {
+         return it->first;
+      }
+      ++it;
+   }
+   return BADTID;
+}
+
+
+
+std::unordered_set<unsigned int> TerritoryList::Borders(HexTile* tile) {
+   std::unordered_set<unsigned int> bset;
+   std::map<unsigned int , Territory>::iterator it= tlist.begin();
+   while (it != tlist.end()) {
+      if (it->second.Borders(tile)) {
+         bset->insert(it->first);
+      }
+      ++it;
+   }
+   return bset;
 }
 
 
