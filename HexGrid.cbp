@@ -148,6 +148,13 @@
 			<Add directory="../Allegro525/lib" />
 		</Linker>
 		<Unit filename="EagleTest/Hex.cpp" />
+		<Unit filename="EagleTest/hexsrc/Game.cpp" />
+		<Unit filename="EagleTest/hexsrc/Game.hpp" />
+		<Unit filename="EagleTest/hexsrc/Hexagon.cpp" />
+		<Unit filename="EagleTest/hexsrc/Hexagon.hpp" />
+		<Unit filename="EagleTest/hexsrc/Player.hpp" />
+		<Unit filename="EagleTest/hexsrc/Territory.cpp" />
+		<Unit filename="EagleTest/hexsrc/Territory.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
