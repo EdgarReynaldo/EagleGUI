@@ -109,9 +109,7 @@ class HexGrid {
 public :
    HexGrid();
    
-   void Resize(unsigned int width , unsigned int height);
-
-   void SetRadius(unsigned int radius);
+   void Resize(unsigned int width , unsigned int height , double radius);
 
    void DrawGrid(EagleGraphicsContext* win , int xpos , int ypos);
    void DrawPlayer(EagleGraphicsContext* win , int xpos , int ypos , Player* player);

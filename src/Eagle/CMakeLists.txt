@@ -59,7 +59,7 @@ endif (${DEBUG_CMAKE})
 
 add_library(EagleObjects OBJECT ${EAGLE_SOURCE_FILES} ${EAGLE_HEADER_FILES})
 target_include_directories(EagleObjects PRIVATE ${EAGLE_INCLUDE_DIR})
-target_compile_options(EagleObjects PRIVATE "-std=c++11")
+target_compile_options(EagleObjects PRIVATE "-std=c++11" "-fPIC")
 
 
 

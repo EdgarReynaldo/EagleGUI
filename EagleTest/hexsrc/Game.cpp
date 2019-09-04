@@ -79,9 +79,8 @@ HexGame::~HexGame() {
 
 void HexGame::Resize(unsigned int width , unsigned int height , double radius) {
    rad = radius;
-   if (radius < 10.0) {radius = 10.0;}
-   hgrid.Resize(width,height);
-   hgrid.SetRadius(radius);
+   if (rad < 10.0) {rad = 10.0;}
+   hgrid.Resize(width,height,rad);
 }
    
    
@@ -132,15 +131,15 @@ void HexGame::HandleEvent(EagleEvent ee) {
 
 
 void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
-   hgrid.DrawGrid(win , xpos + x , ypos + y);
    for (int i = 0 ; i < nplayers + 1 ; ++i) {
-//      hgrid.DrawPlayer(win , xpos + x , ypos + y , players[i]);
+      hgrid.DrawPlayer(win , xpos + x , ypos + y , players[i]);
    }
    if (hover) {
       if (hover->owner == 0) {
-         hover->DrawFilled(win , 0.0 , 0.0 , players[turn + 1]->our_color);
+         hover->DrawFilled(win , xpos + x , ypos + y , players[turn + 1]->our_color);
       }
    }
+   hgrid.DrawGrid(win , xpos + x , ypos + y);
 }
 
 

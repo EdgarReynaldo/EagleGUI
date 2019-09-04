@@ -264,10 +264,12 @@ HexGrid::HexGrid() :
 
 
 
-void HexGrid::Resize(unsigned int width , unsigned int height) {
+void HexGrid::Resize(unsigned int width , unsigned int height , double radius) {
    
    w = width;
    h = height;
+   rad = radius;
+   HexTile::proto.SetRadius(rad);
    grid.clear();
    grid.resize(height , std::vector<HexTile>(width , HexTile()));
 
@@ -356,15 +358,6 @@ void HexGrid::Resize(unsigned int width , unsigned int height) {
 }
 
 
-
-void HexGrid::SetRadius(unsigned int radius) {
-   rad = radius;
-   if (grid.size()) {
-      if (grid[0].size()) {
-         grid[0][0].SetRadius(radius);
-      }
-   }
-}
 
 
 void HexGrid::DrawGrid(EagleGraphicsContext* win , int xpos , int ypos) {
