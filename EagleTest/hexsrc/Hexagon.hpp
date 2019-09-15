@@ -114,6 +114,8 @@ public :
    void DrawGrid(EagleGraphicsContext* win , int xpos , int ypos);
    void DrawPlayer(EagleGraphicsContext* win , int xpos , int ypos , Player* player);
 
+   void DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::map<int , Player*> players);
+   
    unsigned int Width() {return w;}
    unsigned int Height() {return h;}
 };

@@ -17,11 +17,13 @@ const double HexGame::root3 = sqrt(3.0);
 void HexGame::Claim(HexTile* tile , int owner) {
    if (!tile) {return;}
    
-   /// Remove before updating, so everything is current
-   if (tile->owner) {
-      players[tile->owner]->our_turf.RemoveTile(tile);
-   }
    
+   /// Remove after updating, so everything is current
+   if (tile->owner) {
+      TerritoryList& turf = players[tile->owner]->our_turf;
+      turf.RemoveTile(tile);
+   }
+
    tile->owner = owner;
    std::vector<HexTile*>& nb = tile->neighbors;
    for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
@@ -31,9 +33,11 @@ void HexGame::Claim(HexTile* tile , int owner) {
    }
    tile->CalcBorders();
    
+
    /// Now the tile is updated, add it to the appropriate territory
    if (tile->owner) {
-      players[tile->owner]->our_turf.AddTile(tile);
+      TerritoryList& turf = players[tile->owner]->our_turf;
+      turf.AddTile(tile);
    }
 }
 
@@ -131,6 +135,7 @@ void HexGame::HandleEvent(EagleEvent ee) {
 
 
 void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
+/*
    for (int i = 0 ; i < nplayers + 1 ; ++i) {
       hgrid.DrawPlayer(win , xpos + x , ypos + y , players[i]);
    }
@@ -140,6 +145,14 @@ void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
       }
    }
    hgrid.DrawGrid(win , xpos + x , ypos + y);
+
+*/
+   hgrid.DrawGrid2(win , xpos + x , ypos + y , players);
+   if (hover) {
+      if (hover->owner == 0) {
+         hover->DrawFilled(win , xpos + x , ypos + y , players[turn + 1]->our_color);
+      }
+   }
 }
 
 

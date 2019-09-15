@@ -26,7 +26,7 @@ void Territory::AddTile(HexTile* tile) {
    }
    
    /// Skip if already in territory
-   if (Contains(tile)) {
+   if (Territory::Contains(tile)) {
       return;
    }
 
@@ -52,7 +52,7 @@ void Territory::RemoveTile(HexTile* tile) {
       return;
    }
    
-   if (!Contains(tile)) {
+   if (!Territory::Contains(tile)) {
       return;/// We don't own this tile
    }
    
@@ -92,9 +92,8 @@ bool Territory::Borders(HexTile* tile) {
 
 unsigned int TerritoryList::GetNewTerritoryId() {
    unsigned int id = 0;
-   if (tlist.find(id) != tlist.end()) {
-      /// Already on list, skip id
-      ++id;
+   while (tlist.find(id) != tlist.end()) {
+      ++id;/// Already on list, skip id
    }
    return id;
 }
@@ -104,8 +103,10 @@ unsigned int TerritoryList::GetNewTerritoryId() {
 unsigned int TerritoryList::AddTile(HexTile* tile) {
    if (!tile) {return BADTID;}
    
-   if (Contains(tile)) {
+   const unsigned int TID = TerritoryList::Contains(tile);
+   if (TID != BADTID) {
       /// Already on our territory list
+      EAGLE_ASSERT(TID == BADTID);
       return BADTID;
    }
 
@@ -136,8 +137,10 @@ unsigned int TerritoryList::AddTile(HexTile* tile) {
    /// We border more than one territory
    unsigned int tid = *tids.begin();
    Territory* base = tlist[tid];
-   base->blist.erase(tile);/// Remove this tile from the border of the territory
+   base->AddTile(tile);
+   
    tids.erase(tids.begin());/// Ignore this territory, we have a pointer to base 
+
    while(tids.size() > 0) {
       /// For each adjoining territory
       Territory* t = tlist[*tids.begin()];
@@ -148,8 +151,10 @@ unsigned int TerritoryList::AddTile(HexTile* tile) {
       t->tlist.clear();
       t->blist.clear();
       delete t;/// Delete extra territories
+      tlist.erase(tlist.find(*tids.begin()));
       tids.erase(tids.begin());
    }
+
    return tid;
 }
    
@@ -158,7 +163,7 @@ unsigned int TerritoryList::AddTile(HexTile* tile) {
 void TerritoryList::RemoveTile(HexTile* tile) {
    if (!tile) {return;}
    
-   unsigned int TTYID = Contains(tile);
+   unsigned int TTYID = TerritoryList::Contains(tile);
    if (TTYID == BADTID) {
       /// None of our territories contain this tile
       EAGLE_ASSERT(TTYID != BADTID);
@@ -178,50 +183,61 @@ void TerritoryList::RemoveTile(HexTile* tile) {
       tlist.erase(tlist.find(TTYID));
       return;
    }
+   home->RemoveTile(tile);
    if (nnb < 2) {
       /// Neighbors only one other tile
-      home->RemoveTile(tile);
       return;
    }
    
    /// 2 or more neighbors, look for adjacent ones
-   int i = 0;
    std::set<HEXDIRECTION> ntty;/// Sort the directions quick
    ntty.insert(tile->neighbor_tty.begin() , tile->neighbor_tty.end());
-
-   std::set<HEXDIRECTION>::iterator it = ntty.begin();
+   
    std::unordered_set<HEXDIRECTION> uniq;
-   bool wasconnected = false;
-   bool connected = false;
-   while (it != ntty.end()) {
-      std::set<HEXDIRECTION>::iterator it2 = it;
-      ++it2;/// Get next
-      ++i;
-      if (i == (int)ntty.size()) {
-         it2 = ntty.begin();/// Wrap around to beginning of set
+
+   if (ntty.size() > 4) {
+      /// Surrounded by 5 or 6 neighboring territories, so they have to be connected
+      uniq.insert(*ntty.begin());/// Pick any
+   }
+   else {
+      /// There are 2,3,or 4 neighbors, which may or may not be connected (true)
+      /// There must be 2,3,or 4 territories which are not connected (false)
+      /// Ring buffer (of neighbors) 1 0 1 1 0 1 = <5,6> , <2,3>
+
+      std::vector<bool> nbs = {0,0,0,0,0,0};
+      
+      for (std::set<HEXDIRECTION>::iterator it = ntty.begin() ; it != ntty.end() ; ++it) {
+         nbs[(int)*it] = 1;
       }
-      int n1 = *it;
-      int n2 = *it;
-      int dn = n2 - n1;/// compare
-      if (dn < 0) {dn += 6;}/// modulo
-      wasconnected = connected;
-      if (dn == 1 || dn == 5) {/// 1 away or 5 away (1 away)
-         /// These are next to each other, ignore
-         connected = true;
+      
+      int N = 0;
+      while (nbs[N%6]) {++N;}/// Skip true
+      while (!nbs[N%6]) {++N;}/// Skip false
+      /// First true
+      for (int n = N ; n < N + 6 ; ) {
+         uniq.insert((HEXDIRECTION)(n%6));
+         while (nbs[n%6]) {++n;}
+         while (!nbs[n%6]) {++n;}
       }
-      else {
-         connected = false;
-      }
-      if (connected && !wasconnected) {
-         uniq.insert(*it);
-      }
-      ++it;
    }
 
+   tile->owner = 0;
+   tile->CalcBorders();
+   for (unsigned int n = 0 ; n < NUM_HEX_DIRECTIONS ; ++n) {
+      HexTile* nb = tile->neighbors[n];
+      if (nb) {
+         nb->CalcBorders();
+      }
+   }
+   
+   /// for each unique direction, create a new territory
+      /// for each remaining direction, see if it is connected, if so, erase it from the list
+   
    /// Now uniq holds a set of unique neighbors and their direction from here
    std::unordered_set<HEXDIRECTION>::iterator uniqit = uniq.begin();
    /// They might still be connected, so we have to iterate the territory
    while (uniqit != uniq.end()) {
+      /// Create a new territory
       unsigned int newtid = GetNewTerritoryId();
       Territory* newtty = new Territory;
       tlist[newtid] = newtty;
@@ -229,19 +245,21 @@ void TerritoryList::RemoveTile(HexTile* tile) {
       newtty->tlist = GetAdjoiningTiles(tile->neighbors[*uniqit]);
       newtty->blist = GetBorders(newtty->tlist);
       
-      /// Check the remaining tiles for already being included in this territory
+      /// Check if the other territories connect
       std::unordered_set<HEXDIRECTION>::iterator uniqit2 = uniqit;
       ++uniqit2;
       while (uniqit2 != uniq.end()) {
-         if (newtty->tlist.find(tile->neighbors[*uniqit2]) != newtty->tlist.end()) {
-            /// This one is already on a territory, skip it
-            ++uniqit;
+         HexTile* nb = tile->neighbors[*uniqit2];
+         if (newtty->Contains(nb)) {
+            uniqit2 = uniq.erase(uniqit2);/// Skip this one, it's already on a territory
          }
-         ++uniqit2;
+         else {
+            ++uniqit2;
+         }
       }
-      if (uniqit == uniq.end()) {break;}
       ++uniqit;
-   }
+   } 
+   
 
    /// Remove the original territory from the map
    delete home;
@@ -252,15 +270,15 @@ void TerritoryList::RemoveTile(HexTile* tile) {
 
 
 
-bool TerritoryList::Contains(HexTile* tile) {
+unsigned int TerritoryList::Contains(HexTile* tile) {
    std::map<unsigned int , Territory*>::iterator it= tlist.begin();
    while (it != tlist.end()) {
       if (it->second->Contains(tile)) {
-         return true;
+         return it->first;
       }
       ++it;
    }
-   return false;
+   return BADTID;
 }
 
 

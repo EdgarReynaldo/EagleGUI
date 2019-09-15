@@ -66,7 +66,7 @@ public :
    unsigned int AddTile(HexTile* tile);/// Returns territory id
    void RemoveTile(HexTile* tile);
 
-   bool Contains(HexTile* tile);
+   unsigned int Contains(HexTile* tile);
    std::unordered_set<unsigned int> Borders(HexTile* tile);
 
    unsigned int GetTID(HexTile* tile);

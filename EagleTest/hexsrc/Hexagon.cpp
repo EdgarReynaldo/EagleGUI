@@ -393,6 +393,8 @@ void HexGrid::DrawPlayer(EagleGraphicsContext* win , int xpos , int ypos , Playe
       while (tit != ttylist.end()) {
          HexTile* tile = *tit;
          tile->DrawFilled(win , xpos , ypos , player->our_color);
+         win->DrawTextString(win->DefaultFont() , label , xpos + tile->mx , ypos + tile->my ,
+                             EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
          ++tit;
       }
       ++it;
@@ -400,13 +402,8 @@ void HexGrid::DrawPlayer(EagleGraphicsContext* win , int xpos , int ypos , Playe
 }
 
 
-/**
+
 void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::map<int , Player*> players) {
-   static const double root3 = sqrt(3);
-   
-   /// Width and height of grid
-   const double dx = 1.5*rad;
-   const double dy = root3*rad;
 
    /// Top left
    const double ty = ypos;
@@ -414,35 +411,32 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
 
    /// Draw team colors
    for (unsigned int row = 0 ; row < h ; ++row) {
-      double y = ty + dy*row;
       for (unsigned int col = 0 ; col < w ; ++col) {
-         double ly = (col%2==0)?y:(y-dy/2.0);/// Offset odd columns up by dy
-         double x = lx + dx*col;
          HexTile* tile = &grid[row][col];
-         tile->DrawFilled(win , x , ly , players[tile->owner]->our_color);
+         tile->DrawFilled(win , lx , ty , players[tile->owner]->our_color);
          if (tile->owner) {
-            std::string s = StringPrintF("%d" , tile->owner);
-            win->DrawTextString(win->DefaultFont() , s , x , ly , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+            TerritoryList* tlist = &players[tile->owner]->our_turf;
+            unsigned int TID = tlist->GetTID(tile);
+            std::string s = StringPrintF("%d%c" , tile->owner , 'A' + (char)TID);
+            win->DrawTextString(win->DefaultFont() , s , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
          }
       }
    }
    /// Draw team influence
    for (unsigned int row = 0 ; row < h ; ++row) {
-      double y = ty + dy*row;
       for (unsigned int col = 0 ; col < w ; ++col) {
-         double ly = (col%2==0)?y:(y-dy/2.0);/// Offset odd columns up by dy
-         double x = lx + dx*col;
          HexTile* tile = &grid[row][col];
          if (tile->owner != 0) {continue;}
          const std::unordered_set<int>& infset = tile->maxinfluence;
          if (infset.empty()) {continue;}
+
          unsigned char r = 0;
          unsigned char g = 0;
          unsigned char b = 0;
          for (std::unordered_set<int>::const_iterator it = infset.begin() ; it != infset.end() ; ++it) {
             unsigned char r1 = 0;
             unsigned char g1 = 0;
-            unsigned char b1 = 0;
+            unsigned char b1 = 0; 
             al_unmap_rgb(players[*it]->our_color , &r1 , &g1 , &b1);
             r += r1;
             g += g1;
@@ -451,20 +445,18 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
 //         int factor = 2*infset.size();
          
          ALLEGRO_COLOR blended = al_map_rgba(r/2 , g/2 , b/2 , 127);
-         tile->DrawFilled(win , x , ly , blended);
+         tile->DrawFilled(win , lx , ty , blended);
       }
    }
+
    /// Outline in white
    for (unsigned int row = 0 ; row < h ; ++row) {
-      double y = ty + dy*row;
       for (unsigned int col = 0 ; col < w ; ++col) {
-         double ly = (col%2==0)?y:(y-dy/2.0);/// Offset odd columns up by dy
-         double x = lx + dx*col;
-         grid[row][col].DrawOutline(win , x , ly , al_map_rgb(255,255,255));
+         grid[row][col].DrawOutline(win , lx , ty , al_map_rgb(255,255,255));
       }
    }
 }
 
-*/
+
 
 
