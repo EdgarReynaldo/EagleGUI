@@ -21,7 +21,7 @@ const unsigned int BADTID = (unsigned int)-1;
 void Territory::CalcIncome() {
    income = 0;
    /// Simple
-   income = (int)blist.size() + 4*(int)tlist.size();
+///   income = (int)blist.size() + 4*(int)tlist.size();
    /// Complex
    std::unordered_set<HexTile*>::iterator it = tlist.begin();
    while (it != tlist.end()) {
@@ -56,6 +56,11 @@ void Territory::AddTile(HexTile* tile) {
    /// Add the tile to our territory list
    tlist.insert(tile);
 
+   /// Remove the tile from our border list
+   if (blist.find(tile) != blist.end()) {
+      blist.erase(tile);
+   }
+   
    /// Add the neighbors to our border if they are unowned
    std::vector<HexTile*>& nb = tile->neighbors;
    for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {

@@ -34,6 +34,7 @@ public :
    friend class HexGrid;
    friend class HexGame;
    
+   int TotalIncome() {return our_turf.TotalIncome();}
    int TotalScore() {return points;}
 };
 

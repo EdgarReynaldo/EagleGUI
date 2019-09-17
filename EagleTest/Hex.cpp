@@ -31,7 +31,7 @@ int main(int argc , char** argv) {
    
    HexGame game;
    
-   game.Resize(12,9,25);
+   game.Resize(14,12,25);
    
    game.Position(sw/4 , sh/4);
    

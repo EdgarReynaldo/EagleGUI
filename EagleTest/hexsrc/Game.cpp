@@ -195,7 +195,9 @@ void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
    
    for (int i = 0 ; i < NumPlayers() ; ++i) {
       std::string s = StringPrintF("%d" , players[i + 1]->TotalScore());
-      win->DrawTextString(win->DefaultFont() , s , (i+1)*(1024/5) , 50 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
+      win->DrawTextString(win->DefaultFont() , s , (i+1)*(1024/4) , 50 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
+      std::string s2 = StringPrintF("%d" , players[i + 1]->TotalIncome());
+      win->DrawTextString(win->DefaultFont() , s2 , (i+1)*(1024/4) , 80 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
    }
    
 }
