@@ -19,6 +19,9 @@ class Player {
    
    int pid;/// Our player id
    
+   void CalcIncome();
+   void EndTurn();
+   
 public :
 //   Player(ALLEGRO_COLOR teamcolor);
    Player(ALLEGRO_COLOR teamcolor) :
@@ -30,6 +33,8 @@ public :
    
    friend class HexGrid;
    friend class HexGame;
+   
+   int TotalScore() {return points;}
 };
 
 

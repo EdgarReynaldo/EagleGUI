@@ -11,6 +11,12 @@
 
 
 #include "Eagle.hpp"
+#include "Eagle/backends/Allegro5Backend.hpp"
+
+/**
+ *    Points are based on territorial advantages.
+ *    When fighting for a contested territory, each player gets as many d6 as they have neighbor tiles to the territory in question.
+ */
 
 
 class HexGame {
@@ -24,6 +30,7 @@ class HexGame {
    std::map<int , Player*> players;
 
    int turn;
+   int plturn;
    int nplayers;
    
    int mx,my;

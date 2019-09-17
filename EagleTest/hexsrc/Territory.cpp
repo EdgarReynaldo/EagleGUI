@@ -18,6 +18,29 @@ const unsigned int BADTID = (unsigned int)-1;
 
 
 
+void Territory::CalcIncome() {
+   income = 0;
+   /// Simple
+   income = (int)blist.size() + 4*(int)tlist.size();
+   /// Complex
+   std::unordered_set<HexTile*>::iterator it = tlist.begin();
+   while (it != tlist.end()) {
+      HexTile* tile = *it;
+      tile->CalcIncome();
+      income += tile->TotalIncome();
+      ++it;
+   }
+   it = blist.begin();
+   while (it != blist.end()) {
+      HexTile* tile = *it;
+      tile->CalcIncome();
+      income += tile->TotalIncome();
+      ++it;
+   }
+}
+
+
+
 void Territory::AddTile(HexTile* tile) {
 
    /// BAD tile
@@ -87,6 +110,20 @@ bool Territory::Borders(HexTile* tile) {
 
 
 /// ------------------------     TerritoryList     -----------------------------
+
+
+
+void TerritoryList::CalcIncome() {
+   income = 0;
+   std::map<unsigned int , Territory*>::iterator it = tlist.begin();
+   while (it != tlist.end()) {
+      Territory* tty = it->second;
+      tty->CalcIncome();
+      income += tty->TotalIncome();
+      ++it;
+   }
+   return;
+}
 
 
 

@@ -23,8 +23,12 @@ class Territory {
    std::unordered_set<HexTile*> tlist;/// Territory list
    std::unordered_set<HexTile*> blist;/// Border list
    
+   int income;
+   
    friend class TerritoryList;
    friend class HexGrid;
+   
+   void CalcIncome();
    
 public :
 
@@ -32,7 +36,8 @@ public :
    Territory() :
          owner(0),
          tlist(),
-         blist()
+         blist(),
+         income(0)
    {}
 
    void AddTile(HexTile* tile);
@@ -40,12 +45,16 @@ public :
    
    bool Contains(HexTile* tile);
    bool Borders(HexTile* tile);
+   
+   int TotalIncome() {return income;}
 };
 
 
 class TerritoryList {
 //   int owner;
    std::map<unsigned int , Territory*> tlist;/// <territory id , Territory>
+
+   int income;
 
 
 
@@ -55,12 +64,15 @@ class TerritoryList {
    friend class HexGame;
    friend class Player;
    
+   void CalcIncome();
+   
 public :
       
 
 //   TerritoryList();
    TerritoryList() :
-         tlist()
+         tlist(),
+         income(0)
    {}
       
    unsigned int AddTile(HexTile* tile);/// Returns territory id
@@ -70,6 +82,7 @@ public :
    std::unordered_set<unsigned int> Borders(HexTile* tile);
 
    unsigned int GetTID(HexTile* tile);
+   int TotalIncome() {return income;}
 };
 
 

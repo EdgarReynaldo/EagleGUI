@@ -50,6 +50,7 @@ HexGame::HexGame() :
       ypos(0.0),
       players(),
       turn(0),
+      plturn(0),
       nplayers(3),
       mx(0),
       my(0),
@@ -120,9 +121,38 @@ void HexGame::HandleEvent(EagleEvent ee) {
    if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
       if (hover) {
          if (ee.mouse.button == 1) {
-            if (hover->owner == 0) {
-               Claim(hover , turn + 1);
-               turn = (turn + 1)%NumPlayers();
+            if (turn == 0) {
+               /// On first turn, allow players to pick a territory
+               if (hover->owner == 0) {
+                  Claim(hover , plturn + 1);
+                  plturn = (plturn + 1)%NumPlayers();
+                  for (int i = 0 ; i < NumPlayers() ; ++i) {
+                     Player* pl = players[i + 1];
+                     pl->CalcIncome();
+                     if (plturn == 0) {
+                        pl->EndTurn();
+                     }
+                  }
+                  if (plturn == 0) {
+                     ++turn;
+                  }
+               }
+            }
+            else {
+               if (hover->influence[plturn + 1] && hover->owner == 0) {
+                  Claim(hover , plturn + 1);
+                  plturn = (plturn + 1) % NumPlayers();
+                  for (int i = 0 ; i < NumPlayers() ; ++i) {
+                     Player* pl = players[i + 1];
+                     pl->CalcIncome();
+                     if (plturn == 0) {
+                        pl->EndTurn();
+                     }
+                  }
+                  if (plturn == 0) {
+                     ++turn;
+                  }
+               }
             }
          }
          else if (ee.mouse.button == 2) {
@@ -150,9 +180,24 @@ void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
    hgrid.DrawGrid2(win , xpos + x , ypos + y , players);
    if (hover) {
       if (hover->owner == 0) {
-         hover->DrawFilled(win , xpos + x , ypos + y , players[turn + 1]->our_color);
+         if (turn == 0) {
+            /// first turn allow players to select a starting territory
+            hover->DrawFilled(win , xpos + x , ypos + y , players[plturn + 1]->our_color);
+         }
+         else {
+            /// normal turn, only highlight possible moves
+            if (hover->influence[plturn + 1]) {
+               hover->DrawFilled(win , xpos + x , ypos + y , players[plturn + 1]->our_color);
+            }
+         }
       }
    }
+   
+   for (int i = 0 ; i < NumPlayers() ; ++i) {
+      std::string s = StringPrintF("%d" , players[i + 1]->TotalScore());
+      win->DrawTextString(win->DefaultFont() , s , (i+1)*(1024/5) , 50 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
+   }
+   
 }
 
 

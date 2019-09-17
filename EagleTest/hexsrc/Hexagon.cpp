@@ -89,16 +89,32 @@ Hexagon HexTile::proto;
 
 
 
+void HexTile::CalcIncome() {
+   income = 0;
+   if (owner) {
+      income += 4;
+      income += 2*(int)neighbor_tty.size();
+      income += border_tty.size();
+   }
+   else {
+      income = influence[*maxinfluence.begin()];
+   }
+}
+
+
+
 HexTile::HexTile() : 
       tx(-1),
       ty(-1),
       mx(-1.0),
       my(-1.0),
       owner(0),
+      influence(),
       maxinfluence(),
       neighbor_tty(),
       border_tty(),
-      neighbors(6 , NULL)
+      neighbors(6 , NULL),
+      income(0)
 {}
 
 
@@ -114,7 +130,8 @@ void HexTile::CalcBorders() {
    neighbor_tty.clear();
    maxinfluence.clear();
    int maxcount = 0;
-   std::map<int , int> infmap;/// <owner , count>
+   influence.clear();
+//   std::map<int , int> infmap;/// <owner , count>
    for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
       HexTile* n = neighbors[i];
       if (!n) {continue;}
@@ -124,14 +141,14 @@ void HexTile::CalcBorders() {
             /// We connect to this territory
             neighbor_tty.insert((HEXDIRECTION)i);
          }
-         infmap[n->owner]++;
+         influence[n->owner]++;
 
-         if (infmap[n->owner] > maxcount) {
-            maxcount = infmap[n->owner];
+         if (influence[n->owner] > maxcount) {
+            maxcount = influence[n->owner];
             maxinfluence.clear();
             maxinfluence.insert(n->owner);
          }
-         else if (infmap[n->owner] == maxcount) {
+         else if (influence[n->owner] == maxcount) {
             maxinfluence.insert(n->owner);
          }
       }
@@ -416,9 +433,10 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
          tile->DrawFilled(win , lx , ty , players[tile->owner]->our_color);
          if (tile->owner) {
             TerritoryList* tlist = &players[tile->owner]->our_turf;
-            unsigned int TID = tlist->GetTID(tile);
-            std::string s = StringPrintF("%d%c" , tile->owner , 'A' + (char)TID);
-            win->DrawTextString(win->DefaultFont() , s , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+//            unsigned int TID = tlist->GetTID(tile);
+//            std::string s = StringPrintF("%d%c" , tile->owner , 'A' + (char)TID);
+            std::string s2 = StringPrintF("%d" , tile->TotalIncome());
+            win->DrawTextString(win->DefaultFont() , s2 , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
          }
       }
    }
@@ -436,7 +454,7 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
          for (std::unordered_set<int>::const_iterator it = infset.begin() ; it != infset.end() ; ++it) {
             unsigned char r1 = 0;
             unsigned char g1 = 0;
-            unsigned char b1 = 0; 
+            unsigned char b1 = 0;
             al_unmap_rgb(players[*it]->our_color , &r1 , &g1 , &b1);
             r += r1;
             g += g1;
@@ -446,13 +464,15 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
          
          ALLEGRO_COLOR blended = al_map_rgba(r/2 , g/2 , b/2 , 127);
          tile->DrawFilled(win , lx , ty , blended);
+         std::string s2 = StringPrintF("%d" , tile->TotalIncome());
+         win->DrawTextString(win->DefaultFont() , s2 , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
       }
    }
 
    /// Outline in white
    for (unsigned int row = 0 ; row < h ; ++row) {
       for (unsigned int col = 0 ; col < w ; ++col) {
-         grid[row][col].DrawOutline(win , lx , ty , al_map_rgb(255,255,255));
+         grid[row][col].DrawOutline(win , lx , ty , al_map_rgb(255,255,0));
       }
    }
 }

@@ -62,10 +62,14 @@ class HexTile {
    double mx;/// Map x
    double my;/// Map y
    int owner;
+   std::map<int , int> influence;
    std::unordered_set<int> maxinfluence;/// 1 or more players influence this tile
    std::unordered_set<HEXDIRECTION> neighbor_tty;/// Neighbor territories we own
    std::unordered_set<HEXDIRECTION> border_tty;/// Border territories we do not own
    std::vector<HexTile*> neighbors;
+   
+   int income;
+   
    
    friend class HexGrid;
    friend class HexGame;
@@ -76,6 +80,8 @@ class HexTile {
    
    /// unsigned int TID
    
+   void CalcIncome();
+   
    void CalcBorders();
    
 public :
@@ -85,6 +91,8 @@ public :
    
    void DrawFilled(EagleGraphicsContext* win , double xpos , double ypos , ALLEGRO_COLOR color);
    void DrawOutline(EagleGraphicsContext* win , double xpos , double ypos ,  ALLEGRO_COLOR color);
+   
+   int TotalIncome() {return income;}
 };
 
 
