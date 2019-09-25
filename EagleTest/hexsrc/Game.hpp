@@ -37,7 +37,7 @@ class HexGame {
    
    HexTile* hover;
    int hx,hy;
-
+   bool space;
       
    void Claim(HexTile* tile , int owner);
    

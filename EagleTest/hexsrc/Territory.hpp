@@ -43,6 +43,8 @@ public :
    void AddTile(HexTile* tile);
    void RemoveTile(HexTile* tile);
    
+   void RemoveBorderTile(HexTile* tile);
+   
    bool Contains(HexTile* tile);
    bool Borders(HexTile* tile);
    
@@ -78,6 +80,8 @@ public :
    unsigned int AddTile(HexTile* tile);/// Returns territory id
    void RemoveTile(HexTile* tile);
 
+   void RemoveBorderTile(HexTile* tile);
+   
    unsigned int Contains(HexTile* tile);
    std::unordered_set<unsigned int> Borders(HexTile* tile);
 

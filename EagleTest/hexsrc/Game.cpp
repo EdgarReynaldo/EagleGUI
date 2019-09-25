@@ -38,6 +38,11 @@ void HexGame::Claim(HexTile* tile , int owner) {
    if (tile->owner) {
       TerritoryList& turf = players[tile->owner]->our_turf;
       turf.AddTile(tile);
+      for (unsigned int i = 0 ; i < NumPlayers() ; ++i) {
+         if (i + 1 == tile->owner) {continue;}
+         TerritoryList& oturf = players[i+1]->our_turf;
+         oturf.RemoveBorderTile(tile);
+      }
    }
 }
 
@@ -56,7 +61,8 @@ HexGame::HexGame() :
       my(0),
       hover(0),
       hx(0),
-      hy(0)
+      hy(0),
+      space(false)
 {
    ALLEGRO_COLOR teamcolors[4] = {
       al_map_rgb(0,0,0),
@@ -98,6 +104,12 @@ void HexGame::Position(double x , double y) {
 
 
 void HexGame::HandleEvent(EagleEvent ee) {
+   if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_C) {
+      for (int i = 0 ; i < NumPlayers() ; ++i) {
+         Player* pl = players[i + 1];
+         pl->CalcIncome();
+      }
+   }
    if (ee.type == EAGLE_EVENT_MOUSE_AXES) {
       mx = ee.mouse.x;
       my = ee.mouse.y;
@@ -160,6 +172,13 @@ void HexGame::HandleEvent(EagleEvent ee) {
          }
       }
    }
+   if (ee.type == EAGLE_EVENT_KEY_DOWN && ee.keyboard.keycode == EAGLE_KEY_SPACE) {
+      space = true;
+   }
+   else if (ee.type == EAGLE_EVENT_KEY_UP && ee.keyboard.keycode == EAGLE_KEY_SPACE) {
+      space = false;
+   }
+   
 }
 
 
@@ -198,6 +217,12 @@ void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
       win->DrawTextString(win->DefaultFont() , s , (i+1)*(1024/4) , 50 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
       std::string s2 = StringPrintF("%d" , players[i + 1]->TotalIncome());
       win->DrawTextString(win->DefaultFont() , s2 , (i+1)*(1024/4) , 80 , GetEagleColor(players[i+1]->our_color) , HALIGN_CENTER , VALIGN_TOP);
+   }
+   
+   if (space && hover) {
+      HexTile* hl = hover;
+      std::string s1 = StringPrintF("%d" , hl->TotalIncome());
+      win->DrawTextString(win->DefaultFont() , s1 , 10 , (768 - 40) , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_BOTTOM);
    }
    
 }

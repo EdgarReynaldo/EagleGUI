@@ -97,7 +97,9 @@ void HexTile::CalcIncome() {
       income += border_tty.size();
    }
    else {
-      income = influence[*maxinfluence.begin()];
+      if (maxinfluence.size()) {
+         income = influence[*maxinfluence.begin()];
+      }
    }
 }
 

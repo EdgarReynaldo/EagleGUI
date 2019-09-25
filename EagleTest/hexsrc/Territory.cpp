@@ -102,6 +102,15 @@ void Territory::RemoveTile(HexTile* tile) {
 
 
 
+void Territory::RemoveBorderTile(HexTile* tile) {
+   std::unordered_set<HexTile*>::iterator bit = blist.find(tile);
+   if (bit != blist.end()) {
+      blist.erase(bit);
+   }
+}
+
+
+
 bool Territory::Contains(HexTile* tile) {
    return tlist.find(tile) != tlist.end();
 }
@@ -308,6 +317,15 @@ void TerritoryList::RemoveTile(HexTile* tile) {
    tlist.erase(tlist.find(TTYID));
    
    return;
+}
+
+
+
+void TerritoryList::RemoveBorderTile(HexTile* tile) {
+   for (std::map<unsigned int , Territory*>::iterator it = tlist.begin() ; it != tlist.end() ; ++it) {
+      Territory* t = it->second;
+      t->RemoveBorderTile(tile);
+   }
 }
 
 

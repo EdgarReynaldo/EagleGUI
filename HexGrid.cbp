@@ -139,7 +139,7 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-std=c++11" />
+			<Add option="-std=c++2a" />
 			<Add directory="include" />
 			<Add directory="../Allegro525/include" />
 		</Compiler>

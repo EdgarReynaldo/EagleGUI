@@ -7,7 +7,6 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "hexsrc/Game.hpp"
 
-
 int main(int argc , char** argv) {
    
    (void)argc;
@@ -46,72 +45,6 @@ int main(int argc , char** argv) {
    
    return 0;
 }
-
-
-
-
-
-
-/**
-//if (direction == 3) //RIGHT
-//if (direction == 2) //LEFT
-//if (direction == 1) //UP
-//if (direction == 0) //DOWN
-
-enum DIRECTION {
-   DOWN = 0,
-   UP = 1,
-   LEFT = 2,
-   RIGHT = 3
-};
-
-struct DXY {
-   int x;
-   int y;
-};
-
-static const struct DXY movedir[4] = {
-   {0  ,  1},/// down
-   {0  , -1},/// up
-   {-1 ,  0},/// left
-   {1  ,  0} /// right
-};
-
-typedef struct Rectangle {
-   double x,y,rx,by;/// left x, top y , right x , bottom y
-};
-
-Rectangle SweepRectangle(const Rectangle& rect , double dx , double dy) {
-   Rectangle r = rect;
-   r.x += (dx>0)?0:dx;
-   r.y += (dy>0)?0:dy;
-   r.rx += (dx>0)?dx:0;
-   r.by += (dy>0)?dy:0;
-   return r;
-}
-
-/// In update loop
-   Rectangle swept = SweepRectangle(snake_head_rect , dt*snake_speed*DXY[direction].x , dt*snake_speed*DXY[direction].y);
-   if (swept.Overlaps(fruit)) {
-      /// ate some sweet fruit
-      score += 1;
-      remove_fruit();
-      place_new_fruit();
-   }
-   else if (swept.Overlaps(edges) {
-      /// died
-   }
-   else if (swept.Overlaps(body)) {
-      /// ate ourselves
-   }
-   else {
-      /// move normally
-      snake_head_rect.MoveBy(dt*snake_speed*DXY[direction].x , dt*snake_speed*DXY[direction].y);
-   }
-</code>
-   
-   
-*/
 
 
 
