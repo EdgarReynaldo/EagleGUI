@@ -404,22 +404,11 @@ PATH HexGame::FindBestPath(HexTile* start , HexTile* destination) {
    
    std::unordered_set<HexTile*> visited;
    visited.insert(start);
+   
+   PATH pstart(start);
+
    PATHSET pathset;
-   {
-      std::vector<HexTile*> nbs = start->neighbors;
-      for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
-         if (nbs[i]) {
-            pathset.push_back(PATH(start , nbs[i]));
-            if (nbs[i] == destination) {
-               return pathset.back();
-            }
-            visited.insert(nbs[i]);
-         }
-      }
-   }
-   
-   
-   
+   pathset.push_back(pstart);
    
    bool destreached = false;
    for (std::list<PATH>::iterator it = pathset.begin() ; it != pathset.end() ;) {
