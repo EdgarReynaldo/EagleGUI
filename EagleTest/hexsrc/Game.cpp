@@ -343,7 +343,7 @@ void HexGame::DisplayOn(EagleGraphicsContext* win , int x , int y) {
    }
    
    if (rdrag) {
-      PATH p = FindBestPath(rdragtile , hover);
+      PATH p = FindConnectedPath(rdragtile , hover);
       DrawPath(p , xpos + x , ypos + y);
    }
    
@@ -441,6 +441,73 @@ PATH HexGame::FindBestPath(HexTile* start , HexTile* destination) {
             throw EagleException("WTF");
          }
          
+         
+         PATH p2 = p;
+         p2.PushBack(next);
+         npaths.push_back(p2);
+         visited.insert(next);
+         if (next == destination) {
+            return p2;
+         }
+      }
+      pathset.insert(pathset.begin() , npaths.begin() , npaths.end());
+      it = pathset.begin();
+   }
+   return PATH();
+}
+
+
+
+PATH HexGame::FindConnectedPath(HexTile* start , HexTile* destination) {
+
+   //EAGLE_ASSERT(start && destination);
+
+   
+   if (!start) {return PATH();}
+   if (!destination) {return PATH();}
+   if (start == destination) {return PATH(start);}
+   
+   const int owner = start->owner;
+
+   bool left_territory = false;
+   
+   std::unordered_set<HexTile*> visited;
+   visited.insert(start);
+   
+   PATH pstart(start);
+
+   PATHSET pathset;
+   pathset.push_back(pstart);
+   
+   bool destreached = false;
+   for (std::list<PATH>::iterator it = pathset.begin() ; it != pathset.end() ;) {
+      PATH p = *it;
+      it = pathset.erase(it);
+      
+      HexTile* from = p.path.back();
+      HexTile* to = destination;
+      double arad = atan2(to->my - from->my , to->mx - from->mx);
+      
+      const HEXDIRECTION d = AngleToHexDirection(arad);
+      
+      const std::vector<HexTile*> nb = p.path.back()->neighbors;
+      const std::vector<HexTile*> nbs = {
+         nb[d % 6],
+         nb[(d+1)%6],
+         nb[(d+5)%6],
+         nb[(d+2)%6],
+         nb[(d+4)%6],
+         nb[(d+3)%6]
+      };
+      std::deque<PATH> npaths;
+      for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+         HexTile* next = nbs[i];
+         if (!next) {continue;}
+         if (visited.find(next) != visited.end()) {continue;}
+         
+         if (next->owner != owner) {
+            if (next != destination) {continue;}
+         }
          
          PATH p2 = p;
          p2.PushBack(next);

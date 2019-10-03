@@ -93,6 +93,7 @@ public :
    int NumPlayers() {return nplayers;}
 
    PATH FindBestPath(HexTile* start , HexTile* destination);
+   PATH FindConnectedPath(HexTile* start , HexTile* destination);
 
    void DrawPath(PATH p , int x , int y);
 };
