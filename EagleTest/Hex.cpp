@@ -7,6 +7,16 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "hexsrc/Game.hpp"
 
+int main2(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
+   TestAngleToHexDirection();
+   
+   return 0;
+}
+
 int main(int argc , char** argv) {
    
    (void)argc;
@@ -28,7 +38,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   HexGame game;
+   HexGame game(win);
    
    game.Resize(14,12,25);
    

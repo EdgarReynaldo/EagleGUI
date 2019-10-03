@@ -14,12 +14,65 @@
 
 
 #include "Eagle.hpp"
+#include "Eagle/backends/Allegro5Backend.hpp"
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 
 
 /// ---------------------------     Hexagon      -----------------------------
 
+
+
+
+std::string HexDirectionToString(HEXDIRECTION d) {
+   static const char* dirstrs[NUM_HEX_DIRECTIONS + 1] = {
+      "HD_NORTH",
+      "HD_NORTHEAST",
+      "HD_SOUTHEAST",
+      "HD_SOUTH",
+      "HD_SOUTHWEST",
+      "HD_NORTHWEST",
+      "NUM_HEX_DIRECTIONS"
+   };
+   return dirstrs[d];
+};
+
+
+
+double HexDirectionToAngle(HEXDIRECTION d) {
+   const double a = -M_PI/2.0 + (double)d*M_PI/3.0;
+   return a;
+}
+
+
+
+HEXDIRECTION AngleToHexDirection(double arad) {
+   
+   /// North in Allegro is actually 270 degrees, so add a 1/4 turn clockwise to make North zero
+   /// We want North to be from 240 degrees to 300 degrees (allegro degrees) so add 120 degrees
+   arad += 2.0*M_PI/3.0;/// Adjust for the middle of the hex direction by turn cw 1/12
+
+   /// Attempt to normalize the angle
+   double ncircles = arad/(2.0*M_PI);
+   if (ncircles < 0.0) {
+      ncircles += ((int)-ncircles) + 1;
+   }
+   const double deg = fmod(ncircles , 1.0)*360.0;
+   const int hex = int(deg/60.0) % 6;
+   return HEXDIRECTION(hex);
+}
+
+
+
+void TestAngleToHexDirection() {
+   for (unsigned int i = 0 ; i <= 24 ; ++i) {
+      double a = i*M_PI/12.0;
+      double deg = a*180.0/M_PI;
+      HEXDIRECTION d = AngleToHexDirection(a);
+      std::string dstr = HexDirectionToString(d);
+      EagleInfo() << StringPrintF("Angle a (%3.1lf) = direction %s (%d)\n" , deg  , dstr.c_str() , d);
+   }
+}
 
 
 
@@ -105,6 +158,12 @@ void HexTile::CalcIncome() {
 
 
 
+void HexTile::CollectIncome() {
+   armies += income;
+}
+
+
+
 HexTile::HexTile() : 
       tx(-1),
       ty(-1),
@@ -116,7 +175,8 @@ HexTile::HexTile() :
       neighbor_tty(),
       border_tty(),
       neighbors(6 , NULL),
-      income(0)
+      income(0),
+      armies(0)
 {}
 
 
@@ -171,6 +231,17 @@ void HexTile::DrawFilled(EagleGraphicsContext* win , double xpos , double ypos ,
 
 void HexTile::DrawOutline(EagleGraphicsContext* win , double xpos , double ypos , ALLEGRO_COLOR color) {
    proto.DrawOutline(win , mx + xpos , my + ypos , color);
+}
+
+
+
+void HexTile::DrawStats(EagleGraphicsContext* win , double xpos , double ypos , ALLEGRO_COLOR color) {
+//   std::string s1 = StringPrintF("%d" , income);
+//   std::string s2 = StringPrintF("%d" , armies);
+   std::string s3 = StringPrintF("%d+%d" , armies , income);
+//   win->DrawTextString(win->DefaultFont() , s1 , xpos , ypos - 5.0 , GetEagleColor(color) , HALIGN_CENTER , VALIGN_BOTTOM);
+//   win->DrawTextString(win->DefaultFont() , s2 , xpos , ypos + 5.0 , GetEagleColor(color) , HALIGN_CENTER , VALIGN_TOP);
+   win->DrawTextString(win->DefaultFont() , s3 , mx + xpos , my + ypos , GetEagleColor(color) , HALIGN_CENTER , VALIGN_CENTER);
 }
 
 
@@ -274,6 +345,28 @@ std::unordered_set<HexTile*> GetBorders(std::unordered_set<HexTile*> tty) {
 
 
 
+bool HexGrid::CheckGrid() {
+   bool safe = true;
+   unsigned int height = grid.size();
+   unsigned int width = grid[0].size();
+   for (unsigned int row = 0 ; row < height ; ++row) {
+      for (unsigned int col = 0 ; col < width ; ++col) {
+         HexTile* hex = &grid[row][col];
+         for (unsigned int i = 0 ; i < NUM_HEX_DIRECTIONS ; ++i) {
+            HexTile* nb = hex->neighbors[i];
+            if (!Safe(nb)) {
+               safe = false;
+               std::string dstr = HexDirectionToString((HEXDIRECTION)i);
+               EagleError() << StringPrintF("Unsafe tile at row %u , col %u , dir %s (%u) , %p\n" , row , col , dstr.c_str() , i , nb);
+            }
+         }
+      }
+   }
+   return safe;
+}
+
+
+
 HexGrid::HexGrid() :
       w(0),
       h(0),
@@ -374,8 +467,11 @@ void HexGrid::Resize(unsigned int width , unsigned int height , double radius) {
          }
       }
    }
-}
 
+   EAGLE_DEBUG(
+      if (!CheckGrid()) {throw EagleException("Failed to pass grid check");}
+   );
+}
 
 
 
@@ -434,11 +530,7 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
          HexTile* tile = &grid[row][col];
          tile->DrawFilled(win , lx , ty , players[tile->owner]->our_color);
          if (tile->owner) {
-            TerritoryList* tlist = &players[tile->owner]->our_turf;
-//            unsigned int TID = tlist->GetTID(tile);
-//            std::string s = StringPrintF("%d%c" , tile->owner , 'A' + (char)TID);
-            std::string s2 = StringPrintF("%d" , tile->TotalIncome());
-            win->DrawTextString(win->DefaultFont() , s2 , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+            tile->DrawStats(win , lx , ty , al_map_rgb(255,255,255));
          }
       }
    }
@@ -466,8 +558,7 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
          
          ALLEGRO_COLOR blended = al_map_rgba(r/2 , g/2 , b/2 , 127);
          tile->DrawFilled(win , lx , ty , blended);
-         std::string s2 = StringPrintF("%d" , tile->TotalIncome());
-         win->DrawTextString(win->DefaultFont() , s2 , lx + tile->mx , ty + tile->my , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+         tile->DrawStats(win , lx , ty  , al_map_rgb(255,255,255));
       }
    }
 
@@ -481,4 +572,15 @@ void HexGrid::DrawGrid2(EagleGraphicsContext* win , int xpos , int ypos , std::m
 
 
 
+bool HexGrid::Safe(HexTile* tile) {
+   if (!tile) {return true;}
+   for (unsigned int i = 0 ; i < grid.size() ; ++i) {
+      for (unsigned int j = 0 ; j < grid[i].size() ; ++j) {
+         if (tile == &grid[i][j]) {
+            return true;
+         }
+      }
+   }
+   return false;
+}
 

@@ -28,14 +28,24 @@ enum HEXCORNER {
 };
 
 enum HEXDIRECTION {
-   HD_NORTHEAST = 0,
-   HD_SOUTHEAST = 1,
-   HD_SOUTH     = 2,
-   HD_SOUTHWEST = 3,
-   HD_NORTHWEST = 4,
-   HD_NORTH     = 5,
+   HD_NORTH     = 0,
+   HD_NORTHEAST = 1,
+   HD_SOUTHEAST = 2,
+   HD_SOUTH     = 3,
+   HD_SOUTHWEST = 4,
+   HD_NORTHWEST = 5,
    NUM_HEX_DIRECTIONS = 6
 };
+
+
+std::string HexDirectionToString(HEXDIRECTION d);
+
+double HexDirectionToAngle(HEXDIRECTION d);
+HEXDIRECTION AngleToHexDirection(double arad);
+
+void TestAngleToHexDirection();
+
+
 
 class Hexagon {
    double radius;
@@ -57,18 +67,24 @@ public :
 
 class HexTile {
    static Hexagon proto;
+
    unsigned int tx;/// Tile x
    unsigned int ty;/// Tile y
+
    double mx;/// Map x
    double my;/// Map y
+
    int owner;
    std::map<int , int> influence;
    std::unordered_set<int> maxinfluence;/// 1 or more players influence this tile
+
    std::unordered_set<HEXDIRECTION> neighbor_tty;/// Neighbor territories we own
    std::unordered_set<HEXDIRECTION> border_tty;/// Border territories we do not own
+
    std::vector<HexTile*> neighbors;
    
    int income;
+   int armies;
    
    
    friend class HexGrid;
@@ -82,6 +98,9 @@ class HexTile {
    
    void CalcIncome();
    
+   void CollectIncome();
+   
+   
    void CalcBorders();
    
 public :
@@ -91,7 +110,7 @@ public :
    
    void DrawFilled(EagleGraphicsContext* win , double xpos , double ypos , ALLEGRO_COLOR color);
    void DrawOutline(EagleGraphicsContext* win , double xpos , double ypos ,  ALLEGRO_COLOR color);
-   
+   void DrawStats(EagleGraphicsContext* win , double xpos , double ypos , ALLEGRO_COLOR color);
    int TotalIncome() {return income;}
 };
 
@@ -113,6 +132,7 @@ class HexGrid {
    friend class HexGame;
    
    
+   bool CheckGrid();
    
 public :
    HexGrid();
@@ -126,6 +146,8 @@ public :
    
    unsigned int Width() {return w;}
    unsigned int Height() {return h;}
+   
+   bool Safe(HexTile* tile);
 };
 
 

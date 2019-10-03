@@ -30,6 +30,7 @@ class Territory {
    
    void CalcIncome();
    
+   void CollectIncome();
 public :
 
 //   Territory(HexTile* tile);
@@ -67,6 +68,9 @@ class TerritoryList {
    friend class Player;
    
    void CalcIncome();
+   
+   void CollectIncome();
+   
    
 public :
       

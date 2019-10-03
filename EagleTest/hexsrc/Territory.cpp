@@ -41,6 +41,23 @@ void Territory::CalcIncome() {
 
 
 
+void Territory::CollectIncome() {
+   std::unordered_set<HexTile*>::iterator it = tlist.begin();
+   while (it != tlist.end()) {
+      HexTile* tile = *it;
+      tile->CollectIncome();
+      ++it;
+   }
+   it = blist.begin();
+   while (it != blist.end()) {
+      HexTile* tile = *it;
+      tile->CollectIncome();
+      ++it;
+   }
+}
+
+
+
 void Territory::AddTile(HexTile* tile) {
 
    /// BAD tile
@@ -137,6 +154,15 @@ void TerritoryList::CalcIncome() {
       ++it;
    }
    return;
+}
+
+
+
+void TerritoryList::CollectIncome() {
+   for (std::map<unsigned int , Territory*>::iterator it = tlist.begin() ; it != tlist.end() ; ++it) {
+      Territory* t = it->second;
+      t->CollectIncome();
+   }
 }
 
 

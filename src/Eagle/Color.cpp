@@ -163,6 +163,18 @@ void EagleColor::SetFloatColor(float red , float green , float blue , float alph
 
 
 
+void EagleColor::SetAlpha(int alpha) {
+   SetColor(r,g,b,alpha,false);
+}
+
+
+
+void EagleColor::SetFloatAlpha(float alpha) {
+   SetFloatColor(fr,fg,fb,alpha , false);
+}
+
+
+
 std::ostream& operator<<(std::ostream& os , const EagleColor& c) {
    os << "RGBA = " << c.r << "," << c.g << "," << c.b << "," << c.a;
    return os;

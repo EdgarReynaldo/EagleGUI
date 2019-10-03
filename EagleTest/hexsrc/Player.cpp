@@ -14,6 +14,6 @@ void Player::CalcIncome() {
 
 void Player::EndTurn() {
    CalcIncome();
-   points += our_turf.TotalIncome();
+   our_turf.CollectIncome();
 }
 

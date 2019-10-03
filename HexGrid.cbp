@@ -152,6 +152,8 @@
 		<Unit filename="EagleTest/hexsrc/Game.hpp" />
 		<Unit filename="EagleTest/hexsrc/Hexagon.cpp" />
 		<Unit filename="EagleTest/hexsrc/Hexagon.hpp" />
+		<Unit filename="EagleTest/hexsrc/PRNG.cpp" />
+		<Unit filename="EagleTest/hexsrc/PRNG.hpp" />
 		<Unit filename="EagleTest/hexsrc/Player.cpp" />
 		<Unit filename="EagleTest/hexsrc/Player.hpp" />
 		<Unit filename="EagleTest/hexsrc/Territory.cpp" />
