@@ -68,7 +68,10 @@ int HexGame::BattleTurn(HexTile* from , HexTile* to) {
    int nto = to->armies;
    Dice dfrom(nfrom , 6);
    Dice dto(nto , 6);
-   int result = DiceBattle(dfrom , dto);
+
+   DiceBattle db(dfrom , dto);
+   int result = db.GetResult();
+
    if (result < 0) {
       from->armies += result;
       if (from->armies < 0) {
@@ -79,6 +82,8 @@ int HexGame::BattleTurn(HexTile* from , HexTile* to) {
       to->armies -= result;
       if (to->armies < 0) {
          to->armies = 0;
+         Claim(to , from->owner);
+         to->armies = from->armies;
       }
    }
    return result;
@@ -140,18 +145,23 @@ void HexGame::HandleRegularTurn(EagleEvent e) {
       }
    }
    if (drag && e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-      if (hover && hover->influence[plturn + 1] && hover->owner == 0) {
-         Claim(hover , plturn + 1);
-         plturn = (plturn + 1) % NumPlayers();
-         for (int i = 0 ; i < NumPlayers() ; ++i) {
-            Player* pl = players[i + 1];
-            pl->CalcIncome();
-            if (plturn == 0) {
-               pl->EndTurn();
+      if ((hover && hover->influence[plturn + 1] && hover->owner == 0) ||
+          (hover && (hover->owner != dragtile->owner))) {
+         
+         PATH p = FindConnectedPath(dragtile , hover);
+         if (p.path.size()) {
+            int res = BattleTurn(dragtile , hover);
+            plturn = (plturn + 1) % NumPlayers();
+            for (int i = 0 ; i < NumPlayers() ; ++i) {
+               Player* pl = players[i + 1];
+               pl->CalcIncome();
+               if (plturn == 0) {
+                  pl->EndTurn();
+               }
             }
-         }
-         if (plturn == 0) {
-            ++turn;
+            if (plturn == 0) {
+               ++turn;
+            }
          }
       }
       drag = false;
@@ -303,7 +313,7 @@ void HexGame::HandleEvent(EagleEvent e) {
    else {
       HandleRegularTurn(e);
    }
-   
+/**   
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
       if (e.mouse.button == 2) {
          rdrag = true;
@@ -315,7 +325,7 @@ void HexGame::HandleEvent(EagleEvent e) {
          rdrag = false;
       }
    }
-   
+//*/
 }
 
 

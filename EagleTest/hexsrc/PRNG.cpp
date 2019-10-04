@@ -5,7 +5,7 @@
 #include "PRNG.hpp"
 #include "Eagle/Exception.hpp"
 
-
+#include "Math.hpp"
 
 MTRNG PRNG;
 
@@ -18,7 +18,7 @@ int UINTCOMPARE(const void* p1 , const void* p2) {
       EAGLE_ASSERT(pa && pb);
       return 0;
    }
-   return (*pa > *pb)?1:((*pa == *pb)?0:-1);
+   return (*pa > *pb)?-1:((*pa == *pb)?0:1);
 }
 
 
@@ -44,13 +44,50 @@ Dice::Dice(unsigned int num , unsigned int sz) :
 
 
 
-int DiceBattle(Dice dfrom , Dice dto) {
+void DiceBattle::SetDice(Dice def , Dice off) {
+   defdice = def;
+   offdice = off;
+   CalcResult();
+}
+
+
+
+void DiceBattle::CalcResult() {
+   result = 0;
    /// Returns negative if attacker lost armies, positive if defender lost armies
-   const std::vector<unsigned int>& defrolls = dto.GetRolls();
-   const std::vector<unsigned int>& offrolls = dfrom.GetRolls();
+   const std::vector<unsigned int>& defrolls = defdice.GetRolls();
+   const std::vector<unsigned int>& offrolls = offdice.GetRolls();
+   if (!defrolls.size()) {
+      result = offrolls.size();
+      return;
+   }
+   if (!offrolls.size()) {result = 0;return;}
+
+      
+   unsigned int nmatches = MIN(defrolls.size() , offrolls.size());
+   
+   for (unsigned int dnum = 0 ; dnum < nmatches ; ++dnum) {
+      int off = offrolls[dnum];
+      int def = defrolls[dnum];
+      result += (off>def)?1:-1;
+   }
+   /// Leftover dice win automatically
+   result += (offrolls.size() - defrolls.size());
+}
+
+
+
+/**
+void DiceBattle::CalcResult() {
+   result = 0;
+   /// Returns negative if attacker lost armies, positive if defender lost armies
+   const std::vector<unsigned int>& defrolls = defdice.GetRolls();
+   const std::vector<unsigned int>& offrolls = offdice.GetRolls();
    if (!defrolls.size()) {
       return offrolls.size();
    }
+   if (!offrolls) {return 0;}
+   
    int casualties = 0;
    unsigned int d = 0;
    unsigned int o = 0;
@@ -86,6 +123,21 @@ int DiceBattle(Dice dfrom , Dice dto) {
       ++j;
    }
    
-   return casualties;
+   result = casualties;
 }
+//*/
+
+
+DiceBattle::DiceBattle(Dice dfrom , Dice dto) {
+   SetDice(dfrom , dto);
+}
+
+
+
+int DiceBattle::GetResult() {
+   return result;
+}
+
+
+
 
