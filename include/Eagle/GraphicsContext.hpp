@@ -504,10 +504,10 @@ public :
     */
    virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
 
-   void DrawImageCenter (EagleImage* img , Rectangle dest , int flags);///< Centers the image, no scaling is performed
-   void DrawImageFit    (EagleImage* img , Rectangle dest , int flags);///< Maintains aspect and stretches to fit
-   void DrawImageCover  (EagleImage* img , Rectangle dest , int flags);///< Maintains aspect and stretches to cover
-   void DrawImageStretch(EagleImage* img , Rectangle dest , int flags);///< Stretches the image to fill
+   void DrawImageCenter (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Centers the image, no scaling is performed
+   void DrawImageFit    (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Maintains aspect and stretches to fit
+   void DrawImageCover  (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Maintains aspect and stretches to cover
+   void DrawImageStretch(EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Stretches the image to fill
 
 
    ///< Converts the specified color in the specified image to alpha zero, clear

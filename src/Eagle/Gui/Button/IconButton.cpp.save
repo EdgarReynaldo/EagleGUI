@@ -25,7 +25,7 @@
 #include "Eagle/Gui/WidgetHandler.hpp"
 
 
-IconButtonBase::IconButtonBase(std::string classname , std::string objname) :
+IconButtonBase::IconButtonBase(std::string classname = "IconButtonBase" , std::string objname = "Nemo") :
       BasicButton(classname , objname)
 {}
 
@@ -57,7 +57,7 @@ void IconButton::OnAreaChanged() {
 
 
 IconButton::IconButton(std::string classname , std::string objname) :
-      IconButtonBase(classname , objname),
+      BasicButton(classname , objname),
       original_images(),
       click_rect()
 {
@@ -82,7 +82,7 @@ void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , in
    
    Transform t = win->GetTransformer()->GetViewTransform();
    
-   t.Scale((double)InnerArea().W()/image->W() , (double)InnerArea().H()/image->H());
+   t.Scale(InnerArea.W() , InnerArea.H());
    t.Translate(InnerArea().X() + xpos , InnerArea().Y() + ypos);
    
    win->GetTransformer()->PushViewTransform(t);

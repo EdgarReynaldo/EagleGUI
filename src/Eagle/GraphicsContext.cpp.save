@@ -401,8 +401,8 @@ void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , int f
    const double imgw = img->W() * minratio;
    const double imgh = img->H() * minratio;
    
-   Rectangle dest2(dest.CX() - imgw/2.0 ,
-                   dest.CY() - imgh/2.0 ,
+   Rectangle dest2(dest.CX() - imgw)/2.0 ,
+                   dest.CY() - (dest.H() - imgh)/2.0 ,
                    imgw ,
                    imgh
                   );

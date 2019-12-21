@@ -103,6 +103,10 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
                hoverwidget->SetHoverState(true);
             }
             whover = hoverwidget;
+            EAGLE_DEBUG(
+               std::string name = (hoverwidget?hoverwidget->ShortName():std::string(""));
+               EagleInfo() << StringPrintF("Given hover to %s" , name.c_str()) << std::endl;
+            );
          }
          
          /// Check widget focus
