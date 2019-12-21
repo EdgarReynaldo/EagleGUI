@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef Text_HPP
-#define Text_HPP
+#ifndef GlobalText_HPP
+#define GlobalText_HPP
 
 
 
@@ -55,7 +55,7 @@ unsigned int GetNextFreeTextMessageId();///< For text widgets to create a new me
 
 
 
-#endif // Text_HPP
+#endif // GlobalText_HPP
 
 
 

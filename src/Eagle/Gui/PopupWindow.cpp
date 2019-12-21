@@ -22,8 +22,68 @@
 
 #include "Eagle/Gui/PopupWindow.hpp"
 #include "Eagle/Gui/TextWidgets.hpp"
- 
- 
+
+
+
+
+PopupWindow::PopupWindow(std::string system , std::string window_name) :
+      WidgetHandler(0 , "PopupGUI" , window_name),
+      our_system(0),
+      our_window(0)
+{
+   our_system = Eagle::EagleLibrary::System(system);
+   if (!our_system) {
+      throw EagleException(StringPrintF("Failed to get system '%s' from Eagle.\n" , system.c_str()));
+   }
+}
+
+
+
+PopupWindow::~PopupWindow() {
+   FreePopupWindow();
+}
+
+
+
+void PopupWindow::FreePopupWindow() {
+   if (our_system && our_window) {
+      FreeImageBuffers();
+      our_system->FreeGraphicsContext(our_window);
+      our_window = 0;
+   }
+}
+
+
+
+void PopupWindow::CreatePopupWindow(int sx , int sy , int width , int height , int flags) {
+
+   FreePopupWindow();
+
+   EAGLE_ASSERT(our_system);
+   
+   std::string sname = ShortName();
+   our_window = our_system->CreatePopupWindow(sname , width , height , flags);
+   if (!our_window) {
+      std::string flagstr = PrintDisplayFlags(flags);
+      throw EagleException(StringPrintF("Failed to create %d x %d popup window with flags %s\n",
+                                        width , height , flagstr.c_str()));
+   }
+   our_window->SetWindowPosition(sx , sy);
+   SetWidgetArea(Rectangle(0 , 0 , width , height) , false);
+   SetupBuffer(width , height , our_window);
+
+}
+
+
+
+void PopupWindow::Display() {
+   our_window->DrawToBackBuffer();
+   WidgetHandler::Display(our_window , 0 , 0);
+   our_window->FlipDisplay();
+}
+
+
+
 void PopupWindow::Hide() {
    our_window->HideWindow();
 }
@@ -37,13 +97,20 @@ void PopupWindow::Show() {
 
 
 
-SHAREDOBJECT<PopupWindow> CreatePopupTextWindow(int x , int y , int flags , std::string message , EagleFont* font) {
-   EAGLE_ASSERT(font);
-   BasicText text;
-   text.SetupText(HALIGN_CENTER , VALIGN_CENTER , 5 , 5 , font->Height()/2 , message , font);
+PopupText::PopupText(int sx , int sy , int flags , std::string message , EagleFont* font) :
+      PopupWindow("Any" , "TextPopupWindow"),
+      text(font , message , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , font->Height()/2)
+{
+   Rectangle t = text.TextArea();
+   CreatePopupWindow(sx , sy , t.W() + 4 , t.H() + 4 , flags);
+   text.SetWidgetArea(Rectangle(0 , 0 , t.W() + 4 , t.H() + 4) , false);
    text.ShrinkWrap();
-   
-   SHAREDOBJECT<PopupWindow> popup = HeapObject(new PopupWindow(x , y , text.OuterArea().W() , text.OuterArea().H() , flags));
-   popup->AddWidget(&text);
-   return popup;
+   AddWidget(&text);
 }
+
+
+
+
+
+
+

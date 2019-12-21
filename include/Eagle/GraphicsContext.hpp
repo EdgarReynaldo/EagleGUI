@@ -226,8 +226,6 @@ protected :
    typedef IMAGESET::iterator ISIT;
    typedef FONTSET::iterator FSIT;
 
-   
-   
    int scrw;
    int scrh;
 
@@ -637,6 +635,9 @@ public :
    virtual Transformer* GetTransformer()=0;///< Pure virtual function to get the Transformer object for this window
 
    virtual void MakeDisplayCurrent()=0;///< Pure virtual function to make the display current in multi threaded applications
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   
 };
 
 

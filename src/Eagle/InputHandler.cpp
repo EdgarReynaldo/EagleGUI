@@ -742,7 +742,7 @@ x    * EAGLE_EVENT_TIMER
    else if (ev.type == EAGLE_EVENT_KEY_DOWN) {
       if (since_last_keypress[ev.keyboard.keycode] < double_click_duration) {
          keystates[ev.keyboard.keycode] = DBLCLICK;
-      }
+      }bd
       else {
          keystates[ev.keyboard.keycode] = PRESS;
       }
@@ -753,6 +753,7 @@ x    * EAGLE_EVENT_TIMER
    else if (ev.type == EAGLE_EVENT_KEY_UP) {
       keystates[ev.keyboard.keycode] = RELEASE;
       keydown[ev.keyboard.keycode] = false;
+      key_held_duration[ev.keyboard.keycode] = 0.0f;
       UpdateModKeys();
    }
    else if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {

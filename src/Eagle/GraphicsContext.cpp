@@ -688,6 +688,13 @@ void EagleGraphicsContext::PopDrawingTarget() {
 
 
 
+std::ostream& EagleGraphicsContext::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "WxH = " << scrw << " x " << scrh << std::endl;
+   return os;
+}
+
+
+
 /// ------------------------     Drawing Targeter     ----------------------------------------
 
 

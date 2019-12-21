@@ -17,7 +17,7 @@ option(WANT_ALLEGRO5 "If you want to build the Allegro 5 backend for Eagle" OFF)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
-set (A5DepSearchPath "${EAGLE_ROOT_DIR}/Allegro525/" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
+set (A5DepSearchPath "${EAGLE_ROOT_DIR}/../Allegro525/" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
 set(ALLEGRO5_INCLUDE_DIR "$CACHE{A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder")
 set(ALLEGRO5_LIB_DIR "$CACHE{A5DepSearchPath}/lib/" CACHE PATH "Where to find the Allegro 5 library's lib folder")
 
@@ -31,12 +31,9 @@ find_library(ALLEGRO5_LIB "allegro_monolith"
 find_library(PHYSFS_LIB "physfs.dll"
              PATHS "${A5DepSearchPath}/lib/"
              DOC "The shared physfs library")
-             
-             
+
 
 add_subdirectory(src/Eagle)
-
-
 
 #[[ Allegro 5 backend for Eagle ]]
 
@@ -49,10 +46,6 @@ if (${WANT_ALLEGRO5})
           "${ALLEGRO5_LIB}" STREQUAL "NOTFOUND")
 
    add_subdirectory(src/backends/Allegro5)
-   
-
-   
-   
 endif (${WANT_ALLEGRO5})
 
 

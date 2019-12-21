@@ -380,7 +380,6 @@ Allegro5WindowManager* GetAllegro5WindowManager() {
 
 #ifdef EAGLE_WIN32
    #include "allegro5/allegro_windows.h"
-///   #include "windows.h"
 #endif
 
 
@@ -400,7 +399,9 @@ int Allegro5WindowManager::PrivateGiveWindowFocus(int window_eid) {
    }
 #ifdef EAGLE_WIN32
    HWND hwnd = al_get_win_window_handle(a5win->AllegroDisplay());
-   SetFocus(hwnd);
+   SetWindowPos(hwnd , HWND_NOTOPMOST , 0 , 0 , 0 , 0 , SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+   SetForegroundWindow(hwnd);
+   return window_eid;
 #endif
    return -1;
 }

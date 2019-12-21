@@ -25,7 +25,7 @@
 #include "Eagle/Lib.hpp"
 
 #include "Eagle/StringWork.hpp"
-
+#include "Eagle/Gui/TextWidgets.hpp"
 
 
 /**! @class PopupWindow
@@ -43,36 +43,37 @@ protected :
 
 public :
    
-//   PopupWindow(int x , int y , int width , int height , int flags , std::string system = "Any");
-   PopupWindow(int x , int y , int width , int height , int flags , std::string system = "Any") :
-         WidgetHandler(0 , "PopupHandler"),
-         our_system(0),
-         our_window(0)
-   {
-      our_system = Eagle::EagleLibrary::System(system);
-      if (!our_system) {
-         throw EagleException(StringPrintF("Failed to get system '%s' from Eagle.\n" , system.c_str()));
-      }
-      our_window = our_system->CreatePopupWindow("Popup" , width , height , flags);
-      if (!our_window) {
-         std::string flagstr = PrintDisplayFlags(flags);
-         throw EagleException(StringPrintF("Failed to create %d x %d popup window with flags %s\n",
-                                           width , height , flagstr.c_str()));
-      }
-      
-      our_window->SetWindowPosition(x , y);
-      SetupBuffer(width , height , our_window);
-      SetWidgetArea(Rectangle(0 , 0 , width , height) , false);
-   }
+   PopupWindow(std::string system = "Any" , std::string window_name = "Nemo");
    
+   virtual ~PopupWindow();
+   
+   virtual void FreePopupWindow();
+   
+   virtual void CreatePopupWindow(int sx , int sy , int width , int height , int flags);
+      
+   void Display();
    void Hide();
    void Show();
    
    
    EagleGraphicsContext* OurWindow() {return our_window;}
+   
+//   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const {
+      os << indent << "OurPopupWindow :" << std::endl;
+      ++indent;
+      our_window->DescribeTo(os , indent);
+      --indent;
+      WidgetHandler::DescribeTo(os , indent);
+      return os;
+   }
 };
 
-
-SHAREDOBJECT<PopupWindow> CreatePopupTextWindow(int x , int y , int flags , std::string message , EagleFont* font);
+class PopupText : public PopupWindow {
+   BasicText text;
+   
+public :
+   PopupText(int sx , int sy , int flags , std::string message , EagleFont* font);
+};
 
 

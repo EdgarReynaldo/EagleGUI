@@ -70,6 +70,9 @@ public :
    ///< Set the floating point color and whether or not to apply alpha or pre multiply the color
    void SetFloatColor(float red , float green , float blue , float alpha = 1.0 , bool mult_alpha = pre_multiply_alpha);
 
+   void SetAlpha(int alpha);
+   void SetFloatAlpha(float alpha);
+   
    /// Getters
 
    int R() {return r;}
