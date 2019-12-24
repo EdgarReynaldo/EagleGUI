@@ -742,7 +742,7 @@ x    * EAGLE_EVENT_TIMER
    else if (ev.type == EAGLE_EVENT_KEY_DOWN) {
       if (since_last_keypress[ev.keyboard.keycode] < double_click_duration) {
          keystates[ev.keyboard.keycode] = DBLCLICK;
-      }bd
+      }
       else {
          keystates[ev.keyboard.keycode] = PRESS;
       }
