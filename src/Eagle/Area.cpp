@@ -506,12 +506,51 @@ std::ostream& Circle::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
-const Rectangle BADRECTANGLE = Rectangle(-1,-1,-1,-1);
+const Rectangle BADRECTANGLE = Rectangle();
 
 
 
 using std::ostream;
 using std::endl;
+
+
+
+Rectangle::Rectangle() : 
+      AreaBase(),
+      x(-1),
+      y(-1),
+      w(-1),
+      h(-1),
+      brx(-1),
+      bry(-1)
+{}
+   
+
+
+Rectangle::Rectangle(int xpos , int ypos , int width , int height) :
+      AreaBase(),
+      x(xpos),
+      y(ypos),
+      w(width),
+      h(height),
+      brx(0),
+      bry(0)
+{
+   RenewCornerPos();
+}
+
+
+
+Rectangle::Rectangle(const Rectangle& r) : 
+      AreaBase() ,
+      x(r.x) , 
+      y(r.y) , 
+      w(r.w) , 
+      h(r.h) , 
+      brx(r.brx) , 
+      bry(r.bry)
+{}
+
 
 
 vector<Rectangle*> Rectangle::CreateBoundingRectangles() const {

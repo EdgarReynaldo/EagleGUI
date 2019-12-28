@@ -280,40 +280,11 @@ protected :
    
 public :
    
-///   Rectangle();
-   Rectangle() : 
-      AreaBase() , 
-      x(0) , 
-      y(0) , 
-      w(0) , 
-      h(0) , 
-      brx(0) , 
-      bry(0) 
-   {}
-   
-///   Rectangle(int xpos , int ypos , int width , int height);
-   Rectangle(int xpos , int ypos , int width , int height) :
-         AreaBase() ,
-         x(xpos) , 
-         y(ypos) , 
-         w(width) , 
-         h(height) ,
-         brx(0),
-         bry(0)
-   {
-      RenewCornerPos();
-   }
+   Rectangle();
+   Rectangle(int xpos , int ypos , int width , int height);
+   Rectangle(const Rectangle& r);
 
-///   Rectangle(const Rectangle& r);
-   Rectangle(const Rectangle& r) : 
-         AreaBase() ,
-         x(r.x) , 
-         y(r.y) , 
-         w(r.w) , 
-         h(r.h) , 
-         brx(r.brx) , 
-         bry(r.bry)
-   {}
+
 
    
    bool operator==(const Rectangle& rhs) {

@@ -26,7 +26,7 @@
 #include "Eagle/System.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 
-
+#include <memory>
 /// ------------------     GLOBALS     ----------------------------
 
 
@@ -80,6 +80,66 @@ std::string EagleEventName(int event_num) {
 
 
 
+void NETWORK_EVENT_DATA::SetFields(std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) {
+   Free();
+   srcIP = new std::string(IP);
+   srcPORT = new std::string(PORT);
+   if (bytes && NBYTES) {
+      data = malloc(NBYTES);
+      if (data) {
+         memcpy(data , (const void*)bytes , NBYTES);
+         data_size = NBYTES;
+      }
+      else {
+         throw std::bad_alloc();
+      }
+   }
+}
+
+
+
+NETWORK_EVENT_DATA::NETWORK_EVENT_DATA() :
+      srcNETWORK(0),
+      srcIP(0),
+      srcPORT(0),
+      data(0),
+      data_size(0)
+{}
+
+
+
+NETWORK_EVENT_DATA::NETWORK_EVENT_DATA(NETWORK* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) :
+      srcNETWORK(net),
+      srcIP(0),
+      srcPORT(0),
+      data(0),
+      data_size(0)
+{
+   SetFields(IP , PORT , bytes , NBYTES);
+}
+
+
+
+NETWORK_EVENT_DATA::~NETWORK_EVENT_DATA() {
+   Free();
+}
+
+
+
+void NETWORK_EVENT_DATA::Free() {
+   srcNETWORK = 0;
+   if (srcIP) {delete srcIP;}
+   srcIP = 0;
+   if (srcPORT) {delete srcPORT;}
+   if (data) {
+      free(data);
+      data = 0;
+   }
+   data_size = 0;
+}
+
+
+
 int NextFreeEagleEventId() {
    static int id = EAGLE_EVENT_USER_START;
    return id++;
@@ -123,6 +183,12 @@ bool IsWidgetEvent(EagleEvent e) {
 
 
 
+bool IsNetworkEvent (EagleEvent e) {
+   return ((e.type >= EAGLE_EVENT_NETWORK_EVENT_START) && (e.type <= EAGLE_EVENT_NETWORK_EVENT_STOP));
+}
+
+
+
 bool IsSystemEvent(EagleEvent e) {
    return (e.type >= EAGLE_EVENT_NONE && e.type < EAGLE_EVENT_USER_START);
 }
@@ -145,6 +211,7 @@ EAGLE_EVENT_GROUP_TYPE EagleEventGroupType(EagleEvent e) {
                (IsTouchEvent(e)?EAGLE_TOUCH_EVENT_TYPE:0) |
                (IsDisplayEvent(e)?EAGLE_DISPLAY_EVENT_TYPE:0) |
                (IsWidgetEvent(e)?EAGLE_WIDGET_EVENT_TYPE:0) |
+               (IsNetworkEvent(e)?EAGLE_NETWORK_EVENT_TYPE:0) |
                (IsSystemEvent(e)?EAGLE_SYSTEM_EVENT_TYPE:0) |
                (IsUserEvent(e)?EAGLE_USER_EVENT_TYPE:0) );
    if (type) {
