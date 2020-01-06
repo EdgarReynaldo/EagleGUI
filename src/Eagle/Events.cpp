@@ -27,6 +27,8 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 
 #include <memory>
+#include <cstring>
+
 /// ------------------     GLOBALS     ----------------------------
 
 
