@@ -385,19 +385,19 @@ struct WIDGET_EVENT_DATA {
  *   @brief Data for network events
  */
 
-struct NETWORK;
+class Network;
 struct NETWORK_EVENT_DATA {
    
    void SetFields(std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES);
    
-   NETWORK* srcNETWORK;
-   std::string* srcIP;
-   std::string* srcPORT;
+   Network* srcNETWORK;
+   std::string srcIP;
+   std::string srcPORT;
    void* data;
    unsigned int data_size;
    
    NETWORK_EVENT_DATA();
-   NETWORK_EVENT_DATA(NETWORK* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES);
+   NETWORK_EVENT_DATA(Network* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES);
    ~NETWORK_EVENT_DATA();
    void Free();
 

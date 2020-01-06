@@ -72,6 +72,11 @@ std::string EagleEventName(int event_num) {
    else if (n == EAGLE_EVENT_ANIMATION_LOOP_COMPLETE){s = "EAGLE_EVENT_ANIMATION_LOOP_COMPLETE";}
    else if (n == EAGLE_EVENT_ANIMATION_COMPLETE)     {s = "EAGLE_EVENT_ANIMATION_COMPLETE";}
    else if (n == EAGLE_EVENT_WIDGET)                 {s = "EAGLE_EVENT_WIDGET";}
+   else if (n == EAGLE_EVENT_NETWORK_CONNECT)        {s = "EAGLE_EVENT_NETOWRK_CONNECT";}
+   else if (n == EAGLE_EVENT_NETWORK_DISCONNECT)     {s = "EAGLE_EVENT_NETOWRK_DISCONNECT";}
+   else if (n == EAGLE_EVENT_NETWORK_RECV_MSG)       {s = "EAGLE_EVENT_NETOWRK_RECV_MSG";}
+   else if (n == EAGLE_EVENT_NETWORK_SERVERDOWN)     {s = "EAGLE_EVENT_NETOWRK_SERVERDOWN";}
+   else if (n == EAGLE_EVENT_NETWORK_SERVERUP)       {s = "EAGLE_EVENT_NETOWRK_SERVERUP";}
    else {
       s = "EAGLE_EVENT_UNDEFINED";
    }
@@ -82,12 +87,12 @@ std::string EagleEventName(int event_num) {
 
 void NETWORK_EVENT_DATA::SetFields(std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) {
    Free();
-   srcIP = new std::string(IP);
-   srcPORT = new std::string(PORT);
+   srcIP = IP;
+   srcPORT = PORT;
    if (bytes && NBYTES) {
       data = malloc(NBYTES);
       if (data) {
-         memcpy(data , (const void*)bytes , NBYTES);
+         memcpy(data , bytes , NBYTES);
          data_size = NBYTES;
       }
       else {
@@ -108,7 +113,7 @@ NETWORK_EVENT_DATA::NETWORK_EVENT_DATA() :
 
 
 
-NETWORK_EVENT_DATA::NETWORK_EVENT_DATA(NETWORK* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) :
+NETWORK_EVENT_DATA::NETWORK_EVENT_DATA(Network* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) :
       srcNETWORK(net),
       srcIP(0),
       srcPORT(0),
@@ -127,10 +132,6 @@ NETWORK_EVENT_DATA::~NETWORK_EVENT_DATA() {
 
 
 void NETWORK_EVENT_DATA::Free() {
-   srcNETWORK = 0;
-   if (srcIP) {delete srcIP;}
-   srcIP = 0;
-   if (srcPORT) {delete srcPORT;}
    if (data) {
       free(data);
       data = 0;

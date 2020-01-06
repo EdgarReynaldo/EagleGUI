@@ -228,7 +228,8 @@ EagleLogger& EagleLogger::operator<<(MANIP manip) {
 
 
 
-EagleLogGuard::EagleLogGuard(EagleLogger& logger , const char* prefix) :
+EagleLogGuard::EagleLogGuard(EagleLogger& logger , const char* prefix , bool critical_error) :
+      critical(critical_error),
       log(logger),
       pmutex(log.Mutex())
 {
@@ -240,11 +241,13 @@ EagleLogGuard::EagleLogGuard(EagleLogger& logger , const char* prefix) :
 
 
 EagleLogGuard::EagleLogGuard(const EagleLogGuard& rhs) :
+      critical(false),
       log(rhs.log),
       pmutex(0)
 {
 ///   static_assert(false , "EagleLogGuard's are not copyable!");
    EAGLE_ASSERT(false);
+   throw EagleException("Can't copy EagleLogGuards... that's a no-no.");
 }
 
 
@@ -253,6 +256,7 @@ EagleLogGuard& EagleLogGuard::operator=(const EagleLogGuard& rhs) {
 ///   static_assert(false , "EagleLogGuard's are not assignable!");
    (void)rhs;
    EAGLE_ASSERT(false);
+   throw EagleException("EagleLogGuards are not assignable... that's a no-no.");
    return *this;
 }
 
@@ -260,6 +264,9 @@ EagleLogGuard& EagleLogGuard::operator=(const EagleLogGuard& rhs) {
 
 EagleLogGuard::~EagleLogGuard() {
    UnLockMutex(pmutex);
+   if (critical) {
+      throw EagleException("Critical exception.");
+   }
 }
 
 
@@ -273,37 +280,37 @@ EagleLogGuard& EagleLogGuard::operator<<(MANIP manip) {
 
 
 EagleLogGuard EagleLogGuard::EagleGuardLog() {
-   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO));
+   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO) , false);
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardInfo() {
-   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO));
+   return EagleLogGuard(EagleLogger::EagleInfoLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_INFO) , false);
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardWarn() {
-   return EagleLogGuard(EagleLogger::EagleWarnLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_WARN));
+   return EagleLogGuard(EagleLogger::EagleWarnLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_WARN) , false);
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardError() {
-   return EagleLogGuard(EagleLogger::EagleErrorLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_ERROR));
+   return EagleLogGuard(EagleLogger::EagleErrorLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_ERROR) , false);
 }
 
 
 
 EagleLogGuard EagleLogGuard::EagleGuardCritical() {
-   return EagleLogGuard(EagleLogger::EagleCriticalLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_CRITICAL));
+   return EagleLogGuard(EagleLogger::EagleCriticalLog() , EagleLogger::LogPrefixStr(EAGLE_LOG_CRITICAL) , true);
 }
 
 
 
-EagleLogGuard EagleLogGuard::EagleGuardPrefix(const char* prefix) {
-   return EagleLogGuard(EagleLogger::EagleCriticalLog() , prefix);
+EagleLogGuard EagleLogGuard::EagleGuardPrefix(const char* prefix , bool critical) {
+   return EagleLogGuard(EagleLogger::EagleCriticalLog() , prefix , critical);
 }
 
 
@@ -341,8 +348,8 @@ EagleLogGuard EagleCritical() {
 
 
 
-EagleLogGuard EaglePrefix(const char* prefix) {
-   return EagleLogGuard::EagleGuardPrefix(prefix);
+EagleLogGuard EaglePrefix(const char* prefix , bool critical) {
+   return EagleLogGuard::EagleGuardPrefix(prefix , critical);
 }
 
 

@@ -188,7 +188,7 @@ EagleLogger& EagleLogger::operator<<(const Type& t) {
 
 class EagleLogGuard {
 
-
+   bool critical;
 private :
 
    EagleLogger& log;///< A reference to the underlying log
@@ -199,7 +199,7 @@ private :
     *   @param logger Required parameter, represents the underlying log we're using
     */
 
-   explicit EagleLogGuard(EagleLogger& logger , const char* prefix);
+   explicit EagleLogGuard(EagleLogger& logger , const char* prefix , bool critical_error);
    
    /**! @fn EagleLogGuard::EagleLogGuard <const EagleLogGuard&>
     *   @brief EagleLogGuard copy constructor
@@ -244,7 +244,7 @@ public :
     *   @brief Gets an EagleLogGuard, using the specified log prefix
     */
    
-   static EagleLogGuard EagleGuardPrefix(const char* prefix);
+   static EagleLogGuard EagleGuardPrefix(const char* prefix , bool critical = false);
 
    friend EagleLogGuard EagleLog();     ///< Friend function to get access to the regular log
    friend EagleLogGuard EagleInfo();    ///< Friend function to get access to an info log
@@ -252,7 +252,7 @@ public :
    friend EagleLogGuard EagleError();   ///< Friend fucntion to get access to an error log
    friend EagleLogGuard EagleCritical();///< Friend function to get access to the critical log
 
-   friend EagleLogGuard EaglePrefix(const char* prefix);///< Friend function to get access to a log using the specified @param prefix
+   friend EagleLogGuard EaglePrefix(const char* prefix , bool critical);///< Friend function to get access to a log using the specified @param prefix
 
    friend class EagleObject;
    friend EagleLogGuard& operator<<(EagleLogGuard& guard , const EagleObject& obj);///< Global friend function to log EagleObject objects
@@ -265,7 +265,7 @@ EagleLogGuard EagleWarn();    ///< Get access to the warning log
 EagleLogGuard EagleError();   ///< Get access to the error log
 EagleLogGuard EagleCritical();///< Get access to the critical error log
 
-EagleLogGuard EaglePrefix(const char* prefix);///< Get access to the log using the specified logging prefix
+EagleLogGuard EaglePrefix(const char* prefix , bool critical = false);///< Get access to the log using the specified logging prefix
 
 
 
