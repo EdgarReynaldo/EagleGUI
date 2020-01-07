@@ -2,7 +2,9 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="EagleOnLinux">
 		<Project filename="Eagle5Linux.cbp" />
-		<Project filename="Allegro5_backend_Linux.cbp" />
-		<Project filename="Skyline2Git/Skyline.cbp" />
+		<Project filename="Allegro5BackendLinux.cbp" />
+		<Project filename="../Nilorea/Nilorealibrary.cbp" />
+		<Project filename="../KrampusHack2019/Krampus2019Linux.cbp" />
+		<Project filename="../KrampusHack2019/KrampusServerLinux.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

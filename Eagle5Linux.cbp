@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Eagle5Linux" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="cbbuild/bin/EagleDebug" imp_lib="cbbuild/lib/libEagleDebug.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Debug" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+					<Add option="-DEAGLE_DEBUG_MUTEX_LOCKS" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="cbbuild/bin/Eagle" imp_lib="cbbuild/lib/libEagle.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Release" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+			</Target>
+			<Target title="Profile">
+				<Option output="cbbuild/bin/EagleProfile" imp_lib="cbbuild/lib/libEagleProfile.dll.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="cbbuild/obj/Dynamic/Profiling" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pg" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+				</Linker>
+			</Target>
+			<Target title="StaticDebug">
+				<Option output="cbbuild/lib/EagleDebugStatic" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Debug" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O0" />
+					<Add option="-ggdb3" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEAGLE_LOG" />
+					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+					<Add option="-DEAGLE_DEBUG_MUTEX_LOCKS" />
+				</Compiler>
+			</Target>
+			<Target title="StaticRelease">
+				<Option output="cbbuild/lib/EagleStatic" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Release" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DLOG" />
+				</Compiler>
+			</Target>
+			<Target title="StaticProfile">
+				<Option output="cbbuild/lib/EagleProfileStatic" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="cbbuild/obj/Static/Profiling" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option projectCompilerOptionsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pg" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+				</Linker>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Debug;Release;Profile;StaticDebug;StaticRelease;StaticProfile;" />
+			<Add alias="AllDynamic" targets="Debug;Release;Profile;" />
+			<Add alias="AllStatic" targets="StaticDebug;StaticRelease;StaticProfile;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Wshadow" />
+			<Add option="-Wcast-align" />
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-Wno-div-by-zero" />
+			<Add option="-Werror=narrowing" />
+			<Add option="-Wformat" />
+			<Add option="-DNOGDI" />
+			<Add directory="include" />
+		</Compiler>
+		<Unit filename=".gitignore" />
+		<Unit filename="BUILD.txt" />
+		<Unit filename="CMakeLists.txt" />
+		<Unit filename="EagleCopyright.txt" />
+		<Unit filename="EagleFAQ.txt" />
+		<Unit filename="EagleFeatures.txt" />
+		<Unit filename="EagleLicense.txt" />
+		<Unit filename="EagleNotes.txt" />
+		<Unit filename="READMEmd" />
+		<Unit filename="include/Eagle.hpp" />
+		<Unit filename="include/Eagle/AVHandler.hpp" />
+		<Unit filename="include/Eagle/AnimationBase.hpp" />
+		<Unit filename="include/Eagle/Area.hpp" />
+		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
+		<Unit filename="include/Eagle/Callbacks.hpp" />
+		<Unit filename="include/Eagle/Clipboard.hpp" />
+		<Unit filename="include/Eagle/Color.hpp" />
+		<Unit filename="include/Eagle/Conditions.hpp" />
+		<Unit filename="include/Eagle/ConfigFile.hpp" />
+		<Unit filename="include/Eagle/Container.hpp" />
+		<Unit filename="include/Eagle/Events.hpp" />
+		<Unit filename="include/Eagle/Exception.hpp" />
+		<Unit filename="include/Eagle/File.hpp" />
+		<Unit filename="include/Eagle/FileSystem.hpp" />
+		<Unit filename="include/Eagle/FileWork.hpp" />
+		<Unit filename="include/Eagle/Font.hpp" />
+		<Unit filename="include/Eagle/GraphicsContext.hpp" />
+		<Unit filename="include/Eagle/Gui.hpp" />
+		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
+		<Unit filename="include/Eagle/Gui/BasicIcon.hpp" />
+		<Unit filename="include/Eagle/Gui/Button.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/BasicButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/CheckBox.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/GuiButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/IconButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/RadioGroup.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/ScrollButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/TextButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Button/TextIconButton.hpp" />
+		<Unit filename="include/Eagle/Gui/Camera.hpp" />
+		<Unit filename="include/Eagle/Gui/Decorators/Decorator.hpp" />
+		<Unit filename="include/Eagle/Gui/Decorators/TextDecorator.hpp" />
+		<Unit filename="include/Eagle/Gui/Factory/WidgetCreators.hpp" />
+		<Unit filename="include/Eagle/Gui/Factory/WidgetFactory.hpp" />
+		<Unit filename="include/Eagle/Gui/Factory/WidgetFactoryProto.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/FillLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/FlowLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/GridLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/Layout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/LayoutRectangle.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/MenuLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/NPLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/ScrollArea.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu.hpp" />
+		<Unit filename="include/Eagle/Gui/PopupWindow.hpp" />
+		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
+		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
+		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
+		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
+		<Unit filename="include/Eagle/Gui/ScrollView.hpp" />
+		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
+		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
+		<Unit filename="include/Eagle/Gui/Slider.hpp" />
+		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
+		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
+		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
+		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
+		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetAttributes.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetContainer.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetDrawingFuncs.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetMessage.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetMover.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetPainters.hpp" />
+		<Unit filename="include/Eagle/Image.hpp" />
+		<Unit filename="include/Eagle/Indenter.hpp" />
+		<Unit filename="include/Eagle/InputHandler.hpp" />
+		<Unit filename="include/Eagle/Interpolate.hpp" />
+		<Unit filename="include/Eagle/Lib.hpp" />
+		<Unit filename="include/Eagle/LineEquations.hpp" />
+		<Unit filename="include/Eagle/Logging.hpp" />
+		<Unit filename="include/Eagle/Math.hpp" />
+		<Unit filename="include/Eagle/Media.hpp" />
+		<Unit filename="include/Eagle/MemFile.hpp" />
+		<Unit filename="include/Eagle/MemberFunctors.hpp" />
+		<Unit filename="include/Eagle/Memory.hpp" />
+		<Unit filename="include/Eagle/MousePointer.hpp" />
+		<Unit filename="include/Eagle/Mutexes.hpp" />
+		<Unit filename="include/Eagle/NDimensionArray.hpp" />
+		<Unit filename="include/Eagle/NamedParameters.hpp" />
+		<Unit filename="include/Eagle/NinePatch.hpp" />
+		<Unit filename="include/Eagle/NinePatchPainters.hpp" />
+		<Unit filename="include/Eagle/Object.hpp" />
+		<Unit filename="include/Eagle/ObjectInfo.hpp" />
+		<Unit filename="include/Eagle/ObjectRegistry.hpp" />
+		<Unit filename="include/Eagle/Platform.hpp" />
+		<Unit filename="include/Eagle/Position.hpp" />
+		<Unit filename="include/Eagle/Position2.hpp" />
+		<Unit filename="include/Eagle/Random.hpp" />
+		<Unit filename="include/Eagle/ResourceLib.hpp" />
+		<Unit filename="include/Eagle/Resources.hpp" />
+		<Unit filename="include/Eagle/SFXGenerator.hpp" />
+		<Unit filename="include/Eagle/SharedMemory.hpp" />
+		<Unit filename="include/Eagle/Sound.hpp" />
+		<Unit filename="include/Eagle/StringWork.hpp" />
+		<Unit filename="include/Eagle/System.hpp" />
+		<Unit filename="include/Eagle/TableVec.hpp" />
+		<Unit filename="include/Eagle/Threads.hpp" />
+		<Unit filename="include/Eagle/Time.hpp" />
+		<Unit filename="include/Eagle/Timer.hpp" />
+		<Unit filename="include/Eagle/Transforms.hpp" />
+		<Unit filename="include/Eagle/WindowManager.hpp" />
+		<Unit filename="src/Eagle/AVHandler.cpp" />
+		<Unit filename="src/Eagle/AnimationBase.cpp" />
+		<Unit filename="src/Eagle/Area.cpp" />
+		<Unit filename="src/Eagle/CMakeLists.txt" />
+		<Unit filename="src/Eagle/CXX11Mutexes.cpp" />
+		<Unit filename="src/Eagle/Callbacks.cpp" />
+		<Unit filename="src/Eagle/Clipboard.cpp" />
+		<Unit filename="src/Eagle/Color.cpp" />
+		<Unit filename="src/Eagle/Conditions.cpp" />
+		<Unit filename="src/Eagle/ConfigFile.cpp" />
+		<Unit filename="src/Eagle/Events.cpp" />
+		<Unit filename="src/Eagle/Exception.cpp" />
+		<Unit filename="src/Eagle/File.cpp" />
+		<Unit filename="src/Eagle/FileSystem.cpp" />
+		<Unit filename="src/Eagle/FileWork.cpp" />
+		<Unit filename="src/Eagle/Font.cpp" />
+		<Unit filename="src/Eagle/GraphicsContext.cpp" />
+		<Unit filename="src/Eagle/Gui/Alignment.cpp" />
+		<Unit filename="src/Eagle/Gui/BasicIcon.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/BasicButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/CheckBox.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/GuiButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/IconButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/RadioGroup.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/ScrollButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/TextButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Button/TextIconButton.cpp" />
+		<Unit filename="src/Eagle/Gui/Camera.cpp" />
+		<Unit filename="src/Eagle/Gui/Decorator/Decorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Eagle/Gui/Decorator/TextDecorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Eagle/Gui/Factory/WidgetCreators.cpp" />
+		<Unit filename="src/Eagle/Gui/Factory/WidgetFactory.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/DumbLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/FillLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/FlowLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/GridLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/Layout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/LayoutRectangle.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/MenuLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/PinLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/RelativeLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/ScrollArea.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Eagle/Gui/PopupWindow.cpp" />
+		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
+		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
+		<Unit filename="src/Eagle/Gui/ScrollBar.cpp" />
+		<Unit filename="src/Eagle/Gui/ScrollView.cpp" />
+		<Unit filename="src/Eagle/Gui/Scroller.cpp" />
+		<Unit filename="src/Eagle/Gui/Slider.cpp" />
+		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
+		<Unit filename="src/Eagle/Gui/Text/GlobalText.cpp" />
+		<Unit filename="src/Eagle/Gui/Text/LinkText.cpp" />
+		<Unit filename="src/Eagle/Gui/Text/SelectText.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetArea.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetAttributes.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetBase.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetColorset.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetContainer.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetDrawingFuncs.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetFlags.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetHandler.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetMessage.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetMover.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetPainters.cpp" />
+		<Unit filename="src/Eagle/Image.cpp" />
+		<Unit filename="src/Eagle/Indenter.cpp" />
+		<Unit filename="src/Eagle/InputHandler.cpp" />
+		<Unit filename="src/Eagle/Lib.cpp" />
+		<Unit filename="src/Eagle/LineEquations.cpp" />
+		<Unit filename="src/Eagle/Logging.cpp" />
+		<Unit filename="src/Eagle/Media.cpp" />
+		<Unit filename="src/Eagle/MemFile.cpp" />
+		<Unit filename="src/Eagle/Memory.cpp" />
+		<Unit filename="src/Eagle/MousePointer.cpp" />
+		<Unit filename="src/Eagle/Mutexes.cpp" />
+		<Unit filename="src/Eagle/NamedParameters.cpp" />
+		<Unit filename="src/Eagle/NinePatch.cpp" />
+		<Unit filename="src/Eagle/NinePatchPainters.cpp" />
+		<Unit filename="src/Eagle/Object.cpp" />
+		<Unit filename="src/Eagle/ObjectInfo.cpp" />
+		<Unit filename="src/Eagle/ObjectRegistry.cpp" />
+		<Unit filename="src/Eagle/Platform.cpp" />
+		<Unit filename="src/Eagle/Position.cpp" />
+		<Unit filename="src/Eagle/Random.cpp" />
+		<Unit filename="src/Eagle/ResourceLib.cpp" />
+		<Unit filename="src/Eagle/Resources.cpp" />
+		<Unit filename="src/Eagle/Sound.cpp" />
+		<Unit filename="src/Eagle/StringWork.cpp" />
+		<Unit filename="src/Eagle/System.cpp" />
+		<Unit filename="src/Eagle/Threads.cpp" />
+		<Unit filename="src/Eagle/Time.cpp" />
+		<Unit filename="src/Eagle/Timer.cpp" />
+		<Unit filename="src/Eagle/Transforms.cpp" />
+		<Unit filename="src/Eagle/WindowManager.cpp" />
+		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<fortran_project />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
