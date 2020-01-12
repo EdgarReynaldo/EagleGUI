@@ -107,8 +107,8 @@ void NETWORK_EVENT_DATA::SetFields(std::string IP , std::string PORT , unsigned 
 
 NETWORK_EVENT_DATA::NETWORK_EVENT_DATA() :
       srcNETWORK(0),
-      srcIP(0),
-      srcPORT(0),
+      srcIP(""),
+      srcPORT(""),
       data(0),
       data_size(0)
 {}
@@ -117,8 +117,8 @@ NETWORK_EVENT_DATA::NETWORK_EVENT_DATA() :
 
 NETWORK_EVENT_DATA::NETWORK_EVENT_DATA(Network* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES) :
       srcNETWORK(net),
-      srcIP(0),
-      srcPORT(0),
+      srcIP(""),
+      srcPORT(""),
       data(0),
       data_size(0)
 {

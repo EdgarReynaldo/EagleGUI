@@ -74,9 +74,10 @@ int register_system_shutdown_function() {
 
 
 
-inline void signal_handler(int)
+inline void signal_handler(int sig)
 {
-    EpicFail();
+   EagleError() << StringPrintF("EAGLE caught signal %d" , sig) << std::endl;
+   EpicFail();
 }
 /**
 inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t)
@@ -265,9 +266,10 @@ bool EagleSystem::InitializeSystem() {
 ///                              atexit , success);
 
    signal(SIGABRT, signal_handler);
+   signal(SIGTERM, signal_handler);
    // _set_abort_behavior(0, _WRITE_ABORT_MSG|_CALL_REPORTFAULT);
 
-    std::set_terminate(EpicFail );
+//    std::set_terminate(EpicFail );
     std::set_unexpected(EpicFail );
    // _set_purecall_handler( &terminator );
    // _set_invalid_parameter_handler( &invalid_parameter_handler );
