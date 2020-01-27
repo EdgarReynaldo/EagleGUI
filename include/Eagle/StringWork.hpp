@@ -50,7 +50,8 @@ std::string StringPrintF(const char* format_str , ...) PRINTF_FORMAT_STYLE;/// 1
 int CountNewLines(std::string s);
 
 ///< Returns a vector of lines from s
-std::vector<std::string> SplitByNewLines(std::string s);
+std::vector<std::string> SplitByNewLinesChomp(std::string s);
+std::vector<std::string> SplitByNewLinesNoChomp(std::string s);
 
 ///< Returns a tokenized vector of strings using token as a separator
 std::vector<std::string> SplitByDelimiterString(std::string string_to_split , const std::string token);

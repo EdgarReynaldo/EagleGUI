@@ -71,7 +71,7 @@ int CountNewLines(std::string s) {
 
 
 
-vector<string> SplitByNewLines(std::string s) {
+vector<string> SplitByNewLinesChomp(std::string s) {
    vector<string> lines;
 
    if (s.length() == 0) {
@@ -104,6 +104,17 @@ vector<string> SplitByNewLines(std::string s) {
 
    return lines;
 }
+
+
+
+std::vector<std::string> SplitByNewLinesNoChomp(std::string s) {
+   std::vector<std::string> lines_chomp = SplitByNewLinesChomp(s);
+   for (unsigned int i = 0 ; i < lines_chomp.size() ; ++i) {
+      lines_chomp[i].push_back('\n');
+   }
+   return lines_chomp;
+}
+
 
 
 
