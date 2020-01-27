@@ -230,7 +230,7 @@ EagleGuiScript::SECTION_MAP EagleGuiScript::ReadSections(std::string script_file
 
 
 std::vector<std::string> EagleGuiScript::GetSectionLines(std::string content) {
-   std::vector<std::string> lines = SplitByNewLines(content);
+   std::vector<std::string> lines = SplitByNewLinesChomp(content);
    std::vector<std::string> adjusted;
    string current = lines[0];
 

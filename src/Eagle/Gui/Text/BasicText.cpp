@@ -47,7 +47,7 @@ void BasicText::RefreshTextPosition() {
 
    EAGLE_ASSERT(text_font);
    EAGLE_ASSERT(text_font->Valid());
-   lines = SplitByNewLines(text);
+   lines = SplitByNewLinesChomp(text);
    nlines = lines.size();
    
    int lineheight = fontheight + linespacing;

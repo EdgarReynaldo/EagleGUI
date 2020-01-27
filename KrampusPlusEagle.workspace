@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Allegro5Trans">
+		<Project filename="../../../LIBS/LIBS81Rebuild/A5FORK/cbbuild/ALLEGRO.cbp" />
+		<Project filename="../../../LIBS/LIBS81Rebuild/A5FORK/translucency/TransAllegro/Translucency.cbp" />
+		<Project filename="../../../LIBS/LIBS81Rebuild/A5FORK/translucency/WithAllegro/TransAllegro.cbp" />
+		<Project filename="Eagle5.cbp" />
+		<Project filename="Allegro5Backend.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2019/Nilorea/Nilorealibrary.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2019/KrampusServer.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

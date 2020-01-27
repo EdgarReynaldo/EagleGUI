@@ -77,7 +77,7 @@ bool Allegro5Font::Valid() {
 
 int Allegro5Font::Width(std::string str) {
    if (!allegro_font) {return 0;}
-   std::vector<std::string> lines = SplitByNewLines(str);
+   std::vector<std::string> lines = SplitByNewLinesChomp(str);
    int maxw = 0;
    for (unsigned int i = 0 ; i < lines.size() ; ++i) {
       int w = al_get_text_width(allegro_font , lines[i].c_str());
