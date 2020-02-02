@@ -357,7 +357,7 @@ void SelectText::RefreshSelection() {
    }
 
    selected_text = "";
-   if (select_line == -1) {
+   if (nlines < 1) {
       return;
    }
 

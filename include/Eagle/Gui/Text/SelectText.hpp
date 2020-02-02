@@ -80,7 +80,7 @@ protected :
 
    virtual void RefreshSelection();
 
-   bool GetSelectionIterators(std::string::iterator* itLeft , std::string::iterator* itRight);
+//   bool GetSelectionIterators(std::string::iterator* itLeft , std::string::iterator* itRight);
    
    
 public :

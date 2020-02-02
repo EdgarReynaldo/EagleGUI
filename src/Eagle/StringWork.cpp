@@ -53,6 +53,44 @@ string StringPrintF(const char* format_str , ...) {
 
 
 
+
+bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , int caretLine , int caretPos) {
+   EAGLE_ASSERT(itPos);
+   if (!itPos) {return false;}
+
+   std::vector<std::string> lines = SplitByNewLinesNoChomp(selText);
+
+   std::string::iterator carit = selText.begin();
+
+   /// Preconditions
+   if ((selText.begin() == selText.end()) ||
+       (caretLine < 0 || caretLine >= lines.size()) ||
+       (caretPos < 0 || caretPos > lines[caretLine].size())) {
+      *itPos = selText.end();
+      return false;
+   }
+   /// Add the opening lines to the iterators
+   for (unsigned int i = 0 ; i < caretLine ; ++i) {
+      carit += lines[i].size();
+   }
+   
+   /// Add the left selection
+   carit += caretPos;
+}
+
+
+
+bool GetSelectionIterators(std::string& selText ,
+                           std::string::iterator* itLeft , std::string::iterator* itRight,
+                           int select_line_start , int select_line_close ,
+                           int select_left , int select_right)
+{
+   return GetPositionIterator(selText , itLeft  , select_line_start , select_left ) &&
+          GetPositionIterator(selText , itRight , select_line_close , select_right);
+}
+
+
+
 int CountNewLines(std::string s) {
    int nlines = 1;
    for (unsigned int i = 0 ; i < s.length() ; i++) {

@@ -45,7 +45,18 @@ extern unsigned int STRINGPRINTF_BUFFER_SIZE;///< How large our working string p
 std::string StringPrintF(const char* format_str , ...) PRINTF_FORMAT_STYLE;/// 1024 character limit!
 
 
+///< Gets an iterator to the specified position by line and caret position
+bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , int caretLine , int caretPos);
 
+
+
+///< Gets iterators to the specified selection
+bool GetSelectionIterators(std::string& selText ,
+                           std::string::iterator* itLeft , std::string::iterator* itRight,
+                           int select_line_start , int select_line_close ,
+                           int select_left , int select_right);
+
+                           
 ///< Returns the newline count in s
 int CountNewLines(std::string s);
 
