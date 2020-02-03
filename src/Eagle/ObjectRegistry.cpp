@@ -211,11 +211,12 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
       return;
    }
    
+   LockOurMutex();
+
    EAGLE_ID new_id = NextId();
    
    object->SetId(new_id);
    
-   LockOurMutex();
    
    if (object->log_registration) {
       EaglePrefix("EAGLE_CREATE   : ") << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
