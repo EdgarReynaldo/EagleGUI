@@ -56,7 +56,13 @@ bool GetSelectionIterators(std::string& selText ,
                            int select_line_start , int select_line_close ,
                            int select_left , int select_right);
 
-                           
+
+bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine);
+bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine);
+
+bool GetNextWord(bool search_forward , const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine);
+
+
 ///< Returns the newline count in s
 int CountNewLines(std::string s);
 

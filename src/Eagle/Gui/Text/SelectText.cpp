@@ -111,21 +111,11 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
          EagleInfo() << "Key down event detected in SelectText::HandleEvent - key " <<
                         ev.keyboard.keycode << " was pressed." << std::endl;
 
-         if (ev.keyboard.keycode == EAGLE_KEY_DOWN || ev.keyboard.keycode == EAGLE_KEY_UP) {
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               MoveCaretUpOrDown(ev.keyboard.keycode , true);
-            }
-            else {
-               MoveCaretUpOrDown(ev.keyboard.keycode , false);
-            }
-         }
-         if (ev.keyboard.keycode == EAGLE_KEY_LEFT || ev.keyboard.keycode == EAGLE_KEY_RIGHT) {
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               MoveCaretLeftOrRight(ev.keyboard.keycode , true);
-            }
-            else {
-               MoveCaretLeftOrRight(ev.keyboard.keycode , false);
-            }
+         if ((ev.keyboard.keycode == EAGLE_KEY_DOWN || ev.keyboard.keycode == EAGLE_KEY_UP) ||
+             (ev.keyboard.keycode == EAGLE_KEY_LEFT || ev.keyboard.keycode == EAGLE_KEY_RIGHT) ||
+             (ev.keyboard.keycode == EAGLE_KEY_HOME || ev.keyboard.keycode == EAGLE_KEY_END)) 
+         {
+            MoveCaret(ev.keyboard.keycode , input_key_held(EAGLE_KEY_ANY_SHIFT) , input_key_held(EAGLE_KEY_ANY_CTRL));
          }
 
          if (ev.keyboard.keycode == EAGLE_KEY_A) {
@@ -547,7 +537,7 @@ void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum
 
 
 
-void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
+void SelectText::OldMoveCaretUpOrDown(int keycode , bool shift_held) {
 
    EAGLE_ASSERT(lines.size());
    EAGLE_ASSERT(keycode == EAGLE_KEY_UP || keycode == EAGLE_KEY_DOWN);
@@ -625,47 +615,143 @@ void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
 
 
 
-void SelectText::MoveCaretLeftOrRight(int keycode , bool shift_held) {
+void SelectText::OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ctrl_held) {
+   
+   if (keycode != EAGLE_KEY_LEFT && keycode != EAGLE_KEY_RIGHT) {
+      return;
+   }
+   
+   if (!lines.size()) {
+      caret_line = 0;
+      caret_pos = 0;
+      return;
+   }
+   
+   int new_caret_pos = caret_pos;
+   int new_caret_line = caret_line;
 
-   EAGLE_ASSERT(lines.size());
-   EAGLE_ASSERT(keycode == EAGLE_KEY_LEFT || keycode == EAGLE_KEY_RIGHT);
+   if (!ctrl_held) {
+      if (keycode == EAGLE_KEY_LEFT) {
+         new_caret_pos--;
+         if (new_caret_pos < 0) {
+            new_caret_pos = 0;
+            if (new_caret_line > 0) {
+               --new_caret_line;
+               new_caret_pos = lines[new_caret_line].size();
+            }
+         }
+      }
+      if (keycode == EAGLE_KEY_RIGHT) {
+         new_caret_pos++;
+         if (new_caret_pos > (int)lines[new_caret_line].size()) {
+            if (new_caret_line < ((int)(lines.size() - 1))) {
+               ++new_caret_line;
+               new_caret_pos = 0;
+            }
+            else {
+               EAGLE_ASSERT(new_caret_line == ((int)lines.size() - 1 ));
+               new_caret_pos = (int)(lines[new_caret_line].size());
+            }
+         }
+      }
+   }
+   else {
+      /// Ctrl held, move by word
+      if (!GetNextWord((keycode == EAGLE_KEY_LEFT)?false:true , text , caret_pos , caret_line , &new_caret_pos , &new_caret_line)) {
+         return;
+      }
+   }
+   
+   caret_pos = new_caret_pos;
+   caret_line = new_caret_line;
+   
+   if (!shift_held) {/// Reset selection whenever shift is not held
+      select_pos = caret_pos;
+      select_line = caret_line;
+   }
 
-   int old_caret_pos = caret_pos;
-   int old_caret_line = caret_line;
-   if (keycode == EAGLE_KEY_LEFT) {
-      caret_pos--;
-      if (caret_pos < 0) {
-         if (caret_line > 0) {
-            --caret_line;
-            caret_pos = lines[caret_line].size();
-         }
-         else {
-            EAGLE_ASSERT(caret_line == 0);
-            caret_pos = 0;
+   RefreshSelection();
+}
+
+
+
+void SelectText::OldMoveCaretHomeOrEnd(int keycode , bool shift_held , bool ctrl_held) {
+   if (keycode != EAGLE_KEY_HOME && keycode != EAGLE_KEY_END) {
+      return;
+   }
+   
+   int new_caret_line = caret_line;
+   int new_caret_pos = caret_pos;
+   
+   
+   /// Only moving caret
+   if (ctrl_held) {
+      /// Move to home or end of entire text
+      if (keycode == EAGLE_KEY_HOME) {
+         new_caret_line = 0;
+         new_caret_pos = 0;
+      }
+      else if (keycode == EAGLE_KEY_END) {
+         new_caret_line = (int)lines.size() - 1;
+         if (new_caret_line >= 0) {
+            new_caret_pos = (int)lines[new_caret_line].size();
          }
       }
    }
-   if (keycode == EAGLE_KEY_RIGHT) {
-      caret_pos++;
-      if (caret_pos > (int)lines[caret_line].size()) {
-         if (caret_line < ((int)(lines.size() - 1))) {
-            ++caret_line;
-            caret_pos = 0;
-         }
-         else {
-            EAGLE_ASSERT(caret_line == ((int)lines.size() - 1 ));
-            caret_pos = (int)(lines[caret_line].size());
+   else {
+      /// Move to home or end of current line
+      if (keycode == EAGLE_KEY_HOME) {
+         new_caret_pos = 0;   
+      }
+      else if (keycode == EAGLE_KEY_END) {
+         new_caret_pos = 0;
+         if (new_caret_line >= 0 && new_caret_line < (int)lines.size()) {
+            new_caret_pos = (int)lines[new_caret_line].size();
          }
       }
    }
-   if (caret_pos != old_caret_pos || caret_line != old_caret_line) {
-      /// We know that the caret position has changed - if shift is not held, then the select_pos has to be updated too
-      if (!shift_held) {
-         select_pos = caret_pos;
-         select_line = caret_line;
-         RefreshSelection();
-      }
+   
+   caret_pos = new_caret_pos;
+   caret_line = new_caret_line;
+
+   if (!shift_held) {
+      /// Anchor selection, select up to new caret
+      select_pos = caret_pos;
+      select_line = caret_line;
    }
+   else {
+      /// Selection stays in the same place, caret moves to new end of selection
+      (void)0;
+   }
+   
+   RefreshSelection();
+}
+
+
+
+void SelectText::MoveCaret(int keycode , bool shift_held , bool ctrl_held) {
+   /// Valid keycodes are EAGLE_KEY_LEFT , EAGLE_KEY_RIGHT , EAGLE_KEY_UP , EAGLE_KEY_DOWN , EAGLE_KEY_HOME , EAGLE_KEY_END
+   
+   /// Shift + l/r = change selection
+   /// Ctrl + l/r = change selection increment by word
+   if (keycode == EAGLE_KEY_LEFT || keycode == EAGLE_KEY_RIGHT) {
+      OldMoveCaretLeftOrRight(keycode , shift_held , ctrl_held);
+      return;
+   }
+   
+   /// Shift + u/d = change selection
+   if (keycode == EAGLE_KEY_UP || keycode == EAGLE_KEY_DOWN) {
+      OldMoveCaretUpOrDown(keycode , shift_held);
+      return;
+   }
+   
+   /// Home/End = move to beginning or end of line. Shift + Home/End, move to beginning / end of text
+   if (keycode == EAGLE_KEY_HOME || keycode == EAGLE_KEY_END) {
+      OldMoveCaretHomeOrEnd(keycode , shift_held , ctrl_held);
+   }
+   
+   
+   
 }
 
 

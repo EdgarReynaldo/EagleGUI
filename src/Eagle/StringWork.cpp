@@ -76,6 +76,8 @@ bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , i
    
    /// Add the left selection
    carit += caretPos;
+   *itPos = carit;
+   return true;
 }
 
 
@@ -87,6 +89,155 @@ bool GetSelectionIterators(std::string& selText ,
 {
    return GetPositionIterator(selText , itLeft  , select_line_start , select_left ) &&
           GetPositionIterator(selText , itRight , select_line_close , select_right);
+}
+
+
+
+
+bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   if (!newCaretPos || !newCaretLine) {
+      return false;
+   }
+   
+   const vector<std::string> lines = SplitByNewLinesNoChomp(text);
+   
+   if (caretLine < 0 || caretLine >= lines.size()) {
+      return false;
+   }
+   if (caretPos < 0 || caretPos >= lines[caretLine].size()) {
+      return false;
+   }
+   
+   int absPos = 0;
+   int line = 0;
+   while (line < caretLine) {
+      absPos += lines[line].size();
+      ++line;
+   }
+
+   absPos += caretPos;
+
+   unsigned int newPos = absPos;
+   /// If in the middle of a word, advance to the end, if on whitespace, advance to end of whitespace
+   if (!iswspace(text[newPos])) {
+      while(!iswspace(text[newPos]) && newPos < text.size()) {
+         ++newPos;
+      }
+   }
+   while(iswspace(text[newPos]) && newPos < text.size()) {
+      ++newPos;
+   }
+
+   line = 0;
+   while (line < lines.size() && newPos > lines[line].size()) {
+      newPos -= lines[line].size();
+      ++line;
+   }
+
+   *newCaretLine = line;
+   *newCaretPos = newPos;
+   
+   return true;
+}
+
+
+
+bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   if (!newCaretPos || !newCaretLine) {
+      return false;
+   }
+   
+   const vector<std::string> lines = SplitByNewLinesNoChomp(text);
+   
+   if (caretLine < 0 || caretLine >= lines.size()) {
+      return false;
+   }
+   if (caretPos < 0 || caretPos >= lines[caretLine].size()) {
+      return false;
+   }
+   
+   int absPos = 0;
+   int line = 0;
+   while (line < caretLine) {
+      absPos += lines[line].size();
+      ++line;
+   }
+   absPos += caretPos;
+   unsigned int newPos = absPos - 1;/// Always start one character to the left
+   if (newPos < 0) {newPos = 0;}
+   
+   /// Reverse to beginning of current or previous word, including whitespace
+   {
+      /// Example "three |word sentence"
+      if (iswspace(text[newPos])) {
+         while (iswspace(text[newPos]) && newPos > 0) {
+            --newPos;
+         }
+         while (!iswspace(text[newPos]) && newPos > 0) {
+            --newPos;
+         }
+         if (newPos == 0) {
+            if (iswspace(text[0])) {
+               newPos = 1;
+            }
+         }
+         else {
+            ++newPos;
+         }
+      }
+      else {
+         /// Reverse to beginning of word minus 1
+         while (!iswspace(text[newPos]) && newPos > 0) {
+            --newPos;
+         }
+         if (newPos == 0) {
+            if (iswspace(text[0])) {
+               newPos = 1;
+            }
+         }
+         else {
+            ++newPos;
+         }
+      }
+   }
+
+
+
+
+
+   if (iswspace(text[newPos])) {
+      while (iswspace(text[newPos]) && newPos > 0) {
+         --newPos;
+      }
+   }
+   else {
+      while (!iswspace(text[newPos]) && newPos > 0) {
+         --newPos;
+      }
+   }
+   ++newPos;/// We know this character does not match, so start to the right
+   
+   
+   line = 0;
+   while (line < lines.size() && newPos > lines[line].size()) {
+      newPos -= lines[line].size();
+      ++line;
+   }
+   *newCaretPos = newPos;
+   *newCaretLine = line;
+   
+   return true;
+}
+
+
+
+bool GetNextWord(bool search_forward , const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   EAGLE_ASSERT(newCaretPos);
+   EAGLE_ASSERT(newCaretLine);
+   
+   return (search_forward?
+           GetNextWord(text , caretPos , caretLine , newCaretPos , newCaretLine):
+           GetPreviousWord(text , caretPos , caretLine , newCaretPos , newCaretLine));
 }
 
 

@@ -96,9 +96,14 @@ protected :
    
    void DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos);
 
-   void MoveCaretUpOrDown(int keycode , bool shift_held);
-   void MoveCaretLeftOrRight(int keycode , bool shift_held);
+   void OldMoveCaretUpOrDown(int keycode , bool shift_held);
+   void OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ctrl_held);
+   void OldMoveCaretHomeOrEnd(int keycode , bool shift_held , bool ctrl_held);
+   
+   void MoveCaret(int keycode , bool shift_held , bool ctrl_held);
 
+   
+   
    Rectangle GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey);
 
 public :
