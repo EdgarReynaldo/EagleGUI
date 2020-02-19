@@ -630,7 +630,14 @@ void SelectText::OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ct
    int new_caret_pos = caret_pos;
    int new_caret_line = caret_line;
 
-   if (!ctrl_held) {
+   if (ctrl_held) {
+      /// Ctrl held, move by word
+      if (!GetNextWord((keycode == EAGLE_KEY_LEFT)?false:true , text , caret_pos , caret_line , &new_caret_pos , &new_caret_line)) {
+         return;
+      }
+   }
+   else {
+      /// CTRL not held, move by one left or right
       if (keycode == EAGLE_KEY_LEFT) {
          new_caret_pos--;
          if (new_caret_pos < 0) {
@@ -653,12 +660,6 @@ void SelectText::OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ct
                new_caret_pos = (int)(lines[new_caret_line].size());
             }
          }
-      }
-   }
-   else {
-      /// Ctrl held, move by word
-      if (!GetNextWord((keycode == EAGLE_KEY_LEFT)?false:true , text , caret_pos , caret_line , &new_caret_pos , &new_caret_line)) {
-         return;
       }
    }
    

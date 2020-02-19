@@ -129,9 +129,13 @@ bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* n
    }
 
    line = 0;
-   while (line < lines.size() && newPos > lines[line].size()) {
+   while (line < lines.size() && newPos >= lines[line].size()) {
       newPos -= lines[line].size();
       ++line;
+   }
+   if (line == lines.size()) {
+      line--;
+      newPos = lines[line].size();
    }
 
    *newCaretLine = line;
@@ -156,6 +160,7 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
       return false;
    }
    
+   /// Get absolute position
    int absPos = 0;
    int line = 0;
    while (line < caretLine) {
@@ -163,66 +168,34 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
       ++line;
    }
    absPos += caretPos;
-   unsigned int newPos = absPos - 1;/// Always start one character to the left
-   if (newPos < 0) {newPos = 0;}
+   int newPos = absPos?absPos - 1:0;/// Always start one character to the left
    
    /// Reverse to beginning of current or previous word, including whitespace
-   {
-      /// Example "three |word sentence"
-      if (iswspace(text[newPos])) {
-         while (iswspace(text[newPos]) && newPos > 0) {
-            --newPos;
-         }
-         while (!iswspace(text[newPos]) && newPos > 0) {
-            --newPos;
-         }
-         if (newPos == 0) {
-            if (iswspace(text[0])) {
-               newPos = 1;
-            }
-         }
-         else {
-            ++newPos;
-         }
-      }
-      else {
-         /// Reverse to beginning of word minus 1
-         while (!iswspace(text[newPos]) && newPos > 0) {
-            --newPos;
-         }
-         if (newPos == 0) {
-            if (iswspace(text[0])) {
-               newPos = 1;
-            }
-         }
-         else {
-            ++newPos;
-         }
-      }
-   }
 
-
-
-
-
+   /// Skip previous whitespace, if any
    if (iswspace(text[newPos])) {
       while (iswspace(text[newPos]) && newPos > 0) {
          --newPos;
       }
    }
-   else {
-      while (!iswspace(text[newPos]) && newPos > 0) {
-         --newPos;
-      }
+   /// Skip to beginning of word
+   while (!iswspace(text[newPos]) && newPos >= 0) {
+      --newPos;
    }
-   ++newPos;/// We know this character does not match, so start to the right
+   ++newPos;
    
-   
+   /// Get relative position again
    line = 0;
-   while (line < lines.size() && newPos > lines[line].size()) {
+   while (line < lines.size() && newPos >= lines[line].size()) {
       newPos -= lines[line].size();
       ++line;
    }
+
+   if (line == lines.size()) {
+      --line;
+      newPos = lines[line].size();
+   }
+   
    *newCaretPos = newPos;
    *newCaretLine = line;
    
@@ -448,6 +421,12 @@ std::string GetGuiText(std::string gui_text) {
    const char amp = '&';
    for (unsigned int i = 0 ; i < gui_text.size() ; ++i) {
 
+      if (iswspace(gui_text[i])) {
+         /// Turn all whitespace into empty spaces
+         stripped_text.push_back(' ');
+         continue;
+      }
+   
       if (gui_text[i] == amp) {
       // Leading ampersand
          if ((i + 1) < gui_text.size()) {
