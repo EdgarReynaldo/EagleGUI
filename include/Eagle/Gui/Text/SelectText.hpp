@@ -89,11 +89,23 @@ public :
 
    virtual ~SelectText() {}
 
-protected :
    void FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum);
 
    void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos);
    
+//   void GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right);
+   void GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right) {
+      EAGLE_ASSERT(pselect_line_start);
+      EAGLE_ASSERT(pselect_line_close);
+      EAGLE_ASSERT(pselect_left);
+      EAGLE_ASSERT(pselect_right);
+      *pselect_line_start = select_line_start;
+      *pselect_line_close = select_line_close;
+      *pselect_left = select_left;
+      *pselect_right = select_right;
+   }
+   
+protected :
    void DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos);
 
    void OldMoveCaretUpOrDown(int keycode , bool shift_held);

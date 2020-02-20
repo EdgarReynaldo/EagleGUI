@@ -55,54 +55,38 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
       if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
          if (InnerArea().Contains(msx,msy)) {
             retflags |= DIALOG_TAKE_FOCUS;
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               if (select_pos != -1) {
-                  int new_caret_pos = -1;
-                  int new_caret_line = -1;
-                  FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
-                  if (new_caret_line != -1 && new_caret_pos != -1) {
-                     caret_pos = new_caret_pos;
-                     caret_line = new_caret_line;
-                  }
-                  RefreshSelection();
+            int new_caret_pos = -1;
+            int new_caret_line = -1;
+            FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
+            if (new_caret_line != -1 && new_caret_pos != -1) {
+               caret_pos = new_caret_pos;
+               caret_line = new_caret_line;
+               if (!input_key_held(EAGLE_KEY_ANY_SHIFT)) {
+                  select_pos = new_caret_pos;
+                  select_line = new_caret_line;
                }
-            }
-            else {
-               int new_caret_pos = -1;
-               int new_caret_line = -1;
-               FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
-               if (new_caret_line != -1 && new_caret_pos != -1) {
-                  select_pos = caret_pos = new_caret_pos;
-                  select_line = caret_line = new_caret_line;
-                  drag = true;
-               }
+               drag = true;
                RefreshSelection();
             }
          }
       }
-      if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
+      if (ev.type == EAGLE_EVENT_MOUSE_AXES || ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
          if (drag) {
-            int newcaretpos = -1;
-            int newcaretline = -1;
-            FindCaretPos(msx , msy , &newcaretpos , &newcaretline);
-            if (newcaretline != -1 && newcaretpos != -1) {
-               caret_pos = newcaretpos;
-               caret_line = newcaretline;
+            int new_caret_pos = -1;
+            int new_caret_line = -1;
+            FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
+            if (new_caret_line != -1 && new_caret_pos != -1) {
+               caret_pos = new_caret_pos;
+               caret_line = new_caret_line;
+               if (!input_key_held(EAGLE_KEY_ANY_SHIFT)) {
+                  select_pos = new_caret_pos;
+                  select_line = new_caret_line;
+               }
+               RefreshSelection();
             }
-            RefreshSelection();
-         }
-      }
-      if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-         if (drag) {
-            int newcaretpos = -1;
-            int newcaretline = -1;
-            FindCaretPos(msx , msy , &newcaretpos , &newcaretline);
-            if (newcaretline != -1 && newcaretpos != -1) {
-               caret_pos = newcaretpos;
-               caret_line = newcaretline;
+            if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+               drag = false;
             }
-            RefreshSelection();
-            drag = false;
          }
       }
    }
@@ -124,8 +108,14 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
                select_pos = 0;
                select_line = 0;
                int endline = (int)lines.size() - 1;
-               caret_pos = lines[endline].size();
-               caret_line = endline;
+               if (endline == -1) {
+                  caret_line = 0;
+                  caret_pos = 0;
+               }
+               else {
+                  caret_pos = lines[endline].size();
+                  caret_line = endline;
+               }
                RefreshSelection();
             }
          }
@@ -171,10 +161,10 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    for (int i = 0 ; i < nlines ; ++i) {
       Rectangle r = lineareas[i];
       if (i >= select_line_start && i <= select_line_close) {
-///         win->DrawRectangle(r , 3.0 , EagleColor(0,255,255));
+//         win->DrawRectangle(r , 3.0 , EagleColor(0,255,255));
       }
       else {
-///         win->DrawRectangle(r , 3.0 , EagleColor(255,0,255));
+//         win->DrawRectangle(r , 3.0 , EagleColor(255,0,255));
       }
    }
    
@@ -185,6 +175,9 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 ///   EagleInfo() << StringPrintF("lines[start].size() = %d , lines[close].size() = %d" ,
 ///                               (int)lines[select_line_start].size() , (int)lines[select_line_close].size()) << std::endl;
    if (select_line_start > -1) {
+      
+      EagleInfo() << "Drawing selection background.\n";
+      
       if (select_line_start == select_line_close) {
          DrawSelectionBackground(win , select_line_start , select_left , select_right , xpos , ypos);
       }
@@ -220,9 +213,9 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
          
          EagleColor col = GetColor(FGCOL);
          
-         win->DrawFilledRectangle(x-1,y,3.0f,h,col);
-         win->DrawFilledRectangle      (x-3 , y   , 7.0f , 2.0f , col);
-         win->DrawFilledRectangle      (x-3 , y+h , 7.0f , 2.0f , col);
+         win->DrawFilledRectangle(x-1 , y   , 3.0f , h    , col);
+         win->DrawFilledRectangle(x-3 , y   , 7.0f , 2.0f , col);
+         win->DrawFilledRectangle(x-3 , y+h , 7.0f , 2.0f , col);
       }
    }
    /// DIAGNOSTIC TEST
@@ -351,6 +344,9 @@ void SelectText::RefreshSelection() {
       return;
    }
 
+   EagleInfo() << StringPrintF("Start line = %d , pos = %d , Close line = %d , pos = %d\n" ,
+                               select_line_start , select_left , select_line_close , select_right);
+   
    EAGLE_ASSERT(select_line_start >= 0 && select_line_start < nlines);
    EAGLE_ASSERT(select_line_close >= 0 && select_line_close < nlines);
    EAGLE_ASSERT(select_left >= 0 && select_left <= (int)lines[select_line_start].size());
@@ -531,7 +527,7 @@ void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum
 
    if (r.W()) {
       win->DrawFilledRectangle(r , GetColor(MGCOL));
-      win->DrawRectangle(r , 3.0 , GetColor(HLCOL));
+      win->DrawRectangle(r , 2.0 , GetColor(HLCOL));
    }
 }
 
@@ -542,6 +538,8 @@ void SelectText::OldMoveCaretUpOrDown(int keycode , bool shift_held) {
    EAGLE_ASSERT(lines.size());
    EAGLE_ASSERT(keycode == EAGLE_KEY_UP || keycode == EAGLE_KEY_DOWN);
 
+   if (keycode != EAGLE_KEY_UP && keycode != EAGLE_KEY_DOWN) {return;}
+   
    /// TODO : Compensate for alignment - for now assume left alignment
    int old_caret_line = caret_line;
    if (keycode == EAGLE_KEY_UP) {

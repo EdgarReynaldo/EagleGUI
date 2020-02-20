@@ -1354,13 +1354,11 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
    EAGLE_ASSERT(HasWidget(widget));
    
    /// Remove old focus
-   if (wfocus) {
+   if (wfocus && wfocus != widget) {
       wfocus->SetFocusState(false);
    }
-   
    /// Set new focus
    widget->SetFocusState(true);
-   
    wfocus = widget;
    
    /// Things get tricky here, as we might not own the widget we're giving focus to

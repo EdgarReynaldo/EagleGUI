@@ -156,7 +156,7 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
    if (caretLine < 0 || caretLine >= lines.size()) {
       return false;
    }
-   if (caretPos < 0 || caretPos >= lines[caretLine].size()) {
+   if (caretPos < 0 || caretPos > lines[caretLine].size()) {
       return false;
    }
    
@@ -173,10 +173,8 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
    /// Reverse to beginning of current or previous word, including whitespace
 
    /// Skip previous whitespace, if any
-   if (iswspace(text[newPos])) {
-      while (iswspace(text[newPos]) && newPos > 0) {
-         --newPos;
-      }
+   while (iswspace(text[newPos]) && newPos > 0) {
+      --newPos;
    }
    /// Skip to beginning of word
    while (!iswspace(text[newPos]) && newPos >= 0) {
