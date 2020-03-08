@@ -45,6 +45,18 @@ REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);///< Registers the TEXT
  *   TODO : Cache string widths with current font and current string so they don't have to be measured over and over again
  */
 
+struct LPIndex {
+   int l;
+   int p;
+   LPIndex() : l(-1) , p(-1) {}
+   LPIndex(int line , int pos) : l(line) , p(pos) {}
+};
+
+
+int GetAbsoluteIndex(const std::string& text , const std::vector<std::string>& lines , LPIndex lp);
+LPIndex GetLPIndex(const std::string& text , const std::vector<std::string>& lines , int abs_index);
+
+
 class SelectText : public BasicText {
 
 protected :
@@ -64,6 +76,9 @@ protected :
    std::string selected_text;
 
    bool deselect_on_lost_focus;
+   
+   int select_index;
+   int caret_index;
    
    
 
@@ -89,24 +104,11 @@ public :
 
    virtual ~SelectText() {}
 
-   void FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum);
-
-   void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos);
-   
-//   void GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right);
-   void GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right) {
-      EAGLE_ASSERT(pselect_line_start);
-      EAGLE_ASSERT(pselect_line_close);
-      EAGLE_ASSERT(pselect_left);
-      EAGLE_ASSERT(pselect_right);
-      *pselect_line_start = select_line_start;
-      *pselect_line_close = select_line_close;
-      *pselect_left = select_left;
-      *pselect_right = select_right;
-   }
+   void ResetSelection();
    
 protected :
-   void DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos);
+   virtual void DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos);
+   virtual void DrawCaret(EagleGraphicsContext* win , int xpos , int ypos);
 
    void OldMoveCaretUpOrDown(int keycode , bool shift_held);
    void OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ctrl_held);
@@ -114,7 +116,8 @@ protected :
    
    void MoveCaret(int keycode , bool shift_held , bool ctrl_held);
 
-   
+   void MoveCaretRelative(int newCaretLine , int newCaretPos);
+   void MoveCaretAbsolute(int newCaretPos);
    
    Rectangle GetSelectionArea(int linenum , int leftchar , int rightchar , int basex , int basey);
 
@@ -124,6 +127,16 @@ public :
    void SetDeselectOnLostFocus(bool deselect);
    
    virtual void Refresh();
+   
+   void FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum);
+
+   void GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos);
+   
+   void GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right);
+   
+   std::string GetSelectionString();
+   
+   void GetSelectionIndices(int* selIndex , int* caretIndex);
 };
 
 

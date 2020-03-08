@@ -303,9 +303,6 @@ void BasicText::Refresh() {
    if (text_font) {
       RefreshTextPosition();
    }
-///   else {
-///      EagleInfo() << StringPrintF("INFO : BasicText::Refresh called on object %s without an active text_font.\n" , GetName().c_str());
-///   }
 }
 
 

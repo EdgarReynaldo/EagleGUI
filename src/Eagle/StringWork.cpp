@@ -67,7 +67,7 @@ bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , i
        (caretLine < 0 || caretLine >= lines.size()) ||
        (caretPos < 0 || caretPos > lines[caretLine].size())) {
       *itPos = selText.end();
-      return false;
+      return true;
    }
    /// Add the opening lines to the iterators
    for (unsigned int i = 0 ; i < caretLine ; ++i) {
@@ -87,8 +87,9 @@ bool GetSelectionIterators(std::string& selText ,
                            int select_line_start , int select_line_close ,
                            int select_left , int select_right)
 {
-   return GetPositionIterator(selText , itLeft  , select_line_start , select_left ) &&
-          GetPositionIterator(selText , itRight , select_line_close , select_right);
+   GetPositionIterator(selText , itLeft  , select_line_start , select_left );
+   GetPositionIterator(selText , itRight , select_line_close , select_right);
+   return *itLeft != selText.end() || *itRight != selText.end();
 }
 
 
@@ -213,8 +214,8 @@ bool GetNextWord(bool search_forward , const std::string& text , int caretPos , 
 
 
 
-int CountNewLines(std::string s) {
-   int nlines = 1;
+int CountNewlines(std::string s) {
+   int nlines = 0;
    for (unsigned int i = 0 ; i < s.length() ; i++) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
@@ -230,8 +231,13 @@ int CountNewLines(std::string s) {
 }
 
 
+int CountLines(std::string s) {
+   return CountNewlines(s) + 1;
+}
 
-vector<string> SplitByNewLinesChomp(std::string s) {
+
+
+vector<string> SplitByNewLinesNoChomp(std::string s) {
    vector<string> lines;
 
    if (s.length() == 0) {
@@ -244,6 +250,7 @@ vector<string> SplitByNewLinesChomp(std::string s) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
 
+         line.push_back('\n');
          lines.push_back(line);
          line = "";
 
@@ -265,12 +272,15 @@ vector<string> SplitByNewLinesChomp(std::string s) {
    return lines;
 }
 
+/// "a\nb\n"
 
-
-std::vector<std::string> SplitByNewLinesNoChomp(std::string s) {
-   std::vector<std::string> lines_chomp = SplitByNewLinesChomp(s);
+std::vector<std::string> SplitByNewLinesChomp(std::string s) {
+   std::vector<std::string> lines_chomp = SplitByNewLinesNoChomp(s);
    for (unsigned int i = 0 ; i < lines_chomp.size() ; ++i) {
-      lines_chomp[i].push_back('\n');
+      unsigned int index = lines_chomp[i].find_last_of('\n');
+      if (index != std::string::npos) {
+         lines_chomp[i].erase(index , 1);
+      }
    }
    return lines_chomp;
 }

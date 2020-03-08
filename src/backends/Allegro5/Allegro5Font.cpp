@@ -97,7 +97,7 @@ int Allegro5Font::Height() {
 
 
 int Allegro5Font::Height(std::string str , int ls) {
-   int nlines = CountNewLines(str);
+   int nlines = CountLines(str);
    int th = nlines*Height() + (nlines-1)*ls;
    return th;
 }

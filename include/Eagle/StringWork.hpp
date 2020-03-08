@@ -64,7 +64,8 @@ bool GetNextWord(bool search_forward , const std::string& text , int caretPos , 
 
 
 ///< Returns the newline count in s
-int CountNewLines(std::string s);
+int CountNewlines(std::string s);
+int CountLines(std::string s);
 
 ///< Returns a vector of lines from s
 std::vector<std::string> SplitByNewLinesChomp(std::string s);
