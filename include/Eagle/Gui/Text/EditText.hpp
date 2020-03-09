@@ -47,6 +47,7 @@ public :
    bool Insert();
    bool Overwrite();
    
+   std::string GetText() {return text;}
    void SetTabSpacing(unsigned int ntabspaces);
 };
 
