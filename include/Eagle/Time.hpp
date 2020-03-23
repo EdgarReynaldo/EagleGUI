@@ -55,12 +55,11 @@ public :
    static ProgramTime Now();///< The current time
    static ProgramTime ProgramStart();///< The start time of the program
    static ProgramTime Elapsed();///< The time passed since program start
-
+   static ProgramTime SyncTime(double t);///< Synchronize program start to t
 };
 
 
 
-extern const ProgramTime program_start;///< Const access to program start time
 
 
 

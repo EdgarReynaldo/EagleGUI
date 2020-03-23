@@ -35,7 +35,7 @@
 
 
 
-const ProgramTime program_start = ProgramTime::Now();
+ProgramTime program_start = ProgramTime::Now();
 
 
 
@@ -117,4 +117,8 @@ ProgramTime ProgramTime::Elapsed() {
    return Now() - ProgramStart();
 }
 
+
+ProgramTime ProgramTime::SyncTime(double t) {
+   return program_start = t - ProgramTime::Now();
+}
 

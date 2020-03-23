@@ -190,6 +190,8 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    EAGLE_ASSERT(text_font->Valid());
    if (!nlines) {return;}
 
+   InnerArea().Fill(win , GetColor(BGCOL));
+   
 ///   EagleInfo() << "SelectText::PrivateDisplay - begin" << std::endl;
    for (int i = 0 ; i < nlines ; ++i) {
       Rectangle r = lineareas[i];
@@ -257,14 +259,16 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
 
 int SelectText::PrivateUpdate(double tsec) {
-   caret_time += tsec;
-   if (caret_time >= caret_blink_time) {
-      int numblinks = (int)(caret_time / caret_blink_time);
-      if (numblinks % 2 == 1) {
-         caret_visible = !caret_visible;
-         SetBgRedrawFlag();
+   if (Flags().FlagOn(HASFOCUS)) {
+      caret_time += tsec;
+      if (caret_time >= caret_blink_time) {
+         int numblinks = (int)(caret_time / caret_blink_time);
+         if (numblinks % 2 == 1) {
+            caret_visible = !caret_visible;
+            SetBgRedrawFlag();
+         }
+         caret_time = fmod(caret_time,caret_blink_time);
       }
-      caret_time = fmod(caret_time,caret_blink_time);
    }
    return DIALOG_OKAY;
 }
@@ -277,6 +281,7 @@ void SelectText::OnFlagChanged(WIDGET_FLAGS f , bool on) {
          select_line = -1;
          RefreshSelection();
       }
+      caret_visible = true;
    }
    else if (f == HOVER) {
       WidgetHandler* gui = RootHandler();
@@ -569,7 +574,7 @@ void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum
 
 
 void SelectText::DrawCaret(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (caret_visible) {
+   if (caret_visible || Flags().FlagOff(HASFOCUS)) {
       if (caret_line >= 0 && caret_pos > -1) {
          
          Rectangle r = lineareas[caret_line];
