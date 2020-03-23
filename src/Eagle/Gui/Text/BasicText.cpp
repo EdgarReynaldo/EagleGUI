@@ -47,7 +47,7 @@ void BasicText::RefreshTextPosition() {
 
    EAGLE_ASSERT(text_font);
    EAGLE_ASSERT(text_font->Valid());
-   lines = SplitByNewLines(text);
+   lines = SplitByNewLinesNoChomp(text);
    nlines = lines.size();
    
    int lineheight = fontheight + linespacing;
@@ -225,7 +225,7 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    
    win->HoldDrawing();
    for (int i = 0 ; i < nlines ; ++i) {
-      string s = lines[i];
+      string s = GetGuiText(lines[i]);
       Rectangle r = lineareas[i];
       win->DrawTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , HALIGN_LEFT , VALIGN_TOP);
    }
@@ -303,9 +303,6 @@ void BasicText::Refresh() {
    if (text_font) {
       RefreshTextPosition();
    }
-///   else {
-///      EagleInfo() << StringPrintF("INFO : BasicText::Refresh called on object %s without an active text_font.\n" , GetName().c_str());
-///   }
 }
 
 

@@ -24,7 +24,7 @@
 #define Threads_HPP
 
 
-
+#include <atomic>
 #include "Eagle/Object.hpp"
 #include "Eagle/Mutexes.hpp"
 
@@ -65,7 +65,7 @@ private :
    static int new_thread_id;
    
    int thread_id;
-   EAGLE_MUTEX_STATE mutex_state;
+   std::atomic<EAGLE_MUTEX_STATE> mutex_state;
    EagleMutex* our_mutex;
    const char* latest_func_caller;
    

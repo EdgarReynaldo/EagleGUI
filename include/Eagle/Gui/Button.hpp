@@ -32,7 +32,7 @@
 #include "Button/IconButton.hpp"
 #include "Button/RadioGroup.hpp"
 #include "Button/ScrollButton.hpp"
-
+#include "Button/TextIconButton.hpp"
 
 
 #endif // Button_HPP

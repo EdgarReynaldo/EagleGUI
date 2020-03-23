@@ -25,11 +25,14 @@
 #include "Eagle/Gui/WidgetHandler.hpp"
 
 
+IconButtonBase::IconButtonBase(std::string classname , std::string objname) :
+      BasicButton(classname , objname)
+{}
+
+
+
 void IconButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   EagleImage* image = original_images[(int)btn_state];
-   EAGLE_ASSERT(image && image->Valid());
-   win->DrawStretchedRegion(image , 0 , 0 , image->W() , image->H() ,
-                            InnerArea().X() + xpos , InnerArea().Y() + ypos , InnerArea().W() , InnerArea().H());
+   DisplayIcon(win , btn_state , xpos , ypos);
 /**
    Rectangle r = click_rect;
    r.MoveBy(InnerArea().X() , InnerArea().Y());
@@ -54,7 +57,7 @@ void IconButton::OnAreaChanged() {
 
 
 IconButton::IconButton(std::string classname , std::string objname) :
-      BasicButton(classname , objname),
+      IconButtonBase(classname , objname),
       original_images(),
       click_rect()
 {
@@ -73,6 +76,21 @@ void IconButton::SetImages(EagleImage* upimage , EagleImage* downimage , EagleIm
 
 
 
+void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint) {
+   EagleImage* image = original_images[(int)state];
+   EAGLE_ASSERT(image && image->Valid());
+   
+   Transform t = win->GetTransformer()->GetViewTransform();
+   
+   t.Scale((double)InnerArea().W()/image->W() , (double)InnerArea().H()/image->H());
+   t.Translate(InnerArea().X() + xpos , InnerArea().Y() + ypos);
+   
+   win->GetTransformer()->PushViewTransform(t);
+   
+   win->DrawTinted(image , 0 , 0 , tint);
+   
+   win->GetTransformer()->PopViewTransform();
+}
 
 
 

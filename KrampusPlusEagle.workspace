@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="KrampusPlusEagle">
+		<Project filename="Eagle5.cbp" />
+		<Project filename="Allegro5Backend.cbp" />
+		<Project filename="../Nilorea/Nilorealibrary.cbp" />
+		<Project filename="../../projects/KrampusHack2019/KrampusServer.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

@@ -146,7 +146,7 @@ protected :
    virtual int PrivateUpdate(double dt);///< Virtual function that controls what happens when time passes for a widget
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);///< Virtual function that controls how a widget is drawn
 
-   /// Callbacks, overload if you need to
+   /// Callbacks, override and/or call if you need to
    virtual void OnAreaChanged();///< Override to react to changes in this widget's area
    virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);///< Override to react to attribute changes
    virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);///< Override to react to flag changes

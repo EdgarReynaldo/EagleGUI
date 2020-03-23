@@ -395,15 +395,19 @@ void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , int f
 
    
    const double hratio = dest.W() / (double)img->W();
-   const double vratio = dest.W() / (double)img->H();
+   const double vratio = dest.H() / (double)img->H();
    const double minratio = (hratio < vratio)?hratio:vratio;
    
    const double imgw = img->W() * minratio;
    const double imgh = img->H() * minratio;
    
-   Rectangle dest2(dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , imgw , imgh);
+   Rectangle dest2(dest.CX() - imgw/2.0 ,
+                   dest.CY() - imgh/2.0 ,
+                   imgw ,
+                   imgh
+                  );
    
-   Clipper clip(img , dest);
+//   Clipper clip(img , dest);
    
    DrawStretched(img , dest2 , flags);
    

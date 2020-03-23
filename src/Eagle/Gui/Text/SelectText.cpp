@@ -43,6 +43,36 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
 
 
 
+int GetAbsoluteIndex(const std::string& text , const std::vector<std::string>& lines , LPIndex lp) {
+   int l = 0;
+   int absp = lp.p;
+   while (l < (int)lines.size() && l < lp.l) {
+      absp += lines[l].size();
+      ++l;
+   }
+   if (absp < 0) {
+      absp = -1;
+   }
+   if (absp > text.size()) {
+      absp = text.size();
+   }
+   return absp;
+}
+
+
+
+LPIndex GetLPIndex(const std::string& text , const std::vector<std::string>& lines , int abs_index) {
+   int pos = abs_index;
+   int line = 0;
+   while (line < lines.size() && pos >= lines[line].size()) {
+      pos -= lines[line].size();
+      ++line;
+   }
+   return LPIndex(line , pos);
+}
+
+
+
 /// -------------------------------------     SelectText    --------------------------------------
 
 
@@ -52,57 +82,41 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
    if (IsMouseEvent(ev)) {
       int msx = ev.mouse.x;
       int msy = ev.mouse.y;
-      if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && ev.mouse.button == 1) {
          if (InnerArea().Contains(msx,msy)) {
             retflags |= DIALOG_TAKE_FOCUS;
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               if (select_pos != -1) {
-                  int new_caret_pos = -1;
-                  int new_caret_line = -1;
-                  FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
-                  if (new_caret_line != -1 && new_caret_pos != -1) {
-                     caret_pos = new_caret_pos;
-                     caret_line = new_caret_line;
-                  }
-                  RefreshSelection();
+            int new_caret_pos = -1;
+            int new_caret_line = -1;
+            FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
+            if (new_caret_line != -1 && new_caret_pos != -1) {
+               caret_pos = new_caret_pos;
+               caret_line = new_caret_line;
+               if (!input_key_held(EAGLE_KEY_ANY_SHIFT)) {
+                  select_pos = new_caret_pos;
+                  select_line = new_caret_line;
                }
-            }
-            else {
-               int new_caret_pos = -1;
-               int new_caret_line = -1;
-               FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
-               if (new_caret_line != -1 && new_caret_pos != -1) {
-                  select_pos = caret_pos = new_caret_pos;
-                  select_line = caret_line = new_caret_line;
-                  drag = true;
-               }
+               drag = true;
                RefreshSelection();
             }
          }
       }
-      if (ev.type == EAGLE_EVENT_MOUSE_AXES) {
+      if (ev.type == EAGLE_EVENT_MOUSE_AXES || ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
          if (drag) {
-            int newcaretpos = -1;
-            int newcaretline = -1;
-            FindCaretPos(msx , msy , &newcaretpos , &newcaretline);
-            if (newcaretline != -1 && newcaretpos != -1) {
-               caret_pos = newcaretpos;
-               caret_line = newcaretline;
+            int new_caret_pos = -1;
+            int new_caret_line = -1;
+            FindCaretPos(msx , msy , &new_caret_pos , &new_caret_line);
+            if (new_caret_line != -1 && new_caret_pos != -1) {
+               caret_pos = new_caret_pos;
+               caret_line = new_caret_line;
+               if (!input_key_held(EAGLE_KEY_ANY_SHIFT)) {
+                  select_pos = new_caret_pos;
+                  select_line = new_caret_line;
+               }
+               RefreshSelection();
             }
-            RefreshSelection();
-         }
-      }
-      if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-         if (drag) {
-            int newcaretpos = -1;
-            int newcaretline = -1;
-            FindCaretPos(msx , msy , &newcaretpos , &newcaretline);
-            if (newcaretline != -1 && newcaretpos != -1) {
-               caret_pos = newcaretpos;
-               caret_line = newcaretline;
+            if (ev.type == EAGLE_EVENT_MOUSE_BUTTON_UP && ev.mouse.button == 1) {
+               drag = false;
             }
-            RefreshSelection();
-            drag = false;
          }
       }
    }
@@ -111,37 +125,35 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
          EagleInfo() << "Key down event detected in SelectText::HandleEvent - key " <<
                         ev.keyboard.keycode << " was pressed." << std::endl;
 
-         if (ev.keyboard.keycode == EAGLE_KEY_DOWN || ev.keyboard.keycode == EAGLE_KEY_UP) {
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               MoveCaretUpOrDown(ev.keyboard.keycode , true);
-            }
-            else {
-               MoveCaretUpOrDown(ev.keyboard.keycode , false);
-            }
-         }
-         if (ev.keyboard.keycode == EAGLE_KEY_LEFT || ev.keyboard.keycode == EAGLE_KEY_RIGHT) {
-            if (input_key_held(EAGLE_KEY_LSHIFT) || input_key_held(EAGLE_KEY_RSHIFT)) {
-               MoveCaretLeftOrRight(ev.keyboard.keycode , true);
-            }
-            else {
-               MoveCaretLeftOrRight(ev.keyboard.keycode , false);
-            }
+         if ((ev.keyboard.keycode == EAGLE_KEY_DOWN || ev.keyboard.keycode == EAGLE_KEY_UP) ||
+             (ev.keyboard.keycode == EAGLE_KEY_LEFT || ev.keyboard.keycode == EAGLE_KEY_RIGHT) ||
+             (ev.keyboard.keycode == EAGLE_KEY_HOME || ev.keyboard.keycode == EAGLE_KEY_END)) 
+         {
+            MoveCaret(ev.keyboard.keycode , input_key_held(EAGLE_KEY_ANY_SHIFT) , input_key_held(EAGLE_KEY_ANY_CTRL));
+            retflags |= DIALOG_INPUT_USED;
          }
 
          if (ev.keyboard.keycode == EAGLE_KEY_A) {
-            if (input_key_held(EAGLE_KEY_LCTRL) || input_key_held(EAGLE_KEY_RCTRL)) {
+            if (input_key_held(EAGLE_KEY_ANY_CTRL)) {
                /// CTRL + A : select all
                select_pos = 0;
                select_line = 0;
                int endline = (int)lines.size() - 1;
-               caret_pos = lines[endline].size();
-               caret_line = endline;
+               if (endline == -1) {
+                  caret_line = 0;
+                  caret_pos = 0;
+               }
+               else {
+                  caret_pos = lines[endline].size();
+                  caret_line = endline;
+               }
                RefreshSelection();
+               retflags |= DIALOG_INPUT_USED;
             }
          }
          
          if (ev.keyboard.keycode == EAGLE_KEY_C) {
-            if (input_key_held(EAGLE_KEY_LCTRL) || input_key_held(EAGLE_KEY_RCTRL)) {
+            if (input_key_held(EAGLE_KEY_ANY_CTRL)) {
                /// CTRL + C - copy to clipboard
                
                /// TODO : This won't work for stand alone widgets - it depends on the root gui's drawing window
@@ -159,6 +171,7 @@ int SelectText::PrivateHandleEvent(EagleEvent ev) {
                EagleInfo() << "Copying \"" << selected_text << "\" to clipboard." << std::endl;
 
                RaiseEvent(WidgetMsg(this , TOPIC_TEXT_WIDGET , TEXT_COPIED));
+               retflags |= DIALOG_INPUT_USED;
             }
          }
       }
@@ -181,10 +194,10 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
    for (int i = 0 ; i < nlines ; ++i) {
       Rectangle r = lineareas[i];
       if (i >= select_line_start && i <= select_line_close) {
-///         win->DrawRectangle(r , 3.0 , EagleColor(0,255,255));
+//         win->DrawRectangle(r , 3.0 , EagleColor(0,255,255));
       }
       else {
-///         win->DrawRectangle(r , 3.0 , EagleColor(255,0,255));
+//         win->DrawRectangle(r , 3.0 , EagleColor(255,0,255));
       }
    }
    
@@ -216,25 +229,8 @@ void SelectText::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
 
    DrawText(win , xpos , ypos , GetColor(TXTCOL));
 
-   /// Draw caret
-   if (caret_visible) {
-      if (caret_line >= 0 && caret_pos > -1) {
-         
-         Rectangle r = lineareas[caret_line];
-         std::string s = lines[caret_line].substr(0 , caret_pos);
-         
-         float x = r.X() + xpos + text_font->Width(s.c_str());
-         float y = r.Y() + ypos;
-///         float w = 3;
-         float h = text_font->Height();
-         
-         EagleColor col = GetColor(FGCOL);
-         
-         win->DrawFilledRectangle(x-1,y,3.0f,h,col);
-         win->DrawFilledRectangle      (x-3 , y   , 7.0f , 2.0f , col);
-         win->DrawFilledRectangle      (x-3 , y+h , 7.0f , 2.0f , col);
-      }
-   }
+   DrawCaret(win , xpos , ypos);
+   
    /// DIAGNOSTIC TEST
 /**
    EAGLE_DEBUG (
@@ -316,12 +312,7 @@ void SelectText::RefreshSelection() {
    
    SetBgRedrawFlag();
 
-   selected_text = "";
-   
-   select_line_start = -1;
-   select_line_close = -1;
-   select_left = -1;
-   select_right = -1;
+   ResetSelection();
    
    if (select_line == -1) {
       return;
@@ -339,13 +330,14 @@ void SelectText::RefreshSelection() {
             select_left = select_pos;
             select_right = caret_pos;
       }
-      else if (select_pos == caret_pos) {
-         select_left = select_right = select_pos;
-      }
-      else {
+      else if (caret_pos < select_pos) {
          /// select pos > caret_pos
          select_left = caret_pos;
          select_right = select_pos;
+      }
+      else {
+         ResetSelection();
+         return;
       }
    }
    else {
@@ -357,10 +349,13 @@ void SelectText::RefreshSelection() {
    }
 
    selected_text = "";
-   if (select_line == -1) {
+   if (nlines < 1) {
       return;
    }
 
+   EagleInfo() << StringPrintF("Start line = %d , pos = %d , Close line = %d , pos = %d\n" ,
+                               select_line_start , select_left , select_line_close , select_right);
+   
    EAGLE_ASSERT(select_line_start >= 0 && select_line_start < nlines);
    EAGLE_ASSERT(select_line_close >= 0 && select_line_close < nlines);
    EAGLE_ASSERT(select_left >= 0 && select_left <= (int)lines[select_line_start].size());
@@ -482,14 +477,18 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
 
 
 void SelectText::GetCaretAttributes(int* pselect_line , int* pselect_pos , int* pcaret_line , int* pcaret_pos) {
-   EAGLE_ASSERT(pselect_line);
-   EAGLE_ASSERT(pselect_pos);
-   EAGLE_ASSERT(pcaret_line);
-   EAGLE_ASSERT(pcaret_pos);
-   *pselect_line = select_line;
-   *pselect_pos = select_pos;
-   *pcaret_line = caret_line;
-   *pcaret_pos = caret_pos;
+   if (pselect_line) {
+      *pselect_line = select_line;
+   }
+   if (pselect_pos) {
+      *pselect_pos = select_pos;
+   }
+   if (pcaret_line) {
+      *pcaret_line = caret_line;
+   }
+   if (pcaret_pos) {
+      *pcaret_pos = caret_pos;
+   }
 }
 
 
@@ -534,6 +533,28 @@ Rectangle SelectText::GetSelectionArea(int linenum , int leftchar , int rightcha
 
 
 
+void SelectText::GetSelection(int* pselect_line_start , int* pselect_line_close , int* pselect_left , int* pselect_right) {
+   EAGLE_ASSERT(pselect_line_start);
+   EAGLE_ASSERT(pselect_line_close);
+   EAGLE_ASSERT(pselect_left);
+   EAGLE_ASSERT(pselect_right);
+   *pselect_line_start = select_line_start;
+   *pselect_line_close = select_line_close;
+   *pselect_left = select_left;
+   *pselect_right = select_right;
+}
+
+
+
+void SelectText::ResetSelection() {
+   selected_text = "";
+   select_line_start = select_line_close = select_left = select_right = -1;
+//   select_line = caret_line;
+//   select_pos = caret_pos;
+}
+
+
+
 void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum , int left , int right , int xpos , int ypos) {
    EAGLE_ASSERT(win && win->Valid());
 
@@ -541,19 +562,45 @@ void SelectText::DrawSelectionBackground(EagleGraphicsContext* win , int linenum
 
    if (r.W()) {
       win->DrawFilledRectangle(r , GetColor(MGCOL));
-      win->DrawRectangle(r , 3.0 , GetColor(HLCOL));
+      win->DrawRectangle(r , 2.0 , GetColor(HLCOL));
    }
 }
 
 
 
-void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
+void SelectText::DrawCaret(EagleGraphicsContext* win , int xpos , int ypos) {
+   if (caret_visible) {
+      if (caret_line >= 0 && caret_pos > -1) {
+         
+         Rectangle r = lineareas[caret_line];
+         std::string s = lines[caret_line].substr(0 , caret_pos);
+         
+         float x = r.X() + xpos + text_font->Width(s.c_str());
+         float y = r.Y() + ypos;
+///         float w = 3;
+         float h = text_font->Height();
+         
+         EagleColor col = GetColor(FGCOL);
+         
+         win->DrawFilledRectangle(x-1 , y   , 3.0f , h    , col);
+         win->DrawFilledRectangle(x-3 , y   , 7.0f , 2.0f , col);
+         win->DrawFilledRectangle(x-3 , y+h , 7.0f , 2.0f , col);
+      }
+   }
+}
 
-   EAGLE_ASSERT(lines.size());
-   EAGLE_ASSERT(keycode == EAGLE_KEY_UP || keycode == EAGLE_KEY_DOWN);
 
-   /// TODO : Compensate for alignment - for now assume left alignment
-   int old_caret_line = caret_line;
+
+void SelectText::OldMoveCaretUpOrDown(int keycode , bool shift_held) {
+
+   if (!lines.size()) {
+      caret_pos = 0;
+      caret_line = 0;
+      return;
+   }
+
+   if (keycode != EAGLE_KEY_UP && keycode != EAGLE_KEY_DOWN) {return;}
+   
    if (keycode == EAGLE_KEY_UP) {
       caret_line--;
       if (caret_line < 0) {
@@ -567,11 +614,18 @@ void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
          caret_line = (int)lines.size() - 1;
       }
    }
-   if (old_caret_line == caret_line) {
-      /// Nothing needs to change
-      return;
+   if (caret_pos > lines[caret_line].size()) {
+      caret_pos = lines[caret_line].size();
    }
+   if (!shift_held) {
+      select_pos = caret_pos;
+      select_line = caret_line;
+   }
+   RefreshSelection();
+   return;
    
+   /**
+      
    Rectangle r = lineareas[old_caret_line];
    int lx = r.X();
    
@@ -621,51 +675,182 @@ void SelectText::MoveCaretUpOrDown(int keycode , bool shift_held) {
    }
    
    RefreshSelection();
+   */
 }
 
 
 
-void SelectText::MoveCaretLeftOrRight(int keycode , bool shift_held) {
 
-   EAGLE_ASSERT(lines.size());
-   EAGLE_ASSERT(keycode == EAGLE_KEY_LEFT || keycode == EAGLE_KEY_RIGHT);
+void SelectText::OldMoveCaretLeftOrRight(int keycode , bool shift_held , bool ctrl_held) {
+   
+   if (keycode != EAGLE_KEY_LEFT && keycode != EAGLE_KEY_RIGHT) {
+      return;
+   }
+   
+   if (!lines.size()) {
+      caret_line = 0;
+      caret_pos = 0;
+      return;
+   }
+   
+   int new_caret_pos = caret_pos;
+   int new_caret_line = caret_line;
 
-   int old_caret_pos = caret_pos;
-   int old_caret_line = caret_line;
-   if (keycode == EAGLE_KEY_LEFT) {
-      caret_pos--;
-      if (caret_pos < 0) {
-         if (caret_line > 0) {
-            --caret_line;
-            caret_pos = lines[caret_line].size();
+   if (ctrl_held) {
+      /// Ctrl held, move by word
+      if (!GetNextWord((keycode == EAGLE_KEY_LEFT)?false:true , text , caret_pos , caret_line , &new_caret_pos , &new_caret_line)) {
+         return;
+      }
+   }
+   else {
+      /// CTRL not held, move by one left or right
+      if (keycode == EAGLE_KEY_LEFT) {
+         new_caret_pos--;
+         if (new_caret_pos < 0) {
+            new_caret_pos = 0;
+            if (new_caret_line > 0) {
+               --new_caret_line;
+               new_caret_pos = lines[new_caret_line].size();
+            }
          }
-         else {
-            EAGLE_ASSERT(caret_line == 0);
-            caret_pos = 0;
+      }
+      if (keycode == EAGLE_KEY_RIGHT) {
+         new_caret_pos++;
+         if (new_caret_pos >= (int)lines[new_caret_line].size()) {
+            if (new_caret_line < ((int)(lines.size() - 1))) {
+               ++new_caret_line;
+               new_caret_pos = 0;
+            }
+            else {
+               EAGLE_ASSERT(new_caret_line == ((int)lines.size() - 1 ));
+               new_caret_pos = (int)(lines[new_caret_line].size());
+            }
          }
       }
    }
-   if (keycode == EAGLE_KEY_RIGHT) {
-      caret_pos++;
-      if (caret_pos > (int)lines[caret_line].size()) {
-         if (caret_line < ((int)(lines.size() - 1))) {
-            ++caret_line;
-            caret_pos = 0;
-         }
-         else {
-            EAGLE_ASSERT(caret_line == ((int)lines.size() - 1 ));
-            caret_pos = (int)(lines[caret_line].size());
+   
+   caret_pos = new_caret_pos;
+   caret_line = new_caret_line;
+   
+   if (!shift_held) {/// Reset selection whenever shift is not held
+      select_pos = caret_pos;
+      select_line = caret_line;
+   }
+
+   RefreshSelection();
+}
+
+
+
+void SelectText::OldMoveCaretHomeOrEnd(int keycode , bool shift_held , bool ctrl_held) {
+   if (keycode != EAGLE_KEY_HOME && keycode != EAGLE_KEY_END) {
+      return;
+   }
+   
+   int new_caret_line = caret_line;
+   int new_caret_pos = caret_pos;
+   
+   
+   /// Only moving caret
+   if (ctrl_held) {
+      /// Move to home or end of entire text
+      if (keycode == EAGLE_KEY_HOME) {
+         new_caret_line = 0;
+         new_caret_pos = 0;
+      }
+      else if (keycode == EAGLE_KEY_END) {
+         new_caret_line = (int)lines.size() - 1;
+         if (new_caret_line >= 0) {
+            new_caret_pos = (int)lines[new_caret_line].size();
          }
       }
    }
-   if (caret_pos != old_caret_pos || caret_line != old_caret_line) {
-      /// We know that the caret position has changed - if shift is not held, then the select_pos has to be updated too
-      if (!shift_held) {
-         select_pos = caret_pos;
-         select_line = caret_line;
-         RefreshSelection();
+   else {
+      /// Move to home or end of current line
+      if (keycode == EAGLE_KEY_HOME) {
+         new_caret_pos = 0;   
+      }
+      else if (keycode == EAGLE_KEY_END) {
+         new_caret_pos = 0;
+         if (new_caret_line >= 0 && new_caret_line < (int)lines.size()) {
+            new_caret_pos = (int)lines[new_caret_line].size();
+         }
       }
    }
+   
+   caret_pos = new_caret_pos;
+   caret_line = new_caret_line;
+
+   if (!shift_held) {
+      /// Anchor selection, select up to new caret
+      select_pos = caret_pos;
+      select_line = caret_line;
+   }
+   else {
+      /// Selection stays in the same place, caret moves to new end of selection
+      (void)0;
+   }
+   
+   RefreshSelection();
+}
+
+
+
+void SelectText::MoveCaret(int keycode , bool shift_held , bool ctrl_held) {
+   /// Valid keycodes are EAGLE_KEY_LEFT , EAGLE_KEY_RIGHT , EAGLE_KEY_UP , EAGLE_KEY_DOWN , EAGLE_KEY_HOME , EAGLE_KEY_END
+   
+   /// Shift + l/r = change selection
+   /// Ctrl + l/r = change selection increment by word
+   if (keycode == EAGLE_KEY_LEFT || keycode == EAGLE_KEY_RIGHT) {
+      OldMoveCaretLeftOrRight(keycode , shift_held , ctrl_held);
+      return;
+   }
+   
+   /// Shift + u/d = change selection
+   if (keycode == EAGLE_KEY_UP || keycode == EAGLE_KEY_DOWN) {
+      OldMoveCaretUpOrDown(keycode , shift_held);
+      return;
+   }
+   
+   /// Home/End = move to beginning or end of line. Shift + Home/End, move to beginning / end of text
+   if (keycode == EAGLE_KEY_HOME || keycode == EAGLE_KEY_END) {
+      OldMoveCaretHomeOrEnd(keycode , shift_held , ctrl_held);
+      return;
+   }
+}
+
+
+
+void SelectText::MoveCaretRelative(int newCaretLine , int newCaretPos) {
+   if (newCaretLine >= lines.size()) {
+      MoveCaretAbsolute(text.size());
+   }
+   int line = 0;
+   while (line < lines.size() && line < newCaretLine) {
+      newCaretPos += lines[line].size();
+      ++line;
+   }
+   MoveCaretAbsolute(newCaretPos);
+}
+
+
+
+void SelectText::MoveCaretAbsolute(int newCaretPos) {
+   if (newCaretPos > text.size()) {newCaretPos = text.size();}
+   if (newCaretPos < 0) {newCaretPos = 0;}
+
+   int line = 0;
+   while (line < lines.size() && newCaretPos > lines[line].size()) {
+      newCaretPos -= lines[line].size();
+      ++line;
+   }
+   if (newCaretPos < 0) {
+      newCaretPos = 0;
+   }
+   caret_line = line;
+   caret_pos = newCaretPos;
+   select_line = caret_line;
+   select_pos = caret_pos;
 }
 
 
@@ -681,5 +866,17 @@ void SelectText::Refresh() {
    RefreshSelection();
 }
 
+
+
+std::string SelectText::GetSelectionString() {
+   return selected_text;
+}
+
+
+
+void SelectText::GetSelectionIndices(int* selIndex , int* caretIndex) {
+   if (selIndex) {*selIndex = select_index;}
+   if (caretIndex) {*caretIndex = caret_index;}
+}
 
 

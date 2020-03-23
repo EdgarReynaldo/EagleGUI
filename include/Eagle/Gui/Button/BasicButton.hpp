@@ -148,6 +148,7 @@ protected :
    virtual int PrivateUpdate(double tsec);
 
    virtual void OnAreaChanged();
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
 
 
 public :
@@ -158,7 +159,7 @@ public :
 
    virtual void SetButtonType(BUTTON_ACTION_TYPE type);///< Set to SPRING_BTN or TOGGLE_BTN
    
-   virtual void SetHoverState (bool state);
+///   virtual void SetHoverState (bool state);
 
    virtual void SetSpringDuration(double duration);///< Change the down time on a spring button
    virtual void SetButtonUpState(bool button_up);///< Set the button state, eg. for check boxes and such

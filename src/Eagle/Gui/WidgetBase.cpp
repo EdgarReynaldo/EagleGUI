@@ -127,7 +127,7 @@ void WidgetBase::OnSelfAttributeChanged(ATTRIBUTE a , VALUE v) {
 void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
    unsigned int diff = FlagDiff(wflags , new_widget_flags);
    if (diff & VISIBLE) {
-      new_widget_flags.AddFlag(NEEDS_REDRAW);
+      new_widget_flags.AddFlag(NEEDS_BG_REDRAW);
    }
    if (diff & (HOVER | HASFOCUS)) {
       new_widget_flags.AddFlag(NEEDS_BG_REDRAW);
@@ -149,7 +149,6 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
          OnFlagChanged((WIDGET_FLAGS)flag , wflags.FlagOn((WIDGET_FLAGS)flag));
       }
    }
-   if (!wparent) {return;}
    
    if (cflags & NEEDS_REDRAW) {
       SetRedrawFlag();
@@ -159,6 +158,9 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
          whandler->MakeAreaDirty(OuterArea());
       }
    }
+
+   if (!wparent) {return;}
+
    if (cflags & HASFOCUS) {
       wparent->SetFocusState(wflags.FlagOn(HASFOCUS));
    }
@@ -207,7 +209,7 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       
       EagleImage* img = win->GetDrawingTarget();
       
-      Rectangle cliprect = OuterArea();
+      Rectangle cliprect = OuterArea().MovedBy(Pos2I(xpos,ypos));
       
       Clipper clip(img , cliprect);
       

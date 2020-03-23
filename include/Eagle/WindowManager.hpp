@@ -95,7 +95,8 @@ public :
     *   @param flags See @ref EAGLE_DISPLAY_FLAGS for possible values - combine using bitwise OR
     *   @retval The new window
     */
-   EagleGraphicsContext* CreateEagleWindow(std::string objname , int width , int height , int flags);
+
+   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags);
 
    /**! @fn DestroyWindow <int>
     *   @brief Destroys a window given by it's @ref EAGLE_ID - see @ref EagleObject::GetEagleId

@@ -53,8 +53,169 @@ string StringPrintF(const char* format_str , ...) {
 
 
 
-int CountNewLines(std::string s) {
-   int nlines = 1;
+
+bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , int caretLine , int caretPos) {
+   EAGLE_ASSERT(itPos);
+   if (!itPos) {return false;}
+
+   std::vector<std::string> lines = SplitByNewLinesNoChomp(selText);
+
+   std::string::iterator carit = selText.begin();
+
+   /// Preconditions
+   if ((selText.begin() == selText.end()) ||
+       (caretLine < 0 || caretLine >= lines.size()) ||
+       (caretPos < 0 || caretPos > lines[caretLine].size())) {
+      *itPos = selText.end();
+      return true;
+   }
+   /// Add the opening lines to the iterators
+   for (unsigned int i = 0 ; i < caretLine ; ++i) {
+      carit += lines[i].size();
+   }
+   
+   /// Add the left selection
+   carit += caretPos;
+   *itPos = carit;
+   return true;
+}
+
+
+
+bool GetSelectionIterators(std::string& selText ,
+                           std::string::iterator* itLeft , std::string::iterator* itRight,
+                           int select_line_start , int select_line_close ,
+                           int select_left , int select_right)
+{
+   GetPositionIterator(selText , itLeft  , select_line_start , select_left );
+   GetPositionIterator(selText , itRight , select_line_close , select_right);
+   return *itLeft != selText.end() || *itRight != selText.end();
+}
+
+
+
+
+bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   if (!newCaretPos || !newCaretLine) {
+      return false;
+   }
+   
+   const vector<std::string> lines = SplitByNewLinesNoChomp(text);
+   
+   if (caretLine < 0 || caretLine >= lines.size()) {
+      return false;
+   }
+   if (caretPos < 0 || caretPos >= lines[caretLine].size()) {
+      return false;
+   }
+   
+   int absPos = 0;
+   int line = 0;
+   while (line < caretLine) {
+      absPos += lines[line].size();
+      ++line;
+   }
+
+   absPos += caretPos;
+
+   unsigned int newPos = absPos;
+   /// If in the middle of a word, advance to the end, if on whitespace, advance to end of whitespace
+   if (!iswspace(text[newPos])) {
+      while(!iswspace(text[newPos]) && newPos < text.size()) {
+         ++newPos;
+      }
+   }
+   while(iswspace(text[newPos]) && newPos < text.size()) {
+      ++newPos;
+   }
+
+   line = 0;
+   while (line < lines.size() && newPos >= lines[line].size()) {
+      newPos -= lines[line].size();
+      ++line;
+   }
+   if (line == lines.size()) {
+      line--;
+      newPos = lines[line].size();
+   }
+
+   *newCaretLine = line;
+   *newCaretPos = newPos;
+   
+   return true;
+}
+
+
+
+bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   if (!newCaretPos || !newCaretLine) {
+      return false;
+   }
+   
+   const vector<std::string> lines = SplitByNewLinesNoChomp(text);
+   
+   if (caretLine < 0 || caretLine >= lines.size()) {
+      return false;
+   }
+   if (caretPos < 0 || caretPos > lines[caretLine].size()) {
+      return false;
+   }
+   
+   /// Get absolute position
+   int absPos = 0;
+   int line = 0;
+   while (line < caretLine) {
+      absPos += lines[line].size();
+      ++line;
+   }
+   absPos += caretPos;
+   int newPos = absPos?absPos - 1:0;/// Always start one character to the left
+   
+   /// Reverse to beginning of current or previous word, including whitespace
+
+   /// Skip previous whitespace, if any
+   while (iswspace(text[newPos]) && newPos > 0) {
+      --newPos;
+   }
+   /// Skip to beginning of word
+   while (!iswspace(text[newPos]) && newPos >= 0) {
+      --newPos;
+   }
+   ++newPos;
+   
+   /// Get relative position again
+   line = 0;
+   while (line < lines.size() && newPos >= lines[line].size()) {
+      newPos -= lines[line].size();
+      ++line;
+   }
+
+   if (line == lines.size()) {
+      --line;
+      newPos = lines[line].size();
+   }
+   
+   *newCaretPos = newPos;
+   *newCaretLine = line;
+   
+   return true;
+}
+
+
+
+bool GetNextWord(bool search_forward , const std::string& text , int caretPos , int caretLine , int* newCaretPos , int* newCaretLine) {
+   EAGLE_ASSERT(newCaretPos);
+   EAGLE_ASSERT(newCaretLine);
+   
+   return (search_forward?
+           GetNextWord(text , caretPos , caretLine , newCaretPos , newCaretLine):
+           GetPreviousWord(text , caretPos , caretLine , newCaretPos , newCaretLine));
+}
+
+
+
+int CountNewlines(std::string s) {
+   int nlines = 0;
    for (unsigned int i = 0 ; i < s.length() ; i++) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
@@ -70,8 +231,13 @@ int CountNewLines(std::string s) {
 }
 
 
+int CountLines(std::string s) {
+   return CountNewlines(s) + 1;
+}
 
-vector<string> SplitByNewLines(std::string s) {
+
+
+vector<string> SplitByNewLinesNoChomp(std::string s) {
    vector<string> lines;
 
    if (s.length() == 0) {
@@ -84,6 +250,7 @@ vector<string> SplitByNewLines(std::string s) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
 
+         line.push_back('\n');
          lines.push_back(line);
          line = "";
 
@@ -104,6 +271,20 @@ vector<string> SplitByNewLines(std::string s) {
 
    return lines;
 }
+
+/// "a\nb\n"
+
+std::vector<std::string> SplitByNewLinesChomp(std::string s) {
+   std::vector<std::string> lines_chomp = SplitByNewLinesNoChomp(s);
+   for (unsigned int i = 0 ; i < lines_chomp.size() ; ++i) {
+      unsigned int index = lines_chomp[i].find_last_of('\n');
+      if (index != std::string::npos) {
+         lines_chomp[i].erase(index , 1);
+      }
+   }
+   return lines_chomp;
+}
+
 
 
 
@@ -248,6 +429,12 @@ std::string GetGuiText(std::string gui_text) {
    const char amp = '&';
    for (unsigned int i = 0 ; i < gui_text.size() ; ++i) {
 
+      if (iswspace(gui_text[i])) {
+         /// Turn all whitespace into empty spaces
+         stripped_text.push_back(' ');
+         continue;
+      }
+   
       if (gui_text[i] == amp) {
       // Leading ampersand
          if ((i + 1) < gui_text.size()) {

@@ -17,16 +17,16 @@ option(WANT_ALLEGRO5 "If you want to build the Allegro 5 backend for Eagle" OFF)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
-set (A5DepSearchPath "${EAGLE_ROOT_DIR}/../Allegro525/" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
-set(ALLEGRO5_INCLUDE_DIR "$CACHE{A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder")
-set(ALLEGRO5_LIB_DIR "$CACHE{A5DepSearchPath}/lib/" CACHE PATH "Where to find the Allegro 5 library's lib folder")
+set (A5DepSearchPath "/usr/local/allegro525" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
+set(ALLEGRO5_INCLUDE_DIR "${A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder" FORCE)
+set(ALLEGRO5_LIB_DIR "${A5DepSearchPath}/lib/" CACHE PATH "Where to find the Allegro 5 library's lib folder" FORCE)
 
-find_library(ALLEGRO5_DEBUGLIB "allegro_monolith-debug"
-             PATHS "$CACHE{ALLEGRO5_LIB_DIR}" 
+find_library(ALLEGRO5_DEBUGLIB "allegro_monolith-debug.dll"
+             PATHS "${ALLEGRO5_LIB_DIR}" 
              DOC "The shared Allegro 5 debugging library")
 
-find_library(ALLEGRO5_LIB "allegro_monolith"
-             PATHS "$CACHE{ALLEGRO5_LIB_DIR}"
+find_library(ALLEGRO5_LIB "allegro_monolith.dll"
+             PATHS "${ALLEGRO5_LIB_DIR}"
              DOC "The shared Allegro 5 release library")
 find_library(PHYSFS_LIB "physfs.dll"
              PATHS "${A5DepSearchPath}/lib/"
@@ -48,6 +48,7 @@ if (${WANT_ALLEGRO5})
    add_subdirectory(src/backends/Allegro5)
 endif (${WANT_ALLEGRO5})
 
+install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 #[[
 #cd /d E:\Downloads\Programming\Tools\CMake\cmake-3.14.0-rc4\build\Utilities\Sphinx && E:\Programs\Python3pt6\Scripts\sphinx-build.exe -c #E:/Downloads/Programming/Tools/CMake/cmake-3.14.0-rc4/build/Utilities/Sphinx -d #E:/Downloads/Programming/Tools/CMake/cmake-3.14.0-rc4/build/Utilities/Sphinx/doctrees -b htmlhelp #E:/Downloads/Programming/Tools/CMake/cmake-3.14.0-rc4/Help #E:/Downloads/Programming/Tools/CMake/cmake-3.14.0-rc4/build/Utilities/Sphinx/htmlhelp > build-htmlhelp.log

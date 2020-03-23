@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ChaiClient" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="ChaiClientDebug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-lEagleA5DebugStatic" />
+					<Add option="-lEagleDebugStatic" />
+					<Add option="-lallegro_monolith-debug-static" />
+					<Add option="-ljpeg" />
+					<Add option="-ldumb" />
+					<Add option="-lwebp" />
+					<Add option="-lFLAC" />
+					<Add option="-ltheora" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lvorbis" />
+					<Add option="-logg" />
+					<Add option="-lphysfs" />
+					<Add option="-lfreetype" />
+					<Add option="-lpng16" />
+					<Add option="-lzlibstatic" />
+					<Add option="-ldsound" />
+					<Add option="-lgdiplus" />
+					<Add option="-luuid" />
+					<Add option="-lkernel32" />
+					<Add option="-lwinmm" />
+					<Add option="-lpsapi" />
+					<Add option="-lopengl32" />
+					<Add option="-lglu32" />
+					<Add option="-luser32" />
+					<Add option="-lcomdlg32" />
+					<Add option="-lgdi32" />
+					<Add option="-lshell32" />
+					<Add option="-lole32" />
+					<Add option="-ladvapi32" />
+					<Add option="-lws2_32" />
+					<Add option="-lshlwapi" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="ChaiClient" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-leagle-static" />
+					<Add option="-lallegro" />
+					<Add option="-lallegro_acodec" />
+					<Add option="-lallegro_main" />
+					<Add option="-lallegro_primitives" />
+					<Add option="-lallegro_ttf" />
+					<Add option="-lallegro_audio" />
+					<Add option="-lallegro_font" />
+					<Add option="-lallegro_dialog" />
+					<Add option="-lallegro_image" />
+					<Add option="-lopengl32" />
+					<Add option="-ljpeg" />
+					<Add option="-ldumb" />
+					<Add option="-lwebp" />
+					<Add option="-lFLAC" />
+					<Add option="-ltheora" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lvorbis" />
+					<Add option="-logg" />
+					<Add option="-lphysfs" />
+					<Add option="-lfreetype" />
+					<Add option="-lpng16" />
+					<Add option="-lzlibstatic" />
+					<Add option="-ldsound" />
+					<Add option="-lgdiplus" />
+					<Add option="-luuid" />
+					<Add option="-lkernel32" />
+					<Add option="-lwinmm" />
+					<Add option="-lpsapi" />
+					<Add option="-lglu32" />
+					<Add option="-luser32" />
+					<Add option="-lcomdlg32" />
+					<Add option="-lgdi32" />
+					<Add option="-lshell32" />
+					<Add option="-lole32" />
+					<Add option="-ladvapi32" />
+					<Add option="-lws2_32" />
+					<Add option="-lshlwapi" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../EagleGUI/include/Eagle" />
+		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-static" />
+			<Add directory="../EagleGUI/cbbuild/lib" />
+		</Linker>
+		<Unit filename="CMakeLists.txt" />
+		<Unit filename="build/CMakeFiles/3.15.0/CompilerIdCXX/CMakeCXXCompilerId.cpp" />
+		<Unit filename="build/CMakeFiles/3.15.0/CompilerIdC/CMakeCCompilerId.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ChaiClient.cpp" />
+		<Unit filename="src/backend/ChessControl.cpp" />
+		<Unit filename="src/backend/ChessControl.hpp" />
+		<Unit filename="src/backend/ChessModel.cpp" />
+		<Unit filename="src/backend/ChessModel.hpp" />
+		<Unit filename="src/backend/ChessPlayer.cpp" />
+		<Unit filename="src/backend/ChessPlayer.hpp" />
+		<Unit filename="src/backend/ChessPlayerAI.hpp" />
+		<Unit filename="src/backend/ChessView.cpp" />
+		<Unit filename="src/backend/ChessView.hpp" />
+		<Unit filename="src/backend/Network.cpp" />
+		<Unit filename="src/backend/Network.hpp" />
+		<Unit filename="src/backend/TCPconnection.cpp" />
+		<Unit filename="src/backend/TCPconnection.hpp" />
+		<Unit filename="src/backend/n_common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_common.h" />
+		<Unit filename="src/backend/n_hash.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_hash.h" />
+		<Unit filename="src/backend/n_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_list.h" />
+		<Unit filename="src/backend/n_log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_log.h" />
+		<Unit filename="src/backend/n_network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_network.h" />
+		<Unit filename="src/backend/n_network_msg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_network_msg.h" />
+		<Unit filename="src/backend/n_str.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_str.h" />
+		<Unit filename="src/backend/n_thread_pool.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_thread_pool.h" />
+		<Unit filename="src/backend/n_time.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_time.h" />
+		<Unit filename="src/backend/n_zlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/backend/n_zlib.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<fortran_project />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

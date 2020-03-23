@@ -54,7 +54,7 @@ void GetTextAttributes(std::string text , EagleFont* font , int line_spacing , i
    EAGLE_ASSERT(ptotalheight);
 
    /// calculate size of entire text
-   if (plines) {*plines = SplitByNewLines(text);}
+   if (plines) {*plines = SplitByNewLinesChomp(text);}
    if (pnlines) {
       if (plines) {
          *pnlines = (int)plines->size();

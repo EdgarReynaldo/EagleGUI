@@ -359,7 +359,7 @@ bool ConfigFile::LoadFromFile(const char* path) {
    
    mem.Clear();
    
-   std::vector<std::string> lines = SplitByNewLines(contents);
+   std::vector<std::string> lines = SplitByNewLinesChomp(contents);
    
    ConfigSection* section = &sectionmap["GLOBAL"];
    for (int i = 0 ; i < (int)lines.size() ; ++i) {

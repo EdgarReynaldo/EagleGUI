@@ -37,15 +37,21 @@
 
 
 
+class IconButtonBase : public BasicButton {
+public :
+   IconButtonBase(std::string classname = "IconButtonBase" , std::string objname = "Nemo");
+   virtual void DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint = EagleColor(255,255,255))=0;
+};
+
+
 /**! @class IconButton
  *   @brief A simple class to draw icon buttons in 4 different states
  */
 
-class IconButton : public BasicButton {
+class IconButton : public IconButtonBase {
 
 protected :
    EagleImage* original_images[4];///< These are just for reference, but they are used when the button size changes
-///   EagleImage* scaled_images[4];///< We own these, they are scaled to fit the inner area
 
    Rectangle click_rect;
 
@@ -65,6 +71,8 @@ public :
                           EagleImage* downimage , 
                           EagleImage* hoverupimage , 
                           EagleImage* hoverdownimage);///< References these image states for the button
+
+   virtual void DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint = EagleColor(255,255,255));
 };
 
 

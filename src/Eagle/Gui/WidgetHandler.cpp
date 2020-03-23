@@ -103,6 +103,10 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
                hoverwidget->SetHoverState(true);
             }
             whover = hoverwidget;
+            EAGLE_DEBUG(
+               std::string name = (hoverwidget?hoverwidget->ShortName():std::string(""));
+               EagleInfo() << StringPrintF("Given hover to %s" , name.c_str()) << std::endl;
+            );
          }
          
          /// Check widget focus
@@ -1350,13 +1354,11 @@ bool WidgetHandler::GiveWidgetFocus(WidgetBase* widget , bool notify_parent) {
    EAGLE_ASSERT(HasWidget(widget));
    
    /// Remove old focus
-   if (wfocus) {
+   if (wfocus && wfocus != widget) {
       wfocus->SetFocusState(false);
    }
-   
    /// Set new focus
    widget->SetFocusState(true);
-   
    wfocus = widget;
    
    /// Things get tricky here, as we might not own the widget we're giving focus to

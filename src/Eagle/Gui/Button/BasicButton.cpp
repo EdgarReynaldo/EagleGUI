@@ -136,19 +136,7 @@ int BasicButton::PrivateCheckInputs() {
 
    int msx = mouse_x;
    int msy = mouse_y;
-   WidgetHandler* handler = 0;
    
-   if (wparent) {
-      handler = RootHandler();
-///      handler = dynamic_cast<WidgetHandler*>(wparent);/// TODO : BUG : FIXME : What about if a gui is NOT our parent???
-   }
-   if (handler) {
-      msx = handler->GetMouseX();
-      msy = handler->GetMouseY();
-   }
-///   int msx = mouse_x - AbsParentX();// This won't work becase it doesn't include the parent gui's camera position
-///   int msy = mouse_y - AbsParentY();// see above
-
    /// Track whether the button is still being held since the last activation
    if (user_activated || focuskey_activated || pointer_activated) {
       /// Look for input releases
@@ -192,11 +180,18 @@ int BasicButton::PrivateCheckInputs() {
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
 
    } else if (input_mouse_press(LMB)) {
+      Rectangle real = AbsoluteArea().OuterArea();
+      click_area->MoveBy(real.X() , real.Y());
 
-      if (InnerArea().Contains(msx,msy)) {
-         activated = true;/// If there is no click area we use the whole button
+      EAGLE_DEBUG(
+         EagleInfo() << "Mouse = " << msx << "," << msy << " Real = " << real << std::endl;
+      );
+
+      if (real.Contains(msx,msy)) {
+         activated = true;
+         /// If there is no click area we use the whole button
          if (click_area) {
-            if (!(click_area->Contains(msx - InnerArea().X() , msy - InnerArea().Y()))) {
+            if (!(click_area->Contains(msx,msy))) {
                activated = false;
             }
          }
@@ -205,7 +200,7 @@ int BasicButton::PrivateCheckInputs() {
             if (btn_action_type == SPRING_BTN) {pointer_activated = true;}
          }
       }
-
+      click_area->MoveBy(-real.X() , -real.Y());
    }
    just_activated = false;
    if (activated) {// click or key press has activated the button action
@@ -296,6 +291,14 @@ void BasicButton::OnAreaChanged() {
 
 
 
+void BasicButton::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   if (f & HOVER) {
+      SetButtonState(on , Up());
+   }
+}
+
+
+
 BasicButton::BasicButton(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
       btn_action_type(SPRING_BTN),
@@ -336,12 +339,6 @@ void BasicButton::SetButtonType(BUTTON_ACTION_TYPE type) {
    bool hover = Flags().FlagOn(HOVER);
    bool up = true;
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
-}
-
-
-
-void BasicButton::SetHoverState (bool state) {
-   SetButtonState(state , Up());
 }
 
 
@@ -420,7 +417,6 @@ void BasicButton::SetButtonState(bool hover , bool up) {
    }
 //*/
    if (hover != oldhover) {
-      WidgetBase::SetHoverState(hover);
       if (hover_message_enabled) {
          if (hover) {
             RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER));
@@ -429,12 +425,11 @@ void BasicButton::SetButtonState(bool hover , bool up) {
             RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER));
          }
       }
-      if (btn_class == BUTTON_CLASS_HOVER) {
-         WidgetBase::SetBgRedrawFlag();
-      }
-      SetBgRedrawFlag();
    }
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
+   EAGLE_DEBUG(
+      EagleInfo() << GetButtonStateText(btn_state) << std::endl;
+   );
 }
 
 

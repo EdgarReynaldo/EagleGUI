@@ -23,7 +23,7 @@
 #ifndef Allegro5Threads_HPP
 #define Allegro5Threads_HPP
 
-
+#include <atomic>
 #include "Eagle/Threads.hpp"
 
 
@@ -55,8 +55,8 @@ private :
    void* data;
    void* (*process)(EagleThread* , void*);
    void* return_value;
-   bool running;
-   bool complete;
+   std::atomic<bool> running;
+   std::atomic<bool> complete;
    
    ALLEGRO_EVENT_SOURCE* finish_event_source;
    ALLEGRO_EVENT_QUEUE* finish_queue;

@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Allegro5Backend" />
+		<Option title="Allegro5BackendLinux" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -118,7 +118,6 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="E:/LIBS/LIBS81Redistro/Allegro525/lib" />
 		</Linker>
-		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Conditions.hpp" />
@@ -138,6 +137,7 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Conditions.cpp" />

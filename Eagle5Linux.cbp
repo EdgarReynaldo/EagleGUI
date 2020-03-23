@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Eagle5" />
+		<Option title="Eagle5Linux" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -110,7 +110,15 @@
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename=".gitignore" />
+		<Unit filename="BUILD.txt" />
 		<Unit filename="CMakeLists.txt" />
+		<Unit filename="EagleCopyright.txt" />
+		<Unit filename="EagleFAQ.txt" />
+		<Unit filename="EagleFeatures.txt" />
+		<Unit filename="EagleLicense.txt" />
+		<Unit filename="EagleNotes.txt" />
+		<Unit filename="READMEmd" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
@@ -172,12 +180,11 @@
 		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/Slider.hpp" />
-		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
-		<Unit filename="include/Eagle/Gui/Text/EditText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
+		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetArea.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetAttributes.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
@@ -255,8 +262,14 @@
 		<Unit filename="src/Eagle/Gui/Button/TextButton.cpp" />
 		<Unit filename="src/Eagle/Gui/Button/TextIconButton.cpp" />
 		<Unit filename="src/Eagle/Gui/Camera.cpp" />
-		<Unit filename="src/Eagle/Gui/Decorator/Decorator.cpp" />
-		<Unit filename="src/Eagle/Gui/Decorator/TextDecorator.cpp" />
+		<Unit filename="src/Eagle/Gui/Decorator/Decorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Eagle/Gui/Decorator/TextDecorator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/Eagle/Gui/Factory/WidgetCreators.cpp" />
 		<Unit filename="src/Eagle/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DumbLayout.cpp" />
@@ -272,7 +285,10 @@
 		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
-		<Unit filename="src/Eagle/Gui/Menu.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/Eagle/Gui/PopupWindow.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
@@ -281,7 +297,6 @@
 		<Unit filename="src/Eagle/Gui/Scroller.cpp" />
 		<Unit filename="src/Eagle/Gui/Slider.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
-		<Unit filename="src/Eagle/Gui/Text/EditText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/GlobalText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/LinkText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/SelectText.cpp" />
@@ -326,7 +341,11 @@
 		<Unit filename="src/Eagle/Timer.cpp" />
 		<Unit filename="src/Eagle/Transforms.cpp" />
 		<Unit filename="src/Eagle/WindowManager.cpp" />
+		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
 		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />
 				<doxyfile_project />
@@ -336,6 +355,7 @@
 				<doxyfile_dot />
 				<general />
 			</DoxyBlocks>
+			<fortran_project />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

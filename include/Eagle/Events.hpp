@@ -126,6 +126,17 @@ enum EAGLE_EVENT_TYPE {
    EAGLE_EVENT_WIDGET                      = 70,///< This event came from a widget
 
    EAGLE_EVENT_WIDGET_EVENT_STOP           = 70,///< End id for widget events
+   
+   EAGLE_EVENT_NETWORK_EVENT_START         = 80,///< Start id for network events
+   
+   EAGLE_EVENT_NETWORK_RECV_MSG            = 80,///< This event is a network data received event
+   
+   EAGLE_EVENT_NETWORK_CONNECT             = 81,///< This event is a network connection event
+   EAGLE_EVENT_NETWORK_DISCONNECT          = 82,///< This event is a network disconnect event
+   EAGLE_EVENT_NETWORK_SERVERUP            = 83,///< This event means a server is running now
+   EAGLE_EVENT_NETWORK_SERVERDOWN          = 84,///< This event means a server has shut down
+   
+   EAGLE_EVENT_NETWORK_EVENT_STOP          = 84,///< Stop id for network events
 
    EAGLE_EVENT_USER_START                  = 1024///< Event id's above this value are free to use for user events
 };
@@ -369,6 +380,32 @@ struct WIDGET_EVENT_DATA {
 };
 
 
+
+/**! @struct NETWORK_EVENT_DATA
+ *   @brief Data for network events
+ */
+
+class Network;
+struct NETWORK_EVENT_DATA {
+   
+   void SetFields(std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES);
+   
+   Network* srcNETWORK;
+   std::string srcIP;
+   std::string srcPORT;
+   void* data;
+   unsigned int data_size;
+   
+   NETWORK_EVENT_DATA();
+   NETWORK_EVENT_DATA(Network* net , std::string IP , std::string PORT , unsigned char* bytes , unsigned int NBYTES);
+   ~NETWORK_EVENT_DATA();
+   void Free();
+
+};
+
+
+
+
 /**! @struct USER_EVENT_DATA
  *   @brief Data for user events
  */
@@ -417,6 +454,7 @@ public :
       AUDIO_EVENT_DATA audio;
       VIDEO_EVENT_DATA video;
       WIDGET_EVENT_DATA widget;
+      NETWORK_EVENT_DATA* network;
       USER_EVENT_DATA data;
    };
 
@@ -442,10 +480,11 @@ enum EAGLE_EVENT_GROUP_TYPE {
    EAGLE_TOUCH_EVENT_TYPE     = 1 << 3,///< Touch event
    EAGLE_DISPLAY_EVENT_TYPE   = 1 << 4,///< Display event
    EAGLE_WIDGET_EVENT_TYPE    = 1 << 5,///< Widget event
-   EAGLE_SYSTEM_EVENT_TYPE    = 1 << 6,///< System event
-   EAGLE_USER_EVENT_TYPE      = 1 << 7,///< User event
-   EAGLE_ANY_EVENT_TYPE       = 1 << 8,///< Generic event
-   EAGLE_UNDEFINED_EVENT_TYPE = 1 << 9 ///< Undefined event
+   EAGLE_NETWORK_EVENT_TYPE   = 1 << 6,///< Network event
+   EAGLE_SYSTEM_EVENT_TYPE    = 1 << 7,///< System event
+   EAGLE_USER_EVENT_TYPE      = 1 << 8,///< User event
+   EAGLE_ANY_EVENT_TYPE       = 1 << 9,///< Generic event
+   EAGLE_UNDEFINED_EVENT_TYPE = 1 << 10 ///< Undefined event
 };
 
 
@@ -456,7 +495,7 @@ bool IsJoystickEvent(EagleEvent e);///< True if e is a joystick event
 bool IsTouchEvent   (EagleEvent e);///< True if e is a touch event
 bool IsDisplayEvent (EagleEvent e);///< True if e is a display event
 bool IsWidgetEvent  (EagleEvent e);///< True if e is a widget event
-
+bool IsNetworkEvent (EagleEvent e);///< True if e is a network event
 bool IsSystemEvent  (EagleEvent e);///< True if e is a system event
 bool IsUserEvent    (EagleEvent e);///< True if e is a user event
 
