@@ -173,12 +173,6 @@ void HexGame::HandleRegularTurn(EagleEvent e) {
 
 
 
-void HexGame::HandleBattleTurn(EagleEvent e) {
-   
-}
-
-
-
 void HexGame::DisplayFirstTurn(EagleGraphicsContext* win , int x , int y) {
    if (turn > 0) {return;}
    
@@ -311,19 +305,32 @@ void HexGame::HandleEvent(EagleEvent e) {
       }
    }
 
-   switch (gstate) {
+   switch (gstate) :
       case PLACE_TERRITORY :
          HandleFirstTurn(e);
          break;
       case PLAY_GAME :
          HandleRegularTurn(e);
          break;
-      case BATTLE_TURN :
-         HandleBattleTurn(e);
-         break;
-      case GAME_OVER :
-         break;
+      case BA
+
    }
+   else {
+      HandleRegularTurn(e);
+   }
+/**   
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (e.mouse.button == 2) {
+         rdrag = true;
+         rdragtile = hover;
+      }
+   }
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+      if (e.mouse.button == 2) {
+         rdrag = false;
+      }
+   }
+//*/
 }
 
 

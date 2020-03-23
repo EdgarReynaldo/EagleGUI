@@ -9,7 +9,7 @@
 #include "hexsrc/Math.hpp"
 #include "hexsrc/PRNG.hpp"
 
-int main(int argc , char** argv) {
+int main2(int argc , char** argv) {
 
    (void)argc;
    (void)argv;
@@ -68,23 +68,11 @@ int main(int argc , char** argv) {
             win->DrawTinted(d6sides[(int)o - 1] , (n+1)*55 , 50 , EagleColor(255,0,0));
             win->DrawTinted(d6sides[(int)d - 1] , (n+1)*55 , 110 , EagleColor(0,255,0));
             win->DrawTinted(d6sides[(int)(MAX(o,d)) - 1] , (n+1)*55 , 170 , (o>d)?EagleColor(255,0,0):EagleColor(0,255,0));
-/**
-            std::string dstr = StringPrintF("%u" , d);
-            std::string ostr = StringPrintF("%u" , o);
-            win->DrawTextString(win->DefaultFont() , ostr , (n+1)*30 , 50 , EagleColor(255,0,0));
-            win->DrawTextString(win->DefaultFont() , dstr , (n+1)*30 , 90 , EagleColor(0,255,0));
-            win->DrawTextString(win->DefaultFont() , "X" , (n+1)*30 , 130 , (o>d)?EagleColor(255,0,0):EagleColor(0,255,0));
-*/
          }
          std::vector<unsigned int>* lrolls = (drolls.size() > orolls.size())?&drolls:&orolls;
          for (; n < MAX(drolls.size() , orolls.size()) ; ++n) {
             win->DrawTinted(d6sides[(*lrolls)[n] - 1] , (n+1)*55 , (lrolls == &orolls)?50:110 , (lrolls == &orolls)?EagleColor(255,0,0):EagleColor(0,255,0));
             win->DrawTinted(d6sides[(*lrolls)[n] - 1] , (n+1)*55 , 170 , (lrolls == &orolls)?EagleColor(255,0,0):EagleColor(0,255,0));
-/**
-            std::string lstr = StringPrintF("%u" , (*lrolls)[n]);
-            win->DrawTextString(win->DefaultFont() , lstr , (n+1)*30 , (lrolls == &orolls)?50:90 , EagleColor(255,255,0));
-            win->DrawTextString(win->DefaultFont() , "X" , (n+1)*30 , 130 , (lrolls == &orolls)?EagleColor(255,0,0):EagleColor(0,255,0));
-*/
          }
          
          std::string rstr = StringPrintF("%i %s casualties" , abs(battle.GetResult()) , (battle.GetResult()>0)?"Defender":"Attacker");
@@ -115,7 +103,7 @@ int main(int argc , char** argv) {
 
 
 
-int main2(int argc , char** argv) {
+int main(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
