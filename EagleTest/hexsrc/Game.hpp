@@ -35,10 +35,17 @@ typedef struct std::list<PATH> PATHSET;
 
 
 
+enum GAMESTATE {
+   PLACE_TERRITORY = 0,
+   PLAY_GAME = 1,
+   BATTLE_TURN = 2,
+   GAME_OVER = 3
+};
 
 class HexGame {
    static const double root3;
    
+   GAMESTATE gstate;
    
    HexGrid hgrid;
    double rad;
@@ -59,9 +66,13 @@ class HexGame {
    HexTile* dragtile;
    bool rdrag;
    HexTile* rdragtile;
-
+   
    EagleImage* arrowimg;
    EagleGraphicsContext* window;
+   
+   DiceBattle dbattle;
+   
+   
    
    void Claim(HexTile* tile , int owner);
    
@@ -69,9 +80,12 @@ class HexGame {
    
    void DrawArrow(double x1 , double y1 , double x2 , double y2 , EagleColor tint);
    
+   /// Event handling
    void HandleFirstTurn(EagleEvent e);
    void HandleRegularTurn(EagleEvent e);
+   void HandleBattleTurn(EagleEvent e);
    
+   /// Display
    void DisplayFirstTurn(EagleGraphicsContext* win , int x , int y);
    void DisplayRegularTurn(EagleGraphicsContext* win , int x , int y);
    

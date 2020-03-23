@@ -52,9 +52,10 @@ void DiceBattle::SetDice(Dice def , Dice off) {
 
 
 
+/** Returns negative if attacker lost armies, positive if defender lost armies */
 void DiceBattle::CalcResult() {
+
    result = 0;
-   /// Returns negative if attacker lost armies, positive if defender lost armies
    const std::vector<unsigned int>& defrolls = defdice.GetRolls();
    const std::vector<unsigned int>& offrolls = offdice.GetRolls();
    if (!defrolls.size()) {
