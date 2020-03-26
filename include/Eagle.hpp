@@ -33,6 +33,7 @@
 
 #include "Eagle/AnimationBase.hpp"
 #include "Eagle/Area.hpp"
+#include "Eagle/BinStream.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Clipboard.hpp"
 #include "Eagle/Container.hpp"
