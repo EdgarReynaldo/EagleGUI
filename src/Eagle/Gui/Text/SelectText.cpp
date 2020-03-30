@@ -619,7 +619,7 @@ void SelectText::OldMoveCaretUpOrDown(int keycode , bool shift_held) {
          caret_line = (int)lines.size() - 1;
       }
    }
-   if (caret_pos > lines[caret_line].size()) {
+   if (caret_pos > (int)lines[caret_line].size()) {
       caret_pos = lines[caret_line].size();
    }
    if (!shift_held) {
@@ -827,11 +827,11 @@ void SelectText::MoveCaret(int keycode , bool shift_held , bool ctrl_held) {
 
 
 void SelectText::MoveCaretRelative(int newCaretLine , int newCaretPos) {
-   if (newCaretLine >= lines.size()) {
+   if (newCaretLine >= (int)lines.size()) {
       MoveCaretAbsolute(text.size());
    }
    int line = 0;
-   while (line < lines.size() && line < newCaretLine) {
+   while (line < (int)lines.size() && line < newCaretLine) {
       newCaretPos += lines[line].size();
       ++line;
    }
@@ -845,7 +845,7 @@ void SelectText::MoveCaretAbsolute(int newCaretPos) {
    if (newCaretPos < 0) {newCaretPos = 0;}
 
    int line = 0;
-   while (line < lines.size() && newCaretPos > lines[line].size()) {
+   while (line < (int)lines.size() && newCaretPos > (int)lines[line].size()) {
       newCaretPos -= lines[line].size();
       ++line;
    }

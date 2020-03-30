@@ -158,11 +158,6 @@
 		<Unit filename="src/backends/Allegro5/Allegro5Transform.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5WindowManager.cpp" />
 		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
-		<Extensions>
-			<code_completion />
-			<debugger />
-			<envvars />
-			<fortran_project />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

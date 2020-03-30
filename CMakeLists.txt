@@ -17,7 +17,9 @@ option(WANT_ALLEGRO5 "If you want to build the Allegro 5 backend for Eagle" OFF)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
-set (A5DepSearchPath "/usr/local/allegro525" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
+set(CMAKE_INSTALL_PREFIX "/usr")
+
+set (A5DepSearchPath "/usr" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
 set(ALLEGRO5_INCLUDE_DIR "${A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder" FORCE)
 set(ALLEGRO5_LIB_DIR "${A5DepSearchPath}/lib/" CACHE PATH "Where to find the Allegro 5 library's lib folder" FORCE)
 

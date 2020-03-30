@@ -115,6 +115,7 @@
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
+		<Unit filename="include/Eagle/BinStream.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
 		<Unit filename="include/Eagle/Callbacks.hpp" />
 		<Unit filename="include/Eagle/Clipboard.hpp" />
@@ -230,6 +231,7 @@
 		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
+		<Unit filename="src/Eagle/BinStream.cpp" />
 		<Unit filename="src/Eagle/CMakeLists.txt" />
 		<Unit filename="src/Eagle/CXX11Mutexes.cpp" />
 		<Unit filename="src/Eagle/Callbacks.cpp" />
