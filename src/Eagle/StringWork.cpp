@@ -64,13 +64,13 @@ bool GetPositionIterator(std::string& selText , std::string::iterator* itPos , i
 
    /// Preconditions
    if ((selText.begin() == selText.end()) ||
-       (caretLine < 0 || caretLine >= lines.size()) ||
-       (caretPos < 0 || caretPos > lines[caretLine].size())) {
+       (caretLine < 0 || caretLine >= (int)lines.size()) ||
+       (caretPos < 0 || caretPos > (int)lines[caretLine].size())) {
       *itPos = selText.end();
       return true;
    }
    /// Add the opening lines to the iterators
-   for (unsigned int i = 0 ; i < caretLine ; ++i) {
+   for (int i = 0 ; i < caretLine ; ++i) {
       carit += lines[i].size();
    }
    
@@ -102,10 +102,10 @@ bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* n
    
    const vector<std::string> lines = SplitByNewLinesNoChomp(text);
    
-   if (caretLine < 0 || caretLine >= lines.size()) {
+   if (caretLine < 0 || caretLine >= (int)lines.size()) {
       return false;
    }
-   if (caretPos < 0 || caretPos >= lines[caretLine].size()) {
+   if (caretPos < 0 || caretPos >= (int)lines[caretLine].size()) {
       return false;
    }
    
@@ -130,11 +130,11 @@ bool GetNextWord(const std::string& text , int caretPos , int caretLine , int* n
    }
 
    line = 0;
-   while (line < lines.size() && newPos >= lines[line].size()) {
+   while (line < (int)lines.size() && newPos >= lines[line].size()) {
       newPos -= lines[line].size();
       ++line;
    }
-   if (line == lines.size()) {
+   if (line == (int)lines.size()) {
       line--;
       newPos = lines[line].size();
    }
@@ -154,10 +154,10 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
    
    const vector<std::string> lines = SplitByNewLinesNoChomp(text);
    
-   if (caretLine < 0 || caretLine >= lines.size()) {
+   if (caretLine < 0 || caretLine >= (int)lines.size()) {
       return false;
    }
-   if (caretPos < 0 || caretPos > lines[caretLine].size()) {
+   if (caretPos < 0 || caretPos > (int)lines[caretLine].size()) {
       return false;
    }
    
@@ -185,12 +185,12 @@ bool GetPreviousWord(const std::string& text , int caretPos , int caretLine , in
    
    /// Get relative position again
    line = 0;
-   while (line < lines.size() && newPos >= lines[line].size()) {
+   while (line < (int)lines.size() && newPos >= (int)(lines[line].size())) {
       newPos -= lines[line].size();
       ++line;
    }
 
-   if (line == lines.size()) {
+   if (line == (int)lines.size()) {
       --line;
       newPos = lines[line].size();
    }
@@ -241,7 +241,8 @@ vector<string> SplitByNewLinesNoChomp(std::string s) {
    vector<string> lines;
 
    if (s.length() == 0) {
-      lines.push_back("");
+/// TODO : GIMME THE WHAT FOR
+///      lines.push_back("");
       return lines;
    }
 
@@ -277,7 +278,7 @@ vector<string> SplitByNewLinesNoChomp(std::string s) {
 std::vector<std::string> SplitByNewLinesChomp(std::string s) {
    std::vector<std::string> lines_chomp = SplitByNewLinesNoChomp(s);
    for (unsigned int i = 0 ; i < lines_chomp.size() ; ++i) {
-      unsigned int index = lines_chomp[i].find_last_of('\n');
+      std::string::size_type index = lines_chomp[i].find_last_of('\n');
       if (index != std::string::npos) {
          lines_chomp[i].erase(index , 1);
       }
@@ -503,7 +504,7 @@ std::string GetGuiUnderlineText(std::string gui_text) {
 
 string GetFileExtension(string& s) {
    string ext("");
-   unsigned int index = s.find_last_of('.');
+   std::string::size_type index = s.find_last_of('.');
    if ((index != string::npos) && (index + 1 < s.size())) {
       ext = s.substr(index + 1);
    }

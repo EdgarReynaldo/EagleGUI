@@ -426,7 +426,8 @@ void SelectText::FindCaretPos(int msx , int msy , int* pstrpos , int* plinenum) 
 
    /// NOTE : This works for all HALIGN and VALIGN values
    
-   EAGLE_ASSERT(lines.size());
+/// TODO : GIMME THE WHAT FOR
+///   EAGLE_ASSERT(lines.size());
    if (!lines.size()) {return;}
       
    /// Allow margin space to be considered for selection purposes. It makes for nicer selection characteristics.
