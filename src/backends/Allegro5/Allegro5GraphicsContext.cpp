@@ -564,10 +564,10 @@ void Allegro5GraphicsContext::DrawShadedTexturedQuad(float x1 , float y1 , float
 void Allegro5GraphicsContext::DrawTintedStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh , float dx , float dy , float dw , float dh , EagleColor tint , int flags) {
    /// TODO : FIXME : RESPECT THE FLAGS
    DrawShadedTexturedQuad(
-         dx      , dy      , sx/img->W()        , sy/img->H()        , tint ,
-         dx      , dy + dh , sx/img->W()        , (sy + sh)/img->H() , tint ,
-         dx + dw , dy + dh , (sx + sw)/img->W() , (sy + sh)/img->H() , tint ,
-         dx + dw , dy      , (sx + sw)/img->W() , sy/img->H()        , tint ,
+         dx      , dy      , sx      , sy      , tint ,
+         dx      , dy + dh , sx      , sy + sh , tint ,
+         dx + dw , dy + dh , sx + sw , sy + sh , tint ,
+         dx + dw , dy      , sx + sw , sy      , tint ,
          img);
 }
 
