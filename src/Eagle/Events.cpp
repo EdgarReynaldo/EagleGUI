@@ -24,6 +24,7 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/System.hpp"
+#include "Eagle/Time.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 
 #include <memory>
@@ -259,6 +260,7 @@ EagleEventSource::LIT EagleEventSource::FindListener(EagleEventListener* l) {
 
 
 void EagleEventSource::EmitEvent(EagleEvent e , EagleThread* thread) {
+   if (e.timestamp == -1.0) {e.timestamp = ProgramTime::Elapsed();}
    for (unsigned int n = 0 ; n < listeners.size(); ++n) {
       EagleEventListener* l = listeners[n];
       l->RespondToEvent(e , thread);

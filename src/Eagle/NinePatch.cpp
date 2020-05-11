@@ -148,7 +148,7 @@ NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , Widget
          EAGLE_ASSERT(img);
          EAGLE_ASSERT(img->Valid());
          win->PushDrawingTarget(img);
-         win->DrawRegion(src_img , src , 0.0 , 0.0 , DRAW_NORMAL);
+         win->DrawTintedRegion(src_img , src , 0.0 , 0.0);
          win->PopDrawingTarget();
          np[y][x] = img;
       }

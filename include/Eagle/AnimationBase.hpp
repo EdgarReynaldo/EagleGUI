@@ -91,7 +91,7 @@ protected :
 
    ANIMATION_EVENT_DATA GetEventData();
       
-   virtual void OnSetAnimationPercent()=0;///< Pure virtual function that is called when the animation percent changes.
+   virtual void OnSetAnimationPercent(){};///< Pure virtual function that is called when the animation percent changes.
    virtual void OnLoopComplete() {}///< Override this virtual function to respond to loop completion events.
    virtual void OnComplete() {}///< Override this virtual function to respond to animation complete events.
 

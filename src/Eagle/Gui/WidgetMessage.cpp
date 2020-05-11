@@ -25,7 +25,7 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 
-
+#include <atomic>
 
 using std::ostream;
 using std::string;
@@ -42,8 +42,9 @@ typedef map<MESSAGE_KEY,MESSAGE_VALUE> MESSAGE_MAP;
 
 
 unsigned int NextFreeTopicId() {
-   static unsigned int id = 0;
-   return id++;
+   static std::atomic<unsigned int> id(0U);
+   printf("TOPIC %d " , id++);
+   return id;
 }
 
 

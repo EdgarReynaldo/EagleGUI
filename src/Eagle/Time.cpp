@@ -84,8 +84,8 @@ ProgramTime ProgramTime::Now() {
 #if defined EAGLE_WIN32
    LARGE_INTEGER qpf;
    LARGE_INTEGER qpc;
-   QueryPerformanceFrequency(&qpf);
    QueryPerformanceCounter(&qpc);
+   QueryPerformanceFrequency(&qpf);
    return ProgramTime((double)qpc.QuadPart/(double)qpf.QuadPart);
 #elif defined EAGLE_LINUX
     timespec ts;
@@ -119,6 +119,6 @@ ProgramTime ProgramTime::Elapsed() {
 
 
 ProgramTime ProgramTime::SyncTime(double t) {
-   return program_start = t - ProgramTime::Now();
+   return program_start = t + ProgramTime::Now();
 }
 

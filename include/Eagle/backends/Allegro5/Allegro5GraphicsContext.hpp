@@ -162,15 +162,27 @@ public :
 										 float x2 , float y2 , EagleColor c2 ,
 										 float x3 , float y3 , EagleColor c3 ,
 										 float x4 , float y4 , EagleColor c4);
+   /**! @fn DrawShadedTexturedQuad <float , float , float , float , EagleColor , 
+                                    float , float , float , float , EagleColor , 
+                                    float , float , float , float , EagleColor , 
+                                    float , float , float , float , EagleColor ,
+                                    EagleImage*>
+    *   @brief This function is the workhorse of the graphics engine. All image drawing is deferred here.
+    */
+    
+   virtual void DrawShadedTexturedQuad(float x1 , float y1 , float u1 , float v1 , EagleColor c1 ,
+                                       float x2 , float y2 , float u2 , float v2 , EagleColor c2 ,
+                                       float x3 , float y3 , float u3 , float v3 , EagleColor c3 ,
+                                       float x4 , float y4 , float u4 , float v4 , EagleColor c4 ,
+                                       EagleImage* texture);
 
    /// image drawing operations
-   virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL);
-   virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL);
-   virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
-                                                      float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL);
-   virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255));
-
-   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255));
+   /**! @fn DrawTintedStretchedRegion <EagleImage* , float , float , float , float , float , float , float , float , EagleColor , int>
+    *   @brief Draw the source rectangle stretched to fit the destination rectangle using the specified flags and tint
+    */
+   virtual void DrawTintedStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
+                                                      float dx , float dy , float dw , float dh , 
+                                                      EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color);
 ///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);

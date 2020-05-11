@@ -46,7 +46,7 @@ int EditText::PrivateHandleEvent(EagleEvent e) {
                DeleteSelection(select_line_start , select_line_close , select_left , select_right);
             }
             else {
-               if (caret_pos < lines[caret_line].size()) {
+               if (caret_pos < (int)lines[caret_line].size()) {
                   DeleteSelection(caret_line , caret_line , caret_pos , caret_pos + 1);
                }
             }
@@ -100,10 +100,10 @@ int EditText::PrivateHandleEvent(EagleEvent e) {
                Overwrite(newstr , select_line_start , select_line_close , select_left , select_right);
             }
             else {
-               if (caret_pos < lines[caret_line].size()) {
+               if (caret_pos < (int)lines[caret_line].size()) {
                   Overwrite(newstr , caret_line , caret_line , caret_pos , caret_pos + 1);
                } else {
-                  if (caret_line == lines.size() - 1) {
+                  if (caret_line == (int)lines.size() - 1) {
                      Insert(newstr , caret_line , caret_pos);
                   }
                }

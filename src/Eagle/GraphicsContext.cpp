@@ -350,7 +350,14 @@ void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR d
 
 
 
-void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags) {
+void EagleGraphicsContext::DrawTintedStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , 
+                               EagleColor tint , int flags) {
+   DrawTintedStretchedRegion(img , src.X() , src.Y() , src.X() + src.W() , src.Y() + src.H() , dest.X() , dest.Y() , dest.X() + dest.W() , dest.Y() + dest.H() , tint , flags);
+}
+
+
+
+void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , EagleColor tint , int flags) {
    if (halign == HALIGN_CENTER) {
       x -= img->W()/2.0f;
    }
@@ -363,34 +370,53 @@ void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT
    else if (valign == VALIGN_BOTTOM) {
       y -= img->H();
    }
-   Draw(img , x , y , flags);
-}
-
-
-
-void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags) {
-   DrawStretchedRegion(img , src.X() , src.Y() , src.W() , src.H() , dest.X() , dest.Y() , dest.W() , dest.H() , flags);
+   DrawTintedStretched(img , Rectangle(x , y , img->W() , img->H()) , tint , flags);
 }
 
 
 
 void EagleGraphicsContext::DrawStretched(EagleImage* img , Rectangle dest , int flags) {
-   DrawStretchedRegion(img , Rectangle(0,0,img->W(),img->H()) , dest , flags);
+   DrawTintedStretched(img , dest , EagleColor(255,255,255,255) , flags);
 }
 
 
 
-void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , int flags) {
+void EagleGraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor tint , int flags) {
+   DrawTintedStretchedRegion(img , src , Rectangle(x , y , src.W() , src.H()) , tint , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags) {
+   DrawTintedStretchedRegion(img , src , Rectangle(dest.X() , dest.Y() , src.W() , src.H()) , EagleColor(255,255,255,255) , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawTintedStretched(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
+   DrawTintedStretchedRegion(img , Rectangle(0,0,img->W(),img->H()) , dest , tint , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawTinted(EagleImage* img , int x , int y , 
+                                      EagleColor col , int flags) {
+   Draw(img , x , y , HALIGN_LEFT , VALIGN_TOP , col , flags);
+}
+
+
+
+void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
    EAGLE_ASSERT(img && img->Valid());
 
    Clipper clip(img , dest);
 
-   Draw(img , dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , flags);
+   DrawTinted(img , dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , tint , flags);
 }
 
 
 
-void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , int flags) {
+void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
    EAGLE_ASSERT(img && img->Valid() && img->Area());
 
    
@@ -409,13 +435,13 @@ void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , int f
    
 //   Clipper clip(img , dest);
    
-   DrawStretched(img , dest2 , flags);
+   DrawTintedStretched(img , dest2 , tint , flags);
    
 }
 
 
 
-void EagleGraphicsContext::DrawImageCover(EagleImage* img , Rectangle dest , int flags) {
+void EagleGraphicsContext::DrawImageCover(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
    EAGLE_ASSERT(img && img->Valid() && img->Area());
 
    const double hratio = dest.W() / (double)img->W();
@@ -429,13 +455,13 @@ void EagleGraphicsContext::DrawImageCover(EagleImage* img , Rectangle dest , int
    
    Clipper clip(img , dest);
    
-   DrawStretched(img , dest2 , flags);
+   DrawTintedStretched(img , dest2 , tint , flags);
 }
 
 
 
-void EagleGraphicsContext::DrawImageStretch(EagleImage* img , Rectangle dest , int flags) {
-   DrawStretched(img , dest , flags);
+void EagleGraphicsContext::DrawImageStretch(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
+   DrawTintedStretched(img , dest , tint , flags);
 }
 
 

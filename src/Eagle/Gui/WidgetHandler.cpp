@@ -614,7 +614,7 @@ void WidgetHandler::RedrawBackgroundBuffer() {
       }
       else {
          // draw centered
-         gwindow->Draw(user_bg_ptr , (background->W() - user_bg_ptr->W())/2 , (background->H() - user_bg_ptr->H())/2 , DRAW_NORMAL);
+         gwindow->Draw(user_bg_ptr , (background->W() - user_bg_ptr->W())/2 , (background->H() - user_bg_ptr->H())/2);
       }
    }
    gwindow->RestoreLastBlendingState();
@@ -1067,7 +1067,7 @@ void WidgetHandler::PerformPartialRedraw(EagleGraphicsContext* win) {
    win->SetFullCopyBlender();
    for (list<Rectangle>::iterator it = dbg_list.begin() ; it != dbg_list.end() ; ++it) {
       Rectangle& r = *it;
-      win->DrawRegion(background , r , r.X() , r.Y());
+      win->DrawTintedRegion(background , r , r.X() , r.Y());
    }
    win->RestoreLastBlendingState();
    

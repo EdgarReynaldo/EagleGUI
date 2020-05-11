@@ -53,7 +53,7 @@ int GetAbsoluteIndex(const std::string& text , const std::vector<std::string>& l
    if (absp < 0) {
       absp = -1;
    }
-   if (absp > text.size()) {
+   if (absp > (int)text.size()) {
       absp = text.size();
    }
    return absp;
@@ -64,7 +64,7 @@ int GetAbsoluteIndex(const std::string& text , const std::vector<std::string>& l
 LPIndex GetLPIndex(const std::string& text , const std::vector<std::string>& lines , int abs_index) {
    int pos = abs_index;
    int line = 0;
-   while (line < lines.size() && pos >= lines[line].size()) {
+   while (line < (int)lines.size() && pos >= (int)lines[line].size()) {
       pos -= lines[line].size();
       ++line;
    }
@@ -842,7 +842,7 @@ void SelectText::MoveCaretRelative(int newCaretLine , int newCaretPos) {
 
 
 void SelectText::MoveCaretAbsolute(int newCaretPos) {
-   if (newCaretPos > text.size()) {newCaretPos = text.size();}
+   if (newCaretPos > (int)text.size()) {newCaretPos = text.size();}
    if (newCaretPos < 0) {newCaretPos = 0;}
 
    int line = 0;

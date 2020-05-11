@@ -544,48 +544,31 @@ void Allegro5GraphicsContext::DrawShadedQuad(float x1 , float y1 , EagleColor c1
 
 
 
-// image drawing operations
-void Allegro5GraphicsContext::Draw(EagleImage* img , float x , float y , int flags) {
-   ALLEGRO_BITMAP* bmp = GetAllegroBitmap(img);
-   EAGLE_ASSERT(bmp);
-   al_draw_bitmap(bmp , x , y , flags);
+void Allegro5GraphicsContext::DrawShadedTexturedQuad(float x1 , float y1 , float u1 , float v1 , EagleColor c1 ,
+                                                     float x2 , float y2 , float u2 , float v2 , EagleColor c2 ,
+                                                     float x3 , float y3 , float u3 , float v3 , EagleColor c3 ,
+                                                     float x4 , float y4 , float u4 , float v4 , EagleColor c4 ,
+                                                     EagleImage* texture) {
+	ALLEGRO_VERTEX vtx[4] = {
+		MakeAllegro5Vertex(x1 , y1 , 0.0 , u1 , v1 , GetAllegroColor(c1)),
+		MakeAllegro5Vertex(x2 , y2 , 0.0 , u2 , v2 , GetAllegroColor(c2)),
+		MakeAllegro5Vertex(x3 , y3 , 0.0 , u3 , v3 , GetAllegroColor(c3)),
+		MakeAllegro5Vertex(x4 , y4 , 0.0 , u4 , v4 , GetAllegroColor(c4))
+	};
+   ALLEGRO_BITMAP* bmp = GetAllegroBitmap(texture);
+	al_draw_prim(vtx , 0 , bmp , 0 , 4 , ALLEGRO_PRIM_TRIANGLE_FAN);
 }
 
 
 
-void Allegro5GraphicsContext::DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags) {
-   ALLEGRO_BITMAP* bmp = GetAllegroBitmap(img);
-   EAGLE_ASSERT(bmp);
-//void al_draw_bitmap_region(ALLEGRO_BITMAP *bitmap, float sx, float sy, float sw, float sh, float dx, float dy, int flags);
-   al_draw_bitmap_region(bmp , src.X() , src.Y() , src.W() , src.H() , x , y , flags);
-}
-
-
-
-void Allegro5GraphicsContext::DrawStretchedRegion(EagleImage* img ,
-                                                  float sx , float sy , float sw , float sh ,
-                                                  float dx , float dy , float dw , float dh ,
-                                                  int flags) {
-   ALLEGRO_BITMAP* bmp = GetAllegroBitmap(img);
-   EAGLE_ASSERT(bmp);
-   al_draw_scaled_bitmap(bmp , sx , sy , sw , sh , dx , dy , dw , dh , flags);
-}
-
-
-
-void Allegro5GraphicsContext::DrawTinted(EagleImage* img , int x , int y , EagleColor col) {
-   ALLEGRO_BITMAP* bmp = GetAllegroBitmap(img);
-   EAGLE_ASSERT(bmp);
-   ALLEGRO_COLOR c = GetAllegroColor(col);
-///   void al_draw_tinted_bitmap(ALLEGRO_BITMAP *bitmap, ALLEGRO_COLOR tint,
-///   float dx, float dy, int flags)
-   al_draw_tinted_bitmap(bmp , c , x , y , 0);
-}
-
-
-
-void Allegro5GraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col) {
-   al_draw_tinted_bitmap_region(GetAllegroBitmap(img) , GetAllegroColor(col) , src.X() , src.Y() , src.W() , src.H() , x , y , 0);
+void Allegro5GraphicsContext::DrawTintedStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh , float dx , float dy , float dw , float dh , EagleColor tint , int flags) {
+   /// TODO : FIXME : RESPECT THE FLAGS
+   DrawShadedTexturedQuad(
+         dx      , dy      , sx/img->W()        , sy/img->H()        , tint ,
+         dx      , dy + dh , sx/img->W()        , (sy + sh)/img->H() , tint ,
+         dx + dw , dy + dh , (sx + sw)/img->W() , (sy + sh)/img->H() , tint ,
+         dx + dw , dy      , (sx + sw)/img->W() , sy/img->H()        , tint ,
+         img);
 }
 
 

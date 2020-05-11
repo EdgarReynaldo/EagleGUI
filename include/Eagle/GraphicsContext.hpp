@@ -458,54 +458,81 @@ public :
 										 float x3 , float y3 , EagleColor c3 ,
 										 float x4 , float y4 , EagleColor c4)=0;
 
-   /// TODO : Consistent naming
+   /**! @fn DrawShadedTexturedQuad <float,float,float,float,EagleColor,
+                                    float,float,float,float,EagleColor,
+                                    float,float,float,float,EagleColor,
+                                    float,float,float,float,EagleColor,
+                                    EagleImage*>
+    *   @brief Draws a shaded textured quad using the specified corners and corner colors
+    */
+   virtual void DrawShadedTexturedQuad(float x1 , float y1 , float u1 , float v1 , EagleColor c1 ,
+                                       float x2 , float y2 , float u2 , float v2 , EagleColor c2 ,
+                                       float x3 , float y3 , float u3 , float v3 , EagleColor c3 ,
+                                       float x4 , float y4 , float u4 , float v4 , EagleColor c4 ,
+                                       EagleImage* texture)=0;
+
+   /// TODO : Consistent naming, FIXME : DOCS
 										 										 
    /// image drawing operations
 
-   /**! @fn Draw <EagleImage* , float , float , int>
-    *   @brief Draws an @ref EagleImage via pointer to x,y with the specified @ref IMAGE_DISPLAY_FLAGS flags
+   /**! @fn DrawTintedStretchedRegion <EagleImage* , float , float , float , float , float , float , float , float , EagleColor , int>
+    *   @brief Draw the source rectangle stretched to fit the destination rectangle using the specified flags and tint
+    *          This function is the workhorse of the graphics engine. All image drawing is deferred here.
     */
-   virtual void Draw(EagleImage* img , float x , float y , int flags = DRAW_NORMAL)=0;
+   virtual void DrawTintedStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
+                                                    float dx , float dy , float dw , float dh , 
+                                                    EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL)=0;
+
+   /**! @fn DrawTintedStretchedRegion <EagleImage* , Rectangle , Rectangle , EagleColor , int>
+    *   @brief Draw the source rectangle stretched to fit the destination rectangle using the specified flags and tint
+    *
+    */
+   void DrawTintedStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , 
+                                  EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    /**! @fn Draw <EagleImage* , float , float , HALIGNMENT , VALIGNMENT , int>
     *   @brief Draws an @ref EagleImage via pointer to x,y with the specified horizontal and vertical alignment and flags.
     */
-   void Draw(EagleImage* img , float x , float y , HALIGNMENT halign , VALIGNMENT valign , int flags = DRAW_NORMAL);
+   void Draw(EagleImage* img , float x , float y , HALIGNMENT halign = HALIGN_LEFT , VALIGNMENT valign = VALIGN_TOP , 
+             EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
-   /**! @fn DrawRegion <EagleImage* , Rectangle , float , float , int>
-    *   @brief Draw the specified src rectangle of the image at x,y with the specified flags
-    */
-   virtual void DrawRegion(EagleImage* img , Rectangle src , float x , float y , int flags = DRAW_NORMAL)=0;
-
-   /**! @fn DrawStretchedRegion <EagleImage* , float , float , float , float , float , float , float , float , int>
-    *   @brief Draw the source rectangle stretched to fit the destination rectangle using the specified flags
-    */
-   virtual void DrawStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh ,
-                                                      float dx , float dy , float dw , float dh , int flags = DRAW_NORMAL)=0;
    /**! @fn DrawStretchedRegion <EagleImage* , Rectangle , Rectangle , int>
-    *   @brief Same as @ref DrawStretchedRegion <EagleImage*,float,float,float,float,float,float,float,float,int>
+    *   @brief Same as @ref DrawStretchedRegion <EagleImage*,float,float,float,float,float,float,float,float,EagleColor,int>
     */
-   void         DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
+   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
 
    /**! @fn DrawStretched <EagleImage* , Rectangle , int>
     *   @brief Draws the specified image to the destination rectangle stretched as necessary to fit using the specified flags
     */
-   void         DrawStretched(EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);
+   void DrawStretched(EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);
+
+   /**! @fn DrawTintedStretched <EagleImage* , Rectangle , EagleColor , int>
+    *   @brief Draws the specified image to the destination rectangle stretched and tinted as necessary to fit using the specified flags
+    */
+   void DrawTintedStretched(EagleImage* img , Rectangle dest , 
+                            EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
    
    /**! @fn DrawTinted <EagleImage* , int , int , EagleColor>
     *   @brief Draws the specified image using the specified tint color at x,y
     */
-   virtual void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255))=0;
+   void DrawTinted(EagleImage* img , int x , int y , EagleColor col = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    /**! @fn DrawTintedRegion <EagleImage*,Rectangle,float,float,EagleColor>
     *   @brief Same as @ref DrawStretchedRegion but tinted col
     */
-   virtual void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255))=0;
+   void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
-   void DrawImageCenter (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Centers the image, no scaling is performed
-   void DrawImageFit    (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Maintains aspect and stretches to fit
-   void DrawImageCover  (EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Maintains aspect and stretches to cover
-   void DrawImageStretch(EagleImage* img , Rectangle dest , int flags = DRAW_NORMAL);///< Stretches the image to fill
+   ///< Centers the image, no scaling is performed
+   void DrawImageCenter (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+
+   ///< Maintains aspect and stretches to fit
+   void DrawImageFit    (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+
+   ///< Maintains aspect and stretches to cover
+   void DrawImageCover  (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+
+   ///< Stretches the image to fill
+   void DrawImageStretch(EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
 
    ///< Converts the specified color in the specified image to alpha zero, clear

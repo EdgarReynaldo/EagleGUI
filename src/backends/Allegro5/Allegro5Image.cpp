@@ -130,7 +130,7 @@ EagleImage* Allegro5Image::Clone(EagleGraphicsContext* parent_window , std::stri
    if (newimg->Allocate(W() , H() , ImageType())) {
       parent_window->PushDrawingTarget(newimg);
       parent_window->SetCopyBlender();
-      parent_window->Draw(this , 0.0f , 0.0f , DRAW_NORMAL);
+      parent_window->Draw(this , 0 , 0);
       parent_window->RestoreLastBlendingState();
       parent_window->PopDrawingTarget();
       return newimg;
