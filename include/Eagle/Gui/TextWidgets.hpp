@@ -31,6 +31,7 @@
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/Gui/Text/SelectText.hpp"
 #include "Eagle/Gui/Text/LinkText.hpp"
+#include "Eagle/Gui/Text/EditText.hpp"
 
 
 

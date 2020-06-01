@@ -110,6 +110,8 @@ public :
    virtual int XPos();
    virtual int YPos();
 
+   virtual Pos2I GetMaxTextureSize();
+
    /// Load Default font
    void LoadDefaultFont();
 

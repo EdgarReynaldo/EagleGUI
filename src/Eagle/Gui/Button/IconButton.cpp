@@ -94,5 +94,29 @@ void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , in
 
 
 
+/// --------------------------     HoverIcon     -------------------------------------
+
+
+
+void HoverIcon::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   if (Hover()) {
+      if (Up()) {
+         DisplayIcon(win , btn_state , xpos , ypos , GetColor(HLCOL));
+      }
+      else {
+         DisplayIcon(win , btn_state , xpos , ypos , GetColor(MGCOL));
+      }
+   }
+   else {
+      if (Up()) {
+         DisplayIcon(win , btn_state , xpos , ypos , GetColor(FGCOL));
+      }
+      else {
+         DisplayIcon(win , btn_state , xpos , ypos , GetColor(BGCOL));
+      }
+   }
+}
+
+
 
 

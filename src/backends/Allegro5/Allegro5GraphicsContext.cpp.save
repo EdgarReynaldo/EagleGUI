@@ -214,8 +214,7 @@ int Allegro5GraphicsContext::YPos() {
 
 
 Pos2I Allegro5GraphicsContext::GetMaxTextureSize() {
-   int maxwidth = al_get_display_option(display , ALLEGRO_MAX_BITMAP_SIZE);
-   return Pos2I(maxwidth , maxwidth);
+   int max
 }
 
 

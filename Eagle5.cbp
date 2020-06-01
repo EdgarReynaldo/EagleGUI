@@ -227,6 +227,7 @@
 		<Unit filename="include/Eagle/Time.hpp" />
 		<Unit filename="include/Eagle/Timer.hpp" />
 		<Unit filename="include/Eagle/Transforms.hpp" />
+		<Unit filename="include/Eagle/Transitions.hpp" />
 		<Unit filename="include/Eagle/WindowManager.hpp" />
 		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
@@ -327,6 +328,7 @@
 		<Unit filename="src/Eagle/Time.cpp" />
 		<Unit filename="src/Eagle/Timer.cpp" />
 		<Unit filename="src/Eagle/Transforms.cpp" />
+		<Unit filename="src/Eagle/Transitions.cpp" />
 		<Unit filename="src/Eagle/WindowManager.cpp" />
 		<Extensions>
 			<DoxyBlocks>

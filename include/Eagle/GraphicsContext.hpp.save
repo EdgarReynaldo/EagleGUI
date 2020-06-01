@@ -300,7 +300,7 @@ public :
    virtual int XPos()=0;///< Get this display's x position
    virtual int YPos()=0;///< Get this display's y position
 
-   virtual Pos2I GetMaxTextureSize()=0;
+   Pos2I GetMaxTextureSize();
 
    ///< Clears target bitmap to the specified color. Default is opaque black.
    virtual void Clear(EagleColor c = EagleColor(0,0,0))=0;

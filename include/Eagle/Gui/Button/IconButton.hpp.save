@@ -83,14 +83,31 @@ public :
 
 
 class HoverIcon : public IconButton {
-public :
+   
+   
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+void HoverIcon::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   if (Hover()) {
+      if (Up()) {
+         DisplayIcon(win , btn_state , xpos , ypos , GetColor(HLCOL));
+      }
+      else {
+         
+      }
+   }
+   else {
+      if (Up()) {
+         
+      }
+      else {
+         
+      }
+   }
+}
+   
 };
 
-
-
 #endif // IconButton_HPP
-
 
 
 

@@ -276,7 +276,17 @@ double AnimationBase::GetNormalizedPercent() {
 
 
 
-/*! \brief Returns the animation time.
+/*! \brief Returns the animation time divided by the total duration.
+ *  
+ */
+
+double AnimationBase::GetTotalPercent() {
+   return animation_time / (nloops*loop_duration);
+}
+
+
+
+/*! \brief Returns the animation time in loops.
  *  
  */
 

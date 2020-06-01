@@ -352,7 +352,7 @@ void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR d
 
 void EagleGraphicsContext::DrawTintedStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , 
                                EagleColor tint , int flags) {
-   DrawTintedStretchedRegion(img , src.X() , src.Y() , src.X() + src.W() , src.Y() + src.H() , dest.X() , dest.Y() , dest.X() + dest.W() , dest.Y() + dest.H() , tint , flags);
+   DrawTintedStretchedRegion(img , src.X() , src.Y() , src.W() , src.H() , dest.X() , dest.Y() , dest.W() , dest.H() , tint , flags);
 }
 
 
@@ -370,7 +370,7 @@ void EagleGraphicsContext::Draw(EagleImage* img , float x , float y , HALIGNMENT
    else if (valign == VALIGN_BOTTOM) {
       y -= img->H();
    }
-   DrawTintedStretched(img , Rectangle(x , y , img->W() , img->H()) , tint , flags);
+   DrawTintedStretchedRegion(img , Rectangle(0,0,img->W(),img->H()) , Rectangle(x , y , img->W() , img->H()) , tint , flags);
 }
 
 

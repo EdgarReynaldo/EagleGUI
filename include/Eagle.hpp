@@ -68,6 +68,7 @@
 #include "Eagle/Time.hpp"
 #include "Eagle/Timer.hpp"
 #include "Eagle/Transforms.hpp"
+#include "Eagle/Transitions.hpp"
 #include "Eagle/WindowManager.hpp"
 
 

@@ -1155,6 +1155,21 @@ RECT_CONTAINS_TYPE DoRectanglesContain(const Rectangle& r1 , const Rectangle& r2
 
 
 
+Rectangle GetOverlap(const Rectangle& r1 , const Rectangle& r2) {
+   if (!r1.Overlaps(r2)) {
+      return BADRECTANGLE;
+   }
+   /// Overlapping rectangle is created by adjoining the rightmost left edge with the leftmost right edge,
+   /// and the topmost bottom edge and bottom most top edge
+   const int lx = (r1.X() > r2.X())?r1.X():r2.X();
+   const int rx = (r2.BRX() > r1.BRX())?r1.BRX():r2.BRX();
+   const int ty = (r1.Y() > r2.Y())?r1.Y():r2.Y();
+   const int by = (r2.BRY() > r1.BRY())?r1.BRY():r2.BRY();
+   return Rectangle(lx , ty , rx - lx + 1 , by - ty + 1);
+}
+
+
+
 list<Rectangle> CombineRectangles(Rectangle r1 , Rectangle r2) {
    list<Rectangle> rlist;
 
@@ -1343,6 +1358,138 @@ list<Rectangle> ConsolidateRectangles(list<Rectangle> rectlist) {
    }
    
    return rectlist;
+}
+
+
+
+
+bool SubtractRectangle(Rectangle sub , Rectangle from , std::list<Rectangle>& sublist , std::list<Rectangle>& fromlist) {
+   sublist.clear();
+   fromlist.clear();
+   Rectangle overlap = GetOverlap(sub , from);
+   if (overlap == BADRECTANGLE) {
+      /// No overlap, we can't subtract this Rectangle
+      return false;
+   }
+   RECT_CONTAINS_TYPE ctype = DoRectanglesContain(sub , from);
+   
+   switch (ctype) {
+   case CONTAINS_NONE :
+      /// Rectangles overlap but do not consume each other
+      sublist = SubtractRectangle(overlap , sub);
+      fromlist = SubtractRectangle(overlap , from);
+      break;
+   case R2_CONTAINS_R1 :
+      /// From rectangle surrounds sub rectangle
+      fromlist = SubtractRectangle(sub , from);
+      break;
+   case R1_CONTAINS_R2 :
+      /// Sub rectangle surrounds from rectangle
+      sublist = SubtractRectangle(from , sub);
+      break;
+   default :
+      return false;
+      break;
+   };
+   return true;
+}
+
+std::list<Rectangle> SubtractRectangle(Rectangle sub , Rectangle from) {
+   std::list<Rectangle> rlist;
+   Rectangle overlap = GetOverlap(sub , from);
+   if (overlap == BADRECTANGLE) {
+      rlist.push_back(from);
+      return rlist;
+   }
+   if (overlap == from) {
+      return rlist;/// From is totally subtracted by overlap
+   }
+   int nmatch = 0;
+   bool matchleft = overlap.X() == from.X();
+   bool matchright = overlap.BRX() == from.BRX();
+   bool matchtop = overlap.Y() == from.Y();
+   bool matchbottom = overlap.BRY() == from.BRY();
+   nmatch += matchleft?1:0;
+   nmatch += matchright?1:0;
+   nmatch += matchtop?1:0;
+   nmatch += matchbottom?1:0;
+   
+   switch (nmatch) {
+   case 0 :/// overlap is contained by the from rectangle, forming 4 rectangles
+      rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// top
+      rlist.push_back(Rectangle(from.X() , overlap.Y() , overlap.X() - from.X() , overlap.H()));/// left
+      rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// right
+      rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// bottom
+      break;
+   case 1 :/// Only one side matches, creating 3 rectangles
+      if (matchleft || matchright) {
+         rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// above
+         rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// below
+         if (matchleft) {
+            rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// right
+         }
+         else {// matchright
+            rlist.push_back(Rectangle(from.X() , overlap.Y() , overlap.X() - from.X() , overlap.H()));/// left
+         }
+      }
+      else if (matchtop) {
+         rlist.push_back(Rectangle(from.X() , from.Y() , overlap.X() - from.X() , overlap.H()));/// left
+         rlist.push_back(Rectangle(overlap.BRX() + 1 , from.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// right
+         rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.Y() - overlap.Y()));/// bottom
+      }
+      else if (matchbottom) {
+         rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// top
+         rlist.push_back(Rectangle(from.X() , overlap.Y() , overlap.X() - from.X() , overlap.H()));/// left
+         rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// right
+      }
+      break;
+   case 2 :
+      if (matchright) {
+         if (matchtop) {/// NE match
+            rlist.push_back(Rectangle(from.X() , from.Y() , overlap.X() - from.X() , overlap.H()));/// NW corner
+            rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// S rectangle
+         }
+         else if (matchbottom) {/// SE match
+            rlist.push_back(Rectangle(from.X() , overlap.Y() , overlap.X() - from.X() , overlap.H()));/// SW corner
+            rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// N rectangle
+         }
+         else if (matchleft) {/// EW match
+            rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// top
+            rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// bottom
+         }
+      }
+      else if (matchleft) {
+         if (matchtop) {/// NW match
+            rlist.push_back(Rectangle(overlap.BRX() + 1 , from.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// NE corner
+            rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// S rectangle
+         }
+         else if (matchbottom) {/// SW match
+            rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.H() , from.BRX() - overlap.BRX() , overlap.H()));/// SE corner
+            rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// N rectangle
+         }
+      }
+      else if (matchtop && matchbottom) {/// NS match
+         rlist.push_back(Rectangle(from.X() , from.Y() , overlap.X() - from.X() , from.H()));/// left
+         rlist.push_back(Rectangle(overlap.BRX() + 1 , from.Y() , from.BRX() - overlap.BRX() , from.H()));/// right
+      }
+      break;
+   case 3 :
+      if (!matchbottom) {/// bottom
+         rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// S rectangle
+      }
+      else if (!matchtop) {/// top
+         rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// N rectangle
+      }
+      else if (!matchleft) {/// right
+         rlist.push_back(Rectangle(from.X() , from.Y() , overlap.X() - from.X() , from.H()));/// W rectangle
+      }
+      else if (!matchright) {/// left
+         rlist.push_back(Rectangle(overlap.BRX() + 1 , from.Y() , from.BRX() - overlap.BRX() , from.H()));/// E rectangle
+      }
+      break;
+   };
+
+   return rlist;
 }
 
 
