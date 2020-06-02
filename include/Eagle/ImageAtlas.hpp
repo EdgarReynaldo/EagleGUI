@@ -55,6 +55,7 @@ class Atlas {
 public :
    
    Atlas(EagleGraphicsContext* window);
+   virtual ~Atlas() {}
    
    unsigned int MakeNewBody();
    

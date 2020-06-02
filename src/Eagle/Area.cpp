@@ -1464,7 +1464,7 @@ std::list<Rectangle> SubtractRectangle(Rectangle sub , Rectangle from) {
             rlist.push_back(Rectangle(from.X() , overlap.BRY() + 1 , from.W() , from.BRY() - overlap.BRY()));/// S rectangle
          }
          else if (matchbottom) {/// SW match
-            rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.H() , from.BRX() - overlap.BRX() , overlap.H()));/// SE corner
+            rlist.push_back(Rectangle(overlap.BRX() + 1 , overlap.Y() , from.BRX() - overlap.BRX() , overlap.H()));/// SE corner
             rlist.push_back(Rectangle(from.X() , from.Y() , from.W() , overlap.Y() - from.Y()));/// N rectangle
          }
       }

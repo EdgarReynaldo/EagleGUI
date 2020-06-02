@@ -48,6 +48,7 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Gui.hpp"
 #include "Eagle/Image.hpp"
+#include "Eagle/ImageAtlas.hpp"
 #include "Eagle/Indenter.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Lib.hpp"

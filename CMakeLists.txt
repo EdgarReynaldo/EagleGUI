@@ -1,7 +1,7 @@
 
 # This CMakeLists.txt belongs in the root of the project. This is the master cmake file
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.13)
 
 set(EAGLE_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(EAGLE_INCLUDE_DIR ${EAGLE_ROOT_DIR}/include)
@@ -13,7 +13,8 @@ project(EagleLibrary)
 option(EAGLE_SHARED_LIBRARY_BUILD "Whether to build the shared Eagle library or not" ON)
 option(EAGLE_STATIC_LIBRARY_BUILD "Whether to build the static Eagle library or not" OFF)
 
-option(WANT_ALLEGRO5 "If you want to build the Allegro 5 backend for Eagle" OFF)
+option(WANT_ALLEGRO5 "If you want to build the Allegro 5 backend for Eagle" ON)
+option(WANT_EXAMPLES "If you want to build the example programs" ON)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
@@ -40,7 +41,8 @@ add_subdirectory(src/Eagle)
 #[[ Allegro 5 backend for Eagle ]]
 
 
-if (${WANT_ALLEGRO5})
+
+if (WANT_ALLEGRO5)
    if ("${PHYSFS_LIB}" STREQUAL "NOTFOUND" OR
        "${ALLEGRO5_LIB}" STREQUAL "NOTFOUND")
       message (SEND_ERROR "WANT_ALLEGRO5 is On but the Allegro 5 some of the Allegro 5 dependencies were not found.")
@@ -48,7 +50,17 @@ if (${WANT_ALLEGRO5})
           "${ALLEGRO5_LIB}" STREQUAL "NOTFOUND")
 
    add_subdirectory(src/backends/Allegro5)
-endif (${WANT_ALLEGRO5})
+   if (WANT_EXAMPLES)
+      add_subdirectory(examples)
+      foreach(EX IN LISTS EXAMPLESRC)
+         get_filename_component(SRC ${EX} NAME)
+         message(STATUS ${SRC} ${EX} SRC EX)
+#         target_link_options(${SRC} PUBLIC "-L/usr/lib")
+         target_link_libraries(${SRC} PUBLIC EagleA5DebugShared EagleDebugShared)
+         install(TARGETS ${SRC} RUNTIME DESTINATION bin)
+      endforeach()
+   endif()
+endif (WANT_ALLEGRO5)
 
 install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
 

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="Eagle5GUI_Workspace">
+	<Workspace title="Krampus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
-		<Project filename="EagleTest.cbp" />
-		<Project filename="CHAI/ChaiClient.cbp" />
-		<Project filename="../allegro5/test/CreateDisplay/DisplayTest.cbp" />
+		<Project filename="examples/GenericEagle.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
