@@ -2,13 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="GenericEagle" />
+		<Option title="ExRectSub" />
 		<Option execution_dir="E:/usr/projects/TINS2020/examples/" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="TINS2020" prefix_auto="1" extension_auto="1" />
+				<Option output="../cbbuild/bin/RectSubDebug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../cbbuild/bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -21,7 +22,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="TINS2020" prefix_auto="1" extension_auto="1" />
+				<Option output="../cbbuild/bin/RectSub" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../cbbuild/bin" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -30,9 +32,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-static" />
-					<Add option="-lEagleA5" />
+					<Add option="-lEagleA5Static" />
 					<Add option="-lallegro_monolith-static" />
-					<Add option="-lEagle" />
+					<Add option="-lEagleStatic" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lwebp" />
@@ -70,11 +72,14 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="E:/usr/include" />
+			<Add directory="../include" />
+			<Add directory="E:/LIBS/LIBS81Redistro/Allegro525/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="E:/usr/lib" />
+			<Add directory="../cbbuild/lib" />
+			<Add directory="E:/LIBS/LIBS81Redistro/Allegro525/lib" />
 		</Linker>
+		<Unit filename="CMakeLists.txt" />
 		<Unit filename="ExRectSub.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

@@ -3,6 +3,6 @@
 	<Workspace title="Krampus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
-		<Project filename="examples/GenericEagle.cbp" />
+		<Project filename="examples/ExGui.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
