@@ -38,6 +38,7 @@
 #include "Gui/Button.hpp"
 #include "Gui/Camera.hpp"
 #include "Gui/Layouts.hpp"
+#include "Gui/ListBox.hpp"
 ///#include "Gui/Menu.hpp"
 #include "Gui/Slider.hpp"
 #include "Gui/ScrollBar.hpp"

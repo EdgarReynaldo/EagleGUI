@@ -152,10 +152,10 @@ public :
    void EmptySlot(int slot);/// Remove a widget from the layout
 
    ///< Remove a widget by address
-   void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
+   virtual void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
 
    ///< Remove all widgets
-   void ClearWidgets();/// Remove all widgets from layout
+   virtual void ClearWidgets();/// Remove all widgets from layout
    
    ///< To remove the layout from the GUI
    void DetachFromGui();/// Call this in Layout derived class's destructor

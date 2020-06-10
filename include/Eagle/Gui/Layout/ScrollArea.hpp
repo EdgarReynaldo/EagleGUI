@@ -102,18 +102,14 @@ public :
    ~ScrollArea() {DetachFromGui();}
    
    void SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScrollBar* verticalscrollbar);
-//   void SetViewWidget(WidgetBase* widget_to_view);
-   void SetViewWidget(WidgetBase* widget_to_view) {
-      our_scroll_view.SetOurWidget(widget_to_view);
-      our_scroll_widget = widget_to_view;
-      RepositionChild(2);
-   }
    
    
    void SetScrollbarPosition(bool on_top , bool on_left);///< Pass true for left/top, false for right/bottom
    void SetHScrollbarPosition(bool on_top);///< Pass true to place the horizontal scrollbar on the top, false on the bottom
    void SetVSCrollbarPosition(bool on_left);///< Pass true to place the vertical scrollbar on the left, false on the right
    
+   void SetViewWidget(WidgetBase* widget_to_view);
+
    /// LayoutBase
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
@@ -121,13 +117,12 @@ public :
 
    virtual void PlaceWidget(WidgetBase* w , int slot);///< Gives our scroll view widget a child widget
    virtual int AddWidget(WidgetBase* w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
-   
-   virtual bool AcceptsFocus() override {return true;}
-   
+
    /// WidgetBase 
    
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
 
+   virtual bool AcceptsFocus() override {return true;}
 };
 
 

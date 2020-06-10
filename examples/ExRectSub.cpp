@@ -2,7 +2,7 @@
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle.hpp"
-
+#include "allegro5/allegro_color.h"
 
 
 int main(int argc , char** argv) {
@@ -40,8 +40,15 @@ int main(int argc , char** argv) {
          win->Clear();
          win->DrawFilledRectangle(r1 , EagleColor(0,255,0));
          win->DrawFilledRectangle(r2 , EagleColor(255,0,0));
+         float h = 30.0f;
+         float s = 1.0f;
+         float l = 0.5;
          for (std::list<Rectangle>::iterator it = left.begin() ; it != left.end() ; ++it) {
-            win->DrawRectangle(*it , 1 , EagleColor(0,0,255));
+            float r,g,b;
+            al_color_hsl_to_rgb(h,s,l,&r,&g,&b);
+            win->DrawFilledRectangle(*it , EagleColor(r,g,b));
+            
+            h += 30.0f;
          }
          win->FlipDisplay();
          redraw = false;
@@ -74,13 +81,13 @@ int main(int argc , char** argv) {
             sy = e.mouse.y;
             if (input_key_held(EAGLE_KEY_ANY_SHIFT)) {
                shiftdrag = true;
-               x4 = sx;
-               y4 = sy;
+               x3 = x4 = sx;
+               y3 = y4 = sy;
             }
             else {
                drag = true;
-               x2 = sx;
-               y2 = sy;
+               x1 = x2 = sx;
+               y1 = y2 = sy;
             }
          }
          if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {

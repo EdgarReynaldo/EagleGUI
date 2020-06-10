@@ -238,6 +238,12 @@ void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
 
 
 
+void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
+   PlaceWidget(widget_to_view , 2);
+}
+
+
+
 Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
 
    /// We control the position of all widgets
@@ -306,6 +312,7 @@ void ScrollArea::Resize(unsigned int nsize) {
 
 
 void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
+   (void)slot;
    if (w == hscrollbar) {
       slot = 0;
       LayoutBase::PlaceWidget(w , slot);
@@ -318,6 +325,7 @@ void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
       slot = 2;
       our_scroll_widget = w;
       our_scroll_view.SetOurWidget(our_scroll_widget);
+      LayoutBase::PlaceWidget(w , 2);
    }
 
    /// Our scroll max depends on the size of the widget being viewed
