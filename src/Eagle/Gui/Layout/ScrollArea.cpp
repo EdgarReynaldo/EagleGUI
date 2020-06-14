@@ -29,7 +29,7 @@
 
 
 void ScrollArea::ReserveSlots(int nslots) {
-   nslots = 3;///< Always 3 slots
+   nslots = 3;///< Always 3 slots, one for each scrollbar and one for the scroll view
    LayoutBase::ReserveSlots(nslots);
 }
 
@@ -238,8 +238,41 @@ void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
 
 
 
+ScrollArea::ScrollArea(std::string name) :
+      LayoutBase("ScrollArea" , name),
+      EagleEventListener(),
+      basic_hscrollbar("BasicScrollBar" , "basic_hscrollbar"),
+      basic_vscrollbar("BasicScrollBar" , "basic_vscrollbar"),
+      hscrollbar(0),
+      vscrollbar(0),
+      scrollbarsize(10),
+      onleft(false),
+      ontop(false),
+      our_scroll_view(),
+      our_scroll_widget(0),
+      drag(false),
+      anchorx(0),
+      anchory(0),
+      anchorxscroll(0),
+      anchoryscroll(0)
+{
+   Resize(3);
+   SetScrollBars((BasicScrollBar*)0 , (BasicScrollBar*)0);
+   LayoutBase::PlaceWidget(&our_scroll_view , 2);
+   ListenTo(&our_scroll_view);
+   SetWidgetFlags(Flags().AddFlag(VISIBLE));
+}
+
+
+
+ScrollArea::~ScrollArea() {
+   DetachFromGui();
+}
+
+
+
 void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
-   PlaceWidget(widget_to_view , 2);
+   our_scroll_widget = widget_to_view;/// shallow reference, do not destroy, handled by another layout
 }
 
 
@@ -325,7 +358,6 @@ void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
       slot = 2;
       our_scroll_widget = w;
       our_scroll_view.SetOurWidget(our_scroll_widget);
-      LayoutBase::PlaceWidget(w , 2);
    }
 
    /// Our scroll max depends on the size of the widget being viewed

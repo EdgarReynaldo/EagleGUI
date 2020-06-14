@@ -25,11 +25,9 @@ void DropDownList::SetButton(BasicButton* btn) {
    our_toggle_button = btn;
    if (our_toggle_button) {
       ListenTo(our_toggle_button);
-      btn->SetButtonType(TOGGLE_BTN);
       btn->SetButtonUpState(true);
       list_open = false;
    }
-   PlaceWidget(our_toggle_button , 1);
 }
 
 
@@ -68,21 +66,34 @@ void DropDownList::PlaceWidget(WidgetBase* w , int slot) {
    if (slot != 0 && slot != 1) {
       return;
    }
+   BasicText* btext = dynamic_cast<BasicText*>(w);
    BasicButton* bb = dynamic_cast<BasicButton*>(w);
-   if (bb) {
-      SetButton(bb);
+   if (btext) {
+      SetText(btext);
+      RelativeLayout::PlaceWidget(w,0);
    }
-   RelativeLayout::PlaceWidget(w,slot);
+   else if (bb) {
+      SetButton(bb);
+      RelativeLayout::PlaceWidget(w,1);
+   }
 }
 
 
 
 int DropDownList::AddWidget(WidgetBase* w) {
    BasicButton* bb = dynamic_cast<BasicButton*>(w);
+   BasicText* btext = dynamic_cast<BasicText*>(w);
    if (bb) {
       SetButton(bb);
+      RelativeLayout::PlaceWidget(w,1);
+      return 1;
    }
-   return RelativeLayout::AddWidget(w);
+   if (btext) {
+      SetText(btext);
+      RelativeLayout::PlaceWidget(w,0);
+      return 0;
+   }
+   return -1;
 }
 
 

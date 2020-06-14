@@ -32,8 +32,12 @@ int main(int argc , char** argv) {
    gui.SetupBuffer(sw , sh , win);
    gui.SetWidgetArea(Rectangle(0,0,sw,sh) , false);
    
+   SHAREDOBJECT<WidgetColorset> cols = gui.GetWidgetColorset();
+   (*cols.get())[HVRCOL] = EagleColor(0,255,0);
+   
+   
    RelativeLayout rl("RelativeLayout" , "MainRLayout");
-   rl.Resize(1);
+   rl.Resize(2);
    
    gui.SetRootLayout(&rl);
    
@@ -54,7 +58,7 @@ int main(int argc , char** argv) {
    btns[1].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
    btns[2].SetButtonType(ELLIPSE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
    
-   lbox.SetWidgetArea(Rectangle(0,0,sw/3,sh/3) , false);
+   lbox.SetWidgetArea(Rectangle(0,0,sw/2,sh/2) , false);
    lbox.Resize(3);
    lbox.AddWidget(&btns[0]);
    lbox.AddWidget(&btns[1]);
@@ -62,8 +66,9 @@ int main(int argc , char** argv) {
    
    sa.SetViewWidget(&lbox);
    
-   rl.PlaceWidget(&sa , 0 , LayoutRectangle(0.25f,0.25f,0.5f,0.5f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
+   rl.PlaceWidget(&sa , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
    
+//   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));
 
 
    bool quit = false;

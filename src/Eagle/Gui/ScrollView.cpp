@@ -31,19 +31,28 @@ void ScrollView::OnAreaChanged() {
 
 
 
+void ScrollView::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   if (!our_widget) {return;}
+   our_widget->SetWidgetFlags(Flags().SetNewFlag(f , on));
+}
+
+
+
 void ScrollView::RepositionWidget() {
    if (!our_widget) {return;}
    
    Rectangle inner = InnerArea();
 
-   int vw = ViewWidth();
-   int vh = ViewHeight();
+   Rectangle our_widget_area = our_widget->GetWidgetArea().OuterArea();
+   int vw = our_widget_area.W();
+   int vh = our_widget_area.H();
    int x = inner.X() - GetScrollX();
    int y = inner.Y() - GetScrollY();
    
    Rectangle wrect(x,y,vw,vh);
    EaglePrefix("SCROLLVIEW child pos = ") << wrect << std::endl;
    our_widget->SetWidgetArea(wrect , false);
+   SetBgRedrawFlag();
 }
 
 
@@ -55,7 +64,12 @@ void ScrollView::ScrollCallback() {
 
 
 int ScrollView::PrivateHandleEvent(EagleEvent ee) {
-   return our_widget?our_widget->HandleEvent(ee):DIALOG_OKAY;
+   if (!our_widget) {
+      return DIALOG_OKAY;
+   }
+   
+   int ret = our_widget->HandleEvent(ee);
+   return ret;
 }
 
 
@@ -98,15 +112,4 @@ void ScrollView::SetOurWidget(WidgetBase* widget) {
    }
 }
 
-
-
-unsigned int ScrollView::ViewWidth() {
-   return our_widget?our_widget->OuterArea().W():0;
-}
-
-
-
-unsigned int ScrollView::ViewHeight() {
-   return our_widget?our_widget->OuterArea().H():0;
-}
 

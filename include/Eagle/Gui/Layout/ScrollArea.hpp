@@ -45,11 +45,11 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    int scrollbarsize;
    bool onleft;
    bool ontop;
-   
-   WidgetBase* our_scroll_widget;
-   
+
    ScrollView our_scroll_view;
    
+   WidgetBase* our_scroll_widget;
+
    bool drag;
    int anchorx;
    int anchory;
@@ -64,8 +64,12 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    Rectangle GetViewRectangle();
    
+   /// EagleEventListener
+   
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
+   /// WidgetBase
+   
    virtual int PrivateHandleEvent(EagleEvent ee);
 
    virtual void OnAreaChanged();
@@ -73,33 +77,9 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
 public :
    
-//   ScrollArea(std::string name="Nemo");
-   ScrollArea(std::string name) :
-         LayoutBase("ScrollArea" , name),
-         EagleEventListener(),
-         basic_hscrollbar("BasicScrollBar" , "basic_hscrollbar"),
-         basic_vscrollbar("BasicScrollBar" , "basic_vscrollbar"),
-         hscrollbar(0),
-         vscrollbar(0),
-         scrollbarsize(10),
-         onleft(false),
-         ontop(false),
-         our_scroll_widget(0),
-         our_scroll_view(),
-         drag(false),
-         anchorx(0),
-         anchory(0),
-         anchorxscroll(0),
-         anchoryscroll(0)
-   {
-      Resize(3);
-      SetScrollBars((BasicScrollBar*)0 , (BasicScrollBar*)0);
-      LayoutBase::PlaceWidget(&our_scroll_view , 2);
-      SetWidgetFlags(Flags().AddFlag(VISIBLE));
-      ListenTo(&our_scroll_view);
-   }
    
-   ~ScrollArea() {DetachFromGui();}
+   ScrollArea(std::string name="Nemo");
+   ~ScrollArea();
    
    void SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScrollBar* verticalscrollbar);
    

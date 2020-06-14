@@ -37,6 +37,7 @@ std::string WidgetColorName(WIDGETCOLOR wc) {
       "FGCOL",
       "HLCOL",
       "TXTCOL",
+      "FCSCOL",  /// EXTENDED
       "HVRCOL",  /// EXTENDED
       "PADCOL",  /// EXTENDED
       "BORDCOL", /// EXTENDED

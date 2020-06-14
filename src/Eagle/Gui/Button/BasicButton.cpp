@@ -237,12 +237,24 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
       click_area->MoveBy(xoffset , yoffset);
       WidgetColorset wc = WidgetColors();
       if (Up()) {
-         click_area->Fill(win , wc[MGCOL]);
-         click_area->Draw(win , wc[FGCOL]);
+         if (Flags().FlagOn(HOVER)) {
+            click_area->Fill(win , wc[FGCOL]);
+            click_area->Draw(win , wc[HLCOL]);
+         }
+         else {
+            click_area->Fill(win , wc[MGCOL]);
+            click_area->Draw(win , wc[FGCOL]);
+         }
       }
       else {
-         click_area->Fill(win , wc[BGCOL]);
-         click_area->Draw(win , wc[MGCOL]);
+         if (Flags().FlagOn(HOVER)) {
+            click_area->Fill(win , wc[MGCOL]);
+            click_area->Draw(win , wc[FGCOL]);
+         }
+         else {
+            click_area->Fill(win , wc[BGCOL]);
+            click_area->Draw(win , wc[MGCOL]);
+         }
       }
       click_area->MoveBy(-xoffset , -yoffset);
    }

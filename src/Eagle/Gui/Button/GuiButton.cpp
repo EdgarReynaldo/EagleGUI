@@ -258,27 +258,53 @@ void DrawGuiButtonShape(EagleGraphicsContext* win , GuiButton* btn , int x , int
    r.MoveBy(x,y);
    WidgetColorset wc = btn->WidgetColors();
    /// TODO : Add hover coloring?
-   switch(btn->ButtonShape()) {
-      case RECTANGLE_BTN : 
-         up?
-         r.DrawGuiRectUp(win , wc[FGCOL] , wc[SDCOL]):
-         r.DrawGuiRectDown(win , wc[MGCOL] , wc[SDCOL]);
-         break;
-      case CIRCLE_BTN : 
-         up?
-         r.DrawGuiCircleUp(win , rad_a , wc[FGCOL] , wc[SDCOL]):
-         r.DrawGuiCircleDown(win , rad_a , wc[MGCOL] , wc[SDCOL]);
-         break;
-      case ROUNDED_BTN :
-         up?
-         r.DrawGuiRoundedUp(win , rad_a , rad_b , wc[FGCOL] , wc[SDCOL]):
-         r.DrawGuiRoundedDown(win , rad_a , rad_b , wc[MGCOL] , wc[SDCOL]);
-         break;
-      case ELLIPSE_BTN : 
-         up?
-         r.DrawGuiEllipseUp(win , wc[FGCOL] , wc[SDCOL]):
-         r.DrawGuiEllipseDown(win , wc[MGCOL] , wc[SDCOL]);
-         break;
+   if (btn->Flags().FlagOn(HOVER)) {
+      switch(btn->ButtonShape()) {
+         case RECTANGLE_BTN : 
+            up?
+            r.DrawGuiRectUp(win , wc[HVRCOL] , wc[SDCOL]):
+            r.DrawGuiRectDown(win , wc[MGCOL] , wc[SDCOL]);
+            break;
+         case CIRCLE_BTN : 
+            up?
+            r.DrawGuiCircleUp(win , rad_a , wc[HVRCOL] , wc[SDCOL]):
+            r.DrawGuiCircleDown(win , rad_a , wc[MGCOL] , wc[SDCOL]);
+            break;
+         case ROUNDED_BTN :
+            up?
+            r.DrawGuiRoundedUp(win , rad_a , rad_b , wc[HVRCOL] , wc[SDCOL]):
+            r.DrawGuiRoundedDown(win , rad_a , rad_b , wc[MGCOL] , wc[SDCOL]);
+            break;
+         case ELLIPSE_BTN : 
+            up?
+            r.DrawGuiEllipseUp(win , wc[HVRCOL] , wc[SDCOL]):
+            r.DrawGuiEllipseDown(win , wc[MGCOL] , wc[SDCOL]);
+            break;
+      }
+   }
+   else {
+      switch(btn->ButtonShape()) {
+         case RECTANGLE_BTN : 
+            up?
+            r.DrawGuiRectUp(win , wc[FGCOL] , wc[MGCOL]):
+            r.DrawGuiRectDown(win , wc[MGCOL] , wc[BGCOL]);
+            break;
+         case CIRCLE_BTN : 
+            up?
+            r.DrawGuiCircleUp(win , rad_a , wc[FGCOL] , wc[MGCOL]):
+            r.DrawGuiCircleDown(win , rad_a , wc[MGCOL] , wc[BGCOL]);
+            break;
+         case ROUNDED_BTN :
+            up?
+            r.DrawGuiRoundedUp(win , rad_a , rad_b , wc[FGCOL] , wc[MGCOL]):
+            r.DrawGuiRoundedDown(win , rad_a , rad_b , wc[MGCOL] , wc[BGCOL]);
+            break;
+         case ELLIPSE_BTN : 
+            up?
+            r.DrawGuiEllipseUp(win , wc[FGCOL] , wc[MGCOL]):
+            r.DrawGuiEllipseDown(win , wc[MGCOL] , wc[BGCOL]);
+            break;
+      }
    }
 }
 
