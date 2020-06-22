@@ -271,6 +271,12 @@ ScrollArea::~ScrollArea() {
 
 
 
+void ScrollArea::SetScrollbarValues(int xscroll , int yscroll) {
+   our_scroll_view.SetScrollOffset(xscroll , yscroll);
+}
+
+
+
 void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
    our_scroll_widget = widget_to_view;/// shallow reference, do not destroy, handled by another layout
    our_scroll_view.SetOurWidget(our_scroll_widget);

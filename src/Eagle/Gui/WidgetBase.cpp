@@ -230,7 +230,6 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       else {
          PrivateDisplay(win , xpos , ypos);
       }
-      win->DrawRectangle(GetClipRectangle() , 1.0 , EagleColor(255,0,0));
    }
 
    ClearRedrawFlag();

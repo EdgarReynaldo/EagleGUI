@@ -40,9 +40,20 @@ int main(int argc , char** argv) {
    
    
    RelativeLayout rl("RelativeLayout" , "MainRLayout");
-   rl.Resize(1);
+   rl.Resize(3);
    
    gui.SetRootLayout(&rl);
+   
+   BasicScrollBar hbar,vbar;
+   hbar.SetScrollDirection(true);
+   vbar.SetScrollDirection(false);
+   
+   hbar.SetupView(100 , 10);
+   vbar.SetupView(100 , 10);
+   
+   rl.PlaceWidget(&hbar , 1 , LayoutRectangle(0.2 , 0.7 , 0.6 , 0.2));
+   rl.PlaceWidget(&vbar , 2 , LayoutRectangle(0.7 , 0.2 , 0.2 , 0.6));
+   
    
    ScrollArea sa("Scroll area");
    ListBox lbox;
@@ -109,6 +120,12 @@ int main(int argc , char** argv) {
             gui.Update(sys->GetSystemTimer()->SPT());
          }
          gui.HandleEvent(e);
+         while (gui.HasMessages()) {
+            WidgetMsg msg = gui.TakeNextMessage();
+            if (msg.From() == &hbar || msg.From() == &vbar) {
+               sa.SetScrollbarValues(hbar.GetScrollValue() , vbar.GetScrollValue());
+            }
+         }
       } while (!sys->UpToDate());
    }
    

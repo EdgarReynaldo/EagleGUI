@@ -161,6 +161,7 @@ void BasicScroller::PrivateDisplay(EagleGraphicsContext* win , int xpos , int yp
    Rectangle r2 = scroll_handle_area;
    r2.MoveBy(xpos,ypos);
    win->DrawFilledRectangle(r2 , wc[FGCOL]);
+   win->DrawRectangle(r2 , 1.0 , wc[HLCOL]);
 }
 
 

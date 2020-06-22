@@ -115,11 +115,11 @@ void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , in
       WidgetColorset wc = WidgetColors();
       if (scroll_button->Up()) {
          t.Fill(win , wc[MGCOL]);
-         t.Draw(win , 3.0 , wc[HLCOL]);
+         t.Draw(win , 1.5 , wc[HLCOL]);
       }
       else {
          t.Fill(win , wc[BGCOL]);
-         t.Draw(win , 3.0 , wc[FGCOL]);
+         t.Draw(win , 1.5 , wc[FGCOL]);
       }
    }
    else {
