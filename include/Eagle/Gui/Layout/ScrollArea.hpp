@@ -26,8 +26,8 @@
 
 
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
+#include "Eagle/Gui/Layout/ScrollView.hpp"
 #include "Eagle/Gui/ScrollBar.hpp"
-#include "Eagle/Gui/ScrollView.hpp"
 
 
 /**! @class ScrollArea

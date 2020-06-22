@@ -162,7 +162,7 @@ public :
    
    /// Clipping API
    
-   void PushClippingRectangle(Rectangle new_clip);///< Push a new clipping rectangle onto the stack for this image
+   bool PushClippingRectangle(Rectangle new_clip);///< Push a new clipping rectangle onto the stack for this image
    void PopClippingRectangle();///< Pop the top clipping rectangle from the stack for this image, will reset to none if empty
 };
 
@@ -194,7 +194,7 @@ EagleImage* CreateSubImage(EagleImage* img , int sx , int sy , int sw , int sh ,
 
 class Clipper {
 	EagleImage* img;
-
+   bool clip_worked;
 public :
 	Clipper(EagleImage* image , Rectangle clip);///< Pushes clip onto image's clipping rectangle stack
 	~Clipper();///< Pops the top clipping rectangle off of image's clipping rectangle stack

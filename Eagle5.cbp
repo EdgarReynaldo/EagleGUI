@@ -110,6 +110,7 @@
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename="../../bin/ExGui.log" />
 		<Unit filename="CMakeLists.txt" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
@@ -160,6 +161,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/ScrollArea.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/ScrollView.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
@@ -171,7 +173,6 @@
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript2.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/Parsing.hpp" />
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
-		<Unit filename="include/Eagle/Gui/ScrollView.hpp" />
 		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
 		<Unit filename="include/Eagle/Gui/Slider.hpp" />
@@ -276,6 +277,7 @@
 		<Unit filename="src/Eagle/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/ScrollArea.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/ScrollView.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
@@ -285,7 +287,6 @@
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Eagle/Gui/ScrollBar.cpp" />
-		<Unit filename="src/Eagle/Gui/ScrollView.cpp" />
 		<Unit filename="src/Eagle/Gui/Scroller.cpp" />
 		<Unit filename="src/Eagle/Gui/Slider.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />

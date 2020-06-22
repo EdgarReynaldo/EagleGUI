@@ -278,6 +278,8 @@ WidgetBase(std::string classname , std::string objname) :
    int ZValue() const {return zdepth;}///< Gets the z priority. See @ref WIDGET_ZORDER_PRIORITY 
    
    
+   virtual Rectangle GetClipRectangle();
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    
 };

@@ -273,6 +273,7 @@ ScrollArea::~ScrollArea() {
 
 void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
    our_scroll_widget = widget_to_view;/// shallow reference, do not destroy, handled by another layout
+   our_scroll_view.SetOurWidget(our_scroll_widget);
 }
 
 
@@ -310,8 +311,8 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
             wx += scrollbarsize;
          }
       }
-      if (!onleft) {
-         wx = InnerArea().BRX() - scrollbarsize;
+      if (!ontop) {
+         wy = InnerArea().BRY() - scrollbarsize;
       }
       return Rectangle(wx,wy,ww,wh);
    }
@@ -327,8 +328,8 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
             wy += scrollbarsize;
          }
       }
-      if (!ontop) {
-         wy = InnerArea().BRY() - scrollbarsize;
+      if (!onleft) {
+         wx = InnerArea().BRX() - scrollbarsize;
       }
       return Rectangle(wx,wy,ww,wh);
    }
@@ -346,11 +347,11 @@ void ScrollArea::Resize(unsigned int nsize) {
 
 void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
    (void)slot;
-   if (w == hscrollbar) {
+   if (w == &basic_hscrollbar) {
       slot = 0;
       LayoutBase::PlaceWidget(w , slot);
    }
-   else if (w == vscrollbar) {
+   else if (w == &basic_vscrollbar) {
       slot = 1;
       LayoutBase::PlaceWidget(w , slot);
    }

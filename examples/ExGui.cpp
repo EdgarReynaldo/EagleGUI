@@ -12,6 +12,9 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
+   SendOutputToFile("ExGui.log" , "ExGui\n" , false);
+   
+   
    EagleSystem* sys = GetAllegro5System();
    if (!sys) {return -1;}
    
@@ -37,7 +40,7 @@ int main(int argc , char** argv) {
    
    
    RelativeLayout rl("RelativeLayout" , "MainRLayout");
-   rl.Resize(2);
+   rl.Resize(1);
    
    gui.SetRootLayout(&rl);
    
@@ -64,11 +67,20 @@ int main(int argc , char** argv) {
    lbox.AddWidget(&btns[1]);
    lbox.AddWidget(&btns[2]);
    
+   BasicIcon icon;
+   SHAREDIMAGE img = StackObject(win->LoadImageFromFile("Data/Images/Stallions2a.jpg"));
+   icon.SetImage(img);
+   icon.SetWidgetArea(Rectangle(0,0,img->W(),img->H()));
+
+//   ScrollView sv(&lbox);
+
    sa.SetViewWidget(&lbox);
-   
+
    rl.PlaceWidget(&sa , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
    
 //   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));
+
+   EagleLog() << sa << std::endl << std::endl;
 
 
    bool quit = false;

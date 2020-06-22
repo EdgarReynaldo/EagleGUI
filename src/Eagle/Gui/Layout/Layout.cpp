@@ -467,6 +467,16 @@ int LayoutBase::GetLayoutSize() const {
 
 
 
+Rectangle LayoutBase::GetClipRectangle() {
+   LayoutBase* playout = GetLayout();
+   if (playout) {
+      return Overlap(InnerArea() , playout->GetClipRectangle());
+   }
+   return InnerArea();
+}
+
+
+
 std::ostream& LayoutBase::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << StringPrintF("LayoutBase object %s (size %d):" , FullName() , (int)GetLayoutSize()) << std::endl;
    ++indent;

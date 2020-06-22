@@ -205,14 +205,20 @@ int WidgetBase::Update(double dt) {
 
 void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    if (Flags().FlagOn(VISIBLE)) {
+      LayoutBase* layout = GetLayout();
+   
       WidgetPainter wp = GetWidgetPainter();
       
       EagleImage* img = win->GetDrawingTarget();
       
-      Rectangle cliprect = OuterArea().MovedBy(Pos2I(xpos,ypos));
+      Rectangle clip = GetClipRectangle();
       
-      Clipper clip(img , cliprect);
+      if (clip == BADRECTANGLE) {
+         return;
+      }
       
+      Clipper clipper(img , clip);
+
       if (wp) {
          wp->GetPainterReady(win , this , xpos , ypos);
          wp->PaintBackground();
@@ -224,7 +230,9 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       else {
          PrivateDisplay(win , xpos , ypos);
       }
+      win->DrawRectangle(GetClipRectangle() , 1.0 , EagleColor(255,0,0));
    }
+
    ClearRedrawFlag();
 }
 
@@ -587,6 +595,16 @@ bool WidgetBase::HasGui() {
 
 WidgetHandler* WidgetBase::GetGui() {
    return dynamic_cast<WidgetHandler*>(this);
+}
+
+
+
+Rectangle WidgetBase::GetClipRectangle() {
+   LayoutBase* playout = GetLayout();
+   if (playout) {
+      return Overlap(OuterArea() , playout->GetClipRectangle());
+   }
+   return OuterArea();
 }
 
 

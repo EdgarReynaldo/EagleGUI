@@ -131,9 +131,13 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       WidgetBase* widget = inputlist[index];
 
       if (!(widget->Flags().FlagOn(ENABLED))) {continue;}
-
+      
+      if (!widget->GetClipRectangle().Contains(rel_event.mouse.x , rel_event.mouse.y) && e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+         continue;
+      }
+      
       msg = widget->HandleEvent(rel_event);
-
+      
       /// Warning - All messages not related to a dialog will be ignored.
       /// Use QueueUserMessage or RaiseEvent for user notifications instead.
       
