@@ -92,11 +92,11 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       /// WidgetHandlers will check whether the mouse is hovering over one of the widgets, and set the hover flag for
       /// that widget, as well as removing it from any widget that had it last.
       if (!wparent) {/// Only root gui checks for hover and focus
-         WidgetBase* hoverwidget = GetWidgetAt(e.mouse.x , e.mouse.y);
+         WidgetBase* hoverwidget = GetWidgetAt(rel_event.mouse.x , rel_event.mouse.y);
          
          Rectangle clip = hoverwidget?hoverwidget->GetClipRectangle():BADRECTANGLE;
          
-         if (clip == BADRECTANGLE || (clip != BADRECTANGLE && !clip.Contains(e.mouse.x , e.mouse.y))) {
+         if (clip == BADRECTANGLE || (clip != BADRECTANGLE && !clip.Contains(rel_event.mouse.x , rel_event.mouse.y))) {
             hoverwidget = 0;
          }
          

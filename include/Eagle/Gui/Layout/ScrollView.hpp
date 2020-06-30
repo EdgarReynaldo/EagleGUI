@@ -52,6 +52,8 @@ public :
    
    ///< Constructor to create a view on a widget
    ScrollView(WidgetBase* w = 0 , std::string classname = "ScrollView" , std::string objname = "Nemo");
+   virtual ~ScrollView();
+   
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
 

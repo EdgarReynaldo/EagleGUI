@@ -180,7 +180,7 @@ int BasicButton::PrivateCheckInputs() {
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
 
    } else if (input_mouse_press(LMB)) {
-      Rectangle real = AbsoluteArea().OuterArea();
+      Rectangle real = OuterArea();
       click_area->MoveBy(real.X() , real.Y());
 
       EAGLE_DEBUG(

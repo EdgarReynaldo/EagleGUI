@@ -48,6 +48,13 @@ ScrollView::ScrollView(WidgetBase* w , std::string classname , std::string objna
 
 
 
+ScrollView::~ScrollView() {
+   StopBroadcasting();
+   DetachFromGui();
+}
+
+
+
 Rectangle ScrollView::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    if (widget_slot != 0) {return BADRECTANGLE;}
    WidgetBase* w = GetWidget(0);

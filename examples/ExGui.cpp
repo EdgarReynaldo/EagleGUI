@@ -5,7 +5,7 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle.hpp"
 
-
+void AllegroLog(const char* text) {EagleInfo() << text << std::endl;}
 
 int main(int argc , char** argv) {
    
@@ -23,6 +23,7 @@ int main(int argc , char** argv) {
    int sw = 1280;
    int sh = 800;
    
+   al_register_trace_handler(AllegroLog);
    
    EagleGraphicsContext* win = sys->CreateGraphicsContext("Gui window" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED);
    
@@ -51,8 +52,25 @@ int main(int argc , char** argv) {
    hbar.SetupView(100 , 10);
    vbar.SetupView(100 , 10);
    
-   rl.PlaceWidget(&hbar , 1 , LayoutRectangle(0.2 , 0.7 , 0.6 , 0.2));
-   rl.PlaceWidget(&vbar , 2 , LayoutRectangle(0.7 , 0.2 , 0.2 , 0.6));
+   rl.PlaceWidget(&hbar , 1 , LayoutRectangle(0.2 , 0.7 , 0.5 , 0.1));
+   rl.PlaceWidget(&vbar , 2 , LayoutRectangle(0.7 , 0.2 , 0.1 , 0.5));
+   
+   BasicScrollButton n,s,e,w;
+   n.SetScrollDirection(true , false);
+   s.SetScrollDirection(false , false);
+   e.SetScrollDirection(false , true);
+   w.SetScrollDirection(true , true);
+   
+//   rl.PlaceWidget(&n , 3 , LayoutRectangle(0.3,0.2,0.1,0.1));
+//   rl.PlaceWidget(&s , 4 , LayoutRectangle(0.3,0.4,0.1,0.1));
+//   rl.PlaceWidget(&w , 5 , LayoutRectangle(0.2,0.3,0.1,0.1));
+//   rl.PlaceWidget(&e , 6 , LayoutRectangle(0.4,0.3,0.1,0.1));
+   
+   
+   
+   
+   
+   
    
    
    ScrollArea sa("Scroll area");
@@ -91,7 +109,7 @@ int main(int argc , char** argv) {
    
 //   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));
 
-   EagleLog() << sa << std::endl << std::endl;
+   EagleLog() << lbox << std::endl << std::endl;
 
 
    bool quit = false;
@@ -122,6 +140,7 @@ int main(int argc , char** argv) {
          gui.HandleEvent(e);
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
+            EagleLog() << msg << std::endl;
             if (msg.From() == &hbar || msg.From() == &vbar) {
                sa.SetScrollbarValues(hbar.GetScrollValue() , vbar.GetScrollValue());
             }

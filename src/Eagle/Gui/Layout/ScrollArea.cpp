@@ -266,7 +266,10 @@ ScrollArea::ScrollArea(std::string name) :
 
 
 ScrollArea::~ScrollArea() {
+   StopBroadcasting();
+   StopListening();
    DetachFromGui();
+   ClearWidgets();
 }
 
 

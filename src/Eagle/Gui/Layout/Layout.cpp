@@ -226,8 +226,8 @@ void LayoutBase::RemoveWidgetFromLayout(WidgetBase* widget) {
 
    if (whandler) {
       whandler->StopTrackingWidget(widget);
-      widget->SetLayoutOwner(0);
    }
+   widget->SetLayoutOwner(0);
 }
 
 

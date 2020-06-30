@@ -72,6 +72,10 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-DEAGLE_DEBUG" />
+			<Add option="-DDEBUG" />
+			<Add option="-DEAGLE_DEBUG_MUTEX_LOCKS" />
+			<Add option="-DEAGLE_LOG" />
 			<Add directory="../include" />
 			<Add directory="E:/usr/include" />
 		</Compiler>
