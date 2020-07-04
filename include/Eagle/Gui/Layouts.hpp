@@ -36,7 +36,10 @@
 #include "Eagle/Gui/Layout/GridLayout.hpp"
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
+#include "Eagle/Gui/Layout/DropDownList.hpp"
 #include "Eagle/Gui/Layout/SplitterLayouts.hpp"
+#include "Eagle/Gui/Layout/BasicTextButtonLayout.hpp"
+#include "Eagle/Gui/Layout/ScrollView.hpp"
 #include "Eagle/Gui/Layout/ScrollArea.hpp"
 
 

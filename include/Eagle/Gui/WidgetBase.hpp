@@ -211,7 +211,7 @@ WidgetBase(std::string classname , std::string objname) :
    void SetWidgetPainter(const WidgetPainter& wp);///< Set the widget painter to use for painting this widget
    void UnsetWidgetPainter();///< Reset the widget painter for this widget to the default
    
-   void SetZOrder(int zpriority);///< Set the z priority. Larger values are closer to the screen and appear above
+   virtual void SetZOrder(int zpriority);///< Set the z priority. Larger values are closer to the screen and appear above
                                  ///< widgets with lower priority
    
    /// Getters

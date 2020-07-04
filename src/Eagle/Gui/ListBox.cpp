@@ -69,13 +69,14 @@ void ListBox::OnFlagChanged(WIDGET_FLAGS f , bool on) {
          }
       }
    }
+   /// If this list box loses focus, it should disappear
    if (f & HASFOCUS) {
-      if (!on) {
-         for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-            if (wchildren[i]) {
-               WidgetBase* w = wchildren[i];
-               w->SetFocusState(false);
-            }
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         if (wchildren[i]) {
+            WidgetBase* w = wchildren[i];
+            w->SetFocusState(on);
+            w->SetEnabledState(on);
+            w->SetVisibleState(on);
          }
       }
    }

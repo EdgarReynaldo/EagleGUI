@@ -49,9 +49,6 @@ public :
 
    virtual void RemoveWidget(WidgetBase* widget);
    virtual void ClearWidgets();
-
-
-   
    
    std::vector<BasicButton*> ButtonsDown();
    int Choice();

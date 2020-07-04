@@ -182,7 +182,7 @@ public :
    
    virtual bool AcceptsFocus() {return true;}///< Layouts are generally invisible, but will accept the focus
 
-   virtual Rectangle GetClipRectangle();
+   virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
    
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describe this layout to a stream

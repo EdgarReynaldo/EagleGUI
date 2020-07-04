@@ -41,39 +41,21 @@ int main(int argc , char** argv) {
    
    
    RelativeLayout rl("RelativeLayout" , "MainRLayout");
-   rl.Resize(3);
+   rl.Resize(1);
    
    gui.SetRootLayout(&rl);
    
-   BasicScrollBar hbar,vbar;
-   hbar.SetScrollDirection(true);
-   vbar.SetScrollDirection(false);
+   BasicTextButton tbtn;
    
-   hbar.SetupView(100 , 10);
-   vbar.SetupView(100 , 10);
-   
-   rl.PlaceWidget(&hbar , 1 , LayoutRectangle(0.2 , 0.7 , 0.5 , 0.1));
-   rl.PlaceWidget(&vbar , 2 , LayoutRectangle(0.7 , 0.2 , 0.1 , 0.5));
-   
-   BasicScrollButton n,s,e,w;
-   n.SetScrollDirection(true , false);
-   s.SetScrollDirection(false , false);
-   e.SetScrollDirection(false , true);
-   w.SetScrollDirection(true , true);
-   
-//   rl.PlaceWidget(&n , 3 , LayoutRectangle(0.3,0.2,0.1,0.1));
-//   rl.PlaceWidget(&s , 4 , LayoutRectangle(0.3,0.4,0.1,0.1));
-//   rl.PlaceWidget(&w , 5 , LayoutRectangle(0.2,0.3,0.1,0.1));
-//   rl.PlaceWidget(&e , 6 , LayoutRectangle(0.4,0.3,0.1,0.1));
+   rl.PlaceWidget(tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
    
    
    
    
    
    
-   
-   
-   ScrollArea sa("Scroll area");
+/**
+   DropDownList ddl;
    ListBox lbox;
    
    GuiButton btns[3];
@@ -96,21 +78,9 @@ int main(int argc , char** argv) {
    lbox.AddWidget(&btns[1]);
    lbox.AddWidget(&btns[2]);
    
-   BasicIcon icon;
-   SHAREDIMAGE img = StackObject(win->LoadImageFromFile("Data/Images/Stallions2a.jpg"));
-   icon.SetImage(img);
-   icon.SetWidgetArea(Rectangle(0,0,img->W(),img->H()));
-
-//   ScrollView sv(&lbox);
-
-   sa.SetViewWidget(&lbox);
-
-   rl.PlaceWidget(&sa , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
-   
-//   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));
-
-   EagleLog() << lbox << std::endl << std::endl;
-
+   rl.PlaceWidget(&ddl , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.05f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
+   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.5));
+*/
 
    bool quit = false;
    bool redraw = true;
@@ -141,9 +111,6 @@ int main(int argc , char** argv) {
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
             EagleLog() << msg << std::endl;
-            if (msg.From() == &hbar || msg.From() == &vbar) {
-               sa.SetScrollbarValues(hbar.GetScrollValue() , vbar.GetScrollValue());
-            }
          }
       } while (!sys->UpToDate());
    }

@@ -12,6 +12,27 @@
 
 
 
+void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD) {
+   if (e.type == EAGLE_EVENT_WIDGET) {
+      if (e.widget.from == our_toggle_button) {
+         if (e.widget.msgs == BUTTON_TOGGLED) {
+            SetListOpen(!list_open);
+         }
+         else if (e.widget.msgs == BUTTON_CLICKED) {
+            SetListOpen(true);
+         }
+      }
+      if (e.widget.from == our_list) {
+         if (e.widget.msgs == LISTBOX_SELECTION_MADE) {
+            our_selection_text->SetText(our_list->GetTextChoice());
+            SetListOpen(false);
+         }
+      }
+   }
+}
+
+
+
 void DropDownList::SetText(BasicText* text) {
    our_selection_text = text;
 }
@@ -121,6 +142,15 @@ void DropDownList::ClearWidgets() {
 
 
 
+void DropDownList::SetListOpen(bool open) {
+   if (whandler) {
+      whandler->GiveWidgetFocus(open?our_list:0 , true);
+   }
+}
+
+
+
+
 std::vector<BasicButton*> DropDownList::ButtonsDown() {
    std::vector<BasicButton*> btns;
    if (!our_list) {return btns;}
@@ -141,6 +171,13 @@ int DropDownList::Choice() {
 
 
 
+std::string DropDownList::TextChoice() {
+   int c = Choice();
+   if (c >= 0 && c < choice_strings.size()) {
+      return choice_strings[c];
+   }
+   return "INVALID";
+}
 
 
 
