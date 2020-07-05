@@ -45,10 +45,12 @@ using namespace std;
 
 void BasicText::RefreshTextPosition() {
 
-   EAGLE_ASSERT(text_font);
-   EAGLE_ASSERT(text_font->Valid());
    lines = SplitByNewLinesNoChomp(text);
    nlines = lines.size();
+   if (nlines < 1) {return;}
+
+   EAGLE_ASSERT(text_font);
+   EAGLE_ASSERT(text_font->Valid());
    
    int lineheight = fontheight + linespacing;
    maxwidth = 0;
@@ -56,7 +58,6 @@ void BasicText::RefreshTextPosition() {
 
    lineareas.clear();
    
-   if (nlines < 1) {return;}
 
    int y = InnerArea().Y() + vpadding;
    if (valign == VALIGN_CENTER) {
@@ -205,6 +206,8 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 
+   if (nlines < 1) {return;}
+   
    EAGLE_ASSERT(text_font && text_font->Valid());
    
    Transformer* transformer = win->GetTransformer();

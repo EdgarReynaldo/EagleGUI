@@ -26,6 +26,21 @@
 
 
 
+BasicTextButton::BasicTextButton() :
+      LayoutBase("BasicTextButtonLayout" , "BasicTextButton"),
+      basic_button("BasicButton" , "BasicTextButton"),
+      basic_text("BasicText"),
+      our_button(0),
+      our_text(0)
+{
+   Resize(2);
+   SetOurButton(&basic_button);
+   SetOurText(&basic_text);
+   SetZOrder(ZValue());
+}
+
+
+
 void BasicTextButton::SetZOrder(int zpriority) {
    WidgetBase::SetZOrder(zpriority);
    our_button->SetZOrder(ZValue() + 1);
@@ -56,9 +71,9 @@ void BasicTextButton::SetOurButton(BasicButton* button) {
    if (!button) {
       button = &basic_button;
    }
-   PlaceWidget(button , 0);
-   button->SetZOrder(ZValue() + 1);
    our_button = button;
+   PlaceWidget(our_button , 0);
+   our_button->SetZOrder(ZValue() + 1);
 }
 
 
@@ -67,8 +82,9 @@ void BasicTextButton::SetOurText(BasicText* text) {
    if (!text) {
       text = &basic_text;
    }
-   PlaceWidget(text , 0);
-   text->SetZOrder(ZValue() + 2);
+   our_text = text;
+   PlaceWidget(our_text , 0);
+   our_text->SetZOrder(ZValue() + 2);
 }
 
 

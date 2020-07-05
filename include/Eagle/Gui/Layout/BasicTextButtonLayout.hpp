@@ -49,19 +49,7 @@ protected :
    
 public :   
    
-//   BasicTextButton();
-   BasicTextButton() :
-         LayoutBase("BasicTextButtonLayout" , "BasicTextButton"),
-         basic_button("BasicButton" , "BasicTextButton"),
-         basic_text("BasicText"),
-         our_button(0),
-         our_text(0)
-   {
-      Resize(2);
-      SetOurButton(&basic_button);
-      SetOurText(&basic_text);
-      SetZOrder(ZValue());
-   }
+   BasicTextButton();
    
    /// WidgetBase
    
