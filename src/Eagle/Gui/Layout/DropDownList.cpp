@@ -2,7 +2,8 @@
 
 
 
-#include "Eagle/Gui/DropDownList.hpp"
+#include "Eagle/Gui/Layout/DropDownList.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 
@@ -11,8 +12,8 @@
 
 
 
-
-void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD) {
+void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   (void)thread;
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.from == our_toggle_button) {
          if (e.widget.msgs == BUTTON_TOGGLED) {
@@ -24,7 +25,7 @@ void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THRE
       }
       if (e.widget.from == our_list) {
          if (e.widget.msgs == LISTBOX_SELECTION_MADE) {
-            our_selection_text->SetText(our_list->GetTextChoice());
+//            our_selection_text->SetText(our_list->GetTextChoice());
             SetListOpen(false);
          }
       }
@@ -66,7 +67,7 @@ void DropDownList::SetList(ListBox* listbox) {
 
 
 
-DropDownList::DropDownList(BasicText* seltext , BasicButton* button , ListBox* listbox) :
+DropDownList::DropDownList(ListBox* listbox , BasicText* seltext , BasicButton* button) :
       RelativeLayout("DropDownList" , "DDL"),
       EagleEventListener(),
       our_selection_text(0),

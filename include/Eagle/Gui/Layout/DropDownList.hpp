@@ -36,15 +36,17 @@ protected :
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
    
-   void 
-   
 public :   
+
+   DropDownList(ListBox* listbox , BasicText* seltext = 0 , BasicButton* button = 0);
+
+
 
    void SetText(BasicText* text);
    void SetButton(BasicButton* btn);
    void SetList(ListBox* listbox);
 
-   DropDownList(ListBox* listbox , BasicText* seltext = 0 , BasicButton* button = 0);
+
    /// LayoutBase
    virtual void PlaceWidget(WidgetBase* w , int slot);
    virtual int AddWidget(WidgetBase* w);
@@ -58,7 +60,9 @@ public :
    int Choice();
    WidgetBase* WChoice();
    
-   void SetTextChoices(std::vector<std::string> choices);
+   std::string TextChoice();
+
+//   void SetTextChoices(std::vector<std::string> choices);
    void SetTextChoices(std::vector<std::string> choices) {
       choice_strings = choices;
       

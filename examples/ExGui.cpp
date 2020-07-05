@@ -47,7 +47,7 @@ int main(int argc , char** argv) {
    
    BasicTextButton tbtn;
    
-   rl.PlaceWidget(tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
+   rl.PlaceWidget(&tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
    
    
    

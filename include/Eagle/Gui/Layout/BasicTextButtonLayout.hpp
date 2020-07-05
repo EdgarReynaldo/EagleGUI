@@ -29,7 +29,8 @@
 
 
 #include "Eagle/Gui/Layout/Layout.hpp"
-
+#include "Eagle/Gui/Button/BasicButton.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 
 /**! @class BasicTextButton
  * @brief This is the BasicTextButton class. A versatile widget button with text.
@@ -48,8 +49,9 @@ protected :
    
 public :   
    
-   BasicTextButton();
+//   BasicTextButton();
    BasicTextButton() :
+         LayoutBase("BasicTextButtonLayout" , "BasicTextButton"),
          basic_button("BasicButton" , "BasicTextButton"),
          basic_text("BasicText"),
          our_button(0),
@@ -78,8 +80,8 @@ public :
    void SetOurText(BasicText* text);
 
 
-   BasicButton* GetOurButton() {return our_button;}
-   BasicText* GetOurText() {return our_text;}
+   BasicButton* GetOurButton();
+   BasicText* GetOurText();
 };
 
 
