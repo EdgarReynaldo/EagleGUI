@@ -47,9 +47,11 @@ int main(int argc , char** argv) {
    
    BasicTextButton tbtn;
    
+   tbtn.GetOurText()->SetText("Hello widget" , win->DefaultFont());
+   
    rl.PlaceWidget(&tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
    
-   
+   EagleInfo() << tbtn << std::endl;
    
    
    

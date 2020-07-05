@@ -83,7 +83,7 @@ void BasicTextButton::SetOurText(BasicText* text) {
       text = &basic_text;
    }
    our_text = text;
-   PlaceWidget(our_text , 0);
+   PlaceWidget(our_text , 1);
    our_text->SetZOrder(ZValue() + 2);
 }
 
