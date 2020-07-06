@@ -19,13 +19,10 @@ void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread) {
          if (e.widget.msgs == BUTTON_TOGGLED) {
             SetListOpen(!list_open);
          }
-         else if (e.widget.msgs == BUTTON_CLICKED) {
-            SetListOpen(true);
-         }
       }
       if (e.widget.from == our_list) {
          if (e.widget.msgs == LISTBOX_SELECTION_MADE) {
-//            our_selection_text->SetText(our_list->GetTextChoice());
+            RefreshTextChoice();
             SetListOpen(false);
          }
       }
@@ -34,13 +31,32 @@ void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+void DropDownList::RefreshTextChoice() {
+   std::string text = "INVALID";
+   if (Choice() > -1) {
+      text = choice_strings[Choice()];
+   }
+   our_selection_text->SetupText(text , our_font);
+}
+
+
+
 void DropDownList::SetText(BasicText* text) {
+   if (!text) {
+      text = &basic_text;
+   }
    our_selection_text = text;
+   RelativeLayout::PlaceWidget(our_selection_text , 1 , LayoutRectangle(0.0 , 0.0 , 0.9 , 1.0));
+   RefreshTextChoice();
 }
 
 
 
 void DropDownList::SetButton(BasicButton* btn) {
+   if (!btn) {
+      btn = &basic_button;
+   }
+   btn->SetButtonType(TOGGLE_BTN);
    if (our_toggle_button) {
       StopListeningTo(our_toggle_button);
    }
@@ -50,6 +66,7 @@ void DropDownList::SetButton(BasicButton* btn) {
       btn->SetButtonUpState(true);
       list_open = false;
    }
+   RelativeLayout::PlaceWidget(our_toggle_button , 0 , LayoutRectangle(0.9 , 0.0 , 0.1 , 1.0));
 }
 
 
@@ -62,17 +79,17 @@ void DropDownList::SetList(ListBox* listbox) {
    if (our_list) {
       ListenTo(our_list);
    }
-///   PlaceWidget(our_list , 0);
 }
 
 
 
-DropDownList::DropDownList(ListBox* listbox , BasicText* seltext , BasicButton* button) :
+DropDownList::DropDownList(ListBox* listbox , EagleFont* font , BasicText* seltext , BasicButton* button) :
       RelativeLayout("DropDownList" , "DDL"),
       EagleEventListener(),
       our_selection_text(0),
       our_toggle_button(0),
       our_list(0),
+      our_font(font),
       list_open(false)
 {
    Resize(2);
@@ -84,69 +101,26 @@ DropDownList::DropDownList(ListBox* listbox , BasicText* seltext , BasicButton* 
 
 
 
-void DropDownList::PlaceWidget(WidgetBase* w , int slot) {
-   if (slot != 0 && slot != 1) {
-      return;
-   }
-   BasicText* btext = dynamic_cast<BasicText*>(w);
-   BasicButton* bb = dynamic_cast<BasicButton*>(w);
-   if (btext) {
-      SetText(btext);
-      RelativeLayout::PlaceWidget(w,0);
-   }
-   else if (bb) {
-      SetButton(bb);
-      RelativeLayout::PlaceWidget(w,1);
-   }
+Rectangle DropDownList::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
+   return RelativeLayout::RequestWidgetArea(slot , newx , newy , newwidth , newheight);
 }
 
 
 
 int DropDownList::AddWidget(WidgetBase* w) {
-   BasicButton* bb = dynamic_cast<BasicButton*>(w);
-   BasicText* btext = dynamic_cast<BasicText*>(w);
-   if (bb) {
-      SetButton(bb);
-      RelativeLayout::PlaceWidget(w,1);
-      return 1;
-   }
-   if (btext) {
-      SetText(btext);
-      RelativeLayout::PlaceWidget(w,0);
-      return 0;
-   }
+   (void)w;
    return -1;
 }
 
 
 
-void DropDownList::RemoveWidget(WidgetBase* widget) {
-   if (!widget) {return;}
-   if (widget == our_list) {
-      StopListeningTo(our_list);
-      SetList(0);
-   }
-   else if (widget == our_toggle_button) {
-      StopListeningTo(our_toggle_button);
-      SetButton(0);
-   }
-   RelativeLayout::RemoveWidget(widget);
-}
-
-
-
-void DropDownList::ClearWidgets() {
-   SetList(0);
-   SetButton(0);
-   RelativeLayout::ClearWidgets();
-}
-
-
-
 void DropDownList::SetListOpen(bool open) {
+   if (list_open == open) {return;}
+   list_open = open;
    if (whandler) {
       whandler->GiveWidgetFocus(open?our_list:0 , true);
    }
+   our_toggle_button->SetButtonState(our_toggle_button->Flags().FlagOn(HOVER) , !open);
 }
 
 
@@ -174,7 +148,7 @@ int DropDownList::Choice() {
 
 std::string DropDownList::TextChoice() {
    int c = Choice();
-   if (c >= 0 && c < choice_strings.size()) {
+   if (c >= 0 && c < (int)choice_strings.size()) {
       return choice_strings[c];
    }
    return "INVALID";
@@ -182,5 +156,35 @@ std::string DropDownList::TextChoice() {
 
 
 
+void DropDownList::SetTextChoices(std::vector<std::string> choices) {
+   choice_strings = choices;
+   RefreshTextChoice();
+}
+
+
+
+void DropDownList::SetChoice(int c) {
+   our_list->SetChoice(c);
+   RefreshTextChoice();
+}
+
+
+
+void DropDownList::SetFont(EagleFont* font) {
+   our_font = font;
+   RefreshTextChoice();
+}
+
+
+
+BasicButton* DropDownList::GetOurButton() {
+   return our_toggle_button;
+}
+
+
+
+BasicText* DropDownList::GetOurText() {
+   return our_selection_text;
+}
 
 

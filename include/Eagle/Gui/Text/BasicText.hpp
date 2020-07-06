@@ -88,6 +88,12 @@ public :
 
    virtual ~BasicText(){}
 
+   /// WidgetBase
+   
+   virtual void SetRedrawFlag();
+   
+   /// Members
+   
    void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);///< Draws this widget at the specified pos and color
 
    ///< Shrink wrap : Changes area so it exactly fits the text

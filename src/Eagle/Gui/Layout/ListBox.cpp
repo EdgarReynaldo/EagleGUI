@@ -2,7 +2,7 @@
 
 
 
-#include "Eagle/Gui/ListBox.hpp"
+#include "Eagle/Gui/Layout/ListBox.hpp"
 
 
 const unsigned int TOPIC_LISTBOX = NextFreeTopicId();
@@ -113,6 +113,26 @@ void ListBox::RemoveWidget(WidgetBase* widget) {
 void ListBox::ClearWidgets() {
    StopListening();
    ClassicMenuLayout::ClearWidgets();
+}
+
+
+
+void ListBox::SetChoice(int c) {
+   if (c < -1) {c = -1;}
+   if (c >= (int)wchildren.size()) {c = wchildren.size() - 1;}
+   choice = c;
+   if (c == -1) {
+      wchoice = 0;
+   }
+   else {
+      wchoice = wchildren[choice];
+   }
+   EagleEvent e;
+   e.type = EAGLE_EVENT_WIDGET;
+   e.widget.msgs = LISTBOX_SELECTION_MADE;
+   e.widget.topic = TOPIC_LISTBOX;
+   e.widget.from = this;
+   EmitEvent(e);
 }
 
 

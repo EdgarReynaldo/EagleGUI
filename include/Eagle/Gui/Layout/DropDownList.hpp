@@ -9,7 +9,7 @@
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/Gui/Button/BasicButton.hpp"
 
-#include "Eagle/Gui/ListBox.hpp"
+#include "Eagle/Gui/Layout/ListBox.hpp"
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 
 
@@ -32,27 +32,31 @@ protected :
    
    std::vector<std::string> choice_strings;
    
+   EagleFont* our_font;
+   
    bool list_open;
    
+   /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
+   
+   void RefreshTextChoice();
+   
    
 public :   
 
-   DropDownList(ListBox* listbox , BasicText* seltext = 0 , BasicButton* button = 0);
-
-
-
-   void SetText(BasicText* text);
-   void SetButton(BasicButton* btn);
-   void SetList(ListBox* listbox);
+   DropDownList(ListBox* listbox , EagleFont* font , BasicText* seltext = 0 , BasicButton* button = 0);
 
 
    /// LayoutBase
-   virtual void PlaceWidget(WidgetBase* w , int slot);
-   virtual int AddWidget(WidgetBase* w);
+   Rectangle RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight);
 
-   virtual void RemoveWidget(WidgetBase* widget);
-   virtual void ClearWidgets();
+   int AddWidget(WidgetBase* w);///< Does nothing
+   
+   /// Members
+   
+   void SetText(BasicText* text);
+   void SetButton(BasicButton* btn);
+   void SetList(ListBox* listbox);
 
    void SetListOpen(bool open);
 
@@ -62,12 +66,12 @@ public :
    
    std::string TextChoice();
 
-//   void SetTextChoices(std::vector<std::string> choices);
-   void SetTextChoices(std::vector<std::string> choices) {
-      choice_strings = choices;
-      
-   }
+   void SetTextChoices(std::vector<std::string> choices);
+   void SetChoice(int c);
+   void SetFont(EagleFont* font);
    
+   BasicButton* GetOurButton();
+   BasicText* GetOurText();
 };
 
 

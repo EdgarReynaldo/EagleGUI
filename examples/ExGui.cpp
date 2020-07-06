@@ -41,28 +41,29 @@ int main(int argc , char** argv) {
    
    
    RelativeLayout rl("RelativeLayout" , "MainRLayout");
-   rl.Resize(1);
+   rl.Resize(2);
    
    gui.SetRootLayout(&rl);
    
-   BasicTextButton tbtn;
+//   BasicTextButton tbtn;
    
-   EagleFont* font = win->LoadFont("Verdana.ttf" , -72);
+   EagleFont* font = win->LoadFont("Verdana.ttf" , -24);
    
-   tbtn.GetOurText()->SetupText("Hello widget" , font);
+//   tbtn.GetOurText()->SetupText("Hello widget" , font);
    
-   rl.PlaceWidget(&tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
-   
-   EagleInfo() << tbtn << std::endl;
-   
-   EagleInfo() << *tbtn.GetOurText() << std::endl;
+//   rl.PlaceWidget(&tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
    
    
    
-   
-/**
-   DropDownList ddl;
    ListBox lbox;
+   DropDownList ddl(&lbox , font);
+   ScrollArea sa("ScrollArea for the Listbox");
+   
+//   BasicScrollButton scrollbtn;
+   
+//   scrollbtn.SetScrollDirection(false , false);
+   
+//   ddl.SetButton(&scrollbtn);
    
    GuiButton btns[3];
 
@@ -70,9 +71,15 @@ int main(int argc , char** argv) {
    btns[1].SetFont(win->DefaultFont());
    btns[2].SetFont(win->DefaultFont());
 
-   btns[0].SetLabel("A");
-   btns[1].SetLabel("B");
-   btns[2].SetLabel("C");
+   std::vector<std::string> choices = {
+      std::string("Alpha") , std::string("Beta") , std::string("Gamma")
+   };
+   ddl.SetTextChoices(choices);
+   ddl.SetChoice(0);
+   
+   btns[0].SetLabel("Alpha");
+   btns[1].SetLabel("Beta");
+   btns[2].SetLabel("Gamma");
    
    btns[0].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
    btns[1].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
@@ -84,9 +91,12 @@ int main(int argc , char** argv) {
    lbox.AddWidget(&btns[1]);
    lbox.AddWidget(&btns[2]);
    
+   sa.SetViewWidget(&lbox);
+
    rl.PlaceWidget(&ddl , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.05f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
-   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.5));
-*/
+   rl.PlaceWidget(&sa , 1 , LayoutRectangle(0.25 , 0.35 , 0.25 , 0.5));
+
+   EagleInfo() << ddl << std::endl;
 
    bool quit = false;
    bool redraw = true;

@@ -32,16 +32,7 @@ public :
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
    /// WidgetBase
-
-//   virtual int PrivateHandleEvent(EagleEvent ee);
-//   virtual int PrivateCheckInputs();
-//   virtual int PrivateUpdate(double dt);
-//   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-
-//   virtual void OnAreaChanged();
-//   virtual void OnAttributeChanged(const ATTRIBUTE& a , const VALUE& v);
    virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
-//   virtual void OnColorChanged();
 
    /// LayoutBase
    virtual void PlaceWidget(WidgetBase* w , int slot);
@@ -49,6 +40,9 @@ public :
 
    virtual void RemoveWidget(WidgetBase* widget);
    virtual void ClearWidgets();
+   
+   /// Members
+   void SetChoice(int c);
    
    std::vector<BasicButton*> ButtonsDown();
    int Choice();

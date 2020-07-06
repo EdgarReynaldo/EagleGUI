@@ -202,6 +202,12 @@ BasicText::BasicText(EagleFont* font , std::string label , HALIGNMENT hal , VALI
 
 
 
+void BasicText::SetRedrawFlag() {
+   SetBgRedrawFlag();
+}
+
+
+
 void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c) {
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
