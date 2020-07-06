@@ -5,7 +5,7 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle.hpp"
 
-void AllegroLog(const char* text) {EagleInfo() << text << std::endl;}
+void AllegroLog(const char* text) {EagleInfo() << text;}
 
 int main(int argc , char** argv) {
    
@@ -47,11 +47,15 @@ int main(int argc , char** argv) {
    
    BasicTextButton tbtn;
    
-   tbtn.GetOurText()->SetText("Hello widget" , win->DefaultFont());
+   EagleFont* font = win->LoadFont("Verdana.ttf" , -72);
+   
+   tbtn.GetOurText()->SetupText("Hello widget" , font);
    
    rl.PlaceWidget(&tbtn , 0 , LayoutRectangle(0.25,0.25,0.5,0.5));
    
    EagleInfo() << tbtn << std::endl;
+   
+   EagleInfo() << *tbtn.GetOurText() << std::endl;
    
    
    

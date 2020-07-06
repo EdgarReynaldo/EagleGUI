@@ -97,17 +97,8 @@ public :
    void ScaleToFit(bool scale);
    
    ///< Sets up this text widget with the specified alignments, padding, vertical spacing, text, and font
-   virtual void SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
-                          std::string textstr , EagleFont* font);
-   
-   ///< Changes the text and font in use
-   virtual void SetText(std::string textstr , EagleFont* font);
-   
-   ///< Sets the text to display
-   virtual void SetText(std::string textstr);
-   
-   ///< Sets the font in use
-   virtual void SetFont(EagleFont* font);
+   virtual void SetupText(std::string textstr , EagleFont* font = 0,
+                          HALIGNMENT hal = HALIGN_CENTER , VALIGNMENT val = VALIGN_CENTER , int hpad = 0 , int vpad = 0 , int vspacing = 0);
    
    ///< Realigns the text using the specified alignments and optional padding
    virtual void Realign(HALIGNMENT hal , VALIGNMENT val , int hpad = 0 , int vpad = 0);
@@ -136,6 +127,7 @@ public :
    ///< Describes this widget to a stream
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
+   EagleFont* GetFont();
 };
 
 
