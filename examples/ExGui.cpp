@@ -67,9 +67,9 @@ int main(int argc , char** argv) {
    
    GuiButton btns[3];
 
-   btns[0].SetFont(win->DefaultFont());
-   btns[1].SetFont(win->DefaultFont());
-   btns[2].SetFont(win->DefaultFont());
+   btns[0].SetFont(font);
+   btns[1].SetFont(font);
+   btns[2].SetFont(font);
 
    std::vector<std::string> choices = {
       std::string("Alpha") , std::string("Beta") , std::string("Gamma")
@@ -81,11 +81,11 @@ int main(int argc , char** argv) {
    btns[1].SetLabel("Beta");
    btns[2].SetLabel("Gamma");
    
-   btns[0].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-   btns[1].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-   btns[2].SetButtonType(ELLIPSE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
+   btns[0].SetButtonType(ROUNDED_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+   btns[1].SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+   btns[2].SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
    
-   lbox.SetWidgetArea(Rectangle(0,0,sw/2,sh/2) , false);
+   lbox.SetWidgetArea(Rectangle(0,0,sw/4 - 20,2*sh/3) , false);
    lbox.Resize(3);
    lbox.AddWidget(&btns[0]);
    lbox.AddWidget(&btns[1]);
@@ -108,6 +108,7 @@ int main(int argc , char** argv) {
          win->Clear();
 ///         gui.SetFullRedraw();
          gui.Display(win , 0 , 0);
+         win->DrawVTextString(font , "Vertical" , sw - 50 , 50 , EagleColor(255,0,255) , HALIGN_CENTER , VALIGN_TOP);
          win->FlipDisplay();
          redraw = false;
       }

@@ -684,24 +684,66 @@ void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string str ,
       if (valign == VALIGN_CENTER) {y -= textheight/2;}
       if (valign == VALIGN_BOTTOM) {y -= textheight;}
    }
-//void al_draw_text(const ALLEGRO_FONT *font,
-//   ALLEGRO_COLOR color, float x, float y, int flags,
-//   char const *text)
-
-   /// Need to set the premultiplied alpha blender here , and maybe the non-pm alpha too sometimes
-///   SetNoPMAlphaBlender();
-
-///   SetPMAlphaBlender();
    al_draw_text(f , GetAllegroColor(c) , x , y , 0 , str.c_str());
-
-
-
-///   RestoreLastBlendingState();
 }
 
 
 
-// getters
+void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
+                                              HALIGNMENT halign , VALIGNMENT valign) {
+   if (!str.size()) {return;}
+   EAGLE_ASSERT(font);
+   EAGLE_ASSERT(font->Valid());
+   Allegro5Font* a5font = dynamic_cast<Allegro5Font*>(font);
+   EAGLE_ASSERT(a5font);
+   ALLEGRO_FONT* f = a5font->AllegroFont();
+   EAGLE_ASSERT(f);
+   
+   int vheight = font->VHeight(str);
+   int vwidth = font->VWidth(str , 0);
+   
+   switch (valign) {
+   case VALIGN_CENTER :
+      y -= vheight/2;
+      break;
+   case VALIGN_BOTTOM :
+      y -= vheight;
+      break;
+   default : break;
+   };
+   al_hold_bitmap_drawing(true);
+   for (unsigned int i = 0 ; i < str.size() ; ++i) {
+      int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
+      (void)bbw;
+      if (al_get_glyph_dimensions(f , str[i] , &bbx , &bby , &bbw , &bbh)) {
+         int ox = 0;
+/*
+         switch (halign) {
+         case HALIGN_LEFT :
+            ox 
+            break;
+         case HALIGN_CENTER :
+            ox = - (bbx + bbw)/2;
+            break;
+         case HALIGN_RIGHT :
+            ox = vwidth -(bbx + bbw)/2;
+            break;
+         default : break;
+         };
+*/
+         al_draw_glyph(f , GetAllegroColor(c) , x + bbx + ox , y + bby , str[i]);
+         y += bby + bbh;// + al_get_font_line_height(f)/8;
+      }
+   }
+   al_hold_bitmap_drawing(false);
+}
+
+
+
+/// Getters
+
+
+
 EagleImage* Allegro5GraphicsContext::GetBackBuffer() {
    EAGLE_ASSERT(backbuffer);
    return backbuffer;

@@ -118,7 +118,7 @@ void ListBox::ClearWidgets() {
 
 
 void ListBox::SetChoice(int c) {
-   if (c < -1) {c = -1;}
+   if (c < 0) {c = -1;}
    if (c >= (int)wchildren.size()) {c = wchildren.size() - 1;}
    choice = c;
    if (c == -1) {

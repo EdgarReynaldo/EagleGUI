@@ -104,4 +104,60 @@ int Allegro5Font::Height(std::string str , int ls) {
 
 
 
+int Allegro5Font::VHeight(std::string str) {
+   int h = 0;
+   ALLEGRO_FONT* f = AllegroFont();
+   if (!f) {
+      return -1;
+   }
+   if (!str.size()) {
+      return 0;
+   }
+   for (unsigned int i = 0 ; i < str.size() ; ++i) {
+      int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
+      if (al_get_glyph_dimensions(f , str[i] , &bbx , &bby , &bbw , &bbh)) {
+         h += bby + bbh;
+      }
+   }
+   return h;
+}
+
+
+
+int Allegro5Font::VWidth(std::string str , int ls) {
+   
+   std::vector<std::string> lines = SplitByNewLinesChomp(str);
+   
+   if (!lines.size()) {
+      return 0;
+   }
+   
+   int w = 0;
+   int maxw = 0;
+   ALLEGRO_FONT* f = AllegroFont();
+   if (!f) {return -1;}
+   if (!str.size()) {return 0;}
+   
+   for (int i = 0 ; i < (int)lines.size() ; ++i) {
+      maxw = 0;
+      
+      for (unsigned int k = 0 ; k < lines[i].size() ; ++k) {
+         int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
+         if (al_get_glyph_dimensions(f , lines[i][k] , &bbx , &bby , &bbw , &bbh)) {
+            if (bbw - bbx > maxw) {
+               maxw = bbw - bbx;
+            }
+         }
+      }
+      w += maxw;
+      if (i < ((int)lines.size() - 1)) {
+         w += ls;
+      }
+   }
+   return w;
+}
+
+
+
+
 

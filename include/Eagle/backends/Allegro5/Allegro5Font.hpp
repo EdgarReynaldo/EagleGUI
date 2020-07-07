@@ -59,6 +59,8 @@ public :
    int Width(std::string str);///< Get the width of a string
    int Height();///< Get the height of a line of text
    int Height(std::string str , int ls);///< Get the height of multi-line text using the specified line spacing
+   int VHeight(std::string str);///< Get the height of a vertical string
+   int VWidth(std::string str , int ls);///< Get the width of a vertical string (may be multi-line)
    
    ALLEGRO_FONT* AllegroFont() {return allegro_font;}///< Get a handle to the underlying font
 };

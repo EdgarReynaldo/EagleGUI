@@ -187,17 +187,17 @@ public :
                                                       EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color);
-///   void DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags = DRAW_NORMAL);
-/// TODO ADD   virtual void Draw(EagleImage* src , EagleDrawingInfo info);
 
    /// text drawing operations
-///#ifdef DrawText
-///   #warning "DrawText defined as " ## DrawText
-///#endif
+
    virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c,
                                HALIGNMENT halign = HALIGN_LEFT ,
                                VALIGNMENT valign = VALIGN_TOP);
 
+   /**! @brief Draws the specified text vertically top to bottom in color c at x,y using the specified font and alignment */
+   virtual void DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
+                                HALIGNMENT halign = HALIGN_LEFT ,
+                                VALIGNMENT valign = VALIGN_TOP);
 
    /// getters
    virtual EagleImage* GetBackBuffer();

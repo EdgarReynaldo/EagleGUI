@@ -212,6 +212,10 @@ int ScrollArea::PrivateHandleEvent(EagleEvent ee) {
          vscrollbar->SetScroll(anchoryscroll - dy);
          ret |= DIALOG_INPUT_USED;
       }
+      else if (ee.mouse.dz || ee.mouse.dw) {
+         hscrollbar->ScrollBy(ee.mouse.dw);
+         vscrollbar->ScrollBy(ee.mouse.dz);
+      }
    }
    if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
       if (ee.mouse.button == 3) {drag = false;}

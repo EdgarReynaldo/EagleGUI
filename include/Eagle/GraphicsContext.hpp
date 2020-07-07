@@ -542,8 +542,13 @@ public :
 
    /// text drawing operations
 
-   /**! @brief Draws the specified text in color c at x,y using the specified font and alignment */
+   /**! @brief Draws the specified text horizontally left to right in color c at x,y using the specified font and alignment */
    virtual void DrawTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
+                               HALIGNMENT halign = HALIGN_LEFT ,
+                               VALIGNMENT valign = VALIGN_TOP)=0;
+
+   /**! @brief Draws the specified text vertically top to bottom in color c at x,y using the specified font and alignment */
+   virtual void DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                                HALIGNMENT halign = HALIGN_LEFT ,
                                VALIGNMENT valign = VALIGN_TOP)=0;
 
