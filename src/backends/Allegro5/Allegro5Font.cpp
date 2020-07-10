@@ -104,7 +104,7 @@ int Allegro5Font::Height(std::string str , int ls) {
 
 
 
-int Allegro5Font::VHeight(std::string str) {
+int Allegro5Font::VHeight(std::string str , int letter_spacing) {
    int h = 0;
    ALLEGRO_FONT* f = AllegroFont();
    if (!f) {
@@ -113,10 +113,17 @@ int Allegro5Font::VHeight(std::string str) {
    if (!str.size()) {
       return 0;
    }
+   if (letter_spacing < 0) {
+      letter_spacing = al_get_font_line_height(f)/8;
+   }
+   ALLEGRO_GLYPH g;
    for (unsigned int i = 0 ; i < str.size() ; ++i) {
-      int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
-      if (al_get_glyph_dimensions(f , str[i] , &bbx , &bby , &bbw , &bbh)) {
-         h += bby + bbh;
+      memset(&g , 0 , sizeof(g));
+      if (al_get_glyph(f , 0 , str[i] , &g)) {
+         h += g.h;
+         if ((int)i < (int)str.size() - 1) {
+            h += letter_spacing;
+         }
       }
    }
    return h;
@@ -124,34 +131,36 @@ int Allegro5Font::VHeight(std::string str) {
 
 
 
-int Allegro5Font::VWidth(std::string str , int ls) {
+int Allegro5Font::VWidth(std::string str , int line_spacing) {
    
+   ALLEGRO_FONT* f = AllegroFont();
+
+   if (!f) {return -1;}
+
+   if (!str.size()) {return 0;}
+
    std::vector<std::string> lines = SplitByNewLinesChomp(str);
-   
-   if (!lines.size()) {
-      return 0;
-   }
+
+   if (!lines.size()) {return 0;}
    
    int w = 0;
    int maxw = 0;
-   ALLEGRO_FONT* f = AllegroFont();
-   if (!f) {return -1;}
-   if (!str.size()) {return 0;}
    
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       maxw = 0;
       
+      ALLEGRO_GLYPH g;
       for (unsigned int k = 0 ; k < lines[i].size() ; ++k) {
-         int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
-         if (al_get_glyph_dimensions(f , lines[i][k] , &bbx , &bby , &bbw , &bbh)) {
-            if (bbw - bbx > maxw) {
-               maxw = bbw - bbx;
+         memset(&g , 0 , sizeof(g));
+         if (al_get_glyph(f , 0 , lines[i][k] , &g)) {
+            if (g.w > maxw) {
+               maxw = g.w;
             }
          }
       }
       w += maxw;
       if (i < ((int)lines.size() - 1)) {
-         w += ls;
+         w += line_spacing;
       }
    }
    return w;

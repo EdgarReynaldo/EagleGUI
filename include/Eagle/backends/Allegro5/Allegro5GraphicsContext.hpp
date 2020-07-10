@@ -197,7 +197,7 @@ public :
    /**! @brief Draws the specified text vertically top to bottom in color c at x,y using the specified font and alignment */
    virtual void DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                                 HALIGNMENT halign = HALIGN_LEFT ,
-                                VALIGNMENT valign = VALIGN_TOP);
+                                VALIGNMENT valign = VALIGN_TOP , int letter_spacing = -1);
 
    /// getters
    virtual EagleImage* GetBackBuffer();

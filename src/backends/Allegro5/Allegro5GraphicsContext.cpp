@@ -690,7 +690,7 @@ void Allegro5GraphicsContext::DrawTextString(EagleFont* font , std::string str ,
 
 
 void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
-                                              HALIGNMENT halign , VALIGNMENT valign) {
+                                              HALIGNMENT halign , VALIGNMENT valign , int letter_spacing) {
    if (!str.size()) {return;}
    EAGLE_ASSERT(font);
    EAGLE_ASSERT(font->Valid());
@@ -699,7 +699,11 @@ void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str 
    ALLEGRO_FONT* f = a5font->AllegroFont();
    EAGLE_ASSERT(f);
    
-   int vheight = font->VHeight(str);
+   if (letter_spacing < 0) {
+      letter_spacing = al_get_font_line_height(f)/8;
+   }
+   
+   int vheight = font->VHeight(str , -1);
    int vwidth = font->VWidth(str , 0);
    
    switch (valign) {
@@ -714,25 +718,23 @@ void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str 
    al_hold_bitmap_drawing(true);
    for (unsigned int i = 0 ; i < str.size() ; ++i) {
       int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
-      (void)bbw;
-      if (al_get_glyph_dimensions(f , str[i] , &bbx , &bby , &bbw , &bbh)) {
+      ALLEGRO_GLYPH g;
+      memset(&g , 0 , sizeof(g));
+      if (al_get_glyph(f , 0 , str[i] , &g)) {
          int ox = 0;
-/*
          switch (halign) {
          case HALIGN_LEFT :
-            ox 
             break;
          case HALIGN_CENTER :
-            ox = - (bbx + bbw)/2;
+            ox += (vwidth - g.w)/2;
             break;
          case HALIGN_RIGHT :
-            ox = vwidth -(bbx + bbw)/2;
+            ox += vwidth - g.w;
             break;
          default : break;
          };
-*/
-         al_draw_glyph(f , GetAllegroColor(c) , x + bbx + ox , y + bby , str[i]);
-         y += bby + bbh;// + al_get_font_line_height(f)/8;
+         al_draw_bitmap_region(g.bitmap , g.x , g.y , g.w , g.h , x + ox , y , 0);
+         y += g.h + letter_spacing;
       }
    }
    al_hold_bitmap_drawing(false);

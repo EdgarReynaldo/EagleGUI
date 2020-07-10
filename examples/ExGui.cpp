@@ -1,5 +1,5 @@
 
-
+#define ALLEGRO_UNSTABLE
 
 
 #include "Eagle/backends/Allegro5Backend.hpp"
@@ -103,12 +103,21 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
+   ALLEGRO_GLYPH g;
+   memset(&g , 0 , sizeof(g));
+   al_get_glyph(dynamic_cast<Allegro5Font*>(font)->AllegroFont() , 0 , 'a' , &g);
+
+   EagleInfo() << StringPrintF("%d , %d , %d , %d , %d , %d" , g.x , g.y , g.w , g.h , g.offset_x , g.offset_y) << std::endl;
+   
    while (!quit) {
       if (redraw) {
          win->Clear();
 ///         gui.SetFullRedraw();
-         gui.Display(win , 0 , 0);
-         win->DrawVTextString(font , "Vertical" , sw - 50 , 50 , EagleColor(255,0,255) , HALIGN_CENTER , VALIGN_TOP);
+//         al_draw_bitmap(g.bitmap , 0 , 0 , 0);
+//         gui.Display(win , 0 , 0);
+         win->DrawVTextString(font , "Vertical" , sw - 150 , 150 , EagleColor(255,0,255) , HALIGN_LEFT , VALIGN_TOP);
+         win->DrawVTextString(font , "Vertical" , sw - 100 , 150 , EagleColor(255,0,255) , HALIGN_CENTER , VALIGN_CENTER);
+         win->DrawVTextString(font , "Vertical" , sw - 50 , 150 , EagleColor(255,0,255) , HALIGN_RIGHT , VALIGN_BOTTOM);
          win->FlipDisplay();
          redraw = false;
       }
