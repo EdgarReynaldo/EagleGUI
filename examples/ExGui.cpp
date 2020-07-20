@@ -1,16 +1,19 @@
 
-
+#define ALLEGRO_UNSTABLE
 
 
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle.hpp"
 
-
+void AllegroLog(const char* text) {EagleInfo() << text;}
 
 int main(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
+   
+   SendOutputToFile("ExGui.log" , "ExGui\n" , false);
+   
    
    EagleSystem* sys = GetAllegro5System();
    if (!sys) {return -1;}
@@ -20,6 +23,7 @@ int main(int argc , char** argv) {
    int sw = 1280;
    int sh = 800;
    
+   al_register_trace_handler(AllegroLog);
    
    EagleGraphicsContext* win = sys->CreateGraphicsContext("Gui window" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED);
    
@@ -41,35 +45,49 @@ int main(int argc , char** argv) {
    
    gui.SetRootLayout(&rl);
    
-   ScrollArea sa("Scroll area");
+   EagleFont* font = win->LoadFont("Verdana.ttf" , -24);
+   
+   
+   
+   
+   ScrollArea sa("ScrollArea for the Listbox");
    ListBox lbox;
+   DropDownList ddl(&sa , font);
+
+   ddl.ListenTo(&lbox);
    
    GuiButton btns[3];
 
-   btns[0].SetFont(win->DefaultFont());
-   btns[1].SetFont(win->DefaultFont());
-   btns[2].SetFont(win->DefaultFont());
+   btns[0].SetFont(font);
+   btns[1].SetFont(font);
+   btns[2].SetFont(font);
 
-   btns[0].SetLabel("A");
-   btns[1].SetLabel("B");
-   btns[2].SetLabel("C");
+   std::vector<std::string> choices = {
+      std::string("Alpha") , std::string("Beta") , std::string("Gamma")
+   };
+   ddl.SetTextChoices(choices);
+   ddl.SetChoice(0);
    
-   btns[0].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-   btns[1].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-   btns[2].SetButtonType(ELLIPSE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
+   btns[0].SetLabel("Alpha");
+   btns[1].SetLabel("Beta");
+   btns[2].SetLabel("Gamma");
    
-   lbox.SetWidgetArea(Rectangle(0,0,sw/2,sh/2) , false);
+   btns[0].SetButtonType(ROUNDED_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+   btns[1].SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+   btns[2].SetButtonType(ELLIPSE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+   
+   lbox.SetWidgetArea(Rectangle(0,0,sw/4 - 20,2*sh/3) , false);
    lbox.Resize(3);
    lbox.AddWidget(&btns[0]);
    lbox.AddWidget(&btns[1]);
    lbox.AddWidget(&btns[2]);
    
    sa.SetViewWidget(&lbox);
-   
-   rl.PlaceWidget(&sa , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
-   
-//   rl.PlaceWidget(&lbox , 1 , LayoutRectangle(0.25f,0.25f,0.25f,0.25f));
 
+   rl.PlaceWidget(&ddl , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.05f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
+   rl.PlaceWidget(&sa , 1 , LayoutRectangle(0.25 , 0.35 , 0.25 , 0.5));
+
+   EagleInfo() << gui << std::endl;
 
    bool quit = false;
    bool redraw = true;
@@ -79,8 +97,12 @@ int main(int argc , char** argv) {
    while (!quit) {
       if (redraw) {
          win->Clear();
-///         gui.SetFullRedraw();
+         gui.SetFullRedraw();
+//         al_draw_bitmap(g.bitmap , 0 , 0 , 0);
          gui.Display(win , 0 , 0);
+//         win->DrawVTextString(font , "Vertical" , sw - 150 , 150 , EagleColor(255,0,255) , HALIGN_LEFT , VALIGN_TOP);
+//         win->DrawVTextString(font , "Vertical" , sw - 100 , 150 , EagleColor(255,0,255) , HALIGN_CENTER , VALIGN_CENTER);
+//         win->DrawVTextString(font , "Vertical" , sw - 50 , 150 , EagleColor(255,0,255) , HALIGN_RIGHT , VALIGN_BOTTOM);
          win->FlipDisplay();
          redraw = false;
       }
@@ -97,6 +119,10 @@ int main(int argc , char** argv) {
             gui.Update(sys->GetSystemTimer()->SPT());
          }
          gui.HandleEvent(e);
+         while (gui.HasMessages()) {
+            WidgetMsg msg = gui.TakeNextMessage();
+            EagleLog() << msg << std::endl;
+         }
       } while (!sys->UpToDate());
    }
    

@@ -113,13 +113,25 @@ void BasicScrollButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , in
       Triangle t = our_click_area;
       t.MoveBy(InnerArea().X() + xpos , InnerArea().Y() + ypos);
       WidgetColorset wc = WidgetColors();
-      if (scroll_button->Up()) {
-         t.Fill(win , wc[MGCOL]);
-         t.Draw(win , 3.0 , wc[HLCOL]);
+      if (Flags().FlagOn(HOVER)) {
+         if (scroll_button->Up()) {
+            t.Fill(win , wc[HVRCOL]);
+            t.Draw(win , 1.5 , wc[HLCOL]);
+         }
+         else {
+            t.Fill(win , wc[BGCOL]);
+            t.Draw(win , 1.5 , wc[FGCOL]);
+         }
       }
       else {
-         t.Fill(win , wc[BGCOL]);
-         t.Draw(win , 3.0 , wc[FGCOL]);
+         if (scroll_button->Up()) {
+            t.Fill(win , wc[MGCOL]);
+            t.Draw(win , 1.5 , wc[HLCOL]);
+         }
+         else {
+            t.Fill(win , wc[BGCOL]);
+            t.Draw(win , 1.5 , wc[FGCOL]);
+         }
       }
    }
    else {

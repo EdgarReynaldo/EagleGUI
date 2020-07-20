@@ -16,8 +16,6 @@ Issues
 
 -3. Layouts should all use AdjustWidgetArea in RequestWidgetRectangle. This is not the case yet.
 
--1. EagleSystem doesn't have functions to free resources early - it only releases them on destruction
-
 0. Building with MSVC
 
 1. EAGLE_LINK_TYPE (necessary for 0)
@@ -82,10 +80,10 @@ TODO : Milestones necessary for development
    A - DECLSPEC DLLEXPORT necessary for MSVC when building without .def files
    
 4. Build system
-   A - CodeBlocks projects are nice for me, but they're not fully portable
-   B - CMake
-   C - Premake http://premake.github.io/ (looks like it is under active development, with new features, and lots of compiler support)
-   D - Autotools? You're kidding right?
+          A - CodeBlocks projects are nice for me, but they're not fully portable
+Complete *B - CMake
+          C - Premake http://premake.github.io/ (looks like it is under active development, with new features, and lots of compiler support)
+          D - Autotools? You're kidding right?
 
 5- Backend support
    A - SDL 2.0

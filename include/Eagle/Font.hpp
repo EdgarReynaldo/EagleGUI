@@ -69,7 +69,10 @@ public :
    virtual int Width(std::string str)=0;///< Pure virtual function to get the width of a specified string using this font
    virtual int Height()=0;///< Pure virtual function to get the line height of this font
    virtual int Height(std::string str , int ls)=0;///< Pure virtual function to get the height of a specified text string (may be multi-line)
-
+   virtual int VHeight(std::string str , int letter_spacing)=0;///< Pure virtual function to get the height of a vertical string
+   virtual int VWidth(std::string str , int line_spacing)=0;///< Pure virtual function to get the width of a vertical string (may be multi-line)
+   
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describe this font to a stream
 };
 

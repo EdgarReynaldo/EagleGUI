@@ -168,13 +168,15 @@ public :
    void UseDefaultClickArea(bool use_default);///< Go back to the default click area
    
    
-   virtual void SetButtonState(bool hover , bool up);
+   virtual void SetButtonState(bool hover , bool up , bool notify = true);
 
    virtual void SetInputGroup(InputGroup ig);///< Set the input group to activate this button
 
    virtual bool JustActivated();///< Returns true if just activated
    
    virtual void EnableHoverMessage(bool enabled);///< Pass true to enable hover messages
+
+   virtual bool DoIReallyHaveHover(int mx , int my);
 
    virtual InputGroup InputKey();///< Get the input key
    virtual BUTTON_STATE ButtonState();///< Get the button state

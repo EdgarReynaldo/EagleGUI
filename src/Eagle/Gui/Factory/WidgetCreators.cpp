@@ -22,7 +22,7 @@
 
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/StringWork.hpp"
-
+#include "Eagle/Font.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Factory/WidgetCreators.hpp"
 #include "Eagle/Gui/Factory/WidgetFactory.hpp"
@@ -242,11 +242,10 @@ void ApplyTextAttributes(WidgetBase* widget ,  const AttributeValueMap& avmap) {
    map<string , string>::const_iterator cit = attribute_map.end();
    
    if ((cit = attribute_map.find("TEXT")) != attribute_map.end()) {
-      text_widget->SetText(cit->second);
+      text_widget->SetupText(cit->second);
    }
    if ((cit = attribute_map.find("FONT")) != attribute_map.end()) {
-      throw EagleException("Cannot apply attribute FONT at this time.");
-///      text_widget->SetFont(GetFont(cit->second));/// TODO : FIXME : IMPLEMENT
+      text_widget->SetupText(text_widget->GetText() , GetFont(cit->second));
    }
    if ((cit = attribute_map.find("SHRINKWRAP")) != attribute_map.end()) {
       if (strcmp(cit->second.c_str() , "YES") == 0) {

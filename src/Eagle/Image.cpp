@@ -99,7 +99,7 @@ EagleImage::~EagleImage() {
 void EagleImage::FreeChildren() {
    IMGSET imgs = children;/// Must make a copy as children is altered by destruction of each child which calls RemoveChild
    for (IMGIT it = imgs.begin() ; it != imgs.end() ; ++it) {
-      delete *it;
+      FreeChild(*it);
    }
    EAGLE_ASSERT(children.size() == 0);
 }
@@ -115,19 +115,23 @@ void EagleImage::FreeChild(EagleImage* child) {
 }
 
 
-void EagleImage::PushClippingRectangle(Rectangle new_clip) {
+
+/**! TODO : FIXME Pushing an invalid rectangle onto the clipping stack and then popping results in UB */
+bool EagleImage::PushClippingRectangle(Rectangle new_clip) {
+   if (new_clip == BADRECTANGLE) {return false;}
    if (clip_rects.size()) {
       Rectangle outer = clip_rects.back();
       if (!(outer.Contains(new_clip))) {
          Rectangle overlap = Overlap(outer , new_clip);
          if (overlap == BADRECTANGLE) {
-            return;
+            return false;
          }
          new_clip = overlap;
       }
    }
 	clip_rects.push_back(new_clip);
 	SetClippingRectangle(new_clip);
+	return true;
 }
 
 
@@ -155,13 +159,13 @@ Clipper::Clipper(EagleImage* image , Rectangle clip)
 {
 	EAGLE_ASSERT(image);
 	img = image;
-	img->PushClippingRectangle(clip);
+	clip_worked = img->PushClippingRectangle(clip);
 }
 
 
 
 Clipper::~Clipper() {
-	if (img) {
+	if (img && clip_worked) {
 		img->PopClippingRectangle();
 	}
 }

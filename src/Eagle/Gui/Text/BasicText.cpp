@@ -45,10 +45,12 @@ using namespace std;
 
 void BasicText::RefreshTextPosition() {
 
-   EAGLE_ASSERT(text_font);
-   EAGLE_ASSERT(text_font->Valid());
    lines = SplitByNewLinesNoChomp(text);
    nlines = lines.size();
+   if (nlines < 1) {return;}
+
+   EAGLE_ASSERT(text_font);
+   EAGLE_ASSERT(text_font->Valid());
    
    int lineheight = fontheight + linespacing;
    maxwidth = 0;
@@ -56,7 +58,6 @@ void BasicText::RefreshTextPosition() {
 
    lineareas.clear();
    
-   if (nlines < 1) {return;}
 
    int y = InnerArea().Y() + vpadding;
    if (valign == VALIGN_CENTER) {
@@ -196,7 +197,13 @@ BasicText::BasicText(EagleFont* font , std::string label , HALIGNMENT hal , VALI
       scaling_transform(),
       inverse_scaling_transform()
 {
-   SetupText(hal , val , hpad , vpad , vspacing , label , font);
+   SetupText(label , font , hal , val , hpad , vpad , vspacing);
+}
+
+
+
+void BasicText::SetRedrawFlag() {
+   SetBgRedrawFlag();
 }
 
 
@@ -205,6 +212,8 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    EAGLE_ASSERT(win);
    EAGLE_ASSERT(win->Valid());
 
+   if (nlines < 1) {return;}
+   
    EAGLE_ASSERT(text_font && text_font->Valid());
    
    Transformer* transformer = win->GetTransformer();
@@ -258,24 +267,20 @@ void BasicText::ScaleToFit(bool scale) {
 
 
 
-void BasicText::SetupText(HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing ,
-               std::string textstr , EagleFont* font) {
-   
-   EAGLE_ASSERT(font);
-   EAGLE_ASSERT(font->Valid());
+void BasicText::SetupText(std::string textstr , EagleFont* font , HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing) {
+
+   text = textstr;
+   if (!font) {
+      font = text_font;
+   }
+   else {
+      text_font = font;
+   }
    halign = hal;
    valign = val;
    hpadding = hpad;
    vpadding = vpad;
    linespacing = vspacing;
-   SetText(textstr , font);
-}
-   
-
-
-void BasicText::SetText(std::string textstr , EagleFont* font) {
-   text = textstr;
-   text_font = font;
    if (text_font) {
       fontheight = text_font->Height();
    }
@@ -284,19 +289,7 @@ void BasicText::SetText(std::string textstr , EagleFont* font) {
    }
    Refresh();
 }
-
-
-
-void BasicText::SetText(std::string textstr) {
-   SetText(textstr , text_font);
-}
-
-
-
-void BasicText::SetFont(EagleFont* font) {
-   SetText(text , font);
-}
-
+   
 
 
 void BasicText::Refresh() {
@@ -342,6 +335,12 @@ Rectangle BasicText::LineArea(int linenum) {
 std::string BasicText::LineString(int linenum) {
    EAGLE_ASSERT(linenum >= 0 && linenum < nlines);
    return lines[linenum];
+}
+
+
+
+EagleFont* BasicText::GetFont() {
+   return text_font;
 }
 
 

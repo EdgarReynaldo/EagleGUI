@@ -92,7 +92,8 @@ protected :
    void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler
 
 	/// WIDGETBASE
-   virtual void OnAreaChanged();
+   virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);///< If a layout is hidden, so are its children, if a layout is disabled, so are its children
+   virtual void OnAreaChanged();///< Takes care of automatic resizing of contents
 
    virtual int PrivateHandleInputEvent(EagleEvent e);
    virtual int PrivateUpdate(double dt);
@@ -180,9 +181,11 @@ public :
    
    int GetLayoutSize() const ;///< Returns the currently allocated storage size for widget children
    
-   
    virtual bool AcceptsFocus() {return true;}///< Layouts are generally invisible, but will accept the focus
 
+   virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
+   
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describe this layout to a stream
 };
 

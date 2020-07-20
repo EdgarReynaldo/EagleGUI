@@ -30,10 +30,11 @@
  */
 
 class IScrollable {
+
+protected :
    int scrollx;
    int scrolly;
    
-protected :
    virtual void ScrollCallback()=0;
       
 public :
