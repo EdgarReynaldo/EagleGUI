@@ -232,6 +232,27 @@ void LayoutBase::RemoveWidgetFromLayout(WidgetBase* widget) {
 
 
 
+void LayoutBase::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   if (f & VISIBLE) {
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (w) {
+            w->SetVisibleState(on);
+         }
+      }
+   }
+   else if (f & ENABLED) {
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (w) {
+            w->SetEnabledState(on);
+         }
+      }
+   }
+}
+
+
+
 void LayoutBase::OnAreaChanged() {
    RepositionAllChildren();
 }

@@ -15,14 +15,14 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_LISTBOX , LISTBOX_SELECTION_MADE);
 ListBox::ListBox() :
       ClassicMenuLayout("ListBox"),
       EagleEventListener(),
-      choice(-1),
-      wchoice(0)
+      choice(-1)
 {}
 
 
 
 ListBox::~ListBox() {
    DetachFromGui();
+   ClearWidgets();
 }
 
 
@@ -31,15 +31,13 @@ void ListBox::RespondToEvent(EagleEvent e , EagleThread* thread) {
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
          if (e.widget.msgs == BUTTON_CLICKED) {
-            wchoice = e.widget.from;
+            choice = -1;
+            WidgetBase* wchoice = e.widget.from;
             for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
                if (wchoice == wchildren[i]) {
                   choice = i;
                }
             }
-         }
-         else if (e.widget.msgs == BUTTON_TOGGLED) {
-            choice = -1;
          }
          EagleEvent ee = e;
          ee.widget.from = this;
@@ -66,17 +64,6 @@ void ListBox::OnFlagChanged(WIDGET_FLAGS f , bool on) {
          WidgetBase* w = wchildren[i];
          if (w) {
             w->SetEnabledState(on);
-         }
-      }
-   }
-   /// If this list box loses focus, it should disappear
-   if (f & HASFOCUS) {
-      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         if (wchildren[i]) {
-            WidgetBase* w = wchildren[i];
-            w->SetFocusState(on);
-            w->SetEnabledState(on);
-            w->SetVisibleState(on);
          }
       }
    }
@@ -121,12 +108,6 @@ void ListBox::SetChoice(int c) {
    if (c < 0) {c = -1;}
    if (c >= (int)wchildren.size()) {c = wchildren.size() - 1;}
    choice = c;
-   if (c == -1) {
-      wchoice = 0;
-   }
-   else {
-      wchoice = wchildren[choice];
-   }
    EagleEvent e;
    e.type = EAGLE_EVENT_WIDGET;
    e.widget.msgs = LISTBOX_SELECTION_MADE;
@@ -158,13 +139,6 @@ std::vector<BasicButton*> ListBox::ButtonsDown() {
 int ListBox::Choice() {
    return choice;
 }
-
-
-
-WidgetBase* ListBox::WChoice() {
-   return wchoice;
-}
-
 
 
 

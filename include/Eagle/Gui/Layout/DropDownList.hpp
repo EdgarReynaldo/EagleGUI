@@ -28,14 +28,18 @@ protected :
    BasicText* our_selection_text;
    BasicButton* our_toggle_button;
    
-   ListBox* our_list;
+   WidgetBase* our_popup;
    
    std::vector<std::string> choice_strings;
    
+   int our_choice;
+   
    EagleFont* our_font;
    
-   bool list_open;
+   bool popup_open;
    
+
+
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
    
@@ -44,7 +48,7 @@ protected :
    
 public :   
 
-   DropDownList(ListBox* listbox , EagleFont* font , BasicText* seltext = 0 , BasicButton* button = 0);
+   DropDownList(WidgetBase* widget , EagleFont* font , BasicText* seltext = 0 , BasicButton* button = 0);
 
 
    /// LayoutBase
@@ -56,14 +60,11 @@ public :
    
    void SetText(BasicText* text);
    void SetButton(BasicButton* btn);
-   void SetList(ListBox* listbox);
+   void SetPopup(WidgetBase* widget);
 
-   void SetListOpen(bool open);
+   void SetPopupOpen(bool open);
 
-   std::vector<BasicButton*> ButtonsDown();
-   int Choice();
-   WidgetBase* WChoice();
-   
+   int Choice() {return our_choice;}
    std::string TextChoice();
 
    void SetTextChoices(std::vector<std::string> choices);

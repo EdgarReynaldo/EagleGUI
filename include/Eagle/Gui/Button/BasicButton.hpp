@@ -168,7 +168,7 @@ public :
    void UseDefaultClickArea(bool use_default);///< Go back to the default click area
    
    
-   virtual void SetButtonState(bool hover , bool up);
+   virtual void SetButtonState(bool hover , bool up , bool notify = true);
 
    virtual void SetInputGroup(InputGroup ig);///< Set the input group to activate this button
 

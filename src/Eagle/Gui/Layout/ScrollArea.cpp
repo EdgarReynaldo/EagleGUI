@@ -238,6 +238,10 @@ void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
       GetHandler()->GiveWidgetFocus(GetWidget(0));
       GetHandler()->GiveWidgetFocus(GetWidget(1));
    }
+   LayoutBase::OnFlagChanged(f , on);
+   if (f & VISIBLE && on) {
+      ResetScrollbars();
+   }
 }
 
 

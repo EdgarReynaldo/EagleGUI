@@ -17,13 +17,15 @@ void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread) {
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.from == our_toggle_button) {
          if (e.widget.msgs == BUTTON_TOGGLED) {
-            SetListOpen(!list_open);
+            SetPopupOpen(!popup_open);
          }
       }
-      if (e.widget.from == our_list) {
-         if (e.widget.msgs == LISTBOX_SELECTION_MADE) {
+      if (e.widget.topic == TOPIC_LISTBOX && e.widget.msgs == LISTBOX_SELECTION_MADE) {
+         ListBox* lb = dynamic_cast<ListBox*>(e.widget.from);
+         if (lb) {
+            our_choice = lb->Choice();
             RefreshTextChoice();
-            SetListOpen(false);
+            SetPopupOpen(false);
          }
       }
    }
@@ -34,7 +36,7 @@ void DropDownList::RespondToEvent(EagleEvent e , EagleThread* thread) {
 void DropDownList::RefreshTextChoice() {
    std::string text = "INVALID";
    if (Choice() > -1) {
-      text = choice_strings[Choice()];
+      text = choice_strings[our_choice];
    }
    our_selection_text->SetupText(text , our_font);
 }
@@ -64,39 +66,41 @@ void DropDownList::SetButton(BasicButton* btn) {
    if (our_toggle_button) {
       ListenTo(our_toggle_button);
       btn->SetButtonUpState(true);
-      list_open = false;
+      SetPopupOpen(false);
    }
    RelativeLayout::PlaceWidget(our_toggle_button , 0 , LayoutRectangle(0.9 , 0.0 , 0.1 , 1.0));
 }
 
 
 
-void DropDownList::SetList(ListBox* listbox) {
-   if (our_list) {
-      StopListeningTo(our_list);
+void DropDownList::SetPopup(WidgetBase* widget) {
+   if (our_popup) {
+      StopListeningTo(our_popup);
    }
-   our_list = listbox;
-   if (our_list) {
-      ListenTo(our_list);
+   our_popup = widget;
+   if (our_popup) {
+      ListenTo(our_popup);
    }
 }
 
 
 
-DropDownList::DropDownList(ListBox* listbox , EagleFont* font , BasicText* seltext , BasicButton* button) :
+DropDownList::DropDownList(WidgetBase* widget , EagleFont* font , BasicText* seltext , BasicButton* button) :
       RelativeLayout("DropDownList" , "DDL"),
       EagleEventListener(),
       our_selection_text(0),
       our_toggle_button(0),
-      our_list(0),
+      our_popup(0),
+      choice_strings(),
+      our_choice(-1),
       our_font(font),
-      list_open(false)
+      popup_open(true)
 {
    Resize(2);
    SetText(seltext);
    SetButton(button);
-
-   SetList(listbox);
+   SetPopup(widget);
+   SetPopupOpen(false);
 }
 
 
@@ -114,40 +118,25 @@ int DropDownList::AddWidget(WidgetBase* w) {
 
 
 
-void DropDownList::SetListOpen(bool open) {
-   if (list_open == open) {return;}
-   list_open = open;
-   if (whandler) {
-      whandler->GiveWidgetFocus(open?our_list:0 , true);
+void DropDownList::SetPopupOpen(bool open) {
+   if (popup_open == open) {return;}
+   if (!our_popup) {return;}
+   popup_open = open;
+   if (popup_open) {
+      our_popup->ShowAndEnable();
+      if (whandler) {
+         whandler->GiveWidgetFocus(popup_open?our_popup:0 , true);
+      }
+   } else {
+      our_toggle_button->SetButtonState(our_toggle_button->Flags().FlagOn(HOVER) , true , false);
+      our_popup->HideAndDisable();
    }
-   our_toggle_button->SetButtonState(our_toggle_button->Flags().FlagOn(HOVER) , !open);
-}
-
-
-
-
-std::vector<BasicButton*> DropDownList::ButtonsDown() {
-   std::vector<BasicButton*> btns;
-   if (!our_list) {return btns;}
-   return our_list->ButtonsDown();
-}
-
-
-
-WidgetBase* DropDownList::WChoice() {
-   return (our_list?our_list->WChoice():0);
-}
-
-
-
-int DropDownList::Choice() {
-   return (our_list?our_list->Choice():-1);
 }
 
 
 
 std::string DropDownList::TextChoice() {
-   int c = Choice();
+   int c = our_choice;
    if (c >= 0 && c < (int)choice_strings.size()) {
       return choice_strings[c];
    }
@@ -158,13 +147,19 @@ std::string DropDownList::TextChoice() {
 
 void DropDownList::SetTextChoices(std::vector<std::string> choices) {
    choice_strings = choices;
-   RefreshTextChoice();
+   SetChoice(0);
 }
 
 
 
 void DropDownList::SetChoice(int c) {
-   our_list->SetChoice(c);
+   if (c < 0) {
+      c = 0;
+   }
+   if (c > (int)choice_strings.size() - 1) {
+      c = (int)choice_strings.size() - 1;
+   }
+   our_choice = c;
    RefreshTextChoice();
 }
 

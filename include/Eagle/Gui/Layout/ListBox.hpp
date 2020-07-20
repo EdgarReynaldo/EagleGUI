@@ -24,7 +24,7 @@ class ListBox : public ClassicMenuLayout , EagleEventListener {
    
 
    int choice;
-   WidgetBase* wchoice;
+
 public :
    ListBox();
    virtual ~ListBox();
@@ -46,8 +46,6 @@ public :
    
    std::vector<BasicButton*> ButtonsDown();
    int Choice();
-   WidgetBase* WChoice();
-
 };
 
 #endif // ListBox_HPP
