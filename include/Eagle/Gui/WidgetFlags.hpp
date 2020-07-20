@@ -98,7 +98,7 @@ public :
    void Reset();///< Clear all flags and reset to FLAGS_NONE
    
    inline bool FlagOn(WIDGET_FLAGS f) {return flags & f;}///< Whether flag f is on
-   inline bool FlagOff(WIDGET_FLAGS f) {return flags & ~f;}///< Whether flag f is off
+   inline bool FlagOff(WIDGET_FLAGS f) {return ~flags & f;}///< Whether flag f is off
    
    friend unsigned int FlagDiff(const WidgetFlags& wf1 , const WidgetFlags& wf2);///< Helper function
    
