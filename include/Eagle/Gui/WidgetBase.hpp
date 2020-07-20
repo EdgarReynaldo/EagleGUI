@@ -285,6 +285,7 @@ WidgetBase(std::string classname , std::string objname) :
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    
+   virtual bool DoIReallyHaveHover(int mx , int my);
 };
 
 

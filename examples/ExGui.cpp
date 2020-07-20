@@ -87,7 +87,7 @@ int main(int argc , char** argv) {
    rl.PlaceWidget(&ddl , 0 , LayoutRectangle(0.25f,0.25f,0.25f,0.05f));//(Rectangle(0,0,sw,sh) , Rectangle(sw/4,sh/4,sw/2,sh/2)));
    rl.PlaceWidget(&sa , 1 , LayoutRectangle(0.25 , 0.35 , 0.25 , 0.5));
 
-   EagleInfo() << ddl << std::endl;
+   EagleInfo() << gui << std::endl;
 
    bool quit = false;
    bool redraw = true;

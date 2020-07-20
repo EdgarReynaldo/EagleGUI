@@ -176,6 +176,8 @@ public :
    
    virtual void EnableHoverMessage(bool enabled);///< Pass true to enable hover messages
 
+   virtual bool DoIReallyHaveHover(int mx , int my);
+
    virtual InputGroup InputKey();///< Get the input key
    virtual BUTTON_STATE ButtonState();///< Get the button state
    

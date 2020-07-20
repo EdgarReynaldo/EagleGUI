@@ -473,6 +473,18 @@ void BasicButton::EnableHoverMessage(bool enabled) {
 
 
 
+bool BasicButton::DoIReallyHaveHover(int mx , int my) {
+   bool ret = false;
+   if (click_area) {
+      ret = click_area->Contains(mx - InnerArea().X() , my - InnerArea().Y());
+   } else {
+      return WidgetBase::DoIReallyHaveHover(mx,my);
+   }
+   return ret;
+}
+
+
+
 InputGroup BasicButton::InputKey() {
    return input_group;
 }

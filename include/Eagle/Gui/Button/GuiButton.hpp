@@ -74,6 +74,11 @@ public :
 
    virtual ~GuiButton() {}
 
+/**   virtual bool DoIReallyHaveHover(int mx , int my);
+bool GuiButton::DoIReallyHaveHover(int mx , int my) {
+   
+}*/
+
    virtual void SetRedrawFlag();///< Shortcut to SetBgRedrawFlag, since we always need our background re-drawn
 
    /// Setters

@@ -94,6 +94,10 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       if (!wparent) {/// Only root gui checks for hover and focus
          WidgetBase* hoverwidget = GetWidgetAt(rel_event.mouse.x , rel_event.mouse.y);
          
+         if (hoverwidget && !hoverwidget->DoIReallyHaveHover(rel_event.mouse.x , rel_event.mouse.y)) {
+            hoverwidget = 0;
+         }
+         
          Rectangle clip = hoverwidget?hoverwidget->GetClipRectangle():BADRECTANGLE;
          
          if (clip == BADRECTANGLE || (clip != BADRECTANGLE && !clip.Contains(rel_event.mouse.x , rel_event.mouse.y))) {

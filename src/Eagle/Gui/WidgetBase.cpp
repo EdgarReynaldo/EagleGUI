@@ -639,6 +639,12 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
+bool WidgetBase::DoIReallyHaveHover(int mx , int my) {
+   return InnerArea().Contains(mx,my);
+}
+
+
+
 /// Global functions
 
 
