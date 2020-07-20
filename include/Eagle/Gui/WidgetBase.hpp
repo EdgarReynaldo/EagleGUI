@@ -203,6 +203,9 @@ WidgetBase(std::string classname , std::string objname) :
    void SetVisibleState(bool visible);///< Sets the visibility to the value of visible (invisible widgets still take input)
    void SetEnabledState(bool enabled);///< Sets the enabled state to the value of enabled (disabled widgets don't accept input)
    
+   void ShowAndEnable();///< Shows and enables this widget
+   void HideAndDisable();///< Hides and disables this widget
+   
    
    void SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset);///< Sets the shared colorset
    void SetWidgetColorset(const WidgetColorset& cset);///< Sets a personal colorset
@@ -211,7 +214,7 @@ WidgetBase(std::string classname , std::string objname) :
    void SetWidgetPainter(const WidgetPainter& wp);///< Set the widget painter to use for painting this widget
    void UnsetWidgetPainter();///< Reset the widget painter for this widget to the default
    
-   void SetZOrder(int zpriority);///< Set the z priority. Larger values are closer to the screen and appear above
+   virtual void SetZOrder(int zpriority);///< Set the z priority. Larger values are closer to the screen and appear above
                                  ///< widgets with lower priority
    
    /// Getters
@@ -277,6 +280,8 @@ WidgetBase(std::string classname , std::string objname) :
    
    int ZValue() const {return zdepth;}///< Gets the z priority. See @ref WIDGET_ZORDER_PRIORITY 
    
+   
+   virtual Rectangle GetClipRectangle();
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    

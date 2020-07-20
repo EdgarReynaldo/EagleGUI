@@ -226,7 +226,28 @@ void LayoutBase::RemoveWidgetFromLayout(WidgetBase* widget) {
 
    if (whandler) {
       whandler->StopTrackingWidget(widget);
-      widget->SetLayoutOwner(0);
+   }
+   widget->SetLayoutOwner(0);
+}
+
+
+
+void LayoutBase::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   if (f & VISIBLE) {
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (w) {
+            w->SetVisibleState(on);
+         }
+      }
+   }
+   else if (f & ENABLED) {
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (w) {
+            w->SetEnabledState(on);
+         }
+      }
    }
 }
 
@@ -266,7 +287,7 @@ LayoutBase::LayoutBase(std::string objclass , std::string objname) :
       valign(VALIGN_TOP)
 {
    zdepth = ZORDER_PRIORITY_LOW;
-   SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
+///   SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
 }
 
 
@@ -463,6 +484,16 @@ bool LayoutBase::IsRootLayout() const {
 
 int LayoutBase::GetLayoutSize() const {
    return (int)wchildren.size();
+}
+
+
+
+Rectangle LayoutBase::GetClipRectangle() {
+   LayoutBase* playout = GetLayout();
+   if (playout) {
+      return Overlap(InnerArea() , playout->GetClipRectangle());
+   }
+   return InnerArea();
 }
 
 

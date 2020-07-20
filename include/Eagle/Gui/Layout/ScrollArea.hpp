@@ -26,8 +26,8 @@
 
 
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
+#include "Eagle/Gui/Layout/ScrollView.hpp"
 #include "Eagle/Gui/ScrollBar.hpp"
-#include "Eagle/Gui/ScrollView.hpp"
 
 
 /**! @class ScrollArea
@@ -87,6 +87,10 @@ public :
    void SetScrollbarPosition(bool on_top , bool on_left);///< Pass true for left/top, false for right/bottom
    void SetHScrollbarPosition(bool on_top);///< Pass true to place the horizontal scrollbar on the top, false on the bottom
    void SetVSCrollbarPosition(bool on_left);///< Pass true to place the vertical scrollbar on the left, false on the right
+   
+   void SetScrollbarValues(int xscroll , int yscroll);
+
+   
    
    void SetViewWidget(WidgetBase* widget_to_view);
 

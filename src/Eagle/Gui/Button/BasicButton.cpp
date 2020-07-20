@@ -180,7 +180,7 @@ int BasicButton::PrivateCheckInputs() {
       if (btn_action_type == SPRING_BTN) {focuskey_activated = true;}
 
    } else if (input_mouse_press(LMB)) {
-      Rectangle real = AbsoluteArea().OuterArea();
+      Rectangle real = OuterArea();
       click_area->MoveBy(real.X() , real.Y());
 
       EAGLE_DEBUG(
@@ -403,20 +403,26 @@ void BasicButton::UseDefaultClickArea(bool use_default) {
 
 
 
-void BasicButton::SetButtonState(bool hover , bool up) {
+void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
    bool oldhover = (unsigned int)Flags() & HOVER;
    bool oldup = (btn_state % 2 == 0);
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
-          RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED));
+         if (notify) {
+            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED));
+         }
       }
       else if (btn_action_type == SPRING_BTN) {
          if (!up) {
-            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
+            if (notify) {
+               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED));
+            }
             repeat_elapsed = repeat_previous = 0.0;
          }
          else {
-            RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
+            if (notify) {
+               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_RELEASED));
+            }
          }
       }
       SetBgRedrawFlag();

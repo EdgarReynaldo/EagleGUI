@@ -188,6 +188,8 @@ WidgetBase::~WidgetBase() {
 
 
 int WidgetBase::HandleEvent(EagleEvent ee) {
+   if (Flags().FlagOff(ENABLED)) {return DIALOG_DISABLED;}
+   
    if (ee.type == EAGLE_EVENT_TIMER) {
 ///      Update(ee.timer.eagle_timer_source->SPT());
    }
@@ -204,27 +206,35 @@ int WidgetBase::Update(double dt) {
 
 
 void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
-   if (Flags().FlagOn(VISIBLE)) {
-      WidgetPainter wp = GetWidgetPainter();
-      
-      EagleImage* img = win->GetDrawingTarget();
-      
-      Rectangle cliprect = OuterArea().MovedBy(Pos2I(xpos,ypos));
-      
-      Clipper clip(img , cliprect);
-      
-      if (wp) {
-         wp->GetPainterReady(win , this , xpos , ypos);
-         wp->PaintBackground();
-         PrivateDisplay(win , xpos , ypos);
-         if (wflags.FlagOn(HASFOCUS)) {
-            wp->PaintFocus();
-         }
-      }
-      else {
-         PrivateDisplay(win , xpos , ypos);
+   if (Flags().FlagOff(VISIBLE)) {
+      return;
+   }
+   LayoutBase* layout = GetLayout();
+
+   WidgetPainter wp = GetWidgetPainter();
+   
+   EagleImage* img = win->GetDrawingTarget();
+   
+   Rectangle clip = GetClipRectangle();
+   
+   if (clip == BADRECTANGLE) {
+      return;
+   }
+   
+   Clipper clipper(img , clip);
+
+   if (wp) {
+      wp->GetPainterReady(win , this , xpos , ypos);
+      wp->PaintBackground();
+      PrivateDisplay(win , xpos , ypos);
+      if (wflags.FlagOn(HASFOCUS)) {
+         wp->PaintFocus();
       }
    }
+   else {
+      PrivateDisplay(win , xpos , ypos);
+   }
+
    ClearRedrawFlag();
 }
 
@@ -303,6 +313,18 @@ void WidgetBase::SetVisibleState(bool visible) {
 
 void WidgetBase::SetEnabledState(bool enabled) {
    SetWidgetFlags(Flags().SetNewFlag(ENABLED , enabled));
+}
+
+
+
+void WidgetBase::ShowAndEnable() {
+   SetWidgetFlags(Flags().AddFlags(VISIBLE | ENABLED));
+}
+
+
+
+void WidgetBase::HideAndDisable() {
+   SetWidgetFlags(Flags().RemoveFlags(VISIBLE | ENABLED));
 }
 
 
@@ -587,6 +609,16 @@ bool WidgetBase::HasGui() {
 
 WidgetHandler* WidgetBase::GetGui() {
    return dynamic_cast<WidgetHandler*>(this);
+}
+
+
+
+Rectangle WidgetBase::GetClipRectangle() {
+   LayoutBase* playout = GetLayout();
+   if (playout) {
+      return Overlap(OuterArea() , playout->GetClipRectangle());
+   }
+   return OuterArea();
 }
 
 

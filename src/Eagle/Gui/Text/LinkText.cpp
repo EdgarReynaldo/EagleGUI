@@ -117,7 +117,7 @@ LinkText::LinkText(std::string classname , std::string objname) :
 
 
 void LinkText::SetFont(EagleFont* font) {
-   BasicText::SetFont(font);
+   BasicText::SetupText(text , font);
    
    SetLineSpacing(linespacing);
 }

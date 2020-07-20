@@ -212,6 +212,10 @@ int ScrollArea::PrivateHandleEvent(EagleEvent ee) {
          vscrollbar->SetScroll(anchoryscroll - dy);
          ret |= DIALOG_INPUT_USED;
       }
+      else if (ee.mouse.dz || ee.mouse.dw) {
+         hscrollbar->ScrollBy(ee.mouse.dw);
+         vscrollbar->ScrollBy(ee.mouse.dz);
+      }
    }
    if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
       if (ee.mouse.button == 3) {drag = false;}
@@ -233,6 +237,10 @@ void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
    if ((f & HASFOCUS) && on) {
       GetHandler()->GiveWidgetFocus(GetWidget(0));
       GetHandler()->GiveWidgetFocus(GetWidget(1));
+   }
+   LayoutBase::OnFlagChanged(f , on);
+   if (f & VISIBLE && on) {
+      ResetScrollbars();
    }
 }
 
@@ -266,13 +274,23 @@ ScrollArea::ScrollArea(std::string name) :
 
 
 ScrollArea::~ScrollArea() {
+   StopBroadcasting();
+   StopListening();
    DetachFromGui();
+   ClearWidgets();
+}
+
+
+
+void ScrollArea::SetScrollbarValues(int xscroll , int yscroll) {
+   our_scroll_view.SetScrollOffset(xscroll , yscroll);
 }
 
 
 
 void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
    our_scroll_widget = widget_to_view;/// shallow reference, do not destroy, handled by another layout
+   our_scroll_view.SetOurWidget(our_scroll_widget);
 }
 
 
@@ -310,8 +328,8 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
             wx += scrollbarsize;
          }
       }
-      if (!onleft) {
-         wx = InnerArea().BRX() - scrollbarsize;
+      if (!ontop) {
+         wy = InnerArea().BRY() - scrollbarsize;
       }
       return Rectangle(wx,wy,ww,wh);
    }
@@ -327,8 +345,8 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
             wy += scrollbarsize;
          }
       }
-      if (!ontop) {
-         wy = InnerArea().BRY() - scrollbarsize;
+      if (!onleft) {
+         wx = InnerArea().BRX() - scrollbarsize;
       }
       return Rectangle(wx,wy,ww,wh);
    }
@@ -346,11 +364,11 @@ void ScrollArea::Resize(unsigned int nsize) {
 
 void ScrollArea::PlaceWidget(WidgetBase* w , int slot) {
    (void)slot;
-   if (w == hscrollbar) {
+   if (w == &basic_hscrollbar) {
       slot = 0;
       LayoutBase::PlaceWidget(w , slot);
    }
-   else if (w == vscrollbar) {
+   else if (w == &basic_vscrollbar) {
       slot = 1;
       LayoutBase::PlaceWidget(w , slot);
    }
