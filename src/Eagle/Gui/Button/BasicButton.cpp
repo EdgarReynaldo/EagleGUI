@@ -445,9 +445,11 @@ void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
       }
    }
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
+/**
    EAGLE_DEBUG(
       EagleInfo() << GetButtonStateText(btn_state) << std::endl;
    );
+//*/
 }
 
 

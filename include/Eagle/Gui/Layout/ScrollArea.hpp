@@ -35,7 +35,7 @@
  */
  
 class ScrollArea : public LayoutBase , public EagleEventListener {
-   
+public :
    BasicScrollBar basic_hscrollbar;
    BasicScrollBar basic_vscrollbar;
    
@@ -46,6 +46,13 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    bool onleft;
    bool ontop;
 
+   bool hfit;
+   bool vfit;
+   int hmax;
+   int hmin;
+   int vmax;
+   int vmin;
+   
    ScrollView our_scroll_view;
    
    WidgetBase* our_scroll_widget;
@@ -62,6 +69,7 @@ class ScrollArea : public LayoutBase , public EagleEventListener {
    
    void ResetScrollbars();
    
+   Rectangle GetViewRectangle(bool hbar , bool vbar);
    Rectangle GetViewRectangle();
    
    /// EagleEventListener

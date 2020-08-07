@@ -241,7 +241,7 @@ void LayoutBase::OnFlagChanged(WIDGET_FLAGS f , bool on) {
          }
       }
    }
-   else if (f & ENABLED) {
+   if (f & ENABLED) {
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
          WidgetBase* w = wchildren[i];
          if (w) {

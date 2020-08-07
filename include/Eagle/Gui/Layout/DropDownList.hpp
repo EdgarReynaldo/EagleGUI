@@ -73,6 +73,11 @@ public :
    
    BasicButton* GetOurButton();
    BasicText* GetOurText();
+   
+   
+   
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 

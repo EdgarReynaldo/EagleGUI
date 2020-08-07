@@ -141,7 +141,7 @@ void WidgetBase::OnSelfFlagChanged(WidgetFlags new_widget_flags) {
 
    if (!cflags) {return;}/// Nothing changed
 
-   for (unsigned int i = 1 ; i < NUM_WIDGET_FLAGS ; ++i) {
+   for (unsigned int i = 0 ; i < NUM_WIDGET_FLAGS - 1 ; ++i) {
       /// If a flag changes, call its setter
       unsigned int flag = 1 << i;
       bool change = cflags & flag;

@@ -37,8 +37,61 @@ void ScrollArea::ReserveSlots(int nslots) {
 
 void ScrollArea::ResetScrollbars() {
    if (our_scroll_widget) {
+      Rectangle our_area = GetViewRectangle(false , false);
+      Rectangle their_area = our_scroll_widget->OuterArea();
 
-      Rectangle our_area = GetViewRectangle();
+
+      hfit = their_area.W() <= our_area.W();
+      vfit = their_area.H() <= our_area.H();
+
+      hmax = hfit?our_area.W():their_area.W();
+      hmin = hfit?their_area.W():our_area.W();
+
+      vmax = vfit?our_area.H():their_area.H();
+      vmin = vfit?their_area.H():our_area.H();
+
+      if (!vfit) {
+         hfit = their_area.W() <= (our_area.W() - scrollbarsize);   
+      }
+      else if (!hfit) {
+         vfit = their_area.H() <= (our_area.H() - scrollbarsize);
+      }
+      if (!vfit) {
+         hmax = hfit?(our_area.W() - scrollbarsize):their_area.W();
+         hmin = hfit?their_area.W():(our_area.W() - scrollbarsize);
+      }
+      if (!hfit) {
+         vmax = vfit?(our_area.H() - scrollbarsize):their_area.H();
+         vmin = vfit?their_area.H():(our_area.H() - scrollbarsize);
+      }
+      
+      hscrollbar->SetupView(hmax , hmin);
+      vscrollbar->SetupView(vmax , vmin);
+      
+      if (Flags().FlagOn(VISIBLE)) {
+         /// Hide and disable the scrollbars
+         hscrollbar->SetVisibleState(!hfit);
+         vscrollbar->SetVisibleState(!vfit);
+      }
+      if (Flags().FlagOn(ENABLED)) {
+         /// Hide and disable the scrollbars
+         hscrollbar->SetVisibleState(!hfit);
+         vscrollbar->SetVisibleState(!vfit);
+      }
+      
+      hscrollbar->SetScrollPercent(0.0f);
+      vscrollbar->SetScrollPercent(0.0f);
+   
+      RepositionAllChildren();
+   }
+}
+
+
+/**
+void ScrollArea::ResetScrollbars() {
+   if (our_scroll_widget) {
+
+      Rectangle our_area = GetViewRectangle(false , false);
       Rectangle their_area = our_scroll_widget->OuterArea();
 
       bool hfit = their_area.W() <= our_area.W();
@@ -81,35 +134,48 @@ void ScrollArea::ResetScrollbars() {
          }
       }
    }
-   else {
+
+   if (!Flags().FlagOn(VISIBLE)) {
       /// Hide and disable the scrollbars
       hscrollbar->SetVisibleState(false);
       vscrollbar->SetVisibleState(false);
+   }
+   if (!Flags().FlagOn(ENABLED)) {
       hscrollbar->SetEnabledState(false);
       vscrollbar->SetEnabledState(false);
    }
 
+   (void)(Flags().FlagOn(VISIBLE)?our_scroll_view.ShowAndEnable():our_scroll_view.HideAndDisable());
+   
    hscrollbar->SetScrollPercent(0.0f);
    vscrollbar->SetScrollPercent(0.0f);
+   
+   RepositionAllChildren();
 }
+//*/
 
 
-
-Rectangle ScrollArea::GetViewRectangle() {
+Rectangle ScrollArea::GetViewRectangle(bool hbar , bool vbar) {
    Rectangle inner = InnerArea();
-   if (hscrollbar->FlagOn(VISIBLE)) {
+   if (hbar) {
       inner.SetDimensions(inner.W() , inner.H() - scrollbarsize);
       if (ontop) {
          inner.MoveBy(0 , scrollbarsize);
       }
    }
-   if (vscrollbar->FlagOn(VISIBLE)) {
+   if (vbar) {
       inner.SetDimensions(inner.W() - scrollbarsize , inner.H());
       if (onleft) {
          inner.MoveBy(scrollbarsize , 0);
       }
    }
    return inner;
+}
+
+
+
+Rectangle ScrollArea::GetViewRectangle() {
+   return GetViewRectangle(hscrollbar->Flags().FlagOn(VISIBLE) , vscrollbar->Flags().FlagOn(VISIBLE));
 }
 
 
@@ -234,12 +300,8 @@ void ScrollArea::OnAreaChanged() {
 
 void ScrollArea::OnFlagChanged(WIDGET_FLAGS f , bool on) {
    /// If we have the focus, bring the scroll bars to the top
-   if ((f & HASFOCUS) && on) {
-      GetHandler()->GiveWidgetFocus(GetWidget(0));
-      GetHandler()->GiveWidgetFocus(GetWidget(1));
-   }
    LayoutBase::OnFlagChanged(f , on);
-   if (f & VISIBLE && on) {
+   if ((f & VISIBLE || f & ENABLED) && on) {
       ResetScrollbars();
    }
 }
@@ -268,7 +330,7 @@ ScrollArea::ScrollArea(std::string name) :
    SetScrollBars((BasicScrollBar*)0 , (BasicScrollBar*)0);
    LayoutBase::PlaceWidget(&our_scroll_view , 2);
    ListenTo(&our_scroll_view);
-   SetWidgetFlags(Flags().AddFlag(VISIBLE));
+   ResetScrollbars();
 }
 
 
@@ -291,6 +353,7 @@ void ScrollArea::SetScrollbarValues(int xscroll , int yscroll) {
 void ScrollArea::SetViewWidget(WidgetBase* widget_to_view) {
    our_scroll_widget = widget_to_view;/// shallow reference, do not destroy, handled by another layout
    our_scroll_view.SetOurWidget(our_scroll_widget);
+   our_scroll_view.SetWidgetFlags(Flags());
 }
 
 
