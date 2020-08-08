@@ -38,12 +38,12 @@ void ListBox::RespondToEvent(EagleEvent e , EagleThread* thread) {
                   choice = i;
                }
             }
+            EagleEvent ee = e;
+            ee.widget.from = this;
+            ee.widget.topic = TOPIC_LISTBOX;
+            ee.widget.msgs = LISTBOX_SELECTION_MADE;
+            EmitEvent(ee , thread);
          }
-         EagleEvent ee = e;
-         ee.widget.from = this;
-         ee.widget.topic = TOPIC_LISTBOX;
-         ee.widget.msgs = LISTBOX_SELECTION_MADE;
-         EmitEvent(ee , thread);
       }
    }
 }

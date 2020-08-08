@@ -87,73 +87,6 @@ void ScrollArea::ResetScrollbars() {
 }
 
 
-/**
-void ScrollArea::ResetScrollbars() {
-   if (our_scroll_widget) {
-
-      Rectangle our_area = GetViewRectangle(false , false);
-      Rectangle their_area = our_scroll_widget->OuterArea();
-
-      bool hfit = their_area.W() <= our_area.W();
-      bool vfit = their_area.H() <= our_area.H();
-
-      /// The total view is the larger of the viewed widget size and our view rectangle
-      /// The view in length is the smaller of the viewed widget and our view rectangle
-      int hmax = hfit?our_area.W():their_area.W();
-      int hmin = hfit?their_area.W():our_area.W();
-
-      int vmax = vfit?our_area.H():their_area.H();
-      int vmin = vfit?their_area.H():our_area.H();
-      
-      hscrollbar->SetupView(hmax , hmin);
-
-      vscrollbar->SetupView(vmax , vmin);
-
-      EaglePrefix("SCROLLAREA") << StringPrintF("H min %d max %d V min %d max %d\n" , hmin , hmax , vmin , vmax);
-      
-      /// Determine which scroll bars are visible
-      if (!vfit) {
-         /// Need to show the vertical scrollbar
-         vscrollbar->SetEnabledState(true);
-         vscrollbar->SetVisibleState(true);
-         /// The vscrollbar takes up horizontal room
-         if (their_area.W() > (our_area.W() - scrollbarsize)) {
-            /// Need to show the horizontal scrollbar too
-            hscrollbar->SetEnabledState(true);
-            hscrollbar->SetVisibleState(true);
-         }
-      }
-      else if (!hfit) {
-         /// Need to show the horizontal scrollbar
-         hscrollbar->SetEnabledState(true);
-         hscrollbar->SetVisibleState(true);
-         /// The hscrollbar takes up vertical room
-         if (their_area.H() > our_area.H() - scrollbarsize) {
-            vscrollbar->SetEnabledState(true);
-            vscrollbar->SetVisibleState(true);
-         }
-      }
-   }
-
-   if (!Flags().FlagOn(VISIBLE)) {
-      /// Hide and disable the scrollbars
-      hscrollbar->SetVisibleState(false);
-      vscrollbar->SetVisibleState(false);
-   }
-   if (!Flags().FlagOn(ENABLED)) {
-      hscrollbar->SetEnabledState(false);
-      vscrollbar->SetEnabledState(false);
-   }
-
-   (void)(Flags().FlagOn(VISIBLE)?our_scroll_view.ShowAndEnable():our_scroll_view.HideAndDisable());
-   
-   hscrollbar->SetScrollPercent(0.0f);
-   vscrollbar->SetScrollPercent(0.0f);
-   
-   RepositionAllChildren();
-}
-//*/
-
 
 Rectangle ScrollArea::GetViewRectangle(bool hbar , bool vbar) {
    Rectangle inner = InnerArea();
@@ -175,7 +108,8 @@ Rectangle ScrollArea::GetViewRectangle(bool hbar , bool vbar) {
 
 
 Rectangle ScrollArea::GetViewRectangle() {
-   return GetViewRectangle(hscrollbar->Flags().FlagOn(VISIBLE) , vscrollbar->Flags().FlagOn(VISIBLE));
+//   return GetViewRectangle(hscrollbar->Flags().FlagOn(VISIBLE) , vscrollbar->Flags().FlagOn(VISIBLE));
+   return GetViewRectangle(!hfit , !vfit);
 }
 
 
@@ -210,8 +144,6 @@ void ScrollArea::SetScrollBars(BasicScrollBar* horizontalscrollbar , BasicScroll
    LayoutBase::PlaceWidget(vscrollbar , 1);
 
    ResetScrollbars();
-   
-   RepositionChild(2);
 }
 
 
@@ -292,8 +224,8 @@ int ScrollArea::PrivateHandleEvent(EagleEvent ee) {
 
 
 void ScrollArea::OnAreaChanged() {
-   ResetScrollbars();
    LayoutBase::OnAreaChanged();
+   ResetScrollbars();
 }
 
 
@@ -318,6 +250,12 @@ ScrollArea::ScrollArea(std::string name) :
       scrollbarsize(10),
       onleft(false),
       ontop(false),
+      hfit(false),
+      vfit(false),
+      hmax(-1),
+      hmin(-1),
+      vmax(-1),
+      vmin(-1),
       our_scroll_view(),
       our_scroll_widget(0),
       drag(false),
@@ -385,7 +323,7 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
       int ww = InnerArea().W();
       int wh = scrollbarsize;
 
-      if (vscrollbar->FlagOn(VISIBLE)) {
+      if (!hfit) {
          ww -= scrollbarsize;
          if (onleft) {
             wx += scrollbarsize;
@@ -402,7 +340,7 @@ Rectangle ScrollArea::RequestWidgetArea(int widget_slot , int newx , int newy , 
       int wy = InnerArea().Y();
       int ww = scrollbarsize;
       int wh = InnerArea().H();
-      if (hscrollbar->FlagOn(VISIBLE)) {
+      if (!vfit) {
          wh -= scrollbarsize;
          if (ontop) {
             wy += scrollbarsize;
