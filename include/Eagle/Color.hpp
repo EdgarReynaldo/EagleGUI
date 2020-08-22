@@ -75,21 +75,24 @@ public :
    
    /// Getters
 
-   int R() {return r;}
-   int G() {return g;}
-   int B() {return b;}
-   int A() {return a;}
-   float fR() {return fr;}
-   float fG() {return fg;}
-   float fB() {return fb;}
-   float fA() {return fa;}
+   int R() const {return r;}
+   int G() const {return g;}
+   int B() const {return b;}
+   int A() const {return a;}
+   float fR() const {return fr;}
+   float fG() const {return fg;}
+   float fB() const {return fb;}
+   float fA() const {return fa;}
 
    friend std::ostream& operator<<(std::ostream& os , const EagleColor& c);///< Ouput an EagleColor to a stream
 
 };
 
 
-
+//EagleColor operator*(const EagleColor& ecol , double alpha);
+inline EagleColor operator*(const EagleColor& ecol , float alpha) {
+   return EagleColor(ecol.r*alpha , ecol.g*alpha , ecol.b*alpha , alpha);
+}
 
 #endif // EagleColor_HPP
 

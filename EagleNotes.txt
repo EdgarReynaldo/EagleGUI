@@ -47,31 +47,25 @@ TODO : Milestones necessary for development
 
    TODO : Make the file system useful for creating files and checking if they exist
       
-   TODO :
-      1) FlowLayout
-      
    TODO : Widgets in production
-      a - Drop down list (might want ScrollArea first)
-      c - Menu, MenuItem, MenuBar
-      d - WrapText , EditText
-      e - ScrollArea , ScrollBar(edit it to work as a standalone scroller if desired - wait, what does that mean? ICR)
-      f - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
-      g - NPLayout , MenuLayout (might want to use PinLayout)
-      h - Decorator , BorderDecorator, ResizeDecorator
-      j - Slider, SliderKnob - DragButton
-      k - Dial, Tooltip
-      l - GuiWindow
-      f - ZoomCamera (might want ScrollArea first)
+      a - Menu, MenuItem, MenuBar
+      b - WrapText
+      c - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
+      d - Slider, SliderKnob - DragButton
+      e - Dial, Tooltip
+      f - GuiWindow
+      g - ZoomCamera (might want ScrollArea first)
 
       
    COMPLETE : 
       A - BasicButton , GuiButton , IconButton , RadioGroup
-      B - BasicText , SelectText , LinkText
-      C - ScrollButton , Scroller, ScrollBar, ScrollView , ScrollArea
-      D - Slider , Slider2D
-      E - Camera
-      E - DumbLayout , GridLayout , RelativeLayout , SplitterLayouts , PinLayout , NPLayout
-      F - StickyLayout , ScrollAreaLayout
+      B - BasicText , SelectText , LinkText , EditText
+      C - BasicTextButton
+      D - DropDownList
+      E - ScrollButton , Scroller, ScrollBar, ScrollView , ScrollArea
+      F - Slider , Slider2D
+      G - Camera
+      H - DumbLayout , GridLayout , ClassicMenuLayout , ListBox , RelativeLayout , SplitterLayouts , PinLayout , NPLayout
 
 2. Create documentation - doxygen looks best for this
 - WIP

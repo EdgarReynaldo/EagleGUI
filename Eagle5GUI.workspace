@@ -5,5 +5,8 @@
 		<Project filename="Allegro5Backend.cbp" />
 		<Project filename="examples/ExGui.cbp" />
 		<Project filename="../Allegro52X/cbbuild/ALLEGRO.cbp" />
+		<Project filename="../../tests/Allegro5/MSAA.cbp" />
+		<Project filename="../../../AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
+		<Project filename="C:/ctwoplus/progcode/Eagle5GUI_GIT_BitBucket/Skyline2Git/Skyline.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
