@@ -86,13 +86,12 @@ public :
 
    friend std::ostream& operator<<(std::ostream& os , const EagleColor& c);///< Ouput an EagleColor to a stream
 
+   inline EagleColor operator*(float alpha) {
+      return EagleColor(fr*alpha , fg*alpha , fb*alpha , alpha);
+   }
 };
 
 
-//EagleColor operator*(const EagleColor& ecol , double alpha);
-inline EagleColor operator*(const EagleColor& ecol , float alpha) {
-   return EagleColor(ecol.r*alpha , ecol.g*alpha , ecol.b*alpha , alpha);
-}
 
 #endif // EagleColor_HPP
 
