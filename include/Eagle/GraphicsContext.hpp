@@ -528,7 +528,8 @@ public :
    void DrawImageCenter (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    ///< Maintains aspect and stretches to fit
-   void DrawImageFit    (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+   void DrawImageFit    (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , 
+                         HALIGNMENT halign = HALIGN_CENTER , VALIGNMENT valign = VALIGN_CENTER , int flags = DRAW_NORMAL);
 
    ///< Maintains aspect and stretches to cover
    void DrawImageCover  (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
