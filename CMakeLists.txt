@@ -50,17 +50,76 @@ if (WANT_ALLEGRO5)
           "${ALLEGRO5_LIB}" STREQUAL "NOTFOUND")
 
    add_subdirectory(src/backends/Allegro5)
-   if (WANT_EXAMPLES)
-      add_subdirectory(examples)
+endif (WANT_ALLEGRO5)
+
+if (WANT_EXAMPLES)
+   if (NOT WANT_ALLEGRO5)
+      message(SEND_ERROR "Examples need the Allegro 5 Eagle driver)
+   endif (NOT WANT_ALLEGRO5)
+
+   add_subdirectory(examples)
+   if (WANT_ALLEGRO5)
       foreach(EX IN LISTS EXAMPLESRC)
-         get_filename_component(SRC ${EX} NAME)
-         message(STATUS ${SRC} ${EX} SRC EX)
-#         target_link_options(${SRC} PUBLIC "-L/usr/lib")
+         get_filename_component(SRC ${EX} NAME_WLE)
+
+         set(EXNAME ${SRC})
+         string(APPEND EXNAME "_A5")
+
+         set(EXNAMEDEBUG ${SRC})
+         string(APPEND EXNAMEDEBUG "_A5D")
+
+         set(EXNAMESTATIC ${SRC}})
+         string(APPEND EXNAMESTATIC "_A5S")
+
+         set(EXNAMESTATICDEBUG ${SRC})
+         string(APPEND EXNAMESTATICDEBUG "_A5DS")
+
+         set(OPTS "-Wall" "-Wextra" "-Wshadow")
+         set(WINSTATICLIBS "-static" "-ljpeg" "-ldumb" "-lwebp" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lphysfs" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-lopengl32" "-lglu32" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
+
+         if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+            if (EAGLE_SHARED_LIBRARY_BUILD)
+               message(STATUS "Building example " ${EXNAMEDEBUG} ${EX})
+               add_executable(${EXNAMEDEBUG} ${EX})
+               target_compile_options(${EXNAMEDEBUG} ${OPTS} "-g")
+               target_link_libraries(${EXNAMEDEBUG} EagleA5DebugShared EagleDebugShared "-lallegro_monolith-debug.dll")
+            endif (EAGLE_SHARED_LIBRARY_BUILD)
+
+            if (EAGLE_STATIC_LIBRARY_BUILD)
+               message(STATUS "Building example " ${EXNAMESTATICDEBUG} ${EX})
+               add_executable(${EXNAMESTATICDEBUG} ${EX})
+               target_compile_options(${EXNAMESTATICDEBUG} ${OPTS} "-g") 
+               target_link_libraries(${EXNAMESTATICDEBUG} EagleA5Debug EagleDebug "-lallegro_monolith-debug-static" ${WINSTATICLIBS})
+            endif (EAGLE_STATIC_LIBRARY_BUILD)
+
+         endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+         if (CMAKE_BUILD_TYPE NOT STREQUAL "Debug")
+
+            if (EAGLE_SHARED_LIBRARY_BUILD)
+               message(STATUS "Building example " ${EXNAME} ${EX})
+               add_executable(${EXNAME} ${EX})
+               target_compile_options(${EXNAME} ${OPTS}) 
+               target_link_libraries(${EXNAMEDEBUG} EagleA5Shared EagleShared "-lallegro_monolith.dll")
+            endif (EAGLE_SHARED_LIBRARY_BUILD)
+
+            if (EAGLE_STATIC_LIBRARY_BUILD)
+               message(STATUS "Building example " ${EXNAMESTATIC} ${EX})
+               add_executable(${EXNAMESTATIC} ${EX})
+               target_compile_options(${EXNAMESTATIC} ${OPTS}) 
+               target_link_libraries(${EXNAMESTATIC} EagleA5 Eagle "-lallegro_monolith-static" ${WINSTATICLIBS})
+            endif (EAGLE_STATIC_LIBRARY_BUILD)
+
+         endif (CMAKE_BUILD_TYPE NOT STREQUAL "Debug")
+         
+         
+   #         target_link_options(${SRC} PUBLIC "-L/usr/lib")
          target_link_libraries(${SRC} PUBLIC EagleA5DebugShared EagleDebugShared)
          install(TARGETS ${SRC} RUNTIME DESTINATION bin)
       endforeach()
-   endif()
-endif (WANT_ALLEGRO5)
+   endif (WANT_ALLEGRO5)
+endif (WANT_EXAMPLES)
 
 install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
