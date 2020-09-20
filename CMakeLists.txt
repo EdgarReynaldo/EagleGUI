@@ -1,7 +1,7 @@
 
 # This CMakeLists.txt belongs in the root of the project. This is the master cmake file
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.14)
 
 set(EAGLE_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(EAGLE_INCLUDE_DIR ${EAGLE_ROOT_DIR}/include)

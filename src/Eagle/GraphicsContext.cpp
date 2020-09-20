@@ -388,9 +388,8 @@ void EagleGraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , fl
 
 
 void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags) {
-   DrawTintedStretchedRegion(img , src , Rectangle(dest.X() , dest.Y() , src.W() , src.H()) , EagleColor(255,255,255,255) , flags);
+   DrawTintedStretchedRegion(img , src , dest , EagleColor(255,255,255,255) , flags);
 }
-
 
 
 void EagleGraphicsContext::DrawTintedStretched(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
