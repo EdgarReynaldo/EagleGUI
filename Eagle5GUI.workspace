@@ -8,5 +8,6 @@
 		<Project filename="../../tests/Allegro5/MSAA.cbp" />
 		<Project filename="../../../AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
 		<Project filename="../../projects/Skyline2020/Skyline.cbp" />
+		<Project filename="../../projects/Spiraloid2020/Spiraloid2.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

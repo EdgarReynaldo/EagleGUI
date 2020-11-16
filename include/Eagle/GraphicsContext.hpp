@@ -453,7 +453,7 @@ public :
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;
 
    /**! @fn DrawShadedQuad <float,float,EagleColor,float,float,EagleColor,float,float,EagleColor,float,float,EagleColor>
-    *   @brief Draws a shaded quad using the specified corners and corner colors
+    *   @brief Draws a shaded quad using the specified corners and corner colors. x1 is top left, anticlockwise to x4 top right
     */
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,

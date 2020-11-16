@@ -235,6 +235,10 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       PrivateDisplay(win , xpos , ypos);
    }
 
+   if (wflags.FlagOff(ENABLED)) {
+      win->DrawFilledRectangle(InnerArea() , EagleColor(96,96,96,96));/// Show widgets as disabled
+   }
+   
    ClearRedrawFlag();
 }
 

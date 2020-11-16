@@ -465,7 +465,7 @@ extern float key_held_duration[EAGLE_KEY_STATE_EXTENDED_MAX];///< An array of du
  *
  *  Ex.
  *  ```
- *      if (mouse_press && 1) {/// LMB pressed
+ *      if (mouse_press & 1) {/// LMB pressed
  *  ```
  *
  *  See the shortcut functions for testing mouse states, such as 
@@ -629,7 +629,7 @@ extern const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES];
  *   @brief The Input class is designed to test for input states. They are used as objects in boolean expressions to
  *          test whether the given input source and state was detected.
  *
- *   Since the Input class depends on the InputHandler, they're state will not change between calls to @ref HandleInputEvent
+ *   Since the Input class depends on the InputHandler, their state will not change between calls to @ref HandleInputEvent
  */
 
 class Input {
