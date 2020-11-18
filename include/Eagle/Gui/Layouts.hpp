@@ -42,6 +42,7 @@
 #include "Eagle/Gui/Layout/BasicTextButtonLayout.hpp"
 #include "Eagle/Gui/Layout/ScrollView.hpp"
 #include "Eagle/Gui/Layout/ScrollArea.hpp"
+#include "Eagle/Gui/Layout/SimpleTable.hpp"
 
 
 
