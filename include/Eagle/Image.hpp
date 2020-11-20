@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,16 +31,16 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/SharedMemory.hpp"
 
-
-
 #include <string>
 #include <vector>
 #include <memory>
 
 
+
 /**! @enum IMAGE_TYPE
  *   @brief Determines whether this image is a memory image, system image, or video image
  */
+
 enum IMAGE_TYPE {
    MEMORY_IMAGE = 0,///< Memory image
    SYSTEM_IMAGE = 1,///< System image
@@ -54,6 +54,7 @@ enum IMAGE_TYPE {
  *   Lets you know whether this image was allocated from memory (any kind), loaded from disk, created from a parent image,
  *   whether this is a reference to an image we should not free, or whether we own it
  */
+
 enum IMAGE_SOURCE {
    ALLOCATED      = 0,///< Allocated from main, system, or video memory
    LOADED         = 1,///< This image was loaded from disk

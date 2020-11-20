@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,24 +25,21 @@
 
 
 #include <atomic>
+#include <fstream>
+
 #include "Eagle/Object.hpp"
 #include "Eagle/Mutexes.hpp"
 
 
 
-#include <fstream>
-
-
-
 class EagleThread;
-
-
 
 /**! @typedef EAGLE_THREAD_PROCESS
  *   @brief Typedef for a function you wish to run inside an @ref EagleThread
  * 
  *   Your process will be given access to the eagle thread, and the ptr specified in EagleThread::Create
  */
+
 typedef void* (*EAGLE_THREAD_PROCESS)(EagleThread* , void*);
 
 extern void* const THREAD_NOT_VALID;///< Used by @ref EagleThread::FinishThread to signal no thread is active

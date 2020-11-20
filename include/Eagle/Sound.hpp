@@ -12,12 +12,12 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Sound.hpp
- * @brief The interface for all sound in Eagle
+ * @brief The interface for all sounds in Eagle
  * 
  * TODO : Implement and stuff
  */
@@ -25,14 +25,13 @@
 #ifndef Sound_HPP
 #define Sound_HPP
 
-
+/**
 
 #include <string>
 
 
 
 
-/**
 class Sound {
 public :
    virtual ~Sound() {}

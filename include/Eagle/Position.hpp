@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -22,9 +22,9 @@
  *
  * Pos2T is a template class for holding an x and y position in any given precision.
  *
- * Pos2I is Pos2T<int>
- * Pos2F is Pos2T<float>
- * Pos2D is Pos2T<double>
+ * Pos2I is @ref Pos2T<int>
+ * Pos2F is @ref Pos2T<float>
+ * Pos2D is @ref Pos2T<double>
  *
  * You can add and subtract and apply scalar multiplication. You can get angles between points, draw lines and (TODO : Arrows) and more.
  */

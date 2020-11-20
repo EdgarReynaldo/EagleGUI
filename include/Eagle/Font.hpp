@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -36,7 +36,7 @@
 
 
 /**! @enum FONT_LOADING_FLAGS
- *   @brief A set of values indicating how to load the font
+ *   @brief A set of flags indicating how to load the font
  */
 
 enum FONT_LOADING_FLAGS {
@@ -46,6 +46,14 @@ enum FONT_LOADING_FLAGS {
    LOAD_FONT_NOAUTOHINT     = 1 << 2,///< TODO : I Have no idea what this is
    LOAD_FONT_NOPREMULTALPHA = 1 << 3 ///< Whether to pre-multiply the alpha for this font
 };
+
+
+/**! @class EagleFont
+ *   @brief An abstract base class for working with fonts in Eagle
+ *
+ *   See @ref Allegro5Font for a concrete implementation of EagleFont
+ */
+
 
 
 

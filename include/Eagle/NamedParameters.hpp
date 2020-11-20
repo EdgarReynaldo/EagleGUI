@@ -12,18 +12,20 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file NamedParameters.hpp
  * @brief Experimental, for passing named parameters to functions...
+ *
+ * TODO : UNUSED : Abandon all hope ye who enter here?
  */
 
 #ifndef NamedParameters_HPP
 #define NamedParameters_HPP
 
-
+#error UNUSED
 
 /**
 #include <utility>

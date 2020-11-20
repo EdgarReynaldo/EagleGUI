@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -21,7 +21,6 @@
  * @brief Main Eagle include file
  *
  * Include Eagle.hpp to gain access to all of Eagle's public headers
- * 
  */
 
 
@@ -56,7 +55,7 @@
 #include "Eagle/MemberFunctors.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/Mutexes.hpp"
-#include "Eagle/NDimensionArray.hpp"
+//#include "Eagle/NDimensionArray.hpp"
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/ObjectInfo.hpp"

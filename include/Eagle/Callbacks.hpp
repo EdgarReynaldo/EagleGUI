@@ -12,22 +12,18 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Callbacks.hpp
  * @brief The interface file for the callback system in Eagle. WIP.
  *
- * TODO : Implement me?
+ * TODO : Implement me? Questionable usefulness.
  */
 
 #ifndef Callbacks_HPP
 #define Callbacks_HPP
-
-#warning TODO : Complete me
-
-
 
 /**
 

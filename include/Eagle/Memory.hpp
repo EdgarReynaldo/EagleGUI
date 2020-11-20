@@ -12,12 +12,12 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Memory.hpp
- * @brief UNUSED
+ * @brief TODO : UNUSED, Implement me?
  */
 
 #ifndef Memory_HPP

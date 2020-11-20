@@ -19,8 +19,7 @@
  * @file InputHandler.hpp
  * @brief The main interface for all state based input in Eagle
  *
- * All state based input is formed by an event driven state machine. State based input will only work if you call
- * @ref HandleInputEvent or @ref EagleSystesm::WaitForSystemEventAndUpdateState .
+ * All state based input is formed by an event driven state machine. No input will work if you don't call
  */
 
 #ifndef InputHandler_H
@@ -32,6 +31,8 @@
 #include <string>
 #include <map>
 #include <vector>
+
+
 
 #include "Eagle/Events.hpp"
 #include "Eagle/Timer.hpp"

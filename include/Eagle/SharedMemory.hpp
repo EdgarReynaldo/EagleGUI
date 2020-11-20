@@ -12,12 +12,12 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file SharedMemory.hpp
- * @brief The interface for working with shared objects in Eagle
+ * @brief An interface for working with shared objects in Eagle
  */
 
 #ifndef SharedMemory_HPP
@@ -26,6 +26,7 @@
 
 
 #include <memory>
+
 
 
 /**! @class DELETER
