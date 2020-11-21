@@ -52,10 +52,10 @@ class EagleGraphicsContext;
 template <class TYPE>
 class Pos2T {
    
+public :
    TYPE tx;
    TYPE ty;
    
-public :
    Pos2T() : tx(0) , ty(0) {}
    Pos2T(const TYPE& x , const TYPE& y) : tx(x) , ty(y) {}
    
