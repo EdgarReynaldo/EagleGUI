@@ -29,12 +29,7 @@
 #include "Eagle/Gui/Text/SelectText.hpp"
 
 
-
 /**! @class EditText
- *   @brief A simple multi line text editor widget
- *   TODO : DOCS
- */
-
 class EditText : public SelectText {
    
 protected :
