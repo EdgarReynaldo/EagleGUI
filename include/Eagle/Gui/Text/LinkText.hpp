@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -24,8 +24,6 @@
 #ifndef LinkText_HPP
 #define LinkText_HPP
 
-
-
 #include "Eagle/Gui/Text/SelectText.hpp"
 
 
@@ -35,7 +33,6 @@ extern const int LINK_LAUNCHED;
 
 ///< Registers a widget message under TOPIC_TEXT_WIDGET with the value LINK_LAUNCHED
 REGISTER_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
-
 
 
 

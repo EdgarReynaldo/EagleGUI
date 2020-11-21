@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -73,6 +73,11 @@ public :
    GuiButton(std::string classname = "GuiButton" , std::string name = "Nemo");
 
    virtual ~GuiButton() {}
+
+/**   virtual bool DoIReallyHaveHover(int mx , int my);
+bool GuiButton::DoIReallyHaveHover(int mx , int my) {
+   
+}*/
 
    virtual void SetRedrawFlag();///< Shortcut to SetBgRedrawFlag, since we always need our background re-drawn
 

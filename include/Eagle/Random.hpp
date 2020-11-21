@@ -12,12 +12,12 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Random.hpp
- * @brief A simple implementation of the Mersenne Twister 19937 using C++11
+ * @brief A simple implementation of the Mersenne Twister 19937 capabilities using C++11
  */
 
 #ifndef Random_HPP

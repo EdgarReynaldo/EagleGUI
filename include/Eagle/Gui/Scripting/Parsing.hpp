@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,16 +25,14 @@
 #define Parsing_HPP
 
 
+#include <map>
+#include <string>
 
 #include "Eagle/Exception.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Gui/WidgetColorset.hpp"
 #include "Eagle/Gui/WidgetAttributes.hpp"
 
-
-
-#include <map>
-#include <string>
 
 
 /**! @brief Parses the string and creates an attribute value map

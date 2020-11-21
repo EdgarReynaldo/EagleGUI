@@ -59,9 +59,10 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    target_compile_definitions(EagleA5Objects PRIVATE DEBUG)
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_LOG)
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_ASSERT_EXCEPTION)
-   target_compile_definitions(EagleA5Objects PRIVATE ALLEGRO_UNSTABLE)
-   target_compile_options(EagleA5Objects PRIVATE "-g")
+   target_compile_options(EagleA5Objects PRIVATE "-g" "-fno-inline-functions")
 endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+
+target_compile_definitions(EagleA5Objects PRIVATE ALLEGRO_UNSTABLE)
 
 if (${EAGLE_SHARED_LIBRARY_BUILD})
    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")

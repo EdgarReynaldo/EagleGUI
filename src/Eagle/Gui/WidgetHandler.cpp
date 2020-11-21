@@ -94,6 +94,10 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
       if (!wparent) {/// Only root gui checks for hover and focus
          WidgetBase* hoverwidget = GetWidgetAt(rel_event.mouse.x , rel_event.mouse.y);
          
+         if (hoverwidget && !hoverwidget->DoIReallyHaveHover(rel_event.mouse.x , rel_event.mouse.y)) {
+            hoverwidget = 0;
+         }
+         
          Rectangle clip = hoverwidget?hoverwidget->GetClipRectangle():BADRECTANGLE;
          
          if (clip == BADRECTANGLE || (clip != BADRECTANGLE && !clip.Contains(rel_event.mouse.x , rel_event.mouse.y))) {
@@ -109,10 +113,12 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
                hoverwidget->SetHoverState(true);
             }
             whover = hoverwidget;
+/**
             EAGLE_DEBUG(
                std::string name = (hoverwidget?hoverwidget->ShortName():std::string(""));
                EagleInfo() << StringPrintF("Given hover to %s" , name.c_str()) << std::endl;
             );
+//*/
          }
          
          /// Check widget focus
@@ -136,7 +142,7 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
    for (UINT index = 0 ; index < inputlist.size() ; ++index) {
       WidgetBase* widget = inputlist[index];
 
-      if (!(widget->Flags().FlagOn(ENABLED))) {continue;}
+      if (widget->Flags().FlagOff(ENABLED)) {continue;}
       
       if (!widget->GetClipRectangle().Contains(rel_event.mouse.x , rel_event.mouse.y) && e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
          continue;
@@ -339,7 +345,7 @@ void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
       return;
    }
 
-   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget (%s)" , w->FullName()) << std::endl;
+   EagleInfo() << StringPrintF("WidgetHandler::StopTrackingWidget (%s)" , w->FullName()) << std::endl;/// may crash if widget is out of scope, TODO , FIXME
    
    if (!OwnsWidget(w)) {
       EagleWarn() << StringPrintF("WidgetHandler::StopTrackingWidget - we do not own w (%s)\n" , w->FullName()) << std::endl;

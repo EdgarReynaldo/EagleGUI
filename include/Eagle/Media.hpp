@@ -12,11 +12,11 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Media.hpp
- * @brief TODO : Implement?
+ * @brief TODO : Implement me?
  */
 

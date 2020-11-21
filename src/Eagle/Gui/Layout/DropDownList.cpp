@@ -65,7 +65,7 @@ void DropDownList::SetButton(BasicButton* btn) {
    our_toggle_button = btn;
    if (our_toggle_button) {
       ListenTo(our_toggle_button);
-      btn->SetButtonUpState(true);
+      btn->SetButtonState(btn->Flags().FlagOn(HOVER) , true , false);
       SetPopupOpen(false);
    }
    RelativeLayout::PlaceWidget(our_toggle_button , 0 , LayoutRectangle(0.9 , 0.0 , 0.1 , 1.0));
@@ -97,10 +97,9 @@ DropDownList::DropDownList(WidgetBase* widget , EagleFont* font , BasicText* sel
       popup_open(true)
 {
    Resize(2);
+   SetPopup(widget);
    SetText(seltext);
    SetButton(button);
-   SetPopup(widget);
-   SetPopupOpen(false);
 }
 
 
@@ -120,8 +119,8 @@ int DropDownList::AddWidget(WidgetBase* w) {
 
 void DropDownList::SetPopupOpen(bool open) {
    if (popup_open == open) {return;}
-   if (!our_popup) {return;}
    popup_open = open;
+   if (!our_popup) {return;}
    if (popup_open) {
       our_popup->ShowAndEnable();
       if (whandler) {
@@ -181,5 +180,15 @@ BasicButton* DropDownList::GetOurButton() {
 BasicText* DropDownList::GetOurText() {
    return our_selection_text;
 }
+
+
+
+std::ostream& DropDownList::DescribeTo(std::ostream& os , Indenter indent) const {
+   our_toggle_button->DescribeTo(os,indent);
+   our_selection_text->DescribeTo(os,indent);
+   RelativeLayout::DescribeTo(os);
+   return os;
+}
+
 
 

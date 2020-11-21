@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -75,19 +75,21 @@ public :
    
    /// Getters
 
-   int R() {return r;}
-   int G() {return g;}
-   int B() {return b;}
-   int A() {return a;}
-   float fR() {return fr;}
-   float fG() {return fg;}
-   float fB() {return fb;}
-   float fA() {return fa;}
+   int R() const {return r;}
+   int G() const {return g;}
+   int B() const {return b;}
+   int A() const {return a;}
+   float fR() const {return fr;}
+   float fG() const {return fg;}
+   float fB() const {return fb;}
+   float fA() const {return fa;}
 
    friend std::ostream& operator<<(std::ostream& os , const EagleColor& c);///< Ouput an EagleColor to a stream
 
+   inline EagleColor operator*(float alpha) {
+      return EagleColor(fr*alpha , fg*alpha , fb*alpha , alpha);
+   }
 };
-
 
 
 

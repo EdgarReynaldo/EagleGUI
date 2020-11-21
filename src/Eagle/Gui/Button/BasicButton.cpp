@@ -445,9 +445,11 @@ void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
       }
    }
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
+/**
    EAGLE_DEBUG(
       EagleInfo() << GetButtonStateText(btn_state) << std::endl;
    );
+//*/
 }
 
 
@@ -469,6 +471,18 @@ bool BasicButton::JustActivated() {
 
 void BasicButton::EnableHoverMessage(bool enabled) {
    hover_message_enabled = enabled;
+}
+
+
+
+bool BasicButton::DoIReallyHaveHover(int mx , int my) {
+   bool ret = false;
+   if (click_area) {
+      ret = click_area->Contains(mx - InnerArea().X() , my - InnerArea().Y());
+   } else {
+      return WidgetBase::DoIReallyHaveHover(mx,my);
+   }
+   return ret;
 }
 
 

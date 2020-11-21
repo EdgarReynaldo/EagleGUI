@@ -388,9 +388,8 @@ void EagleGraphicsContext::DrawTintedRegion(EagleImage* img , Rectangle src , fl
 
 
 void EagleGraphicsContext::DrawStretchedRegion(EagleImage* img , Rectangle src , Rectangle dest , int flags) {
-   DrawTintedStretchedRegion(img , src , Rectangle(dest.X() , dest.Y() , src.W() , src.H()) , EagleColor(255,255,255,255) , flags);
+   DrawTintedStretchedRegion(img , src , dest , EagleColor(255,255,255,255) , flags);
 }
-
 
 
 void EagleGraphicsContext::DrawTintedStretched(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
@@ -416,7 +415,7 @@ void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , Ea
 
 
 
-void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
+void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , EagleColor tint , HALIGNMENT halign , VALIGNMENT valign , int flags) {
    EAGLE_ASSERT(img && img->Valid() && img->Area());
 
    
@@ -427,12 +426,28 @@ void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , Eagle
    const double imgw = img->W() * minratio;
    const double imgh = img->H() * minratio;
    
-   Rectangle dest2(dest.CX() - imgw/2.0 ,
-                   dest.CY() - imgh/2.0 ,
-                   imgw ,
-                   imgh
-                  );
+   Rectangle dest2(dest.X() , dest.Y() , imgw , imgh);
    
+   switch (halign) {
+   case HALIGN_CENTER :
+      dest.MoveBy((dest.W() - imgw)/2 , 0);
+      break;
+   case HALIGN_RIGHT :
+      dest.MoveBy(dest.W() - imgw , 0);
+      break;
+   default :
+      break;
+   }
+   switch (valign) {
+   case VALIGN_CENTER :
+      dest.MoveBy(0 , (dest.H() - imgh)/2);
+      break;
+   case VALIGN_BOTTOM :
+      dest.MoveBy(0 , dest.H() - imgh);
+      break;
+   default :
+      break;
+   }
 //   Clipper clip(img , dest);
    
    DrawTintedStretched(img , dest2 , tint , flags);

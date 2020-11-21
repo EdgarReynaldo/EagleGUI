@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -175,6 +175,8 @@ public :
    virtual bool JustActivated();///< Returns true if just activated
    
    virtual void EnableHoverMessage(bool enabled);///< Pass true to enable hover messages
+
+   virtual bool DoIReallyHaveHover(int mx , int my);
 
    virtual InputGroup InputKey();///< Get the input key
    virtual BUTTON_STATE ButtonState();///< Get the button state

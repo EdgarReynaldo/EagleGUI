@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,8 +31,6 @@
 #include <string>
 #include <map>
 
-
-
 #include "Eagle/Area.hpp"
 #include "Eagle/Color.hpp"
 #include "Eagle/Events.hpp"
@@ -41,10 +39,7 @@
 #include "Eagle/Container.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/Transforms.hpp"
-
-
 #include "Eagle/Gui/Alignment.hpp"
-
 
 
 
@@ -453,7 +448,7 @@ public :
 	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl)=0;
 
    /**! @fn DrawShadedQuad <float,float,EagleColor,float,float,EagleColor,float,float,EagleColor,float,float,EagleColor>
-    *   @brief Draws a shaded quad using the specified corners and corner colors
+    *   @brief Draws a shaded quad using the specified corners and corner colors. x1 is top left, anticlockwise to x4 top right
     */
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,
@@ -528,7 +523,8 @@ public :
    void DrawImageCenter (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
    ///< Maintains aspect and stretches to fit
-   void DrawImageFit    (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+   void DrawImageFit    (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , 
+                         HALIGNMENT halign = HALIGN_CENTER , VALIGNMENT valign = VALIGN_CENTER , int flags = DRAW_NORMAL);
 
    ///< Maintains aspect and stretches to cover
    void DrawImageCover  (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);

@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,8 +31,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-
-
 
 #include "Eagle/Resources.hpp"
 #include "Eagle/SharedMemory.hpp"

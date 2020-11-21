@@ -12,19 +12,22 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file SFXGenerator.hpp
  * @brief For generating sound effects
+ *
+ * TODO : Implement me
  */
-
-
 
 #ifndef SFXGenerator_HPP
 #define SFXGenerator_HPP
 
-
+#error INCOMPLETE
 
 #endif // SFXGenerator_HPP
+
+
+

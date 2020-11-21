@@ -12,22 +12,21 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Lib.hpp
- * @brief The main interface for the Eagle Library
+ * @brief The main interface for the Eagle Library class
  */
-
-
-
 
 #ifndef EAGLE_LIB_HPP
 #define EAGLE_LIB_HPP
 
 
+
 #include "Eagle/System.hpp"
+
 
 
 namespace Eagle {

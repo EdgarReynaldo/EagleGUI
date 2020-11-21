@@ -12,12 +12,15 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file InputHandler.hpp
  * @brief The main interface for all state based input in Eagle
+ *
+ * All state based input is formed by an event driven state machine. State based input will only work if you call
+ * @ref HandleInputEvent or @ref EagleSystesm::WaitForSystemEventAndUpdateState .
  */
 
 #ifndef InputHandler_H
@@ -29,8 +32,6 @@
 #include <string>
 #include <map>
 #include <vector>
-
-
 
 #include "Eagle/Events.hpp"
 #include "Eagle/Timer.hpp"
@@ -465,7 +466,7 @@ extern float key_held_duration[EAGLE_KEY_STATE_EXTENDED_MAX];///< An array of du
  *
  *  Ex.
  *  ```
- *      if (mouse_press && 1) {/// LMB pressed
+ *      if (mouse_press & 1) {/// LMB pressed
  *  ```
  *
  *  See the shortcut functions for testing mouse states, such as 
@@ -629,7 +630,7 @@ extern const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES];
  *   @brief The Input class is designed to test for input states. They are used as objects in boolean expressions to
  *          test whether the given input source and state was detected.
  *
- *   Since the Input class depends on the InputHandler, they're state will not change between calls to @ref HandleInputEvent
+ *   Since the Input class depends on the InputHandler, their state will not change between calls to @ref HandleInputEvent
  */
 
 class Input {

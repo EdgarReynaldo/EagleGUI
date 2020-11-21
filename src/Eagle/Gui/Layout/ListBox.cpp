@@ -38,12 +38,12 @@ void ListBox::RespondToEvent(EagleEvent e , EagleThread* thread) {
                   choice = i;
                }
             }
+            EagleEvent ee = e;
+            ee.widget.from = this;
+            ee.widget.topic = TOPIC_LISTBOX;
+            ee.widget.msgs = LISTBOX_SELECTION_MADE;
+            EmitEvent(ee , thread);
          }
-         EagleEvent ee = e;
-         ee.widget.from = this;
-         ee.widget.topic = TOPIC_LISTBOX;
-         ee.widget.msgs = LISTBOX_SELECTION_MADE;
-         EmitEvent(ee , thread);
       }
    }
 }
@@ -51,22 +51,7 @@ void ListBox::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 void ListBox::OnFlagChanged(WIDGET_FLAGS f , bool on) {
-   if (f & VISIBLE) {
-      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         WidgetBase* w = wchildren[i];
-         if (w) {
-            w->SetVisibleState(on);
-         }
-      }
-   }
-   if (f & ENABLED) {
-      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         WidgetBase* w = wchildren[i];
-         if (w) {
-            w->SetEnabledState(on);
-         }
-      }
-   }
+   ClassicMenuLayout::OnFlagChanged(f,on);
 }
 
 

@@ -12,20 +12,23 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file NDimensionArray.hpp
  * @brief Utility for making N dimensional arrays
  *
- * Uhh, I don't even remember this code anymore. Make sure it still works....
+ * TODO : Uhh, I don't even remember this code anymore. Make sure it still works....
  */
 
 #ifndef NDimensionArray_HPP
 #define NDimensionArray_HPP
 
 
+#error UNUSED
+
+/** TODO : UNUSED?
 
 template <class O>
 class NDA {
@@ -122,7 +125,7 @@ public :
    }
 };
 
-
+*/
 
 #endif // NDimensionArray_HPP
 

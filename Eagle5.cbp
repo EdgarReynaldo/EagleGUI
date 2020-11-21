@@ -117,6 +117,7 @@
 		<Unit filename="EagleFeatures.txt" />
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
+		<Unit filename="examples/CMakeLists.txt" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
@@ -169,6 +170,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/ScrollArea.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/ScrollView.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/SimpleTable.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/SplitterLayouts.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
@@ -287,6 +289,7 @@
 		<Unit filename="src/Eagle/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/ScrollArea.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/ScrollView.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/SimpleTable.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />

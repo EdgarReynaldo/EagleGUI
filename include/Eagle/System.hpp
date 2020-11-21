@@ -12,16 +12,14 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2019+ by Edgar Reynaldo
+ *    Copyright 2009-2021+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file System.hpp
- * @brief The interface for the @ref EagleSystem base class, which constitutes the base of every system driver in Eagle
+ * @brief The interface for the @ref EagleSystem base class, which constitutes the basis of every system driver in Eagle
  *
- *
- *
- *
+ * See @ref Allegro5System for an implementation.
  */
 
 #ifndef EagleSystem_HPP

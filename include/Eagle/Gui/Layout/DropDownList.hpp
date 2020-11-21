@@ -1,20 +1,39 @@
 
-
-
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2021+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file 
+ * @brief
+ * 
+ * 
+ * 
+ */
 
 #ifndef DropDownList_HPP
 #define DropDownList_HPP
 
 
-#include "Eagle/Gui/Text/BasicText.hpp"
-#include "Eagle/Gui/Button/BasicButton.hpp"
-
-#include "Eagle/Gui/Layout/ListBox.hpp"
-#include "Eagle/Gui/Layout/RelativeLayout.hpp"
-
 
 #include <vector>
 
+#include "Eagle/Gui/Text/BasicText.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
+#include "Eagle/Gui/Layout/ListBox.hpp"
+#include "Eagle/Gui/Layout/RelativeLayout.hpp"
 
 
 
@@ -73,6 +92,11 @@ public :
    
    BasicButton* GetOurButton();
    BasicText* GetOurText();
+   
+   
+   
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 
 
