@@ -23,12 +23,12 @@
 #ifndef Allegro5Sound_HPP
 #define Allegro5Sound_HPP
 
+/**
 
 #include "Eagle/Sound.hpp"
 
 #include "allegro5/allegro_audio.h"
 
-/**
 
 class Allegro5Sound : public Sound {
 

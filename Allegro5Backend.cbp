@@ -129,7 +129,6 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Image.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5MousePointer.hpp" />
-		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Mutex.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5ResourceLib.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Resources.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Sound.hpp" />

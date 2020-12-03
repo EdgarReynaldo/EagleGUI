@@ -920,7 +920,7 @@ bool ModifierHeld(Input* store);
  *   
  *       if (Player.Activated("Punch")) {...}
  *       if (player["Punch"]) {...}  /// This should work as well, [] returns an InputGroup& and if () should evaluate it
- *   ```
+ *   `
  */
 
 class InputAssignment {
