@@ -150,6 +150,7 @@ if (WANT_EXAMPLES)
 
       endforeach()
    endif (WANT_ALLEGRO5)
+   install(FILES "Verdana.ttf" DESTINATION bin)
 endif (WANT_EXAMPLES)
 
 install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
