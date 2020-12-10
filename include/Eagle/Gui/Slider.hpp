@@ -72,7 +72,7 @@ protected :
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
-
+   virtual void  SetRedrawFlag() {SetBgRedrawFlag();}
 public :
    
    Slider(std::string classname = "Slider" , std::string objname = "Nemo" , bool vertical = true , bool inverted = false);
@@ -86,7 +86,6 @@ public :
 
    double GetPercent();///< [0.0,1.0]
    double GetInverted();///< [0.0,1.0]
-   double GetActual();///< [0.0,1.0]
 
    void SetInversion(bool invert_me);///< Pass true to invert (use right to left or use bottom to top)
    void SetOrientation(bool horizontal_slider);///< Pass true to use a horizontal scrollbar, false for vertical

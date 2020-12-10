@@ -207,12 +207,6 @@ double Slider::GetInverted() {
 
 
 
-double Slider::GetActual() {
-   return (invert?GetInverted():GetPercent());
-}
-
-
-
 void Slider::SetInversion(bool invert_me) {
    invert = invert_me;
    SetRedrawFlag();
