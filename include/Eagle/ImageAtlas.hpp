@@ -82,6 +82,8 @@ public :
    EagleImage* ReserveArea(std::string name , EagleImage* copy_image , unsigned int body_index);
    EagleImage* ReserveArea(std::string name , int w , int h , unsigned int body_index);
 
+   std::shared_ptr<AtlasBody> GetBody(unsigned int body_index) {return bodies[body_index];}
+   
 };
 
 

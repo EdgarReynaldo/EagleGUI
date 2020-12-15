@@ -430,20 +430,20 @@ void EagleGraphicsContext::DrawImageFit(EagleImage* img , Rectangle dest , Eagle
    
    switch (halign) {
    case HALIGN_CENTER :
-      dest.MoveBy((dest.W() - imgw)/2 , 0);
+      dest2.MoveBy((dest.W() - imgw)/2 , 0);
       break;
    case HALIGN_RIGHT :
-      dest.MoveBy(dest.W() - imgw , 0);
+      dest2.MoveBy(dest.W() - imgw , 0);
       break;
    default :
       break;
    }
    switch (valign) {
    case VALIGN_CENTER :
-      dest.MoveBy(0 , (dest.H() - imgh)/2);
+      dest2.MoveBy(0 , (dest.H() - imgh)/2);
       break;
    case VALIGN_BOTTOM :
-      dest.MoveBy(0 , dest.H() - imgh);
+      dest2.MoveBy(0 , dest.H() - imgh);
       break;
    default :
       break;
