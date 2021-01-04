@@ -3,11 +3,12 @@
 	<Workspace title="Krampus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
+		<Project filename="../Allegro52X/build/ALLEGRO.cbp" />
 		<Project filename="examples/ExGui.cbp" />
-		<Project filename="../Allegro52X/cbbuild/ALLEGRO.cbp" />
 		<Project filename="../../tests/Allegro5/MSAA.cbp" />
 		<Project filename="../../../AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
 		<Project filename="../../projects/Skyline2020/Skyline.cbp" />
 		<Project filename="../../projects/Spiraloid2020/Spiraloid2.cbp" />
+		<Project filename="../../projects/Krampus2020/Krampus2020.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

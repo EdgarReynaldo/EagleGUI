@@ -569,13 +569,39 @@ void Allegro5GraphicsContext::DrawShadedTexturedQuad(float x1 , float y1 , float
 
 
 void Allegro5GraphicsContext::DrawTintedStretchedRegion(EagleImage* img , float sx , float sy , float sw , float sh , float dx , float dy , float dw , float dh , EagleColor tint , int flags) {
-   /// TODO : FIXME : RESPECT THE FLAGS
-   DrawShadedTexturedQuad(
-         dx      , dy      , sx      , sy      , tint ,
-         dx      , dy + dh , sx      , sy + sh , tint ,
-         dx + dw , dy + dh , sx + sw , sy + sh , tint ,
-         dx + dw , dy      , sx + sw , sy      , tint ,
-         img);
+   
+   if (!flags) {
+      DrawShadedTexturedQuad(
+            dx      , dy      , sx      , sy      , tint ,
+            dx      , dy + dh , sx      , sy + sh , tint ,
+            dx + dw , dy + dh , sx + sw , sy + sh , tint ,
+            dx + dw , dy      , sx + sw , sy      , tint ,
+            img);
+   }
+   else if (flags == DRAW_HFLIP) {/// Exchange texture coordinates between corners 1 and 4 and 2 and 3
+      DrawShadedTexturedQuad(
+            dx      , dy      , sx + sw , sy      , tint ,
+            dx      , dy + dh , sx + sw , sy + sh , tint ,
+            dx + dw , dy + dh , sx      , sy + sh , tint ,
+            dx + dw , dy      , sx      , sy      , tint ,
+            img);
+   }
+   else if (flags == DRAW_VFLIP) {/// Exchange texture coordinates between corners 1 and 2 and 3 and 4
+      DrawShadedTexturedQuad(
+            dx      , dy      , sx      , sy + sh , tint ,
+            dx      , dy + dh , sx      , sy      , tint ,
+            dx + dw , dy + dh , sx + sw , sy      , tint ,
+            dx + dw , dy      , sx + sw , sy + sh , tint ,
+            img);
+   }
+   else if (flags == DRAW_HVFLIP) {/// Exchange texture coordinates between corners 1 and 3 and 2 and 4
+      DrawShadedTexturedQuad(
+            dx      , dy      , sx + sw , sy + sh , tint ,
+            dx      , dy + dh , sx + sw , sy      , tint ,
+            dx + dw , dy + dh , sx      , sy      , tint ,
+            dx + dw , dy      , sx      , sy + sh , tint ,
+            img);
+   }
 }
 
 

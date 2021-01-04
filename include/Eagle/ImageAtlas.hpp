@@ -48,7 +48,6 @@ private :
    AtlasBody();
    
    
-   void Free();
    bool Allocate(EagleGraphicsContext* window);
 
    void SortFreeArea();
@@ -56,6 +55,7 @@ private :
 
 public :
    ~AtlasBody() {Free();}
+   void Free();
    
    EagleImage* GetImage(std::string name);
    

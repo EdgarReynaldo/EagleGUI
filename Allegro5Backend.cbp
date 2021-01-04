@@ -111,6 +111,7 @@
 			<Add option="-std=c++11" />
 			<Add option="-Wformat" />
 			<Add option="-DNOGDI" />
+			<Add option="-DALLEGRO_UNSTABLE" />
 			<Add directory="include" />
 			<Add directory="E:/LIBS/LIBS81Redistro/Allegro525/include" />
 		</Compiler>

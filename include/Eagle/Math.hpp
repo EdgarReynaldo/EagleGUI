@@ -35,6 +35,18 @@
    #define M_PI (3.14159265358979323846)
 #endif
 
+template <class Type>
+Type Sign(Type value) {
+   if (value < 0) {return (Type)-1;}
+   else if (value > 0) {return (Type)1;}
+   else {
+      return (Type)0;
+   }
+}
+
+template <class Type>
+Type Magnitude(Type value) {return (Type)fabs(value);}
+
 
 
 #endif // Math_HPP
