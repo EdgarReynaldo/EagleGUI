@@ -132,6 +132,8 @@ public :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 
    EagleFont* GetFont();
+
+   virtual void SetPreferredSize(int pw = -1, int ph = -1);
 };
 
 

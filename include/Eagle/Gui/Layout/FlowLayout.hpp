@@ -27,7 +27,7 @@
 
 
 #include "Eagle/Gui/Layout/Layout.hpp"
-
+#include <vector>
 
 
 /**! @enum FLOW_ANCHOR_POINT
@@ -49,16 +49,33 @@ enum FLOW_FAVORED_DIRECTION {
 };
 
 
-class FlowLayout : public LayoutBase {/// TODO : IMPLEMENT ME!
+class FlowLayout : public LayoutBase {
 
 protected :
 	
 	FLOW_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
+   std::vector<Rectangle> rcsizes;
+   bool overflow;
+   int padding;
+   
+   virtual void ReserveSlots(int nslots);
+      
+   virtual void OnAreaChanged();///< Override to react to changes in this widget's area
 
+   void RecalcFlow();
+   
 public :
-
+   FlowLayout();
    virtual ~FlowLayout();
+
+   
+   
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+
+   virtual void PlaceWidget(WidgetBase* w , int slot);
+   virtual int AddWidget(WidgetBase* w);
+
 
 };
 

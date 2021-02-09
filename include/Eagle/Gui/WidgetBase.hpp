@@ -48,6 +48,9 @@ class LayoutBase;
 class WidgetHandler;
 
 
+extern int PREFERREDWIDGETWIDTH;
+extern int PREFERREDWIDGETHEIGHT;
+
 
 /*! @enum WIDGET_ZORDER_PRIORITY
  *  @brief This enum provides a small range of z depth for widgets, to enable layering
@@ -132,6 +135,8 @@ protected :
    /// Visual ordering
    int zdepth;///< How deep a widget is in the z order. Larger values indicate the widget is closer to the screen, and on top
 
+   int prefw;
+   int prefh;
 
    /// IScrollable
    
@@ -173,7 +178,9 @@ WidgetBase(std::string classname , std::string objname) :
       whandler(0),
       wpainter(),
       wcolors(),
-      zdepth(ZORDER_PRIORITY_NORMAL)
+      zdepth(ZORDER_PRIORITY_NORMAL),
+      prefw(PREFERREDWIDGETWIDTH),
+      prefh(PREFERREDWIDGETHEIGHT)
 {}
    virtual ~WidgetBase();
    
@@ -286,6 +293,12 @@ WidgetBase(std::string classname , std::string objname) :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    
    virtual bool DoIReallyHaveHover(int mx , int my);
+   
+//   virtual void SetPreferredSize(int pw = PREFERREDWIDGETWIDTH , int ph = PREFERREDWIDGETHEIGHT);
+   virtual void SetPreferredSize(int pw = -1 , int ph = -1);
+   bool PreferredSize(int* pw , int* ph);
+   int PreferredWidth();
+   int PreferredHeight();
 };
 
 

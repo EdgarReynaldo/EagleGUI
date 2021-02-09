@@ -78,6 +78,21 @@ public :
 
 
 
+class IntEditText : public EditText {
+   
+//   virtual int PrivateHandleEvent(EagleEvent e);
+   virtual int PrivateHandleEvent(EagleEvent e) {
+      if (e.type == EAGLE_EVENT_KEY_CHAR && !isdigit(e.keyboard.unicode)) {return DIALOG_OKAY;}
+      return EditText::PrivateHandleEvent(e);
+   }
+   
+public :
+   IntEditText(std::string classname = "IntEditText" , std::string objname = "Nemo") :
+         EditText(classname , objname)
+   {}
+};
+
+
 
 #endif // EditText_HPP
 

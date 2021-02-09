@@ -176,7 +176,7 @@ BasicText::BasicText(std::string objname) :
 
 
 BasicText::BasicText(EagleFont* font , std::string label , HALIGNMENT hal , VALIGNMENT val , int hpad , int vpad , int vspacing) :
-      WidgetBase("BasicText" , text + "_label"),
+      WidgetBase("BasicText" , label + "_label"),
       halign(HALIGN_LEFT),
       valign(VALIGN_TOP),
       text_font(0),
@@ -341,6 +341,18 @@ std::string BasicText::LineString(int linenum) {
 
 EagleFont* BasicText::GetFont() {
    return text_font;
+}
+
+
+
+void BasicText::SetPreferredSize(int pw , int ph) {
+   if (pw == -1) {
+      pw = maxwidth + 2*hpadding;
+   }
+   if (ph == -1) {
+      ph = totalheight + 2*vpadding*(nlines-1);
+   }
+   WidgetBase::SetPreferredSize(pw,ph);
 }
 
 

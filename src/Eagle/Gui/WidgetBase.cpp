@@ -25,6 +25,12 @@
 
 
 
+int PREFERREDWIDGETWIDTH = 80;
+
+int PREFERREDWIDGETHEIGHT = 40;
+
+
+
 const unsigned int TOPIC_DIALOG = NextFreeTopicId();
 
 
@@ -645,6 +651,33 @@ std::ostream& WidgetBase::DescribeTo(std::ostream& os , Indenter indent) const {
 
 bool WidgetBase::DoIReallyHaveHover(int mx , int my) {
    return InnerArea().Contains(mx,my);
+}
+
+
+
+void WidgetBase::SetPreferredSize(int pw , int ph) {
+   if (pw <= 0) {prefw = -1;} else {prefw = pw;}
+   if (ph <= 0) {prefh = -1;} else {prefh = ph;}
+}
+
+
+
+bool WidgetBase::PreferredSize(int* pw , int* ph) {
+   if (pw) {*pw = prefw;}
+   if (ph) {*ph = prefh;}
+   return prefw != -1 && prefh != -1;
+}
+
+
+
+int WidgetBase::PreferredWidth() {
+   return prefw;
+}
+
+
+
+int WidgetBase::PreferredHeight() {
+   return prefh;
 }
 
 

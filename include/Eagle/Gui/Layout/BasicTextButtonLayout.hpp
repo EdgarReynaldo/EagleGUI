@@ -67,9 +67,12 @@ public :
    void SetOurButton(BasicButton* button);
    void SetOurText(BasicText* text);
 
+   void SetupText(std::string text , EagleFont* font , HALIGNMENT halign = HALIGN_CENTER, VALIGNMENT valign = VALIGN_CENTER , int hpadding = 0 , int vpadding = 0 , int lspacing = -1);
 
    BasicButton* GetOurButton();
    BasicText* GetOurText();
+
+   virtual void SetPreferredSize(int pw = -1 , int ph = -1);
 };
 
 

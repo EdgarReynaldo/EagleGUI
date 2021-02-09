@@ -89,6 +89,12 @@ void BasicTextButton::SetOurText(BasicText* text) {
 
 
 
+void BasicTextButton::SetupText(std::string text , EagleFont* font , HALIGNMENT halign , VALIGNMENT valign , int hpadding , int vpadding , int lspacing) {
+   our_text->SetupText(text , font , halign , valign , hpadding , vpadding , lspacing);
+}
+
+
+
 BasicButton* BasicTextButton::GetOurButton() {
    return our_button;
 }
@@ -101,4 +107,10 @@ BasicText* BasicTextButton::GetOurText() {
 
 
 
+void BasicTextButton::SetPreferredSize(int pw , int ph) {
+   our_text->SetPreferredSize(pw,ph);
+   our_button->SetPreferredSize(our_text->PreferredWidth() + 4 , our_text->PreferredHeight() + 4);
+   WidgetBase::SetPreferredSize(our_text->PreferredWidth() + 4 + OuterArea().W() - InnerArea().W() ,
+                                our_text->PreferredHeight() + 4 + OuterArea().H() - InnerArea().H());
+}
 

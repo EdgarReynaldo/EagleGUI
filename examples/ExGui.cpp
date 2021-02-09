@@ -1,4 +1,5 @@
 
+
 #define ALLEGRO_UNSTABLE
 
 
@@ -6,6 +7,232 @@
 #include "Eagle.hpp"
 
 void AllegroLog(const char* text) {EagleInfo() << text;}
+
+
+
+
+
+
+
+class PSlider : public Slider {
+   bool drag = false;
+public :
+   PSlider() :
+         Slider("PSlider" , "Percent slider" , false , false)
+{}
+//   virtual void Display(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual int PrivateHandleEvent(EagleEvent e) {
+      if (IsMouseEvent(e)) {
+         if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+            if (InnerArea().Contains(e.mouse.x , e.mouse.y)) {
+               Slider::SetPercent((double)(e.mouse.x - InnerArea().X())/InnerArea().W());
+               drag = true;
+            }
+         }
+         else if (e.type == EAGLE_EVENT_MOUSE_AXES) {
+            if (drag) {
+               Slider::SetPercent((double)(e.mouse.x - InnerArea().X())/InnerArea().W());
+            }
+         }
+         else if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+            drag = false;
+         }
+      }
+      return DIALOG_OKAY;
+   }
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+      Rectangle r = InnerArea();
+      win->DrawFilledRectangle(r , GetColor(BGCOL));
+      Rectangle pct(r.X() , r.Y() , r.W()*this->GetPercent() , r.H());
+      win->DrawFilledRectangle(pct , GetColor(FGCOL));
+   }
+};
+
+class NumberButton : public GuiButton {
+   int num;
+//   virtual void Display(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+      text = StringPrintF("%d" , num);
+      GuiButton::PrivateDisplay(win,xpos,ypos);
+//      win->DrawTextString(text_font , StringPrintF("%d" , num) , InnerArea().CX() , InnerArea().CY() , GetColor(TXTCOL) , HALIGN_CENTER , VALIGN_CENTER);
+   }
+public :
+   void SetNum(int n) {num = n;}
+};
+
+int main(int argc , char** argv) {
+   Allegro5System* sys = GetAllegro5System();
+   
+   if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
+      EagleWarn() << "Some subsystems not initialized. Proceeding" << std::endl;
+   }
+   
+   int sw = 300;
+   int sh = 600;
+   
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("Main Window" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
+   
+   EAGLE_ASSERT(win && win->Valid());
+   
+   EagleFont* font = win->LoadFont("Verdana.ttf" , -20);
+   
+   EAGLE_ASSERT(font && font->Valid());
+   
+   
+   
+   WidgetHandler gui(win , "GUI" , "Example GUI");
+   
+   
+   
+   gui.SetupBuffer(sw , sh , win);
+   
+   gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));
+   
+   RelativeLayout rl("RL" , "RelativeLayout");
+   
+   rl.Resize(7);/// layout has 7 basic rows
+
+   gui.SetRootLayout(&rl);
+
+   /// TOP ROW OF SHIP SEND PANEL   
+   GridLayout toprow(3 , 1 , "GridLayout" , "TopRow");
+   BasicText trtext1(font , "100" , HALIGN_RIGHT , VALIGN_CENTER , 2 , 2 , 0);
+   BasicText trtext2(font , "SOL\nTO\nULATTE" , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , 0);
+   BasicText trtext3(font , "20" , HALIGN_LEFT , VALIGN_CENTER , 2 , 2 , 0);
+   toprow.PlaceWidget(&trtext1 , 0);
+   toprow.PlaceWidget(&trtext2 , 1);
+   toprow.PlaceWidget(&trtext3 , 2);
+   
+   float y = 0.0;
+   rl.PlaceWidget(&toprow , 0 , LayoutRectangle(0.0f , 0.0f , 1.0f , 0.2f));
+   y += 0.2f;
+   
+   
+   /// 2ND ROW
+   GridLayout num1;
+   num1.ResizeGrid(10 , 1);
+   num1.SetGlobalPadding(2,2);
+   rl.PlaceWidget(&num1 , 2 , LayoutRectangle(0.0f , y , 1.0f , 0.1));
+   y += 0.1f;
+   
+   /// 3ND ROW
+   IntEditText numinput;
+   numinput.SetupText("" , font , HALIGN_RIGHT , VALIGN_CENTER);
+   rl.PlaceWidget(&numinput , 1 , LayoutRectangle(0.0f , y , 1.0f , 0.1));
+   y += 0.1f;
+
+   /// 4TH ROW
+   GridLayout num2;
+   num2.ResizeGrid(11 , 1);
+   num2.SetGlobalSpacing(4 , 4);
+
+   NumberButton numbtns1[10];
+   NumberButton numbtns2[10];
+   
+   for (unsigned int i = 0 ; i < 10 ; ++i) {
+      numbtns1[i].SetFont(font);
+      numbtns2[i].SetFont(win->DefaultFont());
+      numbtns1[i].SetNum(i);
+      numbtns2[i].SetNum((i+1)*10);
+      num1.PlaceWidget(&numbtns1[i] , i);
+      num2.PlaceWidget(&numbtns2[i] , i + 1);
+   }
+   BasicText pctbtn;
+   pctbtn.SetupText("%" , font , HALIGN_CENTER , VALIGN_CENTER);
+   num2.PlaceWidget(&pctbtn , 0);
+   
+   rl.PlaceWidget(&num2 , 3 , LayoutRectangle(0.0f , y , 1.0f , 0.2/3.0f));
+   y += 0.2f/3.0f;
+   
+   /// Row 5
+   BasicScrollButton lrbtn[2];
+   lrbtn[0].SetScrollDirection(true , true);
+   lrbtn[1].SetScrollDirection(false , true);
+   /// Row 5 col 2 -> right
+   PSlider pslider;
+   BasicTextButton clrbtn;
+   clrbtn.SetupText("Clear" , font , HALIGN_CENTER , VALIGN_CENTER);
+   
+   RelativeLayout rl2;
+   rl2.Resize(4);
+   rl2.PlaceWidget(&lrbtn[0] , 0 , LayoutRectangle(0.0f , 0.0f , 0.05f , 1.0f));
+   rl2.PlaceWidget(&lrbtn[1] , 1 , LayoutRectangle(0.05f , 0.0f , 0.05f , 1.0f));
+   rl2.PlaceWidget(&pslider  , 2 , LayoutRectangle(0.1f , 0.0f , 0.7f , 1.0f));
+   rl2.PlaceWidget(&clrbtn   , 3 , LayoutRectangle(0.8f  , 0.0f , 0.2f  , 1.0f));
+   
+   rl.PlaceWidget(&rl2 , 4 , LayoutRectangle(0.0f , y , 1.0f , 0.2/3.0f));
+   y += 0.2f/3.0f;
+   
+   /// Row 6
+   BasicCheckBox cbox[2];
+   BasicText cboxlabels[2];
+
+   cbox[0].SetButtonState(false , false , false);
+   cbox[1].SetButtonState(false , false , false);
+   cboxlabels[0].SetupText("Instant % Box" , font , HALIGN_LEFT , VALIGN_CENTER);
+   cboxlabels[1].SetupText("Instant % Bar" , font , HALIGN_LEFT , VALIGN_CENTER);
+   
+   RelativeLayout rl3;
+   rl3.Resize(5);
+   rl3.PlaceWidget(&cbox[0]       , 0 , LayoutRectangle(0.0f  , 0.0f , 0.1f , 1.0f));
+   rl3.PlaceWidget(&cboxlabels[0] , 1 , LayoutRectangle(0.1f , 0.0f , 0.4f , 1.0f));
+   rl3.PlaceWidget(&cbox[1]       , 2 , LayoutRectangle(0.5f  , 0.0f , 0.1f , 1.0f));
+   rl3.PlaceWidget(&cboxlabels[1] , 3 , LayoutRectangle(0.6f , 0.0f , 0.4f , 1.0f));
+   
+   rl.PlaceWidget(&rl3 , 5 , LayoutRectangle(0.0f , y , 1.0f , 0.2f/3.0f));
+   y += 0.2f/3.0f;
+
+   /// Row 7
+   BasicTextButton send_btns[4];
+   send_btns[0].SetupText("Kill" , font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2);
+   send_btns[1].SetupText("Chase" , font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2);
+   send_btns[2].SetupText("No Retreat" , font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2);
+   send_btns[3].SetupText("Send" , font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2);
+
+   FlowLayout flow;
+   for (unsigned int i = 0 ; i < 4 ; ++i) {
+      BasicTextButton* pbtn = &send_btns[i];
+      pbtn->SetPreferredSize();
+      flow.AddWidget(pbtn);
+   }
+   rl.PlaceWidget(&flow , 6 , LayoutRectangle(0.0f , y , 1.0f , 0.13f));
+//   rl.PlaceWidget(&flow , 6 , LayoutRectangle(0.0f , 0.0 , 1.0f , 1.0f));
+   
+   
+   bool quit = false;
+   bool redraw = true;
+   
+   sys->GetSystemTimer()->Start();
+   
+   while (!quit) {
+      if (redraw) {
+         win->Clear();
+         gui.Display(win , 0 , 0);
+         win->FlipDisplay();
+         redraw = false;
+      }
+      do {
+         EagleEvent e = sys->WaitForSystemEventAndUpdateState();
+         if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            quit = true;
+         }
+         if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+            quit = true;
+         }
+         if (e.type == EAGLE_EVENT_TIMER) {
+            redraw = true;
+            gui.Update(sys->GetSystemTimer()->SPT());
+         }
+         gui.HandleEvent(e);
+         while (gui.HasMessages()) {
+            WidgetMsg msg = gui.TakeNextMessage();
+            EagleLog() << msg << std::endl;
+         }
+      } while (!sys->UpToDate());
+   }
+
+   return 0;
+}
 
 
 
@@ -115,7 +342,7 @@ int main3(int argc , char** argv) {
 
 
 
-int main(int argc , char** argv) {
+int main2(int argc , char** argv) {
    
    (void)argc;
    (void)argv;

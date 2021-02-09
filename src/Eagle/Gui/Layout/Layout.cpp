@@ -152,7 +152,8 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
       *newy = w.Y();
    }
    if (*newwidth == INT_MAX) {
-      *newwidth = w.W();
+      *newwidth = prefw;
+///      *newwidth = w.W();
    }
    else {
       int mw = widget->AbsMinWidth();
@@ -161,7 +162,8 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
       }
    }
    if (*newheight == INT_MAX) {
-      *newheight = w.H();
+      *newheight = prefh;
+///      *newheight = w.H();
    }
    else {
       int mh = widget->AbsMinHeight();

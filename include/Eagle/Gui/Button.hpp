@@ -33,6 +33,7 @@
 #include "Button/RadioGroup.hpp"
 #include "Button/ScrollButton.hpp"
 #include "Button/TextIconButton.hpp"
+#include "Button/CheckBox.hpp"
 
 
 #endif // Button_HPP
