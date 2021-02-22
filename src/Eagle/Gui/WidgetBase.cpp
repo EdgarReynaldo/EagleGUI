@@ -25,12 +25,6 @@
 
 
 
-int PREFERREDWIDGETWIDTH = 80;
-
-int PREFERREDWIDGETHEIGHT = 40;
-
-
-
 const unsigned int TOPIC_DIALOG = NextFreeTopicId();
 
 
@@ -550,18 +544,6 @@ void WidgetBase::SetParent(WidgetBase* p) {
 
 
 
-int WidgetBase::AbsMinWidth() const {
-   return 0;
-}
-
-
-
-int WidgetBase::AbsMinHeight() const {
-   return 0;
-}
-
-
-
 Pos2I WidgetBase::AbsParentPos() const {
    WidgetBase* p = wparent;
    Pos2I pos(0,0);
@@ -655,9 +637,21 @@ bool WidgetBase::DoIReallyHaveHover(int mx , int my) {
 
 
 
+int WidgetBase::AbsMinWidth() const {
+   return 0;
+}
+
+
+
+int WidgetBase::AbsMinHeight() const {
+   return 0;
+}
+
+
+
 void WidgetBase::SetPreferredSize(int pw , int ph) {
-   if (pw <= 0) {prefw = -1;} else {prefw = pw;}
-   if (ph <= 0) {prefh = -1;} else {prefh = ph;}
+   if (pw < 0) {prefw = 0;} else {prefw = pw;}
+   if (ph < 0) {prefh = 0;} else {prefh = ph;}
 }
 
 
@@ -665,7 +659,7 @@ void WidgetBase::SetPreferredSize(int pw , int ph) {
 bool WidgetBase::PreferredSize(int* pw , int* ph) {
    if (pw) {*pw = prefw;}
    if (ph) {*ph = prefh;}
-   return prefw != -1 && prefh != -1;
+   return (prefw && prefh);
 }
 
 

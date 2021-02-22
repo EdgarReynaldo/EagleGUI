@@ -261,10 +261,6 @@ WidgetBase(std::string classname , std::string objname) :
    void SetWidgetHandler(WidgetHandler* wh);///< Sets the widget handler in charge of this widget
    void SetParent(WidgetBase* p);///< Sets the parent widget pointer
    
-   virtual int AbsMinWidth() const;///< Returns the absolute minimum width needed by this widget. Override
-                                   ///< to specify a minimum width to be used by layouts in charge of this widget.
-   virtual int AbsMinHeight() const;///< Returns the absolute minimum height needed by this widget. Override
-                                    ///< to specify a minimum height to be used by layouts in charge of this widget.
    
 ///   virtual Pos2I ViewPos() const;
    virtual Pos2I ViewPos() const {return Pos2I(0,0);}///< Used by widgets with cameras to adjust the reported position of a widget
@@ -292,13 +288,16 @@ WidgetBase(std::string classname , std::string objname) :
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes this widget to an ostream
    
-   virtual bool DoIReallyHaveHover(int mx , int my);
+   virtual bool DoIReallyHaveHover(int mx , int my);///< What's this for again? TODO
    
-//   virtual void SetPreferredSize(int pw = PREFERREDWIDGETWIDTH , int ph = PREFERREDWIDGETHEIGHT);
-   virtual void SetPreferredSize(int pw = -1 , int ph = -1);
-   bool PreferredSize(int* pw , int* ph);
-   int PreferredWidth();
-   int PreferredHeight();
+   virtual int AbsMinWidth() const;///< Returns the absolute minimum width needed by this widget. Override
+                                   ///< to specify a minimum width to be used by layouts in charge of this widget.
+   virtual int AbsMinHeight() const;///< Returns the absolute minimum height needed by this widget. Override
+                                    ///< to specify a minimum height to be used by layouts in charge of this widget.
+   virtual void SetPreferredSize(int pw = 0 , int ph = 0);///< 0 indicates there is no preference for this dimension
+   bool PreferredSize(int* pw , int* ph);///< Returns true if preferred sizes are positive and stores them in *pw and *ph
+   int PreferredWidth();///< Get the preferred width for this widget - may be zero, which indicates no preference
+   int PreferredHeight();///< Get the preferred height for this widget - may be zero, which indicates no preference
 };
 
 

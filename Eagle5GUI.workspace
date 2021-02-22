@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="Krampus">
+	<Workspace title="EaglePlus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
-		<Project filename="../Allegro52X/build/ALLEGRO.cbp" />
 		<Project filename="examples/ExGui.cbp" />
 		<Project filename="../../tests/Allegro5/MSAA.cbp" />
 		<Project filename="../../../AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
