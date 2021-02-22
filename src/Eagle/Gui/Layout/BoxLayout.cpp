@@ -27,6 +27,29 @@
 
 
 
+void BoxLayout::Resize(unsigned int nsize) {
+   areas.resize(nsize , BADRECTANGLE);
+   LayoutBase::Resize(nsize);
+}
+
+
+
+void BoxLayout::PlaceWidget(WidgetBase* w , int slot) {
+   LayoutBase::PlaceWidget(w , slot);
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
+int BoxLayout::AddWidget(WidgetBase* w) {
+   LayoutBase::AddWidget(w);
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
 void HBoxLayout::RecalcFlow() {
    areas.resize(wchildren.size() , BADRECTANGLE);
    
@@ -185,23 +208,7 @@ void HBoxLayout::RecalcFlow() {
 
 
 
-void BoxLayout::Resize(unsigned int nsize) {
-   areas.resize(nsize , BADRECTANGLE);
-   LayoutBase::Resize(nsize);
-}
 
 
 
-void BoxLayout::PlaceWidget(WidgetBase* w , int slot) {
-   LayoutBase::PlaceWidget(w , slot);
-   RecalcFlow();
-   RepositionAllChildren();
-}
 
-
-
-int BoxLayout::AddWidget(WidgetBase* w) {
-   LayoutBase::AddWidget(w);
-   RecalcFlow();
-   RepositionAllChildren();
-}
