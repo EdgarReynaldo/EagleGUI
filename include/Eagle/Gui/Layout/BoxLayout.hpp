@@ -26,7 +26,7 @@
 #define BoxLayout_HPP
 
 
-#include "Eagle/Gui/Layout.hpp"
+#include "Eagle/Gui/Layout/Layout.hpp"
 
 
 /**! @enum BOX_SIZE_RULES
@@ -76,19 +76,8 @@ protected :
    
 public :
    BoxLayout(std::string classname = "BoxLayout" , std::string objname = "Nemo");
-   BoxLayout(std::string classname , std::string objname) :
-         LayoutBase(classname , objname),
-         overflow(false),
-         box_rules(BOX_ALIGN),
-         areas()
-   {
-      LayoutBase::SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
-   }
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) override;
-Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
-   Rectangle r = areas[widget_slot];
-}
 
    virtual void Resize(unsigned int nsize) override;
 

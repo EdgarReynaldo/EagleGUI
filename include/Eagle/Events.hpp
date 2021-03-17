@@ -125,7 +125,9 @@ enum EAGLE_EVENT_TYPE {
 
    EAGLE_EVENT_WIDGET                      = 70,///< This event came from a widget
 
-   EAGLE_EVENT_WIDGET_EVENT_STOP           = 70,///< End id for widget events
+   EAGLE_EVENT_WIDGET_DRAG_AND_DROP        = 71,///< This event came from a mover widget
+
+   EAGLE_EVENT_WIDGET_EVENT_STOP           = 71,///< End id for widget events
    
    EAGLE_EVENT_NETWORK_EVENT_START         = 80,///< Start id for network events
    
@@ -367,15 +369,57 @@ class WidgetBase;
  *   @brief Data for widget events
  */
 
-struct WIDGET_EVENT_DATA {
-   WidgetBase* from;///< The widget that fired this event
-   unsigned int topic;///< The widget topic
-   int msgs;///< The messages for the topic
+struct DRAG_AND_DROP_DATA {
+   WidgetBase*  mwidget;///< The widget being moved, IF this is a drag and drop event, otherwise, NULL
 
+   int          startx;///< The start x of the widget
+   int          starty;///< The start y of the widget
+   int          startw;///< The start width of the widget
+   int          starth;///< The start height of the widget
+
+   int          dropx;///< Where the widget was dropped, only for WIDGET_MOVER_DROP and SIZING messages
+   int          dropy;///< Where the widget was dropped, only for WIDGET_MOVER_DROP and SIZING messages
+   int          dropw;///< How wide the widget was when dropped, only for WIDGET_MOVER_DROP and SIZING messages
+   int          droph;///< How tall the widget was when dropped, only for WIDGET_MOVER_DROP and SIZING messages
+   
+   DRAG_AND_DROP_DATA() :
+         mwidget(0),
+         startx(-1),
+         starty(-1),
+         startw(-1),
+         starth(-1),
+         dropx(-1),
+         dropy(-1),
+         dropw(-1),
+         droph(-1)
+   {}
+   void Reset() {
+      mwidget = 0;
+      startx = -1;
+      starty = -1;
+      startw = -1;
+      starth = -1;
+      dropx  = -1;
+      dropy  = -1;
+      dropw  = -1;
+      droph  = -1;
+   }
+};
+
+
+
+struct WIDGET_EVENT_DATA {
+   WidgetBase*  from;///< The widget that fired this event
+   unsigned int topic;///< The widget topic
+   int          msgs;///< The messages for the topic
+
+   DRAG_AND_DROP_DATA dnd;///< Drag and drop data if this is a drag and drop widget event
+   
    WIDGET_EVENT_DATA() :
          from(0),
          topic(TOPIC_NONE),
-         msgs(0)
+         msgs(0),
+         dnd()
    {}
 };
 

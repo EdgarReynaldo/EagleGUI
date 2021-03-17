@@ -33,6 +33,12 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 
 
+extern const unsigned int TOPIC_PERCENT_WIDGET;
+   
+enum PERCENT_MSGS {
+   PERCENT_CHANGED = 1
+};
+
 
 
 class PercentWidget : public WidgetBase {
@@ -49,7 +55,7 @@ public:
    
    
    void SetPercent(double pct , bool sendmessage = true);///< Set the percent of the slider (from 0.0 to 1.0)
-   void GetPercent(bool inverted = false);
+   double GetPercent();
    
 };
 
@@ -81,7 +87,7 @@ public :
 
 };
 
-
+/**
 class PercentDial : public PercentWidget {
    
    /// 0.5 is N, 0.0 and 1.0 are S
@@ -94,13 +100,13 @@ protected :
 
 public :
    PercentDial() :
-         PercentWidget("PercentDial" , "% dial"),
+         PercentWidget("PercentDial" , "% dial")
          
 
 
 };
 
-
+*/
 
 
 

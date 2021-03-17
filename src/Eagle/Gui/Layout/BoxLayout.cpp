@@ -34,6 +34,30 @@ void BoxLayout::Resize(unsigned int nsize) {
 
 
 
+BoxLayout::BoxLayout(std::string classname , std::string objname) :
+      LayoutBase(classname , objname),
+      overflow(false),
+      box_rules(BOX_ALIGN),
+      areas()
+{
+   LayoutBase::SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
+}
+
+
+
+Rectangle BoxLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+   (void)newx;
+   (void)newy;
+   (void)newwidth;
+   (void)newheight;
+   
+   Rectangle r = areas[widget_slot];
+   
+   return r;
+}
+
+
+
 void BoxLayout::PlaceWidget(WidgetBase* w , int slot) {
    LayoutBase::PlaceWidget(w , slot);
    RecalcFlow();
@@ -51,6 +75,7 @@ int BoxLayout::AddWidget(WidgetBase* w) {
 
 
 void HBoxLayout::RecalcFlow() {
+   areas.clear();
    areas.resize(wchildren.size() , BADRECTANGLE);
    
    Rectangle& in = InnerArea();

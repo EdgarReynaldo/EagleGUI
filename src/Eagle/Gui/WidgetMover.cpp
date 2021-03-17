@@ -25,6 +25,7 @@
 #include "Eagle/Gui/WidgetHandler.hpp"
 
 
+const unsigned int TOPIC_WIDGET_MOVER = NextFreeTopicId();
 
 
 int WidgetMover::PrivateHandleEvent(EagleEvent e) {
@@ -54,7 +55,19 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
       if (moving) {
          Rectangle newarea = original_area.OuterArea();
          newarea.MoveBy(mdx , mdy);
-         mwidget->SetWidgetArea(newarea , true);
+         /// Emit a MOVING event
+         EagleEvent e;
+         e.type = EAGLE_EVENT_DRAG_AND_DROP;
+         e.widget.from = this;
+         e.widget.topic = TOPIC_WIDGET_MOVER;
+         e.widget.msgs = WIDGET_MOVER_MOVING;
+         dnd.dropx = newarea.X();
+         dnd.dropy = newarea.Y();
+         dnd.dropw = newarea.W();
+         dnd.droph = newarea.H();
+         e.widget.dnd = dnd;
+         EmitEvent(e , 0);
+///         mwidget->SetWidgetArea(newarea , true);
       }
       else if (sizing) {
          Rectangle oldarea = original_area.OuterArea();
@@ -83,14 +96,25 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                   newarea.SetArea(oldarea.X() , oldarea.Y() , oldarea.W() , anchorh + mdy);
                }
             }
-            mwidget->SetWidgetArea(newarea , true);
          }
          else {
             /// diagonal sizing
             Pos2I newcorner = movept.MovedBy(mdx , mdy);
             newarea.SetCorners(anchorpt.X() , anchorpt.Y() , newcorner.X() , newcorner.Y());
-            mwidget->SetWidgetArea(newarea , true);
          }
+         /// Emit a SIZING event
+         EagleEvent e;
+         e.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+         e.widget.from = this;
+         e.widget.topic = TOPIC_WIDGET_MOVER;
+         e.widget.msgs = WIDGET_MOVER_SIZING;
+         dnd.dropx = newarea.X();
+         dnd.dropy = newarea.Y();
+         dnd.dropw = newarea.W();
+         dnd.droph = newarea.H();
+         e.widget.dnd = dnd;
+         EmitEvent(e , 0);
+///         mwidget->SetWidgetArea(newarea , true);/// We used to size the widget ourselves, but not anymore
       }
       else {
          mwidget = 0;
@@ -180,6 +204,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
       if (moving || sizing) {
          if (e.mouse.button == 1) {
+            EagleEvent e;
+            e.type = WIDGET_EVENT_DRAG_AND_DROP;
+            e.widget.from = this;
+            e.widget.topic = TOPIC_WIDGET_MOVER;
+            e.widget.msgs = (moving?WIDGET_MOVER_DROP:(sizing?WIDGET_MOVER_SIZE_FINISH:0));
+            e.widget.dnd = dnd;/// We have the final position stored in our dnd object
             moving = false;
             sizing = false;
             if (macquired) {
@@ -189,89 +219,146 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                }
                macquired = false;
             }
+            EmitEvent(e , 0);
             return DIALOG_INPUT_USED;
          }
       }
    }
    if ((e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) && /// on mouse button
        (mwidget) && /// don't try to move a null widget
-       (e.mouse.button == 1)) /// only if LMB is pressed
+       (e.mouse.button == 1) && /// only if LMB is pressed
+       (!moving && !sizing)) /// so we don't interrupt ourselves
    {
-      if (!moving && !sizing) {/// so we don't interrupt ourselves
-//         mxstart = e.mouse.x;
-//         mystart = e.mouse.y;
-         mdxtotal = 0;
-         mdytotal = 0;
-         original_area = mwidget->GetWidgetArea();
-         abs_area = mwidget->AbsoluteArea();
-         if (e.mouse.button == 1) {
-            if (mwidget) {/// If we are over a widget
-               if (moving_enabled && mwidget->Flags().FlagOn(MOVEABLE)) {
-                  CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
-                  if ((bcell != CELL_AREA_OUTSIDE) && (bcell != CELL_AREA_MIDDLEMIDDLE)) {
-                     /// User clicked on our border
-                     moving = true;
-                     /// If we have a drawing context, we can set the mouse pointer icon to the grabby hand to
-                     /// indicate we're holding on to a widget
-                     EagleGraphicsContext* win = RootHandler()?RootHandler()->GetDrawWindow():(EagleGraphicsContext*)0;
-                     win->AcquireMousePointer(this , POINTER_GRABBED , true);
-                     return DIALOG_INPUT_USED;
-                  }
-               }
-               if (sizing_enabled && mwidget->Flags().FlagOn(RESIZEABLE)) {
-                  CELL_AREA mcell = abs_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
-                  if ((mcell != CELL_AREA_OUTSIDE) && (mcell != CELL_AREA_MIDDLEMIDDLE)) {
-                     /// User clicked on our margin
-                     size_corner = mcell;
-                     sizing = true;
-                     anchorw = 0;
-                     anchorh = 0;
-                     switch (mcell) {
-                     case CELL_AREA_TOPLEFT :
-                        movept.SetPos(original_area.OuterArea().X() , original_area.OuterArea().Y());
-                        anchorpt.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().BRY());
-                        break;
-                     case CELL_AREA_TOPRIGHT :
-                        movept.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().Y());
-                        anchorpt.SetPos(original_area.OuterArea().X() , original_area.OuterArea().BRY());
-                        break;
-                     case CELL_AREA_BOTTOMLEFT :
-                        movept.SetPos(original_area.OuterArea().X() , original_area.OuterArea().BRY());
-                        anchorpt.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().Y());
-                        break;
-                     case CELL_AREA_BOTTOMRIGHT :
-                        movept.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().BRY());
-                        anchorpt.SetPos(original_area.OuterArea().X() , original_area.OuterArea().Y());
-                        break;
-                     case CELL_AREA_TOPMIDDLE :
-                        anchorpt.SetPos(0 , original_area.OuterArea().BRY());
-                        anchorh = original_area.OuterArea().H();
-                        break;
-                     case CELL_AREA_BOTTOMMIDDLE :
-                        anchorpt.SetPos(0 , original_area.OuterArea().Y());
-                        anchorh = original_area.OuterArea().H();
-                        break;
-                     case CELL_AREA_MIDDLELEFT :
-                        anchorpt.SetPos(original_area.OuterArea().BRX() , 0);
-                        anchorw = original_area.OuterArea().W();
-                        break;
-                     case CELL_AREA_MIDDLERIGHT :
-                        anchorpt.SetPos(original_area.OuterArea().X() , 0);
-                        anchorw = original_area.OuterArea().W();
-                        break;
-                     default:
-                        break;
-                     }
-                     return DIALOG_INPUT_USED;
-                  }
-               }
+      mdxtotal = 0;
+      mdytotal = 0;
+      original_area = mwidget->GetWidgetArea();
+      abs_area = mwidget->AbsoluteArea();
+      if (moving_enabled && mwidget->Flags().FlagOn(MOVEABLE)) {
+         CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
+         if ((bcell != CELL_AREA_OUTSIDE) && (bcell != CELL_AREA_MIDDLEMIDDLE)) {
+            /// User clicked on our border
+            moving = true;
+            /// If we have a drawing context, we can set the mouse pointer icon to the grabby hand to
+            /// indicate we're holding on to a widget
+            EagleGraphicsContext* win = RootHandler()?RootHandler()->GetDrawWindow():(EagleGraphicsContext*)0;
+            win->AcquireMousePointer(this , POINTER_GRABBED , true);
+            /// Emit a PICKUP event
+            EagleEvent e;
+            e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+            e.widget.from = this;
+            e.widget.topic = TOPIC_WIDGET_MOVER;
+            e.widget.msgs = WIDGET_MOVER_PICKUP;
+            dnd.Reset();
+            dnd.mwidget = mwidget;
+            dnd.startx = mwidget->OuterArea().X();
+            dnd.starty = mwidget->OuterArea().Y();
+            dnd.startw = mwidget->OuterArea().W();
+            dnd.starth = mwidget->OuterArea().H();
+            e.widget.dnd = dnd;
+            EmitEvent(e , 0);
+            return DIALOG_INPUT_USED;
+         }
+      }
+      if (sizing_enabled && mwidget->Flags().FlagOn(RESIZEABLE)) {
+         CELL_AREA mcell = abs_area.OuterNP().GetCellArea(mabs.X() , mabs.Y());
+         if ((mcell != CELL_AREA_OUTSIDE) && (mcell != CELL_AREA_MIDDLEMIDDLE)) {
+            /// User clicked on our margin
+            size_corner = mcell;
+            sizing = true;
+            anchorw = 0;
+            anchorh = 0;
+            switch (mcell) {
+            case CELL_AREA_TOPLEFT :
+               movept.SetPos(original_area.OuterArea().X() , original_area.OuterArea().Y());
+               anchorpt.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().BRY());
+               break;
+            case CELL_AREA_TOPRIGHT :
+               movept.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().Y());
+               anchorpt.SetPos(original_area.OuterArea().X() , original_area.OuterArea().BRY());
+               break;
+            case CELL_AREA_BOTTOMLEFT :
+               movept.SetPos(original_area.OuterArea().X() , original_area.OuterArea().BRY());
+               anchorpt.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().Y());
+               break;
+            case CELL_AREA_BOTTOMRIGHT :
+               movept.SetPos(original_area.OuterArea().BRX() , original_area.OuterArea().BRY());
+               anchorpt.SetPos(original_area.OuterArea().X() , original_area.OuterArea().Y());
+               break;
+            case CELL_AREA_TOPMIDDLE :
+               anchorpt.SetPos(0 , original_area.OuterArea().BRY());
+               anchorh = original_area.OuterArea().H();
+               break;
+            case CELL_AREA_BOTTOMMIDDLE :
+               anchorpt.SetPos(0 , original_area.OuterArea().Y());
+               anchorh = original_area.OuterArea().H();
+               break;
+            case CELL_AREA_MIDDLELEFT :
+               anchorpt.SetPos(original_area.OuterArea().BRX() , 0);
+               anchorw = original_area.OuterArea().W();
+               break;
+            case CELL_AREA_MIDDLERIGHT :
+               anchorpt.SetPos(original_area.OuterArea().X() , 0);
+               anchorw = original_area.OuterArea().W();
+               break;
+            default:
+               break;
             }
+            /// Emit a SIZING event
+            EagleEvent e;
+            e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+            e.widget.from = this;
+            e.widget.topic = TOPIC_WIDGET_MOVER;
+            e.widget.msgs = WIDGET_MOVER_SIZING;
+            dnd.Reset();
+            dnd.mwidget = mwidget;
+            dnd.startx = mwidget->OuterArea().X();
+            dnd.starty = mwidget->OuterArea().Y();
+            dnd.startw = mwidget->OuterArea().W();
+            dnd.starth = mwidget->OuterArea().H();
+            dnd.dropx = mwidget->OuterArea().X();
+            dnd.dropy = mwidget->OuterArea().Y();
+            dnd.dropw = mwidget->OuterArea().W();
+            dnd.droph = mwidget->OuterArea().H();
+            e.widget.dnd = dnd;
+            EmitEvent(e , 0);
+            return DIALOG_INPUT_USED;
          }
       }
    }
    return DIALOG_OKAY;
 }
 
+
+
+
+WidgetMover(std::string objname) :
+      WidgetBase("WidgetMover" , objname),
+      wlist(),
+      blist(),
+      hotkey(input_key_held(EAGLE_KEY_LSHIFT) && input_key_press(EAGLE_KEY_ENTER)),
+      active(false),
+      original_area(),
+      abs_area(),
+      size_corner(CELL_AREA_OUTSIDE),
+      sizing_enabled(false),
+      moving_enabled(false),
+      sizing(false),
+      moving(false),
+      mxstart(-1),
+      mystart(-1),
+      mdxtotal(0),
+      mdytotal(0),
+      anchorpt(),
+      movept(),
+      anchorw(0),
+      anchorh(0),
+      mwidget(0),
+      macquired(false),
+      pointer_type(POINTER_NORMAL),
+      dnd()
+{
+   
+}
 
 
 

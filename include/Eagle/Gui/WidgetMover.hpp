@@ -35,8 +35,29 @@
 #include <set>
 
 
+extern const unsigned int TOPIC_WIDGET_MOVER;///< The topic for all widget mover messages
+
+
+
+/**! @enum WIDGET_MOVER_MESSAGES
+ *   @brief The messages passed by a @refWidgetMover.
+ *   When a widget starts moving a widget, it will emit a pickup message, followed by moving messages, completed by a drop message.
+ *   When a widget sizes a widget, it will begin by emitting a sizing message, completed by a size finish message.
+ */
+enum WIDGET_MOVER_MESSAGES {
+   WIDGET_MOVER_PICKUP      = 1,///< The mover has picked up a widget
+   WIDGET_MOVER_MOVING      = 2,///< The mover is moving a widget
+   WIDGET_MOVER_DROP        = 3,///< The mover has dropped a widget
+   WIDGET_MOVER_SIZING      = 4,///< The mover has started or is continuing to size a widget
+   WIDGET_MOVER_SIZE_FINISH = 5 ///< The mover has finished sizing a widget
+};
+
+
+
 /**! @class WidgetMover
  *   @brief A simple widget to control other widget's positions and areas graphically using the mouse pointer
+ *   A widget needs a border to be properly sized. The mover will pickup widgets and move them until they are dropped,
+ *   at which point a WIDGET_MOVER_DROP event is sent to its listeners.
  */
 
 class WidgetMover : public WidgetBase {
@@ -68,39 +89,13 @@ protected :
    bool macquired;
    MOUSE_POINTER_TYPE pointer_type;
 
+   DRAG_AND_DROP_DATA dnd;
    
    int PrivateHandleEvent(EagleEvent e);
    
 public :
    
-///   WidgetMover(std::string objname);
-WidgetMover(std::string objname) :
-      WidgetBase("WidgetMover" , objname),
-      wlist(),
-      blist(),
-      hotkey(input_key_held(EAGLE_KEY_LSHIFT) && input_key_press(EAGLE_KEY_ENTER)),
-      active(false),
-      original_area(),
-      abs_area(),
-      size_corner(CELL_AREA_OUTSIDE),
-      sizing_enabled(false),
-      moving_enabled(false),
-      sizing(false),
-      moving(false),
-//      mxstart(-1),
-//      mystart(-1),
-      mdxtotal(0),
-      mdytotal(0),
-      anchorpt(),
-      movept(),
-      anchorw(0),
-      anchorh(0),
-      mwidget(0),
-      macquired(false),
-      pointer_type(POINTER_NORMAL)
-{
-   
-}
+   WidgetMover(std::string objname = "Mover");
          
    void SetAbilities(bool can_move , bool can_size);///< Whether to allow moving or sizing
    void SetHotKey(InputGroup ig);///< Set the hot key for activation of the widget mover

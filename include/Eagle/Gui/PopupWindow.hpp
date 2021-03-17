@@ -17,7 +17,7 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file PopupWindow.hpp
- * @brief A templated widget class for making popup windows
+ * @brief A widget class for making popup windows
  */
 
 #include "Eagle/SharedMemory.hpp"

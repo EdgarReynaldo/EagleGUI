@@ -24,20 +24,27 @@
  
  
 #include "Eagle/Gui/PercentWidgets.hpp"
+#include "Eagle/GraphicsContext.hpp"
 
 
 
-
-void SetPercent(double pct , bool sendmessage) {
+void PercentWidget::SetPercent(double pct , bool sendmessage) {
    double old = percent;
    if (pct < 0.0) {pct = 0.0;}
    if (pct > 1.0) {pct = 1.0;}
    percent = pct;
    SetRedrawFlag();
-   if (sendmessage && (old != slider_percent)) {
+   if (sendmessage && (old != percent)) {
       QueueUserMessage(WidgetMsg(this , TOPIC_SLIDER , SLIDER_VALUE_CHANGED));
    }
 }
+
+
+
+double PercentWidget::GetPercent() {
+   return percent;
+}
+
 
 
 
@@ -66,7 +73,7 @@ int PercentBar::PrivateHandleEvent(EagleEvent e) {
             else {/// vertical
                if (!invert) {
                   /// top to bottom
-                  SetPercent((double)(e.mouse.y - InnerArea().Y())/InnerArea.H());
+                  SetPercent((double)(e.mouse.y - InnerArea().Y())/InnerArea().H());
                }
                else {
                   /// bottom to top
@@ -125,10 +132,10 @@ int PercentBar::PrivateUpdate(double dt) {
 void PercentBar::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    Rectangle r = InnerArea();
    win->DrawFilledRectangle(r , GetColor(MGCOL));
-   Rectangle pcth(r.X() , r.Y() , r.W()*this->GetPercent() , r.H());
-   Rectangle pcthrl(r.X() + r.W()*(1.0 - this->GetPercent()) , r.Y() , r.W()*this->GetPercent() , r.H());
-   Rectangle pctv(r.X() , r.Y() , r.W() , r.H()*this->GetPercent());
-   Rectangle pctvdu(r.X() , r.Y() + r.H()*(1.0 - this->GetPercent()) , r.W() , r.H()*this->GetPercent());
+   Rectangle pcth(r.X() , r.Y() , r.W()*(this->GetPercent()) , r.H());
+   Rectangle pcthrl(r.X() + r.W()*(1.0 - this->GetPercent()) , r.Y() , r.W()*(this->GetPercent()) , r.H());
+   Rectangle pctv(r.X() , r.Y() , r.W() , r.H()*(this->GetPercent()));
+   Rectangle pctvdu(r.X() , r.Y() + r.H()*(1.0 - this->GetPercent()) , r.W() , r.H()*(this->GetPercent()));
    Rectangle* pct = 0;
    
    if (horizontal) {
