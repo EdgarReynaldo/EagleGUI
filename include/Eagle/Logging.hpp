@@ -248,7 +248,7 @@ public :
    friend EagleLogGuard EagleLog();     ///< Friend function to get access to the regular log
    friend EagleLogGuard EagleInfo();    ///< Friend function to get access to an info log
    friend EagleLogGuard EagleWarn();    ///< Friend function to get access to a warning log
-   friend EagleLogGuard EagleError();   ///< Friend fucntion to get access to an error log
+   friend EagleLogGuard EagleError();   ///< Friend function to get access to an error log
    friend EagleLogGuard EagleCritical();///< Friend function to get access to the critical log
 
    friend EagleLogGuard EaglePrefix(const char* prefix , bool critical);///< Friend function to get access to a log using the specified @param prefix

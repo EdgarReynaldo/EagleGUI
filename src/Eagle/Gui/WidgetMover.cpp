@@ -29,13 +29,37 @@ const unsigned int TOPIC_WIDGET_MOVER = NextFreeTopicId();
 
 
 int WidgetMover::PrivateHandleEvent(EagleEvent e) {
-   if (false) {///!active) {
-      if (hotkey) {
-         active = true;
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      EagleInfo() << "Breakpoint" << std::endl;/// Breakpoint, remove
+   }
+   if (hotkey) {
+      active = !active;
+      if (!active) {/// Release the mouse pointer if we've got it
+         if (macquired) {
+            if (RootHandler()) {
+               if (RootHandler()->GetDrawWindow()) {
+                  RootHandler()->GetDrawWindow()->ReleaseMousePointer(this);
+               }
+            }
+         }
          return DIALOG_INPUT_USED;
       }
-      return DIALOG_OKAY;
+      else {
+            /// TODO This doesn't work for some reason
+         e.type = EAGLE_EVENT_MOUSE_AXES;
+         e.mouse.x = mouse_x;
+         e.mouse.y = mouse_y;
+         e.mouse.button = 0;
+         e.mouse.dx = 0;
+         e.mouse.dy = 0;
+         e.mouse.dw = 0;
+         e.mouse.dz = 0;
+         /// Let this event through so the user can see the mouse pointer change when activated and over a margin or border of a whitelisted widget
+      }
    }
+   
+   if (!active) {return DIALOG_OKAY;}
+
    if (!IsMouseEvent(e)) {return DIALOG_OKAY;}
    
    const Pos2I mabs = AbsParentPos().MovedBy(e.mouse.x , e.mouse.y);
@@ -56,17 +80,17 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          Rectangle newarea = original_area.OuterArea();
          newarea.MoveBy(mdx , mdy);
          /// Emit a MOVING event
-         EagleEvent e;
-         e.type = EAGLE_EVENT_DRAG_AND_DROP;
-         e.widget.from = this;
-         e.widget.topic = TOPIC_WIDGET_MOVER;
-         e.widget.msgs = WIDGET_MOVER_MOVING;
+         EagleEvent e2;
+         e2.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+         e2.widget.from = this;
+         e2.widget.topic = TOPIC_WIDGET_MOVER;
+         e2.widget.msgs = WIDGET_MOVER_MOVING;
          dnd.dropx = newarea.X();
          dnd.dropy = newarea.Y();
          dnd.dropw = newarea.W();
          dnd.droph = newarea.H();
-         e.widget.dnd = dnd;
-         EmitEvent(e , 0);
+         e2.widget.dnd = dnd;
+         EmitEvent(e2 , 0);
 ///         mwidget->SetWidgetArea(newarea , true);
       }
       else if (sizing) {
@@ -103,17 +127,17 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             newarea.SetCorners(anchorpt.X() , anchorpt.Y() , newcorner.X() , newcorner.Y());
          }
          /// Emit a SIZING event
-         EagleEvent e;
-         e.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
-         e.widget.from = this;
-         e.widget.topic = TOPIC_WIDGET_MOVER;
-         e.widget.msgs = WIDGET_MOVER_SIZING;
+         EagleEvent e2;
+         e2.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+         e2.widget.from = this;
+         e2.widget.topic = TOPIC_WIDGET_MOVER;
+         e2.widget.msgs = WIDGET_MOVER_SIZING;
          dnd.dropx = newarea.X();
          dnd.dropy = newarea.Y();
          dnd.dropw = newarea.W();
          dnd.droph = newarea.H();
-         e.widget.dnd = dnd;
-         EmitEvent(e , 0);
+         e2.widget.dnd = dnd;
+         EmitEvent(e2 , 0);
 ///         mwidget->SetWidgetArea(newarea , true);/// We used to size the widget ourselves, but not anymore
       }
       else {
@@ -129,6 +153,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                if (hwidget &&
                    (hwidget->Flags().FlagOn(MOVEABLE) || hwidget->Flags().FlagOn(RESIZEABLE))) {
                   mwidget = hwidget;
+                  EAGLE_DEBUG(EagleInfo() << "Detected widget " << mwidget->ShortName() << std::endl;);
                   original_area = mwidget->GetWidgetArea();
                   /// We need the absolute position here
                   abs_area = mwidget->AbsoluteArea();
@@ -148,8 +173,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
             
             EAGLE_DEBUG(
-///               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
-///               EagleInfo() << "area = " << abs_area << std::endl;
+               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
+               EagleInfo() << "area = " << abs_area << std::endl;
             );
             
             if (mcell != CELL_AREA_OUTSIDE) {
@@ -201,15 +226,15 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          }
       }
    }
-   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
+   else if (e.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
       if (moving || sizing) {
          if (e.mouse.button == 1) {
-            EagleEvent e;
-            e.type = WIDGET_EVENT_DRAG_AND_DROP;
-            e.widget.from = this;
-            e.widget.topic = TOPIC_WIDGET_MOVER;
-            e.widget.msgs = (moving?WIDGET_MOVER_DROP:(sizing?WIDGET_MOVER_SIZE_FINISH:0));
-            e.widget.dnd = dnd;/// We have the final position stored in our dnd object
+            EagleEvent e2;
+            e2.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+            e2.widget.from = this;
+            e2.widget.topic = TOPIC_WIDGET_MOVER;
+            e2.widget.msgs = (moving?WIDGET_MOVER_DROP:(sizing?WIDGET_MOVER_SIZE_FINISH:0));
+            e2.widget.dnd = dnd;/// We have the final position stored in our dnd object
             moving = false;
             sizing = false;
             if (macquired) {
@@ -219,12 +244,12 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                }
                macquired = false;
             }
-            EmitEvent(e , 0);
+            EmitEvent(e2 , 0);
             return DIALOG_INPUT_USED;
          }
       }
    }
-   if ((e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) && /// on mouse button
+   else if ((e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) && /// on mouse button
        (mwidget) && /// don't try to move a null widget
        (e.mouse.button == 1) && /// only if LMB is pressed
        (!moving && !sizing)) /// so we don't interrupt ourselves
@@ -243,19 +268,19 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             EagleGraphicsContext* win = RootHandler()?RootHandler()->GetDrawWindow():(EagleGraphicsContext*)0;
             win->AcquireMousePointer(this , POINTER_GRABBED , true);
             /// Emit a PICKUP event
-            EagleEvent e;
-            e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
-            e.widget.from = this;
-            e.widget.topic = TOPIC_WIDGET_MOVER;
-            e.widget.msgs = WIDGET_MOVER_PICKUP;
+            EagleEvent e2;
+            e2.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+            e2.widget.from = this;
+            e2.widget.topic = TOPIC_WIDGET_MOVER;
+            e2.widget.msgs = WIDGET_MOVER_PICKUP;
             dnd.Reset();
             dnd.mwidget = mwidget;
             dnd.startx = mwidget->OuterArea().X();
             dnd.starty = mwidget->OuterArea().Y();
             dnd.startw = mwidget->OuterArea().W();
             dnd.starth = mwidget->OuterArea().H();
-            e.widget.dnd = dnd;
-            EmitEvent(e , 0);
+            e2.widget.dnd = dnd;
+            EmitEvent(e2 , 0);
             return DIALOG_INPUT_USED;
          }
       }
@@ -304,11 +329,11 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
                break;
             }
             /// Emit a SIZING event
-            EagleEvent e;
-            e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
-            e.widget.from = this;
-            e.widget.topic = TOPIC_WIDGET_MOVER;
-            e.widget.msgs = WIDGET_MOVER_SIZING;
+            EagleEvent e2;
+            e2.type = EAGLE_EVENT_WIDGET_DRAG_AND_DROP;
+            e2.widget.from = this;
+            e2.widget.topic = TOPIC_WIDGET_MOVER;
+            e2.widget.msgs = WIDGET_MOVER_SIZING;
             dnd.Reset();
             dnd.mwidget = mwidget;
             dnd.startx = mwidget->OuterArea().X();
@@ -319,8 +344,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             dnd.dropy = mwidget->OuterArea().Y();
             dnd.dropw = mwidget->OuterArea().W();
             dnd.droph = mwidget->OuterArea().H();
-            e.widget.dnd = dnd;
-            EmitEvent(e , 0);
+            e2.widget.dnd = dnd;
+            EmitEvent(e2 , 0);
             return DIALOG_INPUT_USED;
          }
       }
@@ -331,7 +356,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
 
 
 
-WidgetMover(std::string objname) :
+WidgetMover::WidgetMover(std::string objname) :
       WidgetBase("WidgetMover" , objname),
       wlist(),
       blist(),
@@ -340,8 +365,8 @@ WidgetMover(std::string objname) :
       original_area(),
       abs_area(),
       size_corner(CELL_AREA_OUTSIDE),
-      sizing_enabled(false),
-      moving_enabled(false),
+      sizing_enabled(true),
+      moving_enabled(true),
       sizing(false),
       moving(false),
       mxstart(-1),

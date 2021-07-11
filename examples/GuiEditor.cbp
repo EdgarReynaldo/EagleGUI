@@ -116,6 +116,8 @@
 			<Add directory="E:/usr/lib" />
 		</Linker>
 		<Unit filename="GuiEditor.cpp" />
+		<Unit filename="GuiEditor/WidgetTree.cpp" />
+		<Unit filename="GuiEditor/WidgetTree.hpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

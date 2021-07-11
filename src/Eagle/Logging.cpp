@@ -102,6 +102,7 @@ EagleLogger::EagleLogger() :
    EAGLE_DEBUG(
       AddOutput(cout);
    );
+   mtx.TurnLogOn();
 #ifndef EAGLE_LOG
    TurnLogOff();
 #endif

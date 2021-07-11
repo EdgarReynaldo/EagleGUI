@@ -84,6 +84,9 @@ public :
    ///< Initialize this color set with an array of EagleColor objects
    WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]);
 
+   ///< Copy the rhs colorset into this
+   WidgetColorset(const WidgetColorset& wcols);
+   
    ///< Assigns our colorset's values to those specified in colorset
    WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
    
@@ -99,7 +102,7 @@ public :
    
    std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
-   friend std::ostream& operator<<(std::ostream& os , const EagleColor& ecol);
+   friend std::ostream& operator<<(std::ostream& os , const WidgetColorset& wc);
 };
 
 extern EagleColor default_eagle_color_array[EAGLE_NUMCOLORS];///< A global color array used to initialize default WidgetColorset objects

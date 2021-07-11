@@ -66,6 +66,8 @@ protected :
    
    bool horizontal;
    bool invert;/// False - left to right or top to bottom, True - right to left or bottom to top
+   bool drag;
+   
    
    virtual int PrivateHandleEvent(EagleEvent e);
    virtual int PrivateCheckInputs();

@@ -190,6 +190,12 @@ EagleWindowManager* Allegro5System::PrivateCreateWindowManager() {
 
 
 
+Transformer* Allegro5System::PrivateCreateTransformer() {
+   return new Allegro5Transformer;
+}
+
+
+
 FileSystem* Allegro5System::PrivateCreateFileSystem() {
    return new Allegro5FileSystem();
 }

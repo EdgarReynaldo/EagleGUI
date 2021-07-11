@@ -105,6 +105,16 @@ WidgetColorset::WidgetColorset(EagleColor colorset[EAGLE_NUMCOLORS]) :
 
 
 
+WidgetColorset::WidgetColorset(const WidgetColorset& wcols) :
+   wcolorset()
+{
+   for (unsigned int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {
+      wcolorset[i] = wcols[i];
+   }
+}
+
+
+
 WidgetColorset& WidgetColorset::operator=(const EagleColor colorset[EAGLE_NUMCOLORS]) {
    for (int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {wcolorset[i] = colorset[i];}
    return *this;

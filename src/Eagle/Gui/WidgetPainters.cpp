@@ -39,25 +39,25 @@ void WidgetPainterBase::PaintCSSModel() {
    
    NPAREA np;
    np = warea.OuterNP();
-   np.PaintOutsideSolid(window , (*wcolors)[MARGCOL]);
+   np.PaintOutsideSolid(window , widget->GetColor(MARGCOL));
    np = warea.BorderNP();
-   np.PaintOutsideSolid(window , (*wcolors)[BORDCOL]);
+   np.PaintOutsideSolid(window , widget->GetColor(BORDCOL));
    np = warea.PaddingNP();
-   np.PaintOutsideSolid(window , (*wcolors)[PADCOL]);
+   np.PaintOutsideSolid(window , widget->GetColor(PADCOL));
 }
 
 
 
 void WidgetPainterBase::PaintFill() {
    NPAREA border = warea.BorderNP();
-   border.PaintOutsideSolid(window , (*wcolors)[BORDCOL]);
+   border.PaintOutsideSolid(window , widget->GetColor(BORDCOL));
 }
 
 
 
 void WidgetPainterBase::PaintRounded() {
    NPAREA border = warea.BorderNP();
-   border.PaintOutsideRounded(window , (*wcolors)[BORDCOL]);
+   border.PaintOutsideRounded(window , widget->GetColor(BORDCOL));
 }
 
 
@@ -76,7 +76,7 @@ void WidgetPainterBase::PaintCustom() {
 
 
 void WidgetPainterBase::PaintFocusHighlight() {
-   EagleColor hl = (*wcolors)[HLCOL];
+   EagleColor hl = widget->GetColor(HLCOL);
    EagleColor col(hl.fR() , hl.fG() , hl.fB() , 0.5);
    window->DrawFilledRectangle(warea.OuterArea() , col);
 }
@@ -87,7 +87,7 @@ void WidgetPainterBase::PaintFocusOutline() {
    BOXAREA b = warea.MarginBox();
    BOXAREA outlinebox(b.left/2 , b.right/2 , b.top/2 , b.bottom/2);
    NPAREA np(warea.OuterArea() , outlinebox);
-   np.PaintOutsideSolid(window , (*wcolors)[HLCOL]);
+   np.PaintOutsideSolid(window , widget->GetColor(HLCOL));
    
 }
 
@@ -124,7 +124,8 @@ WidgetPainterBase::WidgetPainterBase() :
       widget(0),
       warea(),
       wcolors(),
-      bgtype(BG_AREA_EMPTY),
+      bg(0),
+      bgtype(BG_AREA_CSSMODEL),
       ftype(FOCUS_AREA_OUTLINE)
 {}      
 
@@ -143,9 +144,22 @@ void WidgetPainterBase::GetPainterReady(EagleGraphicsContext* win , const Widget
 
 
 void WidgetPainterBase::PaintBackground() {
-   if (bgtype == BG_AREA_EMPTY || bgtype == NUM_BG_AREA_TYPES) {return;}
-   
-   switch(bgtype) {
+   PaintBackground(bgtype);
+}
+
+
+
+void WidgetPainterBase::PaintFocus() {
+   PaintFocus(ftype);
+}
+
+
+
+void WidgetPainterBase::PaintBackground(BG_AREA_PAINT_TYPE pt) {
+   switch (pt) {
+   case BG_AREA_EMPTY :
+      (void)0;
+      break;
    case BG_AREA_CSSMODEL :
       PaintCSSModel();
       break;
@@ -156,39 +170,22 @@ void WidgetPainterBase::PaintBackground() {
       PaintRounded();
       break;
    case BG_AREA_CONTRAST :
-      PaintContrast((*wcolors)[HLCOL] , (*wcolors)[SDCOL]);
+      PaintContrast(widget->GetColor(HLCOL) , widget->GetColor(SDCOL));
       break;
    case BG_AREA_RCONTRAST :
-      PaintContrast((*wcolors)[SDCOL] , (*wcolors)[HLCOL]);
+      PaintContrast(widget->GetColor(SDCOL) , widget->GetColor(HLCOL));
       break;
-   default :
+   case BG_AREA_CUSTOM :
+      PaintCustom();
       break;
-   }
+   default : break;
+   };
+   
 }
-
-
-
-/*! \brief FOCUS_AREA_PAINT_TYPE controls how the focus is drawn for a widget 
-
-enum FOCUS_AREA_PAINT_TYPE {
-   FOCUS_AREA_INVISIBLE = 0,
-   FOCUS_AREA_HIGHLIGHT = 1,
-   FOCUS_AREA_OUTLINE   = 2,
-   FOCUS_AREA_DOTTED    = 3,
-   FOCUS_AREA_CONTRAST  = 4,
-   FOCUS_AREA_DDOTTED   = 5,
-   FOCUS_AREA_CUSTOM    = 6,
-   NUM_FOCUS_AREA_TYPES = 7
-};
-
-*/
-
-
-
-void WidgetPainterBase::PaintFocus() {
-   switch (ftype) {
+void WidgetPainterBase::PaintFocus(FOCUS_AREA_PAINT_TYPE pt) {
+   switch (pt) {
    case FOCUS_AREA_INVISIBLE :
-      return;
+      (void)0;
       break;
    case FOCUS_AREA_HIGHLIGHT :
       PaintFocusHighlight();
@@ -208,13 +205,9 @@ void WidgetPainterBase::PaintFocus() {
    case FOCUS_AREA_CUSTOM :
       PaintFocusCustom();
       break;
-   default :
-      break;
-   }
+   default : break;
+   };
 }
-
-
-
 
 
 

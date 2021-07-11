@@ -85,11 +85,11 @@ void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , in
    t.Scale((double)InnerArea().W()/image->W() , (double)InnerArea().H()/image->H());
    t.Translate(InnerArea().X() + xpos , InnerArea().Y() + ypos);
    
-   win->GetTransformer()->PushViewTransform(t);
+   win->PushViewTransform(t);
    
    win->DrawTinted(image , 0 , 0 , tint);
    
-   win->GetTransformer()->PopViewTransform();
+   win->PopViewTransform();
 }
 
 

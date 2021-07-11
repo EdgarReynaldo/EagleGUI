@@ -145,7 +145,11 @@ public :
    virtual void PlaceWidget(WidgetBase* w , int slot);
 
    ///< Adds a widget to the layout
-   virtual int AddWidget(WidgetBase* w);/// Adds the widget to the next free slot or creates one if necessary, returns slot used
+   virtual int AddWidget(WidgetBase* w);///< Adds the widget to the next free slot or creates one if necessary, returns slot used
+   
+   ///< Inserts a widget into the layout
+   virtual void InsertWidget(WidgetBase* w , int insertion_slot);///< Inserts the widget just before the insertion slot, pushing all widgets down one slot
+                                                                 ///< This may move widgets!
 
    /// Removal of widgets
 
@@ -153,13 +157,19 @@ public :
    void EmptySlot(int slot);/// Remove a widget from the layout
 
    ///< Remove a widget by address
-   virtual void RemoveWidget(WidgetBase* widget);/// Remove a widget from the layout
+   virtual void RemoveWidget(WidgetBase* widget);///< Remove a widget from the layout, does the same thing as emptying the widget's slot
 
+   ///< Remove and erase a widget and its slot
+   virtual void EraseWidgetSlot(int slot);///< Removes the widget at this slot (may be NULL) and erases the slot from the layout
+
+   ///< Remove and erase a widget and its slot by address
+   void EraseWidgetSlot(WidgetBase* widget);///< Removes the widget at this slot (must be non-NULL) and erases the slot from the layout
+   
    ///< Remove all widgets
-   virtual void ClearWidgets();/// Remove all widgets from layout
+   virtual void ClearWidgets();///< Remove all widgets from layout
    
    ///< To remove the layout from the GUI
-   void DetachFromGui();/// Call this in Layout derived class's destructor
+   void DetachFromGui();///< Call this in Layout derived class's destructor
    
    ///< Virtual function to set the specified alignments for this layout
    virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
@@ -181,7 +191,7 @@ public :
    
    int GetLayoutSize() const ;///< Returns the currently allocated storage size for widget children
    
-   virtual bool AcceptsFocus() {return true;}///< Layouts are generally invisible, but will accept the focus
+   virtual bool AcceptsFocus() {return false;}///< Layouts are generally invisible, but will accept the focus
 
    virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
    

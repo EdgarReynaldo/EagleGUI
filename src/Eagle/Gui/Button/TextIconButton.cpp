@@ -60,11 +60,11 @@ void TextIconButton::DisplayText(EagleGraphicsContext* win , int xpos , int ypos
            0.8*InnerArea().H()/label_font->Height());
    t.Translate(xpos + InnerArea().CX() , ypos + InnerArea().CY());
    
-   win->GetTransformer()->PushViewTransform(t);
+   win->PushViewTransform(t);
    
    win->DrawTextString(label_font , label , 0 , 0 , tint , HALIGN_CENTER , VALIGN_CENTER);
    
-   win->GetTransformer()->PopViewTransform();
+   win->PopViewTransform();
 }
 
 

@@ -66,6 +66,7 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width
       blender_stack(),
       allegro5transformer()
 {
+   our_transformer = &allegro5transformer;
    if (width < 0) {width = 0;}
    if (height < 0) {height = 0;}
    if (width && height) {
@@ -893,7 +894,7 @@ EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int
 
 
 Transformer* Allegro5GraphicsContext::GetTransformer() {
-   return &allegro5transformer;
+   return our_transformer;
 }
 
 

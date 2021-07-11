@@ -29,11 +29,13 @@
 #include "Eagle/Gui/Layout/Layout.hpp"
 
 
-/**! @enum BOX_SIZE_RULES
+
+
+/**! @enum BOX_SPACE_RULES
  *   @brief How empty space is used in a box layout
  */
 
-enum BOX_SIZE_RULES {
+enum BOX_SPACE_RULES {
    BOX_ALIGN_ONLY    = 0,///< Left over space is unused
    BOX_EXPAND        = 1,///< Left over space is given completely to widgets
    BOX_SPACE_BETWEEN = 2,///< Left over space is split up between each widget, pushing them out from the middle
@@ -42,33 +44,11 @@ enum BOX_SIZE_RULES {
 
 
 
-/**! @enum FLOW_ANCHOR_POINT
- *   @brief Where to anchor the flow from. The opposite corner is where it flows to
- */
-enum FLOW_ANCHOR_POINT {
-	FLOW_ANCHOR_NW = 0,///< Anchor the flow in the NW corner
-	FLOW_ANCHOR_NE = 1,///< Anchor the flow in the NE corner
-	FLOW_ANCHOR_SE = 2,///< Anchor the flow in the SE corner
-	FLOW_ANCHOR_SW = 3 ///< Anchor the flow in the SW corner
-};
-
-
-
-/**! @enum FLOW_FAVORED_DIRECTION
- *   @brief Which direction to favor when adding widgets to this layout
- */
-enum FLOW_FAVORED_DIRECTION {
-	FLOW_FAVOR_VERTICAL   = 0,///< Favor vertical flow
-	FLOW_FAVOR_HORIZONTAL = 1 ///< Favor horizontal flow
-};
-
-
-
 class BoxLayout : public LayoutBase {
    
 protected :
    bool overflow;/// When the children are too big for the container this becomes true
-   BOX_SIZE_RULES box_rules;
+   BOX_SPACE_RULES box_rules;
    std::vector<Rectangle> areas;
    
    virtual void RecalcFlow()=0;

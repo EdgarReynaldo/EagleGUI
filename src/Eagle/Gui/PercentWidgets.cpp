@@ -25,7 +25,7 @@
  
 #include "Eagle/Gui/PercentWidgets.hpp"
 #include "Eagle/GraphicsContext.hpp"
-
+#include "Eagle/Gui/Slider.hpp"
 
 
 void PercentWidget::SetPercent(double pct , bool sendmessage) {
@@ -98,7 +98,7 @@ int PercentBar::PrivateHandleEvent(EagleEvent e) {
             else {/// vertical
                if (!invert) {
                   /// top to bottom
-                  SetPercent((double)(e.mouse.y - InnerArea().Y())/InnerArea.H());
+                  SetPercent((double)(e.mouse.y - InnerArea().Y())/InnerArea().H());
                }
                else {
                   /// bottom to top

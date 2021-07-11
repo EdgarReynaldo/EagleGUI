@@ -183,6 +183,7 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    system_queue(0),
    system_clipboard(0),
    window_manager(0),
+   system_transformer(0),
    file_system(0),
    resource_library(0),
    system_up(false),
@@ -211,6 +212,10 @@ void EagleSystem::Shutdown() {
       window_manager = 0;
    }
 
+   if (system_transformer) {
+      delete system_transformer;
+      system_transformer = 0;
+   }
    if (file_system) {
       delete file_system;
       file_system = 0;
@@ -290,11 +295,12 @@ bool EagleSystem::InitializeSystem() {
 
 
 bool EagleSystem::FinalizeSystem() {
-   if (!input_handler)    {input_handler    = GetSystemInput();}
-   if (!system_timer)     {system_timer     = GetSystemTimer();}
-   if (!system_queue)     {system_queue     = GetSystemQueue();}
-   if (!system_clipboard) {system_clipboard = CreateClipboard();}
-   if (!window_manager)   {window_manager   = CreateWindowManager();}
+   if (!input_handler)      {input_handler    = GetSystemInput();}
+   if (!system_timer)       {system_timer     = GetSystemTimer();}
+   if (!system_queue)       {system_queue     = GetSystemQueue();}
+   if (!system_clipboard)   {system_clipboard = CreateClipboard();}
+   if (!window_manager)     {window_manager   = CreateWindowManager();}
+   if (!system_transformer) {system_transformer = GetSystemTransformer();}
 
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
@@ -589,6 +595,12 @@ EagleClipboard* EagleSystem::GetSystemClipboard() {
 
 EagleWindowManager* EagleSystem::GetWindowManager() {
    return window_manager;
+}
+
+
+
+Transformer* EagleSystem::GetSystemTransformer() {
+   return system_transformer;
 }
 
 

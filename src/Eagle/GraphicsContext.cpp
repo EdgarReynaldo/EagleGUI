@@ -284,8 +284,10 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       default_font_size(eagle_default_font_size),
       default_font_flags(eagle_default_font_flags),
       our_thread(0),
-      window_mutex(0)
-{}
+      window_mutex(0),
+      our_transformer(0)
+{
+}
 
 
 
@@ -725,6 +727,42 @@ void EagleGraphicsContext::PopDrawingTarget() {
    if (drawing_target != back) {
       SetDrawingTarget(back);
    }
+}
+
+
+
+void EagleGraphicsContext::SetViewTransform(const Transform& t) {
+   our_transformer->SetViewTransform(t);
+}
+
+
+
+void EagleGraphicsContext::SetProjectionTransform(const Transform& t) {
+   our_transformer->SetProjectionTransform(t);
+}
+
+
+
+void EagleGraphicsContext::PushViewTransform(const Transform& t) {
+   our_transformer->PushViewTransform(t);
+}
+
+
+
+void EagleGraphicsContext::PushProjectionTransform(const Transform& t) {
+   our_transformer->PushProjectionTransform(t);
+}
+
+
+
+void EagleGraphicsContext::PopViewTransform() {
+   our_transformer->PopViewTransform();
+}
+
+
+
+void EagleGraphicsContext::PopProjectionTransform() {
+   our_transformer->PopProjectionTransform();
 }
 
 

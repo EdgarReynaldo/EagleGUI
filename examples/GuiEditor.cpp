@@ -1,5 +1,9 @@
 
 
+#include "Eagle.hpp"
+#include "Eagle/backends/Allegro5Backend.hpp"
+#include "allegro5/allegro.h"
+
 
 
 int main(int argc , char** argv) {
@@ -35,7 +39,7 @@ int main(int argc , char** argv) {
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));
 
    WidgetMover mover;
-   mover.SetHotKey(input_key_held(EAGLE_KEY_CTRL) && input_key_press(EAGLE_KEY_M));
+   mover.SetHotKey(input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_M));
    
    RelativeLayout rl;
    

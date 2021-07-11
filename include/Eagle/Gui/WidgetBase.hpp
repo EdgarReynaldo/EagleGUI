@@ -179,9 +179,11 @@ WidgetBase(std::string classname , std::string objname) :
       wpainter(),
       wcolors(),
       zdepth(ZORDER_PRIORITY_NORMAL),
-      prefw(PREFERREDWIDGETWIDTH),
-      prefh(PREFERREDWIDGETHEIGHT)
-{}
+      prefw(0),
+      prefh(0)
+{
+   
+}
    virtual ~WidgetBase();
    
    /// Main interface

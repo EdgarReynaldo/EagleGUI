@@ -205,7 +205,7 @@ void LayoutBase::AdjustWidgetArea(const WidgetBase* widget , int* newx , int* ne
 
 void LayoutBase::RepositionAllChildren() {
    for (int slot = 0 ; slot < (int)wchildren.size() ; ++slot) {
-      RepositionChild(slot);
+      LayoutBase::RepositionChild(slot);
    }
 }
 
@@ -289,7 +289,6 @@ LayoutBase::LayoutBase(std::string objclass , std::string objname) :
       valign(VALIGN_TOP)
 {
    zdepth = ZORDER_PRIORITY_LOW;
-///   SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
 }
 
 
@@ -369,6 +368,25 @@ int LayoutBase::AddWidget(WidgetBase* widget) {
 
 
 
+void LayoutBase::InsertWidget(WidgetBase* w , int insertion_slot) {
+   EAGLE_ASSERT(insertion_slot >= 0 && insertion_slot <= (int)wchildren.size());
+   if (insertion_slot == (int)wchildren.size()) {
+      AddWidget(w);
+      return;
+   }
+   Resize(wchildren.size() + 1);
+   for (int i = (int)wchildren.size() -1 ; i > insertion_slot ; --i) {
+      wchildren[i] = wchildren[i - 1];
+   }
+   wchildren[insertion_slot] = 0;
+   ReplaceWidget(w , insertion_slot);
+   for (unsigned int i = insertion_slot + 1 ; i < wchildren.size() ; ++i) {
+      RepositionChild(i);
+   }
+}
+
+
+
 void LayoutBase::EmptySlot(int slot) {
    EAGLE_ASSERT(slot >= 0 && slot < (int)wchildren.size());
    PlaceWidget(0 , slot);
@@ -381,6 +399,26 @@ void LayoutBase::RemoveWidget(WidgetBase* widget) {
    int index = WidgetIndex(widget);
    if (index == -1) {return;}
    PlaceWidget(0 , index);
+}
+
+
+
+void LayoutBase::EraseWidgetSlot(int slot) {
+   EAGLE_ASSERT(slot >= 0 && slot < (int)wchildren.size());
+   EAGLE_ASSERT(wchildren.size() >= 1);
+   EmptySlot(slot);
+   for (int i = slot ; i < (int)wchildren.size() - 1 ; ++i) {
+      wchildren[i] = wchildren[i+1];
+      RepositionChild(i);
+   }
+}
+
+
+
+void LayoutBase::EraseWidgetSlot(WidgetBase* widget) {
+   int index = WidgetIndex(widget);
+   EAGLE_ASSERT(index != -1);
+   EraseWidgetSlot(index);
 }
 
 

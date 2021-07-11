@@ -136,6 +136,9 @@ public :
    
    Transform CreateTransform() {return GetIdentityTransform();}///< Create an identity transform
 
+protected :
+   friend class EagleGraphicsContext;///< These functions only make sense for graphics contexts, but they remain in the Transformer class
+   
    void SetViewTransform(const Transform& t);///< Set the view transform
    void SetProjectionTransform(const Transform& t);///< Set the projection transform
    

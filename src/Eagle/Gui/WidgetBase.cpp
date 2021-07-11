@@ -239,6 +239,8 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       win->DrawFilledRectangle(InnerArea() , EagleColor(96,96,96,96));/// Show widgets as disabled
    }
    
+   win->DrawRectangle(OuterArea() , 1.0 , EagleColor(0,255,0));
+   
    ClearRedrawFlag();
 }
 

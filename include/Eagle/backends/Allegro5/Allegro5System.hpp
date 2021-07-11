@@ -65,6 +65,7 @@ private :
    EagleClipboard*       PrivateCreateClipboard      (std::string objname);
 
    EagleWindowManager*   PrivateCreateWindowManager();
+   Transformer*          PrivateCreateTransformer();
    FileSystem*           PrivateCreateFileSystem();
    ResourceLibrary*      PrivateCreateResourceLibrary();
 

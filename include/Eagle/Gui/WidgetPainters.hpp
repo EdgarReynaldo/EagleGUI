@@ -88,8 +88,6 @@ protected :
    
    EagleImage* bg;
    
-   BG_AREA_PAINT_TYPE bgtype;
-   FOCUS_AREA_PAINT_TYPE ftype;
 
    
    virtual void PaintCSSModel();///< Overload this to paint the entire CSS model and boxes
@@ -107,17 +105,20 @@ protected :
    
 public :
    
+   BG_AREA_PAINT_TYPE bgtype;///< Controls how the background will be drawn
+   FOCUS_AREA_PAINT_TYPE ftype;///< Controls how the focus will be drawn
+
    WidgetPainterBase();///< Empty constructor, always call GetPainterReady before use
    virtual ~WidgetPainterBase() {}///< Empty virtual destructor
    
-   virtual void PaintBackground();///< Virtual method to paint the background, default implementation given
-   virtual void PaintFocus();///< Virtual method to paint the focus, default implementation given
+   void PaintBackground();///< Paint the background, using the stored bgtype
+   void PaintFocus();///< Paint the focus, using the stored ftype
+   void PaintBackground(BG_AREA_PAINT_TYPE pt);///< Paint the background, with the given paint type pt
+   void PaintFocus(FOCUS_AREA_PAINT_TYPE pt);///< Paint the focus, calls virtual function based on paint type pt
    
    void GetPainterReady(EagleGraphicsContext* win , const WidgetBase* w , int xpos , int ypos);///< Gets the painter ready for painting w
    
 };
-
-
 
 typedef SHAREDOBJECT<WidgetPainterBase> WidgetPainter;///< A WidgetPainter is a shared pointer to a WidgetPainterBase object
 

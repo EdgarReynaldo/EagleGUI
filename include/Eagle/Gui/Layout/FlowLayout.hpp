@@ -30,36 +30,73 @@
 #include <vector>
 
 
+/**! @enum FLOW_ANCHOR_POINT
+ *   @brief Where to anchor the flow from. The opposite corner is where it flows to
+ */
+enum FLOW_ANCHOR_POINT {
+	FLOW_ANCHOR_NW = 0,///< Anchor the flow in the NW corner
+	FLOW_ANCHOR_NE = 1,///< Anchor the flow in the NE corner
+	FLOW_ANCHOR_SE = 2,///< Anchor the flow in the SE corner
+	FLOW_ANCHOR_SW = 3 ///< Anchor the flow in the SW corner
+};
+
+
+
+/**! @enum FLOW_FAVORED_DIRECTION
+ *   @brief Which direction to favor when adding widgets to this layout
+ */
+enum FLOW_FAVORED_DIRECTION {
+	FLOW_FAVOR_VERTICAL   = 0,///< Favor vertical flow
+	FLOW_FAVOR_HORIZONTAL = 1 ///< Favor horizontal flow
+};
+
+
 
 
 class FlowLayout : public LayoutBase {
 
 protected :
-	
+	BOX_SPACE_RULES size_rules;
 	FLOW_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
-   std::vector<Rectangle> rcsizes;
    bool overflow;
-   int padding;
-   
+   bool shrink_on_overflow;
+
+   std::vector<Rectangle> rcsizes;
+   std::vector<double> waspects;
+
+   int rowcount;
+   std::vector<int> colcount;
+   std::vector<int> rowheights;
+   std::vector<int> colwidths;
+   std::vector<int> rowspace;
+   int colspace;
+
+
    virtual void ReserveSlots(int nslots);
-      
+
    virtual void OnAreaChanged();///< Override to react to changes in this widget's area
 
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y) override {
+      LayoutBase::PrivateDisplay(win , x , y);
+   }
+   
    void RecalcFlow();
    
 public :
-   FlowLayout();
+   FlowLayout(std::string classname = "FlowLayout" , std::string objname = "Nemo");
    virtual ~FlowLayout();
 
    
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
 
-   virtual void PlaceWidget(WidgetBase* w , int slot);
-   virtual int AddWidget(WidgetBase* w);
+   void PlaceWidget(WidgetBase* w , int slot) override;
+   int AddWidget(WidgetBase* w) override;
+   void InsertWidget(WidgetBase* w , int slot_before) override;
 
-
+   bool Overflow() {return overflow;}
+   void ShrinkOnOverflow(bool shrink);
 };
 
 

@@ -216,19 +216,17 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    
    EAGLE_ASSERT(text_font && text_font->Valid());
    
-   Transformer* transformer = win->GetTransformer();
-   
    if (scale_to_fit) {
       
-      scaling_transform = transformer->GetIdentityTransform();
+      scaling_transform = win->GetTransformer()->CreateTransform();
       
       scaling_transform.Translate(-textx , -texty);
       scaling_transform.Scale((float)InnerArea().W()/maxwidth , (float)InnerArea().H()/totalheight);
       scaling_transform.Translate(InnerArea().X() , InnerArea().Y());
       
-      scaling_transform *= transformer->GetViewTransform();
+      scaling_transform *= win->GetTransformer()->GetViewTransform();/// Respect the current transform
       
-      transformer->PushViewTransform(scaling_transform);
+      win->PushViewTransform(scaling_transform);
    }
    
    
@@ -241,7 +239,7 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    win->ReleaseDrawing();
    
    if (scale_to_fit) {
-      win->GetTransformer()->PopViewTransform();
+      win->PopViewTransform();
    }
 ///   win->DrawMultiLineTextString(text_font , text , tx + xpos , ty + ypos , c , linespacing , halign , valign);
 }

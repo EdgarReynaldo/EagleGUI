@@ -37,7 +37,7 @@ void BoxLayout::Resize(unsigned int nsize) {
 BoxLayout::BoxLayout(std::string classname , std::string objname) :
       LayoutBase(classname , objname),
       overflow(false),
-      box_rules(BOX_ALIGN),
+      box_rules(BOX_ALIGN_ONLY),
       areas()
 {
    LayoutBase::SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
@@ -67,9 +67,10 @@ void BoxLayout::PlaceWidget(WidgetBase* w , int slot) {
 
 
 int BoxLayout::AddWidget(WidgetBase* w) {
-   LayoutBase::AddWidget(w);
+   int ret = LayoutBase::AddWidget(w);
    RecalcFlow();
    RepositionAllChildren();
+   return ret;
 }
 
 
@@ -78,7 +79,7 @@ void HBoxLayout::RecalcFlow() {
    areas.clear();
    areas.resize(wchildren.size() , BADRECTANGLE);
    
-   Rectangle& in = InnerArea();
+   Rectangle in = InnerArea();
    int ix = in.X();
    int iy = in.Y();
    int iw = in.W();
@@ -116,7 +117,7 @@ void HBoxLayout::RecalcFlow() {
       return;
    }
    
-   if (maxh > InnerArea.H()) {
+   if (maxh > InnerArea().H()) {
       overflow = true;
    }
    
@@ -182,7 +183,7 @@ void HBoxLayout::RecalcFlow() {
                /// Create N + 1 columnds of padding surrounding the widgets and between them
                int ncols = nchildren + 1;
                int colsize = leftover / ncols;
-               int extra = leftover % ncols
+               int extra = leftover % ncols;
                for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
                   WidgetBase* w = wchildren[i];
                   if (!w) {continue;}

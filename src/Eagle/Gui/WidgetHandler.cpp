@@ -139,15 +139,19 @@ int WidgetHandler::PrivateHandleEvent(EagleEvent e) {
 
 
    /// Check the widget with focus first - inputlist is sorted so that the widget with focus is first in the list
+   /// Debugging, remove
+   if (rel_event.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      EagleInfo() << "Breakpoint" << std::endl;
+   }
+
    for (UINT index = 0 ; index < inputlist.size() ; ++index) {
       WidgetBase* widget = inputlist[index];
 
       if (widget->Flags().FlagOff(ENABLED)) {continue;}
       
       if (!widget->GetClipRectangle().Contains(rel_event.mouse.x , rel_event.mouse.y) && e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-         continue;
+///         continue;Some widgets monitor clicks outside their clipping rectangle, like the widget mover
       }
-      
       msg = widget->HandleEvent(rel_event);
       
       /// Warning - All messages not related to a dialog will be ignored.
@@ -314,8 +318,10 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
    }
 
    wlist.push_back(widget);
-   inputlist.push_back(widget);
-   drawlist.insert(drawlist.begin() , widget);
+///   inputlist.push_back(widget);
+///   drawlist.insert(drawlist.begin() , widget);
+   inputlist.insert(inputlist.begin() , widget);/// Insert at top (front)
+   drawlist.push_back(widget);/// Add to back (front)
 
    /// Set these before setting the focus, otherwise it thinks it has no parent
    widget->SetParent(this);
@@ -1503,6 +1509,15 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
 
 
 
+void WidgetHandler::PrintDrawList(std::ostream& os) {
+   os << std::endl;
+   for (int i = 0 ; i < (int)drawlist.size() ; i++) {
+      WidgetBase* w = drawlist[i];
+      std::string s = StringPrintF("DrawWidget #%02d = %s\n" , i , w->FullName());
+      os << s << std::endl;
+   }
+   os << std::endl;
+}
 
 
 

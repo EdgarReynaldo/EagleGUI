@@ -300,6 +300,8 @@ public :
    }
 
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output to stream
+   
+   void PrintDrawList(std::ostream& os);
 };
 
 

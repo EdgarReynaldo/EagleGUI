@@ -119,6 +119,8 @@ protected :
 
    EagleWindowManager* window_manager;
 
+   Transformer* system_transformer;
+   
    FileSystem* file_system;
    
    ResourceLibrary* resource_library;
@@ -163,6 +165,7 @@ protected :
    virtual EagleClipboard*       PrivateCreateClipboard      (std::string objname)=0;
 
    virtual EagleWindowManager*   PrivateCreateWindowManager()=0;
+   virtual Transformer*          PrivateCreateTransformer()=0;
    virtual FileSystem*           PrivateCreateFileSystem()=0;
    virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
 
@@ -232,6 +235,7 @@ public :
    EagleTimer*         GetSystemTimer();
    EagleClipboard*     GetSystemClipboard();
    EagleWindowManager* GetWindowManager();
+   Transformer*        GetSystemTransformer();
    
    FileSystem*         GetFileSystem();
    ResourceLibrary*    GetResourceLibrary();

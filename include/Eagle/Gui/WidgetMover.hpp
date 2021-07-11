@@ -29,7 +29,7 @@
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/MousePointer.hpp"
-
+#include "Eagle/Events.hpp"
 
 
 #include <set>
@@ -97,7 +97,7 @@ public :
    
    WidgetMover(std::string objname = "Mover");
          
-   void SetAbilities(bool can_move , bool can_size);///< Whether to allow moving or sizing
+   void SetAbilities(bool can_move , bool can_size);///< Whether to allow moving or sizing. Both are true to begin with.
    void SetHotKey(InputGroup ig);///< Set the hot key for activation of the widget mover
    void WhiteList(WidgetBase* widget);///< Add a widget to the whitelist
    void BlackList(WidgetBase* widget);///< Add a widget to the blacklist

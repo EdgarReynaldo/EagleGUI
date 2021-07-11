@@ -249,7 +249,7 @@ protected :
    EagleThread* our_thread;
    EagleMutex*  window_mutex;
    
-
+   Transformer* our_transformer;
 
    virtual void PrivateFlipDisplay()=0;
 
@@ -657,13 +657,24 @@ public :
 
    void SetMousePosition(int mousex , int mousey);///< Sets the mouse position relative to the display
 
-   /// drawing target
+   /// Drawing target
 
    void PushDrawingTarget(EagleImage* img);///< Pushes a new drawing target onto the drawing stack
    void PopDrawingTarget();///< Pops an image off the drawing stack, and restores the previous one, reverting to the back buffer when empty
 
+   /// Transform abilities
    virtual Transformer* GetTransformer()=0;///< Pure virtual function to get the Transformer object for this window
 
+   void SetViewTransform(const Transform& t);///< Set the view transform
+   void SetProjectionTransform(const Transform& t);///< Set the projection transform
+   
+   void PushViewTransform(const Transform& t);///< Pushes on stack and sets as current view transform
+   void PushProjectionTransform(const Transform& t);///< Pushes on stack and sets as current projection transform
+
+   void PopViewTransform();///< Pops view transform off top of stack and sets new top to current view transform
+   void PopProjectionTransform();///< Pops projection transform off top of stack and sets new top to current projection transform
+
+   /// The display must be current to draw to it, when dealing with multiple windows
    virtual void MakeDisplayCurrent()=0;///< Pure virtual function to make the display current in multi threaded applications
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
