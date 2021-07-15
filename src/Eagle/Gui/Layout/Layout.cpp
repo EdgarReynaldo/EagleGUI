@@ -527,7 +527,7 @@ int LayoutBase::GetLayoutSize() const {
 }
 
 
-
+/** This is wrong, don't clip to the inner area
 Rectangle LayoutBase::GetClipRectangle() {
    LayoutBase* playout = GetLayout();
    if (playout) {
@@ -535,7 +535,7 @@ Rectangle LayoutBase::GetClipRectangle() {
    }
    return InnerArea();
 }
-
+*/
 
 
 std::ostream& LayoutBase::DescribeTo(std::ostream& os , Indenter indent) const {

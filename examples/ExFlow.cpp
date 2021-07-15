@@ -40,12 +40,6 @@ int main(int argc , char** argv) {
 
    gui.GetWidgetPainter()->bgtype = BG_AREA_CSSMODEL;
    
-   SHAREDOBJECT<WidgetColorset> guicolors = gui.GetWidgetColorset();
-   WidgetColorset& gcol = *(guicolors.get());
-   gcol[MARGCOL] = EagleColor(255,0,0);
-   gcol[BORDCOL] = EagleColor(255,255,255);
-   gcol[PADCOL] = EagleColor(0,0,0,0);
-   gcol[BGCOL] = EagleColor(0,0,192);
    
    WidgetMover mover;
    mover.SetHotKey(input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_M));
@@ -167,8 +161,10 @@ int main(int argc , char** argv) {
       wc[i]->SetRedrawFlag();
    }
    
-   gui.PrintDrawList(std::cout);
    
+   WidgetColorset wcolset = *(vbox.GetWidgetColorset().get());
+   
+   EagleInfo() << wcolset << std::endl;
    
    sys->GetSystemTimer()->Start();
    

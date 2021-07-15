@@ -191,9 +191,9 @@ public :
    
    int GetLayoutSize() const ;///< Returns the currently allocated storage size for widget children
    
-   virtual bool AcceptsFocus() {return false;}///< Layouts are generally invisible, but will accept the focus
+   virtual bool AcceptsFocus() {return false;}///< Layouts are generally invisible, and do not accept focus
 
-   virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
+//?   virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
    
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describe this layout to a stream
