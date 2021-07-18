@@ -296,6 +296,9 @@ LayoutBase::LayoutBase(std::string objclass , std::string objname) :
 LayoutBase::~LayoutBase() {
    /// Okay to call detach and clear layout in our destructor, as no virtual methods are called :
    /// (ClearLayout calls RemoveWidget, PlaceWidget, ReplaceWidget , RemoveWidgetFromLayout)
+   if (wlayout) {
+      wlayout->RemoveWidget(this);
+   }
    DetachFromGui();
    ClearWidgets();
 }

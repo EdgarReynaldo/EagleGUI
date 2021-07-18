@@ -128,7 +128,7 @@ void FlowLayout::RecalcFlow() {
       }
       else if (major > rcmajorrem) {
          /// Overflowed the row, wrap to next
-         rcmajorrem = colspacetotal;
+         rcmajorrem = colspacetotal - major;
          rcminorrem -= rowheights[rowcount];
          colspace -= rowheights[rowcount];
          *major1 = 0;
@@ -174,6 +174,7 @@ void FlowLayout::RecalcFlow() {
       
       *major1 += major;
       if (nextrow) {
+         rcmajorrem = rowspacetotal;
          *major1 = 0;
          int h = 0;
          if (rowheights.size() > 0) {
