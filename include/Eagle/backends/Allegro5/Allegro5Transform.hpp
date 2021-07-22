@@ -71,7 +71,7 @@ public :
 
    virtual TransformBase* Clone();
 
-   virtual void ApplyTransformation(double& destx , double& desty , double& destz);
+   virtual void ApplyTransformation(double* destx , double* desty , double* destz);
 };
 
 

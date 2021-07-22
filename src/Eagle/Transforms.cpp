@@ -145,7 +145,7 @@ Transform& Transform::GetProjectionMatrix() {
 
 
 
-void Transform::ApplyTransformation(double& destx , double& desty , double& destz) {
+void Transform::ApplyTransformation(double* destx , double* desty , double* destz) {
    shared_transform.get()->ApplyTransformation(destx , desty , destz);
 }
 

@@ -28,6 +28,7 @@
 
 
 #include "Button/BasicButton.hpp"
+#include "Button/BasicRadioButton.hpp"
 #include "Button/GuiButton.hpp"
 #include "Button/IconButton.hpp"
 #include "Button/RadioGroup.hpp"

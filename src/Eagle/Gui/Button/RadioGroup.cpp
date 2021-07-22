@@ -22,6 +22,7 @@
 
 
 #include "Eagle/Gui/Button/RadioGroup.hpp"
+#include "Eagle/Gui/Button/BasicButton.hpp"
 
 
 
@@ -59,6 +60,22 @@ void RadioGroup::SelectButton(BasicButton* btn) {
       b->SetButtonUpState(true);
    }
    btn_group.insert(btn);
+}
+
+
+
+void RadioGroup::SetRadioGroup(std::vector<BasicButton*> btns , BasicButton* active) {
+   btn_group.clear();
+   for (unsigned int i = 0 ; i < btns.size() ; ++i) {
+      EAGLE_ASSERT(btns[i]);
+      if (btns[i]) {
+         btn_group.insert(btns[i]);
+      }
+   }
+   EAGLE_ASSERT(active && btn_group.find(active) != btn_group.end());
+   if (active && btn_group.find(active) != btn_group.end()) {
+      SelectButton(active);
+   }
 }
 
 

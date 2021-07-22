@@ -32,11 +32,13 @@
 
 
 #include "Eagle/Events.hpp"
-#include "Eagle/Gui/Button/BasicButton.hpp"
 
 
 
 #include <unordered_set>
+#include <vector>
+
+class BasicButton;
 
 
 
@@ -54,6 +56,8 @@ public :
 
    void SelectButton(BasicButton* btn);///< Select a button to set to down, automatically deselects other buttons
 
+   void SetRadioGroup(std::vector<BasicButton*> btns , BasicButton* active);
+   
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);///< For handling widget events from our event sources
 
    std::unordered_set<BasicButton*> GetButtonGroup();///< Get the set of buttons in this group

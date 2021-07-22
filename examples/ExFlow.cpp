@@ -66,7 +66,7 @@ int main(int argc , char** argv) {
 //   WidgetMover mover("Widget mover");
    mover.WhiteList(&vbox);
 
-   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.1 , 0.1 , 0.8 , 0.8));
+   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.3 , 0.3 , 0.7 , 0.7));
    WidgetArea wa = vbox.GetWidgetArea();
    wa.SetBoxesContract(5,10,5);
    vbox.SetWidgetArea(wa , false);
@@ -161,10 +161,66 @@ int main(int argc , char** argv) {
       wc[i]->SetRedrawFlag();
    }
    
+   EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
+   EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
    
-   WidgetColorset wcolset = *(vbox.GetWidgetColorset().get());
+   EAGLE_ASSERT(verdana && verdana->Valid());
+   EAGLE_ASSERT(verdana12 && verdana12->Valid());
    
-   EagleInfo() << wcolset << std::endl;
+   
+   GridLayout rgrids[3];
+   
+   rgrids[0].ResizeGrid(1 , 4);
+   rgrids[1].ResizeGrid(1 , 2);
+   rgrids[2].ResizeGrid(1 , 6);
+   
+   
+   GuiButton btns[12];
+   BasicRadioButton rbtns[12];
+   BasicText rtext[12];
+   std::string text[12] = {
+      "NW",
+      "NE",
+      "SE",
+      "SW",
+      "HORIZ",
+      "VERT",
+      "HLEFT",
+      "HCENTER",
+      "HRIGHT",
+      "VTOP",
+      "VCENTER",
+      "VBOTTOM"
+   };
+   
+   for (unsigned int i = 0 ; i < 12 ; ++i) {
+      btns[i].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
+      rtext[i].SetupText(text[i] , verdana);
+      rbtns[i].SetWidgets(&btns[i] , &rtext[i]);
+   }
+   
+   RadioGroup radios[4];
+   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1] , &btns[2] , &btns[3]}) , &btns[0]);
+   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[4] , &btns[5]}) , &btns[4]);
+   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[6] , &btns[7] , &btns[8]}) , &btns[6]);
+   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[9] , &btns[10] , &btns[11]}) , &btns[9]);
+   
+   rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.05 , 0.2 , 0.3));
+   rl.AddWidget(&rgrids[1] , LayoutRectangle(0.45 , 0.05 , 0.2 , 0.2));
+   rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.4 , 0.2 , 0.5));
+   
+   rgrids[0].PlaceWidget(&rbtns[0] , 0);
+   rgrids[0].PlaceWidget(&rbtns[1] , 1);
+   rgrids[0].PlaceWidget(&rbtns[2] , 2);
+   rgrids[0].PlaceWidget(&rbtns[3] , 3);
+   rgrids[1].PlaceWidget(&rbtns[4] , 0);
+   rgrids[1].PlaceWidget(&rbtns[5] , 1);
+   rgrids[2].PlaceWidget(&rbtns[6] , 0);
+   rgrids[2].PlaceWidget(&rbtns[7] , 1);
+   rgrids[2].PlaceWidget(&rbtns[8] , 2);
+   rgrids[2].PlaceWidget(&rbtns[9] , 3);
+   rgrids[2].PlaceWidget(&rbtns[10] , 4);
+   rgrids[2].PlaceWidget(&rbtns[11] , 5);
    
    sys->GetSystemTimer()->Start();
    
@@ -187,6 +243,26 @@ int main(int argc , char** argv) {
          gui.HandleEvent(e);
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
+            for (unsigned int i = 0 ; i < 4 ; ++i) {
+               if (msg.From() == &btns[i]) {
+                  vbox.SetFlowAnchor((FLOW_ANCHOR_POINT)i);
+               }
+            }
+            for (unsigned int i = 4 ; i < 6 ; ++i) {
+               if (msg.From() == &btns[i]) {
+                  vbox.SetFlowDirection((FLOW_FAVORED_DIRECTION)(i - 4));
+               }
+            }
+            for (unsigned int i = 6 ; i < 9 ; ++i) {
+               if (msg.From() == &btns[i]) {
+                  vbox.SetAlignment((HALIGNMENT)(i - 6) , vbox.GetVAlignment());
+               }
+            }
+            for (unsigned int i = 9 ; i < 12 ; ++i) {
+               if (msg.From() == &btns[i]) {
+                  vbox.SetAlignment(vbox.GetHAlignment() , (VALIGNMENT)(i - 9));
+               }
+            }
             (void)msg;
          }
          if (e.type == EAGLE_EVENT_TIMER) {

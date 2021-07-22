@@ -113,14 +113,14 @@ TransformBase* Allegro5TransformBase::Clone() {
 
 
 
-void Allegro5TransformBase::ApplyTransformation(double& destx , double& desty , double& destz) {
-   float x = destx;
-   float y = desty;
-   float z = destz;
+void Allegro5TransformBase::ApplyTransformation(double* destx , double* desty , double* destz) {
+   float x = destx?*destx:0.0f;
+   float y = desty?*desty:0.0f;
+   float z = destz?*destz:0.0f;
    al_transform_coordinates_3d(&t , &x , &y , &z);
-   destx = (double)x;
-   desty = (double)y;
-   destz = (double)z;
+   if (destx) {*destx = (double)x;}
+   if (desty) {*desty = (double)y;}
+   if (destz) {*destz = (double)z;}
 }
 
 

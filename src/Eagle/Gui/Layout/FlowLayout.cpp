@@ -21,6 +21,73 @@
 
 
 #include "Eagle/Gui/Layout/FlowLayout.hpp"
+#include "Eagle/Lib.hpp"
+#include "Eagle/System.hpp"
+
+
+int FlowLayout::GetMaxColWidth() {
+   int max = 0;
+   for (unsigned int i = 0 ; i < colwidths.size() ; ++i) {
+      if (colwidths[i] > max) {max = colwidths[i];}
+   }
+   return max;
+}
+
+
+
+int FlowLayout::GetTotalRowHeight() {
+   int h = 0;
+   for (unsigned int i = 0 ; i < rowheights.size() ; ++i) {
+      h += rowheights[i];
+   }
+   return h;
+}
+
+
+
+int FlowLayout::GetColumn(int index) {
+   if (index < 0 || index >= (int)wchildren.size()) {
+      return -1;
+   }
+   int col = index + 1;
+   for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
+      if (colcount[i] < col) {
+         col -= colcount[i];
+      }
+   }
+   return col - 1;
+}
+
+
+
+int FlowLayout::GetRow(int index) {
+   if (index < 0 || index >= (int)wchildren.size()) {
+      return -1;
+   }
+   int row = 0;
+   int col = index + 1;
+   for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
+      if (colcount[i] < col) {
+         col -= colcount[i];
+         row++;
+      }
+   }
+   return row;
+}
+
+
+
+int FlowLayout::GetWidgetIndex(int row , int col) {
+   int index = 0;
+   for (int i = 0 ; i < row ; ++i) {
+      index += colcount[i];
+   }
+   index += col;
+   if (index < 0 || index >= (int)wchildren.size()) {
+      return -1;
+   }
+   return index;
+}
 
 
 
@@ -66,29 +133,8 @@ void FlowLayout::RecalcFlow() {
       rcminorrem = maxw;
    }
    
-   unsigned int i = 0 , n = 0 , N = 0;
-   int rcminorsize = 0;
-   WidgetBase* first_widget = 0;
-   WidgetBase* last_widget = 0;
-   for (i = 0 ; i < wc.size() ; ++i) {
-      if (wc[i]) {
-         first_widget = wc[i];
-         break;
-      }
-   }
-   for (i = wc.size() ; i > 0 ; --i) {
-      if (wc[(int)i - 1]) {
-         last_widget = wc[(int)i - 1];
-         break;
-      }
-   }
-   if (!first_widget) {
-      return;
-   }
-   
    /// Collect statistics on widget children, pack all widgets into upper left placing as many as possible on the current row
    
-///   std::vector<WidgetBase*> wc = wchildren;
    colcount.push_back(0);
    rowheights.push_back(0);
    rowspace.push_back(rowspacetotal);
@@ -102,19 +148,24 @@ void FlowLayout::RecalcFlow() {
    int* const major2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&x2:&y2;
    int* const minor2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&y2:&x2;
    bool nextrow = false;
-   for (i = 0 ; i < wc.size() ; ++i) {/// For all widgets
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {/// For all widgets
       nextrow = false;
       if (!wc[i]) {continue;}
       const int pw = wc[i]->PreferredWidth();
       const int ph = wc[i]->PreferredHeight();
-      const int major = (favored_direction == FLOW_FAVOR_HORIZONTAL)?pw:ph;
-      const int minor = (favored_direction == FLOW_FAVOR_HORIZONTAL)?ph:pw;
-      if (major && minor) {
-         waspects[i] = (double)major/minor;
+      int mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?pw:ph;
+      int mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?ph:pw;
+      if (mjr && mnr) {
+         waspects[i] = (double)mjr/mnr;
       }
       else {
          /// TODO At least one of the preferred sizes is 0. Do something with it. 
+         if (!mjr) {mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defwidth:defheight;}
+         if (!mnr) {mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defheight:defwidth;}
+         waspects[i] = (double)mjr/mnr;
       }
+      const int major = mjr;
+      const int minor = mnr;
       /// Place widgets in rows based upon preferred width (for horizontal layouts)
       if ((major <= rcmajorrem) && (minor <= rcminorrem)) {
          /// This widget fits the major flow and the minor flow
@@ -220,7 +271,9 @@ FlowLayout::FlowLayout(std::string classname , std::string objname) :
       rowheights(),
       colwidths(),
       rowspace(),
-      colspace(0)
+      colspace(0),
+      defwidth(40),
+      defheight(30)
 {
    attributes = LAYOUT_ALLOWS_RESIZE;
 }
@@ -237,28 +290,144 @@ FlowLayout::~FlowLayout() {
 Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    WidgetBase* w = GetWidget(widget_slot);
    if (!w) {return BADRECTANGLE;}
+   if (wchildren.empty()) {return BADRECTANGLE;}
    (void)newx;
    (void)newy;
    (void)newwidth;
    (void)newheight;
+   
+   int row = GetRow(widget_slot);
+   int col = GetColumn(widget_slot);
+   
    
    /// rcsizes is laid out to match wchildren, and is based on a generic case in the nw corner flowing right or down
    /// all other cases can be mirrored to match
    /// First add spacing and alignment to rcsizes
    Rectangle r = rcsizes[widget_slot];
 
-
-
-   
-   
-//   Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();/// Identity
+   Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
 
    Rectangle in = InnerArea();
    
-   if (overflow && shrink_on_overflow) {
-         
+   double colwidth = GetMaxColWidth();
+   EAGLE_ASSERT(colwidth);
+   double totalrowheight = GetTotalRowHeight();
+   EAGLE_ASSERT(totalrowheight);
+   
+   std::vector<double> rheights(rowheights.size() , 0.0);
+   std::vector<double> rspace(rowspace.size() , 0.0);
+   
+   /// Use double precision for scaling, and truncate to ints later
+   for (unsigned int i = 0 ; i < rheights.size() ; ++i) {
+      rheights[i] = rowheights[i];
+   }
+   for (unsigned int i = 0 ; i < rspace.size() ; ++i) {
+      rspace[i] = rowspace[i];
+   }
+
+   int nspacecolumns = 0;
+   int space_per_column = 0;
+   int space_left = 0;
+   
+   if (size_rules == BOX_ALIGN_ONLY) {
+      /// Handle major axis alignment
+      if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+         int ox = rowspace[row];
+         if (halign == HALIGN_LEFT) {
+            (void)0;/// Already aligned left
+         }
+         else if (halign == HALIGN_CENTER) {
+            r.MoveBy(ox/2 , 0);
+         }
+         else if (halign == HALIGN_RIGHT) {
+            r.MoveBy(ox , 0);
+         }
+      }
+      else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+         int oy = rowspace[row];
+         if (valign == VALIGN_TOP) {
+            (void)0;/// Already aligned top
+         }
+         else if (valign == VALIGN_CENTER) {
+            r.MoveBy(0 , oy/2);
+         }
+         else if (valign == VALIGN_BOTTOM) {
+            r.MoveBy(0 , oy);
+         }
+      }
+   }
+   else if (size_rules == BOX_SPACE_BETWEEN) {
+      /// Apply space between consecutive pairs of widgets
+      nspacecolumns = colcount[row] - 1;
+      space_per_column = ((int)rspace[row])/nspacecolumns;
+      space_left = ((int)rspace[row])%nspacecolumns;
+      if (col == 0) {
+         (void)0;/// This column is already pushed out from the middle as far as it will go
+      }
+      else if (col > 0) {
+         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+            r.MoveBy(col*space_per_column + (col - 1 < space_left)?1:0 , 0);
+         }
+         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+            r.MoveBy(0 , col*space_per_column + (col - 1 < space_left)?1:0);
+         }
+      }
+   }
+   else if (size_rules == BOX_SPACE_EVEN) {
+      /// Apply space evenly around each widget
+      nspacecolumns = colcount[row];
+      space_per_column = ((int)rspace[row])/nspacecolumns;
+      int extra = space_per_column - 2*(space_per_column/2);
+      space_per_column -= extra;
+      space_left = ((int)rspace[row])%nspacecolumns;
+      space_left += extra;
+      if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+         r.MoveBy(space_left/2 + (col - 1)*space_per_column , 0);
+      }
+      else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+         r.MoveBy(0 , space_left/2 + (col - 1)*space_per_column);
+      }
+   }
+   else if ((size_rules == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
+      /// Handle underflow and overflow (just scale to fit)
+      t.Scale((double)in.W() / colwidth , (double)in.H() / totalrowheight , 1.0);
    }
    
+   /// Handle minor axis alignment
+   if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+      /// Apply vertical alignment to rows
+      if (valign == VALIGN_TOP) {
+         (void)0;/// Already aligned top
+      }
+      else if (valign == VALIGN_CENTER) {
+         r.MoveBy(0 , (rowheights[row] - r.H())/2);
+      }
+      else if (valign == VALIGN_BOTTOM) {
+         r.MoveBy(0 , (rowheights[row] - r.H()));
+      }
+   }
+   else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+      /// Apply horizontal alignment to columns
+      if (halign == HALIGN_LEFT) {
+         (void)0;/// Already aligned left
+      }
+      else if (halign == HALIGN_CENTER) {
+         r.MoveBy((rowheights[row] - r.W())/2 , 0);
+      }
+      else if (halign == HALIGN_RIGHT) {
+         r.MoveBy((rowheights[row] - r.W()) , 0);
+      }
+   }
+   
+   double rx = r.X();
+   double ry = r.Y();
+   double rw = r.W();
+   double rh = r.H();
+   
+   t.ApplyTransformation(&rx , &ry , 0);
+   t.ApplyTransformation(&rw , &rh , 0);
+   
+   r = Rectangle(rx , ry , rw , rh);
    
    int x1 = in.X() + r.X();
    int y1 = in.Y() + r.Y();
@@ -292,6 +461,7 @@ void FlowLayout::PlaceWidget(WidgetBase* w , int slot) {
    LayoutBase::PlaceWidget(w , slot);
    RecalcFlow();
    RepositionAllChildren();
+   SetRedrawFlag();
 }
 
 
@@ -300,6 +470,7 @@ int FlowLayout::AddWidget(WidgetBase* w) {
    int ret = LayoutBase::AddWidget(w);
    RecalcFlow();
    RepositionAllChildren();
+   SetRedrawFlag();
    return ret;
 }
 
@@ -309,6 +480,7 @@ void FlowLayout::InsertWidget(WidgetBase* w , int slot_before) {
    LayoutBase::InsertWidget(w , slot_before);
    RecalcFlow();
    RepositionAllChildren();
+   SetRedrawFlag();
 }
 
 
@@ -317,7 +489,69 @@ void FlowLayout::ShrinkOnOverflow(bool shrink) {
    if (shrink != shrink_on_overflow) {
       shrink_on_overflow = shrink;
       RecalcFlow();
+      RepositionAllChildren();
+      SetRedrawFlag();
    }
 }
+
+
+
+void FlowLayout::SetDefaultWidth(unsigned int w) {
+   if (w < 1) {w = 1;}
+   defwidth = w;
+   RecalcFlow();
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
+
+
+
+void FlowLayout::SetDefaultHeight(unsigned int h) {
+   if (h < 1) {h = 1;}
+   defheight = h;
+   RecalcFlow();
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
+
+
+
+void FlowLayout::SetDefaultSize(unsigned int w , unsigned int h) {
+   if (w < 1) {w = 1;}
+   if (h < 1) {h = 1;}
+   defwidth = w;
+   defheight = h;
+}
+
+
+
+void FlowLayout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
+   LayoutBase::SetAlignment(h_align , v_align);
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
+
+
+
+void FlowLayout::SetFlowAnchor(FLOW_ANCHOR_POINT p) {
+   anchor_pt = p;
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
+
+
+
+void FlowLayout::SetFlowDirection(FLOW_FAVORED_DIRECTION d) {
+   favored_direction = d;
+   RecalcFlow();
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
+
+
+
+
+
+
 
 

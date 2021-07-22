@@ -55,7 +55,7 @@ enum FLOW_FAVORED_DIRECTION {
 
 class FlowLayout : public LayoutBase {
 
-protected :
+protected :;
 	BOX_SPACE_RULES size_rules;
 	FLOW_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
@@ -72,15 +72,21 @@ protected :
    std::vector<int> rowspace;
    int colspace;
 
-
+   int defwidth;
+   int defheight;
+   
+   
+   
+   int GetMaxColWidth();
+   int GetTotalRowHeight();
+   int GetColumn(int index);/// 1 based
+   int GetRow(int index);/// 0 based
+   int GetWidgetIndex(int row , int col);
+   
    virtual void ReserveSlots(int nslots);
 
    virtual void OnAreaChanged();///< Override to react to changes in this widget's area
 
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int x , int y) override {
-      LayoutBase::PrivateDisplay(win , x , y);
-   }
-   
    void RecalcFlow();
    
 public :
@@ -97,6 +103,16 @@ public :
 
    bool Overflow() {return overflow;}
    void ShrinkOnOverflow(bool shrink);
+   
+   void SetDefaultWidth(unsigned int w);
+   void SetDefaultHeight(unsigned int h);
+   void SetDefaultSize(unsigned int w , unsigned int h);
+
+   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) override;
+   
+   void SetFlowAnchor(FLOW_ANCHOR_POINT p);
+
+   void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
 };
 
 

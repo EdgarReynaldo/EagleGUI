@@ -55,7 +55,7 @@ public :
    
    virtual TransformBase* Clone()=0;
    
-   virtual void ApplyTransformation(double& destx , double& desty , double& destz)=0;
+   virtual void ApplyTransformation(double* destx , double* desty , double* destz)=0;
 };
 
 
@@ -92,7 +92,7 @@ public :
    Transform& GetViewMatrix();///< Take on the value of the view matrix
    Transform& GetProjectionMatrix();///< Take on the value of the projection matrix
    
-   void ApplyTransformation(double& destx , double& desty , double& destz);///< Apply the transformation to destx,desty,destz
+   void ApplyTransformation(double* destx , double* desty , double* destz);///< Apply the transformation to destx,desty,destz
 };
 
 

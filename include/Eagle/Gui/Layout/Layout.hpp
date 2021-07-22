@@ -195,6 +195,8 @@ public :
 
 //?   virtual Rectangle GetClipRectangle();///< Gets the clipping rectangle for this layout
    
+   HALIGNMENT GetHAlignment() {return halign;}
+   VALIGNMENT GetVAlignment() {return valign;}
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;///< Describe this layout to a stream
 };
