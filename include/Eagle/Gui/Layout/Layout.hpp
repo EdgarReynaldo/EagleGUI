@@ -85,8 +85,8 @@ protected :
    void AdjustWidgetArea(const WidgetBase* widget , int* newx , int* newy , int* newwidth , int* newheight) const;
 
    /// Called automatically on reposition
-   void RepositionAllChildren();
-   void RepositionChild(int slot);
+   virtual void RepositionAllChildren();
+   virtual void RepositionChild(int slot);
 
    /// Takes care of removing widget from associated handler and from our layout - public API is RemoveWidget
    void RemoveWidgetFromLayout(WidgetBase* widget);/// Stops tracking widget - talks to WidgetHandler

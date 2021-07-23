@@ -53,11 +53,11 @@ void RadioGroup::RemoveRadioButton(BasicButton* btn) {
 
 
 void RadioGroup::SelectButton(BasicButton* btn) {
-   btn->SetButtonUpState(false);
+   btn->SetButtonState(btn->Hover() , false , false);
    btn_group.erase(btn_group.find(btn));
    for (std::unordered_set<BasicButton*>::iterator it = btn_group.begin() ; it != btn_group.end() ; ++it) {
       BasicButton* b = *it;
-      b->SetButtonUpState(true);
+      b->SetButtonState(b->Hover() , true , false);
    }
    btn_group.insert(btn);
 }

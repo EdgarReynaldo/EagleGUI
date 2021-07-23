@@ -89,6 +89,9 @@ protected :;
 
    void RecalcFlow();
    
+   virtual void RepositionAllChildren() override;
+   virtual void RepositionChild(int slot) override;
+
 public :
    FlowLayout(std::string classname = "FlowLayout" , std::string objname = "Nemo");
    virtual ~FlowLayout();

@@ -105,8 +105,23 @@ void FlowLayout::OnAreaChanged() {
 
 
 
+void FlowLayout::RepositionAllChildren() {
+   RecalcFlow();
+   LayoutBase::RepositionAllChildren();
+}
+
+
+
+void FlowLayout::RepositionChild(int slot) {
+   RecalcFlow();
+   LayoutBase::RepositionChild(slot);
+}
+
+
+
 void FlowLayout::RecalcFlow() {
    std::vector<WidgetBase*> wc = wchildren;
+   if (wchildren.empty()) {return;}
    rcsizes.clear();
    rcsizes.resize(wc.size() , BADRECTANGLE);
    waspects.clear();
@@ -114,6 +129,7 @@ void FlowLayout::RecalcFlow() {
    overflow = false;/// reset overflow warning
    rowcount = 0;
    colcount.clear();
+   colwidths.clear();
    rowheights.clear();
    rowspace.clear();
    
@@ -136,6 +152,7 @@ void FlowLayout::RecalcFlow() {
    /// Collect statistics on widget children, pack all widgets into upper left placing as many as possible on the current row
    
    colcount.push_back(0);
+//   colwidths.push_back(0);
    rowheights.push_back(0);
    rowspace.push_back(rowspacetotal);
    waspects.resize(wc.size() , -1.0);
@@ -170,7 +187,7 @@ void FlowLayout::RecalcFlow() {
       if ((major <= rcmajorrem) && (minor <= rcminorrem)) {
          /// This widget fits the major flow and the minor flow
          colcount[rowcount]++;
-         
+//         colwidths[rowcount] += major;
          /// Calculate max height for each row
          if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
          
@@ -187,11 +204,13 @@ void FlowLayout::RecalcFlow() {
          ++rowcount;
          rowheights.push_back(minor);
          colcount.push_back(1);
+//         colwidths.push_back(major);
       }
       else if (minor >= rcminorrem) {
          /// Overflowed the layout height remaining, keep going anyway, don't wrap to next row
          overflow = true;
          colcount[rowcount]++;
+//         colwidths[rowcount] += major;
          if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
          rcmajorrem -= major;
          rowspace[rowcount] -= major;/// Could be negative now, since it overflowed to the right (for horizontal layouts)
@@ -206,11 +225,14 @@ void FlowLayout::RecalcFlow() {
             *minor1 += rowheights[rowcount];
             rcminorrem -= rowheights[rowcount];/// This could be negative now
             rowheights.push_back(minor);
+//            colwidths.push_back(major);
          }
          else {
             /// Leave major1 and minor1 alone
             nextrow = true;
-            rowheights.push_back(0);
+            if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
+//            colwidths[rowcount] += major;
+//            colwidths.push_back(0);
          }
          rcmajorrem = colspacetotal;
          colspace -= rowheights[rowcount];/// This could be negative now too
@@ -232,6 +254,7 @@ void FlowLayout::RecalcFlow() {
             h = rowheights.back();
          }
          *minor1 += h;
+         rowheights.push_back(minor);
       }
 
 
@@ -239,6 +262,12 @@ void FlowLayout::RecalcFlow() {
          EagleWarn() << "Flow layout overflowed." << std::endl;
       }
    }
+   
+   for (unsigned int i = 0 ; i < rowspace.size() ; ++i) {
+      colwidths.push_back(colspacetotal - rowspace[i]);
+   }
+   
+   
    int pw = 0;
    int ph = 0;
    int ox = 0;
@@ -290,7 +319,7 @@ FlowLayout::~FlowLayout() {
 Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    WidgetBase* w = GetWidget(widget_slot);
    if (!w) {return BADRECTANGLE;}
-   if (wchildren.empty()) {return BADRECTANGLE;}
+   if (WChildren().empty()) {return BADRECTANGLE;}
    (void)newx;
    (void)newy;
    (void)newwidth;
@@ -459,7 +488,6 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
 
 void FlowLayout::PlaceWidget(WidgetBase* w , int slot) {
    LayoutBase::PlaceWidget(w , slot);
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -468,7 +496,6 @@ void FlowLayout::PlaceWidget(WidgetBase* w , int slot) {
 
 int FlowLayout::AddWidget(WidgetBase* w) {
    int ret = LayoutBase::AddWidget(w);
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
    return ret;
@@ -478,7 +505,6 @@ int FlowLayout::AddWidget(WidgetBase* w) {
 
 void FlowLayout::InsertWidget(WidgetBase* w , int slot_before) {
    LayoutBase::InsertWidget(w , slot_before);
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -488,7 +514,6 @@ void FlowLayout::InsertWidget(WidgetBase* w , int slot_before) {
 void FlowLayout::ShrinkOnOverflow(bool shrink) {
    if (shrink != shrink_on_overflow) {
       shrink_on_overflow = shrink;
-      RecalcFlow();
       RepositionAllChildren();
       SetRedrawFlag();
    }
@@ -499,7 +524,6 @@ void FlowLayout::ShrinkOnOverflow(bool shrink) {
 void FlowLayout::SetDefaultWidth(unsigned int w) {
    if (w < 1) {w = 1;}
    defwidth = w;
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -509,7 +533,6 @@ void FlowLayout::SetDefaultWidth(unsigned int w) {
 void FlowLayout::SetDefaultHeight(unsigned int h) {
    if (h < 1) {h = 1;}
    defheight = h;
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -543,7 +566,6 @@ void FlowLayout::SetFlowAnchor(FLOW_ANCHOR_POINT p) {
 
 void FlowLayout::SetFlowDirection(FLOW_FAVORED_DIRECTION d) {
    favored_direction = d;
-   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }

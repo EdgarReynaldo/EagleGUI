@@ -300,7 +300,7 @@ bool EagleSystem::FinalizeSystem() {
    if (!system_queue)       {system_queue     = GetSystemQueue();}
    if (!system_clipboard)   {system_clipboard = CreateClipboard();}
    if (!window_manager)     {window_manager   = CreateWindowManager();}
-   if (!system_transformer) {system_transformer = GetSystemTransformer();}
+   if (!system_transformer) {system_transformer = PrivateCreateTransformer();}
 
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
