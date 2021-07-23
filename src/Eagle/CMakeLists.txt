@@ -59,7 +59,7 @@ endif (${DEBUG_CMAKE})
 
 add_library(EagleObjects OBJECT ${EAGLE_SOURCE_FILES} ${EAGLE_HEADER_FILES})
 target_include_directories(EagleObjects PRIVATE ${EAGLE_INCLUDE_DIR})
-target_compile_options(EagleObjects PRIVATE "-std=c++11" "-fPIC" "-Wall" "-Wextra" "-Wshadow")
+target_compile_options(EagleObjects PRIVATE "-pedantic" "-std=c++11" "-fPIC" "-Wall" "-Wextra" "-Wshadow")
 
 
 
@@ -68,7 +68,7 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    target_compile_definitions(EagleObjects PRIVATE EAGLE_LOG)
    target_compile_definitions(EagleObjects PRIVATE EAGLE_ASSERT_EXCEPTION)
    target_compile_definitions(EagleObjects PRIVATE EAGLE_DEBUG_MUTEX_LOCKS)
-   target_compile_options(EagleObjects PRIVATE "-g" "-fno-inline-functions")
+   target_compile_options(EagleObjects PRIVATE "-g" "-fno-inline-functions" "-O0")
 #   target_compile_options(EagleObjects PUBLIC "-fsanitize=address")
 endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 

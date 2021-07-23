@@ -1,7 +1,7 @@
 
 # This CMakeLists.txt belongs in the root of the project. This is the master cmake file
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.1.13)
 
 set(EAGLE_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(EAGLE_INCLUDE_DIR ${EAGLE_ROOT_DIR}/include)
@@ -85,9 +85,9 @@ if (WANT_EXAMPLES)
          set(EXNAMESTATICDEBUG ${SRC})
          string(APPEND EXNAMESTATICDEBUG "_A5DS")
 
-         set(OPTS "-Wall" "-Wextra" "-Wshadow")
+         set(OPTS "-std=c++11" "-pedantic" "-Wall" "-Wextra" "-Wshadow")
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-            list(APPEND OPTS "-fno-inline" "-O0")
+            list(APPEND OPTS "-g" "-fno-inline" "-O0")
          endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
          
          

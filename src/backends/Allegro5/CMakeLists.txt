@@ -54,13 +54,13 @@ target_include_directories(EagleA5Objects PRIVATE "${EAGLE_INCLUDE_DIR}/backends
 target_include_directories(EagleA5Objects PRIVATE "${ALLEGRO5_INCLUDE_DIR}")
 target_include_directories(EagleA5Objects PRIVATE "/usr/include")
 
-target_compile_options(EagleA5Objects PRIVATE "-std=c++11" "-fPIC" "-Wall" "-Wextra" "-Wshadow")
+target_compile_options(EagleA5Objects PRIVATE "-pedantic" "-std=c++11" "-fPIC" "-Wall" "-Wextra" "-Wshadow")
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    target_compile_definitions(EagleA5Objects PRIVATE DEBUG)
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_LOG)
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_ASSERT_EXCEPTION)
-   target_compile_options(EagleA5Objects PRIVATE "-g" "-fno-inline-functions")
+   target_compile_options(EagleA5Objects PRIVATE "-g" "-fno-inline-functions" "-O0")
 endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 
 target_compile_definitions(EagleA5Objects PRIVATE ALLEGRO_UNSTABLE)
