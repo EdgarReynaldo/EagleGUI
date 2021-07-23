@@ -60,7 +60,7 @@ char NativePathSeparator() {
 
 std::string GetFileName(std::string path) {
    
-   unsigned int index = path.find_last_of("\\/");
+   size_t index = path.find_last_of("\\/");
    
    if (index == std::string::npos) {
       return path;
@@ -72,7 +72,7 @@ std::string GetFileName(std::string path) {
 
 
 std::string GetFileExt(std::string filename) {
-   unsigned int index = filename.find_last_of('.');
+   size_t index = filename.find_last_of('.');
    if (index == std::string::npos) {
       return "";
    }
@@ -86,11 +86,11 @@ std::vector<std::string> ExplodePath(std::string path) {
    std::vector<std::string> components;
    
    /// separate into path components
-   unsigned int stop = path.length();
-   unsigned int index = 0;
+   size_t stop = path.length();
+   size_t index = 0;
 
    while (index < stop) {
-      unsigned int j = path.find_first_of("\\/" , index);
+      size_t j = path.find_first_of("\\/" , index);
       if (j == std::string::npos) {
          j = stop;
       }

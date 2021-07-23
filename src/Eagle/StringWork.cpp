@@ -37,17 +37,19 @@ using std::list;
 
 
 
-unsigned int STRINGPRINTF_BUFFER_SIZE = 1024;
+size_t STRINGPRINTF_BUFFER_SIZE = 1024;
 
    
 string StringPrintF(const char* format_str , ...) {
-   char buffer[STRINGPRINTF_BUFFER_SIZE];
+   char* buffer = new char[STRINGPRINTF_BUFFER_SIZE];
    va_list args;
    va_start(args , format_str);
 ///int vsnprintf (char * s, size_t n, const char * format, va_list arg );
    vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
    va_end(args);
-   return std::string(buffer);
+   std::string s = buffer;
+   delete buffer;
+   return s;
 }
 
 
@@ -247,7 +249,7 @@ vector<string> SplitByNewLinesNoChomp(std::string s) {
    }
 
    string line;
-   for (unsigned int i = 0 ; i < s.length() ; ) {
+   for (size_t i = 0 ; i < s.length() ; ) {
       char c = s[i];
       if (c == '\r' || c == '\n') {
 
@@ -255,7 +257,7 @@ vector<string> SplitByNewLinesNoChomp(std::string s) {
          lines.push_back(line);
          line = "";
 
-         unsigned int i2 = i + 1;
+         size_t i2 = i + 1;
          char c2 = (i2 < s.length())?s[i2]:'\0';
          if (c == '\r' && c2 == '\n') {
             ++i;
@@ -277,8 +279,8 @@ vector<string> SplitByNewLinesNoChomp(std::string s) {
 
 std::vector<std::string> SplitByNewLinesChomp(std::string s) {
    std::vector<std::string> lines_chomp = SplitByNewLinesNoChomp(s);
-   for (unsigned int i = 0 ; i < lines_chomp.size() ; ++i) {
-      std::string::size_type index = lines_chomp[i].find_last_of('\n');
+   for (size_t i = 0 ; i < lines_chomp.size() ; ++i) {
+      size_t index = lines_chomp[i].find_last_of('\n');
       if (index != std::string::npos) {
          lines_chomp[i].erase(index , 1);
       }
@@ -403,10 +405,10 @@ void TrimTrailingWhiteSpace(char* str) {
 
 std::string Replace(std::string str , const char* exp , const char* rep) {
    std::string replace_str = str;
-   int start = 0;
-   int explen = strlen(exp);
-   int replen = strlen(rep);
-   while ((start = replace_str.find_first_of(exp , start)) != (int)std::string::npos) {
+   size_t start = 0;
+   size_t explen = strlen(exp);
+   size_t replen = strlen(rep);
+   while ((start = replace_str.find_first_of(exp , start)) != std::string::npos) {
       replace_str.replace(start , explen , rep);
       start += replen;
    }
@@ -504,7 +506,7 @@ std::string GetGuiUnderlineText(std::string gui_text) {
 
 string GetFileExtension(string& s) {
    string ext("");
-   std::string::size_type index = s.find_last_of('.');
+   size_t index = s.find_last_of('.');
    if ((index != string::npos) && (index + 1 < s.size())) {
       ext = s.substr(index + 1);
    }

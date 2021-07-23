@@ -50,7 +50,7 @@ void ConfigLine::ParseLine() {
       }
    }
    if (!comment && !spacer) {
-      unsigned int j = line.find_first_of('=');
+      size_t j = line.find_first_of('=');
       EAGLE_ASSERT(line.find_first_of('=') != std::string::npos);
       if (j != std::string::npos) {
          /// Should have a key value pair
@@ -365,8 +365,8 @@ bool ConfigFile::LoadFromFile(const char* path) {
    for (int i = 0 ; i < (int)lines.size() ; ++i) {
       std::string l = lines[i];
       
-      unsigned int idx1 = l.find_first_of('[');
-      unsigned int idx2 = l.find_first_of(']');
+      size_t idx1 = l.find_first_of('[');
+      size_t idx2 = l.find_first_of(']');
       if (idx1 != std::string::npos && idx2 != std::string::npos && idx1 < idx2 && idx1 == 0) {
          /// Found a section name
          std::string section_str = l.substr(idx1 + 1 , idx2 - idx1 - 1);

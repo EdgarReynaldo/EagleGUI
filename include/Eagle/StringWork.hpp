@@ -31,7 +31,7 @@
 
 
 
-extern unsigned int STRINGPRINTF_BUFFER_SIZE;///< How large our working string print f buffer should be, defaults to 1024
+extern size_t STRINGPRINTF_BUFFER_SIZE;///< How large our working string print f buffer should be, defaults to 1024
 
 
 

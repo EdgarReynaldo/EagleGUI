@@ -55,7 +55,7 @@ enum FLOW_FAVORED_DIRECTION {
 
 class FlowLayout : public LayoutBase {
 
-protected :;
+protected :
 	BOX_SPACE_RULES size_rules;
 	FLOW_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;

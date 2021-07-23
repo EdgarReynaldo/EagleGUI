@@ -204,10 +204,10 @@ EagleGuiScript::SECTION_MAP EagleGuiScript::ReadSections(std::string script_file
    std::string section = "Global";
    std::string content = "";
 
-   unsigned int brace_start = script_file.find_first_of('[');
-   unsigned int brace_stop = script_file.find_first_of(brace_start , ']');
-   unsigned int content_start = brace_stop + 1;
-   unsigned int content_stop = script_file.find_first_of(content_start , '[');
+   size_t brace_start = script_file.find_first_of('[');
+   size_t brace_stop = script_file.find_first_of(brace_start , ']');
+   size_t content_start = brace_stop + 1;
+   size_t content_stop = script_file.find_first_of(content_start , '[');
 
    /// Global content
    content = script_file.substr(0 , brace_start);
