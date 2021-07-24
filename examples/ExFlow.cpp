@@ -80,8 +80,8 @@ int main(int argc , char** argv) {
    rl.PlaceWidget(&mover , 0 , LayoutRectangle(-1.0 , -1.0 , 0.1 , 0.1));
    
    EagleImage* btnimgs[2] = {
-      win->LoadImageFromFile("Up.png"),
-      win->LoadImageFromFile("Down.png")
+      win->LoadImageFromFile("Data/Images/Up.png"),
+      win->LoadImageFromFile("Data/Images/Down.png")
    };
    
    
