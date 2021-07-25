@@ -156,7 +156,7 @@ if (WANT_EXAMPLES)
       endforeach()
    endif (WANT_ALLEGRO5)
    install(FILES "Verdana.ttf" DESTINATION bin)
-   install(DIRECTORY "Data/Images/" DESTINATION "${CMAKE_INSTALLL_PREFIX}/bin/Data/Images")
+   install(DIRECTORY "Data/Images/" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/Data/Images")
 endif (WANT_EXAMPLES)
 
 install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
