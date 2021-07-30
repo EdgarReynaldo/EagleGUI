@@ -406,6 +406,7 @@ void BasicButton::UseDefaultClickArea(bool use_default) {
 void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
    bool oldhover = (unsigned int)Flags() & HOVER;
    bool oldup = (btn_state % 2 == 0);
+   btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
          if (notify) {
@@ -444,7 +445,6 @@ void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
          }
       }
    }
-   btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
 /**
    EAGLE_DEBUG(
       EagleInfo() << GetButtonStateText(btn_state) << std::endl;
