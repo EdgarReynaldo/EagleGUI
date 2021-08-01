@@ -49,7 +49,7 @@ void BasicRadioButton::ResetWidgetAreas() {
    EAGLE_ASSERT(our_button);
    EAGLE_ASSERT(our_text);
    our_button->SetWidgetArea(Rectangle(in.X() , in.Y() , in.W()/5 , in.H()) , false);
-   our_text->SetWidgetArea(Rectangle(in.X() + in.W()/5 , in.Y() , in.W()/4 , in.H()) , false);
+   our_text->SetWidgetArea(Rectangle(in.X() + in.W()/5 , in.Y() , 4*in.W()/5 , in.H()) , false);
 }
 
 
@@ -62,6 +62,12 @@ BasicRadioButton::BasicRadioButton(BasicButton* button_to_use , BasicText* text_
       our_text(0)
 {
    SetWidgets(button_to_use , text_to_use);
+}
+
+
+
+void BasicRadioButton::SetRedrawFlag() {
+   SetBgRedrawFlag();
 }
 
 

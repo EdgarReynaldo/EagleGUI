@@ -65,11 +65,15 @@ void RadioGroup::SelectButton(BasicButton* btn) {
 
 
 void RadioGroup::SetRadioGroup(std::vector<BasicButton*> btns , BasicButton* active) {
+   for (std::unordered_set<BasicButton*>::iterator it = btn_group.begin() ; it != btn_group.end() ; ++it) {
+      StopListeningTo(*it);
+   }
    btn_group.clear();
    for (unsigned int i = 0 ; i < btns.size() ; ++i) {
       EAGLE_ASSERT(btns[i]);
       if (btns[i]) {
          btn_group.insert(btns[i]);
+         ListenTo(btns[i]);
       }
    }
    EAGLE_ASSERT(active && btn_group.find(active) != btn_group.end());
@@ -87,12 +91,9 @@ void RadioGroup::RespondToEvent(EagleEvent e , EagleThread* thread) {
          if (btn) {
             if (btn_group.find(btn) != btn_group.end()) {
                /// The button is in our set, and it was toggled
-               bool up = btn->Up();
-               if (!up) {
-                  SelectButton(btn);
-                  e.source = this;
-                  EmitEvent(e , thread);
-               }
+               SelectButton(btn);
+               e.source = this;
+               EmitEvent(e , thread);
             }
          }
       }

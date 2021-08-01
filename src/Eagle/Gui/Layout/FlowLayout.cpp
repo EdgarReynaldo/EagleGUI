@@ -140,14 +140,8 @@ void FlowLayout::RecalcFlow() {
    const int maxh = InnerArea().H();
    const int colspacetotal = (favored_direction == FLOW_FAVOR_HORIZONTAL)?maxw:maxh;
    const int rowspacetotal = (favored_direction == FLOW_FAVOR_HORIZONTAL)?maxh:maxw;
-   /// assume major flow is horizontal
-   int rcmajorrem = maxw;
-   int rcminorrem = maxh;
-   /// accomodate vertical flow
-   if (favored_direction == FLOW_FAVOR_VERTICAL) {
-      rcmajorrem = maxh;
-      rcminorrem = maxw;
-   }
+   int rcmajorrem = colspacetotal;/// The main axis is thought of as a set of columns
+   int rcminorrem = rowspacetotal;/// The minor axis is thought of as a set of rows
    
    /// Collect statistics on widget children, pack all widgets into upper left placing as many as possible on the current row
    
@@ -195,22 +189,37 @@ void FlowLayout::RecalcFlow() {
          rowspace[rowcount] -= major;
       }
       else if (major > rcmajorrem) {
-         /// Overflowed the row, wrap to next
-         rcmajorrem = colspacetotal - major;
-         rcminorrem -= rowheights[rowcount];
-         colspace -= rowheights[rowcount];
-         *major1 = 0;
-         *minor1 += rowheights[rowcount];
-         ++rowcount;
-         rowheights.push_back(minor);
-         colcount.push_back(1);
-//         colwidths.push_back(major);
+         /// Overflowed the row
+         /// First on row, don't wrap until next widget
+         if (colcount[rowcount] == 0) {
+            colcount[rowcount] = 1;
+            colcount.push_back(0);
+            rowspace[rowcount] -= major;
+            rowspace.push_back(rowspacetotal);
+            rcmajorrem = rowspacetotal;
+            rcminorrem -= minor;
+            rowheights[rowcount] = minor;
+            *major1 = 0;
+            (void)(*minor1);/// leave y alone
+            ++rowcount;
+            nextrow = true;
+         }
+         /// Wrap to next row
+         else {
+            rcmajorrem = colspacetotal - major;
+            rcminorrem -= rowheights[rowcount];
+            colspace -= rowheights[rowcount];
+            *major1 = 0;
+            *minor1 += rowheights[rowcount];
+            ++rowcount;
+            rowheights.push_back(minor);
+            colcount.push_back(1);
+         }
       }
       else if (minor >= rcminorrem) {
          /// Overflowed the layout height remaining, keep going anyway, don't wrap to next row
          overflow = true;
          colcount[rowcount]++;
-//         colwidths[rowcount] += major;
          if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
          rcmajorrem -= major;
          rowspace[rowcount] -= major;/// Could be negative now, since it overflowed to the right (for horizontal layouts)
@@ -246,6 +255,7 @@ void FlowLayout::RecalcFlow() {
       rcsizes[i].SetCorners(x1 , y1 , x2 , y2);
       
       *major1 += major;
+      /// Flow to the next row for the next widget
       if (nextrow) {
          rcmajorrem = rowspacetotal;
          *major1 = 0;
@@ -254,7 +264,6 @@ void FlowLayout::RecalcFlow() {
             h = rowheights.back();
          }
          *minor1 += h;
-         rowheights.push_back(minor);
       }
 
 
@@ -357,7 +366,7 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    int nspacecolumns = 0;
    int space_per_column = 0;
    int space_left = 0;
-   
+//**   
    if (size_rules == BOX_ALIGN_ONLY) {
       /// Handle major axis alignment
       if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
@@ -388,17 +397,19 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    else if (size_rules == BOX_SPACE_BETWEEN) {
       /// Apply space between consecutive pairs of widgets
       nspacecolumns = colcount[row] - 1;
-      space_per_column = ((int)rspace[row])/nspacecolumns;
-      space_left = ((int)rspace[row])%nspacecolumns;
-      if (col == 0) {
-         (void)0;/// This column is already pushed out from the middle as far as it will go
-      }
-      else if (col > 0) {
-         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-            r.MoveBy(col*space_per_column + (col - 1 < space_left)?1:0 , 0);
+      if (nspacecolumns) {
+         space_per_column = ((int)rspace[row])/nspacecolumns;
+         space_left = ((int)rspace[row])%nspacecolumns;
+         if (col == 0) {
+            (void)0;/// This column is already pushed out from the middle as far as it will go
          }
-         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-            r.MoveBy(0 , col*space_per_column + (col - 1 < space_left)?1:0);
+         else if (col > 0) {
+            if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+               r.MoveBy(col*space_per_column + (col - 1 < space_left)?1:0 , 0);
+            }
+            else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+               r.MoveBy(0 , col*space_per_column + (col - 1 < space_left)?1:0);
+            }
          }
       }
    }
@@ -447,14 +458,14 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
          r.MoveBy((rowheights[row] - r.W()) , 0);
       }
    }
-   
+//*/
    double rx = r.X();
    double ry = r.Y();
    double rw = r.W();
    double rh = r.H();
    
-   t.ApplyTransformation(&rx , &ry , 0);
-   t.ApplyTransformation(&rw , &rh , 0);
+//   t.ApplyTransformation(&rx , &ry , 0);
+//   t.ApplyTransformation(&rw , &rh , 0);
    
    r = Rectangle(rx , ry , rw , rh);
    
@@ -469,15 +480,15 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
          break;
       case FLOW_ANCHOR_SW :
          /// Left to right along bottom - flip vertically
-         r.SetCorners(x1 , in.BRY() - y1 , x2 , in.BRY() - y2);
+         r.SetCorners(x1 , in.BRY() - r.Y() , x2 , in.BRY() - r.BRY());
          break;
       case FLOW_ANCHOR_NE :
          /// Right to left along top - flip horizontally
-         r.SetCorners(in.BRX() - x1 , y1 , in.BRX() - x2 , y2);
+         r.SetCorners(in.BRX() - r.X() , y1 , in.BRX() - r.BRX() , y2);
          break;
       case FLOW_ANCHOR_SE :
          /// Right to left along bottom, double mirror
-         r.SetCorners(in.BRX() - x1 , in.BRY() - y1 , in.BRX() - x2 , in.BRY() - y2);
+         r.SetCorners(in.BRX() - r.X() , in.BRY() - r.Y() , in.BRX() - r.BRX() , in.BRY() - r.BRY());
          break;
    }
    
@@ -573,6 +584,11 @@ void FlowLayout::SetFlowDirection(FLOW_FAVORED_DIRECTION d) {
 
 
 
+void FlowLayout::SetBoxSpacing(BOX_SPACE_RULES r) {
+   size_rules = r;
+   RepositionAllChildren();
+   SetRedrawFlag();
+}
 
 
 

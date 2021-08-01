@@ -46,8 +46,8 @@ enum FLOW_ANCHOR_POINT {
  *   @brief Which direction to favor when adding widgets to this layout
  */
 enum FLOW_FAVORED_DIRECTION {
-	FLOW_FAVOR_VERTICAL   = 0,///< Favor vertical flow
-	FLOW_FAVOR_HORIZONTAL = 1 ///< Favor horizontal flow
+	FLOW_FAVOR_HORIZONTAL = 0,///< Favor horizontal flow
+	FLOW_FAVOR_VERTICAL   = 1 ///< Favor vertical flow
 };
 
 
@@ -116,6 +116,8 @@ public :
    void SetFlowAnchor(FLOW_ANCHOR_POINT p);
 
    void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
+   
+   void SetBoxSpacing(BOX_SPACE_RULES r);
 };
 
 

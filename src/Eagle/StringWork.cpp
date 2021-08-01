@@ -48,7 +48,7 @@ string StringPrintF(const char* format_str , ...) {
    vsnprintf(buffer , STRINGPRINTF_BUFFER_SIZE , format_str , args);
    va_end(args);
    std::string s = buffer;
-   delete buffer;
+   delete [] buffer;
    return s;
 }
 

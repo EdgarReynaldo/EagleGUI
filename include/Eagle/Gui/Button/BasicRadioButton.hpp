@@ -38,7 +38,7 @@ protected :
 public :
    BasicRadioButton(BasicButton* button_to_use = 0 , BasicText* text_to_use = 0 , std::string classname = "BasicRadioButton" , std::string objname = "Nemo");
 
-
+   virtual void SetRedrawFlag() override;
 
    void SetWidgets(BasicButton* button_to_use , BasicText* text_to_use);
    
