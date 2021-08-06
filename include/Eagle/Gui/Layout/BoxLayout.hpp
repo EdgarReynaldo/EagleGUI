@@ -43,6 +43,9 @@ enum BOX_SPACE_RULES {
 };
 
 
+std::string PrintBoxSpaceRule(BOX_SPACE_RULES b);
+
+
 
 class BoxLayout : public LayoutBase {
    

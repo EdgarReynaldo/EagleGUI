@@ -28,6 +28,8 @@
 
 #include "Eagle/Gui/Layout/BoxLayout.hpp"
 #include <vector>
+#include <string>
+
 
 
 /**! @enum FLOW_ANCHOR_POINT
@@ -40,7 +42,7 @@ enum FLOW_ANCHOR_POINT {
 	FLOW_ANCHOR_SW = 3 ///< Anchor the flow in the SW corner
 };
 
-
+std::string PrintFlowAnchorPoint(FLOW_ANCHOR_POINT p);
 
 /**! @enum FLOW_FAVORED_DIRECTION
  *   @brief Which direction to favor when adding widgets to this layout
@@ -50,7 +52,7 @@ enum FLOW_FAVORED_DIRECTION {
 	FLOW_FAVOR_VERTICAL   = 1 ///< Favor vertical flow
 };
 
-
+std::string PrintFlowFavoredDirection(FLOW_FAVORED_DIRECTION d);
 
 
 class FlowLayout : public LayoutBase {
@@ -118,6 +120,9 @@ public :
    void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
    
    void SetBoxSpacing(BOX_SPACE_RULES r);
+   
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+   
 };
 
 

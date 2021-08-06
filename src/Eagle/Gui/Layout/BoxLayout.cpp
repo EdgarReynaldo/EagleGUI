@@ -27,6 +27,18 @@
 
 
 
+std::string PrintBoxSpaceRule(BOX_SPACE_RULES b) {
+   static const char* rules[4] = {
+      "BOX_ALIGN_ONLY",
+      "BOX_EXPAND",
+      "BOX_SPACE_BETWEEN",
+      "BOX_SPACE_EVEN"
+   };
+   return rules[b];
+}
+
+
+
 void BoxLayout::Resize(unsigned int nsize) {
    areas.resize(nsize , BADRECTANGLE);
    LayoutBase::Resize(nsize);
