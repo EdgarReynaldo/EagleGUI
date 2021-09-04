@@ -52,7 +52,6 @@ add_dependencies(EagleA5Objects EagleObjects)
 target_include_directories(EagleA5Objects PRIVATE ${EAGLE_INCLUDE_DIR})
 target_include_directories(EagleA5Objects PRIVATE "${EAGLE_INCLUDE_DIR}/backends/Allegro5/")
 target_include_directories(EagleA5Objects PRIVATE "${ALLEGRO5_INCLUDE_DIR}")
-target_include_directories(EagleA5Objects PRIVATE "/usr64/include")
 
 target_compile_options(EagleA5Objects PRIVATE "-pedantic" "-std=c++11" "-fPIC" "-Wall" "-Wextra" "-Wshadow")
 
