@@ -13,7 +13,7 @@ Last update 08/08/2019
 
     Eagle Agile Gui Library and Extensions
 
-    Copyright 2009-2019+ by Edgar Reynaldo
+    Copyright 2009-2021+ by Edgar Reynaldo
 
     See EagleLicense.txt for allowed uses of this library.
 
