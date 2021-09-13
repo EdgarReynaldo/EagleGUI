@@ -10,3 +10,7 @@ http://members.allegro.cc/EdgarReynaldo/Eagle.html
 Happy programming trails,
 Edgar Reynaldo
 
+To preserve your freedom, EAGLE is now licensed under the Mozilla Public License v2.0.
+You can find it under the root directory under the LICENSE file.
+Edgar 2021-09-18
+
