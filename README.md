@@ -15,8 +15,8 @@ Last update 08/08/2019
 
     Copyright 2009-2021+ by Edgar Reynaldo
 
-    See EagleLicense.txt for allowed uses of this library.
-
+    See LICENSE in the root directory for allowed uses of this library.
+    EAGLE is covered under the Mozilla Public License v2.0.
 
 Eagle now builds with CMake. Build is working on Windows with MinGW and on Linux with GCC.
 
