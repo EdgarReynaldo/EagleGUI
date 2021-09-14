@@ -29,6 +29,21 @@
 #include "Eagle/Gui/Layout/Layout.hpp"
 
 
+/**! @enum BOX_ANCHOR_POINT
+ *   @brief Where to anchor the flow from. The opposite corner is where it flows to
+ */
+enum BOX_ANCHOR_POINT {
+   HBOX_ANCHOR_W = 1 << 1,/// Anchor the flow on the west side, for hbox 1
+   HBOX_ANCHOR_E = 1 << 2,/// Anchor the flow on the east side, for hbox 2
+   VBOX_ANCHOR_N = 1 << 3,/// Anchor the flow on the north side, for vbox 4
+   VBOX_ANCHOR_S = 1 << 4,/// Anchor the flow on the south side, for vbox 8
+	FBOX_ANCHOR_NW = HBOX_ANCHOR_W | VBOX_ANCHOR_N,///< Anchor the flow in the NW corner, for flow 5
+	FBOX_ANCHOR_NE = HBOX_ANCHOR_E | VBOX_ANCHOR_N,///< Anchor the flow in the NE corner, for flow 6
+	FBOX_ANCHOR_SE = HBOX_ANCHOR_E | VBOX_ANCHOR_S,///< Anchor the flow in the SE corner, for flow 10
+	FBOX_ANCHOR_SW = HBOX_ANCHOR_W | VBOX_ANCHOR_S ///< Anchor the flow in the SW corner, for flow 9
+};
+
+std::string PrintBoxAnchorPoint(BOX_ANCHOR_POINT p);
 
 
 /**! @enum BOX_SPACE_RULES
@@ -50,9 +65,6 @@ std::string PrintBoxSpaceRule(BOX_SPACE_RULES b);
 class BoxLayout : public LayoutBase {
    
 protected :
-   bool overflow;/// When the children are too big for the container this becomes true
-   BOX_SPACE_RULES box_rules;
-   std::vector<Rectangle> areas;
    
    virtual void RecalcFlow()=0;
    
@@ -66,9 +78,16 @@ public :
 
    virtual void PlaceWidget(WidgetBase* w , int slot);
    virtual int AddWidget(WidgetBase* w);
+   virtual void InsertWidget(WidgetBase* w , int slot);
    
    
-   bool OverflowWarning() {return overflow;}///< Returns overflow state
+   
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p)=0;
+   
+   virtual int WidthLeft()=0;
+   virtual int HeightLeft()=0;
+   virtual bool OverflowWarning()=0;
+   bool WidgetWouldOverflowLayout(WidgetBase* w)=0;
 };
 
 
@@ -76,17 +95,36 @@ public :
 class HBoxLayout : public BoxLayout {
    
 protected :
-   virtual void RecalcFlow() override;
+   BOX_ANCHOR_POINT anchor;
+   BOX_SPACE_RULES rules;
+   int totalprefw;
+   int maxprefh;
+   int colcount;
+   std::vector<int> colsizes;
+   int colwidthleft;
+   int rowheightleft;
+   int defwidth;
+   int defheight;
+   bool overflow;
+   
+   
+   virtual void RecalcFlow();
+   
 public :
+   HBoxLayout(std::string classname = "HBoxLayout" , std::string objname = "Nemo");
    
    
    
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p);
    
+   virtual int WidthLeft();
+
+   virtual int HeightLeft();
+
+
+   virtual bool OverflowWarning();
    
-   
-   
-   
-   
+   virtual bool WidgetWouldOverflowLayout(WidgetBase* w);
    
    
 };

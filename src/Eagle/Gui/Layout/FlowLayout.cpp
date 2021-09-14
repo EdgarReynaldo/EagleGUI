@@ -26,15 +26,6 @@
 
 
 
-std::string PrintFlowAnchorPoint(FLOW_ANCHOR_POINT p) {
-   static const char* points[4] = {
-      "FLOW_ANCHOR_NW",
-      "FLOW_ANCHOR_NE",
-      "FLOW_ANCHOR_SE",
-      "FLOW_ANCHOR_SW"
-   };
-   return points[p];
-}
 
 
 

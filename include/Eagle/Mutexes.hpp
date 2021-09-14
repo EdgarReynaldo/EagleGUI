@@ -32,6 +32,8 @@
 #include <string>
 #include <list>
 #include <map>
+#include <atomic>
+
 
 
 /**! @enum EAGLE_MUTEX_TYPE
@@ -89,7 +91,7 @@ protected :
       std::recursive_timed_mutex* mtx_recursive_timed;///< Timed recursive mutex
    } MTX;
 
-   int lock_count;///< Estimate of the number of times we've been locked
+   std::atomic<int> lock_count;///< Estimate of the number of times we've been locked
 
    EagleThread* owner;///< The thread that owns us, may be @ref MAIN_THREAD
 

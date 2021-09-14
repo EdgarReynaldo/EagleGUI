@@ -32,17 +32,6 @@
 
 
 
-/**! @enum FLOW_ANCHOR_POINT
- *   @brief Where to anchor the flow from. The opposite corner is where it flows to
- */
-enum FLOW_ANCHOR_POINT {
-	FLOW_ANCHOR_NW = 0,///< Anchor the flow in the NW corner
-	FLOW_ANCHOR_NE = 1,///< Anchor the flow in the NE corner
-	FLOW_ANCHOR_SE = 2,///< Anchor the flow in the SE corner
-	FLOW_ANCHOR_SW = 3 ///< Anchor the flow in the SW corner
-};
-
-std::string PrintFlowAnchorPoint(FLOW_ANCHOR_POINT p);
 
 /**! @enum FLOW_FAVORED_DIRECTION
  *   @brief Which direction to favor when adding widgets to this layout

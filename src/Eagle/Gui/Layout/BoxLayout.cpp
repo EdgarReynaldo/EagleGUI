@@ -16,15 +16,30 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
- * 
- * 
- * 
+ * @file BoxLayout.cpp
+ * @brief Implentations for the BoxLayout family of classes
  */
 
 #include "Eagle/Gui/Layout/BoxLayout.hpp"
 
+
+
+std::string PrintBoxAnchorPoint(BOX_ANCHOR_POINT p) {
+   static const char* points[11] = {
+      "INVALID",
+      "HBOX_ANCHOR_W" ,//1
+      "HBOX_ANCHOR_E" ,//2
+      "INVALID",
+      "VBOX_ANCHOR_N" ,//4
+      "FBOX_ANCHOR_NW",//5
+      "FBOX_ANCHOR_NE",//6
+      "INVALID",
+      "VBOX_ANCHOR_S" ,//8
+      "FBOX_ANCHOR_SW",//9
+      "FBOX_ANCHOR_SE" //10
+   };
+   return points[p];
+}
 
 
 std::string PrintBoxSpaceRule(BOX_SPACE_RULES b) {
@@ -40,20 +55,15 @@ std::string PrintBoxSpaceRule(BOX_SPACE_RULES b) {
 
 
 void BoxLayout::Resize(unsigned int nsize) {
-   areas.resize(nsize , BADRECTANGLE);
+   rcsizes.resize(nsize , BADRECTANGLE);
    LayoutBase::Resize(nsize);
 }
 
 
 
 BoxLayout::BoxLayout(std::string classname , std::string objname) :
-      LayoutBase(classname , objname),
-      overflow(false),
-      box_rules(BOX_ALIGN_ONLY),
-      areas()
-{
-   LayoutBase::SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
-}
+   LayoutBase(classname , objname)
+{}
 
 
 
@@ -62,8 +72,15 @@ Rectangle BoxLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    (void)newy;
    (void)newwidth;
    (void)newheight;
+   WidgetBase* w = LayoutBase::GetWidget(widget_slot);
+   if (!w) {return BADRECTANGLE;}
    
-   Rectangle r = areas[widget_slot];
+   if (newwidth != w->PreferredWidth() || newheight != w->PreferredHeight()) {
+      w->SetPreferredSize(newwidth , newheight);
+      RecalcFlow();
+   }
+   
+   Rectangle r = rcsizes[widget_slot];
    
    return r;
 }
@@ -87,161 +104,217 @@ int BoxLayout::AddWidget(WidgetBase* w) {
 
 
 
+void BoxLayout::InsertWidget(WidgetBase* w , int slot) {
+   LayoutBase::InsertWidget(w , slot);
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
+/// ----------------------     HBOX       ---------------------------
+
+
+
 void HBoxLayout::RecalcFlow() {
-   areas.clear();
-   areas.resize(wchildren.size() , BADRECTANGLE);
+   rcsizes.clear();
+   rcsizes.resize(widget_children.size() , BADRECTANGLE);
    
-   Rectangle in = InnerArea();
-   int ix = in.X();
-   int iy = in.Y();
-   int iw = in.W();
-   int ih = in.H();
+   overflow = false;
+   totalprefw = 0;
+   maxprefh = 0;
+   colsizes.clear();
+   colsizes.resize(WChildren.size() , 0);
+   colcount = colsizes.size();
+   int x = 0;
+   int y = 0;
    
-
-   /// calculate space needed for preferred size and minimum size of widgets
-   int nchildren = 0;
-   int maxh = 0;
-   int totalprefw = 0;
-   int totalminw = 0;
-   int noprefcount = 0;
-   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-      WidgetBase* w = wchildren[i];
-      if (!w) {
-         continue;
-      }
-      ++nchildren;
-      if (w->PreferredWidth() == 0) {
-         noprefcount++;
-         continue;
-      }
-
-      EAGLE_ASSERT(w->PreferredWidth() >= w->AbsMinWidth());
-      
-      totalprefw += w->PreferredWidth();
-      totalminw += w->AbsMinWidth();
-      if (w->PreferredHeight() > maxh) {
-         maxh = w->PreferredHeight();
-      }
+   /// Rcsizes stores the relative position of all the widgets in the layout
+   std::vector<WidgetBase*> wc = wchildren();
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {
+      WidgetBase* w = wc[i];
+      if (!w) {continue;}
+      int pw = w->PreferredWidth();
+      int ph = w->PreferredHeight();
+      if (pw < 1) {pw = defwidth;}
+      if (ph < 1) {pw = defheight;}
+      colsizes[i] = pw;
+      totalprefw += pw;
+      if (ph > maxprefh) {maxprefh = ph;}
+      rcsizes[i].SetArea(x , 0 , pw , ph);
+      x += pw;
    }
    
-   if (totalminw > InnerArea().W()) {
-      overflow = true;
-      return;
-   }
+   colwidthleft = InnerArea().W() - totalprefw;
+   rowheightleft = InnerArea().H() - maxprefh;
    
-   if (maxh > InnerArea().H()) {
+   if ((colwidthleft < 0) || (rowheightleft < 0)) {
       overflow = true;
    }
    
-   
-///   BOX_ALIGN_ONLY    = 0,///< Left over space is unused
-///   BOX_EXPAND        = 1,///< Left over space is given completely to widgets
-///   BOX_SPACE_BETWEEN = 2,///< Left over space is split up between each widget, pushing them out from the middle
-///   BOX_SPACE_EVEN    = 3 ///< Left over space is split up evenly between each widget on its outer edges
-   /// Now we have the total preferred width we can allocate space according to our sizing rules
-   int leftover = InnerArea().W() - totalprefw;
-   if (box_rules != BOX_ALIGN_ONLY) {
-      if (leftover < 0) {
-         /// Widgets take up too much room at their preferred size, so we must shrink them to fit
-         
-      }
-      else if (leftover > 0) {
-         int left = (noprefcount?(leftover / noprefcount):0);/// Give the remaining space to the unspecified widgets
-         if (left) {
-            for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-               WidgetBase* w = wchildren[i];
-               if (!w) {continue;}
-               int pw = w->PreferredWidth();
-               if (!pw) {
-                  pw = left;
-               }
-               
-               ix += pw;
-            }
-         }
-         else {
-            /// Extra space leftover, follow box size rules to expand or pad widgets
-            if (box_rules == BOX_EXPAND) {
-               int grow = leftover / nchildren;
-               int extra = leftover % nchildren;
-               for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-                  WidgetBase* w = wchildren[i];
-                  if (!w) {continue;}
-                  int ww = w->PreferredWidth() + grow + (i%nchildren)?1:0; 
-                  areas[i].SetArea(ix , iy , ww , maxh);
-                  ix += ww;
-               }
-            }
-            else if (box_rules == BOX_SPACE_BETWEEN) {
-               /// Push widgets outwards from centered middle widget, creating N-1 horizontal spaces
-               int ncols = nchildren - 1;
-               if (ncols >= 1) {
-                  int colsize = leftover / ncols;
-                  int extra = leftover % colsize;
-                  for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-                     WidgetBase* w = wchildren[i];
-                     if (!w) {continue;}
-                     areas[i].SetArea(ix , iy , w->PreferredWidth() , maxh);
-                     ix += w->PreferredWidth() + colsize;
-                  }
-               }
-               else if (nchildren == 1) {
-                  /// This is a conundrum. Only one widget, with sizing option space between
-                  /// For now just give the single widget the entire space as if it was set to expand
-                  areas[0].SetArea(ix , iy , iw , ih);
-               }
-            }
-            else if (box_rules == BOX_SPACE_EVEN) {
-               /// Create N + 1 columnds of padding surrounding the widgets and between them
-               int ncols = nchildren + 1;
-               int colsize = leftover / ncols;
-               int extra = leftover % ncols;
-               for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-                  WidgetBase* w = wchildren[i];
-                  if (!w) {continue;}
-                  ix += colsize;
-                  if (i % extra) {
-                     ix += 1;
-                  }
-                  areas[i].SetArea(ix , iy , w->PreferredWidth() , maxh);
-                  ix += w->PreferredWidth();
-               }
-            }
-         }
-      }
-      else {
-         /// Just enough room for each widget to have their preferred size
-         for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            areas[i].SetArea(ix , iy , w->PreferredWidth() , maxh);
-            ix += w->PreferredWidth();
-         }
-      }
-   }
-   else {/// BOX_ALIGN_ONLY
-      /// Our horizontal alignment tells us whether to place widgets near the beginning, center, or end of the box
-      /// These act like flex-start , flex-end, and flex-center in a CSS Flexbox for the hbox and vbox layouts
-      switch (halign) {
-      case HALIGN_LEFT :
-         ix = ix;
-         break;
-      case HALIGN_CENTER :
-         ix += leftover/2;
-         break;
-      case HALIGN_RIGHT :
-         ix += leftover;
-         break;
-      default :
-         break;
-      }
+   if (rules == BOX_EXPAND) {
+      Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
+      t->Scale(InnerArea().W()/(float)totalprefw , InnerArea().H()/(float)maxprefh , 1.0);
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
          WidgetBase* w = wchildren[i];
          if (!w) {continue;}
-         areas[i].SetArea(ix , iy , w->PreferredWidth() , maxh);
-         ix += w->PreferredWidth();
+         Rectangle r = rcsizes[i];
+         double x = r.X();
+         double y = r.Y();
+         double w = r.W();
+         double h = r.H();
+         t.ApplyTransformation(&x , &y , 0);
+         t.ApplyTransformation(&w , &h , 0);
+         r->SetArea((int)x , (int)y , (int)w , (int)h);
       }
    }
+   else if (rules == BOX_SPACE_BETWEEN) {
+      int ncols = (int)colsizes.size();
+      --ncols;
+      if (ncols >= 1) {
+         int percol = colwidthleft / ncols;
+         int leftover = colwidthleft % ncols;
+         int colcount = 0;
+         int ox = 0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            colcount++;
+            ox += percol;
+            if (leftover >= colcount) {
+               ox++;
+            }
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(ox , 0);
+         }
+      }
+   }
+   else if (rules == BOX_SPACE_EVEN) {
+      int ncols = (int)colsizes.size();
+      if (ncols > 0) {
+         int percol = colwidthleft/2*ncols;
+         int leftover = colwidthleft % (2*ncols);
+         int leftoverleft = leftover/2;
+         int leftoverright = leftover/2 + (leftover % 2 == 1)?1:0;
+         int colcount = 0;
+         int ox = percol + leftoverleft;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            colcount++;
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(ox , 0);
+            ox += 2*percol + (leftoverleft >= colcount)?1:0 + (leftoverright >= colcount)?1:0;
+         }
+      }
+   }
+   else if (rules == BOX_ALIGN_ONLY) {
+      HALIGNMENT hal = halign;
+      if (anchor == BOX_ANCHOR_E) {
+         if (hal == HALIGN_LEFT) {hal = HALIGN_RIGHT;}
+         else if (hal == HALIGN_RIGHT) {hal = HALIGN_LEFT;}
+         int ox = 0;
+         if (hal == HALIGN_CENTER) {
+            ox = colwidthleft/2;
+         }
+         else if (hal == HALIGN_RIGHT) {
+            ox = colwidthleft;
+         }
+         for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(ox , 0);
+         }
+      }
+   }
+   
+   /// Handle valign
+   
+   if (rules != BOX_EXPAND) {
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         int h = w->PreferredHeight();
+         int oy = 0;
+         if (valign == VALIGN_CENTER) {
+            oy = (InnerArea().H() - h)/2;
+         }
+         else if (valign == VALIGN_BOTTOM) {
+            oy = InnerArea().H() - h;
+         }
+         Rectangle* r = &rcsizes[i];
+         r->MoveBy(0 , oy);
+      }
+      /// Handle flow direction
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle* r = &rcsizes[i];
+         int x = r->X();
+         int reflectx = InnerArea().W() - x;
+         r->MoveBy(reflectx - x , 0);
+      }
+   }
+}
+
+
+
+HBoxLayout::HBoxLayout(std::string classname , std::string objname) :
+   BoxLayout(classname , objname),
+   anchor(BOX_ANCHOR_W),
+   rules(BOX_ALIGN_ONLY),
+   totalprefw(0),
+   maxprefh(0),
+   colcount(0),
+   colsizes(),
+   colwidthleft(0),
+   rowheightleft(0),
+   defwidth(40),
+   defheight(20),
+   overflow(false)
+{}
+
+
+
+void HBoxLayout::SetAnchorPosition(BOX_ANCHOR_POINT p) {
+   switch (p) {
+   case HBOX_ANCHOR_W :
+   case HBOX_ANCHOR_E :
+      anchor = p;
+      break;
+   default :
+      anchor = HBOX_ANCHOR_W;   
+   }
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
+int HBoxLayout::WidthLeft() {
+   return colwidthleft;
+}
+
+
+
+int HBoxLayout::HeightLeft() {
+   return rowheightleft;
+}
+
+
+
+bool HBoxLayout::OverflowWarning() {
+   return overflow;
+}
+
+
+
+bool HBoxLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
+   if (!w) {return false;}
+   int pw = w->PreferredWidth();
+   int ph = w->PreferredHeight();
+   return (pw > colwidthleft || ph > rowheightleft);
 }
 
 

@@ -311,6 +311,9 @@ int main(int argc , char** argv) {
                quit = true;
                break;
             }
+            if (e.keyboard.keycode == EAGLE_KEY_P) {
+               EagleLog() << vbox << std::endl;
+            }
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             quit = true;
