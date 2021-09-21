@@ -125,12 +125,12 @@ void HBoxLayout::RecalcFlow() {
    maxprefh = 0;
    colsizes.clear();
    colsizes.resize(WChildren.size() , 0);
-   colcount = colsizes.size();
+   colcount = 0;
    int x = 0;
    int y = 0;
    
    /// Rcsizes stores the relative position of all the widgets in the layout
-   std::vector<WidgetBase*> wc = wchildren();
+   std::vector<WidgetBase*> wc = wchildren;
    for (unsigned int i = 0 ; i < wc.size() ; ++i) {
       WidgetBase* w = wc[i];
       if (!w) {continue;}
@@ -138,7 +138,8 @@ void HBoxLayout::RecalcFlow() {
       int ph = w->PreferredHeight();
       if (pw < 1) {pw = defwidth;}
       if (ph < 1) {pw = defheight;}
-      colsizes[i] = pw;
+      colsizes[colcount] = pw;
+      colcount++;
       totalprefw += pw;
       if (ph > maxprefh) {maxprefh = ph;}
       rcsizes[i].SetArea(x , 0 , pw , ph);
@@ -213,19 +214,19 @@ void HBoxLayout::RecalcFlow() {
       if (anchor == BOX_ANCHOR_E) {
          if (hal == HALIGN_LEFT) {hal = HALIGN_RIGHT;}
          else if (hal == HALIGN_RIGHT) {hal = HALIGN_LEFT;}
-         int ox = 0;
-         if (hal == HALIGN_CENTER) {
-            ox = colwidthleft/2;
-         }
-         else if (hal == HALIGN_RIGHT) {
-            ox = colwidthleft;
-         }
-         for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            Rectangle* r = &rcsizes[i];
-            r->MoveBy(ox , 0);
-         }
+      }
+      int ox = 0;
+      if (hal == HALIGN_CENTER) {
+         ox = colwidthleft/2;
+      }
+      else if (hal == HALIGN_RIGHT) {
+         ox = colwidthleft;
+      }
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle* r = &rcsizes[i];
+         r->MoveBy(ox , 0);
       }
    }
    
@@ -254,6 +255,14 @@ void HBoxLayout::RecalcFlow() {
          int x = r->X();
          int reflectx = InnerArea().W() - x;
          r->MoveBy(reflectx - x , 0);
+      }
+   }
+   if (anchor == HBOX_ANCHOR_E) {
+      // we need to reverse everything
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle* r = 
       }
    }
 }
@@ -314,7 +323,7 @@ bool HBoxLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
    if (!w) {return false;}
    int pw = w->PreferredWidth();
    int ph = w->PreferredHeight();
-   return (pw > colwidthleft || ph > rowheightleft);
+   return (pw > colwidthleft || ph > InnerArea().H());
 }
 
 
