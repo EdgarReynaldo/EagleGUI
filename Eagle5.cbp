@@ -104,6 +104,7 @@
 			<Add option="-Wcast-align" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
+			<Add option="-fPIC" />
 			<Add option="-Wno-div-by-zero" />
 			<Add option="-Werror=narrowing" />
 			<Add option="-Wformat" />
@@ -112,6 +113,8 @@
 		</Compiler>
 		<Unit filename="../../bin/ExGui.log" />
 		<Unit filename="CMakeLists.txt" />
+		<Unit filename="LICENSE" />
+		<Unit filename="README.md" />
 		<Unit filename="docs/src/EagleCopyright.txt" />
 		<Unit filename="docs/src/EagleFAQ.txt" />
 		<Unit filename="docs/src/EagleFeatures.txt" />
