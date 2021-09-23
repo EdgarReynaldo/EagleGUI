@@ -52,13 +52,13 @@ int main(int argc , char** argv) {
    
    rl.Resize(2);
    
-   
-   FlowLayout flow;
+   HBoxLayout flow;
+//   FlowLayout flow;
    flow.Resize(9);
 //   GridLayout flow;
 //   flow.ResizeGrid(3,3);
-   
-   FlowLayout vbox("FlowLayout" , "VBox");
+   VBoxLayout vbox("VBOXLayout" , "vbox");
+//   FlowLayout vbox("FlowLayout" , "VBox");
    vbox.Resize(9);
 //   GridLayout vbox;
 //   vbox.ResizeGrid(3,3);
@@ -170,15 +170,19 @@ int main(int argc , char** argv) {
    
    GridLayout rgrids[4];
    
-   rgrids[0].ResizeGrid(1 , 4);
+   rgrids[0].ResizeGrid(1 , 8);
    rgrids[1].ResizeGrid(1 , 2);
    rgrids[2].ResizeGrid(1 , 6);
    rgrids[3].ResizeGrid(1 , 4);
    
-   GuiButton btns[16];
-   BasicRadioButton rbtns[16];
-   BasicText rtext[16];
-   std::string text[16] = {
+   GuiButton btns[20];
+   BasicRadioButton rbtns[20];
+   BasicText rtext[20];
+   std::string text[20] = {
+      "W",
+      "E"
+      "N",
+      "S",
       "NW",
       "NE",
       "SE",
@@ -197,7 +201,7 @@ int main(int argc , char** argv) {
       "EVEN"
    };
    
-   for (unsigned int i = 0 ; i < 16 ; ++i) {
+   for (unsigned int i = 0 ; i < 20 ; ++i) {
       btns[i].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
       WidgetArea wa = btns[i].GetWidgetArea();
       wa.SetBoxesContract(0,0,5);
@@ -207,11 +211,12 @@ int main(int argc , char** argv) {
    }
    
    RadioGroup radios[5];
-   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1] , &btns[2] , &btns[3]}) , &btns[0]);
-   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[4] , &btns[5]}) , &btns[4]);
-   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[6] , &btns[7] , &btns[8]}) , &btns[6]);
-   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[9] , &btns[10] , &btns[11]}) , &btns[9]);
-   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[12] , &btns[13] , &btns[14] , &btns[15]}) , &btns[12]);
+   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1] , &btns[2] , &btns[3] ,
+                                                       &btns[4] , &btns[5] , &btns[6] , &btns[7]}) , &btns[0]);
+   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[8] , &btns[9]}) , &btns[8]);
+   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[10] , &btns[11] , &btns[12]}) , &btns[12]);
+   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[13] , &btns[14] , &btns[15]}) , &btns[13]);
+   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[16] , &btns[17] , &btns[18] , &btns[19]}) , &btns[16]);
    
    sys->GetSystemQueue()->ListenTo(&radios[0]);
    sys->GetSystemQueue()->ListenTo(&radios[1]);
@@ -267,37 +272,37 @@ int main(int argc , char** argv) {
          }
          if (e.type == EAGLE_EVENT_WIDGET) {
             if (e.source == &radios[0]) {
-               for (unsigned int i = 0 ; i < 4 ; ++i) {
+               for (unsigned int i = 0 ; i < 8 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetFlowAnchor((FLOW_ANCHOR_POINT)i);
+                     vbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
                   }
                }
             }
             if (e.source == &radios[1]) {
-               for (unsigned int i = 4 ; i < 6 ; ++i) {
+               for (unsigned int i = 8 ; i < 10 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetFlowDirection((FLOW_FAVORED_DIRECTION)(i - 4));
+                     vbox.SetAnchorPosition((BOX_ANCHOR_POINT)(i - 8));
                   }
                }
             }
             if (e.source == &radios[2]) {
-               for (unsigned int i = 6 ; i < 9 ; ++i) {
+               for (unsigned int i = 10 ; i < 13 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetAlignment((HALIGNMENT)(i - 6) , vbox.GetVAlignment());
+                     vbox.SetAlignment((HALIGNMENT)(i - 10) , vbox.GetVAlignment());
                   }
                }
             }
             if (e.source == &radios[3]) {
-               for (unsigned int i = 9 ; i < 12 ; ++i) {
+               for (unsigned int i = 13 ; i < 16 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetAlignment(vbox.GetHAlignment() , (VALIGNMENT)(i - 9));
+                     vbox.SetAlignment(vbox.GetHAlignment() , (VALIGNMENT)(i - 13));
                   }
                }
             }
             if (e.source == &radios[4]) {
-               for (unsigned int i = 12 ; i < 16 ; ++i) {
+               for (unsigned int i = 16 ; i < 20 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetBoxSpacing((BOX_SPACE_RULES)(i-12));
+                     vbox.SetBoxSpacing((BOX_SPACE_RULES)(i-16));
                   }
                }
             }
