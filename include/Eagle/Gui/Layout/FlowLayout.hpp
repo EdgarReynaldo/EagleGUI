@@ -48,7 +48,7 @@ class FlowLayout : public LayoutBase {
 
 protected :
 	BOX_SPACE_RULES size_rules;
-	FLOW_ANCHOR_POINT anchor_pt;
+	BOX_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
    bool overflow;
    bool shrink_on_overflow;
@@ -104,7 +104,7 @@ public :
 
    virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) override;
    
-   void SetFlowAnchor(FLOW_ANCHOR_POINT p);
+   void SetAnchorPosition(BOX_ANCHOR_POINT p);
 
    void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
    

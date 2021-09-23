@@ -21,22 +21,19 @@
  */
 
 #include "Eagle/Gui/Layout/BoxLayout.hpp"
-
+#include "Eagle/Lib.hpp"
 
 
 std::string PrintBoxAnchorPoint(BOX_ANCHOR_POINT p) {
-   static const char* points[11] = {
-      "INVALID",
-      "HBOX_ANCHOR_W" ,//1
-      "HBOX_ANCHOR_E" ,//2
-      "INVALID",
-      "VBOX_ANCHOR_N" ,//4
-      "FBOX_ANCHOR_NW",//5
-      "FBOX_ANCHOR_NE",//6
-      "INVALID",
-      "VBOX_ANCHOR_S" ,//8
-      "FBOX_ANCHOR_SW",//9
-      "FBOX_ANCHOR_SE" //10
+   static const char* points[8] = {
+      "HBOX_ANCHOR_W" ,//0
+      "HBOX_ANCHOR_E" ,//1
+      "VBOX_ANCHOR_N" ,//2
+      "VBOX_ANCHOR_S" ,//3
+      "FBOX_ANCHOR_NW",//4
+      "FBOX_ANCHOR_NE",//5
+      "FBOX_ANCHOR_SE",//6
+      "FBOX_ANCHOR_SW" //7
    };
    return points[p];
 }
@@ -112,19 +109,27 @@ void BoxLayout::InsertWidget(WidgetBase* w , int slot) {
 
 
 
+void BoxLayout::SetBoxSpacing(BOX_SPACE_RULES r) {
+   spacing = r;
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
 /// ----------------------     HBOX       ---------------------------
 
 
 
 void HBoxLayout::RecalcFlow() {
    rcsizes.clear();
-   rcsizes.resize(widget_children.size() , BADRECTANGLE);
+   rcsizes.resize(wchildren.size() , BADRECTANGLE);
    
    overflow = false;
    totalprefw = 0;
    maxprefh = 0;
    colsizes.clear();
-   colsizes.resize(WChildren.size() , 0);
+   colsizes.resize(WChildren().size() , 0);
    colcount = 0;
    int x = 0;
    int y = 0;
@@ -155,18 +160,19 @@ void HBoxLayout::RecalcFlow() {
    
    if (rules == BOX_EXPAND) {
       Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
-      t->Scale(InnerArea().W()/(float)totalprefw , InnerArea().H()/(float)maxprefh , 1.0);
+      t.Scale(InnerArea().W()/(float)totalprefw , InnerArea().H()/(float)maxprefh , 1.0);
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
          WidgetBase* w = wchildren[i];
          if (!w) {continue;}
-         Rectangle r = rcsizes[i];
-         double x = r.X();
-         double y = r.Y();
-         double w = r.W();
-         double h = r.H();
-         t.ApplyTransformation(&x , &y , 0);
-         t.ApplyTransformation(&w , &h , 0);
-         r->SetArea((int)x , (int)y , (int)w , (int)h);
+         Rectangle r2 = rcsizes[i];
+         Rectangle* r = &rcsizes[i];
+         double x2 = r2.X();
+         double y2 = r2.Y();
+         double w2 = r2.W();
+         double h2 = r2.H();
+         t.ApplyTransformation(&x2 , &y2 , 0);
+         t.ApplyTransformation(&w2 , &h2 , 0);
+         r->SetArea((int)x2 , (int)y2 , (int)w2 , (int)h2);
       }
    }
    else if (rules == BOX_SPACE_BETWEEN) {
@@ -211,7 +217,7 @@ void HBoxLayout::RecalcFlow() {
    }
    else if (rules == BOX_ALIGN_ONLY) {
       HALIGNMENT hal = halign;
-      if (anchor == BOX_ANCHOR_E) {
+      if (anchor == HBOX_ANCHOR_E) {
          if (hal == HALIGN_LEFT) {hal = HALIGN_RIGHT;}
          else if (hal == HALIGN_RIGHT) {hal = HALIGN_LEFT;}
       }
@@ -262,7 +268,9 @@ void HBoxLayout::RecalcFlow() {
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
          WidgetBase* w = wchildren[i];
          if (!w) {continue;}
-         Rectangle* r = 
+         Rectangle r2 = rcsizes[i];
+         Rectangle* r = &rcsizes[i];
+         r->SetArea(InnerArea().BRX() - r2.X() - r2.W() , y , r2.W() , r2.H());
       }
    }
 }
@@ -271,7 +279,7 @@ void HBoxLayout::RecalcFlow() {
 
 HBoxLayout::HBoxLayout(std::string classname , std::string objname) :
    BoxLayout(classname , objname),
-   anchor(BOX_ANCHOR_W),
+   anchor(HBOX_ANCHOR_W),
    rules(BOX_ALIGN_ONLY),
    totalprefw(0),
    maxprefh(0),
@@ -325,6 +333,202 @@ bool HBoxLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
    int ph = w->PreferredHeight();
    return (pw > colwidthleft || ph > InnerArea().H());
 }
+
+
+
+
+void VBoxLayout::RecalcFlow() {
+   rcsizes.clear();
+   rcsizes.resize(wchildren.size() , BADRECTANGLE);
+   
+   maxprefw = 0;
+   totalprefh = 0;
+   rowcount = 0;
+   rowsizes.clear();
+   rowsizes.resize(WChildren().size() , 0);
+   colwidthleft = 0;
+   rowheightleft = 0;
+   overflow = false;
+   
+   int x = 0;
+   int y = 0;
+   
+   /// rcsizes holds the relative position of all the sub widgets
+   std::vector<WidgetBase*> wc = wchildren;
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {
+      WidgetBase* w = wc[i];
+      if (!w) {continue;}
+      int pw = w->PreferredWidth();
+      int ph = w->PreferredHeight();
+      if (pw < 1) {pw = defwidth;}
+      if (ph < 1) {ph = defheight;}
+      if (pw > maxprefw) {
+         maxprefw = pw;
+      }
+      rcsizes[i].SetArea(x,y,pw,ph);
+      totalprefh += ph;
+      y += ph;
+      rowsizes[rowcount] = ph;
+      rowcount++;
+   }
+   
+   colwidthleft = InnerArea().W() - maxprefw;
+   rowheightleft = InnerArea().H() - totalprefh;
+   
+   if (colwidthleft < 0 || rowheightleft < 0) {
+      overflow = true;
+   }
+   
+   if (rules == BOX_EXPAND) {
+      Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
+      t.Scale(InnerArea().W()/(float)maxprefw , InnerArea().H()/(float)totalprefh , 1.0);
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle r2 = rcsizes[i];
+         Rectangle* r = &rcsizes[i];
+         double x2 = r2.X();
+         double y2 = r2.Y();
+         double w2 = r2.W();
+         double h2 = r2.H();
+         t.ApplyTransformation(&x2 , &y2 , 0);
+         t.ApplyTransformation(&w2 , &h2 , 0);
+         r->SetArea((int)x2 , (int)y2 , (int)w2 , (int)h2);
+      }
+   }
+   else if (rules == BOX_SPACE_BETWEEN) {
+      int nrows = (int)rowsizes.size();
+      --nrows;
+      if (nrows >= 1) {
+         int perrow = rowheightleft / nrows;
+         int leftover = rowheightleft % nrows;
+         rowcount = 0;
+         int oy = 0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            rowcount++;
+            oy += perrow;
+            if (leftover >= rowcount) {
+               oy++;
+            }
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(0 , oy);
+         }
+      }
+   }
+   else if (rules == BOX_SPACE_EVEN) {
+      int nrows = (int)rowsizes.size();
+      if (nrows > 0) {
+         int perrow = rowheightleft/2*nrows;
+         int leftover = rowheightleft % (2*nrows);
+         int leftovertop = leftover/2;
+         int leftoverbottom = leftover/2 + (leftover % 2 == 1)?1:0;
+         rowcount = 0;
+         int oy = perrow + leftovertop;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            rowcount++;
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(0 , oy);
+            oy += 2*perrow + (leftovertop >= rowcount)?1:0 + (leftoverbottom >= rowcount)?1:0;
+         }
+      }
+   }
+   else if (rules == BOX_ALIGN_ONLY) {
+      VALIGNMENT val = valign;
+      if (anchor == VBOX_ANCHOR_S) {
+         if (val == VALIGN_TOP) {val = VALIGN_BOTTOM;}
+         else if (val == VALIGN_BOTTOM) {val = VALIGN_TOP;}
+      }
+      int oy = 0;
+      if (val == VALIGN_CENTER) {
+         oy = rowheightleft/2;
+      }
+      else if (val == VALIGN_BOTTOM) {
+         oy = rowheightleft;
+      }
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle* r = &rcsizes[i];
+         r->MoveBy(0 , oy);
+      }
+   }
+   if (anchor == VBOX_ANCHOR_S) {
+      /// Mirror the flow from the other side in the same order
+      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+         WidgetBase* w = wchildren[i];
+         if (!w) {continue;}
+         Rectangle r2 = rcsizes[i];
+         Rectangle* r = &rcsizes[i];
+         r->SetArea(r2.X() , InnerArea().BRY() - r2.Y() - r2.H() , r2.W() , r2.H());
+      }
+   }
+   
+}
+
+
+
+VBoxLayout::VBoxLayout(std::string classname , std::string objname) :
+      BoxLayout(classname , objname),
+      anchor(VBOX_ANCHOR_N),
+      rules(BOX_ALIGN_ONLY),
+      maxprefw(0),
+      totalprefh(0),
+      rowcount(0),
+      rowsizes(),
+      colwidthleft(0),
+      rowheightleft(0),
+      defwidth(20),
+      defheight(40),
+      overflow(false)
+{
+   
+}
+
+
+
+void VBoxLayout::SetAnchorPosition(BOX_ANCHOR_POINT p) {
+   switch (p) {
+   case VBOX_ANCHOR_N :
+   case VBOX_ANCHOR_S :
+      anchor = p;
+      break;
+   default :
+      anchor = VBOX_ANCHOR_N;
+   }
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
+int VBoxLayout::WidthLeft() {
+   return colwidthleft;
+}
+
+
+
+int VBoxLayout::HeightLeft() {
+   return rowheightleft;
+}
+
+
+
+bool VBoxLayout::OverflowWarning() {
+   return overflow;
+}
+
+
+
+bool VBoxLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
+   if (!w) {return false;}
+   return (w->PreferredWidth() > InnerArea().W() || w->PreferredHeight() > rowheightleft);
+}
+
+
 
 
 

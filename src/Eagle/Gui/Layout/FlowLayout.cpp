@@ -320,7 +320,7 @@ void FlowLayout::RecalcFlow() {
 FlowLayout::FlowLayout(std::string classname , std::string objname) :
       LayoutBase(classname , objname),
       size_rules(BOX_ALIGN_ONLY),
-      anchor_pt(FLOW_ANCHOR_NW),
+      anchor_pt(FBOX_ANCHOR_NW),
       favored_direction(FLOW_FAVOR_HORIZONTAL),
       overflow(false),
       shrink_on_overflow(true),
@@ -393,10 +393,10 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    HALIGNMENT hal = halign;
    VALIGNMENT val = valign;
    /// Anchoring on the opposite side reverses alignment
-   if (anchor_pt == FLOW_ANCHOR_NE || anchor_pt == FLOW_ANCHOR_SE) {
+   if (anchor_pt == FBOX_ANCHOR_NE || anchor_pt == FBOX_ANCHOR_SE) {
       hal = (halign == HALIGN_LEFT)?HALIGN_RIGHT:(halign == HALIGN_RIGHT)?HALIGN_LEFT:HALIGN_CENTER;
    }
-   if (anchor_pt == FLOW_ANCHOR_SW || anchor_pt == FLOW_ANCHOR_SE) {
+   if (anchor_pt == FBOX_ANCHOR_SW || anchor_pt == FBOX_ANCHOR_SE) {
       val = (valign == VALIGN_TOP)?VALIGN_BOTTOM:(valign == VALIGN_BOTTOM)?VALIGN_TOP:VALIGN_CENTER;
    }
    if (size_rules == BOX_ALIGN_ONLY) {
@@ -506,22 +506,25 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    int x2 = in.X() + r.BRX();
    int y2 = in.Y() + r.BRY();
    switch (anchor_pt) {
-      case FLOW_ANCHOR_NW :
+      case FBOX_ANCHOR_NW :
          /// Generic case, do nothing
          r.SetCorners(x1,y1,x2,y2);
          break;
-      case FLOW_ANCHOR_SW :
+      case FBOX_ANCHOR_SW :
          /// Left to right along bottom - flip vertically
          r.SetCorners(x1 , in.BRY() - r.Y() , x2 , in.BRY() - r.BRY());
          break;
-      case FLOW_ANCHOR_NE :
+      case FBOX_ANCHOR_NE :
          /// Right to left along top - flip horizontally
          r.SetCorners(in.BRX() - r.X() , y1 , in.BRX() - r.BRX() , y2);
          break;
-      case FLOW_ANCHOR_SE :
+      case FBOX_ANCHOR_SE :
          /// Right to left along bottom, double mirror
          r.SetCorners(in.BRX() - r.X() , in.BRY() - r.Y() , in.BRX() - r.BRX() , in.BRY() - r.BRY());
          break;
+      default :
+         /// Default to NW
+         r.SetCorners(x1,y1,x2,y2);
    }
    
    return r;
@@ -599,7 +602,7 @@ void FlowLayout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 
 
-void FlowLayout::SetFlowAnchor(FLOW_ANCHOR_POINT p) {
+void FlowLayout::SetAnchorPosition(BOX_ANCHOR_POINT p) {
    anchor_pt = p;
    RepositionAllChildren();
    SetRedrawFlag();
@@ -626,7 +629,7 @@ void FlowLayout::SetBoxSpacing(BOX_SPACE_RULES r) {
 
 std::ostream& FlowLayout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "BOX_SPACE_RULES = " << PrintBoxSpaceRule(size_rules) << std::endl;
-   os << indent << "FLOW_ANCHOR_POINT = " << PrintFlowAnchorPoint(anchor_pt) << std::endl;
+   os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor_pt) << std::endl;
    os << indent << "FLOW_FAVORED_DIRECTION = " << PrintFlowFavoredDirection(favored_direction) << std::endl;
    os << indent << "overflow = " << (overflow?"true":"false") << " , shrink = " << (shrink_on_overflow?"true":"false") << std::endl;
    for (unsigned int row = 0 ; row < colcount.size() ; ++row) {
