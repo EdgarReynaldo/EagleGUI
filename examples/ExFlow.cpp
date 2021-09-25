@@ -180,7 +180,7 @@ int main(int argc , char** argv) {
    BasicText rtext[20];
    std::string text[20] = {
       "W",
-      "E"
+      "E",
       "N",
       "S",
       "NW",
@@ -233,18 +233,22 @@ int main(int argc , char** argv) {
    rgrids[0].PlaceWidget(&rbtns[1] , 1);
    rgrids[0].PlaceWidget(&rbtns[2] , 2);
    rgrids[0].PlaceWidget(&rbtns[3] , 3);
-   rgrids[1].PlaceWidget(&rbtns[4] , 0);
-   rgrids[1].PlaceWidget(&rbtns[5] , 1);
-   rgrids[2].PlaceWidget(&rbtns[6] , 0);
-   rgrids[2].PlaceWidget(&rbtns[7] , 1);
-   rgrids[2].PlaceWidget(&rbtns[8] , 2);
-   rgrids[2].PlaceWidget(&rbtns[9] , 3);
-   rgrids[2].PlaceWidget(&rbtns[10] , 4);
-   rgrids[2].PlaceWidget(&rbtns[11] , 5);
-   rgrids[3].PlaceWidget(&rbtns[12] , 0);
-   rgrids[3].PlaceWidget(&rbtns[13] , 1);
-   rgrids[3].PlaceWidget(&rbtns[14] , 2);
-   rgrids[3].PlaceWidget(&rbtns[15] , 3);
+   rgrids[0].PlaceWidget(&rbtns[4] , 4);
+   rgrids[0].PlaceWidget(&rbtns[5] , 5);
+   rgrids[0].PlaceWidget(&rbtns[6] , 6);
+   rgrids[0].PlaceWidget(&rbtns[7] , 7);
+   rgrids[1].PlaceWidget(&rbtns[8] , 0);
+   rgrids[1].PlaceWidget(&rbtns[9] , 1);
+   rgrids[2].PlaceWidget(&rbtns[10] , 0);
+   rgrids[2].PlaceWidget(&rbtns[11] , 1);
+   rgrids[2].PlaceWidget(&rbtns[12] , 2);
+   rgrids[2].PlaceWidget(&rbtns[13] , 3);
+   rgrids[2].PlaceWidget(&rbtns[14] , 4);
+   rgrids[2].PlaceWidget(&rbtns[15] , 5);
+   rgrids[3].PlaceWidget(&rbtns[16] , 0);
+   rgrids[3].PlaceWidget(&rbtns[17] , 1);
+   rgrids[3].PlaceWidget(&rbtns[18] , 2);
+   rgrids[3].PlaceWidget(&rbtns[19] , 3);
    
    
    sys->GetSystemTimer()->Start();

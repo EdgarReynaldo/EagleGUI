@@ -78,14 +78,17 @@
 			<Add option="-DEAGLE_DEBUG_MUTEX_LOCKS" />
 			<Add option="-DEAGLE_LOG" />
 			<Add directory="../include" />
-			<Add directory="E:/usr/include" />
+			<Add directory="O:/usr32/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="E:/usr/lib" />
+			<Add directory="O:/us32r/lib" />
 		</Linker>
 		<Unit filename="ExFlow.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
+			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
