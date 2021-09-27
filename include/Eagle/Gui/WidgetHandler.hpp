@@ -105,7 +105,7 @@ protected :
    bool use_bg_pic;
    EagleColor bg_col;
 
-   Camera          cam;
+   WCamera          cam;
    bool            shrink_buffer_on_resize;
 
    DumbLayout      dumb_layout;

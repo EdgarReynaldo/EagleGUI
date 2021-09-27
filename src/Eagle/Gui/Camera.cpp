@@ -48,7 +48,7 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
 
 
 
-void Camera::SetDestination(int xpos , int ypos) {
+void WCamera::SetDestination(int xpos , int ypos) {
    EAGLE_ASSERT(view_bmp);
    
    // Image boundary checks
@@ -66,7 +66,7 @@ void Camera::SetDestination(int xpos , int ypos) {
 
 
 
-void Camera::SetViewPos(int xpos , int ypos) {
+void WCamera::SetViewPos(int xpos , int ypos) {
    view_area.SetPos(xpos,ypos);
    RaiseEvent(WidgetMsg(this , TOPIC_CAMERA , CAMERA_VIEW_MOVED));
    SetRedrawFlag();
@@ -74,7 +74,7 @@ void Camera::SetViewPos(int xpos , int ypos) {
 
 
 
-void Camera::PerformMove() {
+void WCamera::PerformMove() {
    if (move_time > 0.0) {
       if (time_since_prev_pos >= move_time) {
          SetViewPos(dest_x , dest_y);
@@ -92,7 +92,7 @@ void Camera::PerformMove() {
 
 
 
-Camera::Camera(std::string objclass , std::string objname) :
+WCamera::WCamera(std::string objclass , std::string objname) :
       WidgetBase(objclass , objname),
       view_bmp(0),
       view_area(),
@@ -119,7 +119,7 @@ Camera::Camera(std::string objclass , std::string objname) :
 
 
 
-int Camera::PrivateHandleEvent(EagleEvent ee) {
+int WCamera::PrivateHandleEvent(EagleEvent ee) {
    if (!IsMouseEvent(ee)) {return DIALOG_OKAY;}
    
    int msx = ee.mouse.x;
@@ -157,7 +157,7 @@ int Camera::PrivateHandleEvent(EagleEvent ee) {
 
 
 /**
-int Camera::PrivateCheckInputs() {
+int WCamera::PrivateCheckInputs() {
    int msx = mouse_x - AbsParentX();
    int msy = mouse_y - AbsParentY();
    if (Flags().FlagOn(ENABLED)) {
@@ -197,7 +197,7 @@ int Camera::PrivateCheckInputs() {
 */
 
 
-void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
+void WCamera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
    EAGLE_ASSERT(win);
    
    Rectangle r = InnerArea();
@@ -215,7 +215,7 @@ void Camera::PrivateDisplay(EagleGraphicsContext* win , int x , int y) {
 
 
 
-int Camera::PrivateUpdate (double tsec) {
+int WCamera::PrivateUpdate (double tsec) {
    if (tsec < 0.0) {tsec = 0.0;}
    time_since_prev_pos += tsec;
    PerformMove();
@@ -225,7 +225,7 @@ int Camera::PrivateUpdate (double tsec) {
 
 /**
 /// Don't remove these two function - they serve to prevent redraw on color change
-void Camera::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
+void WCamera::SetColorset(const WidgetColorset& colors , bool set_descendants_colors) {
    wcols = colors;
    (void)set_descendants_colors;
    // purposely don't set redraw flag
@@ -235,7 +235,7 @@ void Camera::SetColorset(const WidgetColorset& colors , bool set_descendants_col
 
 
 /// Don't remove these two function - they serve to prevent redraw on color change
-void Camera::SetPrivateColorset(const WidgetColorset& colors) {
+void WCamera::SetPrivateColorset(const WidgetColorset& colors) {
    privwcols = colors;
    // purposely don't set redraw flag
    return;
@@ -243,19 +243,19 @@ void Camera::SetPrivateColorset(const WidgetColorset& colors) {
 //*/
 
 
-void Camera::SetView(EagleImage* bmp , Rectangle area_to_view) {
+void WCamera::SetView(EagleImage* bmp , Rectangle area_to_view) {
    SetView(bmp , area_to_view.X() , area_to_view.Y() , area_to_view.W() , area_to_view.H());
 }
 
 
 
-void Camera::SetViewArea(Rectangle area_to_view) {
+void WCamera::SetViewArea(Rectangle area_to_view) {
    SetViewArea(area_to_view.X() , area_to_view.Y() , area_to_view.W() , area_to_view.H());
 }
 
 
 
-void Camera::SetView(EagleImage* bmp , int x , int y , int w , int h) {
+void WCamera::SetView(EagleImage* bmp , int x , int y , int w , int h) {
    EAGLE_ASSERT(bmp);
    view_bmp = bmp;
    SetViewArea(x , y , w , h);
@@ -263,7 +263,7 @@ void Camera::SetView(EagleImage* bmp , int x , int y , int w , int h) {
 
 
 
-void Camera::SetViewArea(int x , int y , int w , int h) {
+void WCamera::SetViewArea(int x , int y , int w , int h) {
    EAGLE_ASSERT(view_bmp);
    if (w < 1) {w = 1;}
    if (h < 1) {h = 1;}
@@ -277,7 +277,7 @@ void Camera::SetViewArea(int x , int y , int w , int h) {
 
 
 
-void Camera::AccMoveViewTlxTo(int xpos , int ypos , double time) {
+void WCamera::AccMoveViewTlxTo(int xpos , int ypos , double time) {
    EAGLE_ASSERT(view_bmp);
    SetDestination(xpos,ypos);
    prev_x = (double)view_area.X();
@@ -300,19 +300,19 @@ void Camera::AccMoveViewTlxTo(int xpos , int ypos , double time) {
 
 
 
-void Camera::AccMoveViewCenterTo(int xpos , int ypos , double time) {
+void WCamera::AccMoveViewCenterTo(int xpos , int ypos , double time) {
    AccMoveViewTlxTo(xpos - view_area.W()/2 , ypos - view_area.H()/2 , time);
 }
 
 
 
-void Camera::AccMoveViewBy(int dx , int dy , double time) {
+void WCamera::AccMoveViewBy(int dx , int dy , double time) {
    AccMoveViewTlxTo(view_area.X() + dx , view_area.Y() + dy , time);
 }
 
 
 
-void Camera::MoveViewTlxTo(int xpos , int ypos , double time) {
+void WCamera::MoveViewTlxTo(int xpos , int ypos , double time) {
    EAGLE_ASSERT(view_bmp);
    SetDestination(xpos,ypos);
    prev_x = (double)view_area.X();
@@ -333,31 +333,31 @@ void Camera::MoveViewTlxTo(int xpos , int ypos , double time) {
 
 
 
-void Camera::MoveViewCenterTo(int xpos , int ypos , double time) {
+void WCamera::MoveViewCenterTo(int xpos , int ypos , double time) {
    MoveViewTlxTo(xpos - view_area.W()/2 , ypos - view_area.H()/2 , time);
 }
 
 
 
-void Camera::MoveViewBy(int dx , int dy , double time) {
+void WCamera::MoveViewBy(int dx , int dy , double time) {
    MoveViewTlxTo(view_area.X() + dx , view_area.Y() + dy , time);
 }
 
 
 
-void Camera::AllowMiddleMouseButtonScroll(bool allow) {
+void WCamera::AllowMiddleMouseButtonScroll(bool allow) {
    mmb_scroll_enabled = allow;
 }
 
 
 
-void Camera::TakesFocus(bool click_takes_focus) {
+void WCamera::TakesFocus(bool click_takes_focus) {
    take_focus = click_takes_focus;
 }
 
 
 
-std::ostream& Camera::DescribeTo(std::ostream& os , Indenter indent) const {
+std::ostream& WCamera::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "Camera object : View = " << view_area << " on image " << (view_bmp?view_bmp:(EagleImage*)0) << std::endl;
    return WidgetBase::DescribeTo(os , indent);
 }
@@ -368,8 +368,8 @@ std::ostream& Camera::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 /**
-void SBCamera::SetViewPos(int xpos , int ypos) {
-   Camera::SetViewPos(xpos,ypos);
+void SBWCamera::SetViewPos(int xpos , int ypos) {
+   WCamera::SetViewPos(xpos,ypos);
    Free();
    sbcam = create_sub_bitmap(view_bmp , view_area.X() , view_area.Y() , view_area.W() , view_area.H());
    if (draw_type == SOLID) {

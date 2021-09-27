@@ -76,7 +76,7 @@ REGISTER_WIDGET_MESSAGE(TOPIC_ZOOM_CAMERA , CAMERA_ZOOM_DEST_REACHED);
  *   Used by the WidgetHandler class to change the view of its buffer
  */
 
-class Camera : public WidgetBase {
+class WCamera : public WidgetBase {
 protected :
    EagleImage* view_bmp;///< The image to view
    
@@ -109,8 +109,8 @@ protected :
 
 public :
    
-   Camera(std::string objclass = "Camera" , std::string objname = "Nemo");
-   virtual ~Camera() {}
+   WCamera(std::string objclass = "Camera" , std::string objname = "Nemo");
+   virtual ~WCamera() {}
    
 protected :
 

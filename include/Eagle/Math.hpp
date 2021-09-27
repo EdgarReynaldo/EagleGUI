@@ -45,9 +45,13 @@ Type Sign(Type value) {
 }
 
 template <class Type>
-Type Magnitude(Type value) {return (Type)fabs(value);}
+Type Magnitude(const Type& value) {return (Type)fabs(value);}
 
+template <class Type>
+Type MIN(const Type& t1 , const Type& t2) {(t1<t2)?t1:t2;}
 
+template <class Type>
+Type MAX(const Type& t1 , const Type& t2) {(t1>t2)?t1:t2;}
 
 #endif // Math_HPP
 
