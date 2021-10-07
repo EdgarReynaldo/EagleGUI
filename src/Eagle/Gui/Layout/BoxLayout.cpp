@@ -79,6 +79,8 @@ Rectangle BoxLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    
    Rectangle r = rcsizes[widget_slot];
    
+   r.MoveBy(InnerArea().X() , InnerArea().Y());
+   
    return r;
 }
 
