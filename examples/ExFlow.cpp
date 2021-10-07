@@ -50,26 +50,15 @@ int main(int argc , char** argv) {
    
    gui.SetRootLayout(&rl);
    
-   rl.Resize(2);
+   rl.Resize(8);
    
-   HBoxLayout flow;
-//   FlowLayout flow;
-   flow.Resize(9);
-//   GridLayout flow;
-//   flow.ResizeGrid(3,3);
+   HBoxLayout hbox("HBOXLayout" , "hbox");
    VBoxLayout vbox("VBOXLayout" , "vbox");
-//   FlowLayout vbox("FlowLayout" , "VBox");
-   vbox.Resize(9);
-//   GridLayout vbox;
-//   vbox.ResizeGrid(3,3);
+   FlowLayout flowbox("FLOWLayout" , "flow");
    
 //   WidgetMover mover("Widget mover");
    mover.WhiteList(&vbox);
 
-   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.3 , 0.3 , 0.7 , 0.7));
-   WidgetArea wa = vbox.GetWidgetArea();
-   wa.SetBoxesContract(5,10,5);
-   vbox.SetWidgetArea(wa , false);
    WidgetColorset wcol = default_eagle_color_array;
    wcol[MARGCOL] = EagleColor(0,255,0);
    wcol[BORDCOL] = EagleColor(255,255,255);
@@ -111,9 +100,6 @@ int main(int argc , char** argv) {
    widgets[0] = w[0];
    widgets[1] = w[1];
    widgets[2] = w[2];
-   vbox.PlaceWidget(w[0] , 0);
-   vbox.PlaceWidget(w[1] , 1);
-   vbox.PlaceWidget(w[2] , 2);
 
    HoverIcon* ibtn[3] = {
       new HoverIcon() , new HoverIcon() , new HoverIcon()
@@ -130,9 +116,6 @@ int main(int argc , char** argv) {
    widgets[3] = ibtn[0];
    widgets[4] = ibtn[1];
    widgets[5] = ibtn[2];
-   vbox.PlaceWidget(ibtn[0] , 3);
-   vbox.PlaceWidget(ibtn[1] , 4);
-   vbox.PlaceWidget(ibtn[2] , 5);
 
    Slider* sliders[3] = {
       new Slider("Slider" , "Slider1" , true , false),
@@ -148,9 +131,6 @@ int main(int argc , char** argv) {
    widgets[6] = sliders[0];
    widgets[7] = sliders[1];
    widgets[8] = sliders[2];
-   vbox.PlaceWidget(sliders[0] , 6);
-   vbox.PlaceWidget(sliders[1] , 7);
-   vbox.PlaceWidget(sliders[2] , 8);
 
 
    std::vector<WidgetBase*> wc = vbox.WChildren();
@@ -229,6 +209,10 @@ int main(int argc , char** argv) {
    rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.4 , 0.2 , 0.5));
    rl.AddWidget(&rgrids[3] , LayoutRectangle(0.75 , 0.05 , 0.2 , 0.2));
    
+   rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.3 , 0.5 , 0.2));
+   rl.AddWidget(&vbox , LayoutRectangle(0.3 , 0.5 , 0.2 , 0.5));
+   rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.55 , 0.5 , 0.4));
+   
    rgrids[0].PlaceWidget(&rbtns[0] , 0);
    rgrids[0].PlaceWidget(&rbtns[1] , 1);
    rgrids[0].PlaceWidget(&rbtns[2] , 2);
@@ -278,35 +262,44 @@ int main(int argc , char** argv) {
             if (e.source == &radios[0]) {
                for (unsigned int i = 0 ; i < 8 ; ++i) {
                   if (e.widget.from == &btns[i]) {
+                     hbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
                      vbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
+                     flowbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
                   }
                }
             }
             if (e.source == &radios[1]) {
                for (unsigned int i = 8 ; i < 10 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     vbox.SetAnchorPosition((BOX_ANCHOR_POINT)(i - 8));
+                     /// Horizontal or vertical flow button pressed, only affects FlowBox
+                     flowbox.SetFlowDirection((FLOW_FAVORED_DIRECTION)(i-8));
                   }
                }
             }
             if (e.source == &radios[2]) {
                for (unsigned int i = 10 ; i < 13 ; ++i) {
                   if (e.widget.from == &btns[i]) {
+                     hbox.SetAlignment((HALIGNMENT)(i - 10) , hbox.GetVAlignment());
                      vbox.SetAlignment((HALIGNMENT)(i - 10) , vbox.GetVAlignment());
+                     flowbox.SetAlignment((HALIGNMENT)(i - 10) , flowbox.GetVAlignment());
                   }
                }
             }
             if (e.source == &radios[3]) {
                for (unsigned int i = 13 ; i < 16 ; ++i) {
                   if (e.widget.from == &btns[i]) {
+                     hbox.SetAlignment(hbox.GetHAlignment() , (VALIGNMENT)(i - 13));
                      vbox.SetAlignment(vbox.GetHAlignment() , (VALIGNMENT)(i - 13));
+                     flowbox.SetAlignment(flowbox.GetHAlignment() , (VALIGNMENT)(i - 13));
                   }
                }
             }
             if (e.source == &radios[4]) {
                for (unsigned int i = 16 ; i < 20 ; ++i) {
                   if (e.widget.from == &btns[i]) {
+                     hbox.SetBoxSpacing((BOX_SPACE_RULES)(i-16));
                      vbox.SetBoxSpacing((BOX_SPACE_RULES)(i-16));
+                     flowbox.SetBoxSpacing((BOX_SPACE_RULES)(i-16));
                   }
                }
             }
@@ -336,28 +329,28 @@ int main(int argc , char** argv) {
             if (e.widget.topic == TOPIC_WIDGET_MOVER && e.widget.msgs == WIDGET_MOVER_SIZING) {
                DRAG_AND_DROP_DATA dnd = e.widget.dnd;
                EagleInfo() << "Sizing event" << std::endl;
-               vbox.SetWidgetArea(Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph));
+               e.widget.from->SetWidgetArea(Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph));
             }
          };
          for (int i = 0 ; i < 9 ; ++i) {
             if (input_key_press(EAGLE_KEY_1 + i)) {
-               if (!input_key_held(EAGLE_KEY_ANY_SHIFT)) {
-                  /// Key pressed without shift, move to flow layout
-                  if (!uwidgets[i]) {
-                     uwidgets[i] = widgets[i];
-                     widgets[i] = 0;
-                     vbox.RemoveWidget(uwidgets[i]);
-                     flow.AddWidget(uwidgets[i]);
-                  }
+               if (input_key_held(EAGLE_KEY_ONLY_CTRL)) {
+                  /// Ctrl is held, add to flow layout
+                  hbox.RemoveWidget(widgets[i]);
+                  vbox.RemoveWidget(widgets[i]);
+                  flowbox.AddWidget(widgets[i]);
+               }
+               else if (input_key_held(EAGLE_KEY_ONLY_SHIFT)) {
+                  /// Shift is held, move to vbox layout
+                  hbox.RemoveWidget(widgets[i]);
+                  flowbox.RemoveWidget(widgets[i]);
+                  vbox.AddWidget(widgets[i]);
                }
                else {
-                  /// Shift is held, remove from flow layout
-                  if (!widgets[i]) {
-                     widgets[i] = uwidgets[i];
-                     uwidgets[i] = 0;
-                     flow.RemoveWidget(widgets[i]);
-                     vbox.AddWidget(widgets[i]);
-                  }
+                  /// No key held, move to hbox
+                  vbox.RemoveWidget(widgets[i]);
+                  flowbox.RemoveWidget(widgets[i]);
+                  hbox.AddWidget(widgets[i]);
                }
             }
          }
