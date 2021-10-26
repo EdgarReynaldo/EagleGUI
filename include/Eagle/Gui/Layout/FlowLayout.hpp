@@ -44,16 +44,12 @@ enum FLOW_FAVORED_DIRECTION {
 std::string PrintFlowFavoredDirection(FLOW_FAVORED_DIRECTION d);
 
 
-class FlowLayout : public LayoutBase {
+class FlowLayout : public BoxLayout {
 
 protected :
-	BOX_SPACE_RULES size_rules;
-	BOX_ANCHOR_POINT anchor_pt;
 	FLOW_FAVORED_DIRECTION favored_direction;
-   bool overflow;
    bool shrink_on_overflow;
 
-   std::vector<Rectangle> rcsizes;
    std::vector<double> waspects;
 
    int rowcount;
@@ -78,10 +74,13 @@ protected :
 
    virtual void OnAreaChanged();///< Override to react to changes in this widget's area
 
-   void RecalcFlow();
-   
    virtual void RepositionAllChildren() override;
    virtual void RepositionChild(int slot) override;
+
+   void RecalcFlow();
+   void AdjustSpacing();
+   void MirrorFlow();
+   
 
 public :
    FlowLayout(std::string classname = "FlowLayout" , std::string objname = "Nemo");
@@ -90,25 +89,24 @@ public :
    
    
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   Rectangle RequestWidgetAreaOld(int widget_slot , int newx , int newy , int newwidth , int newheight);
 
-   void PlaceWidget(WidgetBase* w , int slot) override;
-   int AddWidget(WidgetBase* w) override;
-   void InsertWidget(WidgetBase* w , int slot_before) override;
 
-   bool Overflow() {return overflow;}
    void ShrinkOnOverflow(bool shrink);
    
    void SetDefaultWidth(unsigned int w);
    void SetDefaultHeight(unsigned int h);
    void SetDefaultSize(unsigned int w , unsigned int h);
 
-   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) override;
    
-   void SetAnchorPosition(BOX_ANCHOR_POINT p);
+   void SetAnchorPosition(BOX_ANCHOR_POINT p) override;
 
    void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
    
-   void SetBoxSpacing(BOX_SPACE_RULES r);
+   virtual int WidthLeft() override;
+   virtual int HeightLeft() override;
+   
+   virtual bool WidgetWouldOverflowLayout(WidgetBase* w) override;
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
    

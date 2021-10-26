@@ -311,20 +311,185 @@ void FlowLayout::RecalcFlow() {
       ox += colcount[y];
       ph += rowheights[y];
    }
-   if (pw != prefw || ph != prefh) {
-      SetPreferredSize(prefw , prefh);/// This may trigger another call to CalcFlow, so only do it if our preferred size hasn't changed
+   AdjustSpacing();
+   MirrorFlow();
+}
+
+
+void FlowLayout::AdjustSpacing() {
+
+   HALIGNMENT hal = halign;
+   VALIGNMENT val = valign;
+   /// Anchoring on the opposite side reverses alignment
+   if (anchor == FBOX_ANCHOR_NE || anchor == FBOX_ANCHOR_SE) {
+      hal = (halign == HALIGN_LEFT)?HALIGN_RIGHT:(halign == HALIGN_RIGHT)?HALIGN_LEFT:HALIGN_CENTER;
+   }
+   if (anchor == FBOX_ANCHOR_SW || anchor == FBOX_ANCHOR_SE) {
+      val = (valign == VALIGN_TOP)?VALIGN_BOTTOM:(valign == VALIGN_BOTTOM)?VALIGN_TOP:VALIGN_CENTER;
+   }
+
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (!w) {continue;}
+      Rectangle r2 = rcsizes[i];
+      Rectangle* r = &rcsizes[i];
+      
+      
+      int row = GetRow(i);
+      int col = GetColumn(i);
+      
+      if (spacing == BOX_ALIGN_ONLY) {
+         /// Handle major axis alignment
+         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+            int ox = rowspace[row];
+            if (hal == HALIGN_LEFT) {
+               (void)0;/// Already aligned left
+            }
+            else if (hal == HALIGN_CENTER) {
+               r->MoveBy(ox/2 , 0);
+            }
+            else if (hal == HALIGN_RIGHT) {
+               r->MoveBy(ox , 0);
+            }
+         }
+         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+            int oy = rowspace[row];
+            if (val == VALIGN_TOP) {
+               (void)0;/// Already aligned top
+            }
+            else if (val == VALIGN_CENTER) {
+               r->MoveBy(0 , oy/2);
+            }
+            else if (val == VALIGN_BOTTOM) {
+               r->MoveBy(0 , oy);
+            }
+         }
+      }
+      else if (spacing == BOX_SPACE_BETWEEN) {
+         int ncols = colcount[row] - 1;
+         if (ncols > 0) {
+            int spc = rowspace[row]/ncols;
+            int spcleft = rowspace[row]%ncols;
+            if (col == 0) {
+               (void)0;
+            }
+            else if (col > 0) {
+               if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+                  r->MoveBy(col*spc + col*(col - 1 < spcleft)?1:0 , 0);
+               }
+               else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+                  r->MoveBy(0 , col*spc + col*(col - 1 < spcleft)?1:0);
+               }
+            }
+         }
+      }
+      else if (spacing == BOX_SPACE_EVEN) {
+         int ncols = colcount[row];
+         ncols *= 2;
+         int spc = rowspace[row]/ncols;
+         int leftover = rowspace[row]%ncols;
+         
+         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+            if (ncols > 1) {
+               r->MoveBy(spc + spc*(2*(col-1)) + (leftover > 2*(col - 1))?2:0 , 0);
+            }
+            else if (ncols == 1) {
+               r->MoveBy((InnerArea().W() - w->PreferredWidth())/2 , 0);
+            }
+         }
+         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+            if (ncols > 1) {
+               r->MoveBy(0 , spc + spc*2*(col-1) + (leftover > 2*(col-1))?2:0);
+            }
+            else if (ncols == 1) {
+               r->MoveBy(0 , (InnerArea().H() - w->PreferredHeight())/2);
+            }
+         }
+         else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
+            Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
+            t.Scale((double)InnerArea().W() / GetMaxColWidth() , (double)InnerArea().H() / GetTotalRowHeight() , 1.0);
+            double x = r->X();
+            double y = r->Y();
+            double w = r->W();
+            double h = r->H();
+            t.ApplyTransformation(&x , &y , 0);
+            t.ApplyTransformation(&w , &h , 0);
+            r->SetArea((int)x , (int)y , (int)w , (int)h);
+         }
+
+         /// Handle minor axis alignment
+         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+            /// Apply vertical alignment to rows
+            if (val == VALIGN_TOP) {
+               (void)0;/// Already aligned top
+            }
+            else if (val == VALIGN_CENTER) {
+               r->MoveBy(0 , (rowheights[row] - r2.H())/2);
+            }
+            else if (val == VALIGN_BOTTOM) {
+               r->MoveBy(0 , (rowheights[row] - r2.H()));
+            }
+         }
+         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+            /// Apply horizontal alignment to columns
+            if (hal == HALIGN_LEFT) {
+               (void)0;/// Already aligned left
+            }
+            else if (hal == HALIGN_CENTER) {
+               r->MoveBy((rowheights[row] - r2.W())/2 , 0);
+            }
+            else if (hal == HALIGN_RIGHT) {
+               r->MoveBy((rowheights[row] - r2.W()) , 0);
+            }
+         }
+      }
    }
 }
 
 
+
+void FlowLayout::MirrorFlow() {
+   
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (!w) {continue;}
+      Rectangle* r = &rcsizes[i];
+      Rectangle r2 = rcsizes[i];
+      int x1 = r2.X();
+      int x2 = r2.BRX();
+      int y1 = r2.Y();
+      int y2 = r2.BRY();
+      switch (anchor) {
+      case FBOX_ANCHOR_NW :
+         /// Generic case, do nothing
+         r->SetCorners(x1,y1,x2,y2);
+         break;
+      case FBOX_ANCHOR_SW :
+         /// Left to right along bottom - flip vertically
+         r->SetCorners(x1 , InnerArea().H() - r2.Y() , x2 , InnerArea().H() - r2.BRY());
+         break;
+      case FBOX_ANCHOR_NE :
+         /// Right to left along top - flip horizontally
+         r->SetCorners(InnerArea().W() - r2.X() , y1 , InnerArea().W() - r2.BRX() , y2);
+         break;
+      case FBOX_ANCHOR_SE :
+         /// Right to left along bottom, double mirror
+         r->SetCorners(InnerArea().W() - r2.X() , InnerArea().H() - r2.Y() , InnerArea().W() - r2.BRX() , InnerArea().H() - r2.BRY());
+         break;
+      default :
+         /// Default to NW
+         r->SetCorners(x1,y1,x2,y2);
+      }
+   }
+}
+
+
+
+
 FlowLayout::FlowLayout(std::string classname , std::string objname) :
-      LayoutBase(classname , objname),
-      size_rules(BOX_ALIGN_ONLY),
-      anchor_pt(FBOX_ANCHOR_NW),
+      BoxLayout(classname , objname),
       favored_direction(FLOW_FAVOR_HORIZONTAL),
-      overflow(false),
       shrink_on_overflow(true),
-      rcsizes(),
       waspects(),
       rowcount(0),
       colcount(),
@@ -336,6 +501,7 @@ FlowLayout::FlowLayout(std::string classname , std::string objname) :
       defheight(45)
 {
    attributes = LAYOUT_ALLOWS_RESIZE;
+   anchor = FBOX_ANCHOR_NW;
 }
 
 
@@ -348,6 +514,27 @@ FlowLayout::~FlowLayout() {
 
 
 Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) {
+   (void)newx;
+   (void)newy;
+   
+   WidgetBase* w = GetWidget(widget_slot);
+   if (!w) {return BADRECTANGLE;}
+      
+   if (newwidth != INT_MAX && newheight != INT_MAX) {
+      if ((w->PreferredWidth() != newwidth) || (w->PreferredHeight() != newheight)) {
+         w->SetPreferredSize(newwidth , newheight);
+         RecalcFlow();
+      }
+   }
+      
+   Rectangle r = rcsizes[widget_slot];// make a copy, don't change rectangle with inner position
+   r.MoveBy(InnerArea().X() , InnerArea().Y());
+   return r;
+}
+
+
+
+Rectangle FlowLayout::RequestWidgetAreaOld(int widget_slot , int newx , int newy , int newwidth , int newheight) {
    WidgetBase* w = GetWidget(widget_slot);
    if (!w) {return BADRECTANGLE;}
    if (WChildren().empty()) {return BADRECTANGLE;}
@@ -393,13 +580,13 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    HALIGNMENT hal = halign;
    VALIGNMENT val = valign;
    /// Anchoring on the opposite side reverses alignment
-   if (anchor_pt == FBOX_ANCHOR_NE || anchor_pt == FBOX_ANCHOR_SE) {
+   if (anchor == FBOX_ANCHOR_NE || anchor == FBOX_ANCHOR_SE) {
       hal = (halign == HALIGN_LEFT)?HALIGN_RIGHT:(halign == HALIGN_RIGHT)?HALIGN_LEFT:HALIGN_CENTER;
    }
-   if (anchor_pt == FBOX_ANCHOR_SW || anchor_pt == FBOX_ANCHOR_SE) {
+   if (anchor == FBOX_ANCHOR_SW || anchor == FBOX_ANCHOR_SE) {
       val = (valign == VALIGN_TOP)?VALIGN_BOTTOM:(valign == VALIGN_BOTTOM)?VALIGN_TOP:VALIGN_CENTER;
    }
-   if (size_rules == BOX_ALIGN_ONLY) {
+   if (spacing == BOX_ALIGN_ONLY) {
       /// Handle major axis alignment
       if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
          int ox = rowspace[row];
@@ -426,7 +613,7 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
          }
       }
    }
-   else if (size_rules == BOX_SPACE_BETWEEN) {
+   else if (spacing == BOX_SPACE_BETWEEN) {
       /// Apply space between consecutive pairs of widgets
       nspacecolumns = colcount[row] - 1;
       if (nspacecolumns) {
@@ -445,7 +632,7 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
          }
       }
    }
-   else if (size_rules == BOX_SPACE_EVEN) {
+   else if (spacing == BOX_SPACE_EVEN) {
       /// Apply space evenly around each widget
       nspacecolumns = colcount[row];
       space_per_column = ((int)rspace[row])/nspacecolumns;
@@ -460,7 +647,7 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
          r.MoveBy(0 , space_per_column/2 + (col - 1)*space_per_column + col*(col < space_left)?1:0);
       }
    }
-   else if ((size_rules == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
+   else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
       /// Handle underflow and overflow (just scale to fit)
       t.Scale((double)in.W() / colwidth , (double)in.H() / totalrowheight , 1.0);
    }
@@ -505,7 +692,7 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    int y1 = in.Y() + r.Y();
    int x2 = in.X() + r.BRX();
    int y2 = in.Y() + r.BRY();
-   switch (anchor_pt) {
+   switch (anchor) {
       case FBOX_ANCHOR_NW :
          /// Generic case, do nothing
          r.SetCorners(x1,y1,x2,y2);
@@ -528,31 +715,6 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
    }
    
    return r;
-}
-
-
-
-void FlowLayout::PlaceWidget(WidgetBase* w , int slot) {
-   LayoutBase::PlaceWidget(w , slot);
-   RepositionAllChildren();
-   SetRedrawFlag();
-}
-
-
-
-int FlowLayout::AddWidget(WidgetBase* w) {
-   int ret = LayoutBase::AddWidget(w);
-   RepositionAllChildren();
-   SetRedrawFlag();
-   return ret;
-}
-
-
-
-void FlowLayout::InsertWidget(WidgetBase* w , int slot_before) {
-   LayoutBase::InsertWidget(w , slot_before);
-   RepositionAllChildren();
-   SetRedrawFlag();
 }
 
 
@@ -590,12 +752,6 @@ void FlowLayout::SetDefaultSize(unsigned int w , unsigned int h) {
    if (h < 1) {h = 1;}
    defwidth = w;
    defheight = h;
-}
-
-
-
-void FlowLayout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
-   LayoutBase::SetAlignment(h_align , v_align);
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -603,7 +759,17 @@ void FlowLayout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
 
 
 void FlowLayout::SetAnchorPosition(BOX_ANCHOR_POINT p) {
-   anchor_pt = p;
+   switch (p) {
+   case FBOX_ANCHOR_NW:
+   case FBOX_ANCHOR_NE:
+   case FBOX_ANCHOR_SE:
+   case FBOX_ANCHOR_SW:
+      anchor = p;
+      break;
+   default :
+      anchor = FBOX_ANCHOR_NW;
+   }
+   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
@@ -612,24 +778,35 @@ void FlowLayout::SetAnchorPosition(BOX_ANCHOR_POINT p) {
 
 void FlowLayout::SetFlowDirection(FLOW_FAVORED_DIRECTION d) {
    favored_direction = d;
+   RecalcFlow();
    RepositionAllChildren();
    SetRedrawFlag();
 }
 
 
 
+int FlowLayout::WidthLeft() {
+   return InnerArea().W() - GetMaxColWidth();
+}
+int FlowLayout::HeightLeft() {
+   return InnerArea().H() - GetTotalRowHeight();
+}
 
-void FlowLayout::SetBoxSpacing(BOX_SPACE_RULES r) {
-   size_rules = r;
-   RepositionAllChildren();
-   SetRedrawFlag();
+
+
+bool FlowLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
+   if (!w) {return false;}
+   
+   int pw = w->PreferredWidth();
+   int ph = w->PreferredHeight();
+   return (pw > WidthLeft() || ph > HeightLeft());
 }
 
 
 
 std::ostream& FlowLayout::DescribeTo(std::ostream& os , Indenter indent) const {
-   os << indent << "BOX_SPACE_RULES = " << PrintBoxSpaceRule(size_rules) << std::endl;
-   os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor_pt) << std::endl;
+   os << indent << "BOX_SPACE_RULES = " << PrintBoxSpaceRule(spacing) << std::endl;
+   os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor) << std::endl;
    os << indent << "FLOW_FAVORED_DIRECTION = " << PrintFlowFavoredDirection(favored_direction) << std::endl;
    os << indent << "overflow = " << (overflow?"true":"false") << " , shrink = " << (shrink_on_overflow?"true":"false") << std::endl;
    for (unsigned int row = 0 ; row < colcount.size() ; ++row) {

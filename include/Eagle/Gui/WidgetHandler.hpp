@@ -239,6 +239,8 @@ public :
 
    virtual void SetBackgroundColor(const EagleColor color);///< Set the background color
 
+   void AlwaysClear(bool always) {always_clear = always;SetRedrawFlag();}
+   
    void SyncLayoutPos();///< TODO : Make private?
    void SyncCamera();///< TODO : Make private?
 

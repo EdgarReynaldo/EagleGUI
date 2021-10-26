@@ -213,6 +213,7 @@ protected :
 public :
 
    WIDGETAREA();///< Empty constructor
+   WIDGETAREA(const WIDGETAREA& wa);///< Copy constructor
 
    ///< Constructs a widget area from an outer area and margin, border, and padding boxes */
    WIDGETAREA(Rectangle outerarea , BOXAREA marginbox = BOXAREA() , BOXAREA borderbox = BOXAREA() , BOXAREA paddingbox = BOXAREA());

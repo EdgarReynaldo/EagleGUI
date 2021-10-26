@@ -284,9 +284,8 @@ public :
    Rectangle(int xpos , int ypos , int width , int height);
    Rectangle(const Rectangle& r);
 
+   Rectangle& operator=(const Rectangle& r);
 
-
-   
    bool operator==(const Rectangle& rhs) {
       return ((x == rhs.x) &&
               (y == rhs.y) &&

@@ -386,6 +386,18 @@ WIDGETAREA::WIDGETAREA() :
 
 
 
+WIDGETAREA::WIDGETAREA(const WIDGETAREA& wa) :
+   pos(wa.pos),
+   margin(wa.margin),
+   border(wa.border),
+   padding(wa.padding),
+   inner_width(wa.inner_width),
+   inner_height(wa.inner_height)
+{
+}
+
+
+
 WIDGETAREA::WIDGETAREA(Rectangle outerarea , BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbox) :
       pos(0,0),
       margin(0,0,0,0),

@@ -59,7 +59,11 @@ void BoxLayout::Resize(unsigned int nsize) {
 
 
 BoxLayout::BoxLayout(std::string classname , std::string objname) :
-   LayoutBase(classname , objname)
+   LayoutBase(classname , objname),
+   spacing(BOX_ALIGN_ONLY),
+   anchor(HBOX_ANCHOR_W),
+   rcsizes(),
+   overflow(false)
 {}
 
 
@@ -72,7 +76,7 @@ Rectangle BoxLayout::RequestWidgetArea(int widget_slot , int newx , int newy , i
    WidgetBase* w = LayoutBase::GetWidget(widget_slot);
    if (!w) {return BADRECTANGLE;}
    
-   if (newwidth != w->PreferredWidth() || newheight != w->PreferredHeight()) {
+   if ((newwidth != INT_MAX && newwidth != w->PreferredWidth()) || (newheight != INT_MAX && newheight != w->PreferredHeight())) {
       w->SetPreferredSize(newwidth , newheight);
       RecalcFlow();
    }
@@ -119,11 +123,28 @@ void BoxLayout::SetBoxSpacing(BOX_SPACE_RULES r) {
 
 
 
+void BoxLayout::SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align) {
+   halign = h_align;
+   valign = v_align;
+   RecalcFlow();
+   RepositionAllChildren();
+}
+
+
+
+bool BoxLayout::OverflowWarning() {
+   return overflow;
+}
+
+
+
 /// ----------------------     HBOX       ---------------------------
 
 
 
 void HBoxLayout::RecalcFlow() {
+
+   /// Rcsizes stores the relative position of all the widgets in the layout
    rcsizes.clear();
    rcsizes.resize(wchildren.size() , BADRECTANGLE);
    
@@ -136,7 +157,7 @@ void HBoxLayout::RecalcFlow() {
    int x = 0;
    int y = 0;
    
-   /// Rcsizes stores the relative position of all the widgets in the layout
+   /// Stack the widgets horizontally at y = 0, starting from x = 0
    std::vector<WidgetBase*> wc = wchildren;
    for (unsigned int i = 0 ; i < wc.size() ; ++i) {
       WidgetBase* w = wc[i];
@@ -160,7 +181,8 @@ void HBoxLayout::RecalcFlow() {
       overflow = true;
    }
    
-   if (rules == BOX_EXPAND) {
+   
+   if (spacing == BOX_EXPAND) {
       Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
       t.Scale(InnerArea().W()/(float)totalprefw , InnerArea().H()/(float)maxprefh , 1.0);
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
@@ -177,47 +199,7 @@ void HBoxLayout::RecalcFlow() {
          r->SetArea((int)x2 , (int)y2 , (int)w2 , (int)h2);
       }
    }
-   else if (rules == BOX_SPACE_BETWEEN) {
-      int ncols = (int)colsizes.size();
-      --ncols;
-      if (ncols >= 1) {
-         int percol = colwidthleft / ncols;
-         int leftover = colwidthleft % ncols;
-         int colcount = 0;
-         int ox = 0;
-         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            colcount++;
-            ox += percol;
-            if (leftover >= colcount) {
-               ox++;
-            }
-            Rectangle* r = &rcsizes[i];
-            r->MoveBy(ox , 0);
-         }
-      }
-   }
-   else if (rules == BOX_SPACE_EVEN) {
-      int ncols = (int)colsizes.size();
-      if (ncols > 0) {
-         int percol = colwidthleft/2*ncols;
-         int leftover = colwidthleft % (2*ncols);
-         int leftoverleft = leftover/2;
-         int leftoverright = leftover/2 + (leftover % 2 == 1)?1:0;
-         int colcount = 0;
-         int ox = percol + leftoverleft;
-         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            colcount++;
-            Rectangle* r = &rcsizes[i];
-            r->MoveBy(ox , 0);
-            ox += 2*percol + (leftoverleft >= colcount)?1:0 + (leftoverright >= colcount)?1:0;
-         }
-      }
-   }
-   else if (rules == BOX_ALIGN_ONLY) {
+   else if (spacing == BOX_ALIGN_ONLY) {
       HALIGNMENT hal = halign;
       if (anchor == HBOX_ANCHOR_E) {
          if (hal == HALIGN_LEFT) {hal = HALIGN_RIGHT;}
@@ -237,34 +219,65 @@ void HBoxLayout::RecalcFlow() {
          r->MoveBy(ox , 0);
       }
    }
-   
-   /// Handle valign
-   
-   if (rules != BOX_EXPAND) {
-      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         WidgetBase* w = wchildren[i];
-         if (!w) {continue;}
-         int h = w->PreferredHeight();
-         int oy = 0;
-         if (valign == VALIGN_CENTER) {
-            oy = (InnerArea().H() - h)/2;
+   else if (spacing == BOX_SPACE_BETWEEN) {
+      int ncols = (int)colsizes.size();
+      --ncols;
+      if (ncols >= 1) {
+         int percol = colwidthleft / ncols;
+         int leftover = colwidthleft % ncols;
+         int count = 0;
+         int ox = 0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(ox , 0);
+
+            count++;
+            ox += percol;
+            if (leftover >= count) {
+               ox++;
+            }
          }
-         else if (valign == VALIGN_BOTTOM) {
-            oy = InnerArea().H() - h;
-         }
-         Rectangle* r = &rcsizes[i];
-         r->MoveBy(0 , oy);
-      }
-      /// Handle flow direction
-      for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         WidgetBase* w = wchildren[i];
-         if (!w) {continue;}
-         Rectangle* r = &rcsizes[i];
-         int x = r->X();
-         int reflectx = InnerArea().W() - x;
-         r->MoveBy(reflectx - x , 0);
       }
    }
+   else if (spacing == BOX_SPACE_EVEN) {
+      int ncols = (int)colsizes.size();
+      if (ncols > 0) {
+         int percol = colwidthleft/(2*ncols);
+         int leftover = colwidthleft % (2*ncols);
+         int leftoverleft = leftover/2;
+         int leftoverright = leftover/2 + (leftover % 2 == 1)?1:0;
+         int count = 0;
+         int ox = percol + (leftoverleft > count)?1:0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(ox , 0);
+            count++;
+            ox += 2*percol + (leftoverleft > count)?1:0 + (leftoverright > count)?1:0;
+         }
+      }
+   }
+   
+   /// Handle valign
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (!w) {continue;}
+      int h = rcsizes[i].H();
+      int oy = 0;
+      if (valign == VALIGN_CENTER) {
+         oy = (InnerArea().H() - h)/2;
+      }
+      else if (valign == VALIGN_BOTTOM) {
+         oy = InnerArea().H() - h;
+      }
+      Rectangle* r = &rcsizes[i];
+      r->MoveBy(0 , oy);
+   }
+
+   /// Handle flow direction
    if (anchor == HBOX_ANCHOR_E) {
       // we need to reverse everything
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
@@ -272,7 +285,7 @@ void HBoxLayout::RecalcFlow() {
          if (!w) {continue;}
          Rectangle r2 = rcsizes[i];
          Rectangle* r = &rcsizes[i];
-         r->SetArea(InnerArea().BRX() - r2.X() - r2.W() , y , r2.W() , r2.H());
+         r->SetArea(InnerArea().W() - r2.X() - r2.W() , r2.Y() , r2.W() , r2.H());
       }
    }
 }
@@ -281,8 +294,6 @@ void HBoxLayout::RecalcFlow() {
 
 HBoxLayout::HBoxLayout(std::string classname , std::string objname) :
    BoxLayout(classname , objname),
-   anchor(HBOX_ANCHOR_W),
-   rules(BOX_ALIGN_ONLY),
    totalprefw(0),
    maxprefh(0),
    colcount(0),
@@ -290,9 +301,10 @@ HBoxLayout::HBoxLayout(std::string classname , std::string objname) :
    colwidthleft(0),
    rowheightleft(0),
    defwidth(40),
-   defheight(20),
-   overflow(false)
-{}
+   defheight(20)
+{
+   anchor = HBOX_ANCHOR_W;
+}
 
 
 
@@ -319,12 +331,6 @@ int HBoxLayout::WidthLeft() {
 
 int HBoxLayout::HeightLeft() {
    return rowheightleft;
-}
-
-
-
-bool HBoxLayout::OverflowWarning() {
-   return overflow;
 }
 
 
@@ -381,7 +387,9 @@ void VBoxLayout::RecalcFlow() {
       overflow = true;
    }
    
-   if (rules == BOX_EXPAND) {
+   ///
+   
+   if (spacing == BOX_EXPAND) {
       Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
       t.Scale(InnerArea().W()/(float)maxprefw , InnerArea().H()/(float)totalprefh , 1.0);
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
@@ -398,47 +406,7 @@ void VBoxLayout::RecalcFlow() {
          r->SetArea((int)x2 , (int)y2 , (int)w2 , (int)h2);
       }
    }
-   else if (rules == BOX_SPACE_BETWEEN) {
-      int nrows = (int)rowsizes.size();
-      --nrows;
-      if (nrows >= 1) {
-         int perrow = rowheightleft / nrows;
-         int leftover = rowheightleft % nrows;
-         rowcount = 0;
-         int oy = 0;
-         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            rowcount++;
-            oy += perrow;
-            if (leftover >= rowcount) {
-               oy++;
-            }
-            Rectangle* r = &rcsizes[i];
-            r->MoveBy(0 , oy);
-         }
-      }
-   }
-   else if (rules == BOX_SPACE_EVEN) {
-      int nrows = (int)rowsizes.size();
-      if (nrows > 0) {
-         int perrow = rowheightleft/2*nrows;
-         int leftover = rowheightleft % (2*nrows);
-         int leftovertop = leftover/2;
-         int leftoverbottom = leftover/2 + (leftover % 2 == 1)?1:0;
-         rowcount = 0;
-         int oy = perrow + leftovertop;
-         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
-            WidgetBase* w = wchildren[i];
-            if (!w) {continue;}
-            rowcount++;
-            Rectangle* r = &rcsizes[i];
-            r->MoveBy(0 , oy);
-            oy += 2*perrow + (leftovertop >= rowcount)?1:0 + (leftoverbottom >= rowcount)?1:0;
-         }
-      }
-   }
-   else if (rules == BOX_ALIGN_ONLY) {
+   else if (spacing == BOX_ALIGN_ONLY) {
       VALIGNMENT val = valign;
       if (anchor == VBOX_ANCHOR_S) {
          if (val == VALIGN_TOP) {val = VALIGN_BOTTOM;}
@@ -452,12 +420,71 @@ void VBoxLayout::RecalcFlow() {
          oy = rowheightleft;
       }
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
-         WidgetBase* w = wchildren[i];
+         WidgetBase* w  = wchildren[i];
          if (!w) {continue;}
          Rectangle* r = &rcsizes[i];
          r->MoveBy(0 , oy);
       }
    }
+   else if (spacing == BOX_SPACE_BETWEEN) {
+      int nrows = (int)rowsizes.size();
+      --nrows;
+      if (nrows >= 1) {
+         int perrow = rowheightleft / nrows;
+         int leftover = rowheightleft % nrows;
+         rowcount = 0;
+         int oy = 0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(0 , oy);
+
+            rowcount++;
+            oy += perrow;
+            if (leftover >= rowcount) {
+               oy++;
+            }
+
+         }
+      }
+   }
+   else if (spacing == BOX_SPACE_EVEN) {
+      int nrows = (int)rowsizes.size();
+      if (nrows > 0) {
+         int perrow = rowheightleft/(2*nrows);
+         int leftover = rowheightleft % (2*nrows);
+         int leftovertop = leftover/2;
+         int leftoverbottom = leftover/2 + (leftover % 2 == 1)?1:0;
+         rowcount = 0;
+         int oy = perrow + (leftovertop > 0)?1:0;
+         for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
+            WidgetBase* w = wchildren[i];
+            if (!w) {continue;}
+            rowcount++;
+            Rectangle* r = &rcsizes[i];
+            r->MoveBy(0 , oy);
+            oy += 2*perrow + (leftovertop >= rowcount)?1:0 + (leftoverbottom >= rowcount)?1:0;
+         }
+      }
+   }
+   
+   /// Handle horizontal alignment
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (!w) {continue;}
+      Rectangle r2 = rcsizes[i];
+      Rectangle* r = &rcsizes[i];
+      int ox = 0;
+      if (halign == HALIGN_CENTER) {
+         ox = (InnerArea().W() - r2.W())/2;
+      }
+      else if (halign == HALIGN_RIGHT) {
+         ox = (InnerArea().W() - r2.W());
+      }
+      r->MoveBy(ox , 0);
+   }
+   
    if (anchor == VBOX_ANCHOR_S) {
       /// Mirror the flow from the other side in the same order
       for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
@@ -465,7 +492,7 @@ void VBoxLayout::RecalcFlow() {
          if (!w) {continue;}
          Rectangle r2 = rcsizes[i];
          Rectangle* r = &rcsizes[i];
-         r->SetArea(r2.X() , InnerArea().BRY() - r2.Y() - r2.H() , r2.W() , r2.H());
+         r->SetArea(r2.X() , InnerArea().H() - r2.Y() - r2.H() , r2.W() , r2.H());
       }
    }
    
@@ -475,8 +502,6 @@ void VBoxLayout::RecalcFlow() {
 
 VBoxLayout::VBoxLayout(std::string classname , std::string objname) :
       BoxLayout(classname , objname),
-      anchor(VBOX_ANCHOR_N),
-      rules(BOX_ALIGN_ONLY),
       maxprefw(0),
       totalprefh(0),
       rowcount(0),
@@ -484,10 +509,9 @@ VBoxLayout::VBoxLayout(std::string classname , std::string objname) :
       colwidthleft(0),
       rowheightleft(0),
       defwidth(20),
-      defheight(40),
-      overflow(false)
+      defheight(40)
 {
-   
+   anchor = VBOX_ANCHOR_N;
 }
 
 
@@ -515,12 +539,6 @@ int VBoxLayout::WidthLeft() {
 
 int VBoxLayout::HeightLeft() {
    return rowheightleft;
-}
-
-
-
-bool VBoxLayout::OverflowWarning() {
-   return overflow;
 }
 
 

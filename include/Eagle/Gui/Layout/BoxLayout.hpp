@@ -66,8 +66,12 @@ class BoxLayout : public LayoutBase {
    
 protected :
    BOX_SPACE_RULES spacing;
+   BOX_ANCHOR_POINT anchor;
+
    std::vector<Rectangle> rcsizes;
-   
+
+   bool overflow;
+
    virtual void RecalcFlow()=0;
    
    
@@ -85,9 +89,10 @@ public :
    void SetBoxSpacing(BOX_SPACE_RULES r);
    
    virtual void SetAnchorPosition(BOX_ANCHOR_POINT p)=0;
+   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
    virtual int WidthLeft()=0;
    virtual int HeightLeft()=0;
-   virtual bool OverflowWarning()=0;
+   bool OverflowWarning();
    virtual bool WidgetWouldOverflowLayout(WidgetBase* w)=0;
 };
 
@@ -96,8 +101,6 @@ public :
 class HBoxLayout : public BoxLayout {
    
 protected :
-   BOX_ANCHOR_POINT anchor;
-   BOX_SPACE_RULES rules;
    int totalprefw;
    int maxprefh;
    int colcount;
@@ -106,7 +109,6 @@ protected :
    int rowheightleft;
    int defwidth;
    int defheight;
-   bool overflow;
    
    
    virtual void RecalcFlow();
@@ -119,7 +121,6 @@ public :
    virtual int WidthLeft();
    virtual int HeightLeft();
 
-   virtual bool OverflowWarning();
    virtual bool WidgetWouldOverflowLayout(WidgetBase* w);
 };
 
@@ -127,8 +128,6 @@ public :
 
 class VBoxLayout : public BoxLayout {
 protected :
-   BOX_ANCHOR_POINT anchor;
-   BOX_SPACE_RULES rules;
    int maxprefw;
    int totalprefh;
    int rowcount;
@@ -137,7 +136,6 @@ protected :
    int rowheightleft;
    int defwidth;
    int defheight;
-   bool overflow;
    
    virtual void RecalcFlow();
    
@@ -149,7 +147,6 @@ public :
    virtual int WidthLeft();
    virtual int HeightLeft();
    
-   virtual bool OverflowWarning();
    virtual bool WidgetWouldOverflowLayout(WidgetBase* w);
 };
 

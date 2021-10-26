@@ -362,7 +362,7 @@ void LayoutBase::PlaceWidget(WidgetBase* widget , int slot) {
 int LayoutBase::AddWidget(WidgetBase* widget) {
    int slot = NextFreeSlot();
    if (slot == -1) {
-      ReserveSlots((int)wchildren.size() + 1);
+      Resize((int)wchildren.size() + 1);
       slot = (int)wchildren.size() - 1;
    }
    ReplaceWidget(widget , slot);

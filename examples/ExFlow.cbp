@@ -83,12 +83,10 @@
 		<Linker>
 			<Add directory="O:/us32r/lib" />
 		</Linker>
+		<Unit filename="../../../bin/ExFlow.log" />
 		<Unit filename="ExFlow.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
-			<code_completion />
-			<envvars />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -11,6 +11,7 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
+   SendOutputToFile("ExFlow.log" , "" , false);
    
    Allegro5System* sys = GetAllegro5System();
    
@@ -55,15 +56,28 @@ int main(int argc , char** argv) {
    HBoxLayout hbox("HBOXLayout" , "hbox");
    VBoxLayout vbox("VBOXLayout" , "vbox");
    FlowLayout flowbox("FLOWLayout" , "flow");
+   hbox.Resize(9);
+   vbox.Resize(9);
+   flowbox.Resize(9);
    
 //   WidgetMover mover("Widget mover");
+   mover.WhiteList(&hbox);
    mover.WhiteList(&vbox);
+   mover.WhiteList(&flowbox);
 
    WidgetColorset wcol = default_eagle_color_array;
-   wcol[MARGCOL] = EagleColor(0,255,0);
-   wcol[BORDCOL] = EagleColor(255,255,255);
+   wcol[MARGCOL] = EagleColor(0,255,255);
+   wcol[BORDCOL] = EagleColor(255,255,255,0);
    wcol[PADCOL] = EagleColor(0,0,0,0);
    vbox.SetWidgetColorset(wcol);
+   hbox.SetWidgetColorset(wcol);
+   flowbox.SetWidgetColorset(wcol);
+   
+   hbox.SetWidgetArea(hbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
+   vbox.SetWidgetArea(vbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
+   flowbox.SetWidgetArea(flowbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
+   
+   
    
 ///   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.1 , 0.1 , 0.2 , 0.6));
    rl.PlaceWidget(&mover , 0 , LayoutRectangle(-1.0 , -1.0 , 0.1 , 0.1));
@@ -74,9 +88,7 @@ int main(int argc , char** argv) {
    };
    
    
-   std::map<EAGLE_ID , WidgetBase*> rwidgets;
-   std::vector<WidgetBase*> widgets = {0,0,0,0,0,0,0,0,0};
-   std::vector<WidgetBase*> uwidgets = {0,0,0,0,0,0,0,0,0};
+   std::vector<WidgetBase*> widgets(9 , 0);/// Track our content widgets
    
    /// Add three buttons
    GuiButton* w[3] = {
@@ -94,9 +106,6 @@ int main(int argc , char** argv) {
    w[1]->SetFont(font);
    w[2]->SetLabel("Label 2");
    w[2]->SetFont(font);
-   rwidgets[w[0]->GetEagleId()] = w[0];
-   rwidgets[w[1]->GetEagleId()] = w[1];
-   rwidgets[w[2]->GetEagleId()] = w[2];
    widgets[0] = w[0];
    widgets[1] = w[1];
    widgets[2] = w[2];
@@ -110,9 +119,6 @@ int main(int argc , char** argv) {
    ibtn[0]->SetImages(btnimgs[0] , btnimgs[1] , btnimgs[0] , btnimgs[1]);
    ibtn[1]->SetImages(btnimgs[0] , btnimgs[1] , btnimgs[0] , btnimgs[1]);
    ibtn[2]->SetImages(btnimgs[0] , btnimgs[1] , btnimgs[0] , btnimgs[1]);
-   rwidgets[ibtn[0]->GetEagleId()] = ibtn[0];
-   rwidgets[ibtn[1]->GetEagleId()] = ibtn[1];
-   rwidgets[ibtn[2]->GetEagleId()] = ibtn[2];
    widgets[3] = ibtn[0];
    widgets[4] = ibtn[1];
    widgets[5] = ibtn[2];
@@ -125,22 +131,10 @@ int main(int argc , char** argv) {
    sliders[0]->SetPreferredSize(20 , 60);
    sliders[1]->SetPreferredSize(30 , 80);
    sliders[2]->SetPreferredSize(40 , 100);
-   rwidgets[sliders[0]->GetEagleId()] = sliders[0];
-   rwidgets[sliders[1]->GetEagleId()] = sliders[1];
-   rwidgets[sliders[2]->GetEagleId()] = sliders[2];
    widgets[6] = sliders[0];
    widgets[7] = sliders[1];
    widgets[8] = sliders[2];
 
-
-   std::vector<WidgetBase*> wc = vbox.WChildren();
-   for (unsigned int i = 0 ; i < wc.size() ; ++i) {
-      WidgetArea warea = wc[i]->GetWidgetArea();
-      warea.SetBoxesContract(1,2,1);
-      wc[i]->SetWidgetArea(warea , false);
-      wc[i]->SetRedrawFlag();
-   }
-   
    EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
    EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
    
@@ -182,36 +176,46 @@ int main(int argc , char** argv) {
    };
    
    for (unsigned int i = 0 ; i < 20 ; ++i) {
-      btns[i].SetButtonType(ROUNDED_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-      WidgetArea wa = btns[i].GetWidgetArea();
-      wa.SetBoxesContract(0,0,5);
-      btns[i].SetWidgetArea(wa , false);
+      btns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
+      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(0 , 0 , 3) , false);
       rtext[i].SetupText(text[i] , font);
       rbtns[i].SetWidgets(&btns[i] , &rtext[i]);
+      WidgetArea wa = rbtns[i].GetWidgetArea();
+      wa.SetBoxesContract(0,0,5);
+      SHAREDOBJECT<WidgetColorset> wc = rbtns[i].GetWidgetColorset();
+      (*wc.get())[PADCOL] = EagleColor(0,0,0,0);
+      (*wc.get())[MARGCOL] = EagleColor(0,0,0,0);
+      (*wc.get())[BORDCOL] = EagleColor(0,0,0,0);
+      (*wc.get())[HVRCOL] = EagleColor(192,255,255,127);
+      (*wc.get())[MGCOL] = EagleColor(96,152,152,127);
+      rbtns[i].SetWidgetArea(wa , false);
    }
    
-   RadioGroup radios[5];
-   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1] , &btns[2] , &btns[3] ,
-                                                       &btns[4] , &btns[5] , &btns[6] , &btns[7]}) , &btns[0]);
-   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[8] , &btns[9]}) , &btns[8]);
-   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[10] , &btns[11] , &btns[12]}) , &btns[12]);
-   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[13] , &btns[14] , &btns[15]}) , &btns[13]);
-   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[16] , &btns[17] , &btns[18] , &btns[19]}) , &btns[16]);
+   RadioGroup radios[7];
+   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1]}) , &btns[0]);
+   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[2] , &btns[3]}) , &btns[2]);
+   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[4] , &btns[5] , &btns[6] , &btns[7]}) , &btns[4]);
+   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[8] , &btns[9]}) , &btns[8]);
+   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[10] , &btns[11] , &btns[12]}) , &btns[10]);
+   radios[5].SetRadioGroup(std::vector<BasicButton*>({&btns[13] , &btns[14] , &btns[15]}) , &btns[13]);
+   radios[6].SetRadioGroup(std::vector<BasicButton*>({&btns[16] , &btns[17] , &btns[18] , &btns[19]}) , &btns[16]);
    
    sys->GetSystemQueue()->ListenTo(&radios[0]);
    sys->GetSystemQueue()->ListenTo(&radios[1]);
    sys->GetSystemQueue()->ListenTo(&radios[2]);
    sys->GetSystemQueue()->ListenTo(&radios[3]);
    sys->GetSystemQueue()->ListenTo(&radios[4]);
+   sys->GetSystemQueue()->ListenTo(&radios[5]);
+   sys->GetSystemQueue()->ListenTo(&radios[6]);
    
    rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.05 , 0.2 , 0.3));
    rl.AddWidget(&rgrids[1] , LayoutRectangle(0.45 , 0.05 , 0.2 , 0.2));
    rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.4 , 0.2 , 0.5));
    rl.AddWidget(&rgrids[3] , LayoutRectangle(0.75 , 0.05 , 0.2 , 0.2));
    
-   rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.3 , 0.5 , 0.2));
-   rl.AddWidget(&vbox , LayoutRectangle(0.3 , 0.5 , 0.2 , 0.5));
-   rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.55 , 0.5 , 0.4));
+   rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.3 , 0.5 , 0.1));
+   rl.AddWidget(&vbox , LayoutRectangle(0.3 , 0.4 , 0.1 , 0.5));
+   rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.5 , 0.5 , 0.4));
    
    rgrids[0].PlaceWidget(&rbtns[0] , 0);
    rgrids[0].PlaceWidget(&rbtns[1] , 1);
@@ -234,12 +238,22 @@ int main(int argc , char** argv) {
    rgrids[3].PlaceWidget(&rbtns[18] , 2);
    rgrids[3].PlaceWidget(&rbtns[19] , 3);
    
+   mover.WhiteList(&rgrids[0]);
+   mover.WhiteList(&rgrids[1]);
+   mover.WhiteList(&rgrids[2]);
+   mover.WhiteList(&rgrids[3]);
    
    sys->GetSystemTimer()->Start();
+   
+   mover.SetAbilities(true , true);
+   
+   gui.AlwaysClear(true);
    
    bool quit = false;
    bool redraw = true;
    WidgetBase* hover = 0;
+   Rectangle dndrect = BADRECTANGLE;
+   WidgetBase* dndwidget = 0;
    while (!quit) {
       if (redraw) {
          win->SetDrawingTarget(win->GetBackBuffer());
@@ -247,6 +261,9 @@ int main(int argc , char** argv) {
          gui.Display(win , 0 , 0);
          if (hover) {
             win->DrawTextString(win->DefaultFont() , hover->ShortName() , 10 , 10 , EagleColor(255,255,255));
+         }
+         if (dndrect != BADRECTANGLE) {
+            dndwidget->Display(win , 0 , 0);
          }
          win->FlipDisplay();
          redraw = false;
@@ -260,15 +277,31 @@ int main(int argc , char** argv) {
          }
          if (e.type == EAGLE_EVENT_WIDGET) {
             if (e.source == &radios[0]) {
-               for (unsigned int i = 0 ; i < 8 ; ++i) {
+               for (unsigned int i = 0 ; i < 2 ; ++i) {
                   if (e.widget.from == &btns[i]) {
-                     hbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
-                     vbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
-                     flowbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
+                     if (i == HBOX_ANCHOR_E || i == HBOX_ANCHOR_W) {
+                        hbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
+                     }
                   }
                }
             }
             if (e.source == &radios[1]) {
+               for (unsigned int i = 2 ; i < 4 ; ++i) {
+                  if (e.widget.from == &btns[i]) {
+                     if (i == VBOX_ANCHOR_N || i == VBOX_ANCHOR_S) {
+                        vbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
+                     }
+                  }
+               }
+            }
+            if (e.source == &radios[2]) {
+               for (unsigned int i = 4 ; i < 8 ; ++i) {
+                  if (e.widget.from == &btns[i]) {
+                     flowbox.SetAnchorPosition((BOX_ANCHOR_POINT)i);
+                  }
+               }
+            }
+            if (e.source == &radios[3]) {
                for (unsigned int i = 8 ; i < 10 ; ++i) {
                   if (e.widget.from == &btns[i]) {
                      /// Horizontal or vertical flow button pressed, only affects FlowBox
@@ -276,7 +309,7 @@ int main(int argc , char** argv) {
                   }
                }
             }
-            if (e.source == &radios[2]) {
+            if (e.source == &radios[4]) {
                for (unsigned int i = 10 ; i < 13 ; ++i) {
                   if (e.widget.from == &btns[i]) {
                      hbox.SetAlignment((HALIGNMENT)(i - 10) , hbox.GetVAlignment());
@@ -285,7 +318,7 @@ int main(int argc , char** argv) {
                   }
                }
             }
-            if (e.source == &radios[3]) {
+            if (e.source == &radios[5]) {
                for (unsigned int i = 13 ; i < 16 ; ++i) {
                   if (e.widget.from == &btns[i]) {
                      hbox.SetAlignment(hbox.GetHAlignment() , (VALIGNMENT)(i - 13));
@@ -294,7 +327,7 @@ int main(int argc , char** argv) {
                   }
                }
             }
-            if (e.source == &radios[4]) {
+            if (e.source == &radios[6]) {
                for (unsigned int i = 16 ; i < 20 ; ++i) {
                   if (e.widget.from == &btns[i]) {
                      hbox.SetBoxSpacing((BOX_SPACE_RULES)(i-16));
@@ -314,7 +347,12 @@ int main(int argc , char** argv) {
                break;
             }
             if (e.keyboard.keycode == EAGLE_KEY_P) {
+               EagleLog() << "HBOX:\n";
+               EagleLog() << hbox << std::endl;
+               EagleLog() << "VBOX:\n";
                EagleLog() << vbox << std::endl;
+               EagleLog() << "FLOWBOX:\n";
+               EagleLog() << flowbox << std::endl;
             }
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
@@ -325,11 +363,20 @@ int main(int argc , char** argv) {
             hover = gui.GetWidgetAt(e.mouse.x , e.mouse.y);
          }
          if (e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP) {
+            DRAG_AND_DROP_DATA dnd = e.widget.dnd;
             EagleInfo() << "DND event" << std::endl;
             if (e.widget.topic == TOPIC_WIDGET_MOVER && e.widget.msgs == WIDGET_MOVER_SIZING) {
-               DRAG_AND_DROP_DATA dnd = e.widget.dnd;
                EagleInfo() << "Sizing event" << std::endl;
-               e.widget.from->SetWidgetArea(Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph));
+               dndrect = Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph);
+               dndwidget = dnd.mwidget;
+               
+            }
+            else if (e.widget.topic == TOPIC_WIDGET_MOVER && e.widget.msgs == WIDGET_MOVER_DROP) {
+               dnd.mwidget->SetWidgetArea(Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph));
+               dndrect = BADRECTANGLE;
+            }
+            else {
+               dndrect = BADRECTANGLE;
             }
          };
          for (int i = 0 ; i < 9 ; ++i) {
@@ -338,18 +385,48 @@ int main(int argc , char** argv) {
                   /// Ctrl is held, add to flow layout
                   hbox.RemoveWidget(widgets[i]);
                   vbox.RemoveWidget(widgets[i]);
+                  flowbox.RemoveWidget(widgets[i]);
                   flowbox.AddWidget(widgets[i]);
                }
                else if (input_key_held(EAGLE_KEY_ONLY_SHIFT)) {
                   /// Shift is held, move to vbox layout
                   hbox.RemoveWidget(widgets[i]);
+                  vbox.RemoveWidget(widgets[i]);
                   flowbox.RemoveWidget(widgets[i]);
                   vbox.AddWidget(widgets[i]);
                }
                else {
                   /// No key held, move to hbox
+                  hbox.RemoveWidget(widgets[i]);
                   vbox.RemoveWidget(widgets[i]);
                   flowbox.RemoveWidget(widgets[i]);
+                  hbox.AddWidget(widgets[i]);
+               }
+            }
+         }
+         if (input_key_press(EAGLE_KEY_C)) {
+             hbox.ClearWidgets();
+             vbox.ClearWidgets();
+             flowbox.ClearWidgets();
+         }
+         if (input_key_press(EAGLE_KEY_ENTER)) {
+            hbox.ClearWidgets();
+            vbox.ClearWidgets();
+            flowbox.ClearWidgets();
+            if (input_key_held(EAGLE_KEY_ONLY_CTRL)) {
+               for (unsigned int i = 0 ; i < 9 ; ++i) {
+                  flowbox.AddWidget(widgets[i]);
+               }
+            }
+            else if (input_key_held(EAGLE_KEY_ONLY_SHIFT)) {
+               /// Shift key, move all to vbox
+               for (unsigned int i = 0 ; i < 9 ; ++i) {
+                  vbox.AddWidget(widgets[i]);
+               }
+            }
+            else {
+               /// No mod key, move all to hbox
+               for (unsigned int i = 0 ; i < 9 ; ++i) {
                   hbox.AddWidget(widgets[i]);
                }
             }

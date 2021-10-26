@@ -553,6 +553,18 @@ Rectangle::Rectangle(const Rectangle& r) :
 
 
 
+Rectangle& Rectangle::operator=(const Rectangle& r) {
+   this->x = r.x;
+   this->y = r.y;
+   this->w = r.w;
+   this->h = r.h;
+   this->brx = r.brx;
+   this->bry = r.bry;
+   return *this;
+}
+
+
+
 vector<Rectangle*> Rectangle::CreateBoundingRectangles() const {
    vector<Rectangle*> vrect;
    vrect.push_back(new Rectangle(x,y,w,h));
