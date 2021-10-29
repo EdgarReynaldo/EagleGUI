@@ -208,14 +208,14 @@ int main(int argc , char** argv) {
    sys->GetSystemQueue()->ListenTo(&radios[5]);
    sys->GetSystemQueue()->ListenTo(&radios[6]);
    
-   rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.05 , 0.2 , 0.3));
+   rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.05 , 0.2 , 0.4));
    rl.AddWidget(&rgrids[1] , LayoutRectangle(0.45 , 0.05 , 0.2 , 0.2));
-   rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.4 , 0.2 , 0.5));
+   rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.45 , 0.2 , 0.45));
    rl.AddWidget(&rgrids[3] , LayoutRectangle(0.75 , 0.05 , 0.2 , 0.2));
    
    rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.3 , 0.5 , 0.1));
    rl.AddWidget(&vbox , LayoutRectangle(0.3 , 0.4 , 0.1 , 0.5));
-   rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.5 , 0.5 , 0.4));
+   rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.4 , 0.5 , 0.5));
    
    rgrids[0].PlaceWidget(&rbtns[0] , 0);
    rgrids[0].PlaceWidget(&rbtns[1] , 1);

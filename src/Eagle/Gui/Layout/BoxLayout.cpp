@@ -244,19 +244,19 @@ void HBoxLayout::RecalcFlow() {
    else if (spacing == BOX_SPACE_EVEN) {
       int ncols = (int)colsizes.size();
       if (ncols > 0) {
-         int percol = colwidthleft/(2*ncols);
-         int leftover = colwidthleft % (2*ncols);
+         int percol = colwidthleft/ncols;
+         int leftover = colwidthleft%ncols;
          int leftoverleft = leftover/2;
-         int leftoverright = leftover/2 + (leftover % 2 == 1)?1:0;
+         int leftoverright = leftover - leftoverleft;
          int count = 0;
-         int ox = percol + (leftoverleft > count)?1:0;
+         int ox = percol/2;
          for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
             WidgetBase* w = wchildren[i];
             if (!w) {continue;}
             Rectangle* r = &rcsizes[i];
             r->MoveBy(ox , 0);
             count++;
-            ox += 2*percol + (leftoverleft > count)?1:0 + (leftoverright > count)?1:0;
+            ox += percol + ((leftoverleft > count)?1:0) + ((leftoverright > count)?1:0);
          }
       }
    }
@@ -452,19 +452,19 @@ void VBoxLayout::RecalcFlow() {
    else if (spacing == BOX_SPACE_EVEN) {
       int nrows = (int)rowsizes.size();
       if (nrows > 0) {
-         int perrow = rowheightleft/(2*nrows);
-         int leftover = rowheightleft % (2*nrows);
+         int perrow = rowheightleft/nrows;
+         int leftover = rowheightleft%nrows;
          int leftovertop = leftover/2;
-         int leftoverbottom = leftover/2 + (leftover % 2 == 1)?1:0;
+         int leftoverbottom = leftover - leftovertop;
          rowcount = 0;
-         int oy = perrow + (leftovertop > 0)?1:0;
+         int oy = perrow/2;
          for (unsigned int i = 0 ; i < rcsizes.size() ; ++i) {
             WidgetBase* w = wchildren[i];
             if (!w) {continue;}
             rowcount++;
             Rectangle* r = &rcsizes[i];
             r->MoveBy(0 , oy);
-            oy += 2*perrow + (leftovertop >= rowcount)?1:0 + (leftoverbottom >= rowcount)?1:0;
+            oy += perrow + ((leftovertop > rowcount)?1:0) + ((leftoverbottom > rowcount)?1:0);
          }
       }
    }
