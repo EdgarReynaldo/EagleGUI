@@ -370,77 +370,71 @@ void FlowLayout::AdjustSpacing() {
          if (ncols > 0) {
             int spc = rowspace[row]/ncols;
             int spcleft = rowspace[row]%ncols;
-            if (col == 0) {
-               (void)0;
+            if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+               r->MoveBy((col-1)*spc + (col-1)*((col - 1 < spcleft)?1:0) , 0);
             }
-            else if (col > 0) {
-               if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-                  r->MoveBy(col*spc + col*(col - 1 < spcleft)?1:0 , 0);
-               }
-               else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-                  r->MoveBy(0 , col*spc + col*(col - 1 < spcleft)?1:0);
-               }
+            else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+               r->MoveBy(0 , (col-1)*spc + (col-1)*((col - 1 < spcleft)?1:0));
             }
          }
       }
       else if (spacing == BOX_SPACE_EVEN) {
          int ncols = colcount[row];
-         ncols *= 2;
          int spc = rowspace[row]/ncols;
          int leftover = rowspace[row]%ncols;
          
          if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
             if (ncols > 1) {
-               r->MoveBy(spc + spc*(2*(col-1)) + (leftover > 2*(col - 1))?2:0 , 0);
+               r->MoveBy(spc/2 + spc*(col-1) + (leftover > (2*(col - 1))?2:0) , 0);
             }
             else if (ncols == 1) {
-               r->MoveBy((InnerArea().W() - w->PreferredWidth())/2 , 0);
+               r->MoveBy((InnerArea().W() - r2.W())/2 , 0);
             }
          }
          else if (favored_direction == FLOW_FAVOR_VERTICAL) {
             if (ncols > 1) {
-               r->MoveBy(0 , spc + spc*2*(col-1) + (leftover > 2*(col-1))?2:0);
+               r->MoveBy(0 , spc/2 + spc*(col-1) + ((leftover > 2*(col-1))?2:0));
             }
             else if (ncols == 1) {
-               r->MoveBy(0 , (InnerArea().H() - w->PreferredHeight())/2);
+               r->MoveBy(0 , (InnerArea().H() - r2.H())/2);
             }
          }
-         else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
-            Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
-            t.Scale((double)InnerArea().W() / GetMaxColWidth() , (double)InnerArea().H() / GetTotalRowHeight() , 1.0);
-            double x = r->X();
-            double y = r->Y();
-            double w = r->W();
-            double h = r->H();
-            t.ApplyTransformation(&x , &y , 0);
-            t.ApplyTransformation(&w , &h , 0);
-            r->SetArea((int)x , (int)y , (int)w , (int)h);
-         }
+      }
+      else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
+         Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
+         t.Scale((double)InnerArea().W() / GetMaxColWidth() , (double)InnerArea().H() / GetTotalRowHeight() , 1.0);
+         double x = r->X();
+         double y = r->Y();
+         double w = r->W();
+         double h = r->H();
+         t.ApplyTransformation(&x , &y , 0);
+         t.ApplyTransformation(&w , &h , 0);
+         r->SetArea((int)x , (int)y , (int)w , (int)h);
+      }
 
-         /// Handle minor axis alignment
-         if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-            /// Apply vertical alignment to rows
-            if (val == VALIGN_TOP) {
-               (void)0;/// Already aligned top
-            }
-            else if (val == VALIGN_CENTER) {
-               r->MoveBy(0 , (rowheights[row] - r2.H())/2);
-            }
-            else if (val == VALIGN_BOTTOM) {
-               r->MoveBy(0 , (rowheights[row] - r2.H()));
-            }
+      /// Handle minor axis alignment
+      if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
+         /// Apply vertical alignment to rows
+         if (val == VALIGN_TOP) {
+            (void)0;/// Already aligned top
          }
-         else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-            /// Apply horizontal alignment to columns
-            if (hal == HALIGN_LEFT) {
-               (void)0;/// Already aligned left
-            }
-            else if (hal == HALIGN_CENTER) {
-               r->MoveBy((rowheights[row] - r2.W())/2 , 0);
-            }
-            else if (hal == HALIGN_RIGHT) {
-               r->MoveBy((rowheights[row] - r2.W()) , 0);
-            }
+         else if (val == VALIGN_CENTER) {
+            r->MoveBy(0 , (rowheights[row] - r2.H())/2);
+         }
+         else if (val == VALIGN_BOTTOM) {
+            r->MoveBy(0 , (rowheights[row] - r2.H()));
+         }
+      }
+      else if (favored_direction == FLOW_FAVOR_VERTICAL) {
+         /// Apply horizontal alignment to columns
+         if (hal == HALIGN_LEFT) {
+            (void)0;/// Already aligned left
+         }
+         else if (hal == HALIGN_CENTER) {
+            r->MoveBy((colwidths[row] - r2.W())/2 , 0);
+         }
+         else if (hal == HALIGN_RIGHT) {
+            r->MoveBy((colwidths[row] - r2.W()) , 0);
          }
       }
    }
@@ -805,14 +799,17 @@ bool FlowLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
 
 
 std::ostream& FlowLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   
    os << indent << "BOX_SPACE_RULES = " << PrintBoxSpaceRule(spacing) << std::endl;
    os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor) << std::endl;
+   
    os << indent << "FLOW_FAVORED_DIRECTION = " << PrintFlowFavoredDirection(favored_direction) << std::endl;
    os << indent << "overflow = " << (overflow?"true":"false") << " , shrink = " << (shrink_on_overflow?"true":"false") << std::endl;
    for (unsigned int row = 0 ; row < colcount.size() ; ++row) {
       os << indent << "Colcount for row #" << row << " is " << colcount[row] << " and height is " << rowheights[row] << ". Space left is " << rowspace[row] << std::endl;
    }
    os << indent << "Colspace left = " << colspace << std::endl;
+   BoxLayout::DescribeTo(os , indent);
    return os;
 }
 

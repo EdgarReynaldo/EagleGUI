@@ -550,6 +550,21 @@ bool VBoxLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
 
 
 
+std::ostream& BoxLayout::DescribeTo(std::ostream& os , Indenter indent) const {
+   os << indent << "BOX_SPACE_RULES = " << PrintBoxSpaceRule(spacing) << std::endl;
+   os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor) << std::endl;
+   os << indent << "This layout has " << (overflow?"overflowed":"not overflowed") << " RCSIZES :" << std::endl;
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      WidgetBase* w = wchildren[i];
+      if (!w) {continue;}
+      os << indent << "rcsizes[" << i << "]=" << rcsizes[i] << std::endl;
+   }
+   LayoutBase::DescribeTo(os , indent);
+   return os;
+}
+
+
+
 
 
 

@@ -94,6 +94,8 @@ public :
    virtual int HeightLeft()=0;
    bool OverflowWarning();
    virtual bool WidgetWouldOverflowLayout(WidgetBase* w)=0;
+
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent) const;
 };
 
 
