@@ -59,22 +59,22 @@ int FlowLayout::GetTotalRowHeight() {
 
 
 
-int FlowLayout::GetColumn(int index) {
+int FlowLayout::GetColumn(int index) {/// 1 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
    int col = index + 1;
    for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
-      if (colcount[i] < col) {
+      if (col > colcount[i]) {
          col -= colcount[i];
       }
    }
-   return col - 1;
+   return col;
 }
 
 
 
-int FlowLayout::GetRow(int index) {
+int FlowLayout::GetRow(int index) {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
@@ -91,7 +91,7 @@ int FlowLayout::GetRow(int index) {
 
 
 
-int FlowLayout::GetWidgetIndex(int row , int col) {
+int FlowLayout::GetWidgetIndex(int row , int col) {/// 0,0 based
    int index = 0;
    for (int i = 0 ; i < row ; ++i) {
       index += colcount[i];
@@ -368,13 +368,16 @@ void FlowLayout::AdjustSpacing() {
       else if (spacing == BOX_SPACE_BETWEEN) {
          int ncols = colcount[row] - 1;
          if (ncols > 0) {
-            int spc = rowspace[row]/ncols;
-            int spcleft = rowspace[row]%ncols;
+            const int spc = rowspace[row]/ncols;
+            const int spcleft = rowspace[row]%ncols;
+            const int offset1 = (col - 1)*spc;
+            const int offset2 = (col - 1)*(((col - 1) < spcleft)?1:0);
+            const int offset = offset1 + offset2;
             if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-               r->MoveBy((col-1)*spc + (col-1)*((col - 1 < spcleft)?1:0) , 0);
+               r->MoveBy(offset , 0);
             }
             else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-               r->MoveBy(0 , (col-1)*spc + (col-1)*((col - 1 < spcleft)?1:0));
+               r->MoveBy(0 , offset);
             }
          }
       }
@@ -385,7 +388,7 @@ void FlowLayout::AdjustSpacing() {
          
          if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
             if (ncols > 1) {
-               r->MoveBy(spc/2 + spc*(col-1) + (leftover > (2*(col - 1))?2:0) , 0);
+               r->MoveBy(spc/2 + spc*(col-1) + ((leftover > (2*(col - 1)))?2:0) , 0);
             }
             else if (ncols == 1) {
                r->MoveBy((InnerArea().W() - r2.W())/2 , 0);
