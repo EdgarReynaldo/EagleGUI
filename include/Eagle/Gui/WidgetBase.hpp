@@ -296,10 +296,10 @@ WidgetBase(std::string classname , std::string objname) :
                                    ///< to specify a minimum width to be used by layouts in charge of this widget.
    virtual int AbsMinHeight() const;///< Returns the absolute minimum height needed by this widget. Override
                                     ///< to specify a minimum height to be used by layouts in charge of this widget.
-   virtual void SetPreferredSize(int pw = 0 , int ph = 0);///< 0 indicates there is no preference for this dimension
+   virtual void SetPreferredSize(int pw = 0 , int ph = 0);///< 0 indicates there is no preference for this dimension , -1 indicates they want max size
    bool PreferredSize(int* pw , int* ph);///< Returns true if preferred sizes are positive and stores them in *pw and *ph
-   int PreferredWidth();///< Get the preferred width for this widget - may be zero, which indicates no preference
-   int PreferredHeight();///< Get the preferred height for this widget - may be zero, which indicates no preference
+   int PreferredWidth();///< Get the preferred width for this widget - may be zero, which indicates no preference, or -1 which means max size
+   int PreferredHeight();///< Get the preferred height for this widget - may be zero, which indicates no preference. or -1 which means max size
 };
 
 

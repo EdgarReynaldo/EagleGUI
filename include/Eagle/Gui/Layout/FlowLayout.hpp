@@ -48,6 +48,7 @@ class FlowLayout : public BoxLayout {
 
 protected :
 	FLOW_FAVORED_DIRECTION favored_direction;
+	BOX_SPACE_RULES minorspacing;
    bool shrink_on_overflow;
 
    std::vector<double> waspects;
@@ -66,7 +67,7 @@ protected :
    
    int GetMaxColWidth();
    int GetTotalRowHeight();
-   int GetColumn(int index);/// 1 based
+   int GetColumn(int index);/// 0 based
    int GetRow(int index);/// 0 based
    int GetWidgetIndex(int row , int col);
    
@@ -78,6 +79,7 @@ protected :
    virtual void RepositionChild(int slot) override;
 
    void RecalcFlow();
+   void RecalcFlowOld();
    void AdjustSpacing();
    void MirrorFlow();
    
@@ -86,11 +88,7 @@ public :
    FlowLayout(std::string classname = "FlowLayout" , std::string objname = "Nemo");
    virtual ~FlowLayout();
 
-   
-   
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
-   Rectangle RequestWidgetAreaOld(int widget_slot , int newx , int newy , int newwidth , int newheight);
-
 
    void ShrinkOnOverflow(bool shrink);
    

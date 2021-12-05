@@ -59,13 +59,13 @@ int FlowLayout::GetTotalRowHeight() {
 
 
 
-int FlowLayout::GetColumn(int index) {/// 1 based
+int FlowLayout::GetColumn(int index) {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
-   int col = index + 1;
+   int col = index;
    for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
-      if (col > colcount[i]) {
+      if (col >= colcount[i]) {
          col -= colcount[i];
       }
    }
@@ -133,7 +133,7 @@ void FlowLayout::RepositionChild(int slot) {
 
 
 
-void FlowLayout::RecalcFlow() {
+void FlowLayout::RecalcFlowOld() {
    std::vector<WidgetBase*> wc = wchildren;
    rcsizes.clear();
    rcsizes.resize(wc.size() , BADRECTANGLE);/// Default to bad rectangle
@@ -316,6 +316,161 @@ void FlowLayout::RecalcFlow() {
 }
 
 
+
+void FlowLayout::RecalcFlow() {
+   std::vector<WidgetBase*> wc = wchildren;
+   rcsizes.clear();
+   rcsizes.resize(wc.size() , BADRECTANGLE);/// Default to bad rectangle
+   waspects.clear();/// For later maybe
+   waspects.resize(wc.size() , -1.0);/// Default to -1, invalid
+   
+
+   overflow = false;/// reset overflow warning
+   rowcount = 0;/// simple row count
+   colcount.clear();/// For indexing
+   rowheights.clear();/// Track how tall each row is
+   rowspace.clear();/// Track how much space is unused in each 'row'
+   colwidths.clear();
+   
+   if (WChildren().empty()) {return;}
+
+   /// There are really only two flows - horizontal and vertical. Every other position / combination of anchors and directions can be mirrored from the first two
+
+   const int majormax = (favored_direction == FLOW_FAVOR_HORIZONTAL)?InnerArea().W():InnerArea().H();
+   const int minormax = (favored_direction == FLOW_FAVOR_HORIZONTAL)?InnerArea().H():InnerArea().W();
+   int majorrem = majormax;
+   int minorrem = minormax;
+
+   colspace = minormax;/// How much minor axis space there is
+   colcount.push_back(0);/// Count of columns on this row
+   rowspace.push_back(majormax);/// Space remaining on the major axis on this 'row'
+   rowheights.push_back(0);/// How tall this row is
+   colwidths.push_back(0);
+   
+   /// Coordinates of the new rectangle
+   int x1 = 0;
+   int y1 = 0;
+   int x2 = 0;
+   int y2 = 0;
+
+   /// Setup some pointers to make it easier to pick the correct axes
+   int* const major1 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&x1:&y1;
+   int* const minor1 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&y1:&x1;
+   int* const major2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&x2:&y2;
+   int* const minor2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&y2:&x2;
+
+   bool nextrow = false;
+
+   WidgetBase* last = WChildren().back();
+   
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {/// For all widgets
+      nextrow = false;
+      if (!wc[i]) {continue;}
+      WidgetBase* w = wc[i];
+      int mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?w->PreferredWidth():w->PreferredHeight();
+      int mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?w->PreferredHeight():w->PreferredWidth();
+      if (mjr && mnr) {
+         waspects[i] = (double)mjr/mnr;
+      }
+      else {
+         /// TODO At least one of the preferred sizes is 0. Do something with it. 
+         if (mjr < 1) {
+            mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defwidth:defheight;
+         }
+         if (mnr < 1) {
+            mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defheight:defwidth;
+         }
+         waspects[i] = (double)mjr/mnr;
+      }
+      const int major = mjr;
+      const int minor = mnr;
+
+      /// Place widgets in rows based upon preferred width and remaining width available
+
+      Rectangle* r = &rcsizes[i];/// reference
+
+      /// Determine whether the widget goes on this row or starts the next
+      nextrow = false;
+      if (major <= majorrem) {
+         /// Place on this row, there is enough space
+      }
+      else {
+         /// Flow to next row if not first in row, there is not enough major axis space
+         if (colcount[rowcount] > 0) {
+            nextrow = true;
+         }
+         else {
+            overflow = true;/// Overflowed major axis
+         }
+      }
+
+      /// Pre processing
+      if (!nextrow) {
+         /// Place on this row
+         if (rowheights[rowcount] < minor) {
+            rowheights[rowcount] = minor;
+         }
+      }
+      else {
+         /// Place on next row
+         *major1 = 0;
+         *minor1 += rowheights[rowcount];
+         colcount.push_back(0);
+      }
+      
+      /// Add width and height to x2 and y2
+      *major2 = *major1 + major;
+      *minor2 = *minor1 + minor;
+      
+      /// Set our rectangle
+      r->SetCorners(x1 , y1 , x2 , y2);
+      
+      if (!nextrow) {
+         /// Advance to next column
+         *major1 += major;/// Advance along row
+         (void)(*minor1);/// Stay on same minor position
+         majorrem -= major;
+         rowspace[rowcount] = majorrem;
+         colwidths[rowcount] += major;
+         colcount[rowcount]++;
+      }
+      else {
+         /// Advance to next row
+         minorrem -= rowheights[rowcount];
+         colspace = minorrem;
+         majorrem = majormax - major;
+         rowspace.push_back(majorrem);
+         *major1 += major;
+         if (w != last) {
+            colwidths.push_back(0);
+            rowheights.push_back(0);
+            ++rowcount;
+         }
+         colcount[rowcount]++;
+      }
+   }
+   
+   /// Reset preferred size to fit widgets if not already correct
+   int pw = (favored_direction == FLOW_FAVOR_HORIZONTAL)?GetMaxColWidth():GetTotalRowHeight();
+   int ph = (favored_direction == FLOW_FAVOR_HORIZONTAL)?GetTotalRowHeight():GetMaxColWidth();
+   if (PreferredWidth() == 0) {
+      pw = 0;
+   }
+   if (PreferredHeight() == 0) {
+      ph = 0;
+   }
+   if (pw != PreferredWidth() || ph != PreferredHeight()) {
+      SetPreferredSize(pw , ph);
+   }
+   
+   AdjustSpacing();
+   
+   MirrorFlow();
+   
+}
+
+
+
 void FlowLayout::AdjustSpacing() {
 
    HALIGNMENT hal = halign;
@@ -338,6 +493,7 @@ void FlowLayout::AdjustSpacing() {
       int row = GetRow(i);
       int col = GetColumn(i);
       
+      /// Handle major spacing
       if (spacing == BOX_ALIGN_ONLY) {
          /// Handle major axis alignment
          if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
@@ -366,12 +522,12 @@ void FlowLayout::AdjustSpacing() {
          }
       }
       else if (spacing == BOX_SPACE_BETWEEN) {
-         int ncols = colcount[row] - 1;
+         const int ncols = colcount[row] - 1;
          if (ncols > 0) {
             const int spc = rowspace[row]/ncols;
             const int spcleft = rowspace[row]%ncols;
-            const int offset1 = (col - 1)*spc;
-            const int offset2 = (col - 1)*(((col - 1) < spcleft)?1:0);
+            const int offset1 = col*spc;
+            const int offset2 = col*((col < spcleft)?1:0);
             const int offset = offset1 + offset2;
             if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
                r->MoveBy(offset , 0);
@@ -382,30 +538,35 @@ void FlowLayout::AdjustSpacing() {
          }
       }
       else if (spacing == BOX_SPACE_EVEN) {
-         int ncols = colcount[row];
-         int spc = rowspace[row]/ncols;
-         int leftover = rowspace[row]%ncols;
-         
+         const int ncols = colcount[row];
+         const int spc = rowspace[row]/ncols;
+         const int leftover = rowspace[row]%ncols;
+         const int offset1 = spc/2;
+         const int offset2 = spc*col;
+         const int offset3 = ((2*col) < leftover)?2:0;
+         const int offset = offset1 + offset2 + offset3;
          if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
             if (ncols > 1) {
-               r->MoveBy(spc/2 + spc*(col-1) + ((leftover > (2*(col - 1)))?2:0) , 0);
+               r->MoveBy(offset , 0);
             }
-            else if (ncols == 1) {
+            else if (ncols == 1) {/// center a single column
                r->MoveBy((InnerArea().W() - r2.W())/2 , 0);
             }
          }
          else if (favored_direction == FLOW_FAVOR_VERTICAL) {
             if (ncols > 1) {
-               r->MoveBy(0 , spc/2 + spc*(col-1) + ((leftover > 2*(col-1))?2:0));
+               r->MoveBy(0 , offset);
             }
-            else if (ncols == 1) {
+            else if (ncols == 1) {/// center a single column
                r->MoveBy(0 , (InnerArea().H() - r2.H())/2);
             }
          }
       }
       else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
          Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
-         t.Scale((double)InnerArea().W() / GetMaxColWidth() , (double)InnerArea().H() / GetTotalRowHeight() , 1.0);
+         const double sx = (double)InnerArea().W() / (double)((favored_direction == FLOW_FAVOR_HORIZONTAL)?GetMaxColWidth():GetTotalRowHeight());
+         const double sy = (double)InnerArea().H() / (double)((favored_direction == FLOW_FAVOR_HORIZONTAL)?GetTotalRowHeight():GetMaxColWidth());
+         t.Scale(sx , sy , 1.0);
          double x = r->X();
          double y = r->Y();
          double w = r->W();
@@ -486,6 +647,7 @@ void FlowLayout::MirrorFlow() {
 FlowLayout::FlowLayout(std::string classname , std::string objname) :
       BoxLayout(classname , objname),
       favored_direction(FLOW_FAVOR_HORIZONTAL),
+      minorspacing(BOX_ALIGN_ONLY),
       shrink_on_overflow(true),
       waspects(),
       rowcount(0),
@@ -526,191 +688,6 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
       
    Rectangle r = rcsizes[widget_slot];// make a copy, don't change rectangle with inner position
    r.MoveBy(InnerArea().X() , InnerArea().Y());
-   return r;
-}
-
-
-
-Rectangle FlowLayout::RequestWidgetAreaOld(int widget_slot , int newx , int newy , int newwidth , int newheight) {
-   WidgetBase* w = GetWidget(widget_slot);
-   if (!w) {return BADRECTANGLE;}
-   if (WChildren().empty()) {return BADRECTANGLE;}
-   (void)newx;
-   (void)newy;
-   (void)newwidth;
-   (void)newheight;
-   
-   int row = GetRow(widget_slot);
-   int col = GetColumn(widget_slot);
-   
-   
-   /// rcsizes is laid out to match wchildren, and is based on a generic case in the nw corner flowing right or down
-   /// all other cases can be mirrored to match
-   /// First add spacing and alignment to rcsizes
-   Rectangle r = rcsizes[widget_slot];
-
-   Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
-
-   Rectangle in = InnerArea();
-   
-   double colwidth = GetMaxColWidth();
-   EAGLE_ASSERT(colwidth);
-   double totalrowheight = GetTotalRowHeight();
-   EAGLE_ASSERT(totalrowheight);
-   
-   std::vector<double> rheights(rowheights.size() , 0.0);
-   std::vector<double> rspace(rowspace.size() , 0.0);
-   
-   /// Use double precision for scaling, and truncate to ints later
-   for (unsigned int i = 0 ; i < rheights.size() ; ++i) {
-      rheights[i] = rowheights[i];
-   }
-   for (unsigned int i = 0 ; i < rspace.size() ; ++i) {
-      rspace[i] = rowspace[i];
-   }
-
-   int nspacecolumns = 0;
-   int space_per_column = 0;
-   int space_left = 0;
-//**   
-
-   HALIGNMENT hal = halign;
-   VALIGNMENT val = valign;
-   /// Anchoring on the opposite side reverses alignment
-   if (anchor == FBOX_ANCHOR_NE || anchor == FBOX_ANCHOR_SE) {
-      hal = (halign == HALIGN_LEFT)?HALIGN_RIGHT:(halign == HALIGN_RIGHT)?HALIGN_LEFT:HALIGN_CENTER;
-   }
-   if (anchor == FBOX_ANCHOR_SW || anchor == FBOX_ANCHOR_SE) {
-      val = (valign == VALIGN_TOP)?VALIGN_BOTTOM:(valign == VALIGN_BOTTOM)?VALIGN_TOP:VALIGN_CENTER;
-   }
-   if (spacing == BOX_ALIGN_ONLY) {
-      /// Handle major axis alignment
-      if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-         int ox = rowspace[row];
-         if (hal == HALIGN_LEFT) {
-            (void)0;/// Already aligned left
-         }
-         else if (hal == HALIGN_CENTER) {
-            r.MoveBy(ox/2 , 0);
-         }
-         else if (hal == HALIGN_RIGHT) {
-            r.MoveBy(ox , 0);
-         }
-      }
-      else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-         int oy = rowspace[row];
-         if (val == VALIGN_TOP) {
-            (void)0;/// Already aligned top
-         }
-         else if (val == VALIGN_CENTER) {
-            r.MoveBy(0 , oy/2);
-         }
-         else if (val == VALIGN_BOTTOM) {
-            r.MoveBy(0 , oy);
-         }
-      }
-   }
-   else if (spacing == BOX_SPACE_BETWEEN) {
-      /// Apply space between consecutive pairs of widgets
-      nspacecolumns = colcount[row] - 1;
-      if (nspacecolumns) {
-         space_per_column = ((int)rspace[row])/nspacecolumns;
-         space_left = ((int)rspace[row])%nspacecolumns;
-         if (col == 0) {
-            (void)0;/// This column is already pushed out from the middle as far as it will go
-         }
-         else if (col > 0) {
-            if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-               r.MoveBy(col*space_per_column + col*(col - 1 < space_left)?1:0 , 0);
-            }
-            else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-               r.MoveBy(0 , col*space_per_column + col*(col - 1 < space_left)?1:0);
-            }
-         }
-      }
-   }
-   else if (spacing == BOX_SPACE_EVEN) {
-      /// Apply space evenly around each widget
-      nspacecolumns = colcount[row];
-      space_per_column = ((int)rspace[row])/nspacecolumns;
-      int extra = space_per_column - 2*(space_per_column/2);
-      space_per_column -= extra;
-      space_left = ((int)rspace[row])%nspacecolumns;
-      space_left += extra;
-      if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-         r.MoveBy(space_per_column/2 + (col - 1)*space_per_column + col*(col < space_left)?1:0 , 0);
-      }
-      else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-         r.MoveBy(0 , space_per_column/2 + (col - 1)*space_per_column + col*(col < space_left)?1:0);
-      }
-   }
-   else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
-      /// Handle underflow and overflow (just scale to fit)
-      t.Scale((double)in.W() / colwidth , (double)in.H() / totalrowheight , 1.0);
-   }
-   
-   /// Handle minor axis alignment
-   if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
-      /// Apply vertical alignment to rows
-      if (val == VALIGN_TOP) {
-         (void)0;/// Already aligned top
-      }
-      else if (val == VALIGN_CENTER) {
-         r.MoveBy(0 , (rowheights[row] - r.H())/2);
-      }
-      else if (val == VALIGN_BOTTOM) {
-         r.MoveBy(0 , (rowheights[row] - r.H()));
-      }
-   }
-   else if (favored_direction == FLOW_FAVOR_VERTICAL) {
-      /// Apply horizontal alignment to columns
-      if (hal == HALIGN_LEFT) {
-         (void)0;/// Already aligned left
-      }
-      else if (hal == HALIGN_CENTER) {
-         r.MoveBy((rowheights[row] - r.W())/2 , 0);
-      }
-      else if (hal == HALIGN_RIGHT) {
-         r.MoveBy((rowheights[row] - r.W()) , 0);
-      }
-   }
-//*/
-   double rx = r.X();
-   double ry = r.Y();
-   double rw = r.W();
-   double rh = r.H();
-   
-//   t.ApplyTransformation(&rx , &ry , 0);
-//   t.ApplyTransformation(&rw , &rh , 0);
-   
-   r = Rectangle(rx , ry , rw , rh);
-   
-   int x1 = in.X() + r.X();
-   int y1 = in.Y() + r.Y();
-   int x2 = in.X() + r.BRX();
-   int y2 = in.Y() + r.BRY();
-   switch (anchor) {
-      case FBOX_ANCHOR_NW :
-         /// Generic case, do nothing
-         r.SetCorners(x1,y1,x2,y2);
-         break;
-      case FBOX_ANCHOR_SW :
-         /// Left to right along bottom - flip vertically
-         r.SetCorners(x1 , in.BRY() - r.Y() , x2 , in.BRY() - r.BRY());
-         break;
-      case FBOX_ANCHOR_NE :
-         /// Right to left along top - flip horizontally
-         r.SetCorners(in.BRX() - r.X() , y1 , in.BRX() - r.BRX() , y2);
-         break;
-      case FBOX_ANCHOR_SE :
-         /// Right to left along bottom, double mirror
-         r.SetCorners(in.BRX() - r.X() , in.BRY() - r.Y() , in.BRX() - r.BRX() , in.BRY() - r.BRY());
-         break;
-      default :
-         /// Default to NW
-         r.SetCorners(x1,y1,x2,y2);
-   }
-   
    return r;
 }
 
