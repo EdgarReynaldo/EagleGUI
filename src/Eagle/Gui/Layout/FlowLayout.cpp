@@ -63,13 +63,23 @@ int FlowLayout::GetColumn(int index) {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
-   int col = index;
-   for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
-      if (col >= colcount[i]) {
-         col -= colcount[i];
+   int col = 0;
+   int row = 0;
+   WidgetBase* w = wchildren[index];
+   for (unsigned int i = 0 ; i < WChildren().size() ; ++i) {
+      WidgetBase* compare = WChildren()[i];
+      if (w == compare) {
+         return col;
+      }
+      else {
+         col++;
+      }
+      if (col >= colcount[row]) {
+         col = 0;
+         row++;
       }
    }
-   return col;
+   return -1;
 }
 
 
@@ -78,15 +88,23 @@ int FlowLayout::GetRow(int index) {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
+   int col = 0;
    int row = 0;
-   int col = index + 1;
-   for (unsigned int i = 0 ; i < colcount.size() ; ++i) {
-      if (colcount[i] < col) {
-         col -= colcount[i];
+   WidgetBase* w = wchildren[index];
+   for (unsigned int i = 0 ; i < WChildren().size() ; ++i) {
+      WidgetBase* compare = WChildren()[i];
+      if (w == compare) {
+         return row;
+      }
+      else {
+         col++;
+      }
+      if (col >= colcount[row]) {
+         col = 0;
          row++;
       }
    }
-   return row;
+   return -1;
 }
 
 
@@ -438,15 +456,13 @@ void FlowLayout::RecalcFlow() {
          /// Advance to next row
          minorrem -= rowheights[rowcount];
          colspace = minorrem;
+         ++rowcount;
+         colcount[rowcount] = 1;
          majorrem = majormax - major;
          rowspace.push_back(majorrem);
+         rowheights.push_back(minor);
+         colwidths.push_back(major);
          *major1 += major;
-         if (w != last) {
-            colwidths.push_back(0);
-            rowheights.push_back(0);
-            ++rowcount;
-         }
-         colcount[rowcount]++;
       }
    }
    
@@ -527,7 +543,7 @@ void FlowLayout::AdjustSpacing() {
             const int spc = rowspace[row]/ncols;
             const int spcleft = rowspace[row]%ncols;
             const int offset1 = col*spc;
-            const int offset2 = col*((col < spcleft)?1:0);
+            const int offset2 = (col < spcleft)?col:spcleft;
             const int offset = offset1 + offset2;
             if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
                r->MoveBy(offset , 0);
@@ -543,7 +559,7 @@ void FlowLayout::AdjustSpacing() {
          const int leftover = rowspace[row]%ncols;
          const int offset1 = spc/2;
          const int offset2 = spc*col;
-         const int offset3 = ((2*col) < leftover)?2:0;
+         const int offset3 = ((2*col) < leftover)?(2*col):leftover;
          const int offset = offset1 + offset2 + offset3;
          if (favored_direction == FLOW_FAVOR_HORIZONTAL) {
             if (ncols > 1) {
@@ -569,11 +585,11 @@ void FlowLayout::AdjustSpacing() {
          t.Scale(sx , sy , 1.0);
          double x = r->X();
          double y = r->Y();
-         double w = r->W();
+         double wd = r->W();
          double h = r->H();
          t.ApplyTransformation(&x , &y , 0);
-         t.ApplyTransformation(&w , &h , 0);
-         r->SetArea((int)x , (int)y , (int)w , (int)h);
+         t.ApplyTransformation(&wd , &h , 0);
+         r->SetArea((int)x , (int)y , (int)wd , (int)h);
       }
 
       /// Handle minor axis alignment
