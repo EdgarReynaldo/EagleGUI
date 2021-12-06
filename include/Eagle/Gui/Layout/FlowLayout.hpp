@@ -65,11 +65,11 @@ protected :
    
    
    
-   int GetMaxColWidth();
-   int GetTotalRowHeight();
-   int GetColumn(int index);/// 0 based
-   int GetRow(int index);/// 0 based
-   int GetWidgetIndex(int row , int col);
+   int GetMaxColWidth() const;
+   int GetTotalRowHeight() const;
+   int GetColumn(int index) const;/// 0 based
+   int GetRow(int index) const;/// 0 based
+   int GetWidgetIndex(int row , int col) const;
    
    virtual void ReserveSlots(int nslots);
 

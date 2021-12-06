@@ -39,7 +39,7 @@ std::string PrintFlowFavoredDirection(FLOW_FAVORED_DIRECTION d) {
 
 
 
-int FlowLayout::GetMaxColWidth() {
+int FlowLayout::GetMaxColWidth() const {
    int max = 0;
    for (unsigned int i = 0 ; i < colwidths.size() ; ++i) {
       if (colwidths[i] > max) {max = colwidths[i];}
@@ -49,7 +49,7 @@ int FlowLayout::GetMaxColWidth() {
 
 
 
-int FlowLayout::GetTotalRowHeight() {
+int FlowLayout::GetTotalRowHeight() const {
    int h = 0;
    for (unsigned int i = 0 ; i < rowheights.size() ; ++i) {
       h += rowheights[i];
@@ -59,7 +59,7 @@ int FlowLayout::GetTotalRowHeight() {
 
 
 
-int FlowLayout::GetColumn(int index) {/// 0 based
+int FlowLayout::GetColumn(int index) const {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
@@ -84,7 +84,7 @@ int FlowLayout::GetColumn(int index) {/// 0 based
 
 
 
-int FlowLayout::GetRow(int index) {/// 0 based
+int FlowLayout::GetRow(int index) const {/// 0 based
    if (index < 0 || index >= (int)wchildren.size()) {
       return -1;
    }
@@ -109,7 +109,7 @@ int FlowLayout::GetRow(int index) {/// 0 based
 
 
 
-int FlowLayout::GetWidgetIndex(int row , int col) {/// 0,0 based
+int FlowLayout::GetWidgetIndex(int row , int col) const {/// 0,0 based
    int index = 0;
    for (int i = 0 ; i < row ; ++i) {
       index += colcount[i];
@@ -804,7 +804,7 @@ std::ostream& FlowLayout::DescribeTo(std::ostream& os , Indenter indent) const {
    for (unsigned int row = 0 ; row < colcount.size() ; ++row) {
       os << indent << "Colcount for row #" << row << " is " << colcount[row] << " and height is " << rowheights[row] << ". Space left is " << rowspace[row] << std::endl;
    }
-   os << indent << "Colspace left = " << colspace << std::endl;
+   os << indent << "Colspace left = " << colspace << " max col width = " << GetMaxColWidth() << " total row height = " << GetTotalRowHeight() << std::endl;
    BoxLayout::DescribeTo(os , indent);
    return os;
 }
