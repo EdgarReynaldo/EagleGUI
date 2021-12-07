@@ -58,7 +58,7 @@ class FlowLayout : public BoxLayout {
 
 protected :
 	FLOW_FAVORED_DIRECTION favored_direction;
-	BOX_SPACE_RULES minorspacing;
+	BOX_SPACE_RULES minorspacing;/// TODO : Implement
 
    std::vector<double> waspects;
 

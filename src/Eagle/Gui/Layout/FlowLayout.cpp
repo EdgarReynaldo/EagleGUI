@@ -282,6 +282,13 @@ void FlowLayout::RecalcFlow() {
       }
    }
    
+   if (GetMaxColWidth() > InnerArea().W()) {
+      overflow = true;
+   }
+   if (GetTotalRowHeight() > InnerArea().H()) {
+      overflow = true;
+   }
+   
    /// Reset preferred size to fit widgets if not already correct
    int pw = (favored_direction == FLOW_FAVOR_HORIZONTAL)?GetMaxColWidth():GetTotalRowHeight();
    int ph = (favored_direction == FLOW_FAVOR_HORIZONTAL)?GetTotalRowHeight():GetMaxColWidth();
@@ -524,16 +531,6 @@ Rectangle FlowLayout::RequestWidgetArea(int widget_slot , int newx , int newy , 
 
 
 
-void FlowLayout::ShrinkOnOverflow(bool shrink) {
-   if (shrink != shrink_on_overflow) {
-      shrink_on_overflow = shrink;
-      RepositionAllChildren();
-      SetRedrawFlag();
-   }
-}
-
-
-
 void FlowLayout::SetDefaultWidth(unsigned int w) {
    if (w < 1) {w = 1;}
    defwidth = w;
@@ -639,7 +636,7 @@ std::ostream& FlowLayout::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "BOX_ANCHOR_POINT = " << PrintBoxAnchorPoint(anchor) << std::endl;
    
    os << indent << "FLOW_FAVORED_DIRECTION = " << PrintFlowFavoredDirection(favored_direction) << std::endl;
-   os << indent << "overflow = " << (overflow?"true":"false") << " , shrink = " << (shrink_on_overflow?"true":"false") << std::endl;
+   os << indent << "overflow = " << (overflow?"true":"false") << std::endl;
    for (unsigned int row = 0 ; row < colcount.size() ; ++row) {
       os << indent << "Colcount for row #" << row << " is " << colcount[row] << " and height is " << rowheights[row] << ". Space left is " << rowspace[row] << std::endl;
    }
