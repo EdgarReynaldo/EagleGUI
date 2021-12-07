@@ -41,20 +41,17 @@ somewhere....
 
 TODO : Milestones necessary for development
 
-0. namespace EAGLE?
+0. namespace EAGLE
 
 1. Finish basic widget set
 
-   TODO : Make the file system useful for creating files and checking if they exist
       
    TODO : Widgets in production
       a - Menu, MenuItem, MenuBar
       b - WrapText
-      c - FlowLayout (Longterm , not uber necessary , but nice for those coming from Java)
-      d - Slider, SliderKnob - DragButton
-      e - Dial, Tooltip
-      f - GuiWindow
-      g - ZoomCamera (might want ScrollArea first)
+      c - Dial, Tooltip
+      d - GuiWindow
+      e - ZoomCamera (might want ScrollArea first)
 
       
    COMPLETE : 
@@ -66,26 +63,35 @@ TODO : Milestones necessary for development
       F - Slider , Slider2D
       G - Camera
       H - DumbLayout , GridLayout , ClassicMenuLayout , ListBox , RelativeLayout , SplitterLayouts , PinLayout , NPLayout
+      I - FlowLayout, HBoxLayout, VBoxLayout
 
-2. Create documentation - doxygen looks best for this
+2. Features
+   TODO : Make the file system useful for creating files and checking if they exist
+   TODO : WidgetFactory
+   TODO : scripting
+
+3. Create documentation - doxygen looks best for this
 - WIP
+- Fix 'module' problem
+- Maintenance
 
-3. Make the library work with MSVC (Not looking forward to this)
+4. Make the library work with MSVC (Not looking forward to this)
    A - DECLSPEC DLLEXPORT necessary for MSVC when building without .def files
    
-4. Build system
+5. Build system
           A - CodeBlocks projects are nice for me, but they're not fully portable
 Complete *B - CMake
           C - Premake http://premake.github.io/ (looks like it is under active development, with new features, and lots of compiler support)
           D - Autotools? You're kidding right?
 
-5- Backend support
+6- Backend support
    A - SDL 2.0
    B - SFML
-   C - ???
+X  C - Allegro 5
+   D - Allegro 4
 
-6. Platform support - already mostly possible due to Allegro's multi platform support
-   A. Windows and Linux supported through gcc and mingw.
+7. Platform support - already mostly possible due to Allegro's multi platform support
+X  A. Windows and Linux supported through gcc and mingw.
    B. OSX
    C. Android
    D. iOS

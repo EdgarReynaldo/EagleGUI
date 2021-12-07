@@ -3,7 +3,7 @@
 Hmm, a license you say? Well, if you use my stuff, give me credit,
 and give the library credit as well. Advertise for me, and use my
 library, and I'll be happy. Please tell as many of your developer
-friends about my library as you can. 
+friends about my library as you can. Source code and any modifications MUST be made freely available.
 
 http://members.allegro.cc/EdgarReynaldo/Eagle.html
 
