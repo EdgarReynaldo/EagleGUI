@@ -151,190 +151,6 @@ void FlowLayout::RepositionChild(int slot) {
 
 
 
-void FlowLayout::RecalcFlowOld() {
-   std::vector<WidgetBase*> wc = wchildren;
-   rcsizes.clear();
-   rcsizes.resize(wc.size() , BADRECTANGLE);/// Default to bad rectangle
-   waspects.clear();/// For later maybe
-   waspects.resize(wc.size() , -1.0);/// Default to -1, invalid
-   
-
-   overflow = false;/// reset overflow warning
-   rowcount = 0;/// simple row count
-   colcount.clear();/// For indexing
-   rowheights.clear();/// Track how tall each row is
-   rowspace.clear();/// Track how much space is used in each 'row'
-   
-   if (WChildren().empty()) {return;}
-
-   /// There are really only two flows - horizontal and vertical. Every other position / combination of anchors and directions can be mirrored from the first two
-   Rectangle r;
-
-   const int maxw = InnerArea().W();
-   const int maxh = InnerArea().H();
-   const int colspacetotal = (favored_direction == FLOW_FAVOR_HORIZONTAL)?maxw:maxh;///How much space is available for columns (major axis)
-   const int rowspacetotal = (favored_direction == FLOW_FAVOR_HORIZONTAL)?maxh:maxw;/// How much space is available for rows (minor axis)
-   int rcmajorrem = colspacetotal;/// The main axis is thought of as a set of columns
-   int rcminorrem = rowspacetotal;/// The minor axis is thought of as a set of rows
-   
-   /// Collect statistics on widget children, pack all widgets into upper left placing as many as possible on the current row
-   
-   colcount.push_back(0);
-   rowheights.push_back(0);
-   rowspace.push_back(colspacetotal);
-
-   int x1 = 0;
-   int y1 = 0;
-   int x2 = 0;
-   int y2 = 0;
-
-   int* const major1 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&x1:&y1;
-   int* const minor1 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&y1:&x1;
-   int* const major2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&x2:&y2;
-   int* const minor2 = (favored_direction == FLOW_FAVOR_HORIZONTAL)?&y2:&x2;
-
-   bool nextrow = false;
-
-   for (unsigned int i = 0 ; i < wc.size() ; ++i) {/// For all widgets
-      nextrow = false;
-      if (!wc[i]) {continue;}
-      const int pw = wc[i]->PreferredWidth();
-      const int ph = wc[i]->PreferredHeight();
-      int mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?pw:ph;
-      int mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?ph:pw;
-      if (mjr && mnr) {
-         waspects[i] = (double)mjr/mnr;
-      }
-      else {
-         /// TODO At least one of the preferred sizes is 0. Do something with it. 
-         if (!mjr) {mjr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defwidth:defheight;}
-         if (!mnr) {mnr = (favored_direction == FLOW_FAVOR_HORIZONTAL)?defheight:defwidth;}
-         waspects[i] = (double)mjr/mnr;
-      }
-      const int major = mjr;
-      const int minor = mnr;
-
-      /// Place widgets in rows based upon preferred width (for horizontal layouts)
-      if ((major <= rcmajorrem) && (minor <= rcminorrem)) {
-         /// This widget fits the major flow and the minor flow
-         colcount[rowcount]++;
-//         colwidths[rowcount] += major;
-         /// Calculate max height for each row
-         if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
-         
-         rcmajorrem -= major;
-         rowspace[rowcount] = rcmajorrem;
-      }
-      else if (major > rcmajorrem) {
-         /// Overflowed the row
-         /// First on row, don't wrap until next widget
-         if (colcount[rowcount] == 0) {
-            colcount[rowcount] = 1;
-            colcount.push_back(0);
-            rowspace[rowcount] -= major;
-            rowspace.push_back(colspacetotal);
-            rcmajorrem = colspacetotal;
-            rcminorrem -= minor;
-            rowheights[rowcount] = minor;
-            *major1 = 0;
-            (void)(*minor1);/// leave y alone
-            ++rowcount;
-            nextrow = true;
-         }
-         /// Wrap to next row
-         else {
-            rcmajorrem = colspacetotal - major;
-            rowspace.push_back(rcmajorrem);
-            rcminorrem -= rowheights[rowcount];
-            colspace = rcminorrem;
-            *major1 = 0;
-            *minor1 += rowheights[rowcount];
-            ++rowcount;
-            rowheights.push_back(minor);
-            colcount.push_back(1);
-         }
-      }
-      else if (minor >= rcminorrem) {
-         /// Overflowed the layout height remaining, keep going anyway, don't wrap to next row
-         overflow = true;
-         colcount[rowcount]++;
-         if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
-         rcmajorrem -= major;
-         rowspace[rowcount] -= rcmajorrem;
-      }
-      else {/// Minor and major overflow
-         /// Overflowed the layout completely, keep going anyway
-         overflow = true;
-         /// If widget will fit on the next row, place it there, otherwise tack it on the end and start a new row
-         if (major < colspacetotal) {
-            *major1 = 0;
-            *minor1 += rowheights[rowcount];
-            rcmajorrem = colspacetotal - major;
-            rcminorrem -= rowheights[rowcount];/// This could be negative now
-            colcount.push_back(1);
-            rowheights.push_back(minor);
-            rowspace.push_back(rcmajorrem);
-         }
-         else {
-            /// Leave major1 and minor1 alone
-            nextrow = true;
-            if (rowheights[rowcount] < minor) {rowheights[rowcount] = minor;}
-            rcmajorrem -= major;
-            colcount[rowcount]++;
-            colcount.push_back(0);
-            rowspace[rowcount] = rcmajorrem;
-            rowspace.push_back(colspacetotal);
-         }
-      }
-
-      *major2 = *major1 + major;/// Pack as tightly as possible, spacing comes later
-      *minor2 = *minor1 + minor;
-      
-      rcsizes[i].SetCorners(x1 , y1 , x2 , y2);
-      
-      *major1 += major;
-      /// Flow to the next row for the next widget
-      if (nextrow) {
-         rcmajorrem = colspacetotal;
-         *major1 = 0;
-         int h = 0;
-         if (rowheights.size() > 0) {
-            h = rowheights.back();
-         }
-         *minor1 += h;
-         rowheights.push_back(0);
-      }
-
-
-      if (overflow) {
-         EagleWarn() << "Flow layout overflowed." << std::endl;
-      }
-   }
-   
-   colwidths.clear();/// Calculate at end from rowspace
-   for (unsigned int i = 0 ; i < rowspace.size() ; ++i) {
-      colwidths.push_back(colspacetotal - rowspace[i]);
-   }
-   
-   
-   int pw = 0;
-   int ph = 0;
-   int ox = 0;
-   for (unsigned int y = 0 ; y < rowheights.size() ; ++y) {
-      int w = 0;
-      for (int x = 0 ; x < colcount[y] ; ++x) {
-         w += rcsizes[x + ox].W();
-      }
-      if (pw < w) {pw = w;}
-      ox += colcount[y];
-      ph += rowheights[y];
-   }
-   AdjustSpacing();
-   MirrorFlow();
-}
-
-
-
 void FlowLayout::RecalcFlow() {
    std::vector<WidgetBase*> wc = wchildren;
    rcsizes.clear();
@@ -578,7 +394,7 @@ void FlowLayout::AdjustSpacing() {
             }
          }
       }
-      else if ((spacing == BOX_EXPAND) || (overflow && shrink_on_overflow)) {
+      else if (spacing == BOX_EXPAND) {
          Transform t = Eagle::EagleLibrary::System("Any")->GetSystemTransformer()->CreateTransform();
          const double sx = (double)InnerArea().W() / (double)((favored_direction == FLOW_FAVOR_HORIZONTAL)?GetMaxColWidth():GetTotalRowHeight());
          const double sy = (double)InnerArea().H() / (double)((favored_direction == FLOW_FAVOR_HORIZONTAL)?GetTotalRowHeight():GetMaxColWidth());
@@ -664,7 +480,6 @@ FlowLayout::FlowLayout(std::string classname , std::string objname) :
       BoxLayout(classname , objname),
       favored_direction(FLOW_FAVOR_HORIZONTAL),
       minorspacing(BOX_ALIGN_ONLY),
-      shrink_on_overflow(true),
       waspects(),
       rowcount(0),
       colcount(),
@@ -776,10 +591,19 @@ void FlowLayout::SetFlowDirection(FLOW_FAVORED_DIRECTION d) {
 
 
 int FlowLayout::WidthLeft() {
-   return InnerArea().W() - GetMaxColWidth();
+   if (!rowcount) {
+      return InnerArea().W();
+   }
+   return rowspace.back();
 }
+
+
+
 int FlowLayout::HeightLeft() {
-   return InnerArea().H() - GetTotalRowHeight();
+   if (!rowcount) {
+      return InnerArea().H();/// Full space available
+   }
+   return (colspace + rowheights.back());/// Return space left on this row plus space left in layout
 }
 
 
@@ -789,7 +613,22 @@ bool FlowLayout::WidgetWouldOverflowLayout(WidgetBase* w) {
    
    int pw = w->PreferredWidth();
    int ph = w->PreferredHeight();
-   return (pw > WidthLeft() || ph > HeightLeft());
+   if (pw < 1) {
+      pw = defwidth;
+   }
+   if (ph < 1) {
+      ph = defheight;
+   }
+   if (pw < WidthLeft()) {
+      return true;
+   }
+   else if (!rowcount) {
+      return (ph <= InnerArea().H());
+   }
+   else if (rowcount) {
+      return (ph < (colspace + rowheights.back()));
+   }
+   return (ph < colspace);
 }
 
 

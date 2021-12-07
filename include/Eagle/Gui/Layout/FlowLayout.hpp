@@ -17,7 +17,7 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file FlowLayout.hpp
- * @brief The interface for the flow layout
+ * @brief The interface for the flow box layout
  */
 
 
@@ -41,15 +41,24 @@ enum FLOW_FAVORED_DIRECTION {
 	FLOW_FAVOR_VERTICAL   = 1 ///< Favor vertical flow
 };
 
+
+/**! @fn PrintFlowFavoredDirection
+ *   @brief Turns a @ref FLOW_FAVORED_DIRECTION into a text string
+ */
+
 std::string PrintFlowFavoredDirection(FLOW_FAVORED_DIRECTION d);
 
+
+
+/**! @class FlowBoxLayout
+ *   @brief For laying out widgets horizontally or vertically, wrapping to the next row as necessary
+ */
 
 class FlowLayout : public BoxLayout {
 
 protected :
 	FLOW_FAVORED_DIRECTION favored_direction;
 	BOX_SPACE_RULES minorspacing;
-   bool shrink_on_overflow;
 
    std::vector<double> waspects;
 
@@ -79,7 +88,6 @@ protected :
    virtual void RepositionChild(int slot) override;
 
    void RecalcFlow();
-   void RecalcFlowOld();
    void AdjustSpacing();
    void MirrorFlow();
    
@@ -88,25 +96,23 @@ public :
    FlowLayout(std::string classname = "FlowLayout" , std::string objname = "Nemo");
    virtual ~FlowLayout();
 
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
-
-   void ShrinkOnOverflow(bool shrink);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight) override;
    
-   void SetDefaultWidth(unsigned int w);
-   void SetDefaultHeight(unsigned int h);
-   void SetDefaultSize(unsigned int w , unsigned int h);
+   void SetDefaultWidth(unsigned int w);///< Set the default width for widgets added to this layout. Only used if w->PreferredWidth() is 0
+   void SetDefaultHeight(unsigned int h);///< Set the default height for widgets added to this layout. Only used if w->PreferredHeight() is 0
+   void SetDefaultSize(unsigned int w , unsigned int h);/// Set the default size for widgets added to this layout. See @ref SetDefaultWidth and @ref SetDefaultHeight
 
    
-   void SetAnchorPosition(BOX_ANCHOR_POINT p) override;
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p) override;///< Set the anchor position for this widget. May be any corner of the @ref BOX_ANCHOR_POINT FBox values
 
-   void SetFlowDirection(FLOW_FAVORED_DIRECTION d);
+   void SetFlowDirection(FLOW_FAVORED_DIRECTION d);///< Whether to flow horizontally or vertically. See @ref FLOW_FAVORED_DIRECTION for values.
    
-   virtual int WidthLeft() override;
-   virtual int HeightLeft() override;
+   virtual int WidthLeft() override;///< Return space left on this row horizontally
+   virtual int HeightLeft() override;///< Return space left including the last row vertically
    
-   virtual bool WidgetWouldOverflowLayout(WidgetBase* w) override;
+   virtual bool WidgetWouldOverflowLayout(WidgetBase* w) override;///< Returns true if the layout would overflow by adding w
    
-   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const;
+   virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const override;
    
 };
 

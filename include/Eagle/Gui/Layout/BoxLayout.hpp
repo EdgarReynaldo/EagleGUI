@@ -52,16 +52,22 @@ std::string PrintBoxAnchorPoint(BOX_ANCHOR_POINT p);
 
 enum BOX_SPACE_RULES {
    BOX_ALIGN_ONLY    = 0,///< Left over space is unused
-   BOX_EXPAND        = 1,///< Left over space is given completely to widgets
+   BOX_EXPAND        = 1,///< Left over space is given completely to widgets, scaling them to fit the full area of the box
    BOX_SPACE_BETWEEN = 2,///< Left over space is split up between each widget, pushing them out from the middle
    BOX_SPACE_EVEN    = 3 ///< Left over space is split up evenly between each widget on its outer edges
 };
 
 
+/**! @fn PrintBoxSpaceRules
+ *   @brief Turns an @ref BOX_SPACE_RULES enum into a text string
+ */
+
 std::string PrintBoxSpaceRule(BOX_SPACE_RULES b);
 
 
-
+/**! @class BoxLayout
+ *   @brief Base class for all box layouts
+ */
 class BoxLayout : public LayoutBase {
    
 protected :
@@ -86,19 +92,22 @@ public :
    virtual int AddWidget(WidgetBase* w);
    virtual void InsertWidget(WidgetBase* w , int slot);
    
-   void SetBoxSpacing(BOX_SPACE_RULES r);
+   void SetBoxSpacing(BOX_SPACE_RULES r);///< Set the box spacing for this box layout
    
-   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p)=0;
-   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);
-   virtual int WidthLeft()=0;
-   virtual int HeightLeft()=0;
-   bool OverflowWarning();
-   virtual bool WidgetWouldOverflowLayout(WidgetBase* w)=0;
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p)=0;///< Set the anchor point for this box layout
+   virtual void SetAlignment(HALIGNMENT h_align , VALIGNMENT v_align);///< Set the horizontal and vertical alignment for this layout
+   virtual int WidthLeft()=0;///< How much width is left in this layout
+   virtual int HeightLeft()=0;///< How much height is left in this layout
+   bool OverflowWarning();///< Whether or not this layout has overflowed
+   virtual bool WidgetWouldOverflowLayout(WidgetBase* w)=0;///< Whether or not adding w to the layout would make it overflow
 
-   std::ostream& DescribeTo(std::ostream& os , Indenter indent) const;
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent) const override;
 };
 
 
+/**! @class HBoxLayout
+ *   @brief A horizontal box layout
+ */
 
 class HBoxLayout : public BoxLayout {
    
@@ -118,7 +127,7 @@ protected :
 public :
    HBoxLayout(std::string classname = "HBoxLayout" , std::string objname = "Nemo");
    
-   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p);
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p);///< Sets the @ref BOX_ANCHOR_POINT of this layout - may be @ref HBOX_ANCHOR_E or @ref HBOX_ANCHOR_W
    
    virtual int WidthLeft();
    virtual int HeightLeft();
@@ -127,6 +136,10 @@ public :
 };
 
 
+
+/**! @class VBoxLayout
+ *   @brief A vertical box layout
+ */
 
 class VBoxLayout : public BoxLayout {
 protected :
@@ -144,12 +157,12 @@ protected :
 public :
    VBoxLayout(std::string classname = "VBoxLayout" , std::string objname = "Nemo");
    
-   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p);
+   virtual void SetAnchorPosition(BOX_ANCHOR_POINT p) override;///< Sets the anchor position for this layout, @ref VBOX_ANCHOR_N or @ref VBOX_ANCHOR_S
    
-   virtual int WidthLeft();
-   virtual int HeightLeft();
+   virtual int WidthLeft() override;
+   virtual int HeightLeft() override;
    
-   virtual bool WidgetWouldOverflowLayout(WidgetBase* w);
+   virtual bool WidgetWouldOverflowLayout(WidgetBase* w) override;
 };
 
 
