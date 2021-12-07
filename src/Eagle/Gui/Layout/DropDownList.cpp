@@ -186,7 +186,9 @@ BasicText* DropDownList::GetOurText() {
 std::ostream& DropDownList::DescribeTo(std::ostream& os , Indenter indent) const {
    our_toggle_button->DescribeTo(os,indent);
    our_selection_text->DescribeTo(os,indent);
-   RelativeLayout::DescribeTo(os);
+   ++indent;
+   RelativeLayout::DescribeTo(os,indent);
+   --indent;
    return os;
 }
 
