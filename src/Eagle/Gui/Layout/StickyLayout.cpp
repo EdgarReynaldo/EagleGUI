@@ -244,7 +244,7 @@ int StickyLayout::AddWidget(WidgetBase* w , StickyPosition sp) {
 
 
 
-void StickyLayout::StickyLayout::SetAnchor(int slot , StickyPosition sp) {
+void StickyLayout::SetAnchor(int slot , StickyPosition sp) {
    EAGLE_ASSERT(slot >= 0 && slot < (int)anchors.size());
    WidgetBase* a = sp.AnchorWidget();
    if (a) {ListenTo(a);}

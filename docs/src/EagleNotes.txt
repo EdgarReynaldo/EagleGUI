@@ -74,6 +74,7 @@ TODO : Milestones necessary for development
 - WIP
 - Fix 'module' problem
 - Maintenance
+- Fix InputHandler.cpp and InputHandler.hpp (@fn references)
 
 4. Make the library work with MSVC (Not looking forward to this)
    A - DECLSPEC DLLEXPORT necessary for MSVC when building without .def files

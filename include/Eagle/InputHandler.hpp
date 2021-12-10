@@ -20,7 +20,7 @@
  * @brief The main interface for all state based input in Eagle
  *
  * All state based input is formed by an event driven state machine. State based input will only work if you call
- * @ref HandleInputEvent or @ref EagleSystesm::WaitForSystemEventAndUpdateState .
+ * @ref EagleInputHandler::HandleInputEvent or @ref EagleSystem::WaitForSystemEventAndUpdateState .
  */
 
 #ifndef InputHandler_H
@@ -630,7 +630,7 @@ extern const char* input_func_text[NUM_INPUT_SRCS][NUM_INPUT_STATES];
  *   @brief The Input class is designed to test for input states. They are used as objects in boolean expressions to
  *          test whether the given input source and state was detected.
  *
- *   Since the Input class depends on the InputHandler, their state will not change between calls to @ref HandleInputEvent
+ *   Since the Input class depends on the InputHandler, their state will not change between calls to @ref EagleInputHandler::HandleInputEvent
  */
 
 class Input {
@@ -903,24 +903,23 @@ bool ModifierHeld(Input* store);
  *   
  *    Usage example
  *    
- *    ```
- *        void AssignPlayerDefaults(InputAssignment& player) {
- *           player.clear();
- *           player["Punch"]     = input_key_press(EAGLE_KEY_ONLY_SHIFT);
- *           player["Kick"]      = input_key_press(EAGLE_KEY_ONLY_ALT);
- *           player["Jump"]      = input_key_press(EAGLE_KEY_UP);
- *           player["Crouch"]    = input_key_held(EAGLE_KEY_DOWN);
- *           player["MoveLeft"]  = input_key_held(EAGLE_KEY_LEFT);
- *           player["MoveRight"] = input_key_held(EAGLE_KEY_RIGHT);
- *           player["Quit"]      = input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_ESCAPE);
- *        }
- *
- *       InputAssignment Player;
- *       AssignPlayerDefaults(Player);
- *   
- *       if (Player.Activated("Punch")) {...}
- *       if (player["Punch"]) {...}  /// This should work as well, [] returns an InputGroup& and if () should evaluate it
- *   `
+ @code 
+      void AssignPlayerDefaults(InputAssignment& player) {
+         player.clear();
+         player["Punch"]     = input_key_press(EAGLE_KEY_ONLY_SHIFT);
+         player["Kick"]      = input_key_press(EAGLE_KEY_ONLY_ALT);
+         player["Jump"]      = input_key_press(EAGLE_KEY_UP);
+         player["Crouch"]    = input_key_held(EAGLE_KEY_DOWN);
+         player["MoveLeft"]  = input_key_held(EAGLE_KEY_LEFT);
+         player["MoveRight"] = input_key_held(EAGLE_KEY_RIGHT);
+         player["Quit"]      = input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_ESCAPE);
+      }
+      InputAssignment Player;
+      AssignPlayerDefaults(Player);
+  
+      if (Player.Activated("Punch")) {...}
+      if (player["Punch"]) {...}  /// This should work as well, [] returns an InputGroup& and if () should evaluate it
+ @endcode
  */
 
 class InputAssignment {

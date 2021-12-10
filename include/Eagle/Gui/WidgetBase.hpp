@@ -71,9 +71,9 @@ enum WIDGET_ZORDER_PRIORITY {
 
 
 /*! @enum DIALOG_RETURN_VALUE
- *  @brief Bitfield values for messages returned to a dialog from the Update() and CheckInput() functions.
+ *  @brief Bitfield values for messages returned to a dialog from the @ref WidgetBase::Update<double> and @ref WidgetBase::PrivateCheckInputs<> functions.
  * 
- * Valid values are any bitwise OR'ed combination of the following flags :
+ *  Valid values are any bitwise OR'ed combination of the following flags :
  */
 enum DIALOG_RETURN_VALUE {
    DIALOG_OKAY       = 0x00,///< Return value used to specify no messages
@@ -189,9 +189,9 @@ WidgetBase(std::string classname , std::string objname) :
    /// Main interface
 
    int HandleEvent(EagleEvent ee);///< Handles the event passed to it, and returns a bitfield composed of 
-                                  ///< flags specified by #DIALOG_RETURN_MSGS
+                                  ///< flags specified by @ref DIALOG_RETURN_VALUE
    int Update(double dt);///< Updates the widget based on the delta time, and returns a bitfield composed of
-                         ///< flags specified by #DIALOG_RETURN_MSGS
+                         ///< flags specified by @ref DIALOG_RETURN_VALUE
    void Display(EagleGraphicsContext* win , int xpos , int ypos);///< Displays the specified widget on the graphics window at x,y
    
    /// Parent messaging

@@ -140,8 +140,8 @@ public :
    
    bool Destroyed(EagleObject* obj);///< True if obj has been destroyed according to the registry
    bool Valid(EagleObject* obj);///< True if obj is valid, or has been resurrected by system memory
-   std::string ShortName(EagleObject* obj);///< Short name for obj, favor @ref ShortName <EAGLE_ID>
-   std::string FullName(EagleObject* obj);///< Full name for obj, favor @ref FullName <EAGLE_ID>
+   std::string ShortName(EagleObject* obj);///< Short name for obj, favor @ref ShortName<EAGLE_ID>
+   std::string FullName(EagleObject* obj);///< Full name for obj, favor @ref FullName<EAGLE_ID>
 
    EagleObjectInfo Info(EAGLE_ID eid);///< Get the info for this eid
    EagleObjectInfo FindInfoByAddress(EagleObject* object);///< May no longer refer to old object! May have been recycled!

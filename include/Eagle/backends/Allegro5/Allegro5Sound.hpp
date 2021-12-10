@@ -64,7 +64,7 @@ public :
    
 };
 
-//*/
+*/
 
 
 #endif // Allegro5Sound_HPP

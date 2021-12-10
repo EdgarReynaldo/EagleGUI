@@ -58,16 +58,16 @@ public :
    
    /// Member funcs
 
-   ///< Place a widget with the given @class LayoutRectangle
+   ///< Place a widget with the given @ref LayoutRectangle
    void PlaceWidget(WidgetBase* widget , int slot , LayoutRectangle lrect);
    
-   ///< Add a widget with the given @class LayoutRectangle
+   ///< Add a widget with the given @ref LayoutRectangle
    int AddWidget(WidgetBase* widget , LayoutRectangle lrect);
 
-   ///< Set the layout rectangle for the given layout index
+   ///< Set the @ref LayoutRectangle for the given layout index
    Rectangle SetLayoutRectangle(int index , LayoutRectangle layout_rect);
 
-   ///< Set the layout rectangle for the given widget
+   ///< Set the @ref LayoutRectangle for the given widget
    Rectangle SetLayoutRectangle(WidgetBase* widget , LayoutRectangle layout_rect);
 
    ///< Describe this layout to a stream

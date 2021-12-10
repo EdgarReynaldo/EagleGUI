@@ -141,7 +141,7 @@ public :
    
    MousePointerInfo GetInfo();///< Get the MousePointerInfo associated with this MousePointer
 
-   virtual bool Create(MousePointerInfo info)=0;///< Pure virtual function to create a mouse pointer given the specified @var info
+   virtual bool Create(MousePointerInfo info)=0;///< Pure virtual function to create a mouse pointer given the specified @ref MousePointerInfo info
    virtual void Free()=0;///< Pure virtual function to free this mouse pointer's data
    virtual bool Valid()=0;///< Pure virtual function to test validity of this object and its readiness
 };

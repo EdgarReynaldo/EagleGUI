@@ -189,7 +189,7 @@ public :
    void ClearSettings();
 };
 
-//*/
+*/
 
 class EagleSystem;
 class EagleThread;
@@ -570,7 +570,7 @@ public :
 
    /// utilities
 
-   void FlipDisplay();///< Flip the display and show its contents on screen. Overload @ref PrivateFlipDisplay to affect this
+   void FlipDisplay();///< Flip the display and show its contents on screen. Overload @ref EagleGraphicsContext::PrivateFlipDisplay to affect this
 
    virtual void HoldDrawing()=0;///< Pure virtual function to hold the drawing
    virtual void ReleaseDrawing()=0;///< Pure virtual function to resume drawing
@@ -589,7 +589,7 @@ public :
    ///< Create a sub image from an existing EagleImage
    virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;
 
-   ///< Create an image of the specified width, height, @redf IMAGE_TYPE , and name
+   ///< Create an image of the specified width, height, @ref IMAGE_TYPE , and name
    virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;
 
    ///< Load an image from file using the specified @ref IMAGE_TYPE

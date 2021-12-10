@@ -1122,7 +1122,7 @@ InputGroup InputGroup::operator!() const {
    /** Input group ==> " !(Input(A) || Input(B)) " ==> " !InputGroup(A || B) "       */
    /** As in, we don't want to leave a bool value in a grouping chain.               */
    /** This should still work with evaluations though, as "if (!InputGroup)" should  */
-   /** end up as !InputGroup::operator bool.                                          */
+   /** end up as !InputGroup::operator(bool)().                                          */
 
    /* TODO : Can't this just return a reference to itself with the value of 'is' negated? */
    /*      - No, not for constant objects, so a new copy needs to be created and returned

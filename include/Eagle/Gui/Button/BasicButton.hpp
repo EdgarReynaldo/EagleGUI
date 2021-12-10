@@ -35,6 +35,10 @@
 
 extern const unsigned int TOPIC_BUTTON_WIDGET;///< The topic for a button widget
 
+/**! @enum BUTTON_MSGS
+ *   @brief The messages that may be sent by a button
+ */
+
 enum BUTTON_MSGS {
    BUTTON_CLICKED      = 0, ///< Sent whenever a spring button is pushed down.
    BUTTON_HELD         = 1, ///< Sent whenever a spring button is held down.
@@ -53,7 +57,9 @@ REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
 
 
 
-/*! \brief BUTTON_SHAPE determines the visual and physical shape of the button */
+/*! @enum BUTTON_SHAPE
+ *  @brief BUTTON_SHAPE determines the visual and physical shape of the button
+ */
 
 enum BUTTON_SHAPE {
    RECTANGLE_BTN = 0,///< Generic rectangle button
@@ -62,13 +68,18 @@ enum BUTTON_SHAPE {
    ELLIPSE_BTN   = 3 ///< Elliptical button
 };
 
-/*! \brief BUTTON_ACTION_TYPE determines how the button behaves when pressed. Spring buttons pop back up, and toggle buttons toggle */
-
+/*! @enum BUTTON_ACTION_TYPE
+ *  @brief BUTTON_ACTION_TYPE determines how the button behaves when pressed. Spring buttons pop back up, and toggle buttons toggle
+ */
+ 
 enum BUTTON_ACTION_TYPE {
    SPRING_BTN = 0,///< Spring buttons pop back up after being released
    TOGGLE_BTN = 1 ///< Toggle buttons toggle state on each button press
 };
 
+/*! @enum BUTTON_CLASS
+ *  @brief Whther a button is a hover button or a plain button
+ */
 
 enum BUTTON_CLASS {
    BUTTON_CLASS_PLAIN = 0,

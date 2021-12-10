@@ -40,7 +40,7 @@ extern const unsigned int TOPIC_WIDGET_MOVER;///< The topic for all widget mover
 
 
 /**! @enum WIDGET_MOVER_MESSAGES
- *   @brief The messages passed by a @refWidgetMover.
+ *   @brief The messages passed by a @ref WidgetMover.
  *   When a widget starts moving a widget, it will emit a pickup message, followed by moving messages, completed by a drop message.
  *   When a widget sizes a widget, it will begin by emitting a sizing message, completed by a size finish message.
  */

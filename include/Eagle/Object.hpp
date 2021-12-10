@@ -36,7 +36,7 @@
 
 
 /**! @typedef EAGLE_ID
- *   @brief Typedef for the eagle id type. Retrieve any EagleObject from the @ref ObjectRegistry by using its EAGLE_ID.
+ *   @brief Typedef for the eagle id type. Retrieve any EagleObject from the @ref EagleObjectRegistry by using its EAGLE_ID.
  *   
  *   All EAGLE_IDs are unique, starting from zero
  *
@@ -58,7 +58,7 @@ class EagleLogGuard;
 
 class EagleObject {
 
-   friend class EagleObjectRegistry;///< For private @ref EagleObjectRegistry::SetId function
+   friend class EagleObjectRegistry;///< For private access by @ref EagleObjectRegistry
 
 private :
 

@@ -52,7 +52,7 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , LINK_LAUNCHED);
 
 
 
-int LinkText::LinkText::PrivateHandleEvent(EagleEvent e) {
+int LinkText::PrivateHandleEvent(EagleEvent e) {
    int ret = SelectText::PrivateHandleEvent(e);
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
       int msx = e.mouse.x;

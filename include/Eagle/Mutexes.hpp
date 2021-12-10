@@ -172,7 +172,7 @@ public :
     */
    virtual void Destroy()=0;
 
-   void TurnLogOn();///< Turn the log on, only affects things if @ref EAGLE_DEBUG_MUTEX_LOCKS is defined
+   void TurnLogOn();///< Turn the log on, only affects things if EAGLE_DEBUG_MUTEX_LOCKS is defined
    void TurnLogOff();///< Turn the log off
    
    bool Valid();///< True if this mutex is valid
@@ -295,7 +295,7 @@ public :
    
 };
 
-/**! @defgroup MutexLocks
+/**! @defgroup MutexLocks MutexLocks
  *   @brief Some helper macros to make threading and mutex locks cleaner and easier to use 
  *   
  *   @def ThreadLockMutex(t,m)

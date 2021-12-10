@@ -40,7 +40,7 @@
 
 
 /**! @enum EAGLE_INIT_STATE
- *   @brief This enum is for flags that you can pass to @ref System::Initialize
+ *   @brief This enum is for flags that you can pass to @ref EagleSystem::Initialize
  * 
  *   Bitwise OR these flags together to specify the system components you wish to initialize
  */
@@ -70,7 +70,7 @@ enum EAGLE_INIT_STATE {
 
 
 
-extern const char* const eagle_init_state_strs[12];///< To convert an EAGLE_INIT_STATE bit flag to a string
+extern const char* const eagle_init_state_strs[12];///< To convert an @ref EAGLE_INIT_STATE bit flag to a string
 
 
 
@@ -279,14 +279,14 @@ public :
    EagleEvent WaitForSystemEventAndUpdateState();
    
    /**! @fn TimedWaitForSystemEventAndUpdateState <double>
+    *   @brief Waits up to timeout seconds for an event and updates state if one is received.
     *   @param timeout Duration to wait in seconds
-    *   @brief Waits up to @ref timeout seconds for an event and updates state if one is received.
     *   @retval The event processed
     */
    EagleEvent TimedWaitForSystemEventAndUpdateState(double timeout);
 
 	/**! @fn Rest <double>
-	 *   @brief Rest for @ref time seconds
+	 *   @brief Rest for time seconds
 	 *   @param time Duration to wait in seconds
 	 * 
 	 *   Pure virtual function. Must be implemented by system driver

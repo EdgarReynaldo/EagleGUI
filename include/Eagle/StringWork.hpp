@@ -96,7 +96,7 @@ void TrimTrailingWhiteSpace(char* str);
 ///< Replace all occurrences of exp with rep and return the new string
 std::string Replace(std::string str , const char* exp , const char* rep);
 
-///< Duplicate a c string, must call @ref free when done
+///< Duplicate a c string, must call free when done
 char* CStrDup(const char* str);
 
 

@@ -361,7 +361,7 @@ EagleLogGuard EaglePrefix(const char* prefix , bool critical) {
 
 
 
-EagleLogger::operator ostream&() {
+EagleLogger::operator (ostream&)() {
    return log_file.log_file;
 }
 

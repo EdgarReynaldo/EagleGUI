@@ -346,7 +346,7 @@ bool ReadMousePointerInfo(string info_line , MousePointerInfo& info) {
    
    
 }
-//*/
+*/
 
 
 

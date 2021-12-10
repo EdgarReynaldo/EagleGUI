@@ -1050,7 +1050,7 @@ RoundedRectangle& RoundedRectangle::operator=(const RoundedRectangle& rr) {
 
 
 
-bool RoundedRectangle::RoundedRectangle::Contains(int xpos , int ypos) const {
+bool RoundedRectangle::Contains(int xpos , int ypos) const {
    Rectangle topmid(x + hrad , 0        , w - 2*hrad , vrad);
    Rectangle botmid(x + hrad , h - vrad , w - 2*hrad , vrad);
    Rectangle middle(x        , y + vrad , w          , h - 2*vrad);

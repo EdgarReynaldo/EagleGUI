@@ -38,8 +38,6 @@ using namespace std;
 
 #include "Eagle/StringWork.hpp"
 
-///#include "Eagle/Gui/Decorators/TextDecorator.hpp"
-
 #include <cstdlib>
 
 

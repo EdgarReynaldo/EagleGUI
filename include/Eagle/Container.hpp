@@ -53,7 +53,7 @@ class PointerManager {
 
 protected :
    /**! @typedef PTYPE
-    *   @brief A shared object of template class @ref Type
+    *   @brief A shared object of template class Type
     */
    typedef SHAREDOBJECT<Type> PTYPE;
    
@@ -77,7 +77,7 @@ public :
    ~PointerManager();///< Destructor that clears the shared pointer list
 
    PTYPE Add(PTYPE sp);///< Add a @ref PTYPE object to the list
-   void Remove(Type* sp);///< Remove a @ref Type pointer from the list
+   void Remove(Type* sp);///< Remove a Type pointer from the list
    void RemoveAll();///< Empty the list
 };
 
