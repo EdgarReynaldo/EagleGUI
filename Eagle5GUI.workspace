@@ -8,5 +8,10 @@
 		<Project filename="examples/GuiEditor.cbp" />
 		<Project filename="examples/ExFlow.cbp" />
 		<Project filename="../../projects/Hexagoner/Hexagoner.cbp" />
+		<Project filename="../../projects/Krampus21/Krampus21.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro5/Maze3D/Maze3D.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro/KruskalMaze/KruskalMaze.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2018/KrampusHack2018.cbp" />
+		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2018/LibKrampus18.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -111,7 +111,6 @@
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
 		</Compiler>
-		<Unit filename="../../bin/ExGui.log" />
 		<Unit filename="CMakeLists.txt" />
 		<Unit filename="LICENSE" />
 		<Unit filename="README.md" />
@@ -369,9 +368,6 @@
 				<doxyfile_dot />
 				<general />
 			</DoxyBlocks>
-			<code_completion />
-			<envvars />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
