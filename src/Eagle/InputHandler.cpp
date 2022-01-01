@@ -1457,7 +1457,7 @@ void InputAssignment::clear() {
 InputGroup& InputAssignment::operator[](const string& str) {
    TIMIT timit = task_input_map.find(str);
    if (timit == task_input_map.end()) {
-      throw EagleException(StringPrintF("Failed to find %s in input map." , str.c_str()));
+//      throw EagleException(StringPrintF("Failed to find %s in input map." , str.c_str()));
    }
    return task_input_map[str];
 }
