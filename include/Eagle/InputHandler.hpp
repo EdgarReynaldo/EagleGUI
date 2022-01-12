@@ -804,6 +804,8 @@ public :
    explicit InputGroup(bool use_and , bool use_is , const Input& i);
    explicit InputGroup(bool use_and , bool use_is , const InputGroup& ig);
 
+   InputGroup& operator=(const InputGroup& ig);
+   
    /** Vector like behavior */
    
    void        clear();///< Clear this input group of inputs

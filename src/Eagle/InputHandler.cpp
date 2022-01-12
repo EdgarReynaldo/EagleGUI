@@ -1055,6 +1055,16 @@ InputGroup::InputGroup(bool use_and , bool use_is , const InputGroup& ig) :
 
 
 
+InputGroup& InputGroup::operator=(const InputGroup& ig) {
+   all_apply = ig.all_apply;
+   is = ig.is;
+   inputs = ig.inputs;
+   nodes = ig.nodes;
+   return *this;
+}
+
+
+
 void InputGroup::clear() {
    inputs.clear();
    nodes.clear();
