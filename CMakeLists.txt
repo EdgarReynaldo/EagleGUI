@@ -22,6 +22,8 @@ option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
 
 
+unset(ALLEGRO5_INCLUDE_DIR CACHE)
+unset(ALLEGRO5_LIB_DIR CACHE)
 
 set (A5DepSearchPath CACHE PATH "Where to find the dependencies for the Allegro5 backend")
 set(ALLEGRO5_INCLUDE_DIR "${A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder" FORCE)
