@@ -80,9 +80,9 @@ public :
    WidgetFlags();///< Default constructor with no flags set
    WidgetFlags(int newflags);///< Constructor that sets the specified flags
    WidgetFlags(const WidgetFlags& f);///< Basic copy constructor
-   WidgetFlags& operator=(WidgetFlags wflags);///< Copies the flags passed
+   WidgetFlags& operator=(const WidgetFlags& wflags);///< Copies the flags passed
    
-   WidgetFlags& SetNewFlags(WidgetFlags wflags);///< Specify new flags to be set
+   WidgetFlags& SetNewFlags(const WidgetFlags& wflags);///< Specify new flags to be set
    
    WidgetFlags& SetNewFlag(WIDGET_FLAGS f , bool value);///< Set a specific flag
 

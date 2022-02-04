@@ -87,14 +87,14 @@ WidgetFlags::WidgetFlags(const WidgetFlags& f) :
 
 
 
-WidgetFlags& WidgetFlags::operator=(WidgetFlags wflags) {
+WidgetFlags& WidgetFlags::operator=(const WidgetFlags& wflags) {
    SetNewFlags(wflags);
    return *this;
 }
 
 
 
-WidgetFlags& WidgetFlags::SetNewFlags(WidgetFlags wflags) {
+WidgetFlags& WidgetFlags::SetNewFlags(const WidgetFlags& wflags) {
    changed_flags = flags ^ wflags.flags;
    added_flags = changed_flags & (~flags);/// Added flags equals flags that were off and were changed
    removed_flags = changed_flags & (flags);/// Removed flags equals flags that were on and were changed
