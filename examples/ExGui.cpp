@@ -10,10 +10,6 @@ void AllegroLog(const char* text) {EagleInfo() << text;}
 
 
 
-
-
-
-
 class PSlider : public Slider {
    bool drag = false;
 public :
@@ -42,11 +38,14 @@ public :
    }
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
       Rectangle r = InnerArea();
+      r.MoveBy(xpos,ypos);
       win->DrawFilledRectangle(r , GetColor(BGCOL));
       Rectangle pct(r.X() , r.Y() , r.W()*this->GetPercent() , r.H());
       win->DrawFilledRectangle(pct , GetColor(FGCOL));
    }
 };
+
+
 
 class NumberButton : public GuiButton {
    int num;
@@ -60,7 +59,13 @@ public :
    void SetNum(int n) {num = n;}
 };
 
+
+
 int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
    Allegro5System* sys = GetAllegro5System();
    
    if (sys->Initialize(EAGLE_FULL_SETUP) != EAGLE_FULL_SETUP) {
@@ -238,6 +243,10 @@ int main(int argc , char** argv) {
 
 int main4(int argc , char** argv) {
    
+   (void)argc;
+   (void)argv;
+   
+   
    SendOutputToFile("ExGuiFlags.log" , "ExGui\n" , false);
 
    GuiButton gbtn;
@@ -267,6 +276,10 @@ int main3(int argc , char** argv) {
    if (!sys) {return -1;}
    
    int ret = sys->Initialize(EAGLE_FULL_SETUP);
+   
+   if (EAGLE_FULL_SETUP != ret) {
+      EagleInfo() << "Failed to setup subsystem. Continuing." << std::endl;
+   }
    
    int sw = 1280;
    int sh = 800;
@@ -319,7 +332,7 @@ int main3(int argc , char** argv) {
    
    rl.PlaceWidget(&lbox , 0 , LayoutRectangle(0.25 , 0.35 , 0.25 , 0.5));
    
-   WidgetFlags flags = lbox.Flags();
+//   WidgetFlags flags = lbox.Flags();
    
    EagleInfo() << lbox << std::endl << btns[0] << std::endl;
    
@@ -355,6 +368,10 @@ int main2(int argc , char** argv) {
    
    int ret = sys->Initialize(EAGLE_FULL_SETUP);
    
+   if (EAGLE_FULL_SETUP != ret) {
+      EagleInfo() << "Failed to setup subsystem. Continuing." << std::endl;
+   }
+
    int sw = 1280;
    int sh = 800;
    

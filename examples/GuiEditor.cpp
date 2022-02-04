@@ -25,7 +25,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   EagleFont* font = win->LoadFont("Verdana.ttf" , -20);
+///   EagleFont* font = win->LoadFont("Verdana.ttf" , -20);
    
    EAGLE_ASSERT(font && font->Valid());
    

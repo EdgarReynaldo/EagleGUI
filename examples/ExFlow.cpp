@@ -135,8 +135,8 @@ int main(int argc , char** argv) {
    widgets[7] = sliders[1];
    widgets[8] = sliders[2];
 
-   EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
-   EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
+//   EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
+//   EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
    
    EAGLE_ASSERT(verdana && verdana->Valid());
    EAGLE_ASSERT(verdana12 && verdana12->Valid());
