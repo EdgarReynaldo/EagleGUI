@@ -18,9 +18,21 @@ option(WANT_EXAMPLES "If you want to build the example programs" ON)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
-set (A5DepSearchPath "/usr64" CACHE PATH "Where to find the dependencies for the Allegro5 backend")
+
+
+
+
+
+set (A5DepSearchPath CACHE PATH "Where to find the dependencies for the Allegro5 backend")
 set(ALLEGRO5_INCLUDE_DIR "${A5DepSearchPath}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder" FORCE)
 set(ALLEGRO5_LIB_DIR "${A5DepSearchPath}/lib/" CACHE PATH "Where to find the Allegro 5 library's lib folder" FORCE)
+
+unset(ALLEGRO5_DEBUGLIB)
+unset(ALLEGRO5_LIB)
+unset(PHYSFS_LIB)
+unset(ALLEGRO5_DEBUGLIB CACHE)
+unset(ALLEGRO5_LIB CACHE)
+unset(PHYSFS_LIB CACHE)
 
 if (WIN32)
    find_library(ALLEGRO5_DEBUGLIB "allegro_monolith-debug.dll"
