@@ -90,7 +90,6 @@ void AtlasBody::SortFreeArea() {
 
 void AtlasBody::RemoveArea(Rectangle area) {///< This only works if the area is free, otherwise does nothing
    
-   bool removed = false;
    std::list<Rectangle>::iterator it = freearea.begin();
    for (; it != freearea.end() ; ++it) {
       RECT_CONTAINS_TYPE type = DoRectanglesContain(area , *it);

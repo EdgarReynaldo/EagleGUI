@@ -236,7 +236,7 @@ void ApplyTextAttributes(WidgetBase* widget ,  const AttributeValueMap& avmap) {
    BasicText* text_widget = dynamic_cast<BasicText*>(widget);
    
    if (!text_widget) {
-      throw EagleException(StringPrintF("ApplyTextAttributes - widget %p is not a BasicText widget!!!\n" , widget));
+      throw EagleException(StringPrintF("ApplyTextAttributes - widget %p is not a BasicText widget!!!\n" , (void*)widget));
    }
    
    map<string , string>::const_iterator cit = attribute_map.end();

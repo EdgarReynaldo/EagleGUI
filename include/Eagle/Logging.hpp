@@ -214,7 +214,7 @@ private :
    
 public :
 
-   ~EagleLogGuard();///< Public destructor
+   ~EagleLogGuard() noexcept(false);///< Public destructor
 
    /**! @typedef MANIP
     *   @brief A typedef to work with ostream manipulators

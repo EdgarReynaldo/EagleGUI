@@ -27,6 +27,9 @@
 #define Area_H
 
 
+#ifdef __GL_H__
+   #warning Eagle::Rectangle has issues with OpenGL headers. Include Eagle headers first.
+#endif
 
 #include "Eagle/Color.hpp"
 #include "Eagle/Exception.hpp"
@@ -267,7 +270,6 @@ enum RECT_CORNER_POS {
    RECT_CORNER_BL = 3 ///< Bottom left corner
 };
 
-#warning Eagle::Rectangle has issues with OpenGL headers
 
 
 class Rectangle : public AreaBase {

@@ -17,14 +17,14 @@ void* A5ThreadWrapperProcess(ALLEGRO_THREAD* allegro_thread , void* argument) {
    EAGLE_ASSERT(thread_process);
    void* data = ethread->Data();
 
-   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Starting process %p on %s." , thread_process , ethread->FullName()) << std::endl;
+   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Starting process %p on %s." , (void*)thread_process , ethread->FullName()) << std::endl;
 
    ethread->running = true;
    void* process_result = thread_process(ethread , data);
    ethread->running = false;
    ethread->complete = true;
 
-   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Finished process %p on %s." , thread_process , ethread->FullName()) << std::endl;
+   EagleInfo() << StringPrintF("A5ThreadWrapperProcess : Finished process %p on %s." , (void*)thread_process , ethread->FullName()) << std::endl;
 
    ALLEGRO_EVENT ev;
    ev.type = EAGLE_EVENT_USER_START;

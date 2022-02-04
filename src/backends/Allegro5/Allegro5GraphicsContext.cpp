@@ -744,7 +744,7 @@ void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str 
    };
    al_hold_bitmap_drawing(true);
    for (unsigned int i = 0 ; i < str.size() ; ++i) {
-      int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
+///      int bbx = 0 , bby = 0 , bbw = 0 , bbh = 0;
       ALLEGRO_GLYPH g;
       memset(&g , 0 , sizeof(g));
       if (al_get_glyph(f , 0 , str[i] , &g)) {
@@ -760,7 +760,7 @@ void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str 
             break;
          default : break;
          };
-         al_draw_bitmap_region(g.bitmap , g.x , g.y , g.w , g.h , x + ox , y , 0);
+         al_draw_tinted_bitmap_region(g.bitmap , GetAllegroColor(c) , g.x , g.y , g.w , g.h , x + ox , y , 0);
          y += g.h + letter_spacing;
       }
    }

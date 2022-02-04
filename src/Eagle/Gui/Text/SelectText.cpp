@@ -42,6 +42,7 @@ const int TEXT_COPIED = GetNextFreeTextMessageId();
 REGISTERED_WIDGET_MESSAGE(TOPIC_TEXT_WIDGET , TEXT_COPIED);
 
 
+#warning TODO : Figure out what 'text' is for in the next two functions. I forgot.
 
 int GetAbsoluteIndex(const std::string& text , const std::vector<std::string>& lines , LPIndex lp) {
    int l = 0;

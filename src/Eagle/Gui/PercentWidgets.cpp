@@ -124,6 +124,7 @@ int PercentBar::PrivateCheckInputs() {
 
 
 int PercentBar::PrivateUpdate(double dt) {
+   (void)dt;
    return DIALOG_OKAY;
 }
 
@@ -131,6 +132,7 @@ int PercentBar::PrivateUpdate(double dt) {
 
 void PercentBar::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    Rectangle r = InnerArea();
+   r.MoveBy(xpos , ypos);
    win->DrawFilledRectangle(r , GetColor(MGCOL));
    Rectangle pcth(r.X() , r.Y() , r.W()*(this->GetPercent()) , r.H());
    Rectangle pcthrl(r.X() + r.W()*(1.0 - this->GetPercent()) , r.Y() , r.W()*(this->GetPercent()) , r.H());

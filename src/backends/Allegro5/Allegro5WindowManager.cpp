@@ -57,7 +57,7 @@ void* A5WindowManagerProcess(EagleThread* thread , void* manager) {
             EAGLE_ASSERT(d);
             
             EagleInfo() << "EAGLE_EVENT_WM_CLOSE_WINDOW received by A5WindowManagerProcess" << std::endl;
-            EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" , d) << std::endl;
+            EagleInfo() << StringPrintF("A5WindowManagerProcess : Closing display %p" ,(void*)d) << std::endl;
 
             al_unregister_event_source(window_queue , al_get_display_event_source(d));
 
@@ -106,7 +106,7 @@ void Allegro5WindowManager::AddDisplay(EagleGraphicsContext* window , ALLEGRO_DI
    ThreadLockMutex(our_thread , manager_mutex);
 
    display_context_map[display] = window;
-   EagleInfo() << StringPrintF("Allegro5WindowManager::AddDisplay - adding ALLEGRO_DISPLAY* %p ." , display) << std::endl;
+   EagleInfo() << StringPrintF("Allegro5WindowManager::AddDisplay - adding ALLEGRO_DISPLAY* 0x%p ." , (void*)display) << std::endl;
 
    ThreadUnLockMutex(our_thread , manager_mutex);
 }
@@ -122,7 +122,7 @@ void Allegro5WindowManager::RemoveDisplay(ALLEGRO_DISPLAY* display) {
    std::map<ALLEGRO_DISPLAY* , EagleGraphicsContext*>::iterator it = display_context_map.find(display);
    if (it != display_context_map.end()) {
       display_context_map.erase(it);
-      EagleInfo() << StringPrintF("Allegro5WindowManager::RemoveDisplay - removing ALLEGRO_DISPLAY* %p ." , display) << std::endl;
+      EagleInfo() << StringPrintF("Allegro5WindowManager::RemoveDisplay - removing ALLEGRO_DISPLAY* 0x%p ." , (void*)display) << std::endl;
    }
 
    ThreadUnLockMutex(our_thread , manager_mutex);
@@ -358,7 +358,7 @@ EagleGraphicsContext* Allegro5WindowManager::GetAssociatedContext(ALLEGRO_DISPLA
       window = it->second;
    }
    else {
-      EagleWarn() << StringPrintF("Failed to retrieve window for ALLEGRO_DISPLAY* %p.\n" , display);
+      EagleWarn() << StringPrintF("Failed to retrieve window for ALLEGRO_DISPLAY* %p.\n" , (void*)display);
    }
 
    ThreadUnLockMutex(our_thread , manager_mutex);

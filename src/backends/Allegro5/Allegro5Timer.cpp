@@ -32,7 +32,7 @@ void* Allegro5TimerProcess(EagleThread* ethread , void* etimer) {
    EAGLE_ASSERT(queue);
    EAGLE_ASSERT(event_source);
 
-   int counter = 0;
+   long long counter = 0;
    bool close = false;
    while (!ethread->ShouldStop() && !close) {
       ALLEGRO_EVENT ev;
@@ -66,7 +66,7 @@ void* Allegro5TimerProcess(EagleThread* ethread , void* etimer) {
          al_emit_user_event(event_source , &ev , 0);// bounce message back to synchronize states
       }
    }
-   return (void*)(long)counter;
+   return (void*)counter;
 }
 
 

@@ -33,7 +33,7 @@
 void EagleObjectInfo::RebuildName() {
 ///   fullname = StringPrintF("%20s '%30s' : (EID %s %03d at 0x%p)" , 
    fullname = StringPrintF("%s %s : (%s %4d at 0x%p)" ,
-                           classname.c_str() , shortname.c_str() , destroyed?"XXX":"EID" , object->GetEagleId() , object);
+                           classname.c_str() , shortname.c_str() , destroyed?"XXX":"EID" , object->GetEagleId() , (void*)object);
 }
 
 

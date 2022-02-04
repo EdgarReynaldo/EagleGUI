@@ -26,7 +26,7 @@
 #ifndef Clipboard_HPP
 #define Clipboard_HPP
 
-#warning TODO : Support more than local strings... Use my clipboard library instead.
+///#warning TODO : Support more than local strings... Use my clipboard library instead.
 
 
 

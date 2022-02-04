@@ -195,7 +195,7 @@ void FlowLayout::RecalcFlow() {
 
    bool nextrow = false;
 
-   WidgetBase* last = WChildren().back();
+///   WidgetBase* last = WChildren().back();
    
    for (unsigned int i = 0 ; i < wc.size() ; ++i) {/// For all widgets
       nextrow = false;

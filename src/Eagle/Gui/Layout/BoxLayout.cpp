@@ -155,7 +155,7 @@ void HBoxLayout::RecalcFlow() {
    colsizes.resize(WChildren().size() , 0);
    colcount = 0;
    int x = 0;
-   int y = 0;
+   const int y = 0;
    
    /// Stack the widgets horizontally at y = 0, starting from x = 0
    std::vector<WidgetBase*> wc = wchildren;
@@ -170,7 +170,7 @@ void HBoxLayout::RecalcFlow() {
       colcount++;
       totalprefw += pw;
       if (ph > maxprefh) {maxprefh = ph;}
-      rcsizes[i].SetArea(x , 0 , pw , ph);
+      rcsizes[i].SetArea(x , y , pw , ph);
       x += pw;
    }
    

@@ -79,7 +79,7 @@ typedef unsigned int UINT;
 public :
    WidgetFlags();///< Default constructor with no flags set
    WidgetFlags(int newflags);///< Constructor that sets the specified flags
-   
+   WidgetFlags(const WidgetFlags& f);///< Basic copy constructor
    WidgetFlags& operator=(WidgetFlags wflags);///< Copies the flags passed
    
    WidgetFlags& SetNewFlags(WidgetFlags wflags);///< Specify new flags to be set

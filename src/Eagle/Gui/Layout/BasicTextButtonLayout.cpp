@@ -89,8 +89,8 @@ void BasicTextButton::SetOurText(BasicText* text) {
 
 
 
-void BasicTextButton::SetupText(std::string text , EagleFont* font , HALIGNMENT halign , VALIGNMENT valign , int hpadding , int vpadding , int lspacing) {
-   our_text->SetupText(text , font , halign , valign , hpadding , vpadding , lspacing);
+void BasicTextButton::SetupText(std::string text , EagleFont* font , HALIGNMENT hal , VALIGNMENT val , int hpadding , int vpadding , int lspacing) {
+   our_text->SetupText(text , font , hal , val , hpadding , vpadding , lspacing);
 }
 
 

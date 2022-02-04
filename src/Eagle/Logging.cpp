@@ -263,7 +263,7 @@ EagleLogGuard& EagleLogGuard::operator=(const EagleLogGuard& rhs) {
 
 
 
-EagleLogGuard::~EagleLogGuard() {
+EagleLogGuard::~EagleLogGuard() noexcept(false) {
    UnLockMutex(pmutex);
    if (critical) {
       throw EagleException("Critical exception.");

@@ -76,6 +76,17 @@ WidgetFlags::WidgetFlags(int newflags) :
 
 
 
+WidgetFlags::WidgetFlags(const WidgetFlags& f) :
+      flags(0),
+      changed_flags(0),
+      added_flags(0),
+      removed_flags(0)
+{
+   *this = f;
+}
+
+
+
 WidgetFlags& WidgetFlags::operator=(WidgetFlags wflags) {
    SetNewFlags(wflags);
    return *this;

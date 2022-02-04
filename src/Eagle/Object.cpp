@@ -73,7 +73,7 @@ EagleObject& EagleObject::operator=(const EagleObject& rhs) {
    (void)rhs;
    EAGLE_DEBUG
    (
-   EagleLog() << StringPrintF("EagleObject assignment operator called with lhs = %p and rhs = %p" , this , &rhs) << std::endl;
+   EagleLog() << StringPrintF("EagleObject assignment operator called with lhs = %p and rhs = %p" , (void*)this , (void*)&rhs) << std::endl;
    );
    return *this;
 }

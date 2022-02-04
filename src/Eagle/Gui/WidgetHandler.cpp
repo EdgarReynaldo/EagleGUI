@@ -342,9 +342,10 @@ void WidgetHandler::TrackWidget(WidgetBase* widget) {
 
 void WidgetHandler::StopTrackingWidget(WidgetBase* w) {
    EAGLE_ASSERT(w);
-   if (!GetValidByAddress(w)) {
+   EAGLE_ID eid = w->GetEagleId();
+   if (!GetValidById(eid)) {
       /// TODO : This widget has already been destroyed somehow - note it and move on - figure it out later
-      EagleError() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , w) << endl;
+      EagleError() << StringPrintF("WidgetHandler::StopTrackingWidget(%p) reports an invalid widget." , (void*)w) << endl;
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(wlist , w);
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(inputlist , w);
       RemoveUniqueFromList<WidgetBase* , WIDGETLIST>(drawlist , w);
@@ -788,10 +789,19 @@ void WidgetHandler::SetDrawWindow(EagleGraphicsContext* window) {
    if (oldbuffer && oldbuffer->W() && oldbuffer->H()) {
       SetupBuffer(oldbuffer->W() , oldbuffer->H() , gwindow);
    }
-#warning TODO : Copy old background
-   if (oldwindow && oldbuffer && oldbackground) {
-      oldwindow->FreeImage(oldbuffer);
-      oldwindow->FreeImage(oldbackground);
+   if (oldwindow) {
+      if (oldbuffer) {
+         oldwindow->FreeImage(oldbuffer);
+      }
+      if (oldbackground) {
+         EagleImage* oldtarget = window->GetDrawingTarget();
+         window->SetDrawingTarget(background);
+         window->SetCopyBlender();
+         window->Draw(oldbackground , 0 , 0);
+         window->RestoreLastBlendingState();
+         window->SetDrawingTarget(oldtarget);
+         oldwindow->FreeImage(oldbackground);
+      }
    }
    
 }
@@ -1342,9 +1352,9 @@ WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
    /// Search drawlist from front to back
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
-      bool visible = w->Flags().FlagOn(VISIBLE);
+///      bool visible = w->Flags().FlagOn(VISIBLE);
 ///      if (visible && w->OuterArea().Contains(relx , rely)) {/// TODO : FIXME?
-      if (true && w->OuterArea().Contains(relx , rely)) {
+      if (w->OuterArea().Contains(relx , rely)) {
          WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
          if (!wh) {
             return w;
@@ -1480,13 +1490,13 @@ std::ostream& WidgetHandler::DescribeTo(std::ostream& os , Indenter indent) cons
    os << "[stretch_bg = " << (stretch_bg?"true] ":"false] ");
    os << endl;
    os << indent << "Background color : [" << bg_col << "] ";
-   os << StringPrintF("user_bg_ptr = %p (",user_bg_ptr);
+   os << StringPrintF("user_bg_ptr = %p (" , (void*)user_bg_ptr);
    if (user_bg_ptr) {
       user_bg_ptr->DescribeTo(os);
    }
    os << ")" << endl;
    os << indent << StringPrintF("wfocus = %p (%s) , whover = %p (%s)" ,
-                                 wfocus , wfocus?wfocus->FullName():"" , whover , whover?whover->FullName():"") << endl;
+                                 (void*)wfocus , wfocus?wfocus->FullName():"" , (void*)whover , whover?whover->FullName():"") << endl;
    os << indent << "Widget Camera info :" << endl;
    ++indent;
    cam.DescribeTo(os,indent);

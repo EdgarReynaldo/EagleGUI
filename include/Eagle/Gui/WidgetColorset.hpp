@@ -87,6 +87,9 @@ public :
    ///< Copy the rhs colorset into this
    WidgetColorset(const WidgetColorset& wcols);
    
+   ///< array copy
+   WidgetColorset& operator=(const WidgetColorset& wcols);
+
    ///< Assigns our colorset's values to those specified in colorset
    WidgetColorset& operator=(const EagleColor colorset[EAGLE_NUMCOLORS]);
    

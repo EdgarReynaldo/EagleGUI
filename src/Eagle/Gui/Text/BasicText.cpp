@@ -357,7 +357,7 @@ using std::endl;
 std::ostream& BasicText::DescribeTo(std::ostream& os , Indenter indent) const {
    os <<indent << FullName() << endl;
    os << indent << PrintAlignment(halign , valign) << endl;
-   os << indent << StringPrintF("Using text font (%p) :",this) << endl;
+   os << indent << StringPrintF("Using text font (%p) :" , (void*)text_font) << endl;
    if (text_font) {
       text_font->DescribeTo(os , indent);
    }

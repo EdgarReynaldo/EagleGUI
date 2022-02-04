@@ -73,7 +73,7 @@ void BasicIcon::SetImage(SHAREDIMAGE new_image) {
 std::ostream& BasicIcon::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << FullName() << " :" << std::endl;
    os << indent << StringPrintF("icon_image is %p and is %s , stretch_icon is %s",
-                                (const EagleImage*)icon_image , (icon_image && icon_image->Valid())?"Valid":"Invalid" , stretch_icon?"true":"false") << std::endl;
+                                (void*)icon_image.get() , (icon_image && icon_image->Valid())?"Valid":"Invalid" , stretch_icon?"true":"false") << std::endl;
    WidgetBase::DescribeTo(os , indent);
    return os;
 }

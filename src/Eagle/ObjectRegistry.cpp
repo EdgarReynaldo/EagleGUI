@@ -219,7 +219,7 @@ void EagleObjectRegistry::Register(EagleObject* object , std::string objclass , 
    
    
    if (object->log_registration) {
-      EaglePrefix("EAGLE_CREATE   : ") << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , object , new_id) << std::endl;
+      EaglePrefix("EAGLE_CREATE   : ") << StringPrintF("Creating %s object '%s' at %p with eid %d\n" , objclass.c_str() , name.c_str() , (void*)object , new_id) << std::endl;
    }
    
    stop_id = new_id + 1;
@@ -445,7 +445,7 @@ EagleObjectInfo EagleObjectRegistry::FindInfoByAddress(EagleObject* object) {
    
    ADDRESSMAP::iterator mit = paddressmap->find(object);
    if (mit == paddressmap->end()) {
-      throw EagleException(StringPrintF("EagleObjectRegistry::FindInfoByAddress : Could not find info for object %p" , object));
+      throw EagleException(StringPrintF("EagleObjectRegistry::FindInfoByAddress : Could not find info for object %p" , (void*)object));
    }
    
    id = mit->second;

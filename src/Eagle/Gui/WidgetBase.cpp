@@ -209,7 +209,7 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
    if (Flags().FlagOff(VISIBLE)) {
       return;
    }
-   LayoutBase* layout = GetLayout();
+//   LayoutBase* layout = GetLayout();
 
    WidgetPainter wp = GetWidgetPainter();
    
