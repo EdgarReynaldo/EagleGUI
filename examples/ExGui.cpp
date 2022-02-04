@@ -268,6 +268,8 @@ int main4(int argc , char** argv) {
 
 int main3(int argc , char** argv) {
    
+   (void)argc;
+   (void)argv;
    
    SendOutputToFile("ExGuiFlags.log" , "ExGui\n" , false);
    
