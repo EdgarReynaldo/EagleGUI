@@ -66,9 +66,9 @@ int main(int argc , char** argv) {
    mover.WhiteList(&flowbox);
 
    WidgetColorset wcol = default_eagle_color_array;
-   wcol[MARGCOL] = EagleColor(0,255,255);
-   wcol[BORDCOL] = EagleColor(255,255,255,0);
-   wcol[PADCOL] = EagleColor(0,0,0,0);
+   wcol[MARGCOL] = EagleColor(0,0,96,0);
+   wcol[BORDCOL] = EagleColor(255,255,255,255);
+   wcol[PADCOL] = EagleColor(0,0,96,255);
    vbox.SetWidgetColorset(wcol);
    hbox.SetWidgetColorset(wcol);
    flowbox.SetWidgetColorset(wcol);
@@ -177,18 +177,17 @@ int main(int argc , char** argv) {
    
    for (unsigned int i = 0 ; i < 20 ; ++i) {
       btns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(0 , 0 , 3) , false);
-      rtext[i].SetupText(text[i] , font);
-      rbtns[i].SetWidgets(&btns[i] , &rtext[i]);
-      WidgetArea wa = rbtns[i].GetWidgetArea();
-      wa.SetBoxesContract(0,0,5);
-      SHAREDOBJECT<WidgetColorset> wc = rbtns[i].GetWidgetColorset();
+      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(2,2,2) , false);
+      btns[i].SetFont(font);
+      btns[i].SetLabel(text[i]);
+      
+      SHAREDOBJECT<WidgetColorset> wc = btns[i].GetWidgetColorset();
       (*wc.get())[PADCOL] = EagleColor(0,0,0,0);
       (*wc.get())[MARGCOL] = EagleColor(0,0,0,0);
-      (*wc.get())[BORDCOL] = EagleColor(0,0,0,0);
+      (*wc.get())[BORDCOL] = EagleColor(255,255,255,255);
       (*wc.get())[HVRCOL] = EagleColor(192,255,255,127);
       (*wc.get())[MGCOL] = EagleColor(96,152,152,127);
-      rbtns[i].SetWidgetArea(wa , false);
+      (*wc.get())[TXTCOL] = EagleColor(255,255,255,255);
    }
    
    RadioGroup radios[7];
@@ -213,30 +212,30 @@ int main(int argc , char** argv) {
    rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.45 , 0.2 , 0.45));
    rl.AddWidget(&rgrids[3] , LayoutRectangle(0.75 , 0.05 , 0.2 , 0.2));
    
-   rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.3 , 0.5 , 0.1));
-   rl.AddWidget(&vbox , LayoutRectangle(0.3 , 0.4 , 0.1 , 0.5));
+   rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.25 , 0.5 , 0.1));
+   rl.AddWidget(&vbox , LayoutRectangle(0.25 , 0.4 , 0.1 , 0.5));
    rl.AddWidget(&flowbox , LayoutRectangle(0.4 , 0.4 , 0.5 , 0.5));
    
-   rgrids[0].PlaceWidget(&rbtns[0] , 0);
-   rgrids[0].PlaceWidget(&rbtns[1] , 1);
-   rgrids[0].PlaceWidget(&rbtns[2] , 2);
-   rgrids[0].PlaceWidget(&rbtns[3] , 3);
-   rgrids[0].PlaceWidget(&rbtns[4] , 4);
-   rgrids[0].PlaceWidget(&rbtns[5] , 5);
-   rgrids[0].PlaceWidget(&rbtns[6] , 6);
-   rgrids[0].PlaceWidget(&rbtns[7] , 7);
-   rgrids[1].PlaceWidget(&rbtns[8] , 0);
-   rgrids[1].PlaceWidget(&rbtns[9] , 1);
-   rgrids[2].PlaceWidget(&rbtns[10] , 0);
-   rgrids[2].PlaceWidget(&rbtns[11] , 1);
-   rgrids[2].PlaceWidget(&rbtns[12] , 2);
-   rgrids[2].PlaceWidget(&rbtns[13] , 3);
-   rgrids[2].PlaceWidget(&rbtns[14] , 4);
-   rgrids[2].PlaceWidget(&rbtns[15] , 5);
-   rgrids[3].PlaceWidget(&rbtns[16] , 0);
-   rgrids[3].PlaceWidget(&rbtns[17] , 1);
-   rgrids[3].PlaceWidget(&rbtns[18] , 2);
-   rgrids[3].PlaceWidget(&rbtns[19] , 3);
+   rgrids[0].PlaceWidget(&btns[0] , 0);
+   rgrids[0].PlaceWidget(&btns[1] , 1);
+   rgrids[0].PlaceWidget(&btns[2] , 2);
+   rgrids[0].PlaceWidget(&btns[3] , 3);
+   rgrids[0].PlaceWidget(&btns[4] , 4);
+   rgrids[0].PlaceWidget(&btns[5] , 5);
+   rgrids[0].PlaceWidget(&btns[6] , 6);
+   rgrids[0].PlaceWidget(&btns[7] , 7);
+   rgrids[1].PlaceWidget(&btns[8] , 0);
+   rgrids[1].PlaceWidget(&btns[9] , 1);
+   rgrids[2].PlaceWidget(&btns[10] , 0);
+   rgrids[2].PlaceWidget(&btns[11] , 1);
+   rgrids[2].PlaceWidget(&btns[12] , 2);
+   rgrids[2].PlaceWidget(&btns[13] , 3);
+   rgrids[2].PlaceWidget(&btns[14] , 4);
+   rgrids[2].PlaceWidget(&btns[15] , 5);
+   rgrids[3].PlaceWidget(&btns[16] , 0);
+   rgrids[3].PlaceWidget(&btns[17] , 1);
+   rgrids[3].PlaceWidget(&btns[18] , 2);
+   rgrids[3].PlaceWidget(&btns[19] , 3);
    
    mover.WhiteList(&rgrids[0]);
    mover.WhiteList(&rgrids[1]);
