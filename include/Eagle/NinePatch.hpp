@@ -24,15 +24,64 @@
 #define NinePatch_HPP
 
 
+#include "Eagle/Area.hpp"
+#include "Eagle/BoxArea.hpp"
 
-#include "Eagle/Gui/WidgetArea.hpp"
 
 
+/*! \class NPAREA
+ *  \brief The NPAREA class holds the information needed to store the attributes of a nine patch area
+ * 
+ * The NPAREA class is to facilitate creating and painting nine patch areas
+ */
+
+class NPAREA {
+public :
+   Pos2I pos;
+   int left;
+   int width;
+   int right;
+   int top;
+   int height;
+   int bottom;
+   
+   NPAREA();///< Default empty constructor initializes to zero
+   NPAREA(Rectangle area , BOXAREA box);///< Constructs the Nine patch area so that area is the OuterArea, and box defines the margins
+   
+   
+   /// Getters
+   
+   CELL_AREA GetCellArea(int xpos , int ypos) const;///< Returns the CELL_AREA specified by the passed position values
+   
+   Rectangle GetNPCell(HCELL_AREA hcell , VCELL_AREA vcell) const ;///< Gets the rectangle for a specified cell
+   Rectangle GetNPCell(CELL_AREA cell) const ;///< Gets the rectangle for a specified cell
+
+   Rectangle GetRow(VCELL_AREA vcell) const;///< Gets the row rectangle for a specified VCELL_AREA
+   Rectangle GetColumn(HCELL_AREA hcell) const;///< Gets the column rectangle for a specified HCELL_AREA
+   
+   inline int Width() const {return left + width + right;}///< Returns the total width of the nine patch
+   inline int Height() const {return top + height + bottom;}///< Returns the total height of the nine patch
+   inline Rectangle Area() const {return Rectangle(pos.X() , pos.Y() , Width() , Height());}///< Returns the outer area of the nine patch
+   inline Rectangle OuterArea() const {return Area();}
+   inline Rectangle InnerArea() const {return GetNPCell(HCELL_CENTER , VCELL_CENTER);}
+   std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describes the nine patch object to a stream
+
+   friend std::ostream& operator<<(std::ostream& os , const NPAREA& np);///< Stream output
+
+};
+
+/// Paint functions
 
 class EagleGraphicsContext;
+
+void PaintOutsideSolid(EagleGraphicsContext* win , NPAREA np , EagleColor c);///< Paint the margin of the nine patch a solid color
+void PaintOutsideRounded(EagleGraphicsContext* win , NPAREA np , EagleColor c);///< Paint the margin of the nine patch a solid color that is rounded
+void PaintOutsideContrast(EagleGraphicsContext* win , NPAREA np , EagleColor outer , EagleColor inner);///< Paints a two tone margin
+void PaintOutsideGradient(EagleGraphicsContext* win , NPAREA np , EagleColor outer , EagleColor inner);///< Paints a gradient border
+
+
+
 class EagleImage;
-
-
 
 /**! @class NinePatch
  *   @brief A class to store nine patch images
@@ -40,10 +89,12 @@ class EagleImage;
 
 class NinePatch {
 
-friend NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , WidgetArea nparea);
+friend NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , NPAREA nparea);
+friend void DrawNinePatch(const NinePatch& np , NPAREA dest_area , int ox = 0 , int oy = 0);
 
-   EagleImage* imgs[3][3];///< EagleImage array, row major from top to bottom, left to right
    EagleGraphicsContext* window;///< Our graphics context window
+   EagleImage* imgs[3][3];///< EagleImage array, row major from top to bottom, left to right
+   NPAREA source_area;
 
    NinePatch();///< Private constructor, accessible through @ref MakeNinePatch
    
@@ -55,14 +106,12 @@ public :
    NinePatch(const NinePatch& np);///< Copy construct a nine patch
    NinePatch& operator=(const NinePatch& np);///< Assign one nine patch to another
    
-   EagleImage** operator[](int yindex);///< Get a pointer to a sub array of images in this nine patch
-   EagleImage* const* operator[](int index) const;///< Get a direct const pointer to image 0-8
+   EagleImage* operator[](CELL_AREA carea) const;///< Get a direct pointer to image 0-8
    
    /**! @fn Draw <WidgetArea , int , int>
     *   @brief Draws the nine patch to the specified widget area using the specified optional offset
     */
 
-   void Draw(NPAREA dest_area , int xoffset = 0 , int yoffset = 0);
 };
 
 
@@ -70,7 +119,8 @@ public :
  *   @brief Makes a NinePatch object from a source image and nine patch area on the specified window
  */
 
-NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , WidgetArea nparea);
+NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , NPAREA nparea);
+void DrawNinePatch(const NinePatch& np , NPAREA dest_area , int ox = 0 , int oy = 0);
 
 
 
