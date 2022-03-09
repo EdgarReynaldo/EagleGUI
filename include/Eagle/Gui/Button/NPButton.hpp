@@ -13,7 +13,7 @@
 class NPButton : public BasicButton {
 protected :
    
-   NinePatch* ournp;
+   NinePatch* np;
    
 public :
    

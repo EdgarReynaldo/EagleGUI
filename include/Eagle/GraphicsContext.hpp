@@ -216,9 +216,11 @@ class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
    typedef std::unordered_set<EagleImage*> IMAGESET;
+   typedef std::unordered_set<NinePatch*> IMAGESET;
    typedef std::unordered_set<EagleFont*> FONTSET;
 
    typedef IMAGESET::iterator ISIT;
+   typedef NPSET::iterator NPSIT;
    typedef FONTSET::iterator FSIT;
 
    int scrw;
@@ -230,6 +232,7 @@ protected :
    std::list<EagleImage*> draw_target_stack;
 
    IMAGESET imageset;
+   NPSET npset;
    FONTSET  fontset;
 
    MousePointerManager* mp_manager;/// Derived class is responsible for instantiating this object, b/c a virtual creation function
@@ -598,6 +601,13 @@ public :
    void                FreeImage(EagleImage* img);///< Frees any references this window has to the image and destroys it
    void                FreeAllImages();///< Frees all images owned by this display
 
+   NinePatch* CreateNinePatchSubImages(EagleImage* src , NPAREA srcarea);
+   
+   void FreeNinePatch(NinePatch* np);
+   void FreeAllNinePatch();
+
+   
+   
    /// Font loading - these fonts are owned by the window
 
    ///< Pure virtual function to load a font from a file with the specified height, @ref FONT_LOADING_FLAGS , and @ref IMAGE_TYPE

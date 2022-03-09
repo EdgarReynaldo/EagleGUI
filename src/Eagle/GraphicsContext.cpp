@@ -602,6 +602,34 @@ void EagleGraphicsContext::FreeAllImages() {
 
 
 
+NinePatch* CreateNinePatchSubImages(EagleImage* src , NPAREA srcarea) {
+   NinePatch* np = new NinePatch();
+   np->Create(this , src , srcarea);
+   EAGLE_ASSERT(np->Valid());
+   npset.insert(np);
+}
+
+void FreeNinePatch(NinePatch* np) {
+   NPSIT it = npset.find(np);
+   if (it != npset.end()) {
+      delete(*it);
+      npset.erase(it);
+   }
+}
+
+
+
+void FreeAllNinePatch() {
+   NPSIT it = npset.begin();
+   while (it != npset.end()) {
+      delete *it;
+      npset.erase(it);
+      it = npset.begin();
+   }
+}
+
+
+
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
    if (!font) {return;}
    FSIT it = fontset.find(font);

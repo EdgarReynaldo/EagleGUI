@@ -24,6 +24,7 @@
 #define NinePatch_HPP
 
 
+#include "Position.hpp"
 #include "Eagle/Area.hpp"
 #include "Eagle/BoxArea.hpp"
 
@@ -70,6 +71,32 @@ public :
 
 };
 
+
+/*! @class RELNPAREA
+
+*/
+
+
+class NPAREA_REL {
+protected :
+   Rectangle outer;
+   double rleft;
+   double rwidth;
+   double rright;
+   double rtop;
+   double rheight;
+   double rbottom;
+   
+public :
+   void SetArea(const Rectangle& outer_area);
+   void SetArea(const Rectangle& outer_area) {
+      outer = outer_area;
+   }
+   
+};
+
+
+
 /// Paint functions
 
 class EagleGraphicsContext;
@@ -80,23 +107,28 @@ void PaintOutsideContrast(EagleGraphicsContext* win , NPAREA np , EagleColor out
 void PaintOutsideGradient(EagleGraphicsContext* win , NPAREA np , EagleColor outer , EagleColor inner);///< Paints a gradient border
 
 
-
 class EagleImage;
 
 /**! @class NinePatch
  *   @brief A class to store nine patch images
+ *   It is recommended to make your ninepatch images entirely black and white so they can later be tinted any color. Regular color works too.
  */
 
 class NinePatch {
 
-friend NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , NPAREA nparea);
-friend void DrawNinePatch(const NinePatch& np , NPAREA dest_area , int ox = 0 , int oy = 0);
+   friend EagleGraphicsContext;
 
    EagleGraphicsContext* window;///< Our graphics context window
    EagleImage* imgs[3][3];///< EagleImage array, row major from top to bottom, left to right
-   NPAREA source_area;
+   EagleImage* srcimage;
+   NPAREA srcarea;
 
-   NinePatch();///< Private constructor, accessible through @ref MakeNinePatch
+   bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area);
+
+   EagleImage* operator[](CELL_AREA carea) const;///< Get a direct pointer to image 0-8
+
+   NinePatch();
+
    
 public :
    ~NinePatch();///< Public destructor, frees any stored images
@@ -106,22 +138,18 @@ public :
    NinePatch(const NinePatch& np);///< Copy construct a nine patch
    NinePatch& operator=(const NinePatch& np);///< Assign one nine patch to another
    
-   EagleImage* operator[](CELL_AREA carea) const;///< Get a direct pointer to image 0-8
    
-   /**! @fn Draw <WidgetArea , int , int>
-    *   @brief Draws the nine patch to the specified widget area using the specified optional offset
-    */
-
+   void Draw(NPAREA dest , EagleColor tint = EagleColor(255,255,255,255));
+   void Draw(NPAREA dest , EagleColor tint) {
+      
+   }
+   
+   bool Valid() {return imgs[0][0];}
 };
 
-
-/**! @fn MakeNinePatch <EagleGraphicsContext* , EagleImage* , WidgetArea>
- *   @brief Makes a NinePatch object from a source image and nine patch area on the specified window
+/**! @fn DrawNinePatch <
+ *   @brief Draws the nine patch to the specified widget area using the specified optional offset
  */
-
-NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , NPAREA nparea);
-void DrawNinePatch(const NinePatch& np , NPAREA dest_area , int ox = 0 , int oy = 0);
-
 
 
 

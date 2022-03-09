@@ -303,10 +303,36 @@ void PaintOutsideGradient(EagleGraphicsContext* win , NPAREA np , EagleColor out
 
 
 
+bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area) :
+{
+   Free();
+
+   EAGLE_ASSERT(window);
+   EAGLE_ASSERT(src && src->Valid());
+   EAGLE_ASSERT(area.InnerArea().Area() > 0);
+   EAGLE_ASSERT(area.OuterArea().Area() >= area.InnerArea().Area());
+
+   window = win;
+   srcimage = src;,
+   srcarea = area;
+
+   for (unsigned int i = 0 ; i < 9 ; ++i) {
+      HCELL_AREA hcell = (HCELL_AREA)(i%3);
+      VCELL_AREA vcell = (VCELL_AREA)(i/3);
+      Rectangle r = srcarea.GetNPCell(hcell , vcell);
+      imgs[i/3][i%3] = win->CreateSubImage(src , r.X() , r.Y() , r.W() , r.H());
+      EAGLE_ASSERT(imgs[i/3][i%3] && imgs[i/3][i%3]->Valid());
+   }
+   return imgs[0][0]->Valid();
+}
+
+
+
 NinePatch::NinePatch() : 
       window(0),
       imgs(),
-      source_area()
+      srcimage(0),
+      srcarea()
 {
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
@@ -350,66 +376,8 @@ NinePatch::NinePatch(const NinePatch& np) {
 
 NinePatch& NinePatch::operator=(const NinePatch& np) {
    Free();
-   window = np.window;
-   for (int y = 0 ; y < 3 ; ++y) {
-      for (int x = 0 ; x < 3 ; ++x) {
-         imgs[y][x] = window->CloneImage(np.imgs[y][x] , StringPrintF("NP#%d" , y*3 + x));
-      }
-   }
+   Create(np.window , np.srcimage , np.srcarea);
    return *this;
-}
-
-
-
-NinePatch MakeNinePatch(EagleGraphicsContext* win , EagleImage* src_img , NPAREA src_area) {
-   
-   EAGLE_ASSERT(win);
-   EAGLE_ASSERT(win->Valid());
-   EAGLE_ASSERT(src_img);
-   EAGLE_ASSERT(src_img->Valid());
-   
-   Rectangle src_outer = src_area.OuterArea();
-   Rectangle src_inner = src_area.InnerArea();
-
-   Rectangle img_rect = Rectangle(0 , 0 , src_img->W() , src_img->H());
-   
-   if (!img_rect.Contains(src_outer) || !img_rect.Contains(src_inner)) {
-      throw EagleException("MakeNinePatch() - Source image area does not fully contain the nine patch area!");
-   }
-   
-   /// Store relative positions in nplayout
-   LayoutRectangle nplayout(src_outer , src_inner);
-   
-   /// Set the matching relative area on the image
-///   img_area.SetFractionalInnerArea(nplayout.fx , nplayout.fy , nplayout.fw , nplayout.fh);
-   
-   EagleLog() << "NinePatch source area : " << src_area << std::endl;
-///   EagleLog() << "IMGAREA :" << std::endl;
-///   EagleLog() << img_area << std::endl;
-   
-   win->SetCopyBlender();
-   NinePatch np;
-   for (int y = 0 ; y < 3 ; ++y) {
-      for (int x = 0 ; x < 3 ; ++x) {
-         np[y][x] = 0;
-         VCELL_AREA vcell = (VCELL_AREA)y;
-         HCELL_AREA hcell = (HCELL_AREA)x;
-         NPAREA nparea = src_area.BorderNP();
-         Rectangle src = nparea.GetNPCell(hcell , vcell);
-         EagleLog() << StringPrintF("Drawing Image : [%d][%d]" , y , x) << std::endl;
-         EagleLog() << "Src = [" << src << "]" << std::endl;
-         EagleImage* img = win->CreateImage(src.W() , src.H() , VIDEO_IMAGE);
-         EAGLE_ASSERT(img);
-         EAGLE_ASSERT(img->Valid());
-         win->PushDrawingTarget(img);
-         win->DrawTintedRegion(src_img , src , 0.0 , 0.0);
-         win->PopDrawingTarget();
-         np[y][x] = img;
-      }
-   }
-   win->RestoreLastBlendingState();
-
-   return np;
 }
 
 

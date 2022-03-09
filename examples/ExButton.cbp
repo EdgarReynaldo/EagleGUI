@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="ExGui" />
+		<Option title="ExButton" />
 		<Option execution_dir="E:/usr/projects/TINS2020/examples/" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -84,7 +84,7 @@
 			<Add directory="../cbbuild/lib" />
 			<Add directory="E:/usr/lib" />
 		</Linker>
-		<Unit filename="ExGui.cpp" />
+		<Unit filename="ExButton.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

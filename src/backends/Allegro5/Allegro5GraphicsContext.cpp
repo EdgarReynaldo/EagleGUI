@@ -138,6 +138,7 @@ bool Allegro5GraphicsContext::Valid() {
 
 void Allegro5GraphicsContext::Destroy() {
 
+   FreeAllNinePatch();
    FreeAllImages();
    FreeAllFonts();
    
