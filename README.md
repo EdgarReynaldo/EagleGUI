@@ -13,7 +13,7 @@ Last update 2021-09-18
 
     Eagle Agile Gui Library and Extensions
 
-    Copyright 2009-2021+ by Edgar Reynaldo
+    Copyright 2009-2022+ by Edgar Reynaldo
 
     See LICENSE in the root directory for allowed uses of this library.
     EAGLE is covered under the Mozilla Public License v2.0.
