@@ -38,6 +38,7 @@
 #include "Eagle/Font.hpp"
 #include "Eagle/Container.hpp"
 #include "Eagle/MousePointer.hpp"
+#include "Eagle/NinePatch.hpp"
 #include "Eagle/Transforms.hpp"
 #include "Eagle/Gui/Alignment.hpp"
 
@@ -216,7 +217,7 @@ class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
    typedef std::unordered_set<EagleImage*> IMAGESET;
-   typedef std::unordered_set<NinePatch*> IMAGESET;
+   typedef std::unordered_set<NinePatch*> NPSET;
    typedef std::unordered_set<EagleFont*> FONTSET;
 
    typedef IMAGESET::iterator ISIT;
@@ -535,7 +536,9 @@ public :
    ///< Stretches the image to fill
    void DrawImageStretch(EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
-
+   ///< Draw nine patch stretching cells to cover cells
+   void DrawNinePatch(NinePatch* np , NPAREA dest_area , int ox , int oy , EagleColor tint = EagleColor(255,255,255,255));
+   
    ///< Converts the specified color in the specified image to alpha zero, clear
    virtual void ConvertColorToAlpha(EagleImage* img , EagleColor alpha_color)=0;
 

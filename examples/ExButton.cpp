@@ -9,6 +9,9 @@
 
 int main(int argc , char** argv) {
    
+   (void)argc;
+   (void)argv;
+   
    EagleSystem* sys = GetAllegro5System();
    
    EAGLE_ASSERT(sys);
@@ -21,18 +24,28 @@ int main(int argc , char** argv) {
    int sw = 1024;
    int sh = 768;
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext(sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_NOFRAME);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("win" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_NOFRAME);
    EAGLE_ASSERT(win && win->Valid());
    
    WidgetHandler gui(win , "GUI" , "Main GUI");
    
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh) , false);
    
-   gui.SetupBuffer(win , sw , sh);
+   gui.SetupBuffer(sw , sh , win);
    
+   EagleImage* orangenp = win->LoadImageFromFile("Data/Images/OrangeYellowNP.png");
+   EagleImage* whitenp = win->LoadImageFromFile("Data/Images/AllPurposeNP.png");
+   EagleImage* blacknp = win->LoadImageFromFile("Data/Images/AllPurpose2NP.png");
    
+   NPRAREA npr(Rectangle(0,0,orangenp->W(),orangenp->H()) , 0.33 , 0.33);
+   NPAREA npa = npr.GetNP();
    
+   NPAREA npa2(Rectangle(0,0,whitenp->W(),whitenp->H()) , BOXAREA(32,32,32,32));
+   NPAREA npa3(Rectangle(0,0,whitenp->W(),whitenp->H()) , BOXAREA(250,250,250,250));
    
+   NinePatch* np = win->CreateNinePatchSubImages(orangenp , npa);
+   NinePatch* npw = win->CreateNinePatchSubImages(whitenp , npa2);
+   NinePatch* npb = win->CreateNinePatchSubImages(blacknp , npa3);
    
    
    bool quit = false;

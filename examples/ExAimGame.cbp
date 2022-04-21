@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="ExButton" />
+		<Option title="AimGame" />
 		<Option execution_dir="E:/usr/projects/TINS2020/examples/" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../cbbuild/bin/RectSubDebug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="e:/usr/bin" />
+				<Option output="../cbbuild/bin/AimGameD" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="e:/usr64/bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -24,8 +24,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="../cbbuild/bin/RectSub" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="e:/usr/bin" />
+				<Option output="../cbbuild/bin/AimGame" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="e:/usr64/bin" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -81,10 +81,9 @@
 			<Add directory="E:/usr64/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="../cbbuild/lib" />
 			<Add directory="E:/usr64/lib" />
 		</Linker>
-		<Unit filename="ExButton.cpp" />
+		<Unit filename="AimGame.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

@@ -131,6 +131,64 @@ std::ostream& operator<<(std::ostream& os , const NPAREA& np) {
 
 
 
+/// Nine Patch Relative area
+
+
+
+void NPRAREA::ResetNP() {
+   int ow = outer.Width();
+   int oh = outer.Height();
+   if (ow < 3) {ow = 3;}
+   if (oh < 3) {oh = 3;}
+   int lrw = (double)(ow)*(1.0 - rcw);
+   int tbh = (double)(oh)*(1.0 - rch);
+   int l = lrw/2;
+   if (l < 1) {l = 1;}
+   int r = l;
+   int t = tbh/2;
+   if (t < 1) {t = 1;}
+   int b = t;
+   nparea = NPAREA(outer , BOXAREA(l,r,t,b));
+}
+
+
+
+NPRAREA::NPRAREA(Rectangle outer_area , double rel_center_width , double rel_center_height) :
+      outer(outer_area),
+      rcw(0.0),
+      rch(0.0),
+      nparea()
+{
+   SetCenterArea(rel_center_width , rel_center_height);
+}
+
+
+
+void NPRAREA::SetCenterArea(double rel_center_width , double rel_center_height) {
+   rcw = rel_center_width;
+   rch = rel_center_height;
+   if (rcw < 0.0) {rcw = 0.0;}
+   if (rch < 0.0) {rch = 0.0;}
+   if (rcw > 1.0) {rcw = 1.0;}
+   if (rch > 1.0) {rch = 1.0;}
+   ResetNP();
+}
+
+
+
+void NPRAREA::SetArea(const Rectangle& outer_area) {
+   outer = outer_area;
+   ResetNP();;
+}
+
+
+
+NPAREA NPRAREA::GetNP() {
+   return nparea;
+}
+
+
+
 /// Nine Patch drawing
 
 
@@ -188,8 +246,8 @@ void PaintOutsideContrast(EagleGraphicsContext* win , NPAREA np , EagleColor out
    NPAREA outernp(np.Area() , BOXAREA(np.left/2 , np.right/2 , np.top/2 , np.bottom/2));
    NPAREA innernp(outernp.GetNPCell(HCELL_CENTER , VCELL_CENTER) , 
                   BOXAREA(np.left - np.left/2 , np.right - np.right/2 , np.top - np.top/2 , np.bottom - np.bottom/2));
-   innernp.PaintOutsideSolid(win , inner);
-   outernp.PaintOutsideSolid(win , outer);
+   PaintOutsideSolid(win , innernp , inner);
+   PaintOutsideSolid(win , outernp , outer);
 }
 
 
@@ -303,7 +361,7 @@ void PaintOutsideGradient(EagleGraphicsContext* win , NPAREA np , EagleColor out
 
 
 
-bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area) :
+bool NinePatch::Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area)
 {
    Free();
 
@@ -313,30 +371,30 @@ bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area) :
    EAGLE_ASSERT(area.OuterArea().Area() >= area.InnerArea().Area());
 
    window = win;
-   srcimage = src;,
+   srcimage = src;
    srcarea = area;
 
    for (unsigned int i = 0 ; i < 9 ; ++i) {
       HCELL_AREA hcell = (HCELL_AREA)(i%3);
       VCELL_AREA vcell = (VCELL_AREA)(i/3);
       Rectangle r = srcarea.GetNPCell(hcell , vcell);
-      imgs[i/3][i%3] = win->CreateSubImage(src , r.X() , r.Y() , r.W() , r.H());
-      EAGLE_ASSERT(imgs[i/3][i%3] && imgs[i/3][i%3]->Valid());
+      srcs[i/3][i%3] = win->CreateSubImage(src , r.X() , r.Y() , r.W() , r.H());
+      EAGLE_ASSERT(srcs[i/3][i%3] && srcs[i/3][i%3]->Valid());
    }
-   return imgs[0][0]->Valid();
+   return srcs[0][0]->Valid();
 }
 
 
 
 NinePatch::NinePatch() : 
       window(0),
-      imgs(),
+      srcs(),
       srcimage(0),
       srcarea()
 {
    for (int y = 0 ; y < 3 ; ++y) {
       for (int x = 0 ; x < 3 ; ++x) {
-         imgs[y][x] = 0;
+         srcs[y][x] = 0;
       }
    }
 }
@@ -352,18 +410,18 @@ NinePatch::~NinePatch() {
 void NinePatch::Free() {
    if (window) {
       for (unsigned int i = 0 ; i < 9 ; ++i) {
-         if (imgs[i/3][i%3]) {
-            window->FreeImage(imgs[i/3][i%3]);
+         if (srcs[i/3][i%3]) {
+            window->FreeImage(srcs[i/3][i%3]);
          }
-         imgs[i/3][i%3] = 0;
+         srcs[i/3][i%3] = 0;
       }
    }
 }
 
 
 
-EagleImage* const NinePatch::operator[](CELL_AREA carea) const {
-   return imgs[carea/3][carea%3];
+EagleImage* NinePatch::operator[](CELL_AREA carea) const {
+   return srcs[carea/3][carea%3];
 }
 
 
@@ -382,19 +440,6 @@ NinePatch& NinePatch::operator=(const NinePatch& np) {
 
 
 
-void DrawNinePatch(const NinePatch& np , NPAREA dest_area , int ox , int oy ) {
-   if (np->window) {
-      for (int y = 0 ; y < 3 ; ++y) {
-         for (int x = 0 ; x < 3 ; ++x) {
-            VCELL_AREA vcell = (VCELL_AREA)y;
-            HCELL_AREA hcell = (HCELL_AREA)x;
-            Rectangle dest = dest_area.GetNPCell(hcell , vcell);
-            dest.MoveBy(ox , oy);
-            window->DrawStretched(np->imgs[y][x] , dest , DRAW_NORMAL);
-         }
-      }
-   }
-}
 
 
 

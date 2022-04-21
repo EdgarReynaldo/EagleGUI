@@ -72,27 +72,32 @@ public :
 };
 
 
-/*! @class RELNPAREA
-
+/*! @class NPRAREA
+ *  @brief NPRAREA holds a relative nine patch area, using doubles as the relative width and height of the center cell
+ *  
+ *  The NPRAREA class allows you to create a normal nine patch area using relative values. Retrive the @ref NPAREA using @ref NPRAREA::GetNP<> .
+ *  The widths of the left and right and the heights of the top and bottom cells are determined by halving what is left from the center.
+ *  Minimum NPAREA dimensions will be 3x3, so creating a nine patch image will always use at least 1x1 sub bitmaps.
 */
 
 
-class NPAREA_REL {
+class NPRAREA {
 protected :
    Rectangle outer;
-   double rleft;
-   double rwidth;
-   double rright;
-   double rtop;
-   double rheight;
-   double rbottom;
+   double rcw;///< Relative center width
+   double rch;///< Relative center height
+   NPAREA nparea;///< Storage for precalculated NPAREA using relative values
+   
+   void ResetNP();
+   
    
 public :
-   void SetArea(const Rectangle& outer_area);
-   void SetArea(const Rectangle& outer_area) {
-      outer = outer_area;
-   }
    
+   NPRAREA(Rectangle outer_area , double rel_center_width , double rel_center_height);///< Create a relative nine patch using a rectangle and relative center width and height
+   void SetCenterArea(double rel_center_width , double rel_center_height);///< Set the relative center width and height of the NPRAREA
+   void SetArea(const Rectangle& outer_area);///< Change the area of the NPRAREA without changing the relative widths and heights of the cells
+   
+   NPAREA GetNP();///< Get the stored pre-calculated NPAREA for this NPRAREA
 };
 
 
@@ -119,11 +124,13 @@ class NinePatch {
    friend EagleGraphicsContext;
 
    EagleGraphicsContext* window;///< Our graphics context window
-   EagleImage* imgs[3][3];///< EagleImage array, row major from top to bottom, left to right
+   EagleImage* srcs[3][3];///< EagleImage array, row major from top to bottom, left to right
    EagleImage* srcimage;
    NPAREA srcarea;
-
-   bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA area);
+   
+   
+   
+   bool Create(EagleGraphicsContext* win , EagleImage* src , NPAREA nparea);
 
    EagleImage* operator[](CELL_AREA carea) const;///< Get a direct pointer to image 0-8
 
@@ -137,14 +144,8 @@ public :
 
    NinePatch(const NinePatch& np);///< Copy construct a nine patch
    NinePatch& operator=(const NinePatch& np);///< Assign one nine patch to another
-   
-   
-   void Draw(NPAREA dest , EagleColor tint = EagleColor(255,255,255,255));
-   void Draw(NPAREA dest , EagleColor tint) {
-      
-   }
-   
-   bool Valid() {return imgs[0][0];}
+
+   bool Valid() {return srcs[0][0];}
 };
 
 /**! @fn DrawNinePatch <

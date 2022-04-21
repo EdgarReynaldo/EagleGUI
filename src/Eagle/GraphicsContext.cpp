@@ -483,6 +483,22 @@ void EagleGraphicsContext::DrawImageStretch(EagleImage* img , Rectangle dest , E
 
 
 
+void EagleGraphicsContext::DrawNinePatch(NinePatch* np , NPAREA dest_area , int ox , int oy , EagleColor tint) {
+   if (np->window) {
+      for (int y = 0 ; y < 3 ; ++y) {
+         for (int x = 0 ; x < 3 ; ++x) {
+            VCELL_AREA vcell = (VCELL_AREA)y;
+            HCELL_AREA hcell = (HCELL_AREA)x;
+            Rectangle dest = dest_area.GetNPCell(hcell , vcell);
+            dest.MoveBy(ox , oy);
+            DrawTintedStretched(np->srcs[y][x] , dest , tint , DRAW_NORMAL);
+         }
+      }
+   }
+}
+
+
+
 void EagleGraphicsContext::DrawMultiLineTextString(EagleFont* font , std::string str , float x , float y , EagleColor c , float line_spacing ,
                             HALIGNMENT halign , VALIGNMENT valign) {
    EAGLE_ASSERT(font);
@@ -602,14 +618,15 @@ void EagleGraphicsContext::FreeAllImages() {
 
 
 
-NinePatch* CreateNinePatchSubImages(EagleImage* src , NPAREA srcarea) {
+NinePatch* EagleGraphicsContext::CreateNinePatchSubImages(EagleImage* src , NPAREA srcarea) {
    NinePatch* np = new NinePatch();
    np->Create(this , src , srcarea);
    EAGLE_ASSERT(np->Valid());
    npset.insert(np);
+   return np;
 }
 
-void FreeNinePatch(NinePatch* np) {
+void EagleGraphicsContext::FreeNinePatch(NinePatch* np) {
    NPSIT it = npset.find(np);
    if (it != npset.end()) {
       delete(*it);
@@ -619,7 +636,7 @@ void FreeNinePatch(NinePatch* np) {
 
 
 
-void FreeAllNinePatch() {
+void EagleGraphicsContext::FreeAllNinePatch() {
    NPSIT it = npset.begin();
    while (it != npset.end()) {
       delete *it;

@@ -39,32 +39,32 @@ void WidgetPainterBase::PaintCSSModel() {
    
    NPAREA np;
    np = warea.OuterNP();
-   np.PaintOutsideSolid(window , widget->GetColor(MARGCOL));
+   PaintOutsideSolid(window , np , widget->GetColor(MARGCOL));
    np = warea.BorderNP();
-   np.PaintOutsideSolid(window , widget->GetColor(BORDCOL));
+   PaintOutsideSolid(window , np , widget->GetColor(BORDCOL));
    np = warea.PaddingNP();
-   np.PaintOutsideSolid(window , widget->GetColor(PADCOL));
+   PaintOutsideSolid(window , np , widget->GetColor(PADCOL));
 }
 
 
 
 void WidgetPainterBase::PaintFill() {
    NPAREA border = warea.BorderNP();
-   border.PaintOutsideSolid(window , widget->GetColor(BORDCOL));
+   PaintOutsideSolid(window , border , widget->GetColor(BORDCOL));
 }
 
 
 
 void WidgetPainterBase::PaintRounded() {
    NPAREA border = warea.BorderNP();
-   border.PaintOutsideRounded(window , widget->GetColor(BORDCOL));
+   PaintOutsideRounded(window , border , widget->GetColor(BORDCOL));
 }
 
 
 
 void WidgetPainterBase::PaintContrast(EagleColor outer , EagleColor inner) {
    NPAREA border = warea.BorderNP();
-   border.PaintOutsideContrast(window , outer , inner);
+   PaintOutsideContrast(window , border , outer , inner);
 }
 
 
@@ -87,7 +87,7 @@ void WidgetPainterBase::PaintFocusOutline() {
    BOXAREA b = warea.MarginBox();
    BOXAREA outlinebox(b.left/2 , b.right/2 , b.top/2 , b.bottom/2);
    NPAREA np(warea.OuterArea() , outlinebox);
-   np.PaintOutsideSolid(window , widget->GetColor(HLCOL));
+   PaintOutsideSolid(window , np , widget->GetColor(HLCOL));
    
 }
 
@@ -101,7 +101,7 @@ void WidgetPainterBase::PaintFocusDotted() {
 
 
 void WidgetPainterBase::PaintFocusContrast() {
-   warea.OuterNP().PaintOutsideContrast(window , (*wcolors)[HLCOL] , (*wcolors)[SDCOL]);
+   PaintOutsideContrast(window , warea.OuterNP() , (*wcolors)[HLCOL] , (*wcolors)[SDCOL]);
 }
 
 

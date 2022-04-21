@@ -29,7 +29,7 @@
 
 #include "Eagle/Gui/WidgetBase.hpp"
 
-
+#include "Eagle/Gui/Layout/LayoutRectangle.hpp"
 
 #include <string>
 

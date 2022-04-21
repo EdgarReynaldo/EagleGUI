@@ -28,7 +28,7 @@
 
 
 #include <ostream>
-
+#include "Eagle/Logging.hpp"
 
 
 /**! @enum BOX_TYPE

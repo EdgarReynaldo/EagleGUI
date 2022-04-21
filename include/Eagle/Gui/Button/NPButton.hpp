@@ -7,13 +7,20 @@
 
 
 
-#include "Eagle/Gui/Button/BasicButton.hpp"
+#include "Eagle/Gui/Button/TextIconButton.hpp"
 
 
-class NPButton : public BasicButton {
+class NPButton : public TextIconButton {
 protected :
    
-   NinePatch* np;
+   NinePatch* np[4];
+   
+   BOXAREA box;
+   
+   void CreateNP() {
+      
+   }
+   
    
 public :
    
