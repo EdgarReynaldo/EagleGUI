@@ -35,6 +35,12 @@ void WidgetDecorator::Decorate(void* object , EagleGraphicsContext* win , int xp
 
 
 
+DropShadowDecorator::DropShadowDecorator(SHAREDDECORATOR d) :
+      WidgetDecorator(d)
+{}
+
+
+
 void DropShadowDecorator::DecorateWidget(WidgetBase* widget , EagleGraphicsContext* win , int xpos , int ypos) {
    if (!widget) {return;}
    WidgetArea wa = widget->GetWidgetArea();

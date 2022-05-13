@@ -48,6 +48,11 @@ public :
 
 class DropShadowDecorator : public WidgetDecorator {
    
+public :
+   
+   DropShadowDecorator(SHAREDDECORATOR d = HeapObject((DecoratorBase*)0));
+   virtual ~DropShadowDecorator() {}
+   
    virtual void DecorateWidget(WidgetBase* widget , EagleGraphicsContext* win , int xpos , int ypos);
 
 };

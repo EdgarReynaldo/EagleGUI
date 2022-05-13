@@ -22,7 +22,7 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 #include "Eagle/Timer.hpp"
-
+#include "Eagle/Gui/WidgetDecorators.hpp"
 
 
 const unsigned int TOPIC_DIALOG = NextFreeTopicId();

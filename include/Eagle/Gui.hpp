@@ -29,6 +29,7 @@
 #include "Gui/WidgetArea.hpp"
 #include "Gui/WidgetColorset.hpp"
 #include "Gui/WidgetBase.hpp"
+#include "Gui/WidgetDecorators.hpp"
 ///#include "Gui/WidgetDrawFuncs.hpp"
 #include "Gui/WidgetHandler.hpp"
 #include "Gui/WidgetMover.hpp"
@@ -54,6 +55,7 @@
 
 
 #endif // EagleGui_HPP
+
 
 
 

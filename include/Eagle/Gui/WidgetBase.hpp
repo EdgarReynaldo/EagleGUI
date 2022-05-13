@@ -33,7 +33,7 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/SharedMemory.hpp"
-#include "Eagle/Gui/WidgetDecorators.hpp"
+//#include "Eagle/Gui/WidgetDecorators.hpp"
 
 #include "Eagle/Gui/WidgetMessage.hpp"
 #include "Eagle/Gui/WidgetArea.hpp"
@@ -47,7 +47,7 @@
 
 class LayoutBase;
 class WidgetHandler;
-
+class WidgetDecorator;
 
 extern int PREFERREDWIDGETWIDTH;
 extern int PREFERREDWIDGETHEIGHT;

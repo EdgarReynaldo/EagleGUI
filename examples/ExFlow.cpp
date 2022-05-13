@@ -90,7 +90,10 @@ int main(int argc , char** argv) {
    vbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
    flowbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
    
-   
+   SHAREDOBJECT<WidgetDecorator> dshadow = HeapObject(dynamic_cast<WidgetDecorator*>(new DropShadowDecorator()));
+   hbox.SetWidgetDecorator(dshadow);
+   vbox.SetWidgetDecorator(dshadow);
+   flowbox.SetWidgetDecorator(dshadow);
    
    
 ///   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.1 , 0.1 , 0.2 , 0.6));
