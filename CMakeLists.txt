@@ -18,7 +18,7 @@ option(WANT_EXAMPLES "If you want to build the example programs" ON)
 
 option(DEBUG_CMAKE "Enable cmake debug output" OFF)
 
-
+option(EAGLE_DEBUG_MUTEX_LOCKS "Enable debug logging of mutex locks on all threads created with Eagle" OFF)
 
 
 
@@ -109,10 +109,14 @@ if (WANT_EXAMPLES)
 
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
+            
             if (EAGLE_SHARED_LIBRARY_BUILD)
                message(STATUS "Building example " ${EXNAMEDEBUG} " ${EX}")
                add_executable(${EXNAMEDEBUG} ${EX})
                target_compile_options(${EXNAMEDEBUG} PUBLIC ${OPTS})
+               if (EAGLE_DEBUG_MUTEX_LOCKS)
+                  target_compile_definitions(${EXNAMEDEBUG} PRIVATE EAGLE_DEBUG_MUTEX_LOCKS)
+               endif(EAGLE_DEBUG_MUTEX_LOCKS)
                target_include_directories(${EXNAMEDEBUG} PUBLIC "${EAGLE_INCLUDE_DIR}" "${ALLEGRO5_INCLUDE_DIR}")
                target_link_directories(${EXNAMEDEBUG} PUBLIC "${ALLEGRO5_LIB_DIR}")
                target_link_libraries(${EXNAMEDEBUG} PUBLIC EagleA5DebugShared EagleDebugShared)

@@ -60,6 +60,11 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_LOG)
    target_compile_definitions(EagleA5Objects PRIVATE EAGLE_ASSERT_EXCEPTION)
    target_compile_options(EagleA5Objects PRIVATE "-g" "-fno-inline-functions" "-O0")
+   
+   if (EAGLE_DEBUG_MUTEX_LOCKS)
+      target_compile_definitions(EagleA5Objects PRIVATE EAGLE_DEBUG_MUTEX_LOCKS)
+   endif(EAGLE_DEBUG_MUTEX_LOCKS)
+   
 endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 
 target_compile_definitions(EagleA5Objects PRIVATE ALLEGRO_UNSTABLE)
