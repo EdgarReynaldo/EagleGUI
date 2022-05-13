@@ -204,6 +204,7 @@
 		<Unit filename="include/Eagle/Gui/WidgetBase.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetColorset.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetContainer.hpp" />
+		<Unit filename="include/Eagle/Gui/WidgetDecorators.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetDrawingFuncs.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetFlags.hpp" />
 		<Unit filename="include/Eagle/Gui/WidgetHandler.hpp" />
@@ -324,6 +325,7 @@
 		<Unit filename="src/Eagle/Gui/WidgetBase.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetColorset.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetContainer.cpp" />
+		<Unit filename="src/Eagle/Gui/WidgetDecorators.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetDrawingFuncs.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetFlags.cpp" />
 		<Unit filename="src/Eagle/Gui/WidgetHandler.cpp" />

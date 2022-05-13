@@ -13,15 +13,6 @@
 class NPButton : public TextIconButton {
 protected :
    
-   NinePatch* np[4];
-   
-   BOXAREA box;
-   
-   void CreateNP() {
-      
-   }
-   
-   
 public :
    
    

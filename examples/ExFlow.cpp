@@ -6,10 +6,19 @@
 #include "allegro5/allegro.h"
 
 
+void PipeToEagleLog(const char* str) {
+   EagleInfo() << str << std::endl;
+}
+
+
 int main(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
+   
+   al_set_config_value(al_get_system_config() , "trace" , "level" , "error");
+   
+   al_register_trace_handler(PipeToEagleLog);
    
    SendOutputToFile("ExFlow.log" , "" , false);
    
@@ -66,9 +75,9 @@ int main(int argc , char** argv) {
    mover.WhiteList(&flowbox);
 
    WidgetColorset wcol = default_eagle_color_array;
-   wcol[MARGCOL] = EagleColor(0,0,96,0);
-   wcol[BORDCOL] = EagleColor(255,255,255,255);
    wcol[PADCOL] = EagleColor(0,0,96,255);
+   wcol[BORDCOL] = EagleColor(255,255,255,255);
+   wcol[MARGCOL] = EagleColor(0,0,96,0);
    vbox.SetWidgetColorset(wcol);
    hbox.SetWidgetColorset(wcol);
    flowbox.SetWidgetColorset(wcol);
@@ -76,6 +85,11 @@ int main(int argc , char** argv) {
    hbox.SetWidgetArea(hbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
    vbox.SetWidgetArea(vbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
    flowbox.SetWidgetArea(flowbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
+   
+   hbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
+   vbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
+   flowbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
+   
    
    
    
@@ -135,8 +149,8 @@ int main(int argc , char** argv) {
    widgets[7] = sliders[1];
    widgets[8] = sliders[2];
 
-//   EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
-//   EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
+   EagleFont* verdana = win->LoadFont("Verdana.ttf" , -8);
+   EagleFont* verdana12 = win->LoadFont("Verdana.ttf" , -12);
    
    EAGLE_ASSERT(verdana && verdana->Valid());
    EAGLE_ASSERT(verdana12 && verdana12->Valid());

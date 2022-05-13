@@ -33,6 +33,7 @@
 #include "Eagle/Object.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/SharedMemory.hpp"
+#include "Eagle/Gui/WidgetDecorators.hpp"
 
 #include "Eagle/Gui/WidgetMessage.hpp"
 #include "Eagle/Gui/WidgetArea.hpp"
@@ -131,6 +132,8 @@ protected :
    /// Can be shared
    WidgetPainter wpainter;///< A painter object that controls how the widget will be painted
    SHAREDOBJECT<WidgetColorset> wcolors;///< A shared reference to our widget's colors
+   SHAREDOBJECT<WidgetDecorator> wdecorator;///< A decorator object that can be used to alter the widgets appearance. Decorators may be chained.
+   
    
    /// Visual ordering
    int zdepth;///< How deep a widget is in the z order. Larger values indicate the widget is closer to the screen, and on top
@@ -223,6 +226,8 @@ WidgetBase(std::string classname , std::string objname) :
    void SetWidgetPainter(const WidgetPainter& wp);///< Set the widget painter to use for painting this widget
    void UnsetWidgetPainter();///< Reset the widget painter for this widget to the default
    
+   void SetWidgetDecorator(SHAREDOBJECT<WidgetDecorator> decorator);
+   
    virtual void SetZOrder(int zpriority);///< Set the z priority. Larger values are closer to the screen and appear above
                                  ///< widgets with lower priority
    
@@ -249,6 +254,8 @@ WidgetBase(std::string classname , std::string objname) :
    
    
    WidgetPainter GetWidgetPainter() const;///< Returns the current widget painter in use
+   
+   SHAREDOBJECT<WidgetDecorator> GetWidgetDecorator() const;///< Returns the widget decorator chain in use
    
    
    virtual bool AcceptsFocus() {return true;}///< Returns true if this widget accepts the focus. Overload if you want

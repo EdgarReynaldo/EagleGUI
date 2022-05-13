@@ -15,5 +15,7 @@
 		<Project filename="examples/GuiEditor.cbp" />
 		<Project filename="examples/ExGui.cbp" />
 		<Project filename="examples/ExButton.cbp" />
+		<Project filename="examples/ExAimGame.cbp" />
+		<Project filename="../../../Downloads/ForumCode/agonvs/mappy.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

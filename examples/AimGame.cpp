@@ -41,7 +41,7 @@ struct Mover {
       const double by = pos.Y();
       const double dx = px - bx;
       const double dy = py - by;
-      const double dzsq = dx*dx + dy*dy;
+      const double dzsq = dx*dx + dy*dy; 
       const double dz = sqrt(dzsq);
       const double pvx = target.vel.X();
       const double pvy = target.vel.Y();
@@ -49,7 +49,34 @@ struct Mover {
       const double pvz = sqrt(pvzsq);
       const double bvzsq = velocity*velocity;
       const double bvz = sqrt(bvzsq);
+
+//  t^2(pvx^2 + pvy^2 - bv^2)
+// +t^1(2pxpvx + 2pypvy - 2bxpvx - 2bypvy)
+// +t^0(px^2 + bx^2 + py^2 + by^2 - 2bxpx - 2bypy)
+
+   double A = pvz*pvz - bvz*bvz;
+   double B = 2*px*pvx + 2*py*pvy - 2*bx*pvx - 2*by*pvy;
+   double C = px*px + bx*bx + py*py + by*by - 2*bx*px - 2*by*py;
+   double D = B*B - 4*A*C;
+   if (A == 0.0 || D < 0.0) {
+      return -1.0;
+   }
+   
+   double t1 = (-B - sqrt(D))/(2.0*A);
+   double t2 = (-B + sqrt(D))/(2.0*A);
+
+   double t = t2;
+   if (t2 < 0.0 || t1 > 0.0 && t1 < t2) {
+      t = t1;
+   }
+   
+   EagleInfo() << "T is " << t << std::endl;
+   if (t < 0.0) {
+      return -1.0;
+   }
+   
 ///      const double t = tsecs_ahead;
+/** DanielH's method, doesn't work because we don't know bvx and bvy
       /// t = sqrt(((bx - px)^2 + (by - py)^2) / (pv^2 + bv^2 - 2*pv*bv*cos(C)))
       ///cos(angle) = (v1 . v2)/(||v1||||v2||)
       double B = acos((pvx*bvx + pvy*bvy)/(pvz*bvz));
@@ -61,6 +88,10 @@ struct Mover {
       const double bvy = bvz*sin(C);
       double t = sqrt(dz*dz/((pvzsq + bvzsq - 2.0*(pvx*pvx + pvy*pvy)*(bvz*bvz)*cos(C))));
       EagleInfo() << "T is " << t << std::endl;
+*/
+
+
+
 /**
 This doesn't work
       const double A = pvzsq - bvzsq;
@@ -98,7 +129,7 @@ This doesn't work
       
       double angle = atan2(dy/(bvz*(*T)) + pvy/bvz , dx/(bvz*(*T)) + pvx/bvz);
 */
-      double angle = atan2(dy/(bvz*(t)) + pvy/bvz , dx/(bvz*(t)) + pvx/bvz);
+      double angle = atan2(dy + pvy*t , dx + pvx*t);
       if (angle < 0.0) {
          return dir = angle + 2.0*M_PI;
       }
@@ -353,8 +384,110 @@ int main(int argc , char** argv) {
 
 
 
+ALLEGRO_BITMAP* CreateTexturedBitmnap(ALLEGRO_BITMAP* mask , ALLEGRO_COLOR maskcolor , ALLEGRO_BITMAP* texture , ALLEGRO_BITMAP* image);
+
+#include "allegro5/allegro_image.h"
 
 
+
+int main2(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
+   if (!al_init()) {return 1;}
+   
+   if (!al_init_image_addon()) {return 2;}
+   
+
+   return 0;
+}
+
+ALLEGRO_BITMAP* CreateTexturedBitmap(ALLEGRO_BITMAP* mask , ALLEGRO_COLOR maskcolor , ALLEGRO_BITMAP* texture , ALLEGRO_BITMAP* image) {
+   
+   ALLEGRO_LOCKED_REGION* mlock = 0;
+   ALLEGRO_LOCKED_REGION* texlock = 0;
+   ALLEGRO_LOCKED_REGION* imagelock = 0;
+   ALLEGRO_LOCKED_REGION* destlock = 0;
+   
+   int blop = 0;
+   int blsrc = 0;
+   int bldest = 0;
+   al_get_blender(&blop , &blsrc , &bldest);
+   
+   ALLEGRO_BITMAP* oldtarget = al_get_target_bitmap();
+   
+   
+   int w = al_get_bitmap_width(image);
+   int h = al_get_bitmap_height(image);
+   if (al_get_bitmap_width(texture) != w || al_get_bitmap_height(texture) != h || al_get_bitmap_width(mask) != w || al_get_bitmap_height(mask) != h) {
+      printf("Bitmaps not same size.\n");
+      return 0;
+   }
+   ALLEGRO_BITMAP* dest = al_create_bitmap(w , h);
+   if (!dest) {
+      return 0;
+   }
+   al_set_target_bitmap(dest);
+   al_set_blender(ALLEGRO_ADD , ALLEGRO_ONE , ALLEGRO_ZERO);
+   al_draw_bitmap(image , 0 , 0 , 0);
+   
+   mlock = al_lock_bitmap(mask , ALLEGRO_PIXEL_FORMAT_ANY , ALLEGRO_LOCK_READONLY);
+   if (!mlock) {
+      al_destroy_bitmap(dest);
+      dest = 0;
+      goto cleanup;
+   }
+   
+   texlock = al_lock_bitmap(texture , ALLEGRO_PIXEL_FORMAT_ANY , ALLEGRO_LOCK_READONLY);
+   if (!texlock) {
+      al_destroy_bitmap(dest);
+      dest = 0;
+      goto cleanup;
+   }
+   
+   imagelock = al_lock_bitmap(image , ALLEGRO_PIXEL_FORMAT_ANY , ALLEGRO_LOCK_READONLY);
+   if (!imagelock) {
+      al_destroy_bitmap(dest);
+      dest = 0;
+      goto cleanup;
+   }
+
+   destlock = al_lock_bitmap(dest , ALLEGRO_PIXEL_FORMAT_ANY , ALLEGRO_LOCK_READWRITE);
+   if (!destlock) {
+      al_destroy_bitmap(dest);
+      dest = 0;
+      goto cleanup;
+   }
+
+   al_set_target_bitmap(dest);
+   al_set_blender(ALLEGRO_ADD , ALLEGRO_DEST_COLOR , ALLEGRO_ZERO);/// Multiply blender
+   
+   for (int y = 0 ; y < h ; ++y) {
+      for (int x = 0 ; x < w ; ++x) {
+         ALLEGRO_COLOR mcol = al_get_pixel(mask , x , y);
+         if (mcol.r == maskcolor.r && mcol.g == maskcolor.g && mcol.b == maskcolor.b) {
+            // pixel on mask bitmap matches maskcolor
+            al_put_blended_pixel(x , y , al_get_pixel(texture , x , y));/// draw a blended pixel from the texture if it is the mask color
+         }
+         else {
+            al_put_pixel(x , y , al_get_pixel(image , x , y));/// draw a standard pixel from the image (non masked)
+         }
+      }
+   }
+   
+   
+   cleanup:
+   if (mlock) {al_unlock_bitmap(mask);}
+   if (texlock) {al_unlock_bitmap(texture);}
+   if (imagelock) {al_unlock_bitmap(image);}
+   if (destlock) {al_unlock_bitmap(dest);}
+   
+   al_set_blender(blop , blsrc , bldest);
+   al_set_target_bitmap(oldtarget);
+   
+   return dest;
+}
 
 
 

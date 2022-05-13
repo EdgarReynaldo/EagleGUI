@@ -235,6 +235,10 @@ void WidgetBase::Display(EagleGraphicsContext* win , int xpos , int ypos) {
       PrivateDisplay(win , xpos , ypos);
    }
 
+   if (wdecorator.get()) {
+      wdecorator->Decorate(this , win , 0 , 0);
+   }
+   
    if (wflags.FlagOff(ENABLED)) {
       win->DrawFilledRectangle(InnerArea() , EagleColor(96,96,96,96));/// Show widgets as disabled
    }
@@ -362,6 +366,13 @@ void WidgetBase::SetWidgetPainter(const WidgetPainter& wp) {
 
 void WidgetBase::UnsetWidgetPainter() {
    wpainter.reset();
+}
+
+
+
+void WidgetBase::SetWidgetDecorator(SHAREDOBJECT<WidgetDecorator> decorator) {
+   wdecorator = decorator;
+   SetBgRedrawFlag();
 }
 
 
@@ -506,6 +517,12 @@ WidgetPainter WidgetBase::GetWidgetPainter() const {
       return whandler->GetWidgetPainter();
    }
    return default_widget_painter;
+}
+
+
+
+SHAREDOBJECT<WidgetDecorator> WidgetBase::GetWidgetDecorator() const {
+   return wdecorator;
 }
 
 
