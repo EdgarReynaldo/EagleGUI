@@ -132,6 +132,8 @@ public :
    /// Getters
    
    NPAREA OuterNP() const;///< Returns the nine patch for the outer area (the margin)
+   NPAREA MarginNP() const;///< Returns the nine patch for the outer area (the margin)
+   
    NPAREA BorderNP() const;///< Returns the nine patch for the border area
    NPAREA PaddingNP() const;///< Returns the nine patch for the padding area
    

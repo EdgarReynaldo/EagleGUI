@@ -45,15 +45,15 @@ void DropShadowDecorator::DecorateWidget(WidgetBase* widget , EagleGraphicsConte
    if (!widget) {return;}
    WidgetArea wa = widget->GetWidgetArea();
    wa.MoveBy(Pos2I(xpos , ypos));
+   NPAREA npmargin = wa.MarginNP();
    NPAREA npborder = wa.BorderNP();
-   NPAREA nppadding = wa.PaddingNP();
    const WidgetColorset& wc = *(widget->GetWidgetColorset().get());
    EagleColor hl = wc[HLCOL];
    EagleColor sd = wc[SDCOL];
    
-   PaintNPOutsideFill(win , nppadding , hl , sd , 0);
-   win->DrawFilledRectangle(npborder.GetNPCell(CELL_AREA_BOTTOMMIDDLE) , sd);
-   win->DrawFilledRectangle(npborder.GetNPCell(CELL_AREA_BOTTOMRIGHT) , sd);
-   win->DrawFilledRectangle(npborder.GetNPCell(CELL_AREA_MIDDLERIGHT) , sd);
+   win->DrawFilledRectangle(npmargin.GetNPCell(CELL_AREA_BOTTOMMIDDLE) , sd);
+   win->DrawFilledRectangle(npmargin.GetNPCell(CELL_AREA_BOTTOMRIGHT) , sd);
+   win->DrawFilledRectangle(npmargin.GetNPCell(CELL_AREA_MIDDLERIGHT) , sd);
+   PaintNPOutsideRounded(win , npborder , hl , sd , 0);
 }
 

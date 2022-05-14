@@ -97,7 +97,7 @@ int main(int argc , char** argv) {
    
    
 ///   rl.PlaceWidget(&vbox , 1 , LayoutRectangle(0.1 , 0.1 , 0.2 , 0.6));
-   rl.PlaceWidget(&mover , 0 , LayoutRectangle(-1.0 , -1.0 , 0.1 , 0.1));
+   rl.PlaceWidget(&mover , 0 , LayoutRectangle(-1.0 , -1.0 , 0.1 , 0.1));/// Just position off screen to keep out of the way
    
    EagleImage* btnimgs[2] = {
       win->LoadImageFromFile("Data/Images/Up.png"),
@@ -194,7 +194,9 @@ int main(int argc , char** argv) {
    
    for (unsigned int i = 0 ; i < 20 ; ++i) {
       btns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(2,2,2) , false);
+      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(2,1,3) , false);
+      btns[i].GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
+      btns[i].SetWidgetDecorator(SHAREDOBJECT<WidgetDecorator>(HeapObject<WidgetDecorator>(new DropShadowDecorator)));
       btns[i].SetFont(font);
       btns[i].SetLabel(text[i]);
       
@@ -202,19 +204,21 @@ int main(int argc , char** argv) {
       (*wc.get())[PADCOL] = EagleColor(0,0,0,0);
       (*wc.get())[MARGCOL] = EagleColor(0,0,0,0);
       (*wc.get())[BORDCOL] = EagleColor(255,255,255,255);
-      (*wc.get())[HVRCOL] = EagleColor(192,255,255,127);
-      (*wc.get())[MGCOL] = EagleColor(96,152,152,127);
+      (*wc.get())[HVRCOL] = EagleColor(255,127,0,127);
+      (*wc.get())[MGCOL] = EagleColor(127,64,0,127);
+      (*wc.get())[FGCOL] = EagleColor(127,64,0,255);
+      (*wc.get())[SDCOL] = EagleColor(64,0,0,127);
       (*wc.get())[TXTCOL] = EagleColor(255,255,255,255);
    }
    
    RadioGroup radios[7];
-   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1]}) , &btns[0]);
-   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[2] , &btns[3]}) , &btns[2]);
-   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[4] , &btns[5] , &btns[6] , &btns[7]}) , &btns[4]);
-   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[8] , &btns[9]}) , &btns[8]);
-   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[10] , &btns[11] , &btns[12]}) , &btns[10]);
-   radios[5].SetRadioGroup(std::vector<BasicButton*>({&btns[13] , &btns[14] , &btns[15]}) , &btns[13]);
-   radios[6].SetRadioGroup(std::vector<BasicButton*>({&btns[16] , &btns[17] , &btns[18] , &btns[19]}) , &btns[16]);
+   radios[0].SetRadioGroup(std::vector<BasicButton*>({&btns[0] , &btns[1]}) , &btns[0]);/// WE, default W
+   radios[1].SetRadioGroup(std::vector<BasicButton*>({&btns[2] , &btns[3]}) , &btns[2]);/// NS, default N
+   radios[2].SetRadioGroup(std::vector<BasicButton*>({&btns[4] , &btns[5] , &btns[6] , &btns[7]}) , &btns[4]);/// diagonal
+   radios[3].SetRadioGroup(std::vector<BasicButton*>({&btns[8] , &btns[9]}) , &btns[8]);/// flow direction
+   radios[4].SetRadioGroup(std::vector<BasicButton*>({&btns[10] , &btns[11] , &btns[12]}) , &btns[10]);/// Halign
+   radios[5].SetRadioGroup(std::vector<BasicButton*>({&btns[13] , &btns[14] , &btns[15]}) , &btns[13]);/// Valign
+   radios[6].SetRadioGroup(std::vector<BasicButton*>({&btns[16] , &btns[17] , &btns[18] , &btns[19]}) , &btns[16]);/// Spacing
    
    sys->GetSystemQueue()->ListenTo(&radios[0]);
    sys->GetSystemQueue()->ListenTo(&radios[1]);

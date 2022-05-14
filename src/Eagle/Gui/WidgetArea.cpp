@@ -245,6 +245,12 @@ NPAREA WIDGETAREA::OuterNP() const {
 
 
 
+NPAREA WIDGETAREA::MarginNP() const {
+   return OuterNP();
+}
+
+
+
 NPAREA WIDGETAREA::BorderNP() const {
    return NPAREA(BorderArea() , GetAreaBox(BOX_TYPE_BORDER));
 }
