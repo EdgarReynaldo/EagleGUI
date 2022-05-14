@@ -346,7 +346,7 @@ void EagleGraphicsContext::DrawFilledQuarterEllipse(Rectangle r , QUADRANT_DIR d
       Pos2I(r.BRX() , r.Y()  ),
       Pos2I(r.X()   , r.Y()  ) 
    };
-   DrawFilledQuarterEllipse(Rectangle(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height()) , dir , c);
+   DrawFilledEllipse(corners[dir].X() , corners[dir].Y() , r.Width() , r.Height() , c);
    target->PopClippingRectangle();
 }
 
