@@ -60,7 +60,7 @@ int main(int argc , char** argv) {
    
    gui.SetRootLayout(&rl);
    
-   rl.Resize(8);
+   rl.Resize(9);
    
    HBoxLayout hbox("HBOXLayout" , "hbox");
    VBoxLayout vbox("VBOXLayout" , "vbox");
@@ -159,12 +159,13 @@ int main(int argc , char** argv) {
    EAGLE_ASSERT(verdana12 && verdana12->Valid());
    
    
-   GridLayout rgrids[4];
+   GridLayout rgrids[5];
    
-   rgrids[0].ResizeGrid(1 , 8);
-   rgrids[1].ResizeGrid(1 , 2);
-   rgrids[2].ResizeGrid(1 , 6);
-   rgrids[3].ResizeGrid(1 , 4);
+   rgrids[0].ResizeGrid(1 , 4);
+   rgrids[1].ResizeGrid(1 , 4);
+   rgrids[2].ResizeGrid(1 , 2);
+   rgrids[3].ResizeGrid(1 , 6);
+   rgrids[4].ResizeGrid(1 , 4);
    
    GuiButton btns[20];
    BasicRadioButton rbtns[20];
@@ -204,10 +205,10 @@ int main(int argc , char** argv) {
       (*wc.get())[PADCOL] = EagleColor(0,0,0,0);
       (*wc.get())[MARGCOL] = EagleColor(0,0,0,0);
       (*wc.get())[BORDCOL] = EagleColor(255,255,255,255);
-      (*wc.get())[HVRCOL] = EagleColor(255,127,0,127);
-      (*wc.get())[MGCOL] = EagleColor(127,64,0,127);
-      (*wc.get())[FGCOL] = EagleColor(127,64,0,255);
-      (*wc.get())[SDCOL] = EagleColor(64,0,0,127);
+      (*wc.get())[HVRCOL] = EagleColor(255,255,255,96);
+      (*wc.get())[MGCOL] = EagleColor(127,127,127,255);
+      (*wc.get())[FGCOL] = EagleColor(192,192,192,255);
+      (*wc.get())[SDCOL] = EagleColor(96,96,96,255);
       (*wc.get())[TXTCOL] = EagleColor(255,255,255,255);
    }
    
@@ -228,10 +229,11 @@ int main(int argc , char** argv) {
    sys->GetSystemQueue()->ListenTo(&radios[5]);
    sys->GetSystemQueue()->ListenTo(&radios[6]);
    
-   rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.05 , 0.2 , 0.4));
-   rl.AddWidget(&rgrids[1] , LayoutRectangle(0.45 , 0.05 , 0.2 , 0.2));
-   rl.AddWidget(&rgrids[2] , LayoutRectangle(0.05 , 0.45 , 0.2 , 0.45));
-   rl.AddWidget(&rgrids[3] , LayoutRectangle(0.75 , 0.05 , 0.2 , 0.2));
+   rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.1 , 0.16 , 0.175));
+   rl.AddWidget(&rgrids[1] , LayoutRectangle(0.05 , 0.3 , 0.16 , 0.175));
+   rl.AddWidget(&rgrids[2] , LayoutRectangle(0.45 , 0.05 , 0.16 , 0.125));
+   rl.AddWidget(&rgrids[3] , LayoutRectangle(0.05 , 0.5 , 0.16 , 0.4));
+   rl.AddWidget(&rgrids[4] , LayoutRectangle(0.75 , 0.05 , 0.16 , 0.175));
    
    rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.25 , 0.5 , 0.1));
    rl.AddWidget(&vbox , LayoutRectangle(0.25 , 0.4 , 0.1 , 0.5));
@@ -241,27 +243,28 @@ int main(int argc , char** argv) {
    rgrids[0].PlaceWidget(&btns[1] , 1);
    rgrids[0].PlaceWidget(&btns[2] , 2);
    rgrids[0].PlaceWidget(&btns[3] , 3);
-   rgrids[0].PlaceWidget(&btns[4] , 4);
-   rgrids[0].PlaceWidget(&btns[5] , 5);
-   rgrids[0].PlaceWidget(&btns[6] , 6);
-   rgrids[0].PlaceWidget(&btns[7] , 7);
-   rgrids[1].PlaceWidget(&btns[8] , 0);
-   rgrids[1].PlaceWidget(&btns[9] , 1);
-   rgrids[2].PlaceWidget(&btns[10] , 0);
-   rgrids[2].PlaceWidget(&btns[11] , 1);
-   rgrids[2].PlaceWidget(&btns[12] , 2);
-   rgrids[2].PlaceWidget(&btns[13] , 3);
-   rgrids[2].PlaceWidget(&btns[14] , 4);
-   rgrids[2].PlaceWidget(&btns[15] , 5);
-   rgrids[3].PlaceWidget(&btns[16] , 0);
-   rgrids[3].PlaceWidget(&btns[17] , 1);
-   rgrids[3].PlaceWidget(&btns[18] , 2);
-   rgrids[3].PlaceWidget(&btns[19] , 3);
+   rgrids[1].PlaceWidget(&btns[4] , 0);
+   rgrids[1].PlaceWidget(&btns[5] , 1);
+   rgrids[1].PlaceWidget(&btns[6] , 2);
+   rgrids[1].PlaceWidget(&btns[7] , 3);
+   rgrids[2].PlaceWidget(&btns[8] , 0);
+   rgrids[2].PlaceWidget(&btns[9] , 1);
+   rgrids[3].PlaceWidget(&btns[10] , 0);
+   rgrids[3].PlaceWidget(&btns[11] , 1);
+   rgrids[3].PlaceWidget(&btns[12] , 2);
+   rgrids[3].PlaceWidget(&btns[13] , 3);
+   rgrids[3].PlaceWidget(&btns[14] , 4);
+   rgrids[3].PlaceWidget(&btns[15] , 5);
+   rgrids[4].PlaceWidget(&btns[16] , 0);
+   rgrids[4].PlaceWidget(&btns[17] , 1);
+   rgrids[4].PlaceWidget(&btns[18] , 2);
+   rgrids[4].PlaceWidget(&btns[19] , 3);
    
    mover.WhiteList(&rgrids[0]);
    mover.WhiteList(&rgrids[1]);
    mover.WhiteList(&rgrids[2]);
    mover.WhiteList(&rgrids[3]);
+   mover.WhiteList(&rgrids[4]);
    
    sys->GetSystemTimer()->Start();
    
