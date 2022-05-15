@@ -159,13 +159,29 @@ int main(int argc , char** argv) {
    EAGLE_ASSERT(verdana12 && verdana12->Valid());
    
    
-   GridLayout rgrids[5];
+   GridLayout rgrids[6];
    
    rgrids[0].ResizeGrid(1 , 4);
    rgrids[1].ResizeGrid(1 , 4);
    rgrids[2].ResizeGrid(1 , 2);
-   rgrids[3].ResizeGrid(1 , 6);
-   rgrids[4].ResizeGrid(1 , 4);
+   rgrids[3].ResizeGrid(1 , 3);
+   rgrids[4].ResizeGrid(1 , 3);
+   rgrids[5].ResizeGrid(1 , 4);
+   
+   for (unsigned int i = 0 ; i < 6 ; ++i) {
+      SHAREDOBJECT<WidgetColorset> wc = rgrids[i].GetWidgetColorset();
+      WidgetArea wa = rgrids[i].GetWidgetArea();
+      wa.SetBoxesContract(1,6,3);
+      rgrids[i].SetWidgetArea(wa , false);
+      rgrids[i].SetVisibleState(true);
+      rgrids[i].GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
+      rgrids[i].SetWidgetDecorator(dshadow);
+      (*wc.get())[HLCOL] = EagleColor(127,255,127,255);
+      (*wc.get())[SDCOL] = EagleColor(64,127,64,255);
+      rgrids[i].SetWidgetColorset(wc);
+   }
+   
+   
    
    GuiButton btns[20];
    BasicRadioButton rbtns[20];
@@ -232,8 +248,9 @@ int main(int argc , char** argv) {
    rl.AddWidget(&rgrids[0] , LayoutRectangle(0.05 , 0.1 , 0.16 , 0.175));
    rl.AddWidget(&rgrids[1] , LayoutRectangle(0.05 , 0.3 , 0.16 , 0.175));
    rl.AddWidget(&rgrids[2] , LayoutRectangle(0.45 , 0.05 , 0.16 , 0.125));
-   rl.AddWidget(&rgrids[3] , LayoutRectangle(0.05 , 0.5 , 0.16 , 0.4));
-   rl.AddWidget(&rgrids[4] , LayoutRectangle(0.75 , 0.05 , 0.16 , 0.175));
+   rl.AddWidget(&rgrids[3] , LayoutRectangle(0.05 , 0.5 , 0.16 , 0.15));
+   rl.AddWidget(&rgrids[4] , LayoutRectangle(0.05 , 0.7 , 0.16 , 0.15));
+   rl.AddWidget(&rgrids[5] , LayoutRectangle(0.75 , 0.05 , 0.16 , 0.175));
    
    rl.AddWidget(&hbox , LayoutRectangle(0.4 , 0.25 , 0.5 , 0.1));
    rl.AddWidget(&vbox , LayoutRectangle(0.25 , 0.4 , 0.1 , 0.5));
@@ -252,13 +269,13 @@ int main(int argc , char** argv) {
    rgrids[3].PlaceWidget(&btns[10] , 0);
    rgrids[3].PlaceWidget(&btns[11] , 1);
    rgrids[3].PlaceWidget(&btns[12] , 2);
-   rgrids[3].PlaceWidget(&btns[13] , 3);
-   rgrids[3].PlaceWidget(&btns[14] , 4);
-   rgrids[3].PlaceWidget(&btns[15] , 5);
-   rgrids[4].PlaceWidget(&btns[16] , 0);
-   rgrids[4].PlaceWidget(&btns[17] , 1);
-   rgrids[4].PlaceWidget(&btns[18] , 2);
-   rgrids[4].PlaceWidget(&btns[19] , 3);
+   rgrids[4].PlaceWidget(&btns[13] , 0);
+   rgrids[4].PlaceWidget(&btns[14] , 1);
+   rgrids[4].PlaceWidget(&btns[15] , 2);
+   rgrids[5].PlaceWidget(&btns[16] , 0);
+   rgrids[5].PlaceWidget(&btns[17] , 1);
+   rgrids[5].PlaceWidget(&btns[18] , 2);
+   rgrids[5].PlaceWidget(&btns[19] , 3);
    
    mover.WhiteList(&rgrids[0]);
    mover.WhiteList(&rgrids[1]);
