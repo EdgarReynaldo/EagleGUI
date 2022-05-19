@@ -656,9 +656,9 @@ EagleTimer* EagleSystem::CreateTimer(std::string objname) {
 
 
 
-EagleGraphicsContext* EagleSystem::CreateGraphicsContext(std::string objname , int width , int height , int flags) {
+EagleGraphicsContext* EagleSystem::CreateGraphicsContext(std::string objname , int width , int height , int flags , int newx , int newy) {
    EAGLE_ASSERT(system_up);
-   EagleGraphicsContext* win = PrivateCreateGraphicsContext(objname , width , height , flags);
+   EagleGraphicsContext* win = PrivateCreateGraphicsContext(objname , width , height , flags , newx , newy);
    if (win) {
       if (system_queue) {
          system_queue->ListenTo(win);
@@ -669,11 +669,11 @@ EagleGraphicsContext* EagleSystem::CreateGraphicsContext(std::string objname , i
 
 
 
-EagleGraphicsContext* EagleSystem::CreatePopupWindow(std::string objname , int width , int height , int flags) {
+EagleGraphicsContext* EagleSystem::CreatePopupWindow(std::string objname , int width , int height , int flags , int newx , int newy) {
    flags |= EAGLE_NOFRAME;/// Specify no frame
    flags &= ~EAGLE_FULLSCREEN;/// Remove fullscreen
    flags |= EAGLE_WINDOWED;/// Always windowed
-   return CreateGraphicsContext(objname , width , height , flags);
+   return CreateGraphicsContext(objname , width , height , flags , newx , newy);
 }
 
 

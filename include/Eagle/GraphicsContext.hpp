@@ -224,6 +224,8 @@ protected :
    typedef NPSET::iterator NPSIT;
    typedef FONTSET::iterator FSIT;
 
+   int newx;
+   int newy;
    int scrw;
    int scrh;
 
@@ -284,7 +286,7 @@ public :
     *   Pure virtual functions to create an EagleGraphicsContext, check its validity, and destroy it.
     *   Implement in your driver's derived graphics context class
     */
-   
+   virtual void SetNewWindowPosition(int wx , int wy)=0;///< Set new window position. Use -1,-1 to center the window. Centering is default.
    virtual bool Create(int width , int height , int flags)=0;///< Responsible for creating Font.cpp:default_font
    virtual bool Valid()=0;
    virtual void Destroy()=0;

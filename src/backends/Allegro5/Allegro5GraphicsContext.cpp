@@ -56,7 +56,7 @@ void Allegro5GraphicsContext::PrivateFlipDisplay() {
 
 
 
-Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width , int height , int flags) :
+Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width , int height , int flags , int newwx , int newwy) :
       EagleGraphicsContext("Allegro5GraphicsContext" , objname),
       display(0),
       realbackbuffer("A5GC::realbackbuffer"),
@@ -69,6 +69,7 @@ Allegro5GraphicsContext::Allegro5GraphicsContext(std::string objname , int width
    our_transformer = &allegro5transformer;
    if (width < 0) {width = 0;}
    if (height < 0) {height = 0;}
+   SetNewWindowPosition(newwx , newwy);
    if (width && height) {
       Create(width , height , flags);
    }
@@ -88,11 +89,24 @@ EagleSystem* Allegro5GraphicsContext::GetSystem() {
 
 
 
+void Allegro5GraphicsContext::SetNewWindowPosition(int wx , int wy) {
+   if (wx != -1 && wy != -1) {
+      al_set_new_window_position(wx , wy);
+   }
+   else {
+      al_set_new_window_position(INT_MAX , INT_MAX);
+   }
+}
+
+
+
 bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    Destroy();
 
+
    /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
    al_set_new_display_flags(flags);
+
    display = al_create_display(width,height);
 
    if (!display) {

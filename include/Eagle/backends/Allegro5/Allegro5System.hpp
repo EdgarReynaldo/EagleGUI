@@ -59,7 +59,7 @@ private :
    EagleInputHandler*    PrivateCreateInputHandler   (std::string objname);
    EagleEventHandler*    PrivateCreateEventHandler   (std::string objname , bool delay_events = true);
    EagleTimer*           PrivateCreateTimer          (std::string objname);
-   EagleGraphicsContext* PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags);
+   EagleGraphicsContext* PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags , int newx , int newy);
    EagleThread*          PrivateCreateThread         (std::string objname , void* (*process)(EagleThread* , void*) , void* data);
    EagleMutex*           PrivateCreateMutex          (std::string objname , bool recursive , bool timed);
    EagleClipboard*       PrivateCreateClipboard      (std::string objname);

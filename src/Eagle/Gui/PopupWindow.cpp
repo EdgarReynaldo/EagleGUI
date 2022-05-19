@@ -39,6 +39,17 @@ PopupWindow::PopupWindow(std::string system , std::string window_name) :
 
 
 
+PopupWindow::PopupWindow(int wx , int wy , int width , int height , int flags , std::string system , std::string window_name) :
+      WidgetHandler(0 , "Popup Window" , window_name),
+      our_system(0),
+      our_window(0) 
+{
+   our_system = Eagle::EagleLibrary::System(system);
+   CreatePopupWindow(wx , wy , width , height , flags);
+}
+
+
+
 PopupWindow::~PopupWindow() {
    FreePopupWindow();
 }
@@ -62,7 +73,7 @@ void PopupWindow::CreatePopupWindow(int sx , int sy , int width , int height , i
    EAGLE_ASSERT(our_system);
    
    std::string sname = ShortName();
-   our_window = our_system->CreatePopupWindow(sname , width , height , flags);
+   our_window = our_system->CreatePopupWindow(sname , width , height , flags , sx , sy);
    if (!our_window) {
       std::string flagstr = PrintDisplayFlags(flags);
       throw EagleException(StringPrintF("Failed to create %d x %d popup window with flags %s\n",
@@ -78,6 +89,7 @@ void PopupWindow::CreatePopupWindow(int sx , int sy , int width , int height , i
 
 void PopupWindow::Display() {
    our_window->DrawToBackBuffer();
+   our_window->Clear();
    WidgetHandler::Display(our_window , 0 , 0);
    our_window->FlipDisplay();
 }
@@ -103,7 +115,7 @@ PopupText::PopupText(int sx , int sy , int flags , std::string message , EagleFo
 {
    Rectangle t = text.TextArea();
    CreatePopupWindow(sx , sy , t.W() + 4 , t.H() + 4 , flags);
-   text.SetWidgetArea(Rectangle(0 , 0 , t.W() + 4 , t.H() + 4) , false);
+   text.SetWidgetArea(Rectangle(2 , 2 , t.W() , t.H() ) , false);
    text.ShrinkWrap();
    AddWidget(&text);
 }

@@ -91,7 +91,7 @@ private :
 
    friend class Allegro5WindowManager;///< To create a window, use the window manager
 
-   Allegro5GraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0);///< Private constructor!
+   Allegro5GraphicsContext(std::string objname = "Nemo" , int width = 0 , int height = 0 , int flags = 0 , int newwx = -1 , int newwy = -1);///< Private constructor!
 
 public :
 
@@ -102,6 +102,7 @@ public :
 
 
    /// creation/destruction
+   virtual void SetNewWindowPosition(int wx , int wy);
    virtual bool Create(int width , int height , int flags);
    virtual bool Valid();
    virtual void Destroy();

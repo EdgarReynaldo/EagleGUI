@@ -147,8 +147,8 @@ EagleTimer* Allegro5System::PrivateCreateTimer(std::string objname) {
 
 
 
-EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags) {
-   return window_manager->CreateGraphicsContext(objname , width , height , flags);
+EagleGraphicsContext* Allegro5System::PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags , int newx , int newy) {
+   return window_manager->CreateGraphicsContext(objname , width , height , flags , newx , newy);
 }
 
 

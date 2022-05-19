@@ -44,7 +44,7 @@ protected :
 public :
    
    PopupWindow(std::string system = "Any" , std::string window_name = "Nemo");
-   
+   PopupWindow(int wx , int wy , int width , int height , int flags , std::string system = "Any" , std::string window_name = "Nemo");
    virtual ~PopupWindow();
    
    virtual void FreePopupWindow();

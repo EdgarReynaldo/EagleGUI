@@ -67,7 +67,7 @@ protected :
    /**! @fn PrivateCreateWindow <std::string , int , int , int>
     *   @brief Pure virtual function to create a new window
     */
-   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags)=0;
+   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags , int newx = -1 , int newy = 1)=0;
 
    /**! @fn PrivateGiveWindowFocus <int>
     *   @brief Pure virtual function to give a window focus
@@ -91,7 +91,7 @@ public :
     *   @retval The new window
     */
 
-   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags);
+   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags , int newx = -1 , int newy = -1);
 
    /**! @fn DestroyWindow <int>
     *   @brief Destroys a window given by it's @ref EAGLE_ID - see @ref EagleObject::GetEagleId

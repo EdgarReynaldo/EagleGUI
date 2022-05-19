@@ -159,7 +159,7 @@ protected :
    virtual EagleInputHandler*    PrivateCreateInputHandler   (std::string objname)=0;
    virtual EagleEventHandler*    PrivateCreateEventHandler   (std::string objname , bool delay_events = true)=0;
    virtual EagleTimer*           PrivateCreateTimer          (std::string objname)=0;
-   virtual EagleGraphicsContext* PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags)=0;
+   virtual EagleGraphicsContext* PrivateCreateGraphicsContext(std::string objname , int width , int height , int flags , int newx = -1 , int newy = -1)=0;
    virtual EagleThread*          PrivateCreateThread         (std::string objname , void* (*process)(EagleThread* , void*) , void* data)=0;
    virtual EagleMutex*           PrivateCreateMutex          (std::string objname , bool recursive , bool timed)=0;
    virtual EagleClipboard*       PrivateCreateClipboard      (std::string objname)=0;
@@ -245,8 +245,8 @@ public :
 	EagleEventHandler*    CreateEventHandler(std::string objname = "Nemo" , bool delay_events = false);
 
 	EagleTimer*           CreateTimer          (std::string objname = "Nemo");
-   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags);
-   EagleGraphicsContext* CreatePopupWindow    (std::string objname , int width , int height , int flags);
+   EagleGraphicsContext* CreateGraphicsContext(std::string objname , int width , int height , int flags , int newx = -1 , int newy = -1);
+   EagleGraphicsContext* CreatePopupWindow    (std::string objname , int width , int height , int flags , int newx = -1 , int newy = -1);
    EagleThread*          CreateThread         (std::string objname = "Nemo" , void* (*process)(EagleThread* , void*) = 0 , void* data = 0);
    EagleMutex*           CreateMutex          (std::string objname = "Nemo" , bool recursive = false , bool timed = false);
    EagleClipboard*       CreateClipboard      (std::string objname = "Nemo");

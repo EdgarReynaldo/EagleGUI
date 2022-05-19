@@ -235,8 +235,8 @@ EagleEvent Allegro5WindowManager::GetEagleDisplayEvent(ALLEGRO_EVENT ev) {
 
 
 
-EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(std::string objname , int width , int height , int flags) {
-   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext(objname , width , height , flags);
+EagleGraphicsContext* Allegro5WindowManager::PrivateCreateWindow(std::string objname , int width , int height , int flags , int newx , int newy) {
+   Allegro5GraphicsContext* a5win = new Allegro5GraphicsContext(objname , width , height , flags , newx , newy);
    EAGLE_ASSERT(a5win && a5win->Valid());
    al_register_event_source(window_queue , al_get_display_event_source(a5win->AllegroDisplay()));
    return a5win;

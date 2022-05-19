@@ -113,9 +113,9 @@ void EagleWindowManager::CloseWindows() {
 
 
 
-EagleGraphicsContext* EagleWindowManager::CreateGraphicsContext(std::string objname , int width , int height , int flags) {
+EagleGraphicsContext* EagleWindowManager::CreateGraphicsContext(std::string objname , int width , int height , int flags , int newx , int newy) {
 
-   EagleGraphicsContext* window = PrivateCreateWindow(objname , width , height , flags);
+   EagleGraphicsContext* window = PrivateCreateWindow(objname , width , height , flags , newx , newy);
    if (window) {
       if (!window->Valid()) {
          throw EagleException("EagleWindowManager::CreateWindow - Failed to create valid window!");

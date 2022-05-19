@@ -73,7 +73,7 @@ protected :
 
 
 
-   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags);
+   virtual EagleGraphicsContext* PrivateCreateWindow(std::string objname , int width , int height , int flags , int newx = -1 , int newy = -1);
 
    virtual int PrivateGiveWindowFocus(int window_eid);
 
