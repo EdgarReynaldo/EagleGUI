@@ -218,11 +218,9 @@ class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 protected :
    typedef std::unordered_set<EagleImage*> IMAGESET;
    typedef std::unordered_set<NinePatch*> NPSET;
-   typedef std::unordered_set<EagleFont*> FONTSET;
 
    typedef IMAGESET::iterator ISIT;
    typedef NPSET::iterator NPSIT;
-   typedef FONTSET::iterator FSIT;
 
    int newx;
    int newy;
@@ -236,7 +234,6 @@ protected :
 
    IMAGESET imageset;
    NPSET npset;
-   FONTSET  fontset;
 
    MousePointerManager* mp_manager;/// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    /// cannot be called in a base class constructor
@@ -247,10 +244,8 @@ protected :
    float previoustime;
    float currenttime;
 
-   EagleFont*  default_font;
-   std::string default_font_path;
-   int         default_font_size;
-   int         default_font_flags;
+   FontManager* font_manager;
+   
 
    EagleThread* our_thread;
    EagleMutex*  window_mutex;

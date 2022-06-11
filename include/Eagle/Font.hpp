@@ -130,71 +130,12 @@ public :
 
 EagleFont* GetFont(std::string font_name);
 
-/**! @fn SetDefaultFontPath @fn SetDefaultFontSize @fn SetDefaultFontFlags
- *   @brief Set the default font path, size, or flags
- *
- *   The default font path, size, and flags will be used whenever a new display is created.
- *   You can retrieve the default font from a display @ref EagleGraphicsContext with the @ref DefaultFont function
- */
-
-void SetDefaultFontPath(std::string path);///< Set the default font path
-void SetDefaultFontSize(int size);///< Set the default font size
-void SetDefaultFontFlags(int flags);///< Set the default font flags
-
-std::string DefaultFontPath();///< Get the default font path
-int DefaultFontSize();///< Get the default font size
-int DefaultFontFlags();///< Get the default font flags
-
 
 /**! @typedef SHAREDFONT
  *   @brief Simple typedef for working with shared pointers to EagleFont objects
  */
 
 typedef SHAREDOBJECT<EagleFont> SHAREDFONT;
-
-/**! @class EagleFontFamily
- *   @brief A group of fonts resembling a family of roman, bold , italic, and bold italic fonts
- *   
- */
- 
-class EagleFontFamily {
-protected:
-   
-   std::string fontbasepath;
-   std::string fontbasename;
-   MemFile memory_files[4];
-   EagleGraphicsContext* owner;
-   EagleFont* fonts[4];
-   int pt;
-   
-   
-   EagleFont* Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style = FONT_ROMAN)=0;
-   
-public:
-   
-   EagleFontFamily();
-   EagleFontFamily() :
-         fontpath(""),
-         fontbasename(""),
-         memory_files(),
-         owner(0),
-         fonts(),
-         pt(0)
-   {}
-   
-   virtual ~EagleFontFamily();
-
-   Free();
-   
-   bool LoadFontFamily(std::string basename , std::string dir , int point);
-   bool LoadFont(std::string basename , std::string dir , int point , FONT_STYLE_FLAGS style);
-   EagleFont* GetFontType(FONT_STYLE_FLAGS kind = FONT_ROMAN);
-
-};
-
-
-
-
 
 
 
