@@ -7,21 +7,64 @@
 
 Allegro5Font::Allegro5Font(ALLEGRO_FONT* font , std::string objname) :
    EagleFont("Allegro5Font" , objname),
-   allegro_font(font)
+   allegro_font(font),
+   allegro_file(0)
 {}
 
 
 
 Allegro5Font::Allegro5Font(std::string file , int size , int flags , std::string objname , IMAGE_TYPE type) :
       EagleFont("Allegro5Font" , objname),
-      allegro_font(0)
+      allegro_font(0),
+      allegro_file(0)
 {
    Load(file , size , flags , type);
 }
 
 
 
+bool Allegro5Font::LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_TYPE type) {
+   Free();
+   
+   if (!memfile) {
+      EAGLE_ASSERT(memfile);
+      return false;
+   }
+   if (!memfile->Begin()) {
+      EAGLE_ASSERT(memfile->Begin());
+      return false;
+   }
+   
+   allegro_file = al_open_memfile((void*)memfile->Begin() , (int64_t)memfile->Size() , "r");
+   if (!allegro_file) {
+      return false;
+   }
+   
+   if (type == SYSTEM_IMAGE) {type = VIDEO_IMAGE;}
+   
+   if (type == VIDEO_IMAGE) {
+      al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
+   }
+   else if (type == MEMORY_IMAGE) {
+      al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
+   }
+   memtype = type;
+   
+   allegro_font = al_load_ttf_font_f(allegro_file , src.c_str() , pt , flags);
+   if (!allegro_font) {
+      EAGLE_ASSERT(allegro_font);
+      return false;
+   }
+   srcfile = memfile->Path();
+   fontflags = flags;
+   srcflags = FONT_MEMFILE;
+   styleflags = FONT_ROMAN;
+}
+
+
+
 bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE type) {
+   
    Free();
 
    if (type == SYSTEM_IMAGE) {type = VIDEO_IMAGE;}
@@ -32,15 +75,34 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
    else if (type == MEMORY_IMAGE) {
       al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
    }
+   memtype = type;
 
-
+   /// We support loading ttfs, bmp, and pcx bitmap fonts
    bool ttf = false;
-   if (file.find_last_of(".ttf") != std::string::npos) {
-      // found a .ttf font TODO fix this is a bit simple check not quite robust enough
+   bool bmp = false;
+   bool pcx = false;
+   srcfile = file;
+   /// index of extension minus 1
+   size_t idx = srcfile.find_last_of(".")
+   if (idx == std::string::npos) {
+      EagleError() << "Extension not found." << std::endl;
+      return false;
+   }
+   std::string ext = srcfile.substr(idx + 1 , std::string::npos);
+   if (ext.compare("ttf") == 0) {
       ttf = true;
    }
+   else if (ext.compare("BMP") == 0 || ext.compare("bmp") == 0) {
+      bmp = true;
+   }
+   else if (ext.compare("pcx") == 0) {
+      pcx = true;
+   }
+   
+   
    // string::npos
    /// size_type find_last_of( const char* str, size_type index = npos );
+   srcflags = FONT_SRCFILE;
    if (ttf) {
       allegro_font = al_load_ttf_font(file.c_str() , size , flags);
    }
@@ -51,6 +113,7 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
       EagleInfo() << StringPrintF("Loaded font %s from disk." , file.c_str()) << std::endl;
       height = size;
       srcfile = file;
+      fontflags = flags;
    }
    else {
       EagleError() << "Failed to load font " << file << " from disk." << std::endl;
@@ -60,10 +123,32 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
 
 
 
+bool Adopt(ALLEGRO_FONT* f) {
+   if (!f) {
+      EAGLE_ASSERT(f);
+      return false;
+   }
+   Free();
+   allegro_font = f;
+   height = al_get_font_line_height(f);
+   srcfile = "";
+   fontflags = FONT_NORMAL;
+   styleflags = FONT_ROMAN;
+   srcflags = FONT_UNKNOWN;
+   memtype = SYSTEM_IMAGE;
+   return Valid();
+}
+
+
+
 void Allegro5Font::Free() {
    if (allegro_font) {
       al_destroy_font(allegro_font);
       allegro_font = 0;
+   }
+   if (allegro_file) {
+      al_fclose(allegro_file);
+      allegro_file = 0;
    }
 }
 

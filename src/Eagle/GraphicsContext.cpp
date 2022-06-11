@@ -649,6 +649,13 @@ void EagleGraphicsContext::FreeAllNinePatch() {
 
 
 
+void    EagleFont* CloneFont(EagleFont* font) {
+   if (!font) {return 0;}
+   return LoadFont(font->File() , font->FontHeight() , font->Flags() , font->ImageType());
+}
+
+
+
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
    if (!font) {return;}
    FSIT it = fontset.find(font);

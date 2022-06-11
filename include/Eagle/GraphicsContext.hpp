@@ -617,7 +617,8 @@ public :
 
    ///< Pure virtual function to load a font from a file with the specified height, @ref FONT_LOADING_FLAGS , and @ref IMAGE_TYPE
    virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-
+   void    EagleFont* CloneFont(EagleFont* font);
+   
    void               FreeFont(EagleFont* font);///< Frees any references this window has to the font and destroys it
    void               FreeAllFonts();///< Frees all fonts owned by this window
    

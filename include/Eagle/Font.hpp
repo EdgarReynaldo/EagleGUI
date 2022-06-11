@@ -40,12 +40,35 @@
  */
 
 enum FONT_LOADING_FLAGS {
-   LOAD_FONT_NORMAL         = 0,
-   LOAD_FONT_NO_KERNING     = 1 << 0,///< Whether to monospace this font
-   LOAD_FONT_MONOCHROME     = 1 << 1,///< Whether to alias this font or keep it pixelated
-   LOAD_FONT_NOAUTOHINT     = 1 << 2,///< TODO : I Have no idea what this is
-   LOAD_FONT_NOPREMULTALPHA = 1 << 3 ///< Whether to pre-multiply the alpha for this font
+   FONT_NORMAL         = 0,
+   FONT_NO_KERNING     = 1 << 0,///< Whether to monospace this font
+   FONT_MONOCHROME     = 1 << 1,///< Whether to alias this font or keep it pixelated
+   FONT_NOAUTOHINT     = 1 << 2,///< TODO : I Have no idea what this is
+   FONT_NOPREMULTALPHA = 1 << 3 ///< Whether to pre-multiply the alpha for this font
 };
+
+std::string TranslateFontFlags(FONT_LOADING_FLAGS flags);
+
+
+/**! @enum FONT_STYLE_FLAGS {
+ *   @brief Font style flags
+ */
+ enum FONT_STYLE_FLAGS {
+   FONT_ROMAN = 0,
+   FONT_ITALIC = 0x00000001,
+   FONT_BOLD = 0x00000010,
+   FONT_BOLD_ITALIC = 0x00000011
+};
+
+/**! @enum FONT_SOURCE_FLAGS 
+ *   @brief Flags to track source of font
+ */
+enum FONT_SOURCE_FLAGS {
+   FONT_UNKNOWN = 0,
+   FONT_BUILTIN = 1,
+   FONT_SRCFILE = 2,
+   FONT_MEMFILE = 4
+}
 
 
 /**! @class EagleFont
@@ -56,20 +79,28 @@ enum FONT_LOADING_FLAGS {
 
 
 
+class EagleGraphicsContext;
 
 class EagleFont : public EagleObject {
    
 protected :
+   EagleGraphicsContext* owner;
+   FontManager* fontman;
    int height;
    std::string srcfile;
-
+   int fontflags;
+   int styleflags;
+   int srcflags;
+   int memtype;
+   
 public :   
-///   EagleFont();
-///   EagleFont(std::string name);
-   EagleFont(std::string objclass , std::string objname);///< Base constructor for font objects
+   EagleFont(std::string objclass = "EagleFont" , std::string objname = "Nemo");///< Base constructor for font objects
+
    virtual ~EagleFont() {}
 
+   virtual bool LoadFromMemory(MemFile* memfile , int pt , int flags , std::string src , IMAGE_TYPE type = VIDEO_IMAGE)=0;
    virtual bool Load(std::string file , int size , int flags , IMAGE_TYPE type)=0;///< Pure virtual function to load a font
+   
    virtual void Free()=0;///< Pure virtual function to free a font
    
    virtual bool Valid()=0;///< Pure virtual function to determine if a font is valid and ready
@@ -80,6 +111,13 @@ public :
    virtual int VHeight(std::string str , int letter_spacing)=0;///< Pure virtual function to get the height of a vertical string
    virtual int VWidth(std::string str , int line_spacing)=0;///< Pure virtual function to get the width of a vertical string (may be multi-line)
    
+   EagleGraphicsContext* Owner() {return owner;}
+   int FontPoint() {return height;}
+   std::string File() {return srcfile;}
+   int Flags() {return fontflags;}
+   int Style() {return styleflags;}
+   int SrcFlags() {returnn srcflags;}
+   int ImageType() {return memtype;}
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describe this font to a stream
 };
@@ -114,9 +152,68 @@ int DefaultFontFlags();///< Get the default font flags
 
 typedef SHAREDOBJECT<EagleFont> SHAREDFONT;
 
+/**! @class EagleFontFamily
+ *   @brief A group of fonts resembling a family of roman, bold , italic, and bold italic fonts
+ *   
+ */
+ 
+class EagleFontFamily {
+protected:
+   
+   std::string fontbasepath;
+   std::string fontbasename;
+   MemFile memory_files[4];
+   EagleGraphicsContext* owner;
+   EagleFont* fonts[4];
+   int pt;
+   
+   
+   EagleFont* Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style = FONT_ROMAN)=0;
+   
+public:
+   
+   EagleFontFamily();
+   EagleFontFamily() :
+         fontpath(""),
+         fontbasename(""),
+         memory_files(),
+         owner(0),
+         fonts(),
+         pt(0)
+   {}
+   
+   virtual ~EagleFontFamily();
+
+   Free();
+   
+   bool LoadFontFamily(std::string basename , std::string dir , int point);
+   bool LoadFont(std::string basename , std::string dir , int point , FONT_STYLE_FLAGS style);
+   EagleFont* GetFontType(FONT_STYLE_FLAGS kind = FONT_ROMAN);
+
+};
+
+
+
+
+
+
+
+
 
 
 #endif // EagleFont_HPP
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

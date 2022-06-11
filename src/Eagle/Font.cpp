@@ -24,33 +24,55 @@
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/StringWork.hpp"
 
+#include <sstream>
 
 
-/*
-EagleFont::EagleFont() :
-      EagleObject("EagleFont" , "Nemo"),
-      height(0),
-      srcfile("") 
-{
-   
+
+std::string TranslateFontFlags(FONT_LOADING_FLAGS flags) {
+   if (flags == LOAD_FONT_NORMAL) {
+      return "FONT_NORMAL";
+   }
+   int flagcount = 0;
+   std::stringstream ss;
+   if (flags & FONT_NO_KERNING) {
+      ss << "NO_KERNING";
+      flagcount++;
+   }
+   if (flags & FONT_MONOCHROME) {
+      if (flagcount) {
+         ss << " | ";
+      }
+      ss << "MONOCHROME";
+      flagcount++;
+   }
+   if (flags & FONT_NOAUTOHINT) {
+      if (flagcount) {
+         ss << " | ";
+      }
+      ss << "NOAUTOHINT";
+      flagcount++;
+   }
+   if (flags & FONT_NOPREMULTALPHA) {
+      if (flagcount) {
+         ss << " | ";
+      }
+      ss << "NOPREMULTALPHA";
+   }
+   return ss.str();
 }
 
-
-
-EagleFont::EagleFont(std::string name) :
-      EagleObject("EagleFont" , name),
-      height(0),
-      srcfile("") 
-{
-   
-}
-*/
 
 
 EagleFont::EagleFont(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
+      owner(0),
+      fontman(0),
       height(0),
-      srcfile("") 
+      srcfile(""),
+      fontflags(FONT_NORMAL),
+      styleflags(FONT_ROMAN),
+      srcflags(FONT_UNKNOWN),
+      memtype(0)
 {
    
 }
@@ -117,6 +139,51 @@ int DefaultFontSize() {
 
 int DefaultFontFlags() {
    return default_font_flags;
+}
+
+
+
+
+EagleFontFamily::~EagleFontFamily() {
+   Free();
+}
+
+
+
+void EagleFontFamily::Free() {
+   for (unsigned int i = 0 ; i < 4 ; ++i) {
+      if (fonts[i]) {
+         fonts[i]->owner->Free(fonts[i]);
+      }
+   }
+}
+
+
+
+bool EagleFontFamily::LoadFontFamily(std::string basename , std::string dir , int point) {
+   Free();
+   fonts[FONT_ROMAN]       = Load(basename ,                dir , point , FONT_ROMAN);
+   fonts[FONT_BOLD]        = Load(basename + "Bold" ,       dir , point , FONT_BOLD);
+   fonts[FONT_ITALIC]      = Load(basename + "Italic" ,     dir , point , FONT_ITALIC);
+   fonts[FONT_BOLD_ITALIC] = Load(basename + "BoldItalic" , dir , point , FONT_BOLD_ITALIC);
+   
+   return fonts[FONT_ROMAN] && fonts[FONT_BOLD] && fonts[FONT_ITALIC] && fonts[FONT_BOLD_ITALIC];
+
+}
+
+
+
+bool LoadFont(std::string basename , std::string dir , int point , FONT_STYLE_FLAGS style) {
+   if (fonts[style]) {fonts[style]->owner->Free(fonts[style])}
+   fonts[style] = 0;
+   fonts[style] = Load(basename , dir , point , style);
+   return fonts[style];
+}
+
+
+
+EagleFont* EagleFontFamily::GetFontType(FONT_STYLE_FLAGS kind) {
+   return fonts[kind];
 }
 
 

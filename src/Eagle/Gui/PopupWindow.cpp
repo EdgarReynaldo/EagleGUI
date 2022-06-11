@@ -109,14 +109,19 @@ void PopupWindow::Show() {
 
 
 
-PopupText::PopupText(int sx , int sy , int flags , std::string message , EagleFont* font) :
+PopupText::PopupText(int sx , int sy , int flags , std::string message , std::string fontpath , int fontpt) :
       PopupWindow("Any" , "TextPopupWindow"),
-      text(font , message , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , font->Height()/2)
+      text("Popup label"),
+      our_font(0)
 {
-   Rectangle t = text.TextArea();
+   
    CreatePopupWindow(sx , sy , t.W() + 4 , t.H() + 4 , flags);
+
+   our_font = our_window->LoadFont(fontpath , fontpt);
+
+   text.SetupText(message , our_font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , our_font->Height()/4);
+   Rectangle t = text.TextArea();
    text.SetWidgetArea(Rectangle(2 , 2 , t.W() , t.H() ) , false);
-   text.ShrinkWrap();
    AddWidget(&text);
 }
 

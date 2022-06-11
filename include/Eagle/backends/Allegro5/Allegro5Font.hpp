@@ -39,7 +39,9 @@ class Allegro5Font : public EagleFont {
 
 private :
    ALLEGRO_FONT* allegro_font;
-
+   ALLEGRO_FILE* allegro_file;
+   
+   
 public :
    ///< Constructor that takes ownership of an ALLEGRO_FONT*
    Allegro5Font(ALLEGRO_FONT* font , std::string objname = "Nemo");
@@ -47,9 +49,14 @@ public :
    ///< Constructor that loads a font from a file using the specified size and flags
    Allegro5Font(std::string file , int size , int flags , std::string objname = "Nemo" , IMAGE_TYPE type = VIDEO_IMAGE);
    
+   ///< Load a font file from a memory file
+   bool LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
+
    ///< Load the specified font using the specified size and flags and image type
    bool Load(std::string file , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
 
+   bool Adopt(ALLEGRO_FONT* f);
+   
    ///< Free the underlying font
    void Free();
    
@@ -67,7 +74,51 @@ public :
 
 
 
+
+class Allegro5FontFamily : public EagleFontFamily {
+
+protected :
+   
+   EagleFont* Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style = FONT_ROMAN);
+   
+EagleFont* Allegro5FontFamily::Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style) {
+   
+}
+   
+   
+public :
+   
+   virtual ~Allegro5FontFamily();
+Allegro5FontFamily::~Allegro5FontFamily() {
+   Free();
+}
+   
+};
+
+
+
+
+
+
+
 #endif // Allegro5Font_HPP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -71,9 +71,10 @@ public :
 
 class PopupText : public PopupWindow {
    BasicText text;
+   EagleFont* our_font;
    
 public :
-   PopupText(int sx , int sy , int flags , std::string message , EagleFont* font);
+   PopupText(int sx , int sy , int flags , std::string message , std::string fontpath , int fontpt);
 };
 
 
