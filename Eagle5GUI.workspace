@@ -16,6 +16,6 @@
 		<Project filename="examples/ExGui.cbp" />
 		<Project filename="examples/ExButton.cbp" />
 		<Project filename="examples/ExAimGame.cbp" />
-		<Project filename="../../../Downloads/ForumCode/agonvs/mappy.cbp" />
+		<Project filename="examples/ExDialog.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

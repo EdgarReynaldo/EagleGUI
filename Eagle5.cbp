@@ -140,6 +140,7 @@
 		<Unit filename="include/Eagle/FileSystem.hpp" />
 		<Unit filename="include/Eagle/FileWork.hpp" />
 		<Unit filename="include/Eagle/Font.hpp" />
+		<Unit filename="include/Eagle/FontManager.hpp" />
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
 		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
@@ -269,6 +270,7 @@
 		<Unit filename="src/Eagle/FileSystem.cpp" />
 		<Unit filename="src/Eagle/FileWork.cpp" />
 		<Unit filename="src/Eagle/Font.cpp" />
+		<Unit filename="src/Eagle/FontManager.cpp" />
 		<Unit filename="src/Eagle/GraphicsContext.cpp" />
 		<Unit filename="src/Eagle/Gui/Alignment.cpp" />
 		<Unit filename="src/Eagle/Gui/BasicIcon.cpp" />
