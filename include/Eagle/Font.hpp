@@ -93,13 +93,15 @@ protected :
    int srcflags;
    int memtype;
    
+   friend class FontManager;
+   
 public :   
    EagleFont(std::string objclass = "EagleFont" , std::string objname = "Nemo");///< Base constructor for font objects
 
    virtual ~EagleFont() {}
 
-   virtual bool LoadFromMemory(MemFile* memfile , int pt , int flags , std::string src , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   virtual bool Load(std::string file , int size , int flags , IMAGE_TYPE type)=0;///< Pure virtual function to load a font
+   virtual bool LoadFromMemory(MemFile* memfile , int pt , int flags , std::string src , IMAGE_TYPE type = VIDEO_IMAGE)=0;///< Only loads ttf fonts from a memfile
+   virtual bool Load(std::string file , int size , int flags , IMAGE_TYPE type)=0;///< Pure virtual function to load any supported font
    
    virtual void Free()=0;///< Pure virtual function to free a font
    

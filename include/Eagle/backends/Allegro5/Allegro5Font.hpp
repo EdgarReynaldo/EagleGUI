@@ -43,16 +43,19 @@ private :
    
    
 public :
+   ///< Default constructor
+   Allegro5Font(std::string objclass = "Allegro5Font" , std::string objname = "Nemo");
+   
    ///< Constructor that takes ownership of an ALLEGRO_FONT*
    Allegro5Font(ALLEGRO_FONT* font , std::string objname = "Nemo");
 
    ///< Constructor that loads a font from a file using the specified size and flags
    Allegro5Font(std::string file , int size , int flags , std::string objname = "Nemo" , IMAGE_TYPE type = VIDEO_IMAGE);
    
-   ///< Load a font file from a memory file
-   bool LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
+   ///< Load a font file from a memory file, only ttf fonts are supported
+   bool LoadFromMemory(MemFile* memfile , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
 
-   ///< Load the specified font using the specified size and flags and image type
+   ///< Load any supported font using the specified size, flags and image type
    bool Load(std::string file , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
 
    bool Adopt(ALLEGRO_FONT* f);

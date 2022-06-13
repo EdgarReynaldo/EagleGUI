@@ -5,11 +5,21 @@
 #include "Eagle/StringWork.hpp"
 
 
+Allegro5Font::Allegro5Font(std::string objclass , std::string objname) :
+      EagleFont(objclass , objname),
+      allegro_font(0),
+      allegro_file(0)
+{}
+
+
+
 Allegro5Font::Allegro5Font(ALLEGRO_FONT* font , std::string objname) :
    EagleFont("Allegro5Font" , objname),
-   allegro_font(font),
+   allegro_font(0),
    allegro_file(0)
-{}
+{
+   Adopt(font);
+}
 
 
 
@@ -23,7 +33,7 @@ Allegro5Font::Allegro5Font(std::string file , int size , int flags , std::string
 
 
 
-bool Allegro5Font::LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_TYPE type) {
+bool Allegro5Font::LoadFromMemory(MemFile* memfile , int size , int flags , IMAGE_TYPE type) {
    Free();
    
    if (!memfile) {
@@ -50,7 +60,7 @@ bool Allegro5Font::LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_
    }
    memtype = type;
    
-   allegro_font = al_load_ttf_font_f(allegro_file , src.c_str() , pt , flags);
+   allegro_font = al_load_ttf_font_f(allegro_file , src.c_str() , size , flags);
    if (!allegro_font) {
       EAGLE_ASSERT(allegro_font);
       return false;

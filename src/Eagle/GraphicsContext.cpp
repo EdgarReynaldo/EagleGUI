@@ -81,13 +81,6 @@ unsigned int GUI_TEXT_LINE_SPACING = 3;
 
 
 
-const char* eagle_default_font_path = "Verdana.ttf";
-
-int eagle_default_font_size = -16;
-
-int eagle_default_font_flags = LOAD_FONT_MONOCHROME;
-
-
 /**
 REGION_INFO::REGION_INFO() : sx(0.0f) , sy(0.0f) , sw(0.0f) , sh(0.0f) {}
 
@@ -273,7 +266,6 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       backbuffer(0),
       drawing_target(0),
       imageset(),
-      fontset(),
       mp_manager(0),
       maxframes(60),
       numframes(0.0f),
@@ -281,10 +273,7 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       frame_times(),
       previoustime(0.0f),
       currenttime(0.0f),
-      default_font(),
-      default_font_path(eagle_default_font_path),
-      default_font_size(eagle_default_font_size),
-      default_font_flags(eagle_default_font_flags),
+      font_manager(0),
       our_thread(0),
       window_mutex(0),
       our_transformer(0)
