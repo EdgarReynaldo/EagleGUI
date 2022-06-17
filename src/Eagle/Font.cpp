@@ -63,6 +63,32 @@ std::string TranslateFontFlags(FONT_LOADING_FLAGS flags) {
 
 
 
+int UntranslateFontFlags(std::string flagstr) {
+   int flags = 0;
+   if (flagstr.find_first_of("FONT_NORMAL" , 0) != std::string::npos) {
+      return 0;
+   }
+   if (flagstr.find_first_of("FONT_NO_KERNING" , 0) != std::string::npos) {
+      flags |= FONT_NO_KERNING;
+   }
+   if (flagstr.find_first_of("FONT_MONOCHROME" , 0) != std::string::npos) {
+      flags |= FONT_MONOCHROME;
+   }
+   if (flagstr.find_first_of("FONT_NOAUTOHINT" , 0) != std::string::npos) {
+      flags |= FONT_NOAUTOHINT;
+   }
+   if (flagstr.find_first_of("FONT_NOPREMULTALPHA" , 0) != std::string::npos) {
+      flags |= FONT_NOPREMULTALPHA;
+   }
+   return flags;
+}
+
+
+
+/// -------------------------------       EagleFont      ----------------------------------------------
+
+
+
 EagleFont::EagleFont(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
       owner(0),
@@ -70,7 +96,6 @@ EagleFont::EagleFont(std::string objclass , std::string objname) :
       height(0),
       srcfile(""),
       fontflags(FONT_NORMAL),
-      styleflags(FONT_ROMAN),
       srcflags(FONT_UNKNOWN),
       memtype(0)
 {
@@ -92,104 +117,5 @@ EagleFont* GetFont(std::string font_name) {
    EagleFont* font = dynamic_cast<EagleFont*>(GetFirstObjectByName(font_name));
    return font;
 }
-
-
-
-std::string default_font_path = "data/fonts/verdana.ttf";
-
-
-
-int default_font_size = -20;
-
-
-
-int default_font_flags = 0;
-
-
-
-void SetDefaultFontPath(std::string path) {
-   default_font_path = path;
-}
-
-
-
-void SetDefaultFontSize(int size) {
-   default_font_size = size;
-}
-
-
-
-void SetDefaultFontFlags(int flags) {
-   default_font_flags = flags;
-}
-
-
-
-std::string DefaultFontPath() {
-   return default_font_path;
-}
-
-
-
-int DefaultFontSize() {
-   return default_font_size;
-}
-
-
-
-int DefaultFontFlags() {
-   return default_font_flags;
-}
-
-
-
-
-EagleFontFamily::~EagleFontFamily() {
-   Free();
-}
-
-
-
-void EagleFontFamily::Free() {
-   for (unsigned int i = 0 ; i < 4 ; ++i) {
-      if (fonts[i]) {
-         fonts[i]->owner->Free(fonts[i]);
-      }
-   }
-}
-
-
-
-bool EagleFontFamily::LoadFontFamily(std::string basename , std::string dir , int point) {
-   Free();
-   fonts[FONT_ROMAN]       = Load(basename ,                dir , point , FONT_ROMAN);
-   fonts[FONT_BOLD]        = Load(basename + "Bold" ,       dir , point , FONT_BOLD);
-   fonts[FONT_ITALIC]      = Load(basename + "Italic" ,     dir , point , FONT_ITALIC);
-   fonts[FONT_BOLD_ITALIC] = Load(basename + "BoldItalic" , dir , point , FONT_BOLD_ITALIC);
-   
-   return fonts[FONT_ROMAN] && fonts[FONT_BOLD] && fonts[FONT_ITALIC] && fonts[FONT_BOLD_ITALIC];
-
-}
-
-
-
-bool LoadFont(std::string basename , std::string dir , int point , FONT_STYLE_FLAGS style) {
-   if (fonts[style]) {fonts[style]->owner->Free(fonts[style])}
-   fonts[style] = 0;
-   fonts[style] = Load(basename , dir , point , style);
-   return fonts[style];
-}
-
-
-
-EagleFont* EagleFontFamily::GetFontType(FONT_STYLE_FLAGS kind) {
-   return fonts[kind];
-}
-
-
-
-
-
-
 
 

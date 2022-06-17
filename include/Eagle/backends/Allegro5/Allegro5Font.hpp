@@ -41,6 +41,7 @@ private :
    ALLEGRO_FONT* allegro_font;
    ALLEGRO_FILE* allegro_file;
    
+   friend Allegro5FontManager;
    
 public :
    ///< Default constructor
@@ -51,6 +52,9 @@ public :
 
    ///< Constructor that loads a font from a file using the specified size and flags
    Allegro5Font(std::string file , int size , int flags , std::string objname = "Nemo" , IMAGE_TYPE type = VIDEO_IMAGE);
+   
+   ///< Default destructor
+   Allegro5Font::~Allegro5Font();
    
    ///< Load a font file from a memory file, only ttf fonts are supported
    bool LoadFromMemory(MemFile* memfile , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);
@@ -75,28 +79,6 @@ public :
    ALLEGRO_FONT* AllegroFont() {return allegro_font;}///< Get a handle to the underlying font
 };
 
-
-
-
-class Allegro5FontFamily : public EagleFontFamily {
-
-protected :
-   
-   EagleFont* Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style = FONT_ROMAN);
-   
-EagleFont* Allegro5FontFamily::Load(std::string basename , std::string basepath , int point , FONT_STYLE_FLAGS style) {
-   
-}
-   
-   
-public :
-   
-   virtual ~Allegro5FontFamily();
-Allegro5FontFamily::~Allegro5FontFamily() {
-   Free();
-}
-   
-};
 
 
 

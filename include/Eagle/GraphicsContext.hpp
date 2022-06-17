@@ -86,14 +86,6 @@ extern unsigned int GUI_TEXT_LINE_SPACING;/// TODO : Find better alternative
 
 
 
-extern const char* eagle_default_font_path;
-
-extern int eagle_default_font_size;
-
-extern int eagle_default_font_flags;
-
-
-
 /**
 class REGION_INFO {
 
@@ -623,6 +615,7 @@ public :
     *   The default font is created using the default font file, size, and flags. See @ref EagleFont and
     *   @ref Font.hpp
     */
+   EagleFont* BuiltinFont();
    EagleFont* DefaultFont();
 
    std::string DefaultFontPath();///< Returns the path used by the default font

@@ -666,26 +666,32 @@ void EagleGraphicsContext::FreeAllFonts() {
 
 
 
+EagleFont* EagleGraphicsContext::BuiltinFont() {
+   return font_manager->BuiltinFont();
+}
+
+
+
 EagleFont* EagleGraphicsContext::DefaultFont() {
-   return default_font;
+   return font_manager->DefaultFont();
 }
 
 
 
 std::string EagleGraphicsContext::DefaultFontPath() {
-   return default_font_path;
+   return font_manager->DefaultFontPath();
 }
 
 
 
 int EagleGraphicsContext::DefaultFontSize() {
-   return default_font_size;
+   return font_manager->DefaultFontSize();
 }
 
 
 
 int EagleGraphicsContext::DefaultFontFlags() {
-   return default_font_flags;
+   return font_manager->DefaultFontFlags();
 }
 
 

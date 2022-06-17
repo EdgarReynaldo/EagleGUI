@@ -48,17 +48,20 @@ enum FONT_LOADING_FLAGS {
 };
 
 std::string TranslateFontFlags(FONT_LOADING_FLAGS flags);
-
+int UntranslateFontFlags(std::string flagstr);
 
 /**! @enum FONT_STYLE_FLAGS {
  *   @brief Font style flags
- */
+ *
  enum FONT_STYLE_FLAGS {
    FONT_ROMAN = 0,
    FONT_ITALIC = 0x00000001,
    FONT_BOLD = 0x00000010,
    FONT_BOLD_ITALIC = 0x00000011
 };
+//*//
+
+
 
 /**! @enum FONT_SOURCE_FLAGS 
  *   @brief Flags to track source of font
@@ -89,7 +92,6 @@ protected :
    int height;
    std::string srcfile;
    int fontflags;
-   int styleflags;
    int srcflags;
    int memtype;
    

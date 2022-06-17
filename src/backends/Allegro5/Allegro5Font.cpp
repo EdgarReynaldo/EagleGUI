@@ -33,6 +33,12 @@ Allegro5Font::Allegro5Font(std::string file , int size , int flags , std::string
 
 
 
+Allegro5Font::~Allegro5Font() {
+   Free();
+}
+
+
+
 bool Allegro5Font::LoadFromMemory(MemFile* memfile , int size , int flags , IMAGE_TYPE type) {
    Free();
    
@@ -112,7 +118,6 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
    
    // string::npos
    /// size_type find_last_of( const char* str, size_type index = npos );
-   srcflags = FONT_SRCFILE;
    if (ttf) {
       allegro_font = al_load_ttf_font(file.c_str() , size , flags);
    }
@@ -121,9 +126,10 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
    }
    if (allegro_font) {
       EagleInfo() << StringPrintF("Loaded font %s from disk." , file.c_str()) << std::endl;
-      height = size;
       srcfile = file;
+      height = size;
       fontflags = flags;
+      srcflags = FONT_SRCFILE;
    }
    else {
       EagleError() << "Failed to load font " << file << " from disk." << std::endl;
@@ -143,9 +149,8 @@ bool Adopt(ALLEGRO_FONT* f) {
    height = al_get_font_line_height(f);
    srcfile = "";
    fontflags = FONT_NORMAL;
-   styleflags = FONT_ROMAN;
    srcflags = FONT_UNKNOWN;
-   memtype = SYSTEM_IMAGE;
+   memtype = VIDEO_IMAGE;/// TODO : actually check somehow - glyph?
    return Valid();
 }
 
