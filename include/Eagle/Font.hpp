@@ -32,6 +32,7 @@
 #include "Eagle/Image.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/SharedMemory.hpp"
+#include "Eagle/MemFile.hpp"
 
 
 
@@ -59,8 +60,7 @@ int UntranslateFontFlags(std::string flagstr);
    FONT_BOLD = 0x00000010,
    FONT_BOLD_ITALIC = 0x00000011
 };
-//*//
-
+//*/
 
 
 /**! @enum FONT_SOURCE_FLAGS 
@@ -71,7 +71,7 @@ enum FONT_SOURCE_FLAGS {
    FONT_BUILTIN = 1,
    FONT_SRCFILE = 2,
    FONT_MEMFILE = 4
-}
+};
 
 
 /**! @class EagleFont
@@ -83,6 +83,9 @@ enum FONT_SOURCE_FLAGS {
 
 
 class EagleGraphicsContext;
+class FontManager;
+
+
 
 class EagleFont : public EagleObject {
    
@@ -119,8 +122,7 @@ public :
    int FontPoint() {return height;}
    std::string File() {return srcfile;}
    int Flags() {return fontflags;}
-   int Style() {return styleflags;}
-   int SrcFlags() {returnn srcflags;}
+   int SrcFlags() {return srcflags;}
    int ImageType() {return memtype;}
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Describe this font to a stream

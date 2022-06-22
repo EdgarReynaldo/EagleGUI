@@ -23,13 +23,19 @@
 #include "Eagle/Font.hpp"
 #include "Eagle/ObjectRegistry.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/FontManager.hpp"
+#include "Eagle/GraphicsContext.hpp"
+
+
+
+
 
 #include <sstream>
 
 
 
 std::string TranslateFontFlags(FONT_LOADING_FLAGS flags) {
-   if (flags == LOAD_FONT_NORMAL) {
+   if (flags == FONT_NORMAL) {
       return "FONT_NORMAL";
    }
    int flagcount = 0;

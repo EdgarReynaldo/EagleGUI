@@ -10,6 +10,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Font.hpp"
+#include "Eagle/backends/Allegro5/Allegro5FontManager.hpp"
 #include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5MousePointer.hpp"
@@ -107,6 +108,13 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    /// TODO : Convert EAGLE_FLAGS into ALLEGRO_FLAGS
    al_set_new_display_flags(flags);
 
+   if (flags & EAGLE_FULLSCREEN) {
+      fullscreen = true;
+   }
+   else {
+      fullscreen = false;
+   }
+   
    display = al_create_display(width,height);
 
    if (!display) {
@@ -117,6 +125,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    scrw = al_get_display_width(display);
    scrh = al_get_display_height(display);
 
+   al_get_window_position(display , &winx , &winy);
+   
    GetAllegro5WindowManager()->AddDisplay(this , display);
 
    LoadDefaultFont();
@@ -131,7 +141,8 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    }
 
    mp_manager = new Allegro5MousePointerManager(this);
-
+   font_manager = new Allegro5FontManager(this);
+   
    EagleEvent ee;
    ee.type = EAGLE_EVENT_DISPLAY_CREATE;
    ee.window = this;
@@ -139,6 +150,26 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
 
    EmitEvent(ee , 0);
 
+   return true;
+}
+
+
+
+bool Allegro5GraphicsContext::ResizeWindow(int width , int height) {
+   if (fullscreen) {return false;}
+   al_resize_display(display , width , height);
+   scrw = al_get_display_width(display);
+   scrh = al_get_display_height(display);
+   return scrw == width && scrh == height;
+}
+
+
+
+bool Allegro5GraphicsContext::SetWindowPosition(int sx , int sy) {
+   if (fullscreen) {return false;}
+   al_set_window_position(display , sx , sy);
+   winx = sx;
+   winy = sy;
    return true;
 }
 
@@ -176,10 +207,14 @@ void Allegro5GraphicsContext::Destroy() {
       GetAllegro5WindowManager()->SignalClose(this);
 
       al_destroy_display(display);
+      
+      fullscreen = false;
 
       GetAllegro5WindowManager()->RemoveDisplay(display);
 
       display = 0;
+      winx = 0;
+      winy = 0;
 
       ThreadUnLockMutex(our_thread , window_mutex);
    }
@@ -193,7 +228,10 @@ void Allegro5GraphicsContext::Destroy() {
       delete mp_manager;
       mp_manager = 0;
    }
-
+   if (font_manager) {
+      delete font_manager;
+      font_manager = 0;
+   }
 }
 
 
@@ -208,23 +246,13 @@ void Allegro5GraphicsContext::AcknowledgeResize() {
 
 
 int Allegro5GraphicsContext::XPos() {
-   if (display) {
-      int x = 0 , y = 0;
-      al_get_window_position(display , &x , &y);
-      return x;
-   }
-   return -1;
+   return winx;
 }
 
 
 
 int Allegro5GraphicsContext::YPos() {
-   if (display) {
-      int x = 0 , y = 0;
-      al_get_window_position(display , &x , &y);
-      return y;
-   }
-   return -1;
+   return winy;
 }
 
 
@@ -236,42 +264,6 @@ Pos2I Allegro5GraphicsContext::GetMaxTextureSize() {
 
 
 
-void Allegro5GraphicsContext::LoadDefaultFont() {
-   if (default_font) {
-      FreeFont(default_font);
-      default_font = 0;
-   }
-   default_font_path = DefaultFontPath();
-   default_font_size = DefaultFontSize();
-   default_font_flags = DefaultFontFlags();
-
-   default_font = LoadFont(default_font_path.c_str() , default_font_size , default_font_flags , VIDEO_IMAGE);
-
-   if (!default_font || !default_font->Valid()) {
-      EagleWarn() << StringPrintF("Failed to load default font %s at size %d with flags %d" ,
-                                   default_font_path.c_str() , default_font_size , default_font_flags) << std::endl;
-      FreeFont(default_font);
-      default_font = new Allegro5Font(al_create_builtin_font());
-      if (!default_font->Valid()) {
-         EagleError() << "Failed to create built in font for fallback. No Default Font available." << std::endl;
-         delete default_font;
-         default_font = 0;
-      }
-      else {
-         EagleWarn() << "Using allegro's built in font for default font" << std::endl;
-      }
-   }
-   if (default_font) {
-      fontset.insert(default_font);
-   }
-   
-   EagleInfo() << StringPrintF("Allegro5GraphicsContext::LoadDefaultFont : Default font is %s , size %d\n" ,
-                              (default_font && default_font->Valid())?"Valid":"Invalid" , default_font->Height()) << std::endl;
-}
-
-
-
-// clears target bitmap
 void Allegro5GraphicsContext::Clear(EagleColor c) {
    ALLEGRO_COLOR ac = GetAllegroColor(c);
    al_clear_to_color(ac);
@@ -896,18 +888,6 @@ EagleImage* Allegro5GraphicsContext::LoadImageFromFile(std::string file , IMAGE_
 
 
 
-EagleFont* Allegro5GraphicsContext::LoadFont(std::string file , int height , int flags , IMAGE_TYPE type) {
-   Allegro5Font* font = new Allegro5Font(file , height , flags , file , type);
-   if (font->Valid()) {
-      fontset.insert(font);
-      return font;
-   }
-   delete font;
-   return (EagleFont*)0;
-}
-
-
-
 Transformer* Allegro5GraphicsContext::GetTransformer() {
    return our_transformer;
 }
@@ -918,10 +898,6 @@ void Allegro5GraphicsContext::MakeDisplayCurrent() {
    ResetBackBuffer();
 }
 
-
-void Allegro5GraphicsContext::SetWindowPosition(int screenx , int screeny) {
-   al_set_window_position(display , screenx , screeny);
-}
 
 
 #ifdef EAGLE_WIN32

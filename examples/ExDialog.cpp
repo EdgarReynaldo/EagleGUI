@@ -21,7 +21,7 @@ int main(int argc , char** argv) {
       EagleWarn() << "Failed to initialize some subsystem. Continuing anyway." << std::endl;
    }
    
-   PopupText ptext(-1 , -1 , 0 , "Hello popup" , "Data/Fonts/Verdana.ttf" , -18 );
+   PopupText ptext(-1 , -1 , 0 , "Hello popup");
    
    ptext.Show();
    

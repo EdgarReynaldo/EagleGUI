@@ -27,11 +27,11 @@
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Mutexes.hpp"
+#include "Eagle/FontManager.hpp"
 
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
-
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 
@@ -104,6 +104,8 @@ public :
    /// creation/destruction
    virtual void SetNewWindowPosition(int wx , int wy);
    virtual bool Create(int width , int height , int flags);
+   virtual bool ResizeWindow(int width , int height);
+   virtual bool SetWindowPosition(int sx , int sy);
    virtual bool Valid();
    virtual void Destroy();
    virtual void AcknowledgeResize();
@@ -222,9 +224,6 @@ public :
    EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo");
    EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE);
 
-   /// Font loading, this function returns a new font owned by the window
-   EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE);
-
    ALLEGRO_DISPLAY* AllegroDisplay() {return display;}
 
    Transformer* GetTransformer();
@@ -232,7 +231,6 @@ public :
    /// Window functions
    
    virtual void MakeDisplayCurrent();
-   virtual void SetWindowPosition(int screenx , int screeny);
    virtual void ShowWindow();
    virtual void HideWindow();
 

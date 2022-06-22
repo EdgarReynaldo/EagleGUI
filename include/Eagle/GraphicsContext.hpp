@@ -205,6 +205,9 @@ enum QUADRANT_DIR {
  *   @brief A graphics context allows you to create and draw to and work with windows (a display)
  */
 
+class FontManager;
+
+
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
 protected :
@@ -216,8 +219,11 @@ protected :
 
    int newx;
    int newy;
+   int winx;
+   int winy;
    int scrw;
    int scrh;
+   bool fullscreen;
 
    EagleImage* backbuffer;
    EagleImage* drawing_target;
@@ -275,6 +281,8 @@ public :
     */
    virtual void SetNewWindowPosition(int wx , int wy)=0;///< Set new window position. Use -1,-1 to center the window. Centering is default.
    virtual bool Create(int width , int height , int flags)=0;///< Responsible for creating Font.cpp:default_font
+   virtual bool ResizeWindow(int width , int height)=0;
+   virtual bool SetWindowPosition(int sx , int sy)=0;
    virtual bool Valid()=0;
    virtual void Destroy()=0;
 
@@ -285,6 +293,7 @@ public :
    
    int Width() {return scrw;}///< Get this display's width
    int Height() {return scrh;}///< Get this display's height
+   bool Fullscreen() {return fullscreen;}///< Whether the display is fullscreen or not
    virtual int XPos()=0;///< Get this display's x position
    virtual int YPos()=0;///< Get this display's y position
 
@@ -602,20 +611,23 @@ public :
    
    /// Font loading - these fonts are owned by the window
 
-   ///< Pure virtual function to load a font from a file with the specified height, @ref FONT_LOADING_FLAGS , and @ref IMAGE_TYPE
-   virtual EagleFont* LoadFont(std::string file , int height , int flags = LOAD_FONT_NORMAL , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-   void    EagleFont* CloneFont(EagleFont* font);
+   EagleFont* GetFont(std::string file , int height , int fontflags = FONT_NORMAL , int memflags = VIDEO_IMAGE);
    
    void               FreeFont(EagleFont* font);///< Frees any references this window has to the font and destroys it
+   void               FreeFontFile(std::string file);
    void               FreeAllFonts();///< Frees all fonts owned by this window
    
+   /**! @fn BuiltinFont <>
+    *   @brief Get a pointer to the builtin font. It is an 8x8 monochrome font used for basic output.
+    */
+   EagleFont* BuiltinFont();
+
    /**! @fn DefaultFont <>
     *   @brief Get a pointer to the default font
     *   
     *   The default font is created using the default font file, size, and flags. See @ref EagleFont and
     *   @ref Font.hpp
     */
-   EagleFont* BuiltinFont();
    EagleFont* DefaultFont();
 
    std::string DefaultFontPath();///< Returns the path used by the default font
@@ -624,7 +636,6 @@ public :
 
    
    /// Window control
-   virtual void SetWindowPosition(int screenx , int screeny)=0;
    virtual void ShowWindow()=0;
    virtual void HideWindow()=0;
    

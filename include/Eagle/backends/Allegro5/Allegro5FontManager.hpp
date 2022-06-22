@@ -9,21 +9,9 @@
 
 class Allegro5FontManager : public FontManager {
 
-//   EagleGraphicsContext* owner;
-
-//   std::map<std::string , MemFile> memfiles;
-//   std::map<std::string , EagleFont*> fonts;
-
-//   typedef std::map<std::string , Memfile> MFMAP;
-//   typedef std::map<std::string , Memfile>::iterator MFMIT;
-//   typedef std::map<std::string , EagleFont*> FNTMAP;
-//   typedef std::map<std::string , EagleFont*>::iterator FNTIT;
-
-//   EagleFont* builtinfont;
-//   EagleFont* defaultfont;
-
 public :
-   Allegro5FontManager(EagleGraphicsContext* window) explicit;
+   explicit Allegro5FontManager(EagleGraphicsContext* window);
+   ~Allegro5FontManager();
    
    virtual EagleFont* CreateBuiltinFont();
    virtual EagleFont* CreateDefaultFont();

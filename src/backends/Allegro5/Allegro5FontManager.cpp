@@ -7,11 +7,17 @@
 
 
 
-Allegro5FontManager(EagleGraphicsContext* window) :
+Allegro5FontManager::Allegro5FontManager(EagleGraphicsContext* window) :
       FontManager(window)
 {
-   CreateBuiltinFont();
-   CreateDefaultFont();
+   builtinfont = CreateBuiltinFont();
+   defaultfont = CreateDefaultFont();
+}
+
+
+
+Allegro5FontManager::~Allegro5FontManager() {
+   FreeAll();
 }
 
 
@@ -30,57 +36,66 @@ EagleFont* Allegro5FontManager::CreateDefaultFont() {
 
 EagleFont* Allegro5FontManager::LoadFontPath(std::string path , int size , int loading_flags , IMAGE_TYPE type) {
 
+   if (path.compare("DEFAULT") == 0) {
+      path = default_font_path;
+   }
+
    FNTIT fntit = fonts.find(path + std::string(size) + TranslateFontFlags(loading_flags));/// Fonts are stored in the map as FONT.EXT### with the point size at the right of the string
    if (fntit != fonts.end()) {
       return fntit->second;/// Font already in font map
    }
    
-   MemFile* mfile;
+   MemFile* mfile = 0;
    MFMIT mfmit = memfiles->find(path);/// Memfiles are tracked by base file path
    if (mfmit != memfiles.end()) {
       /// This font is stored in memory - create an allegro file and then use al_load_ttf_font_f
       mfile = mfmit->second;
-      
+   }
+   else {// mfmit == memfiles.end()
+      if (path.compare("BUILTIN") != 0) {
+         mfile = new MemFile(path);
+         bool loaded = mfile->ReadFileIntoMemory();
+         if (!loaded) {
+            EAGLE_ASSERT(loaded);
+            return 0;
+         }
+         memfiles.insert(std::pair<std::string , MemFile*>(path , mfile));
+      }
    }
    
-   int flag = ALLEGRO_MEMORY_BITMAP;
-   switch (type) {
-      case SYSTEM_IMAGE : 
-         type = VIDEO_IMAGE;
-         /// Don't break here
-      case VIDEO_IMAGE :
-         flag = ALLEGRO_VIDEO_BITMAP;
-      default : 
-         al_set_new_bitmap_flags(al_get_new_bitmap_flags() & flag);
-   };
+   if (type == SYSTEM_IMAGE) {type = VIDEO_IMAGE;}
+   if (type == MEMORY_IMAGE) {
+      al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
+   }
+   else if (type == VIDEO_IMAGE) {
+      al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
+   }
    
-   EagleFont* font = new Allegro5Font("Allegro5Font" , path + std::string(size));
+   
+   EagleFont* font = new Allegro5Font("Allegro5Font" , path);
    font->owner = owner;
    font->fontman = this;
-   if (path.compare("BUILTIN") == 0) {/// BUILTIN font is never in the map
+   if (path.compare("BUILTIN") == 0) {/// BUILTIN font is never in the memfile map
+      font->SetShortName("BUILTIN");
       font->srcfile = "BUILTIN";
       font = al_create_builtin_font();
       font->height = al_get_line_height(font);
       font->flags = FONT_MONOCHROME;
       font->srcflags = FONT_BUILTIN;
       fonts.insert(std::pair<std::string , EagleFont*>("BUILTIN" , font));
-      return font;
+      reversefontmap.insert(std::pair<EagleFont* , std::string>(font , "BUILTIN");
    }
    else if (mfile) {
-      font->LoadFromMemory(mfile , size , flag , type);
+      bool success = font->LoadFromMemory(mfile , size , loading_flags , type);
+      if (!success) {
+         EAGLE_ASSERT(success);
+         return 0;
+      }
+      std::string fullfontname = mfile->Path() + std::string(size) + TranslateFontFlags(flags);
+      fonts.insert<std::pair<std::string , Eaglefont*>(fullfontname , font);
+      reversefontmap.insert(std::pair<EagleFont* , std::string>(font , mfile->Path());
    }
-   else (path.compare(0 , 7 , "DEFAULT") == 0) {
-      font->srcfile = default_font_path + std::string(default_font_size) + TranslateFontFlags(flags);
-      font->height = default_font_size;
-      font->flags = default_font_flags;
-      font->Load(default_font_path.c_str() , default_font_size , default_font_flags , VIDEO_IMAGE);
-   }
-   else {
-         
-   }
-   
-   
-   
+   return font;
 }
 
 

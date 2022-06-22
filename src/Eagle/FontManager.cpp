@@ -3,7 +3,7 @@
 
 
 #include "Eagle/FontManager.hpp"
-
+#include "Eagle/GraphicsContext.hpp"
 
 
 
@@ -13,6 +13,7 @@ FontManager::FontManager(EagleGraphicsContext* window) :
       owner(window),
       memfiles(),
       fonts(),
+      reversefontmap(),
       builtinfont(0),
       defaultfont(0),
       default_font_path("Data/Fonts/Verdana.ttf"),
@@ -22,16 +23,81 @@ FontManager::FontManager(EagleGraphicsContext* window) :
 
 
 
-EagleFont* FontManager::GetFont(std::string path , int size) {
+EagleFont* FontManager::GetFont(std::string path , int size , int fontflags , int memflags) {
    if (path.compare(0 , 7 , "BUILTIN" , std::string::npos) == 0) {
       return CreateBuiltinFont();
    }
    else if (path.compare(0 , 7 , "DEFAULT" , std::string npos) {
+      
       return CreateDefaultFont();
    }
    else {
-      return LoadFontPath(path , size , 
+      return LoadFontPath(path , size , fontflags , memflags);
    }
+}
+
+
+
+
+void FontManager::Free(EagleFont* font) {
+   std::string fpath;
+   RFMIT it = reversefontmap.find(font);
+   if (it != reversefontmap.end()) {
+      FNTIT it2 = fonts.find(fpath);
+      if (it2 != fonts.end()) {
+         font->Free();
+         delete font;
+         reversefontmap.erase(it);
+         fonts.erase(it2);
+      }
+   }
+}
+
+
+
+void FontManager::FreeFontFile(std::string file) {
+   MFMIT it = memfiles.find(file);
+   if (it != memfiles.end()) {
+      MemFile* mf = it->second;
+      std::string path = mf->Path();
+      for (FNTIT it2 = fonts.begin() ; it2 != fonts.end() ; ++it2) {
+         std::string fontname = it2->first;
+         if (fontname.compare(0 , path , path.size() , std::string npos) == 0) {
+            EagleFont* f = it2->second;
+            f->Free();
+            delete f;
+         }
+      }
+      mf->Clear();
+      delete mf;
+      memfiles.erase(it);
+   }
+}
+
+
+
+void FontManager::FreeAll() {
+   /// Free and destroy all fonts
+   if (builtinfont) {
+      builtinfont->Free();
+      delete builtinfont;
+      builtinfont = 0;
+   }
+   /// defaultfont is stored in fonts
+   for (FNTIT it = fonts.begin() ; it != fonts.end() ; ++it) {
+      EagleFont* font = it->second;
+      font->Free();
+      delete font;
+   }
+   fonts.clear();
+   reversefontmap.clear();
+   /// Free and destroy all memfiles. Must destroy memfiles after fonts.
+   for (MFMIT it = memfiles.begin() ; it != memfiles.end() ; ++it) {
+      MemFile* mf = it->second;
+      mf->Clear();
+      delete mf;
+   }
+   memfiles.clear();
 }
 
 

@@ -66,7 +66,7 @@ bool Allegro5Font::LoadFromMemory(MemFile* memfile , int size , int flags , IMAG
    }
    memtype = type;
    
-   allegro_font = al_load_ttf_font_f(allegro_file , src.c_str() , size , flags);
+   allegro_font = al_load_ttf_font_f(allegro_file , memfile->Path().c_str(), size , flags);
    if (!allegro_font) {
       EAGLE_ASSERT(allegro_font);
       return false;
@@ -74,7 +74,7 @@ bool Allegro5Font::LoadFromMemory(MemFile* memfile , int size , int flags , IMAG
    srcfile = memfile->Path();
    fontflags = flags;
    srcflags = FONT_MEMFILE;
-   styleflags = FONT_ROMAN;
+   return Valid();
 }
 
 
@@ -99,7 +99,7 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
    bool pcx = false;
    srcfile = file;
    /// index of extension minus 1
-   size_t idx = srcfile.find_last_of(".")
+   size_t idx = srcfile.find_last_of(".");
    if (idx == std::string::npos) {
       EagleError() << "Extension not found." << std::endl;
       return false;
@@ -139,7 +139,7 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
 
 
 
-bool Adopt(ALLEGRO_FONT* f) {
+bool Allegro5Font::Adopt(ALLEGRO_FONT* f) {
    if (!f) {
       EAGLE_ASSERT(f);
       return false;

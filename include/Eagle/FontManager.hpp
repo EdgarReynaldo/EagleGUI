@@ -25,18 +25,25 @@
  */
 
 
+class EagleGraphicsContext;
+
+
 
 class FontManager {
    
+protected :
    EagleGraphicsContext* owner;
 
    std::map<std::string , MemFile> memfiles;
    std::map<std::string , EagleFont*> fonts;
+   std::map<EagleFont* , std::string> reversefontmap;
 
-   typedef std::map<std::string , Memfile> MFMAP;
-   typedef std::map<std::string , Memfile>::iterator MFMIT;
+   typedef std::map<std::string , MemFile> MFMAP;
+   typedef std::map<std::string , MemFile>::iterator MFMIT;
    typedef std::map<std::string , EagleFont*> FNTMAP;
    typedef std::map<std::string , EagleFont*>::iterator FNTIT;
+   typedef std::map<EagleFont* , std::string> RFMAP;
+   typedef std::map<EagleFont* , std::string>::iterator RFMIT;
    
    EagleFont* builtinfont;
    EagleFont* defaultfont;
@@ -50,12 +57,16 @@ class FontManager {
    
    
 public :
-   FontManager(EagleGraphicsContext* window) explicit;
+   explicit FontManager(EagleGraphicsContext* window);
+   virtual ~FontManager() {}
    
    virtual EagleFont* LoadFontPath(std::string path , int size , int loading_flags , IMAGE_TYPE type = VIDEO_IMAGE)=0;
 
-   EagleFont* GetFont(std::string path , int size);
+   EagleFont* GetFont(std::string path , int size , int fontflags = FONT_NORMAL , int memflags = VIDEO_IMAGE);
    
+   void FreeFont(EagleFont* font);
+   void FreeFontFile(std::string path);
+   void FreeAll();
    
    void SetDefaultFontPath(std::string path);///< Set the default font path
    void SetDefaultFontSize(int pointsize);///< Set the default font size
@@ -65,7 +76,7 @@ public :
    EagleFont* DefaultFont();
 
    std::string DefaultFontPath();///< Get the default font path
-   int DefaultFontPoint();///< Get the default font point size
+   int DefaultFontSize();///< Get the default font point size
    int DefaultFontFlags();///< Get the default font flags
 };
 

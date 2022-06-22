@@ -79,7 +79,6 @@ void PopupWindow::CreatePopupWindow(int sx , int sy , int width , int height , i
       throw EagleException(StringPrintF("Failed to create %d x %d popup window with flags %s\n",
                                         width , height , flagstr.c_str()));
    }
-   our_window->SetWindowPosition(sx , sy);
    SetWidgetArea(Rectangle(0 , 0 , width , height) , false);
    SetupBuffer(width , height , our_window);
 
@@ -115,10 +114,19 @@ PopupText::PopupText(int sx , int sy , int flags , std::string message , std::st
       our_font(0)
 {
    
-   CreatePopupWindow(sx , sy , t.W() + 4 , t.H() + 4 , flags);
+   EagleFont* temp = our_window->GetFont(fontpath , fontpt , FONT_NORMAL , MEMORY_IMAGE);
+   temp->Load(fontpath , fontpt , FONT_NORMAL , MEMORY_IMAGE);
+   int w = temp->Width(message);
+   int h = temp->Height(message , 2);
+   our_window->FreeFont(temp);
+   temp = 0;
+   
+   
+   CreatePopupWindow(sx , sy , w + 4 , h + 4 , flags);
 
-   our_font = our_window->LoadFont(fontpath , fontpt);
-
+   our_font = our_window->GetFont(fontpath , fontpt , FONT_NORMAL);
+   EAGLE_ASSERT(our_font);
+   
    text.SetupText(message , our_font , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , our_font->Height()/4);
    Rectangle t = text.TextArea();
    text.SetWidgetArea(Rectangle(2 , 2 , t.W() , t.H() ) , false);

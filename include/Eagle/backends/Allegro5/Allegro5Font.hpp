@@ -27,8 +27,11 @@
 
 #include "Eagle/Font.hpp"
 
+#include "allegro5/allegro.h"
 #include "allegro5/allegro_font.h"
 #include "allegro5/allegro_ttf.h"
+#include "allegro5/allegro_memfile.h"
+
 
 
 /**! @class Allegro5Font
@@ -41,7 +44,7 @@ private :
    ALLEGRO_FONT* allegro_font;
    ALLEGRO_FILE* allegro_file;
    
-   friend Allegro5FontManager;
+   friend class Allegro5FontManager;
    
 public :
    ///< Default constructor
@@ -54,7 +57,7 @@ public :
    Allegro5Font(std::string file , int size , int flags , std::string objname = "Nemo" , IMAGE_TYPE type = VIDEO_IMAGE);
    
    ///< Default destructor
-   Allegro5Font::~Allegro5Font();
+   ~Allegro5Font();
    
    ///< Load a font file from a memory file, only ttf fonts are supported
    bool LoadFromMemory(MemFile* memfile , int size , int flags , IMAGE_TYPE type = VIDEO_IMAGE);

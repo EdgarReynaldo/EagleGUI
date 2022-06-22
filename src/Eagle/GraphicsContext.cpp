@@ -25,6 +25,9 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Text/GlobalText.hpp"
 #include "Eagle/System.hpp"
+#include "Eagle/FontManager.hpp"
+
+
 
 #include <vector>
 using std::vector;
@@ -261,8 +264,11 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       EagleEventSource(),
       newx(-1),
       newy(-1),
+      winx(0),
+      winy(0),
       scrw(0),
       scrh(0),
+      fullscreen(false),
       backbuffer(0),
       drawing_target(0),
       imageset(),
@@ -638,30 +644,26 @@ void EagleGraphicsContext::FreeAllNinePatch() {
 
 
 
-void    EagleFont* CloneFont(EagleFont* font) {
-   if (!font) {return 0;}
-   return LoadFont(font->File() , font->FontHeight() , font->Flags() , font->ImageType());
+EagleFont* EagleGraphicsContext::GetFont(std::string file , int height , int fontflags , int memflags) {
+   return font_manager->GetFont(file , height , fontflags , memflags);
 }
 
 
 
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
-   if (!font) {return;}
-   FSIT it = fontset.find(font);
-   if (it != fontset.end()) {
-      delete font;
-      fontset.erase(it);
-   }
+   font_manager->FreeFont(font);
+}
+
+
+
+void EagleGraphicsContext::FreeFontFile(std::string file) {
+   font_manager->FreeFontFile(file);
 }
 
 
 
 void EagleGraphicsContext::FreeAllFonts() {
-   FONTSET fset = fontset;
-   for (FSIT it = fset.begin() ; it != fset.end() ; ++it) {
-      FreeFont(*it);
-   }
-   EAGLE_ASSERT(fontset.empty());
+   font_manager->FreeAll();
 }
 
 
