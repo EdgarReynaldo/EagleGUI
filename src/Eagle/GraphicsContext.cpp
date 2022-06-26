@@ -644,8 +644,8 @@ void EagleGraphicsContext::FreeAllNinePatch() {
 
 
 
-EagleFont* EagleGraphicsContext::GetFont(std::string file , int height , int fontflags , int memflags) {
-   return font_manager->GetFont(file , height , fontflags , memflags);
+EagleFont* EagleGraphicsContext::GetFont(std::string file , int height , int fontflags , IMAGE_TYPE memflag) {
+   return font_manager->GetFont(file , height , fontflags , memflag);
 }
 
 

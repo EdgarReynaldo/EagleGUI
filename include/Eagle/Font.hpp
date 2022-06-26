@@ -48,7 +48,7 @@ enum FONT_LOADING_FLAGS {
    FONT_NOPREMULTALPHA = 1 << 3 ///< Whether to pre-multiply the alpha for this font
 };
 
-std::string TranslateFontFlags(FONT_LOADING_FLAGS flags);
+std::string TranslateFontFlags(int fontflags);
 int UntranslateFontFlags(std::string flagstr);
 
 /**! @enum FONT_STYLE_FLAGS {
@@ -105,7 +105,7 @@ public :
 
    virtual ~EagleFont() {}
 
-   virtual bool LoadFromMemory(MemFile* memfile , int pt , int flags , std::string src , IMAGE_TYPE type = VIDEO_IMAGE)=0;///< Only loads ttf fonts from a memfile
+   virtual bool LoadFromMemory(MemFile* memfile , int pt , int flags , IMAGE_TYPE type = VIDEO_IMAGE)=0;///< Only loads ttf fonts from a memfile
    virtual bool Load(std::string file , int size , int flags , IMAGE_TYPE type)=0;///< Pure virtual function to load any supported font
    
    virtual void Free()=0;///< Pure virtual function to free a font

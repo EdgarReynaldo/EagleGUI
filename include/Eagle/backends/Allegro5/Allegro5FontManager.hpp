@@ -16,7 +16,7 @@ public :
    virtual EagleFont* CreateBuiltinFont();
    virtual EagleFont* CreateDefaultFont();
 
-   virtual EagleFont* LoadFontPath(std::string path , int size , int loading_flags , IMAGE_TYPE type = VIDEO_IMAGE);
+   virtual EagleFont* LoadFontPath(std::string path , int size , int fontflags , IMAGE_TYPE type = VIDEO_IMAGE);
 };
 
 

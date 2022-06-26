@@ -129,8 +129,6 @@ bool Allegro5GraphicsContext::Create(int width , int height , int flags) {
    
    GetAllegro5WindowManager()->AddDisplay(this , display);
 
-   LoadDefaultFont();
-
    ResetBackBuffer();
 
    window_mutex = new CXX11Mutex("A5GC::window_mutex");

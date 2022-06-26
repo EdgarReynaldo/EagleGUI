@@ -34,31 +34,31 @@
 
 
 
-std::string TranslateFontFlags(FONT_LOADING_FLAGS flags) {
-   if (flags == FONT_NORMAL) {
+std::string TranslateFontFlags(int fontflags) {
+   if (fontflags == FONT_NORMAL) {
       return "FONT_NORMAL";
    }
    int flagcount = 0;
    std::stringstream ss;
-   if (flags & FONT_NO_KERNING) {
+   if (fontflags & FONT_NO_KERNING) {
       ss << "NO_KERNING";
       flagcount++;
    }
-   if (flags & FONT_MONOCHROME) {
+   if (fontflags & FONT_MONOCHROME) {
       if (flagcount) {
          ss << " | ";
       }
       ss << "MONOCHROME";
       flagcount++;
    }
-   if (flags & FONT_NOAUTOHINT) {
+   if (fontflags & FONT_NOAUTOHINT) {
       if (flagcount) {
          ss << " | ";
       }
       ss << "NOAUTOHINT";
       flagcount++;
    }
-   if (flags & FONT_NOPREMULTALPHA) {
+   if (fontflags & FONT_NOPREMULTALPHA) {
       if (flagcount) {
          ss << " | ";
       }

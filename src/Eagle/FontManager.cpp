@@ -18,28 +18,31 @@ FontManager::FontManager(EagleGraphicsContext* window) :
       defaultfont(0),
       default_font_path("Data/Fonts/Verdana.ttf"),
       default_font_size(-16),
-      default_font_flags(LOAD_FONT_MONOCHROME)
+      default_font_flags(FONT_MONOCHROME)
 {}
 
 
 
-EagleFont* FontManager::GetFont(std::string path , int size , int fontflags , int memflags) {
+EagleFont* FontManager::GetFont(std::string path , int size , int fontflags , IMAGE_TYPE memflags) {
    if (path.compare(0 , 7 , "BUILTIN" , std::string::npos) == 0) {
       return CreateBuiltinFont();
    }
-   else if (path.compare(0 , 7 , "DEFAULT" , std::string npos) {
-      
+   else if (path.compare(0 , 7 , "DEFAULT" , std::string::npos) == 0) {
+      default_font_size = size;
+      default_font_flags = fontflags;
       return CreateDefaultFont();
    }
    else {
       return LoadFontPath(path , size , fontflags , memflags);
    }
+   /// Not reached
+   return 0;
 }
 
 
 
 
-void FontManager::Free(EagleFont* font) {
+void FontManager::FreeFont(EagleFont* font) {
    std::string fpath;
    RFMIT it = reversefontmap.find(font);
    if (it != reversefontmap.end()) {
@@ -62,7 +65,7 @@ void FontManager::FreeFontFile(std::string file) {
       std::string path = mf->Path();
       for (FNTIT it2 = fonts.begin() ; it2 != fonts.end() ; ++it2) {
          std::string fontname = it2->first;
-         if (fontname.compare(0 , path , path.size() , std::string npos) == 0) {
+         if (fontname.compare(0 , path.size() , path , std::string::npos) == 0) {
             EagleFont* f = it2->second;
             f->Free();
             delete f;
