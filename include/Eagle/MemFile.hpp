@@ -41,7 +41,7 @@ protected :
    std::vector<unsigned char> fmem;
    
 public :
-   
+   MemFile(std::string file) : File(FSInfo(FilePath(file))) {}
    MemFile(FSInfo info) : File(info) {}///< Construct a MemFile from @param info
 
    ~MemFile() {Clear();}///< Destructor frees reserved memory

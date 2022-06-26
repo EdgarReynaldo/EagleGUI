@@ -79,7 +79,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   EagleFont* font = win->LoadFont("Verdana.ttf" , -20);
+   EagleFont* font = win->GetFont("Verdana.ttf" , -20);
    
    EAGLE_ASSERT(font && font->Valid());
    
@@ -295,7 +295,7 @@ int main3(int argc , char** argv) {
    }
 
    
-   EagleFont* font = win->LoadFont("Verdana.ttf" , -24);
+   EagleFont* font = win->GetFont("Verdana.ttf" , -24);
    
    WidgetHandler gui(win , "WidgetHandler" , "MainGUI");
    gui.SetupBuffer(sw , sh , win);
@@ -399,7 +399,7 @@ int main2(int argc , char** argv) {
    
    gui.SetRootLayout(&rl);
    
-   EagleFont* font = win->LoadFont("Verdana.ttf" , -24);
+   EagleFont* font = win->GetFont("Verdana.ttf" , -24);
    
    
    
