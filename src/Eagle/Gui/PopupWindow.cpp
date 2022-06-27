@@ -127,7 +127,12 @@ PopupText::PopupText(int sx , int sy , int flags , std::string message , std::st
    AddWidget(&text);
    
    our_window->ResizeWindow(t.W() + 4 , t.H() + 4);
-   our_window->SetWindowPosition(sx , sy);
+   if (sx != -1 && sy != -1) {
+      our_window->SetWindowPosition(sx , sy);
+   }
+   else {
+      our_window->SetWindowPosition();/// Center the window
+   }
    
 }
 
