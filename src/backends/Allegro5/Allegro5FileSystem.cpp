@@ -163,7 +163,7 @@ Allegro5FileSystem::~Allegro5FileSystem() {
 FSInfo Allegro5FileSystem::GetFileInfo(FilePath fpath) {
    std::string path = fpath.Path();
    ALLEGRO_FS_ENTRY* fs = al_create_fs_entry(path.c_str());
-   FSInfo info(path);
+   FSInfo info;
    if (al_fs_entry_exists(fs)) {
       info = GetFSInfo(fs);
    }

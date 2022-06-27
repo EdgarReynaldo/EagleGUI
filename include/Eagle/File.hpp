@@ -113,8 +113,8 @@ protected :
    unsigned long long fsize;
 
 public :
-
-   FSInfo(FilePath path);
+   FSInfo();
+   FSInfo(FilePath path);/// Uses the path to read the file attributes
    FSInfo(FilePath path , bool exists , FSMode mode , 
           time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
    virtual ~FSInfo() {}

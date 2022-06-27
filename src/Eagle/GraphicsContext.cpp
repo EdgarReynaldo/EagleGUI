@@ -271,7 +271,9 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       fullscreen(false),
       backbuffer(0),
       drawing_target(0),
+      draw_target_stack(),
       imageset(),
+      npset(),
       mp_manager(0),
       maxframes(60),
       numframes(0.0f),
@@ -645,54 +647,66 @@ void EagleGraphicsContext::FreeAllNinePatch() {
 
 
 EagleFont* EagleGraphicsContext::GetFont(std::string file , int height , int fontflags , IMAGE_TYPE memflag) {
+   EAGLE_ASSERT(font_manager);
+   if (!font_manager) {return 0;}
    return font_manager->GetFont(file , height , fontflags , memflag);
 }
 
 
 
 void EagleGraphicsContext::FreeFont(EagleFont* font) {
+   if (!font_manager) {return;}
    font_manager->FreeFont(font);
 }
 
 
 
 void EagleGraphicsContext::FreeFontFile(std::string file) {
+   if (!font_manager) {return;}
    font_manager->FreeFontFile(file);
 }
 
 
 
 void EagleGraphicsContext::FreeAllFonts() {
+   if (!font_manager) {return;}
    font_manager->FreeAll();
 }
 
 
 
 EagleFont* EagleGraphicsContext::BuiltinFont() {
+   EAGLE_ASSERT(font_manager);
+   if (!font_manager) {return 0;}
    return font_manager->BuiltinFont();
 }
 
 
 
 EagleFont* EagleGraphicsContext::DefaultFont() {
+   EAGLE_ASSERT(font_manager);
+   if (!font_manager) {return 0;}
    return font_manager->DefaultFont();
 }
 
 
 
 std::string EagleGraphicsContext::DefaultFontPath() {
+   if (!font_manager) {return "";}
    return font_manager->DefaultFontPath();
 }
 
 
 
 int EagleGraphicsContext::DefaultFontSize() {
+   if (!font_manager) {return 0;}
    return font_manager->DefaultFontSize();
 }
 
 
 
 int EagleGraphicsContext::DefaultFontFlags() {
+   if (!font_manager) {return 0;}
    return font_manager->DefaultFontFlags();
 }
 

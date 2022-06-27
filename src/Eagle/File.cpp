@@ -25,11 +25,25 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
 
-
 #include "Eagle/FileSystem.hpp"
+#include "Eagle/System.hpp"
+#include "Eagle/Lib.hpp"
+
 
 
 /// -------------------------      FSInfo     -----------------------------
+
+
+FSInfo::FSInfo() :
+      fpath(""),
+      fexists(false),
+      fmode(0),
+      tcreate(),
+      tmodify(),
+      taccess(),
+      fsize(0ULL)
+{}
+
 
 
 FSInfo::FSInfo(FilePath path) :
@@ -40,7 +54,9 @@ FSInfo::FSInfo(FilePath path) :
    tmodify(0),
    taccess(0),
    fsize(0ULL)
-{}
+{
+   *this = Eagle::EagleLibrary::System("Any")->GetFileSystem()->GetFileInfo(fpath);
+}
 
 
 

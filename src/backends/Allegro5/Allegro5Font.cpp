@@ -162,7 +162,7 @@ void Allegro5Font::Free() {
       allegro_font = 0;
    }
    if (allegro_file) {
-      al_fclose(allegro_file);
+///      al_fclose(allegro_file);This is not a memory leak. The file handle is owned by and freed by the ALLEGRO_FONT object
       allegro_file = 0;
    }
 }

@@ -80,20 +80,20 @@ void FontManager::FreeFontFile(std::string file) {
 
 
 void FontManager::FreeAll() {
+
    /// Free and destroy all fonts
-   if (builtinfont) {
-      builtinfont->Free();
-      delete builtinfont;
-      builtinfont = 0;
-   }
-   /// defaultfont is stored in fonts
+
+   /// builtinfont and defaultfont are stored in fonts
    for (FNTIT it = fonts.begin() ; it != fonts.end() ; ++it) {
       EagleFont* font = it->second;
       font->Free();
       delete font;
    }
+   builtinfont = 0;
+   defaultfont = 0;
    fonts.clear();
    reversefontmap.clear();
+
    /// Free and destroy all memfiles. Must destroy memfiles after fonts.
    for (MFMIT it = memfiles.begin() ; it != memfiles.end() ; ++it) {
       MemFile* mf = it->second;
