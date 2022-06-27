@@ -298,6 +298,9 @@ public :
 	virtual const char* GetSystemName()=0;///< Pure virtual function to get the driver name
 
 	static double GetProgramTime();///< Seconds since program start
+	
+	virtual int GetAdapterCount()=0;
+	virtual MonitoInfo GetMonitorInfo(int adapter_num)=0;
 
 };
 

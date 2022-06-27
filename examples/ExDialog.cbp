@@ -83,6 +83,7 @@
 		<Linker>
 			<Add directory="E:/usr64/lib" />
 		</Linker>
+		<Unit filename="../../../bin/ExDialog.log" />
 		<Unit filename="../../../bin/allegro5.cfg" />
 		<Unit filename="ExDialog.cpp" />
 		<Extensions>
