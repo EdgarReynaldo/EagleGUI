@@ -225,6 +225,7 @@
 		<Unit filename="include/Eagle/MemFile.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
 		<Unit filename="include/Eagle/Memory.hpp" />
+		<Unit filename="include/Eagle/MonitorInfo.hpp" />
 		<Unit filename="include/Eagle/MousePointer.hpp" />
 		<Unit filename="include/Eagle/Mutexes.hpp" />
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
@@ -344,6 +345,7 @@
 		<Unit filename="src/Eagle/Media.cpp" />
 		<Unit filename="src/Eagle/MemFile.cpp" />
 		<Unit filename="src/Eagle/Memory.cpp" />
+		<Unit filename="src/Eagle/MonitorInfo.cpp" />
 		<Unit filename="src/Eagle/MousePointer.cpp" />
 		<Unit filename="src/Eagle/Mutexes.cpp" />
 		<Unit filename="src/Eagle/NamedParameters.cpp" />
