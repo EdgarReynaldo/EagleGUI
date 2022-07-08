@@ -79,9 +79,7 @@ int main(int argc , char** argv) {
    
    while (!quit) {
       if (redraw) {
-         ptext.Display();
-      }
-      if (0) {
+//         ptext.Display();
          win->DrawToBackBuffer();
          win->Clear();
          win->DrawTextString(win->DefaultFont() , "Hello dialog" , 10 , 10 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
