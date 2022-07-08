@@ -105,7 +105,7 @@ public :
    virtual void SetNewWindowPosition(int wx , int wy);
    virtual bool Create(int width , int height , int flags);
    virtual bool ResizeWindow(int width , int height);
-   virtual bool SetWindowPosition(int sx , int sy);
+   virtual bool SetWindowPosition(int sx = -1 , int sy = -1);///< Default values center the window
    virtual bool Valid();
    virtual void Destroy();
    virtual void AcknowledgeResize();

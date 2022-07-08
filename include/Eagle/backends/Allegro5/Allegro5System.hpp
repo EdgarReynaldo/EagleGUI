@@ -68,6 +68,7 @@ private :
    Transformer*          PrivateCreateTransformer();
    FileSystem*           PrivateCreateFileSystem();
    ResourceLibrary*      PrivateCreateResourceLibrary();
+   GraphicsHardware*     PrivateCreateGraphicsHardware();
 
    friend class EagleLibrary;
 

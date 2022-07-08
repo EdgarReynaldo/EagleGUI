@@ -282,7 +282,7 @@ public :
    virtual void SetNewWindowPosition(int wx , int wy)=0;///< Set new window position. Use -1,-1 to center the window. Centering is default.
    virtual bool Create(int width , int height , int flags)=0;///< Responsible for creating Font.cpp:default_font
    virtual bool ResizeWindow(int width , int height)=0;
-   virtual bool SetWindowPosition(int sx , int sy)=0;
+   virtual bool SetWindowPosition(int sx = -1 , int sy = -1)=0;
    virtual bool Valid()=0;
    virtual void Destroy()=0;
 

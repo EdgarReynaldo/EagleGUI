@@ -186,6 +186,7 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    system_transformer(0),
    file_system(0),
    resource_library(0),
+   graphics_hardware(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -226,6 +227,11 @@ void EagleSystem::Shutdown() {
       resource_library = 0;
    }
 
+   if (graphics_hardware) {
+      delete graphics_hardware;
+      graphics_hardware = 0;
+   }
+   
    /// TODO : Manage destruction order carefully...
    inputs.RemoveAll();
    clipboards.RemoveAll();
@@ -301,6 +307,9 @@ bool EagleSystem::FinalizeSystem() {
    if (!system_clipboard)   {system_clipboard = CreateClipboard();}
    if (!window_manager)     {window_manager   = CreateWindowManager();}
    if (!system_transformer) {system_transformer = PrivateCreateTransformer();}
+   if (!file_system)        {file_system        = PrivateCreateFileSystem();}
+   if (!resource_library)   {resource_library   = PrivateCreateResourceLibrary();}
+   if (!graphics_hardware)  {graphics_hardware  = PrivateCreateGraphicsHardware();}
 
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
@@ -752,53 +761,6 @@ void EagleSystem::FreeClipboard(EagleClipboard* clipboard) {
 }
 
 
-/*
-void EagleSystem::RegisterKeyboardInput(EagleEventHandler* queue) {
-	EagleInputHandler* input = GetInputHandler();
-	if (input) {
-		input->RegisterKeyboardInput(queue);
-	}
-}
-
-
-
-void EagleSystem::RegisterMouseInput   (EagleEventHandler* queue) {
-	EagleInputHandler* input = GetInputHandler();
-	if (input) {
-		input->RegisterMouseInput(queue);
-	}
-}
-
-
-
-void EagleSystem::RegisterJoystickInput(EagleEventHandler* queue) {
-	EagleInputHandler* input = GetInputHandler();
-	if (input) {
-		input->RegisterJoystickInput(queue);
-	}
-}
-
-
-
-void EagleSystem::RegisterTouchInput   (EagleEventHandler* queue) {
-	EagleInputHandler* input = GetInputHandler();
-	if (input) {
-		input->RegisterTouchInput(queue);
-	}
-}
-
-
-
-void EagleSystem::RegisterInputs(EagleEventHandler* queue) {
-	EagleInputHandler* input = GetInputHandler();
-	EAGLE_ASSERT(input);
-	if (input) {
-		queue->ListenTo(input);
-///		input->RegisterInputs(queue);
-	}
-}
-
-*/
 
 bool EagleSystem::UpToDate() {
    EAGLE_ASSERT(system_up);

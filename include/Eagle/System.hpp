@@ -30,6 +30,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/GraphicsHardware.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Threads.hpp"
@@ -125,6 +126,7 @@ protected :
    
    ResourceLibrary* resource_library;
    
+   GraphicsHardware* graphics_hardware;
    
    
    bool system_up;
@@ -168,6 +170,7 @@ protected :
    virtual Transformer*          PrivateCreateTransformer()=0;
    virtual FileSystem*           PrivateCreateFileSystem()=0;
    virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
+   virtual GraphicsHardware*     PrivateCreateGraphicsHardware()=0;
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
 
@@ -239,6 +242,7 @@ public :
    
    FileSystem*         GetFileSystem();
    ResourceLibrary*    GetResourceLibrary();
+   GraphicsHardware*   GetGraphicsHardware();
 
 	EagleInputHandler*    CreateInputHandler(std::string objname = "Nemo");
 	
@@ -299,9 +303,6 @@ public :
 
 	static double GetProgramTime();///< Seconds since program start
 	
-	virtual int GetAdapterCount()=0;
-	virtual MonitoInfo GetMonitorInfo(int adapter_num)=0;
-
 };
 
 

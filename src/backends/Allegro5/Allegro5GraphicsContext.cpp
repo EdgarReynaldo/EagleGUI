@@ -165,6 +165,7 @@ bool Allegro5GraphicsContext::ResizeWindow(int width , int height) {
 
 bool Allegro5GraphicsContext::SetWindowPosition(int sx , int sy) {
    if (fullscreen) {return false;}
+   /// Allegro uses -1,-1 as centering coordinates
    al_set_window_position(display , sx , sy);
    winx = sx;
    winy = sy;
