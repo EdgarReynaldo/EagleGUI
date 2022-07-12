@@ -142,6 +142,7 @@
 		<Unit filename="include/Eagle/Font.hpp" />
 		<Unit filename="include/Eagle/FontManager.hpp" />
 		<Unit filename="include/Eagle/GraphicsContext.hpp" />
+		<Unit filename="include/Eagle/GraphicsHardware.hpp" />
 		<Unit filename="include/Eagle/Gui.hpp" />
 		<Unit filename="include/Eagle/Gui/Alignment.hpp" />
 		<Unit filename="include/Eagle/Gui/BasicIcon.hpp" />
@@ -225,7 +226,6 @@
 		<Unit filename="include/Eagle/MemFile.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
 		<Unit filename="include/Eagle/Memory.hpp" />
-		<Unit filename="include/Eagle/MonitorInfo.hpp" />
 		<Unit filename="include/Eagle/MousePointer.hpp" />
 		<Unit filename="include/Eagle/Mutexes.hpp" />
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
@@ -273,6 +273,7 @@
 		<Unit filename="src/Eagle/Font.cpp" />
 		<Unit filename="src/Eagle/FontManager.cpp" />
 		<Unit filename="src/Eagle/GraphicsContext.cpp" />
+		<Unit filename="src/Eagle/GraphicsHardware.cpp" />
 		<Unit filename="src/Eagle/Gui/Alignment.cpp" />
 		<Unit filename="src/Eagle/Gui/BasicIcon.cpp" />
 		<Unit filename="src/Eagle/Gui/Button/BasicButton.cpp" />
@@ -345,7 +346,6 @@
 		<Unit filename="src/Eagle/Media.cpp" />
 		<Unit filename="src/Eagle/MemFile.cpp" />
 		<Unit filename="src/Eagle/Memory.cpp" />
-		<Unit filename="src/Eagle/MonitorInfo.cpp" />
 		<Unit filename="src/Eagle/MousePointer.cpp" />
 		<Unit filename="src/Eagle/Mutexes.cpp" />
 		<Unit filename="src/Eagle/NamedParameters.cpp" />
