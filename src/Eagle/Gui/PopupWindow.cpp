@@ -123,15 +123,28 @@ PopupText::PopupText(int sx , int sy , int flags , std::string message , std::st
    
    text.SetupText(message , f , HALIGN_CENTER , VALIGN_CENTER , 2 , 2 , f->Height()/4);
    Rectangle t = text.TextArea();
-   text.SetWidgetArea(Rectangle(2 , 2 , t.W() , t.H() ) , false);
    AddWidget(&text);
+   int tw = t.W();
+   int th = t.H();
    
-   our_window->ResizeWindow(t.W() + 4 , t.H() + 4);
+   our_window->ResizeWindow(tw + 4 , th + 4);
+   SetupBuffer(tw + 4 , th + 4 , our_window);
+   SetWidgetArea(Rectangle(0,0,tw+4,th+4),false);
+   text.SetWidgetArea(Rectangle(2 , 2 , tw , th ) , false);
+   
+   SetRedrawAllFlag();
+   
    if (sx != -1 && sy != -1) {
       our_window->SetWindowPosition(sx , sy);
    }
    else {
-      our_window->SetWindowPosition();/// Center the window
+      EagleSystem* sys = our_window->GetSystem();
+   
+      GraphicsHardware* g = sys->GetGraphicsHardware();
+      
+      MONITOR_INFO i = g->GetMonitor(GRAPHICS_OPENGL , 0);
+         
+      our_window->SetWindowPosition(i.w/2 - w/2 , i.h/2 - h/2);/// Center the window
    }
    
 }

@@ -41,8 +41,9 @@ EagleFont* Allegro5FontManager::LoadFontPath(std::string path , int size , int f
    if (path.compare("DEFAULT") == 0) {
       path = default_font_path;
    }
-
-   FNTIT fntit = fonts.find(path + std::to_string(size) + TranslateFontFlags(fontflags));/// Fonts are stored in the map as FONT.EXT### with the point size at the right of the string
+   const std::string fullfontname = std::to_string(size) + path + TranslateFontFlags(fontflags);
+   
+   FNTIT fntit = fonts.find(fullfontname);/// Fonts are stored in the map as ###Font.path$FLAGS$ with the point size at the left of the string
    if (fntit != fonts.end()) {
       return fntit->second;/// Font already in font map
    }
@@ -93,7 +94,6 @@ EagleFont* Allegro5FontManager::LoadFontPath(std::string path , int size , int f
          EAGLE_ASSERT(success);
          return 0;
       }
-      std::string fullfontname = mfile->Path() + std::to_string(size) + TranslateFontFlags(fontflags);
       fonts.insert(std::pair<std::string , EagleFont*>(fullfontname , font));
       reversefontmap.insert(std::pair<EagleFont* , std::string>(font , mfile->Path()));
    }

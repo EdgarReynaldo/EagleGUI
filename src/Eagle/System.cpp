@@ -632,6 +632,15 @@ ResourceLibrary* EagleSystem::GetResourceLibrary() {
 
 
 
+GraphicsHardware* EagleSystem::GetGraphicsHardware() {
+   if (!graphics_hardware) {
+      graphics_hardware = PrivateCreateGraphicsHardware();
+   }
+   return graphics_hardware;
+}
+
+
+
 EagleInputHandler* EagleSystem::CreateInputHandler(std::string objname) {
    EAGLE_ASSERT(system_up);
    EagleInputHandler* input = PrivateCreateInputHandler(objname);

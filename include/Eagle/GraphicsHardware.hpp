@@ -55,6 +55,8 @@ protected :
 public :
    GraphicsHardware() : adaptermap() {}
    
+   virtual ~GraphicsHardware() {}
+   
    virtual void EnumerateHardware()=0;
    
    std::vector<ADAPTER_INFO> GetAdapters(GRAPHICS_DRIVER driver);
