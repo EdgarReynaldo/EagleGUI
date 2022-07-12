@@ -50,6 +50,8 @@ int main(int argc , char** argv) {
 
    gui.GetWidgetPainter()->bgtype = BG_AREA_CSSMODEL;
    
+   gui.SetBackgroundColor(EagleColor(52,96,52));
+   
    
    WidgetMover mover;
    mover.SetHotKey(input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_M));
@@ -171,7 +173,7 @@ int main(int argc , char** argv) {
    for (unsigned int i = 0 ; i < 6 ; ++i) {
       SHAREDOBJECT<WidgetColorset> wc = rgrids[i].GetWidgetColorset();
       WidgetArea wa = rgrids[i].GetWidgetArea();
-      wa.SetBoxesContract(1,6,3);
+      wa.SetBoxesContract(2,2,2);
       rgrids[i].SetWidgetArea(wa , false);
       rgrids[i].SetVisibleState(true);
       rgrids[i].GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
@@ -211,7 +213,7 @@ int main(int argc , char** argv) {
    
    for (unsigned int i = 0 ; i < 20 ; ++i) {
       btns[i].SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
-      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(2,1,3) , false);
+      btns[i].SetWidgetArea(btns[i].GetWidgetArea().SetBoxesContract(0,1,2) , false);
       btns[i].GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
       btns[i].SetWidgetDecorator(SHAREDOBJECT<WidgetDecorator>(HeapObject<WidgetDecorator>(new DropShadowDecorator)));
       btns[i].SetFont(font);

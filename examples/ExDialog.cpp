@@ -26,46 +26,41 @@ int main(int argc , char** argv) {
       EagleWarn() << "Failed to initialize some subsystem. Continuing anyway." << std::endl;
    }
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext("Main window" , 400 , 300 , EAGLE_NOFRAME | EAGLE_WINDOWED | EAGLE_OPENGL);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("Main window" , 400 , 300 , EAGLE_WINDOWED | EAGLE_OPENGL , 100 , 75);
    
    WidgetHandler gui(win , "WidgetHandler" , "GUI");
    gui.SetWidgetArea(Rectangle(0,0,400,300) , false);
    gui.SetupBuffer(400,300,win);
+   gui.SetBackgroundColor(EagleColor(255,255,255));
    
-   SHAREDOBJECT<WidgetColorset> guicset = gui.GetWidgetColorset();
-   
-//   (*cset.get())[TXTCOL] = EagleColor(0,0,0);
-   (*guicset.get())[HLCOL] = EagleColor(0,255,0,127);
-   (*guicset.get())[SDCOL] = EagleColor(0,0,127,127);
-   (*guicset.get())[BGCOL] = EagleColor(0,0,127,255);
-   (*guicset.get())[MGCOL] = EagleColor(0,127,255);
-   (*guicset.get())[FGCOL] = EagleColor(0,255,255);
-   (*guicset.get())[HVRCOL] = EagleColor(0,255,0);
-   (*guicset.get())[TXTCOL] = EagleColor(255,255,255);
-
-   gui.SetWidgetColorset(guicset);
-   
-   EagleFont* alex = win->GetFont("Data/Fonts/AlexBrush.ttf" , -20);
+   Allegro5Font* alex = dynamic_cast<Allegro5Font*>(win->GetFont("Data/Fonts/AlexBrush.ttf" , -40));
    EAGLE_ASSERT(alex && alex->Valid());
    
    GuiButton guibtn;
-   guibtn.SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_PLAIN);
+   WidgetColorset wc = *(guibtn.GetWidgetColorset().get());
+   wc[TXTCOL] = EagleColor(0,0,0);
+   wc[BGCOL] = EagleColor(255,0,0);
+   guibtn.SetWidgetColorset(wc);
+   guibtn.SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
    guibtn.SetFont(alex);
+   al_draw_text(alex->AllegroFont() , al_map_rgb(0,0,0) , -40 , -40 , 0 , "Press ME!");
    guibtn.SetLabel("Press ME!");
-   guibtn.SetWidgetArea(Rectangle(100 , 75 , 200 , 150) , false);
-   guibtn.SetWidgetColorset(guicset);
 
    
    
    gui << &guibtn;
+   guibtn.SetWidgetArea(Rectangle(100 , 75 , 200 , 150) , false);
    
    
    
    
    
    
+   PopupText ptext(-1 , -1 , 0 , "Hello\npopup" , "Data/Fonts/AlexBrush.ttf" , -80);
+   ptext.SetBackgroundColor(EagleColor(255,255,0));
+   ptext.Hide();
    
-   PopupText ptext(-1 , -1 , 0 , "Hello popup" , "Data/Fonts/Verdana.ttf" , -20);
+   (*ptext.GetWidgetColorset().get())[TXTCOL] = EagleColor(0,0,0);
    
    sys->GetSystemQueue()->ListenTo(&guibtn);
    
@@ -73,26 +68,33 @@ int main(int argc , char** argv) {
    
 //   ptext.Show();
    
+   EagleInfo() << gui << std::endl;
 
    bool quit = false;
    bool redraw = false;
    
    while (!quit) {
       if (redraw) {
-//         ptext.Display();
+         ptext.Display();
+
          win->DrawToBackBuffer();
          win->Clear();
-         win->DrawTextString(win->DefaultFont() , "Hello dialog" , 10 , 10 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
-//         gui.Display(win , 0 , 0);
+         gui.Display(win,0,0);
+//         win->DrawTextString(win->GetFont("Data/Fonts/AlexBrush.ttf" , -20) , "Alex" , 10 , 10 , EagleColor(0,0,255));
+//         win->DrawTextString(win->GetFont("Data/Fonts/Verdana.ttf" , -20) , "Verdana" , 10 , 30 , EagleColor(0,255,255));
          win->FlipDisplay();
-
-//         ptext.Display();
 
          redraw = false;
       }
       do {
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
-//         gui.HandleEvent(e);
+         gui.HandleEvent(e);
+         while (gui.HasMessages()) {
+            WidgetMsg m = gui.TakeNextMessage();
+            if (m.from == &guibtn) {
+               ptext.Show();
+            }
+         }
          ptext.HandleEvent(e);
          if (e.type == EAGLE_EVENT_TIMER) {
             gui.Update(e.timer.eagle_timer_source->SPT());
@@ -111,6 +113,11 @@ int main(int argc , char** argv) {
          }
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_H) {
             ptext.Hide();
+         }
+         if (e.type == EAGLE_EVENT_DISPLAY_SWITCH_OUT) {
+            if (e.source == &ptext) {
+               ptext.Hide();
+            }
          }
       } while (!sys->UpToDate());
          
