@@ -165,6 +165,7 @@
 		<Unit filename="include/Eagle/Gui/Factory/WidgetFactoryProto.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/BasicTextButtonLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/BoxLayout.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/ClassicMenuLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DropDownList.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FillLayout.hpp" />
@@ -293,6 +294,7 @@
 		<Unit filename="src/Eagle/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BasicTextButtonLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BoxLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/ClassicMenuLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DropDownList.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/FillLayout.cpp" />
