@@ -78,6 +78,7 @@ public :
    
    WIDGETAREA& operator=(const WIDGETAREA& wa);///< Copies wa
    
+   WIDGETAREA& MoveTo(Pos2I p);///< Moves the object to p.x , p.y
    WIDGETAREA& MoveBy(Pos2I p);///< Moves the object by p.x , p.y
    WIDGETAREA MovedBy(Pos2I p) const ;///< Returns a copy of the object, moved by p.x , p.y
 

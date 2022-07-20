@@ -91,6 +91,13 @@ WIDGETAREA::WIDGETAREA(BOXAREA marginbox , BOXAREA borderbox , BOXAREA paddingbo
 
 
 
+WIDGETAREA& WIDGETAREA::MoveTo(Pos2I p) {
+   pos = p;
+   return *this;
+}
+
+
+
 WIDGETAREA& WIDGETAREA::MoveBy(Pos2I p) {
    pos.MoveBy(p);
    return *this;
