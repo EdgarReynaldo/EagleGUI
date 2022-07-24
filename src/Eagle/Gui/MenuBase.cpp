@@ -3,7 +3,9 @@
 
 
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
-
+#include "Eagle/Gui/MenuBase.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui/Layout/Layout.hpp"
 
 
 const unsigned int TOPIC_MENU = NextFreeTopicId();
@@ -107,39 +109,36 @@ void MenuItemBase::OnSubMenuOpened() {
 
 
 
-void MenuItemBase::OnAreaChanged() {
-   SyncSubMenuPosition();
-}
-
-
-
-int MenuItemBase::PrivateHandleEvent(EagleEvent ee) {
-   
-}
-
-
-
-int MenuItemBase::PrivateUpdate(double dt) {
-   if (Flags().FlagOn(HOVER)) {
-      /// Count up with hover
-      if (hover_duration + dt >= hover_trigger) {
-         /// Threshold triggered, open submenu
-         OpenSubMenu();
-         hover_duration = 0.0;
-      }
-      else {
-         hover_duration += dt;
-      }
+void MenuItemBase::CloseMenu() {
+   if (submenu && submenu->IsOpen()) {
+      submenu->Close();
    }
-   
+}
+
+
+
+void MenuItemBase::Clear() {
+   CloseMenu();
+   ourwidget = 0;
+   parentmenu = 0;
+   submenu = 0;
+   submenu_open = false;
+}
+
+
+
+void MenuItemBase::SetWidgetAndMenu(WidgetBase* widget , LayoutBase* smenu) {
+   Clear();
+   if (widget) {
+      ourwidget = widget;
+      parentmenu = widget->GetLayout();
+      submenu = dynamic_cast<MenuBase*>(smenu);
+   }
 }
 
 
 
 void MenuItemBase::OpenSubMenu() {
-   if (mparent) {
-      mparent->CloseAllSubMenus();
-   }
    if (submenu) {
       submenu->Open();
    }
@@ -148,7 +147,9 @@ void MenuItemBase::OpenSubMenu() {
 
 
 void MenuItemBase::CloseSubMenu() {
-   if (submenu) {submenu->Close();}
+   if (submenu) {
+      submenu->Close();
+   }
 }
 
 
@@ -168,23 +169,33 @@ unsigned int MenuItemBase::OpenHour() {
 
 
 
-void MenuBase::ReserveSlots(int nslots) {
-   LayoutBase::ReserveSlots(nslots);
-   items.resize(nslots);
+
+void MenuBase::CloseOtherMenus(MenuItemBase* mitem) {
+   EAGLE_ASSERT(ourlayout);
+   std::vector<WidgetBase*> wchildren = ourlayout->WidgetChildren();
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      MenuItemBase* item = dynamic_cast<MenuItemBase*>(wchildren[i]);
+      if (item && mitem && item != mitem) {
+         item->CloseMenu();
+      }
+   }
 }
-
-
-
 void MenuBase::CloseAllSubMenus() {
-   for (unsigned int i = 0 ; i < items.size() ; ++i) {
-      items[i].CloseSubMenu();
+   EAGLE_ASSERT(ourlayout);
+   std::vector<WidgetBase*> wchildren = ourlayout->WidgetChildren();
+   for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
+      MenuItemBase* item = dynamic_cast<MenuItemBase*>(wchildren[i]);
+      if (item) {
+         item->CloseMenu();
+      }
    }
 }
 
 
 
-void MenuBase::Open() {
-   SetWidgetFlags(Flags().AddFlag(VISIBLE));
+void MenuBase::OpenMenu() {
+   EAGLE_ASSERT(ourlayout);
+   ourlayout->SetWidgetFlags(Flags().AddFlag(VISIBLE));
    WidgetMsg wmsg;
    wmsg.from = this;
    wmsg.topic = TOPIC_MENU_MESSAGE;
@@ -194,9 +205,10 @@ void MenuBase::Open() {
 
 
 
-void MenuBase::Close() {
+void MenuBase::CloseMenu() {
    CloseAllSubMenus();
-   SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
+   EAGLE_ASSERT(ourlayout);
+   ourlayout->SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
    WidgetMsg wmsg;
    wmsg.from = this;
    wmsg.topic = TOPIC_MENU_MESSAGE;
@@ -206,60 +218,19 @@ void MenuBase::Close() {
 
 
 
-void MenuBase::PlaceWidget(WidgetBase* w , int slot) {
-   CloseAllSubMenus();
-   MenuItemBase* mitem = dynamic_cast<MenuItemBase*>(w);
-   LayoutBase::PlaceWidget(w,slot);
-   if (items[slot]) {
-      StopListeningTo(items[slot]);
-   }
-   items[slot] = mitem;
-   if (mitem) {
-      ListenTo(mitem);
-   }
+bool MenuBase::IsOpen() {
+   return (bool)open_item;
 }
 
 
 
-int MenuBase::AddWidget(WidgetBase* w) {
-   CloseAllSubMenus();
-   items[LayoutBase::AddWidget(w)] = dynamic_cast<MenuItemBase*>(w);
-   ListenTo(w);
+bool MenuBase::IsClosed() {
+   return !IsOpen();
 }
 
 
 
-void MenuBase::InsertWidget(WidgetBase* w , int insertion_slot) {
-   CloseAllSubMenus();
-   LayoutBase::InsertWidget(w , insertion_slot);
-   ListenTo(w);
-   items.resize(items.size() + 1);
-   for (int i = items.size() - 1 ; i > insertion_slot ; --i) {
-      items[i] = items[i-1];
-   }
-   items[insertion_slot] = dynamic_cast<MenuItemBase*>(w);
-}
 
-
-
-void MenuBase::RemoveWidget(WidgetBase* widget) {
-   CloseAllSubMenus();
-   StopListeningTo(widget);
-   items[WidgetIndex(widget)] = 0;
-   LayoutBase::RemoveWidget(widget);
-}
-
-
-
-void MenuBase::EraseWidgetSlot(int slot) {
-   LayoutBase::EraseWidgetSlot(slot);
-   if (items[slot]) {
-      StopListeningTo(items[slot]);
-   }
-   for (int i = slot ; i < (int)items.size - 1 ; ++i) {
-      items[i] = items[i+1];
-   }
-}
 
 
 
