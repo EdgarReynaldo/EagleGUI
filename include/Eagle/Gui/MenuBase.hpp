@@ -55,6 +55,33 @@ protected :
    virtual void OnSubMenuClosed();
    virtual void OnSubMenuOpened();
    
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
+void MenuItemBase::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   /// React to messages from our widgets, specifically buttons
+   if (e.type == EAGLE_EVENT_WIDGET) {
+      if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
+         if (e.widget.from == ourwidget) {
+            /// We got a button message from our widget
+            if (e.widget.msgs == BUTTON_TOGGLED) {
+               EmitEvent(this , TOPIC_MENU , MENU_ITEM_TOGGLED);
+            }
+            else if (e.widget.msgs == BUTTON_CLICKED) {
+               EmitEvent(this , TOPIC_MENU , MENU_ITEM_ACTIVATED);
+            }
+            else if (e.widget.msgs == BUTTON_HOVER_TRIGGER) {
+               
+            }
+         }
+      }
+      else if (e.widget.topic == TOPIC_MENU) {
+         if (e.widget.from == submenu) {
+            if (e.widget.msgs == MENU_OPENED) {
+               EmitEvent(e , 0);/// Pass menu open message up the chain to our parent so they can close other sub menus
+            }
+         }
+      }
+   }
+}
    
 public :
    
@@ -97,6 +124,16 @@ protected :
    
    LayoutBase* ourlayout;
    MenuItemBase* open_item;
+
+
+
+
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
+void RespondToEvent(EagleEvent e , EagleThread* thread) {
+   (void)thread;
+   
+}
+
 
 public :
    MenuBase(LayoutBase* layout);

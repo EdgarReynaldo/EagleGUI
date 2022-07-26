@@ -37,6 +37,7 @@ REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
 REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
 REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
 REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+REGISTERED_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_HOVER_TRIGGER);
 
 
 
@@ -71,6 +72,7 @@ string GetButtonActionTypeText(BUTTON_ACTION_TYPE type) {
    switch (type) {
       case SPRING_BTN : ss << "SPRING_BTN";break;
       case TOGGLE_BTN : ss << "TOGGLE_BTN";break;
+      case MENU_BTN   : ss << "MENU_BTN";  break;
       default : ss << "Unknown button action type";break;
    };
    return ss.str();
@@ -266,6 +268,14 @@ int BasicButton::PrivateUpdate(double tsec) {
    if (btn_action_type == SPRING_BTN) {
       bool up = (btn_state%2) == 0;
       bool hover = Flags().FlagOn(HOVER);
+      if (hover) {
+         hover_duration += tsec;
+         if (hover_duration >= hover_trigger) {
+            if (btn_action_type == MENU_BTN) {
+               RaiseEvent(WidgetMsg(this , TOPIC_BUTTON_WIDGET , BUTTON_HOVER_TRIGGER));
+            }
+         }
+      }
       
       if (!up) {
          repeat_elapsed += tsec;
@@ -332,7 +342,9 @@ BasicButton::BasicButton(std::string objclass , std::string objname) :
       pointer_activated(false),
       just_activated(false),
       hover_message_enabled(false),
-      held_message_enabled(false)
+      held_message_enabled(false),
+      hover_duration(0.0),
+      hover_trigger(0.4)
 {
    UseDefaultClickArea(true);
 }
@@ -407,6 +419,14 @@ void BasicButton::SetButtonState(bool hover , bool up , bool notify) {
    bool oldhover = (unsigned int)Flags() & HOVER;
    bool oldup = (btn_state % 2 == 0);
    btn_state = (BUTTON_STATE)((hover?2:0) + (up?0:1));
+   if (hover != oldhover) {
+      if (hover) {
+         hover_duration = 0.0;/// Just gained hover
+      }
+      else {
+         hover_duration = -1.0;
+      }
+   }
    if (up != oldup) {
       if (btn_action_type == TOGGLE_BTN) {
          if (notify) {

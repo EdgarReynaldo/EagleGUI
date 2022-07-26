@@ -45,7 +45,8 @@ enum BUTTON_MSGS {
    BUTTON_RELEASED     = 2, ///< Sent whenever a spring button is released.
    BUTTON_TOGGLED      = 3, ///< Sent whenever a toggle button is toggled, poll for the current state.
    BUTTON_GAINED_HOVER = 4, ///v Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
-   BUTTON_LOST_HOVER   = 5  ///< Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
+   BUTTON_LOST_HOVER   = 5, ///< Sent whenever a button has the hover, but must be enabled with EnableHoverMessage
+   BUTTON_HOVER_TRIGGER= 6  ///< Sent whenever a menu button's hover duration is triggered. Must be a MENU_BTN. Default trigger is 0.3 seconds.
 };
 
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
@@ -54,6 +55,7 @@ REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_RELEASED);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_GAINED_HOVER);
 REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_LOST_HOVER);
+REGISTER_WIDGET_MESSAGE(TOPIC_BUTTON_WIDGET , BUTTON_HOVER_TRIGGER);
 
 
 
@@ -74,7 +76,8 @@ enum BUTTON_SHAPE {
  
 enum BUTTON_ACTION_TYPE {
    SPRING_BTN = 0,///< Spring buttons pop back up after being released
-   TOGGLE_BTN = 1 ///< Toggle buttons toggle state on each button press
+   TOGGLE_BTN = 1,///< Toggle buttons toggle state on each button press
+   MENU_BTN   = 2 ///< Menu buttons control sub menus
 };
 
 /*! @enum BUTTON_CLASS
@@ -149,7 +152,9 @@ protected :
 
    bool hover_message_enabled;
    bool held_message_enabled;
-   
+
+   double hover_duration;
+   double hover_trigger;
 
 
    void FreeClickArea();

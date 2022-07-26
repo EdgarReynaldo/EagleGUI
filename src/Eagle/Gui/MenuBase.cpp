@@ -119,7 +119,10 @@ void MenuItemBase::CloseMenu() {
 
 void MenuItemBase::Clear() {
    CloseMenu();
-   ourwidget = 0;
+   if (ourwidget) {
+      StopListeningTo(ourwidget);
+      ourwidget = 0;
+   }
    parentmenu = 0;
    submenu = 0;
    submenu_open = false;
@@ -131,6 +134,7 @@ void MenuItemBase::SetWidgetAndMenu(WidgetBase* widget , LayoutBase* smenu) {
    Clear();
    if (widget) {
       ourwidget = widget;
+      ListenTo(ourwidget);
       parentmenu = widget->GetLayout();
       submenu = dynamic_cast<MenuBase*>(smenu);
    }
@@ -172,21 +176,25 @@ unsigned int MenuItemBase::OpenHour() {
 
 void MenuBase::CloseOtherMenus(MenuItemBase* mitem) {
    EAGLE_ASSERT(ourlayout);
+   EAGLE_ASSERT(mitem);
    std::vector<WidgetBase*> wchildren = ourlayout->WidgetChildren();
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
       MenuItemBase* item = dynamic_cast<MenuItemBase*>(wchildren[i]);
       if (item && mitem && item != mitem) {
-         item->CloseMenu();
+         item->CloseSubMenu();
       }
    }
 }
+
+
+
 void MenuBase::CloseAllSubMenus() {
    EAGLE_ASSERT(ourlayout);
    std::vector<WidgetBase*> wchildren = ourlayout->WidgetChildren();
    for (unsigned int i = 0 ; i < wchildren.size() ; ++i) {
       MenuItemBase* item = dynamic_cast<MenuItemBase*>(wchildren[i]);
       if (item) {
-         item->CloseMenu();
+         item->CloseSubMenu();
       }
    }
 }
@@ -196,11 +204,13 @@ void MenuBase::CloseAllSubMenus() {
 void MenuBase::OpenMenu() {
    EAGLE_ASSERT(ourlayout);
    ourlayout->SetWidgetFlags(Flags().AddFlag(VISIBLE));
-   WidgetMsg wmsg;
-   wmsg.from = this;
-   wmsg.topic = TOPIC_MENU_MESSAGE;
-   wmsg.msgs = MENU_OPENED;
-   EmitEvent(wmsg);
+   EagleEvent e;
+   e.type = EAGLE_EVENT_WIDGET;
+   e.source = this;
+   e.widget.from = this;
+   e.widget.msgs = MENU_OPENED;
+   e.widget.topic = TOPIC_MENU_MESSAGE;
+   EmitEvent(e,0);
 }
 
 
@@ -209,11 +219,13 @@ void MenuBase::CloseMenu() {
    CloseAllSubMenus();
    EAGLE_ASSERT(ourlayout);
    ourlayout->SetWidgetFlags(Flags().RemoveFlag(VISIBLE));
-   WidgetMsg wmsg;
-   wmsg.from = this;
-   wmsg.topic = TOPIC_MENU_MESSAGE;
-   wmsg.msgs = MENU_CLOSED;
-   EmitEvent(wmsg);
+   EagleEvent e;
+   e.type = EAGLE_EVENT_WIDGET;
+   e.source = this;
+   e.widget.from = this;
+   e.widget.msgs = MENU_CLOSED;
+   e.widget.topic = TOPIC_MENU;
+   EmitEvent(e,0);
 }
 
 
