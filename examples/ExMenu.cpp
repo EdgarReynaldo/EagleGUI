@@ -16,6 +16,28 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
+   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) | input_key_press(EAGLE_KEY_Q) , "CTRL-Q" , 0}};
+
+   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1" , 0},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2" , 0},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &3" , input_key_press(EAGLE_KEY_3) , "3"} , 0};
+
+   SIMPLE_MENU_ITEM mmenu[] = {{MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&File"    , input_key_press(EAGLE_KEY_F) , "F" , &fmenu},
+                               {MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Options" , input_key_press(EAGLE_KEY_O) , "O" , &omenu}};
+   
+   
+   return 0;
+}
+
+/**
+int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
    al_set_config_value(al_get_system_config() , "trace" , "level" , "error");
    
    al_register_trace_handler(PipeToEagleLog);
@@ -49,20 +71,19 @@ int main(int argc , char** argv) {
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));
    
 
+   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P" , 0},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) | input_key_press(EAGLE_KEY_Q) , "CTRL-Q" , 0}};
 
-   SIMPLE_MENU fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L" , 0},
-                          {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S" , 0},
-                          {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P" , 0},
-                          {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) | input_key_press(EAGLE_KEY_Q) , "CTRL-Q" , 0}};
+   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1" , 0},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2" , 0},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &3" , input_key_press(EAGLE_KEY_3) , "3"} , 0};
 
-   SIMPLE_MENU omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1" , 0},
-                          {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2" , 0},
-                          {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &3" , input_key_press(EAGLE_KEY_3) , "3"} , 0};
-
-   SIMPLE_MENU mmenu[] = {{MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&File"    , input_key_press(EAGLE_KEY_F) , "F" , &fmenu},
-                          {MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Options" , input_key_press(EAGLE_KEY_O) , "O" , &omenu}};
+   SIMPLE_MENU_ITEM mmenu[] = {{MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&File"    , input_key_press(EAGLE_KEY_F) , "F" , &fmenu},
+                               {MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Options" , input_key_press(EAGLE_KEY_O) , "O" , &omenu}};
    
-   MenuBar mainmenu(&mmenu);
+   ClassicMenuBar mainmenu(&mmenu);
    ClassicMenu filemenu(&fmenu);
    ClassicMenu optionsmenu(&omenu);
    
@@ -93,5 +114,6 @@ int main(int argc , char** argv) {
       
    return 0;
 }
+*/
 
 

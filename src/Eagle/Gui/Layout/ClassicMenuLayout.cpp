@@ -25,7 +25,7 @@
 
 
 ClassicMenuLayout::ClassicMenuLayout(std::string objname) :
-      GridLayout(0 , 0 , "MenuLayout" , objname),
+      GridLayout(0 , 0 , "ClassicMenuLayout" , objname),
       layout_direction(MENU_VERTICAL),
       menu_size(0)
 {}
@@ -84,3 +84,4 @@ void ClassicMenuBarLayout::Resize(unsigned int nsize) {
    ResizeGrid(nsize , 1);
    return;
 }
+
