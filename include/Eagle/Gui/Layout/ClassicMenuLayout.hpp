@@ -24,7 +24,13 @@
 #define MenuLayout_HPP
 
 
+#include "Eagle/Gui/Layout/GridLayout.hpp"
+
+
+
 extern const unsigned int TOPIC_MENU;
+
+
 
 enum MENU_MESSAGES {
    
@@ -35,6 +41,8 @@ enum MENU_MESSAGES {
    
 };
 
+
+
 REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_OPENED);
 REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_CLOSED);
 REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_ACTIVATED);
@@ -42,7 +50,6 @@ REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_TOGGLED);
 
 
 
-#include "Eagle/Gui/Layout/GridLayout.hpp"
 
 
 
@@ -108,9 +115,6 @@ public :
    
    MENU_LAYOUT_DIRECTION Direction() {return layout_direction;}///< Returns the direction this menu is laid out in
    
-   void Toggle();
-   void Activate();
-   void OpenSubMenu();
 
 
    virtual void OpenMe();
@@ -144,6 +148,12 @@ public :
 
 //#include "SimpleMenu.hpp"
 
+#include "Eagle/Gui/Button/BasicButton.hpp"
+#include "Eagle/Font.hpp"
+#include "Eagle/Image.hpp"
+#include "Eagle/InputHandler.hpp"
+
+
 
 class SIMPLE_MENU_ITEM {
 public :
@@ -158,12 +168,20 @@ public :
    SIMPLE_MENU_ITEM* sub_menu;
 };
 
+
+class BasicCheckBox;
+class BasicText;
+class BasicScrollButton;
+class BasicButton;
+class SimpleTable;
+
+
 class ClassicMenuItemLayout : public LayoutBase , public EagleEventListener {
 
 protected :
    SIMPLE_MENU_ITEM* item;/// Our init data
    
-   std::unique_ptr<CheckBox>          cbox;/// Checkbox for toggle buttons
+   std::unique_ptr<BasicCheckBox>          cbox;/// Checkbox for toggle buttons
    std::unique_ptr<BasicText>         dtext;/// Text button to display description of command
    std::unique_ptr<BasicText>         ktext;/// Label to tell what key to press
    std::unique_ptr<BasicScrollButton> hbtn;/// MENU_BTN for hover trigger to open sub menu
@@ -182,7 +200,7 @@ public :
    
    ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item = 0);
 
-   ~virtual ClassicMenuItemLayout () {Clear();}
+   virtual ~ClassicMenuItemLayout ();
 
    void Clear();
 
@@ -191,6 +209,10 @@ public :
    /// LayoutBase
    virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
    
+   
+   void Toggle();
+   void Activate();
+   void OpenSubMenu();
 };
 
 

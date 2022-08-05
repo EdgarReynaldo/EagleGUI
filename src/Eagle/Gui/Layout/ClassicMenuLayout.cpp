@@ -21,6 +21,9 @@
 
 #include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
+#include "Eagle/Gui/Button/CheckBox.hpp"
+#include "Eagle/Gui/Layout/SimpleTable.hpp"
+#include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/StringWork.hpp"
 
 
@@ -30,10 +33,10 @@ const unsigned int TOPIC_MENU = NextFreeTopicId();
 
 
 
-REGISTERED_WIDGET_MESSAGE(TOPIC_MENU_MESSAGE , MENU_OPENED);
-REGISTERED_WIDGET_MESSAGE(TOPIC_MENU_MESSAGE , MENU_CLOSED);
-REGISTERED_WIDGET_MESSAGE(TOPIC_MENU_MESSAGE , MENU_ITEM_ACTIVATED);
-REGISTERED_WIDGET_MESSAGE(TOPIC_MENU_MESSAGE , MENU_ITEM_TOGGLED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_MENU , MENU_OPENED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_MENU , MENU_CLOSED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_ACTIVATED);
+REGISTERED_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_TOGGLED);
 
 
 
@@ -75,32 +78,6 @@ void ClassicMenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new
 
 
 
-void ClassicMenuLayout::Toggle() {
-   EagleEvent e;
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = this;
-   e.widget.topic = TOPIC_MENU;
-   e.widget.msgs = MENU_ITEM_TOGGLED;
-}
-
-
-
-void ClassicMenuLayout::Activate() {
-   EagleEvent e;
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = this;
-   e.widget.topic = TOPIC_MENU;
-   e.widget.msgs = MENU_ITEM_TOGGLED;
-}
-
-
-
-void ClassicMenuLayout::OpenSubMenu() {
-   
-}
-
-
-
 void ClassicMenuLayout::OpenMe() {
    ShowAndEnable();
 }
@@ -114,7 +91,7 @@ void ClassicMenuLayout::CloseMe() {
 
 
 bool ClassicMenuLayout::IsOpen() {
-   return (Flags().FlagOn(ENABLED) && Flags.FlagOn(VISIBLE));
+   return (Flags().FlagOn(ENABLED) && Flags().FlagOn(VISIBLE));
 }
 
 
@@ -131,7 +108,7 @@ int ClassicMenuBarLayout::PrivateHandleEvent(EagleEvent ee) {
 
 
 ClassicMenuBarLayout::ClassicMenuBarLayout(std::string objname) : 
-      GridLayout(0,0,"ClassicMenuBarLayout" , objname)
+      ClassicMenuLayout(objname)
 {}
 
 
@@ -170,12 +147,11 @@ void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 ClassicMenuItemLayout::ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item) :
-   BasicButton("Menu item button" , "this"),
+   LayoutBase("Menu item layout" , "Nemo"),
    EagleEventListener(),
    item(0),
    cbox(),
-   icon(),
-   btn(),
+   dtext(),
    ktext(),
    hbtn(),
    submenu(0),
@@ -183,6 +159,12 @@ ClassicMenuItemLayout::ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item) :
    item_layout()
 {
    SetItemInfo(item);
+}
+
+
+
+ClassicMenuItemLayout::~ClassicMenuItemLayout () {
+   Clear();
 }
 
 
@@ -211,38 +193,38 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    
    Resize(2);
    
-   menu_button.set(new BasicButton("Menu item button" , "menu_button"));
+   menu_button.reset(new BasicButton("Menu item button" , "menu_button"));
    menu_button->SetButtonState(!item->down , false);
-   menu_button->SetZDepth(ZORDER_PRIORITY_LOW);
-   item_layout.set(new SimpleTable("Menu item layout"));
+   menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
+   item_layout.reset(new SimpleTable("Menu item layout"));
 
-   PlaceWidget(menu_button, 0);
-   PlaceWidget(item_layout , 1);
+   PlaceWidget(menu_button.get(), 0);
+   PlaceWidget(item_layout.get() , 1);
    
    item_layout->Resize(std::vector<float>({0.1 , 0.4 , 0.4 , 0.1}) , std::vector<float>({1.0}));
 
-   cbox.set(new BasicCheckBox("cbox"));
-   dtext.set(new BasicText("dtext"));
-   ktext.set(new BasicText("ktext"));
-   hbtn.set(new BasicScrollButton("Menu hover button" , "hbtn"));
+   cbox.reset(new BasicCheckBox("cbox"));
+   dtext.reset(new BasicText("dtext"));
+   ktext.reset(new BasicText("ktext"));
+   hbtn.reset(new BasicScrollButton("Menu hover button" , "hbtn"));
    
    cbox->SetImages(item->image_up , item->image_dn , item->image_up , item->image_dn);
    cbox->SetChecked(item->down);
    
-   dtext.SetupText(item->text_font , item->description);
-   ktext.SetupText(item->text_font , item->key_text);
+   dtext->SetupText(item->description , item->text_font);
+   ktext->SetupText(item->key_text    , item->text_font);
    
-   hbtn.SetScrollDirection(false , true);
+   hbtn->SetScrollDirection(false , true);
    
-   item_layout->PlaceWidget(cbox , 0);
-   item_layout->PlaceWidget(dtext , 1);
-   item_layout->PlaceWidget(ktext , 2);
+   item_layout->PlaceWidget(cbox.get() , 0);
+   item_layout->PlaceWidget(dtext.get() , 1);
+   item_layout->PlaceWidget(ktext.get() , 2);
    if (item->sub_menu) {
-      item_layout->PlaceWidget(hbtn , 3);
+      item_layout->PlaceWidget(hbtn.get() , 3);
    }
 
    ListenTo(cbox.get());
-   ListenTo(gbtn.get());
+   ListenTo(dtext.get());
    ListenTo(ktext.get());
    ListenTo(hbtn.get());
    ListenTo(menu_button.get());
@@ -255,9 +237,38 @@ Rectangle ClassicMenuItemLayout::RequestWidgetArea(int widget_slot , int newx , 
    (void)widget_slot;
    (void)newx;
    (void)newy;
-   (void)neww;
-   (void)newh;
+   (void)newwidth;
+   (void)newheight;
    return InnerArea();
+}
+
+
+
+void ClassicMenuItemLayout::Toggle() {
+   RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_TOGGLED));
+}
+
+
+
+void ClassicMenuItemLayout::Activate() {
+   if (item->batype == MENU_BTN) {
+      OpenSubMenu();
+   }
+   else {
+      RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED));
+   }
+}
+
+
+
+void ClassicMenuItemLayout::OpenSubMenu() {
+   if (item->batype == MENU_BTN) {
+      MenuBase* mb = dynamic_cast<MenuBase*>(submenu);
+      if (mb) {
+         mb->OpenMe();
+      }
+   }
+   RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_OPENED));
 }
 
 
