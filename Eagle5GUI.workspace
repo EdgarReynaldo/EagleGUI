@@ -11,11 +11,8 @@
 		<Project filename="C:/ctwoplus/progcode/allegro/KruskalMaze/KruskalMaze.cbp" />
 		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2018/KrampusHack2018.cbp" />
 		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2018/LibKrampus18.cbp" />
-		<Project filename="examples/ExMenu.cbp" />
-		<Project filename="examples/GuiEditor.cbp" />
-		<Project filename="examples/ExGui.cbp" />
-		<Project filename="examples/ExButton.cbp" />
 		<Project filename="examples/ExAimGame.cbp" />
-		<Project filename="examples/ExDialog.cbp" />
+		<Project filename="examples/TINS2022/TINS2022.cbp" />
+		<Project filename="../../projects/TINS2022/TINS2022.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

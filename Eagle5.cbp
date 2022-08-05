@@ -200,6 +200,7 @@
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/EditText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
+		<Unit filename="include/Eagle/Gui/Text/GuiText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/VerticalText.hpp" />
@@ -325,6 +326,7 @@
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/EditText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/GlobalText.cpp" />
+		<Unit filename="src/Eagle/Gui/Text/GuiText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/LinkText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/SelectText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/VerticalText.cpp" />
