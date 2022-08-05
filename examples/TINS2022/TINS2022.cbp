@@ -2,13 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="MenuTest" />
+		<Option title="ExMenu" />
 		<Option execution_dir="E:/usr/projects/TINS2020/examples/" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="E:/usr64/bin/MenuTestD" prefix_auto="1" extension_auto="1" />
+				<Option output="E:/usr64/bin/ExMenuD" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="e:/usr/bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,11 +17,15 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-lEagleA5DebugShared.dll" />
+					<Add option="-lEagleDebugShared.dll" />
 					<Add option="-lallegro_monolith-debug.dll" />
+					<Add option="-lphysfs" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="E:/usr64/bin/MenuTest" prefix_auto="1" extension_auto="1" />
+				<Option output="E:/usr64/bin/ExMenu" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="e:/usr/bin" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -29,7 +34,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-static" />
+					<Add option="-lEagleA5Static" />
 					<Add option="-lallegro_monolith-static" />
+					<Add option="-lEagleStatic" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lwebp" />
@@ -70,14 +77,13 @@
 			<Add option="-DDEBUG" />
 			<Add option="-DEAGLE_DEBUG_MUTEX_LOCKS" />
 			<Add option="-DEAGLE_LOG" />
-			<Add directory="E:/LIBS64/LIBS112Distro/Allegro5271GIT/include" />
-			<Add directory="E:/usr/include" />
+			<Add directory="../include" />
+			<Add directory="E:/usr64/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="E:/LIBS64/LIBS112Distro/Allegro5271GIT/lib" />
-			<Add directory="E:/usr/lib" />
+			<Add directory="E:/usr64/lib" />
 		</Linker>
-		<Unit filename="MenuTest.cpp" />
+		<Unit filename="../ExMenu.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
