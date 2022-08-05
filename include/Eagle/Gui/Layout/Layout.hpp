@@ -107,6 +107,9 @@ public :
    virtual ~LayoutBase();
    
 
+   /// WidgetBase
+   virtual void ShowAndEnable();///< Shows and enables this widget and all widgets in its layout
+   virtual void HideAndDisable();///< Hides and disables this widget and all widgets in its layout
 
 
    /// Layout

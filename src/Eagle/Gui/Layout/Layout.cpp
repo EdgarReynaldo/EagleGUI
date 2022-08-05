@@ -305,6 +305,26 @@ LayoutBase::~LayoutBase() {
 
 
 
+void LayoutBase::ShowAndEnable() {
+   std::vector<WidgetBase*> wc = WChildren();
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {
+      wc[i]->ShowAndEnable();
+   }
+   WidgetBase::ShowAndEnable();
+}
+
+
+
+void LayoutBase::HideAndDisable() {
+   std::vector<WidgetBase*> wc = WChildren();
+   for (unsigned int i = 0 ; i < wc.size() ; ++i) {
+      wc[i]->HideAndDisable();
+   }
+   WidgetBase::HideAndDisable();
+}
+
+
+
 Rectangle LayoutBase::RequestWidgetArea(int slot , int newx , int newy , int newwidth , int newheight) {
    
    const WidgetBase* widget = GetWidget(slot);

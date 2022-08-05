@@ -230,9 +230,9 @@ void BasicText::DrawText(EagleGraphicsContext* win , int xpos , int ypos , Eagle
    
    win->HoldDrawing();
    for (int i = 0 ; i < nlines ; ++i) {
-      string s = GetGuiText(lines[i]);
+      string s = lines[i];
       Rectangle r = lineareas[i];
-      win->DrawTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , HALIGN_LEFT , VALIGN_TOP);
+      win->DrawGuiTextString(text_font , s , r.X() + xpos , r.Y() + ypos , c , HALIGN_LEFT , VALIGN_TOP);
    }
    win->ReleaseDrawing();
    

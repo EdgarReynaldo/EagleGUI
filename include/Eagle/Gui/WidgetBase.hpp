@@ -215,8 +215,8 @@ WidgetBase(std::string classname , std::string objname) :
    void SetVisibleState(bool visible);///< Sets the visibility to the value of visible (invisible widgets still take input)
    void SetEnabledState(bool enabled);///< Sets the enabled state to the value of enabled (disabled widgets don't accept input)
    
-   void ShowAndEnable();///< Shows and enables this widget
-   void HideAndDisable();///< Hides and disables this widget
+   virtual void ShowAndEnable();///< Shows and enables this widget
+   virtual void HideAndDisable();///< Hides and disables this widget
    
    
    void SetWidgetColorset(SHAREDOBJECT<WidgetColorset> cset);///< Sets the shared colorset

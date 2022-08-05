@@ -92,7 +92,7 @@ public :
    
    /// Members
    
-   void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);///< Draws this widget at the specified pos and color
+   virtual void DrawText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor c);///< Draws this widget at the specified pos and color
 
    ///< Shrink wrap : Changes area so it exactly fits the text
    void ShrinkWrap();

@@ -29,12 +29,13 @@
 
 
 #include "Eagle/Gui/Layout/Layout.hpp"
+
 #include "Eagle/Gui/Layout/DumbLayout.hpp"
 #include "Eagle/Gui/Layout/PinLayout.hpp"
 #include "Eagle/Gui/Layout/NPLayout.hpp"
 #include "Eagle/Gui/Layout/FlowLayout.hpp"
 #include "Eagle/Gui/Layout/GridLayout.hpp"
-#include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/Layout/DropDownList.hpp"
 #include "Eagle/Gui/Layout/ListBox.hpp"

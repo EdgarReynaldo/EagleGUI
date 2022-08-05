@@ -75,9 +75,9 @@ enum BUTTON_SHAPE {
  */
  
 enum BUTTON_ACTION_TYPE {
-   SPRING_BTN = 0,///< Spring buttons pop back up after being released
-   TOGGLE_BTN = 1,///< Toggle buttons toggle state on each button press
-   MENU_BTN   = 2 ///< Menu buttons control sub menus
+   SPRING_BTN = 1,///< Spring buttons pop back up after being released
+   TOGGLE_BTN = 2,///< Toggle buttons toggle state on each button press
+   MENU_BTN   = 4 ///< Menu buttons control sub menus
 };
 
 /*! @enum BUTTON_CLASS
