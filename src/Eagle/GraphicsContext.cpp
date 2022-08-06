@@ -411,7 +411,7 @@ void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , Ea
 
    Clipper clip(img , dest);
 
-   DrawTinted(img , dest.X() - (dest.W() - img->W())/2.0 , dest.Y() - (dest.H() - img->H())/2.0 , tint , flags);
+   DrawTinted(img , dest.X() + (dest.W() - img->W())/2.0 , dest.Y() + (dest.H() - img->H())/2.0 , tint , flags);
 }
 
 
