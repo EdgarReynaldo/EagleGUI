@@ -242,6 +242,41 @@ void AnimationBase::SetAnimationPercent(double percent) {
 
 
 
+void AnimationBase::AdvanceFrame() {
+   EAGLE_ASSERT(nframes > 1);
+   if (PingPong() && (loop_num % 2 == 1)) {// ping pong and loop num is odd, going backward
+      --frame_num;
+      if (frame_num < 0) {
+         LoopComplete();
+         ++loop_num;
+         if (loop_num == nloops) {
+            Complete();
+         }
+      }
+   }
+   else {// not ping pong or loop num is even, advancing forward
+      ++frame_num;
+      if (frame_num == nframes) {
+         if (PingPong() && loop_num % 2 == 0) {
+            ++loop_num;
+            LoopComplete();
+         }
+         else if (!PingPong()) {
+            ++loop_num;
+            LoopComplete();
+         }
+         if (loop_num == nloops) {
+            Complete();
+         }
+      }
+   }
+   animation_percent = (double)loop_num + (double)frame_num/(nframes - 1);
+   animation_time = (loop_num*loop_duration) + (double)frame_num/(nframes - 1)*loop_duration;
+   normal_percent = animation_time / (double)(nloops*loop_duration);
+}
+
+
+
 /*! \brief Returns the animation percentage. */
 
 double AnimationBase::GetAnimationPercent() {

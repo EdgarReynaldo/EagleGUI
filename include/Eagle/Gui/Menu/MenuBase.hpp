@@ -87,6 +87,7 @@ void MenuItemBase::RespondToEvent(EagleEvent e , EagleThread* thread) {
 public :
    
    MenuItemBase(WidgetBase* widget , LayoutBase* smenu);
+   virtual ~MenuItemBase() {}
    void CloseMenu();
    void Clear();
    void SetWidgetAndMenu(WidgetBase* widget , LayoutBase* smenu);

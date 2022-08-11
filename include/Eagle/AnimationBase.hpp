@@ -88,10 +88,9 @@ protected :
 ///   EagleThread* our_thread;///< Currently unused
 
 
-
    ANIMATION_EVENT_DATA GetEventData();
       
-   virtual void OnSetAnimationPercent(){};///< Pure virtual function that is called when the animation percent changes.
+   virtual void OnSetAnimationPercent(){};///< Virtual function that is called when the animation percent changes.
    virtual void OnLoopComplete() {}///< Override this virtual function to respond to loop completion events.
    virtual void OnComplete() {}///< Override this virtual function to respond to animation complete events.
 
@@ -113,6 +112,7 @@ public :
 
    void SetAnimationPercent(double percent);///< Sets the percentage of completion [0.0,1.0] or higher
    
+   void AdvanceFrame();
 
    double GetAnimationPercent();///< Gets the percent of playback time passed, may be higher than one for looping animations
    double GetNormalizedPercent();///< Gets the normalized percentage of the playback time from [0.0 , 1.0)

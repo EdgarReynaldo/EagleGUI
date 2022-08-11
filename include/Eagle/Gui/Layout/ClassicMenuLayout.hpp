@@ -59,6 +59,7 @@ class MenuBase {
 protected :
    
 public :
+   virtual ~MenuBase() {}
    /// NO DATA
    virtual void OpenMe()=0;
    virtual void CloseMe()=0;
