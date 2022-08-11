@@ -184,8 +184,9 @@
 		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
-		<Unit filename="include/Eagle/Gui/Menu.hpp" />
-		<Unit filename="include/Eagle/Gui/MenuBase.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/Menu.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/MenuBase.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/SimpleMenu.hpp" />
 		<Unit filename="include/Eagle/Gui/PercentWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/PopupWindow.hpp" />
 		<Unit filename="include/Eagle/Gui/Scripting/GuiScript.hpp" />
@@ -194,13 +195,11 @@
 		<Unit filename="include/Eagle/Gui/ScrollBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Scrollable.hpp" />
 		<Unit filename="include/Eagle/Gui/Scroller.hpp" />
-		<Unit filename="include/Eagle/Gui/SimpleMenu.hpp" />
 		<Unit filename="include/Eagle/Gui/Slider.hpp" />
 		<Unit filename="include/Eagle/Gui/TextWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/BasicText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/EditText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/GlobalText.hpp" />
-		<Unit filename="include/Eagle/Gui/Text/GuiText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/LinkText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/SelectText.hpp" />
 		<Unit filename="include/Eagle/Gui/Text/VerticalText.hpp" />
@@ -326,7 +325,6 @@
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/EditText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/GlobalText.cpp" />
-		<Unit filename="src/Eagle/Gui/Text/GuiText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/LinkText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/SelectText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/VerticalText.cpp" />
