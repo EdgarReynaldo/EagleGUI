@@ -270,8 +270,15 @@ void AnimationBase::AdvanceFrame() {
          }
       }
    }
-   animation_percent = (double)loop_num + (double)frame_num/(nframes - 1);
-   animation_time = (loop_num*loop_duration) + (double)frame_num/(nframes - 1)*loop_duration;
+   int fnum = frame_num;
+   if (fnum < 0) {
+      fnum = 0;
+   }
+   if (fnum >= nframes) {
+      fnum = nframes - 1;
+   }
+   animation_percent = (double)loop_num + (double)fnum/(nframes - 1);
+   animation_time = (loop_num*loop_duration) + (double)fnum/(nframes - 1)*loop_duration;
    normal_percent = animation_time / (double)(nloops*loop_duration);
 }
 
