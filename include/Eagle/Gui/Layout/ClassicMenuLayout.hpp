@@ -72,7 +72,17 @@ public :
 
 
 
-
+class MenuItemBase {
+public :
+   MenuBase* parentmenu;
+   MenuBase* submenu;
+   
+   virtual void Toggle()=0;
+   virtual void Activate()=0;
+   virtual bool HasSubMenu()=0;
+   virtual void OpenSubMenu()=0;
+   virtual void CloseSubMenu()=0;
+};
 
 
 
@@ -155,19 +165,8 @@ public :
 #include "Eagle/InputHandler.hpp"
 
 
+#include "Eagle/Gui/Menu/SimpleMenu.hpp"
 
-class SIMPLE_MENU_ITEM {
-public :
-   BUTTON_ACTION_TYPE   batype;/// Spring / Toggle / Menu hover trigger
-   bool              down;
-   EagleImage*       image_up;
-   EagleImage*       image_dn;
-   EagleFont*        text_font;
-   std::string       description;
-   InputGroup        action_key;
-   std::string       key_text;
-   SIMPLE_MENU_ITEM* sub_menu;
-};
 
 
 class BasicCheckBox;
@@ -177,17 +176,17 @@ class BasicButton;
 class SimpleTable;
 
 
-class ClassicMenuItemLayout : public LayoutBase , public EagleEventListener {
+class ClassicMenuItemLayout : public LayoutBase , public MenuItemBase , public EagleEventListener {
 
 protected :
-   SIMPLE_MENU_ITEM* item;/// Our init data
+   SIMPLE_MENU_ITEM item;/// Our init data
    
    std::unique_ptr<BasicCheckBox>          cbox;/// Checkbox for toggle buttons
    std::unique_ptr<BasicText>         dtext;/// Text button to display description of command
    std::unique_ptr<BasicText>         ktext;/// Label to tell what key to press
    std::unique_ptr<BasicScrollButton> hbtn;/// MENU_BTN for hover trigger to open sub menu
    
-   LayoutBase* submenu;
+   MenuBase* submenu;
    
    std::unique_ptr<BasicButton> menu_button;
    std::unique_ptr<SimpleTable> item_layout;
@@ -213,30 +212,93 @@ public :
    
    void Toggle();
    void Activate();
+   bool HasSubMenu();
    void OpenSubMenu();
+   void CloseSubMenu();
 };
+
+
+
+class ClassicMenuBarItem : public MenuItemBase , public GuiButton {
+protected :
+   SIMPLE_MENU_BAR_ITEM item;
+
+public :
+   
+   ClassicMenuBarItem();
+   void SetItem(SIMPLE_MENU_BAR_ITEM mbitem);
+   
+   
+   
+   virtual void Toggle();
+   virtual void Activate();
+   virtual bool HasSubMenu();
+   virtual void OpenSubMenu();
+   virtual void CloseSubMenu();
+};
+
 
 
 
 /**! @class ClassicMenuBar @brief simple implentation of a classic menu bar
  */
 
-class ClassicMenuBar : public ClassicMenuBarLayout {
+class ClassicMenuBar : public ClassicMenuBarLayout , public MenuBase , public EagleEventListener {
 protected :
-   
+   std::vector<SIMPLE_MENU_BAR_ITEM> bitems;
+   std::vector<ClassicMenuBarItem> mbitems;
+   bool open;
 public :
    
+   ClassicMenuBar();
+   ClassicMenuBar() :
+         ClassicMenuBarLayout("Menubar"),
+         MenuBase(),
+         EagleEventListener(),
+         bitems(),
+         mbitems(),
+         open(false)
+   {}
    
+   virtual ~ClassicMenuBar() {Clear();}
+   
+   void Clear();
+   void SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems);
+   
+   virtual void OpenMe();
+   virtual void CloseMe();
+   virtual bool IsOpen();
 };
 
 /**! @class ClassicMenu @brief simple implentation of a classic menu
  */
-class ClassicMenu : public ClassicMenuLayout {
+class ClassicMenu : protected ClassicMenuLayout , public EagleEventListener {
 protected :
+   std::vector<SIMPLE_MENU_ITEM> items;
+   std::vector<ClassicMenuItemLayout*> mitems;
+   bool open;
+   ClassicMenuItemLayout citem;/// current menu item
+   
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
+   
+   
+   void CloseOtherMenus(ClassicMenuItemLayout* mitem);
    
 public :
    
+   ClassicMenu();
    
+   void Clear();
+   void SetItems(SIMPLE_MENU_ITEM* menu , int size);
+   
+   /// MenuBase
+   
+   virtual void OpenMe();
+   virtual void CloseMe();
+   virtual bool IsOpen();
+
+
+
 };
 
 

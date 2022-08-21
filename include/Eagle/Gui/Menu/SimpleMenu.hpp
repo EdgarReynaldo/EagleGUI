@@ -13,7 +13,6 @@ class EagleImage;
 class EagleFont;
 
 #include <string>
-#include <memory>
 
 
 class SIMPLE_MENU_ITEM {
@@ -24,30 +23,21 @@ public :
    EagleImage*       image_dn;
    EagleFont*        text_font;
    std::string       description;
-   InputGroup        action_key;
+   InputGroup        hotkey;
    std::string       key_text;
-   SIMPLE_MENU_ITEM* sub_menu;
 };
 
 
-class ClassicMenuBar;
-class ClassicMenu;
+class SIMPLE_MENU_BAR_ITEM {
+public :
+   EagleFont* text_font;
+   std::string guitext;
+   InputGroup hotkey;
+};
 
-std::shared_ptr<ClassicMenuBar> MakeMenuBar(SIMPLE_MENU_ITEM* items , int nitems);
-std::shared_ptr<ClassicMenu> MakeMenu(SIMPLE_MENU_ITEM* items, int nitems);
 
 
 
-#include "Eagle/Image.hpp"
-#include "Eagle/Font.hpp"
-#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
-
-std::shared_ptr<ClassicMenuBar> MakeMenuBar(SIMPLE_MENU_ITEM* items , int nitems) {
-   std::shared_ptr<ClassicMenuBar> mbar = new ClassicMenuBar(
-}
-std::shared_ptr<ClassicMenu> MakeMenu(SIMPLE_MENU_ITEM* items, int nitems) {
-   
-}
 
 
 

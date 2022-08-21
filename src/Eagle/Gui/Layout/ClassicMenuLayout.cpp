@@ -26,7 +26,7 @@
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/StringWork.hpp"
 
-
+#include "Eagle/Event.hpp"
 
 
 const unsigned int TOPIC_MENU = NextFreeTopicId();
@@ -196,6 +196,7 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    menu_button.reset(new BasicButton("Menu item button" , "menu_button"));
    menu_button->SetButtonState(!item->down , false);
    menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
+   menu_button->SetInputGroup(hotkey);
    item_layout.reset(new SimpleTable("Menu item layout"));
 
    PlaceWidget(menu_button.get(), 0);
@@ -261,16 +262,263 @@ void ClassicMenuItemLayout::Activate() {
 
 
 
+bool ClassicMenuItemLayout::HasSubMenu() {
+   return (bool)submenu;
+}
+
+
+
 void ClassicMenuItemLayout::OpenSubMenu() {
-   if (item->batype == MENU_BTN) {
-      MenuBase* mb = dynamic_cast<MenuBase*>(submenu);
-      if (mb) {
-         mb->OpenMe();
-      }
+   if (item->batype == MENU_BTN && HasSubMenu()) {
+      submenu->OpenMe();
    }
    RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_OPENED));
 }
 
+
+
+void ClassicMenuItemLayout::CloseSubMenu() {
+   submenu->CloseMe();
+}
+
+
+
+/// -----------------------     ClassicMenu     ----------------------------------
+
+
+
+ClassicMenuBarItem::ClassicMenuBarItem() :
+      MenuItemBase(),
+      GuiButton("ClassicMenuBarItem" , "gbtn"),
+      item()
+{
+   
+}
+
+
+
+void ClassicMenuBarItem::SetItem(SIMPLE_MENU_BAR_ITEM mbitem) {
+   item = mbitem;
+   SetInputGroup(item->hotkey);
+   SetFont(item->text_font);
+   SetLabel(item->guitext);
+}
+
+
+
+void ClassicMenuBarItem::Toggle() {
+   EagleEvent e;
+   e.source = this;
+   e.type = EAGLE_EVENT_WIDGET;
+   e.widget.from = this;
+   e.widget.topic = TOPIC_MENU;
+   e.widget.msgs = MENU_ITEM_TOGGLED;
+   RaiseEvent(e);
+}
+
+
+
+void ClassicMenuBarItem::Activate() {
+   EagleEvent e;
+   e.source = this;
+   e.type = EAGLE_EVENT_WIDGET;
+   e.widget.from = this;
+   e.widget.topic = TOPIC_MENU;
+   e.widget.msgs = MENU_ITEM_ACTIVATED;
+   RaiseEvent(e);
+}
+
+
+
+bool ClassicMenuBarItem::HasSubMenu() {
+   return (bool)this->submenu;
+}
+
+
+
+void ClassicMenuBarItem::OpenSubMenu() {
+   if (HasSubMenu()) {
+      submenu->OpenMe();
+   }
+}
+
+
+
+void ClassicMenuBarItem::CloseSubMenu() {
+   if (HasSubMenu()) {
+      submenu->CloseMe();
+   }
+}
+
+
+
+/// ------------------------------     ClassicMenuBar     -------------------------------
+
+
+
+void ClassicMenuBar::Clear() {
+   open = false;
+   StopListening();
+   ClearWidgets();
+   bitems.clear();
+   for (unsigned int i = 0 ; i < mbitems.size() ; ++i) {
+      delete mbitems[i];
+   }
+   mbitems.clear();
+}
+
+
+
+void ClassicMenuBar::SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems) {
+   Clear();
+   ResizeMenu(nitems , MENU_HORIZONTAL);
+   bitems.resize(nitems);
+   mbitems.resize(nitems,0);
+   for (unsigned int i = 0 ; i < nitems ; ++i) {
+         bitems[i] = mbi[i];
+         mbitems[i] = new ClassicMenuBarItem();
+         mbitems[i]->SetItem(bitems[i]);
+         ListenTo(mbitems[i]);
+         PlaceWidget(mbitems[i] , i);
+   }
+}
+
+
+
+void ClassicMenuBar::OpenMe() {
+   open = true;
+   SetRedrawFlag();
+}
+
+
+
+void ClassicMenuBar::CloseMe() {
+   open = false;
+   SetRedrawFlag();
+}
+
+
+
+bool ClassicMenuBar::IsOpen() {
+   return open;
+}
+
+
+
+/// -----------------------     ClassicMenu     ----------------------------------
+
+
+
+void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   (void)thread;
+   
+   if (e.type == EAGLE_EVENT_WIDGET) {
+      if (e.widget.topic == TOPIC_MENU) {
+         ClassicMenuItemLayout* mitem = dynamic_cast<ClassicMenuItemLayout*>(e.widget.from);
+         int index = -1;
+         for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
+            ClassicMenuItemLayout* mi = mitems[i];
+            if (mitem == mi) {
+               index = i;
+               break;
+            }
+         }
+         if (index != -1) {
+            /// This menu item is one of ours
+            if (e.widget.msgs == MENU_ITEM_ACTIVATED) {
+               if (mitem->HasSubMenu()) {
+                  mitem->OpenSubMenu();
+///                  CloseOtherMenus(mitem);
+                  /// We don't need to close the other menus here - we will get a MENU_OPENED message and then they will close
+               }
+               else {
+                  e.source = this;
+                  RaiseEvent(e);
+               }
+            }
+            else if (e.widget.msgs == MENU_ITEM_TOGGLED) {
+               e.source = this;
+               RaiseEvent(e);
+            }
+            else if (e.widget.msgs == MENU_OPENED) {
+               CloseOtherMenus(mitem);
+            }
+         }
+      }
+   }
+}
+
+
+
+void ClassicMenu::CloseOtherMenus(ClassicMenuItemLayout* mitem) {
+   for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
+      ClassicMenuItemLayout* m = mitems[i];
+      if (m->HasSubMenu()) {
+         m->CloseSubMenu();
+      }
+   }
+}
+
+
+
+ClassicMenu::ClassicMenu() :
+      ClassicMenuLayout("Classic menu"),
+      EagleEventListener(),
+      items(),
+      mitems()
+{}
+
+
+
+void ClassicMenu::Clear() {
+   StopListening();
+   ClearWidgets();
+   items.clear();
+   for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
+      delete mitems[i];
+   }
+   mitems.clear();
+}
+
+
+
+void ClassicMenu::SetItems(SIMPLE_MENU_ITEM* menu , int size) {
+   Clear();
+   items.resize(size);
+   mitems.resize(size , 0);
+   for (unsigned int i = 0 ; i < size ; ++i) {
+      items[i] = menu[i];
+      mitems[i] = new ClassicMenuItemLayout(items[i]);
+      PlaceWidget(mitems[i] , i);
+      ListenTo(mitems[i]);
+   }
+}
+
+
+
+void ClassicMenu::OpenMe() {
+   open = true;
+   if (citem) {
+      citem->OpenSubMenu();
+   }
+   SetRedrawFlag();
+}
+
+
+
+void ClassicMenu::CloseMe() {
+   open = false;
+   if (citem) {
+      citem->CloseSubMenu();
+   }
+   SetRedrawFlag();
+}
+
+
+
+bool ClassicMenu::IsOpen() {
+   return open;
+}
 
 
 
