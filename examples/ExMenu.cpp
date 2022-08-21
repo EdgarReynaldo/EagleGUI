@@ -53,24 +53,30 @@ int main(int argc , char** argv) {
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));
    
 
-   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L" , 0},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S" , 0},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P" , 0},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) || input_key_press(EAGLE_KEY_Q) , "CTRL-Q" , 0}};
+   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L"},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S"},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P"},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) || input_key_press(EAGLE_KEY_Q) , "CTRL-Q"}};
 
-   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1" , 0},
-                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2" , 0},
-                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &3" , input_key_press(EAGLE_KEY_3) , "3" , 0}};
+   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1"},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2"},
+                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &3" , input_key_press(EAGLE_KEY_3) , "3"}};
 
-   SIMPLE_MENU_ITEM mmenu[] = {{MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&File"    , input_key_press(EAGLE_KEY_F) , "F" , fmenu},
-                               {MENU_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Options" , input_key_press(EAGLE_KEY_O) , "O" , omenu}};
+   SIMPLE_MENU_BAR_ITEM mbar[] = {{font , "&File"    , input_key_press(EAGLE_KEY_F)},
+                                  {font , "&Options" , input_key_press(EAGLE_KEY_O)}};
    
-   std::shared_ptr<ClassicMenuBar> mainmen  = MakeMenuBar(mmenu , 2);
-   std::shared_ptr<ClassicMenu> filemenu    = MakeMenu(fmenu , 4);
-   std::shared_ptr<ClassicMenu> optionsmenu = MakeMenu(omenu , 3);
    
-   MenuTree rootmenu(&mainmenu);
+   ClassicMenu options;
+   ClassicMenu foptions;
+   ClassicMenuBar menubar;
    
+   options.SetItems(&omenu[9] , 3);
+   foptions.SetItems(&fmenu[0] , 4);
+   menubar.SetBarItems(&mbar[0] , 2);
+   
+   menubar.SetSubMenu(int bar_item_index , ClassicMenu* menu);
+   menubar.SetSubMenu(0 , &foptions);
+   menubar.SetSubMenu(1 , &options);
    
    
    
