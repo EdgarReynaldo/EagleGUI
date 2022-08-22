@@ -65,6 +65,8 @@ public :
    virtual void CloseMe()=0;
    virtual bool IsOpen()=0;
 
+   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
+   
    bool IsClosed() {return !IsOpen();}
 };
 
@@ -82,6 +84,8 @@ public :
    virtual bool HasSubMenu()=0;
    virtual void OpenSubMenu()=0;
    virtual void CloseSubMenu()=0;
+   
+   virtual void SetSubMenu(MenuBase* smenu)=0;
 };
 
 
@@ -131,6 +135,8 @@ public :
    virtual void OpenMe();
    virtual void CloseMe();
    virtual bool IsOpen();
+   
+   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
 };
 
 
@@ -149,11 +155,12 @@ class ClassicMenuBarLayout : public ClassicMenuLayout {
 public :
    ClassicMenuBarLayout(std::string objname = "Nemo");
 
+   virtual void Resize(unsigned int nsize);///< Resize the menu
+
    virtual void OpenMe();
    virtual void CloseMe();
 
-   virtual void Resize(unsigned int nsize);///< Resize the menu
-
+   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
 };
 
 
@@ -215,6 +222,8 @@ public :
    bool HasSubMenu();
    void OpenSubMenu();
    void CloseSubMenu();
+   
+   virtual void SetSubMenu(MenuBase* smenu);
 };
 
 
@@ -235,6 +244,7 @@ public :
    virtual bool HasSubMenu();
    virtual void OpenSubMenu();
    virtual void CloseSubMenu();
+   virtual void SetSubMenu(MenuBase* smenu);
 };
 
 
@@ -247,6 +257,7 @@ class ClassicMenuBar : public ClassicMenuBarLayout , public MenuBase , public Ea
 protected :
    std::vector<SIMPLE_MENU_BAR_ITEM> bitems;
    std::vector<ClassicMenuBarItem> mbitems;
+   ClassicMenuBarItem* citem;
    bool open;
 public :
    
@@ -257,6 +268,7 @@ public :
          EagleEventListener(),
          bitems(),
          mbitems(),
+         citem(0),
          open(false)
    {}
    
@@ -264,10 +276,13 @@ public :
    
    void Clear();
    void SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems);
+   void SetSubMenu(int bar_item_index , ClassicMenu* menu);
    
    virtual void OpenMe();
    virtual void CloseMe();
    virtual bool IsOpen();
+
+   virtual void SetSubMenu(int index , MenuBase* smenu);
 };
 
 /**! @class ClassicMenu @brief simple implentation of a classic menu
@@ -297,6 +312,7 @@ public :
    virtual void CloseMe();
    virtual bool IsOpen();
 
+   virtual void SetSubMenu(int index , MenuBase* smenu)p
 
 
 };

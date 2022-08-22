@@ -283,6 +283,12 @@ void ClassicMenuItemLayout::CloseSubMenu() {
 
 
 
+void ClassicMenuItemLayout::SetSubMenu(MenuBase* smenu) {
+   submenu = smenu;
+}
+
+
+
 /// -----------------------     ClassicMenu     ----------------------------------
 
 
@@ -352,6 +358,12 @@ void ClassicMenuBarItem::CloseSubMenu() {
 
 
 
+void ClassicMenuBarItem::SetSubMenu(MenuBase* smenu) {
+   submenu = smenu;
+}
+
+
+
 /// ------------------------------     ClassicMenuBar     -------------------------------
 
 
@@ -401,6 +413,12 @@ void ClassicMenuBar::CloseMe() {
 
 bool ClassicMenuBar::IsOpen() {
    return open;
+}
+
+
+
+void ClassicMenuBar::SetSubMenu(int index , MenuBase* smenu) {
+   mbitems[index].SetSubMenu(smenu);
 }
 
 
@@ -518,6 +536,12 @@ void ClassicMenu::CloseMe() {
 
 bool ClassicMenu::IsOpen() {
    return open;
+}
+
+
+
+void ClassicMenu::SetSubMenu(int index , MenuBase* smenu) {
+   mitems[index].SetSubMenu(smenu);
 }
 
 
