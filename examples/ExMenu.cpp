@@ -74,7 +74,6 @@ int main(int argc , char** argv) {
    foptions.SetItems(&fmenu[0] , 4);
    menubar.SetBarItems(&mbar[0] , 2);
    
-   menubar.SetSubMenu(int bar_item_index , ClassicMenu* menu);
    menubar.SetSubMenu(0 , &foptions);
    menubar.SetSubMenu(1 , &options);
    
