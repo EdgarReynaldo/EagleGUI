@@ -25,7 +25,7 @@
 
 
 #include "Eagle/Gui/Layout/GridLayout.hpp"
-
+#include "Eagle/Gui/Button/GuiButton.hpp"
 
 
 extern const unsigned int TOPIC_MENU;
@@ -157,8 +157,8 @@ public :
 
    virtual void Resize(unsigned int nsize);///< Resize the menu
 
-   virtual void OpenMe();
-   virtual void CloseMe();
+   virtual void OpenMe()=0;
+   virtual void CloseMe()=0;
 
    virtual void SetSubMenu(int index , MenuBase* smenu)=0;
 };
@@ -205,7 +205,7 @@ protected :
 
 public :
    
-   ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item = 0);
+   ClassicMenuItemLayout(SIMPLE_MENU_ITEM* mitem = 0);
 
    virtual ~ClassicMenuItemLayout ();
 
@@ -253,30 +253,27 @@ public :
 /**! @class ClassicMenuBar @brief simple implentation of a classic menu bar
  */
 
-class ClassicMenuBar : public ClassicMenuBarLayout , public MenuBase , public EagleEventListener {
+class ClassicMenuBar : public ClassicMenuBarLayout , public EagleEventListener {
 protected :
    std::vector<SIMPLE_MENU_BAR_ITEM> bitems;
-   std::vector<ClassicMenuBarItem> mbitems;
+   std::vector<ClassicMenuBarItem*> mbitems;
    ClassicMenuBarItem* citem;
    bool open;
+
+
+
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
+
+
+
 public :
    
    ClassicMenuBar();
-   ClassicMenuBar() :
-         ClassicMenuBarLayout("Menubar"),
-         MenuBase(),
-         EagleEventListener(),
-         bitems(),
-         mbitems(),
-         citem(0),
-         open(false)
-   {}
    
    virtual ~ClassicMenuBar() {Clear();}
    
    void Clear();
    void SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems);
-   void SetSubMenu(int bar_item_index , ClassicMenu* menu);
    
    virtual void OpenMe();
    virtual void CloseMe();
@@ -285,14 +282,17 @@ public :
    virtual void SetSubMenu(int index , MenuBase* smenu);
 };
 
+
+
+
 /**! @class ClassicMenu @brief simple implentation of a classic menu
  */
-class ClassicMenu : protected ClassicMenuLayout , public EagleEventListener {
+class ClassicMenu : public ClassicMenuLayout , public EagleEventListener {
 protected :
    std::vector<SIMPLE_MENU_ITEM> items;
    std::vector<ClassicMenuItemLayout*> mitems;
    bool open;
-   ClassicMenuItemLayout citem;/// current menu item
+   ClassicMenuItemLayout* citem;/// current menu item
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
    
@@ -304,7 +304,7 @@ public :
    ClassicMenu();
    
    void Clear();
-   void SetItems(SIMPLE_MENU_ITEM* menu , int size);
+   void SetItems(SIMPLE_MENU_ITEM* menu , int msize);
    
    /// MenuBase
    
@@ -312,7 +312,7 @@ public :
    virtual void CloseMe();
    virtual bool IsOpen();
 
-   virtual void SetSubMenu(int index , MenuBase* smenu)p
+   virtual void SetSubMenu(int index , MenuBase* smenu);
 
 
 };

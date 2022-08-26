@@ -26,7 +26,10 @@
 #include "Eagle/Gui/Text/BasicText.hpp"
 #include "Eagle/StringWork.hpp"
 
-#include "Eagle/Event.hpp"
+#include "Eagle/Events.hpp"
+
+
+#include <cstring>
 
 
 const unsigned int TOPIC_MENU = NextFreeTopicId();
@@ -126,6 +129,7 @@ void ClassicMenuBarLayout::Resize(unsigned int nsize) {
 
 
 void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   (void)thread;
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.from == cbox.get() || e.widget.from == menu_button.get()) {
          if (e.widget.topic == BUTTON_TOGGLED) {
@@ -146,10 +150,10 @@ void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
-ClassicMenuItemLayout::ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item) :
+ClassicMenuItemLayout::ClassicMenuItemLayout(SIMPLE_MENU_ITEM* mitem) :
    LayoutBase("Menu item layout" , "Nemo"),
    EagleEventListener(),
-   item(0),
+   item(),
    cbox(),
    dtext(),
    ktext(),
@@ -158,7 +162,7 @@ ClassicMenuItemLayout::ClassicMenuItemLayout(SIMPLE_MENU_ITEM* item) :
    menu_button(),
    item_layout()
 {
-   SetItemInfo(item);
+   SetItemInfo(mitem);
 }
 
 
@@ -170,7 +174,7 @@ ClassicMenuItemLayout::~ClassicMenuItemLayout () {
 
 
 void ClassicMenuItemLayout::Clear() {
-   item = 0;
+   memset(&item , 0 , sizeof(SIMPLE_MENU_ITEM));
    StopListening();
    ClearWidgets();
    item_layout.reset();
@@ -186,17 +190,17 @@ void ClassicMenuItemLayout::Clear() {
 
 void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    Clear();
-   item = mitem;
-   if (!item) {
+   if (!mitem) {
       return;
    }
+   item = *mitem;
    
    Resize(2);
    
    menu_button.reset(new BasicButton("Menu item button" , "menu_button"));
-   menu_button->SetButtonState(!item->down , false);
+   menu_button->SetButtonState(!mitem->down , false);
    menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
-   menu_button->SetInputGroup(hotkey);
+   menu_button->SetInputGroup(mitem->hotkey);
    item_layout.reset(new SimpleTable("Menu item layout"));
 
    PlaceWidget(menu_button.get(), 0);
@@ -209,18 +213,18 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    ktext.reset(new BasicText("ktext"));
    hbtn.reset(new BasicScrollButton("Menu hover button" , "hbtn"));
    
-   cbox->SetImages(item->image_up , item->image_dn , item->image_up , item->image_dn);
-   cbox->SetChecked(item->down);
+   cbox->SetImages(mitem->image_up , mitem->image_dn , mitem->image_up , mitem->image_dn);
+   cbox->SetChecked(mitem->down);
    
-   dtext->SetupText(item->description , item->text_font);
-   ktext->SetupText(item->key_text    , item->text_font);
+   dtext->SetupText(mitem->description , mitem->text_font);
+   ktext->SetupText(mitem->key_text    , mitem->text_font);
    
    hbtn->SetScrollDirection(false , true);
    
    item_layout->PlaceWidget(cbox.get() , 0);
    item_layout->PlaceWidget(dtext.get() , 1);
    item_layout->PlaceWidget(ktext.get() , 2);
-   if (item->sub_menu) {
+   if (mitem->batype == MENU_BTN) {
       item_layout->PlaceWidget(hbtn.get() , 3);
    }
 
@@ -252,7 +256,7 @@ void ClassicMenuItemLayout::Toggle() {
 
 
 void ClassicMenuItemLayout::Activate() {
-   if (item->batype == MENU_BTN) {
+   if (item.batype == MENU_BTN) {
       OpenSubMenu();
    }
    else {
@@ -269,7 +273,7 @@ bool ClassicMenuItemLayout::HasSubMenu() {
 
 
 void ClassicMenuItemLayout::OpenSubMenu() {
-   if (item->batype == MENU_BTN && HasSubMenu()) {
+   if (item.batype == MENU_BTN && HasSubMenu()) {
       submenu->OpenMe();
    }
    RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_OPENED));
@@ -305,9 +309,9 @@ ClassicMenuBarItem::ClassicMenuBarItem() :
 
 void ClassicMenuBarItem::SetItem(SIMPLE_MENU_BAR_ITEM mbitem) {
    item = mbitem;
-   SetInputGroup(item->hotkey);
-   SetFont(item->text_font);
-   SetLabel(item->guitext);
+   SetInputGroup(item.hotkey);
+   SetFont(item.text_font);
+   SetLabel(item.guitext);
 }
 
 
@@ -319,7 +323,7 @@ void ClassicMenuBarItem::Toggle() {
    e.widget.from = this;
    e.widget.topic = TOPIC_MENU;
    e.widget.msgs = MENU_ITEM_TOGGLED;
-   RaiseEvent(e);
+   EmitEvent(e);
 }
 
 
@@ -331,7 +335,7 @@ void ClassicMenuBarItem::Activate() {
    e.widget.from = this;
    e.widget.topic = TOPIC_MENU;
    e.widget.msgs = MENU_ITEM_ACTIVATED;
-   RaiseEvent(e);
+   EmitEvent(e);
 }
 
 
@@ -368,6 +372,51 @@ void ClassicMenuBarItem::SetSubMenu(MenuBase* smenu) {
 
 
 
+void ClassicMenuBar::RespondToEvent(EagleEvent e , EagleThread* thread) {
+   (void)thread;
+/*
+   for (int i = 0 ; i < mbitems.size() ; ++i) {
+      ClassicMenuBarItem* mbitem = mbitems[i];
+      if (e.source == mbitem) {
+         if (e.type == EAGLE_EVENT_WIDGET) {
+            if (e.widget.topic == TOPIC_MENU) {
+               if (e.widget.msgs == MENU_ITEM_TOGGLED) {
+                  if (mbitem->Up()) {
+                     CloseAllMenus();
+                  }
+                  else {
+                     mbitem->OpenSubMenu();
+                     CloseOtherMenus();
+                  }
+               }
+               else if (e.widget.msgs == MENU_ITEM_ACTIVATED) {
+                  mbitem->OpenSubMenu();
+                  CloseOtherMenus(mbitem);
+               }
+               else if (e.widget.msgs == MENU_OPENED) {
+                  CloseOtherMenus(mbitem);
+               }
+               
+            }
+         }
+      }
+   }
+*/
+}
+
+
+
+ClassicMenuBar::ClassicMenuBar() :
+      ClassicMenuBarLayout("Menubar"),
+      EagleEventListener(),
+      bitems(),
+      mbitems(),
+      citem(0),
+      open(false)
+{}
+
+
+
 void ClassicMenuBar::Clear() {
    open = false;
    StopListening();
@@ -386,7 +435,7 @@ void ClassicMenuBar::SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems) {
    ResizeMenu(nitems , MENU_HORIZONTAL);
    bitems.resize(nitems);
    mbitems.resize(nitems,0);
-   for (unsigned int i = 0 ; i < nitems ; ++i) {
+   for (int i = 0 ; i < nitems ; ++i) {
          bitems[i] = mbi[i];
          mbitems[i] = new ClassicMenuBarItem();
          mbitems[i]->SetItem(bitems[i]);
@@ -418,7 +467,7 @@ bool ClassicMenuBar::IsOpen() {
 
 
 void ClassicMenuBar::SetSubMenu(int index , MenuBase* smenu) {
-   mbitems[index].SetSubMenu(smenu);
+   mbitems[index]->SetSubMenu(smenu);
 }
 
 
@@ -451,12 +500,12 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                }
                else {
                   e.source = this;
-                  RaiseEvent(e);
+                  EmitEvent(e);
                }
             }
             else if (e.widget.msgs == MENU_ITEM_TOGGLED) {
                e.source = this;
-               RaiseEvent(e);
+               EmitEvent(e);
             }
             else if (e.widget.msgs == MENU_OPENED) {
                CloseOtherMenus(mitem);
@@ -471,7 +520,7 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
 void ClassicMenu::CloseOtherMenus(ClassicMenuItemLayout* mitem) {
    for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
       ClassicMenuItemLayout* m = mitems[i];
-      if (m->HasSubMenu()) {
+      if (m->HasSubMenu() && (m != mitem)) {
          m->CloseSubMenu();
       }
    }
@@ -483,7 +532,9 @@ ClassicMenu::ClassicMenu() :
       ClassicMenuLayout("Classic menu"),
       EagleEventListener(),
       items(),
-      mitems()
+      mitems(),
+      open(false),
+      citem(0)
 {}
 
 
@@ -500,13 +551,14 @@ void ClassicMenu::Clear() {
 
 
 
-void ClassicMenu::SetItems(SIMPLE_MENU_ITEM* menu , int size) {
+void ClassicMenu::SetItems(SIMPLE_MENU_ITEM* menu , int msize) {
    Clear();
-   items.resize(size);
-   mitems.resize(size , 0);
-   for (unsigned int i = 0 ; i < size ; ++i) {
+   items.resize(msize);
+   mitems.resize(msize , 0);
+   Resize(msize);
+   for (int i = 0 ; i < msize ; ++i) {
       items[i] = menu[i];
-      mitems[i] = new ClassicMenuItemLayout(items[i]);
+      mitems[i] = new ClassicMenuItemLayout(&items[i]);
       PlaceWidget(mitems[i] , i);
       ListenTo(mitems[i]);
    }
@@ -541,7 +593,7 @@ bool ClassicMenu::IsOpen() {
 
 
 void ClassicMenu::SetSubMenu(int index , MenuBase* smenu) {
-   mitems[index].SetSubMenu(smenu);
+   mitems[index]->SetSubMenu(smenu);
 }
 
 

@@ -5,7 +5,7 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 #include "allegro5/allegro.h"
 
-#include "Eagle/Gui/SimpleMenu.hpp"
+#include "Eagle/Gui/Menu/SimpleMenu.hpp"
 
 
 
@@ -43,7 +43,8 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(font && font->Valid());
    
-   
+   EagleImage* checkbox_down = win->LoadImageFromFile("Data/Images/Checkbox_Checked.png");
+   EagleImage* checkbox_up = win->LoadImageFromFile("Data/Images/Checkbox_Unchecked.png");
    
    
    WidgetHandler gui(win , "GUI" , "Example GUI");
@@ -70,14 +71,19 @@ int main(int argc , char** argv) {
    ClassicMenu foptions;
    ClassicMenuBar menubar;
    
-   options.SetItems(&omenu[9] , 3);
+   options.SetItems(&omenu[0] , 3);
    foptions.SetItems(&fmenu[0] , 4);
    menubar.SetBarItems(&mbar[0] , 2);
    
    menubar.SetSubMenu(0 , &foptions);
    menubar.SetSubMenu(1 , &options);
    
+   RelativeLayout rlayout;
+   rlayout.Resize(3);
    
+   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.1));
+   rlayout.PlaceWidget(&options  , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
+   rlayout.PlaceWidget(&foptions , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
    
    
    
@@ -88,17 +94,29 @@ int main(int argc , char** argv) {
       if (redraw) {
          win->SetDrawingTarget(win->GetBackBuffer());
          win->Clear();
+         gui.Display(win , 0 , 0);
+         win->FlipDisplay();
          redraw = false;
       }
       while (!sys->UpToDate()) {
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
+         
+         if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+            quit = true;
+         }
+         if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+            quit = true;
+         }
+         
+         
          gui.HandleEvent(e);
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
             (void)msg;
          }
 
-      
+      }
+   }
    return 0;
 }
 
