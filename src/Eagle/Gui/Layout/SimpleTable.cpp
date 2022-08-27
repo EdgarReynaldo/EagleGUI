@@ -61,6 +61,12 @@ void SimpleTable::CalcRelativeSizes() {
 
 
 
+void SimpleTable::OnAreaChanged() {
+   CalcCells();
+}
+
+
+
 SimpleTable::SimpleTable(std::string objname) :
       LayoutBase("SimpleTable" , objname),
       ncols(0),

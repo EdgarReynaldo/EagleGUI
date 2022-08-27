@@ -47,6 +47,10 @@ class SimpleTable : public LayoutBase {
    void CalcCells();
    void CalcRelativeSizes();
    
+   virtual void OnAreaChanged();///< Takes care of automatic resizing of contents
+
+
+
 public :
    
    SimpleTable(std::string objname = "Nemo");

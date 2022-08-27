@@ -204,6 +204,8 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    item_layout.reset(new SimpleTable("Menu item layout"));
 
    PlaceWidget(menu_button.get(), 0);
+
+   menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
    PlaceWidget(item_layout.get() , 1);
    
    item_layout->Resize(std::vector<float>({0.1 , 0.4 , 0.4 , 0.1}) , std::vector<float>({1.0}));
@@ -221,7 +223,9 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    
    hbtn->SetScrollDirection(false , true);
    
-   item_layout->PlaceWidget(cbox.get() , 0);
+   if (mitem->image_up && mitem->image_dn) {
+      item_layout->PlaceWidget(cbox.get() , 0);
+   }
    item_layout->PlaceWidget(dtext.get() , 1);
    item_layout->PlaceWidget(ktext.get() , 2);
    if (mitem->batype == MENU_BTN) {
