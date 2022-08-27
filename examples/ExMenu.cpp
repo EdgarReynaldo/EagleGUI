@@ -85,8 +85,11 @@ int main(int argc , char** argv) {
    rlayout.PlaceWidget(&options  , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
    rlayout.PlaceWidget(&foptions , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
    
+   gui.SetRootLayout(&rlayout);
    
+   EagleInfo() << gui << std::endl << std::endl;
    
+   sys->GetSystemTimer()->Start();
    
    bool quit = false;
    bool redraw = true;
@@ -107,12 +110,18 @@ int main(int argc , char** argv) {
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             quit = true;
          }
-         
-         
+         if (e.type == EAGLE_EVENT_TIMER) {
+            redraw = true;
+         }
+         else {
+            if (e.type != EAGLE_EVENT_MOUSE_AXES) {
+               EagleInfo() << EagleEventName(e.type) << std::endl;
+            }
+         }
          gui.HandleEvent(e);
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
-            (void)msg;
+            EagleInfo() << Indenter() << msg << std::endl;
          }
 
       }
