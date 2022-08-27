@@ -87,7 +87,7 @@ int main(int argc , char** argv) {
    
    gui.SetRootLayout(&rlayout);
    
-   EagleInfo() << gui << std::endl << std::endl;
+//   EagleInfo() << gui << std::endl << std::endl;
    
    sys->GetSystemTimer()->Start();
    
