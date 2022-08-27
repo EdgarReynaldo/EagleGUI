@@ -317,25 +317,15 @@ void ClassicMenuBarItem::SetItem(SIMPLE_MENU_BAR_ITEM mbitem) {
 
 
 void ClassicMenuBarItem::Toggle() {
-   EagleEvent e;
-   e.source = this;
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = this;
-   e.widget.topic = TOPIC_MENU;
-   e.widget.msgs = MENU_ITEM_TOGGLED;
-   EmitEvent(e);
+   WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_TOGGLED);
+   RaiseEvent(msg);
 }
 
 
 
 void ClassicMenuBarItem::Activate() {
-   EagleEvent e;
-   e.source = this;
-   e.type = EAGLE_EVENT_WIDGET;
-   e.widget.from = this;
-   e.widget.topic = TOPIC_MENU;
-   e.widget.msgs = MENU_ITEM_ACTIVATED;
-   EmitEvent(e);
+   WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED);
+   RaiseEvent(msg);
 }
 
 
@@ -499,13 +489,12 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                   /// We don't need to close the other menus here - we will get a MENU_OPENED message and then they will close
                }
                else {
-                  e.source = this;
-                  EmitEvent(e);
+//                  RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED));
                }
             }
             else if (e.widget.msgs == MENU_ITEM_TOGGLED) {
                e.source = this;
-               EmitEvent(e);
+//               RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_TOGGLED));
             }
             else if (e.widget.msgs == MENU_OPENED) {
                CloseOtherMenus(mitem);
