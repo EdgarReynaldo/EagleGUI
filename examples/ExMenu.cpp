@@ -57,7 +57,7 @@ int main(int argc , char** argv) {
    SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L"},
                                {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S"},
                                {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P"},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) || input_key_press(EAGLE_KEY_Q) , "CTRL-Q"}};
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_Q) , "CTRL-Q"}};
 
    SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1"},
                                {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &2" , input_key_press(EAGLE_KEY_2) , "2"},
@@ -90,6 +90,8 @@ int main(int argc , char** argv) {
 //   EagleInfo() << gui << std::endl << std::endl;
    
    sys->GetSystemTimer()->Start();
+   
+   bool show = true;
    
    bool quit = false;
    bool redraw = true;
