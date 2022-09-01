@@ -20,8 +20,6 @@
  * @brief Base classes for menu work
  */
 
-
-
 #ifndef SimpleMenu_HPP
 #define SimpleMenu_HPP
 

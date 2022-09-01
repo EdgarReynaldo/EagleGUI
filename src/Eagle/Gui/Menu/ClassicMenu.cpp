@@ -22,14 +22,7 @@
 
 
 #include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
-#include "Eagle/Gui/Button/ScrollButton.hpp"
-#include "Eagle/Gui/Button/CheckBox.hpp"
-#include "Eagle/Gui/Layout/SimpleTable.hpp"
-#include "Eagle/Gui/Text/BasicText.hpp"
-#include "Eagle/StringWork.hpp"
-
 #include "Eagle/Events.hpp"
-
 
 #include <cstring>
 

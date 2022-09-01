@@ -26,7 +26,9 @@
 
 
 #include "Eagle/Gui/Layout/GridLayout.hpp"
-#include "Eagle/Gui/Button/GuiButton.hpp"
+#include "Eagle/Gui/Menu/SimpleMenu.hpp"
+
+#include <string>
 
 
 
@@ -101,5 +103,5 @@ public :
 
 
 
-#endif MenuLayout_HPP
+#endif //MenuLayout_HPP
 

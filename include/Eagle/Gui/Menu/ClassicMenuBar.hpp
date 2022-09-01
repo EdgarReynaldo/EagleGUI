@@ -25,9 +25,13 @@
 #ifndef CLASSIC_MENU_BAR_HPP
 #define CLASSIC_MENU_BAR_HPP
 
+
+
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Menu/MenuItem.hpp"
+#include "Eagle/Events.hpp"
 
-
+#include <vector>
 
 /**! @class ClassicMenuBar @
  *   @brief simple implentation of a classic menu bar

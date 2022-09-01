@@ -31,14 +31,8 @@
 
 #include <memory>
 
+#include "Eagle/Gui/Button/GuiButton.hpp"
 
-#include "Eagle/Gui/Button/BasicButton.hpp"
-#include "Eagle/Font.hpp"
-#include "Eagle/Image.hpp"
-#include "Eagle/InputHandler.hpp"
-
-
-#include "Eagle/Gui/Menu/SimpleMenu.hpp"
 
 class BasicCheckBox;
 class BasicText;
@@ -46,6 +40,9 @@ class BasicScrollButton;
 class BasicButton;
 class SimpleTable;
 
+/**! @class ClassicMenuItemLayout
+ *   @brief A classic menu item layout including a checkbox, description text, key text, and a scroll button to open sub menus
+ */
 
 class ClassicMenuItemLayout : public LayoutBase , public MenuItemBase , public EagleEventListener {
 
