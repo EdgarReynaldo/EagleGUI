@@ -165,7 +165,6 @@
 		<Unit filename="include/Eagle/Gui/Factory/WidgetFactoryProto.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/BasicTextButtonLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/BoxLayout.hpp" />
-		<Unit filename="include/Eagle/Gui/Layout/ClassicMenuLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DropDownList.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/DumbLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/FillLayout.hpp" />
@@ -174,6 +173,7 @@
 		<Unit filename="include/Eagle/Gui/Layout/Layout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/LayoutRectangle.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/ListBox.hpp" />
+		<Unit filename="include/Eagle/Gui/Layout/MenuLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/NPLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/PinLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/RelativeLayout.hpp" />
@@ -184,8 +184,12 @@
 		<Unit filename="include/Eagle/Gui/Layout/StickyLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layout/TableLayout.hpp" />
 		<Unit filename="include/Eagle/Gui/Layouts.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/ClassicMenu.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/ClassicMenuBar.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/Menu.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/MenuBase.hpp" />
+		<Unit filename="include/Eagle/Gui/Menu/MenuItem.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/SimpleMenu.hpp" />
 		<Unit filename="include/Eagle/Gui/PercentWidgets.hpp" />
 		<Unit filename="include/Eagle/Gui/PopupWindow.hpp" />
@@ -295,7 +299,6 @@
 		<Unit filename="src/Eagle/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BasicTextButtonLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BoxLayout.cpp" />
-		<Unit filename="src/Eagle/Gui/Layout/ClassicMenuLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DropDownList.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/FillLayout.cpp" />
@@ -304,6 +307,7 @@
 		<Unit filename="src/Eagle/Gui/Layout/Layout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/LayoutRectangle.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/ListBox.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/MenuLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/PinLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/RelativeLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/ScrollArea.cpp" />
@@ -314,8 +318,11 @@
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu.cpp" />
 		<Unit filename="src/Eagle/Gui/MenuBase.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu/ClassicMenu.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu/ClassicMenuBar.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/Menu.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/MenuBase.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu/MenuItem.cpp" />
 		<Unit filename="src/Eagle/Gui/PercentWidgets.cpp" />
 		<Unit filename="src/Eagle/Gui/PopupWindow.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
