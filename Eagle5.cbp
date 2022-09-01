@@ -323,13 +323,13 @@
 		<Unit filename="src/Eagle/Gui/Menu/Menu.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/MenuBase.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/MenuItem.cpp" />
+		<Unit filename="src/Eagle/Gui/Menu/SimpleMenu.cpp" />
 		<Unit filename="src/Eagle/Gui/PercentWidgets.cpp" />
 		<Unit filename="src/Eagle/Gui/PopupWindow.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/GuiScript.cpp" />
 		<Unit filename="src/Eagle/Gui/Scripting/Parsing.cpp" />
 		<Unit filename="src/Eagle/Gui/ScrollBar.cpp" />
 		<Unit filename="src/Eagle/Gui/Scroller.cpp" />
-		<Unit filename="src/Eagle/Gui/SimpleMenu.cpp" />
 		<Unit filename="src/Eagle/Gui/Slider.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/BasicText.cpp" />
 		<Unit filename="src/Eagle/Gui/Text/EditText.cpp" />
