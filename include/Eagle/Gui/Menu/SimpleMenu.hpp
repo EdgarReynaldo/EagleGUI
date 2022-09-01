@@ -1,4 +1,25 @@
 
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2022+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file SimpleMenu.hpp
+ * @brief Base classes for menu work
+ */
+
 
 
 
@@ -34,6 +55,70 @@ public :
    std::string guitext;
    InputGroup hotkey;
 };
+
+
+
+extern const unsigned int TOPIC_MENU;
+
+
+
+enum MENU_MESSAGES {
+   
+   MENU_OPENED = 0,
+   MENU_CLOSED = 1,
+   MENU_ITEM_ACTIVATED = 2,
+   MENU_ITEM_TOGGLED = 3
+   
+};
+
+
+
+REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_OPENED);
+REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_CLOSED);
+REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_ACTIVATED);
+REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_TOGGLED);
+
+
+
+
+class MenuBase {
+   
+protected :
+   
+public :
+   virtual ~MenuBase() {}
+   /// NO DATA
+   virtual void OpenMe()=0;
+   virtual void CloseMe()=0;
+   virtual bool IsOpen()=0;
+
+   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
+   
+   
+   
+   bool IsClosed() {return !IsOpen();}
+};
+
+
+
+
+
+class MenuItemBase {
+public :
+   MenuBase* parentmenu;
+   MenuBase* submenu;
+   
+   virtual void Toggle()=0;
+   virtual void Activate()=0;
+   virtual bool HasSubMenu()=0;
+   virtual void OpenSubMenu()=0;
+   virtual void CloseSubMenu()=0;
+   
+   virtual void SetSubMenu(MenuBase* smenu)=0;
+};
+
+
+
 
 
 
