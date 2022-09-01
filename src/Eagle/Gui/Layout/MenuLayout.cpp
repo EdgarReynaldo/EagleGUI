@@ -17,7 +17,7 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file MenuLayout.cpp
- * @brief Implementation of the classic menu in Eagle
+ * @brief Implementation of the classic menu layout in Eagle
  */
 
 

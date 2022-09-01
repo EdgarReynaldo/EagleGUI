@@ -17,7 +17,7 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file MenuItem.hpp
- * @brief Interface for menu items 
+ * @brief Interface for menu items in Eagle
  */
 
 

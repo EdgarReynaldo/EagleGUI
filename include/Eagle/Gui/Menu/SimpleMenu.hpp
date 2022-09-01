@@ -22,7 +22,6 @@
 
 
 
-
 #ifndef SimpleMenu_HPP
 #define SimpleMenu_HPP
 

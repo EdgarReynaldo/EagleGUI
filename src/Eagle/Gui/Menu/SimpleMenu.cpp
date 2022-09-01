@@ -17,16 +17,13 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file SimpleMenu.cpp
- * @brief Base classe implementations for menu work
+ * @brief Base class implementations for menu work
  */
 
 
 
 
 #include "Eagle/Gui/Menu/SimpleMenu.hpp"
-
-
-
 
 
 
