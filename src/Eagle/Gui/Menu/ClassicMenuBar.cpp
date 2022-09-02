@@ -130,3 +130,17 @@ void ClassicMenuBar::SetSubMenu(int index , MenuBase* smenu) {
 }
 
 
+
+void ClassicMenuBar::CloseOtherMenus(ClassicMenuBarItem* exclude) {
+   for (unsigned int i = 0 ; i < mbitems.size() ; ++i) {
+      ClassicMenuBarItem* mbitem = mbitems[i];
+      if (mbitem != exclude) {
+         mbitem->CloseSubMenu();
+      }
+   }
+}
+
+
+
+
+

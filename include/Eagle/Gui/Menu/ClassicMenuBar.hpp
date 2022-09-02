@@ -68,7 +68,6 @@ public :
    virtual void SetSubMenu(int index , MenuBase* smenu);
    
    void CloseOtherMenus(ClassicMenuBarItem* exclude);
-   
 };
 
 

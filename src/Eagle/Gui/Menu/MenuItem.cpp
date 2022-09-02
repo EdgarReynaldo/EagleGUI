@@ -29,7 +29,7 @@
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 #include "Eagle/Gui/Layout/SimpleTable.hpp"
 
-
+#include <cstring>
 
 /// ------------------------     ClassicMenuItemLayout     --------------------------------
 

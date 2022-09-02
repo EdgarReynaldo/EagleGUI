@@ -73,7 +73,7 @@ public :
    virtual void CloseMe();
    virtual bool IsOpen();
    
-   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
+   virtual void SetSubMenu(int index , MenuBase* smenu);
 };
 
 
@@ -94,10 +94,7 @@ public :
 
    virtual void Resize(unsigned int nsize);///< Resize the menu
 
-   virtual void OpenMe()=0;
-   virtual void CloseMe()=0;
 
-   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
 };
 
 

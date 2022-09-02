@@ -45,7 +45,6 @@ protected :
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
    
    
-   void CloseOtherMenus(ClassicMenuItemLayout* mitem);
    
 public :
    
@@ -62,6 +61,7 @@ public :
 
    virtual void SetSubMenu(int index , MenuBase* smenu);
 
+   void CloseOtherMenus(ClassicMenuItemLayout* exclude);
 
 };
 

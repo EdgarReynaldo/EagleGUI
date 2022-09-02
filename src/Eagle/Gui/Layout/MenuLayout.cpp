@@ -86,6 +86,13 @@ bool ClassicMenuLayout::IsOpen() {
 
 
 
+void ClassicMenuLayout::SetSubMenu(int index , MenuBase* smenu) {
+   (void)index;
+   (void)smenu;
+}
+
+
+
 /// -------------------------     ClassicMenuBarLayout     ------------------------
 
 

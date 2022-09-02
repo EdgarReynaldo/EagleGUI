@@ -10,6 +10,7 @@ set(srcdirs
    "Eagle/Gui/Decorator/" 
    "Eagle/Gui/Factory/" 
    "Eagle/Gui/Layout/" 
+   "Eagle/Gui/Menu/" 
    "Eagle/Gui/Scripting/" 
    "Eagle/Gui/Text/"
    )

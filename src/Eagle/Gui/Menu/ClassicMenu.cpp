@@ -20,8 +20,8 @@
  * @brief Implementation for the classic menu in Eagle
  */
 
-
-#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
+#include "Eagle/Gui/Menu/ClassicMenu.hpp"
+#include "Eagle/Gui/Layout/MenuLayout.hpp"
 #include "Eagle/Events.hpp"
 
 #include <cstring>
@@ -65,17 +65,6 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                CloseOtherMenus(mitem);
             }
          }
-      }
-   }
-}
-
-
-
-void ClassicMenu::CloseOtherMenus(ClassicMenuItemLayout* mitem) {
-   for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
-      ClassicMenuItemLayout* m = mitems[i];
-      if (m->HasSubMenu() && (m != mitem)) {
-         m->CloseSubMenu();
       }
    }
 }
@@ -152,15 +141,14 @@ void ClassicMenu::SetSubMenu(int index , MenuBase* smenu) {
 
 
 
-void ClassicMenuBar::CloseOtherMenus(ClassicMenuBarItem* exclude) {
-   for (unsigned int i = 0 ; i < mbitems.size() ; ++i) {
-      ClassicMenuBarItem* mbitem = mbitems[i];
-      if (mbitem && mbitem != exclude) {
-         mbitem->CloseSubMenu();
+void ClassicMenu::CloseOtherMenus(ClassicMenuItemLayout* exclude) {
+   for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
+      ClassicMenuItemLayout* item = mitems[i];
+      if (item != exclude) {
+         item->CloseSubMenu();
       }
    }
 }
-
 
 
 
