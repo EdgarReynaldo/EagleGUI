@@ -41,7 +41,7 @@ void ClassicMenuBar::RespondToEvent(EagleEvent e , EagleThread* thread) {
             if (e.widget.topic == TOPIC_MENU) {
                if (e.widget.msgs == MENU_ITEM_TOGGLED) {
                   if (mbitem->Up()) {
-                     mbitem->CloseSubMenu();
+//                     mbitem->CloseSubMenu();
                   }
                   else {
                      mbitem->OpenSubMenu();
@@ -49,13 +49,9 @@ void ClassicMenuBar::RespondToEvent(EagleEvent e , EagleThread* thread) {
                   }
                }
                else if (e.widget.msgs == MENU_ITEM_ACTIVATED) {
-                  mbitem->OpenSubMenu();
+//                  mbitem->OpenSubMenu();
                   CloseOtherMenus(mbitem);
                }
-               else if (e.widget.msgs == MENU_OPENED) {
-                  CloseOtherMenus(mbitem);
-               }
-               
             }
          }
       }

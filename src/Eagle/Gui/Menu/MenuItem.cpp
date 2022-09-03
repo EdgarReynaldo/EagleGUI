@@ -37,6 +37,11 @@
 
 void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
    (void)thread;
+   e.source = this;
+   EmitEvent(e , thread);/// Pass our message on to our handler
+
+
+/**
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.from == cbox.get() || e.widget.from == menu_button.get()) {
          if (e.widget.topic == BUTTON_TOGGLED) {
@@ -53,6 +58,7 @@ void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
          }
       }
    }
+*/
 }
 
 
@@ -108,6 +114,7 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    menu_button->SetButtonState(!mitem->down , false);
    menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
    menu_button->SetInputGroup(mitem->hotkey);
+   menu_button->SetButtonType(mitem->batype);
    item_layout.reset(new SimpleTable("Menu item layout"));
 
    PlaceWidget(menu_button.get(), 0);
@@ -197,7 +204,9 @@ void ClassicMenuItemLayout::OpenSubMenu() {
 
 
 void ClassicMenuItemLayout::CloseSubMenu() {
-   submenu->CloseMe();
+   if (HasSubMenu()) {
+      submenu->CloseMe();
+   }
 }
 
 
@@ -209,6 +218,22 @@ void ClassicMenuItemLayout::SetSubMenu(MenuBase* smenu) {
 
 
 /// -----------------------     ClassicMenuBarItem     ----------------------------------
+
+
+
+void ClassicMenuBarItem::QueueUserMessage(const WidgetMsg& msg) {
+   const WidgetMsg gbtnmsg1(this , TOPIC_BUTTON_WIDGET , BUTTON_TOGGLED);
+   const WidgetMsg gbtnmsg2(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
+   if (msg == gbtnmsg1) {
+      Toggle();
+   }
+   else if (msg == gbtnmsg2) {
+      Activate();
+   }
+   else {
+      WidgetBase::QueueUserMessage(msg);
+   }
+}
 
 
 
@@ -227,12 +252,19 @@ void ClassicMenuBarItem::SetItem(SIMPLE_MENU_BAR_ITEM mbitem) {
    SetInputGroup(item.hotkey);
    SetFont(item.text_font);
    SetLabel(item.guitext);
+   SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
 }
 
 
 
 void ClassicMenuBarItem::Toggle() {
    WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_TOGGLED);
+   if (Up()) {
+      CloseSubMenu();
+   }
+   else {
+      OpenSubMenu();
+   }
    RaiseEvent(msg);
 }
 
@@ -240,6 +272,7 @@ void ClassicMenuBarItem::Toggle() {
 
 void ClassicMenuBarItem::Activate() {
    WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED);
+   OpenSubMenu();
    RaiseEvent(msg);
 }
 
@@ -269,5 +302,8 @@ void ClassicMenuBarItem::CloseSubMenu() {
 
 void ClassicMenuBarItem::SetSubMenu(MenuBase* smenu) {
    submenu = smenu;
+   if (submenu) {
+      submenu->CloseMe();
+   }
 }
 

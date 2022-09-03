@@ -27,6 +27,12 @@
 #include <cstring>
 
 
+#include "Eagle/Gui/Button/BasicButton.hpp"
+#include "Eagle/Gui/Button/CheckBox.hpp"
+#include "Eagle/Gui/Button/ScrollButton.hpp"
+
+
+
 /// -----------------------     ClassicMenu     ----------------------------------
 
 
@@ -35,8 +41,8 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
    (void)thread;
    
    if (e.type == EAGLE_EVENT_WIDGET) {
-      if (e.widget.topic == TOPIC_MENU) {
-         ClassicMenuItemLayout* mitem = dynamic_cast<ClassicMenuItemLayout*>(e.widget.from);
+      if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
+         ClassicMenuItemLayout* mitem = dynamic_cast<ClassicMenuItemLayout*>(e.source);
          int index = -1;
          for (unsigned int i = 0 ; i < mitems.size() ; ++i) {
             ClassicMenuItemLayout* mi = mitems[i];
@@ -47,25 +53,37 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
          }
          if (index != -1) {
             /// This menu item is one of ours
-            if (e.widget.msgs == MENU_ITEM_ACTIVATED) {
-               if (mitem->HasSubMenu()) {
+            if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->cbox.get())) {
+               /// Our checkbox was toggled
+               mitem->menu_button->SetButtonState(false , !mitem->cbox->Up() , false);
+            }
+            else if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->menu_button.get())) {
+               /// Menu button was activated or toggled
+               if (e.widget.msgs == BUTTON_CLICKED) {
                   mitem->OpenSubMenu();
-///                  CloseOtherMenus(mitem);
-                  /// We don't need to close the other menus here - we will get a MENU_OPENED message and then they will close
+                  CloseOtherMenus(mitem);
                }
-               else {
-//                  RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED));
+               else if (e.widget.msgs == BUTTON_TOGGLED) {
+                  mitem->cbox->SetButtonState(false , !mitem->menu_button->Up() , false);
+                  if (mitem->menu_button->Up()) {
+                     mitem->CloseSubMenu();
+                  }
+                  else {
+                     mitem->OpenSubMenu();
+                     CloseOtherMenus(mitem);
+                  }
                }
             }
-            else if (e.widget.msgs == MENU_ITEM_TOGGLED) {
-               e.source = this;
-//               RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_ITEM_TOGGLED));
-            }
-            else if (e.widget.msgs == MENU_OPENED) {
-               CloseOtherMenus(mitem);
+            else if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->hbtn.get())) {
+               /// Our hover button was activated
+               if (e.widget.msgs == BUTTON_HOVER_TRIGGER) {
+                  mitem->OpenSubMenu();
+                  CloseOtherMenus(mitem);
+               }
             }
          }
       }
+      RaiseEvent(WidgetMsg(e.widget.from , e.widget.topic , e.widget.msgs));
    }
 }
 
@@ -110,6 +128,7 @@ void ClassicMenu::SetItems(SIMPLE_MENU_ITEM* menu , int msize) {
 
 
 void ClassicMenu::OpenMe() {
+   ClassicMenuLayout::OpenMe();
    open = true;
    if (citem) {
       citem->OpenSubMenu();
@@ -120,6 +139,7 @@ void ClassicMenu::OpenMe() {
 
 
 void ClassicMenu::CloseMe() {
+   ClassicMenuLayout::CloseMe();
    open = false;
    if (citem) {
       citem->CloseSubMenu();

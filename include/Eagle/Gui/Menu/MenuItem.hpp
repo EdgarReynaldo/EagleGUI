@@ -64,6 +64,8 @@ protected :
    /// EagleEventListener
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
+   friend class ClassicMenu;
+   
 public :
    
    ClassicMenuItemLayout(SIMPLE_MENU_ITEM* mitem = 0);
@@ -90,19 +92,21 @@ public :
 
 
 
-
+/**! @class ClassicMenuBarItem
+ *   @brief Interface for a classic menu bar item in Eagle
+ */
 
 class ClassicMenuBarItem : public MenuItemBase , public GuiButton {
 protected :
    SIMPLE_MENU_BAR_ITEM item;
 
+   virtual void QueueUserMessage(const WidgetMsg& msg);
+   
 public :
    
    ClassicMenuBarItem();
    void SetItem(SIMPLE_MENU_BAR_ITEM mbitem);
-   
-   
-   
+
    virtual void Toggle();
    virtual void Activate();
    virtual bool HasSubMenu();
