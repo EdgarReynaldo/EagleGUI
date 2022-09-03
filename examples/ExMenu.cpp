@@ -82,8 +82,8 @@ int main(int argc , char** argv) {
    rlayout.Resize(3);
    
    rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.1));
-   rlayout.PlaceWidget(&options  , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
-   rlayout.PlaceWidget(&foptions , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
+   rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
+   rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
    
    gui.SetRootLayout(&rlayout);
    
