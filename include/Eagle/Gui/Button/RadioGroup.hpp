@@ -50,6 +50,8 @@ protected :
 public :
 
    RadioGroup();
+   
+   void Clear();
 
    void AddRadioButton(BasicButton* btn);///< Add a radio button to the group
    void RemoveRadioButton(BasicButton* btn);///< Remove a radio button from the group

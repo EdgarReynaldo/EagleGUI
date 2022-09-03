@@ -36,6 +36,12 @@ RadioGroup::RadioGroup() :
 
 
 
+void RadioGroup::Clear() {
+   btn_group.clear();
+}
+
+
+
 void RadioGroup::AddRadioButton(BasicButton* btn) {
    btn_group.insert(btn);
    ListenTo(btn);
