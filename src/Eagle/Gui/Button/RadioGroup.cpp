@@ -59,13 +59,17 @@ void RadioGroup::RemoveRadioButton(BasicButton* btn) {
 
 
 void RadioGroup::SelectButton(BasicButton* btn) {
-   btn->SetButtonState(btn->Hover() , false , false);
-   btn_group.erase(btn_group.find(btn));
+   if (btn) {
+      btn->SetButtonState(btn->Hover() , false , false);
+      btn_group.erase(btn_group.find(btn));
+   }
    for (std::unordered_set<BasicButton*>::iterator it = btn_group.begin() ; it != btn_group.end() ; ++it) {
       BasicButton* b = *it;
       b->SetButtonState(b->Hover() , true , false);
    }
-   btn_group.insert(btn);
+   if (btn) {
+      btn_group.insert(btn);
+   }
 }
 
 
@@ -97,7 +101,12 @@ void RadioGroup::RespondToEvent(EagleEvent e , EagleThread* thread) {
          if (btn) {
             if (btn_group.find(btn) != btn_group.end()) {
                /// The button is in our set, and it was toggled
-               SelectButton(btn);
+               if (!btn->Up()) {
+                  SelectButton(btn);
+               }
+               else {
+                  SelectButton(0);/// Deselect all buttons as the button was toggled up
+               }
                e.source = this;
                EmitEvent(e , thread);
             }

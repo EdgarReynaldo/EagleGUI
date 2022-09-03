@@ -56,8 +56,8 @@ public :
    void AddRadioButton(BasicButton* btn);///< Add a radio button to the group
    void RemoveRadioButton(BasicButton* btn);///< Remove a radio button from the group
 
-   void SelectButton(BasicButton* btn);///< Select a button to set to down, automatically deselects other buttons
-
+   void SelectButton(BasicButton* btn);///< Select a button to set to down, automatically deselects other buttons, null is valid to deselect all buttons for menus
+   
    void SetRadioGroup(std::vector<BasicButton*> btns , BasicButton* active);
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);///< For handling widget events from our event sources
