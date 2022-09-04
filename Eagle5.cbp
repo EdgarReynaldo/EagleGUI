@@ -316,8 +316,6 @@
 		<Unit filename="src/Eagle/Gui/Layout/SplitterLayouts.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/StickyLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
-		<Unit filename="src/Eagle/Gui/Menu.cpp" />
-		<Unit filename="src/Eagle/Gui/MenuBase.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/ClassicMenu.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/ClassicMenuBar.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/Menu.cpp" />
