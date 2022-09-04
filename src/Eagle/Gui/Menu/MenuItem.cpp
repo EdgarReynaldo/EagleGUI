@@ -195,10 +195,9 @@ bool ClassicMenuItemLayout::HasSubMenu() {
 
 
 void ClassicMenuItemLayout::OpenSubMenu() {
-   if (item.batype == MENU_BTN && HasSubMenu()) {
+   if (HasSubMenu()) {
       submenu->OpenMe();
    }
-   RaiseEvent(WidgetMsg(this , TOPIC_MENU , MENU_OPENED));
 }
 
 

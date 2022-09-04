@@ -39,7 +39,7 @@
 
 void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
    (void)thread;
-   
+   int msg = -1;
    if (e.type == EAGLE_EVENT_WIDGET) {
       if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
          ClassicMenuItemLayout* mitem = dynamic_cast<ClassicMenuItemLayout*>(e.source);
@@ -56,12 +56,14 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
             if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->cbox.get())) {
                /// Our checkbox was toggled
                mitem->menu_button->SetButtonState(false , !mitem->cbox->Up() , false);
+               msg = MENU_ITEM_TOGGLED;
             }
             else if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->menu_button.get())) {
                /// Menu button was activated or toggled
                if (e.widget.msgs == BUTTON_CLICKED) {
                   mitem->OpenSubMenu();
                   CloseOtherMenus(mitem);
+                  msg = MENU_ITEM_ACTIVATED;
                }
                else if (e.widget.msgs == BUTTON_TOGGLED) {
                   mitem->cbox->SetButtonState(false , !mitem->menu_button->Up() , false);
@@ -72,6 +74,11 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                      mitem->OpenSubMenu();
                      CloseOtherMenus(mitem);
                   }
+                  msg = MENU_ITEM_TOGGLED;
+               }
+               else {
+                  /// We don't handle other button messages
+                  return;
                }
             }
             else if (e.widget.from == dynamic_cast<WidgetBase*>(mitem->hbtn.get())) {
@@ -79,11 +86,12 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                if (e.widget.msgs == BUTTON_HOVER_TRIGGER) {
                   mitem->OpenSubMenu();
                   CloseOtherMenus(mitem);
+                  msg = MENU_ITEM_ACTIVATED;
                }
             }
+            RaiseEvent(WidgetMsg(mitem , TOPIC_MENU , msg));
          }
       }
-      RaiseEvent(WidgetMsg(e.widget.from , e.widget.topic , e.widget.msgs));
    }
 }
 

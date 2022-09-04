@@ -30,6 +30,7 @@
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
 #include "Eagle/Gui/Menu/MenuItem.hpp"
 #include "Eagle/Events.hpp"
+#include "Eagle/Gui/Button/RadioGroup.hpp"
 
 #include <vector>
 
@@ -46,7 +47,7 @@ protected :
    ClassicMenuBarItem* citem;
    bool open;
 
-
+   RadioGroup radio;
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 

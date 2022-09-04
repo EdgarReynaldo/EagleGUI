@@ -26,7 +26,6 @@
 
 
 
-
 /// ------------------------------     ClassicMenuBar     -------------------------------
 
 
@@ -41,7 +40,7 @@ void ClassicMenuBar::RespondToEvent(EagleEvent e , EagleThread* thread) {
             if (e.widget.topic == TOPIC_MENU) {
                if (e.widget.msgs == MENU_ITEM_TOGGLED) {
                   if (mbitem->Up()) {
-//                     mbitem->CloseSubMenu();
+                     mbitem->CloseSubMenu();
                   }
                   else {
                      mbitem->OpenSubMenu();
@@ -67,7 +66,8 @@ ClassicMenuBar::ClassicMenuBar() :
       bitems(),
       mbitems(),
       citem(0),
-      open(false)
+      open(false),
+      radio()
 {}
 
 
@@ -81,6 +81,7 @@ void ClassicMenuBar::Clear() {
       delete mbitems[i];
    }
    mbitems.clear();
+   radio.Clear();
 }
 
 
@@ -96,7 +97,9 @@ void ClassicMenuBar::SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems) {
          mbitems[i]->SetItem(bitems[i]);
          ListenTo(mbitems[i]);
          PlaceWidget(mbitems[i] , i);
+         radio.AddRadioButton(mbitems[i]);
    }
+   radio.SelectButton(0);
 }
 
 
