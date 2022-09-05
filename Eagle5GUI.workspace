@@ -3,7 +3,6 @@
 	<Workspace title="EaglePlus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
-		<Project filename="../Allegro52X/build/ALLEGRO.cbp" />
 		<Project filename="../../../AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
 		<Project filename="../../projects/Hexagoner/Hexagoner.cbp" />
 		<Project filename="../../projects/Krampus21/Krampus21.cbp" />

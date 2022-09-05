@@ -187,8 +187,6 @@
 		<Unit filename="include/Eagle/Gui/Menu.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/ClassicMenu.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/ClassicMenuBar.hpp" />
-		<Unit filename="include/Eagle/Gui/Menu/Menu.hpp" />
-		<Unit filename="include/Eagle/Gui/Menu/MenuBase.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/MenuItem.hpp" />
 		<Unit filename="include/Eagle/Gui/Menu/SimpleMenu.hpp" />
 		<Unit filename="include/Eagle/Gui/PercentWidgets.hpp" />
@@ -318,8 +316,6 @@
 		<Unit filename="src/Eagle/Gui/Layout/TableLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/ClassicMenu.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/ClassicMenuBar.cpp" />
-		<Unit filename="src/Eagle/Gui/Menu/Menu.cpp" />
-		<Unit filename="src/Eagle/Gui/Menu/MenuBase.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/MenuItem.cpp" />
 		<Unit filename="src/Eagle/Gui/Menu/SimpleMenu.cpp" />
 		<Unit filename="src/Eagle/Gui/PercentWidgets.cpp" />
