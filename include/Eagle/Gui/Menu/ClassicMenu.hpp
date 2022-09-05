@@ -51,7 +51,7 @@ public :
    ClassicMenu();
    
    void Clear();
-   void SetItems(SIMPLE_MENU_ITEM* menu , int msize);
+   void SetItems(SIMPLE_MENU_ITEM* menu , int msize);///< Pass an array of SIMPLE_MENU_ITEMs to initialize the menu
    
    /// MenuBase
    
@@ -59,9 +59,9 @@ public :
    virtual void CloseMe();
    virtual bool IsOpen();
 
-   virtual void SetSubMenu(int index , MenuBase* smenu);
+   virtual void SetSubMenu(int index , MenuBase* smenu);///< Set the sub menu for the named item index item
 
-   void CloseOtherMenus(ClassicMenuItemLayout* exclude);
+   void CloseOtherMenus(ClassicMenuItemLayout* exclude);///< Close all other sub menus except 'exclude'
 
 };
 

@@ -74,10 +74,10 @@ public :
 
    void Clear();
 
-   void SetItemInfo(SIMPLE_MENU_ITEM* mitem);
+   void SetItemInfo(SIMPLE_MENU_ITEM* mitem);///< Pass a pointer to a SIMPLE_MENU_ITEM to initialize this menu item layout
 
    /// LayoutBase
-   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);
+   virtual Rectangle RequestWidgetArea(int widget_slot , int newx , int newy , int newwidth , int newheight);///< For internal purposes only, public for practicality
    
    
    void Toggle();
@@ -105,7 +105,7 @@ protected :
 public :
    
    ClassicMenuBarItem();
-   void SetItem(SIMPLE_MENU_BAR_ITEM mbitem);
+   void SetItem(SIMPLE_MENU_BAR_ITEM mbitem);///< Pass a SIMPLE_MENU_BAR_ITEM to setup this menu bar item
 
    virtual void Toggle();
    virtual void Activate();
@@ -117,6 +117,9 @@ public :
 
 
 
-
-
 #endif // MENU_ITEM_HPP
+
+
+
+
+

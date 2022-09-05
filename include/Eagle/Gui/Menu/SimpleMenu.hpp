@@ -58,10 +58,12 @@ public :
 extern const unsigned int TOPIC_MENU;
 
 
-
+/**! @enum MENU_MESSAGES 
+ *   @brief Simple enum to track menu messages
+ */
 enum MENU_MESSAGES {
-   MENU_ITEM_ACTIVATED = 1,
-   MENU_ITEM_TOGGLED   = 2
+   MENU_ITEM_ACTIVATED = 1,///< A menu item was activated
+   MENU_ITEM_TOGGLED   = 2 ///< A menu item was toggled
 };
 
 
@@ -71,6 +73,9 @@ REGISTER_WIDGET_MESSAGE(TOPIC_MENU , MENU_ITEM_TOGGLED);
 
 
 
+/**! @class MenuBase
+ *   @brief The base class for a menu in Eagle
+ */
 
 class MenuBase {
    
@@ -79,20 +84,20 @@ protected :
 public :
    virtual ~MenuBase() {}
    /// NO DATA
-   virtual void OpenMe()=0;
-   virtual void CloseMe()=0;
-   virtual bool IsOpen()=0;
+   virtual void OpenMe()=0;///< Open this menu
+   virtual void CloseMe()=0;///< Close this menu
+   virtual bool IsOpen()=0;///< True if open
 
-   virtual void SetSubMenu(int index , MenuBase* smenu)=0;
+   virtual void SetSubMenu(int index , MenuBase* smenu)=0;///< Allows you to set the sub menu for this menu's items
    
-   
-   
-   bool IsClosed() {return !IsOpen();}
+   bool IsClosed() {return !IsOpen();}///< True if closed
 };
 
 
 
-
+/**! @class MenuItemBase
+ *   @brief The base class for menu items in Eagle
+ */
 
 class MenuItemBase {
 public :
@@ -110,11 +115,10 @@ public :
 
 
 
-
-
-
-
-
-
-
 #endif // SimpleMenu_HPP
+
+
+
+
+
+

@@ -38,8 +38,6 @@
  *   @brief simple implentation of a classic menu bar
  */
 
-
-
 class ClassicMenuBar : public ClassicMenuBarLayout , public EagleEventListener {
 protected :
    std::vector<SIMPLE_MENU_BAR_ITEM> bitems;
@@ -60,7 +58,7 @@ public :
    virtual ~ClassicMenuBar() {Clear();}
    
    void Clear();
-   void SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems);
+   void SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems);///< Pass an array of SIMPLE_MENU_BAR_ITEMs to initialize the menu bar
    
    virtual void OpenMe();
    virtual void CloseMe();
@@ -68,7 +66,7 @@ public :
 
    virtual void SetSubMenu(int index , MenuBase* smenu);
    
-   void CloseOtherMenus(ClassicMenuBarItem* exclude);
+   void CloseOtherMenus(ClassicMenuBarItem* exclude);///< Close all menus except the exclude parameter
 };
 
 
