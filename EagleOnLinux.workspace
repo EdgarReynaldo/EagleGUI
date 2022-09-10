@@ -3,7 +3,5 @@
 	<Workspace title="EagleOnLinux">
 		<Project filename="Eagle5Linux.cbp" />
 		<Project filename="Allegro5BackendLinux.cbp" />
-		<Project filename="../KrampusHack2019/KrampusServerLinux.cbp" />
-		<Project filename="../NiloreaFG/Nilorealibrary.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
