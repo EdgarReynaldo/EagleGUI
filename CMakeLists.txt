@@ -4,9 +4,9 @@
 cmake_minimum_required(VERSION 3.1.13)
 
 if (VERSION LESS 3.1.13)
-   function(target_link_directories LINKTARGET DIRS)
-      foreach(DIR ${DIRS})
-         target_link_options(LINKTARGET PUBLIC "-L${DIR}")
+   function(target_link_directories)# LINKTARGET DIRS)
+      foreach(ARG ${ARGV2})
+         target_link_options(${ARGV1} PUBLIC "-L${ARG}")
       endforeach()
    endfunction()
 endif()
