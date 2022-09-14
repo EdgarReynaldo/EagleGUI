@@ -19,8 +19,6 @@ message(STATUS "Getting ready to build Eagle")
 set(EAGLE_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(EAGLE_INCLUDE_DIR ${EAGLE_ROOT_DIR}/include)
 
-set(CMAKE_INSTALL_PREFIX "/usr/local/")
-
 option(EAGLE_SHARED_LIBRARY_BUILD "Whether to build the shared Eagle library or not" ON)
 if (UNIX)
    message(STATUS "Static build is disabled on Linux")
@@ -119,13 +117,13 @@ endif()
 
 if (WIN32)
    find_library(PHYSFS_LIB "physfs.dll"
-                PATHS "${DEPDIR}lib/" "/usr/lib" "/usr/local/lib"
+                PATHS "${A5LIBDIR}" "/usr/lib" "/usr/local/lib"
                 DOC "The shared physfs library")
 endif()
 
 if (UNIX)
    find_library(PHYSFS_LIB "physfs"
-                PATHS "${DEPDIR}lib/" "/usr/lib" "/usr/local/lib"
+                PATHS "${A5LIBDIR}" "/usr/lib" "/usr/local/lib"
                 DOC "The shared physfs library")
 endif()
 
