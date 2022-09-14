@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="Debug">
 				<Option output="E:/usr64/bin/ExFlowD" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="e:/usr/bin" />
+				<Option working_dir="e:/usr64/bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -25,7 +25,7 @@
 			</Target>
 			<Target title="Release">
 				<Option output="E:/usr64/bin/ExFlow" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="e:/usr/bin" />
+				<Option working_dir="e:/usr64/bin" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
