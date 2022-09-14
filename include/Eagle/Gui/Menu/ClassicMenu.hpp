@@ -26,7 +26,7 @@
 
 #include "Eagle/Gui/Menu/SimpleMenu.hpp"
 #include "Eagle/Gui/Layout/MenuLayout.hpp"
-#include "Eagle/GUi/Menu/MenuItem.hpp"
+#include "Eagle/Gui/Menu/MenuItem.hpp"
 #include "Eagle/Events.hpp"
 
 #include <vector>

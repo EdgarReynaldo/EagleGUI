@@ -197,7 +197,7 @@ Rectangle TableBodyLayout::SlotRectangle(unsigned int columnx , unsigned int row
 
 void TableBodyLayout::PlaceWidgetInTable(WidgetBase* w , int slot , TableCell cell) {
    if (slot >= (int)wchildren.size()) {
-      throw EagleException(StringPrintF("TableBodyLayout::PlaceWidgetInTable() : slot (%d) out of range! (%llu)\n" , slot , wchildren.size()));
+      throw EagleException(StringPrintF("TableBodyLayout::PlaceWidgetInTable() : slot (%d) out of range! (%lu)\n" , slot , wchildren.size()));
    }
    
    if (cell.Area() == 0) {
