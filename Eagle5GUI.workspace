@@ -12,5 +12,6 @@
 		<Project filename="C:/ctwoplus/progcode/allegro5/KrampusHack2018/LibKrampus18.cbp" />
 		<Project filename="examples/TINS2022/TINS2022.cbp" />
 		<Project filename="../../projects/TINS2022/TINS2022.cbp" />
+		<Project filename="examples/ExFlow.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -112,6 +112,7 @@
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="CMakeLists.txt" />
+		<Unit filename="Doxybuild/Doxyfile" />
 		<Unit filename="LICENSE" />
 		<Unit filename="README.md" />
 		<Unit filename="docs/src/EagleCopyright.txt" />
