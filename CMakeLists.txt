@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.1.13)
 
-if (VERSION LESS 3.13)
+if (CMAKE_MAJOR_VERSION LESS_EQUAL 3 AND CMAKE_MINOR_VERSION LESS_EQUAL 13)
    function(target_link_directories)# LINKTARGET DIRS)
       foreach(ARG ${ARGV2})
          target_link_options(${ARGV1} PUBLIC "-L${ARG}")
@@ -37,7 +37,7 @@ option(DEBUG_ALLEGRO5 "Enable debugging of allegro 5" OFF)
 option(EAGLE_DEBUG_MUTEX_LOCKS "Enable debug logging of mutex locks on all threads created with Eagle" OFF)
 
 set (A5_MONOLITH "allegro_monolith" CACHE STRING "The allegro 5 monolith base name")
-set (A5_ADDONS 
+set (A5LIBS
 "allegro_acodec"
 "allegro_audio"
 "allegro_color"
@@ -48,13 +48,13 @@ set (A5_ADDONS
 "allegro_primitives"
 "allegro_ttf"
 "allegro_video"
-"allegro_main"
 "allegro"
+"allegro_main"
 CACHE STRING "A list of the allegro addon libraries")
 
 # Set search directories
 
-set (A5DEPDIR "" CACHE PATH "Where to find the Allegro 5 library")
+set (A5DEPDIR "/usr" CACHE PATH "Where to find the Allegro 5 library")
 
 if (A5DEPDIR)
    set(A5INCDIR "${A5DEPDIR}/include/" CACHE PATH "Where to find the Allegro 5 library's include folder" FORCE)
@@ -66,42 +66,43 @@ endif()
 
 # Find allegro5.h header
 
-find_path (A5_INCLUDE_DIRECTORY "allegro5.h" PATHS ${A5INCDIR} NO_DEFAULT_PATH)
+find_path (A5_INCLUDE_DIRECTORY "allegro5/allegro5.h" PATHS ${A5INCDIR} NO_DEFAULT_PATH)
 if (A5_INCLUDE_DIRECTORY)
-   message(STATUS "Allegro 5 header found at ${A5INCDIR}")
+   message(STATUS "Allegro 5 header found at ${A5INCDIR}/allegro5")
 endif()
-find_path (A5_INCLUDE_DIRECTORY "allegro5.h" PATHS "/usr/include/allegro" "/usr/local/include/allegro")
-if (${A5_INCLUDE_DIRECTORY} STREQUAL "NOTFOUND")
+find_path (A5_INCLUDE_DIRECTORY "allegro5/allegro5.h" PATHS "/usr/include/allegro5" "/usr/local/include/allegro5")
+if (NOT A5_INCLUDE_DIRECTORY)
    message(SEND_ERROR "Failed to find allegro5.h")
 endif()
 
 
-set (LIBEXT ".a")
+set(LIBEXT ".so")
 if (WIN32)
-   string(REPLACE LIBEXT ".dll.a")
+   set(LIBEXT ".dll.a")
 endif()
 
 if (DEBUG_ALLEGRO5)
    string(PREPEND LIBEXT "-debug")
 endif()
 
-list(APPEND ${A5LIBS} ${LIBEXT})
 string(APPEND ${A5_MONOLITH} ${LIBEXT})
+
+message(STATUS ${A5LIBS})
 
 # Find Allegro 5 monolith
 
-find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS ${A5LIBDIR})
-find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS "/usr/lib" "/usr/local/lib")
+find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS ${A5LIBDIR} NO_DEFAULT_PATH)
+find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS "/usr/lib" "/usr/local/lib" "/usr/lib/x86_64-linux-gnu")
 
-if (${A5_MONOLITH_LIB} STREQUAL "NOTFOUND")
+if (NOT A5_MONOLITH_LIB)
    # Find allegro addons in case monolith is not there
    message(STATUS "Allegro 5 monolith library not found. Falling back to addons.")
    foreach(A5LIB ${A5LIBS})
-      set (A5LIBVAR "lib${A5LIB}" INTERNAL FILEPATH "Allegro 5 lib var" FORCE)
-      string(APPEND ${A5LIBVAR} "LIB")
-      string(TOUPPER ${A5LIBVAR})
-      find_library(${A5LIBVAR} ${A5LIB} PATHS ${A5LIBDIR} "/usr/lib" "/usr/local/lib")
-      if (${A5LIBVAR} STREQUAL "NOTFOUND")
+      unset(A5LIBVAR CACHE)
+      find_library(A5LIBVAR "lib${A5LIB}${LIBEXT}" PATHS ${A5LIBDIR} NO_DEFAULT_PATH)
+      find_library(A5LIBVAR "lib${A5LIB}${LIBEXT}" PATHS "/usr/lib" "/usr/local/lib" "/usr/lib/x86_64-linux-gnu")
+      message(STATUS ${A5LIBVAR})
+      if(NOT A5LIBVAR)
          message(SEND_ERROR "Failed to find addon lib ${A5LIB}")
       endif()
       list(APPEND ALLEGRO_LINK_LIBS ${A5LIBVAR})
@@ -110,6 +111,9 @@ else ()
    list(APPEND ALLEGRO_LINK_LIBS ${A5_MONOLITH_LIB})
 endif()
 
+if (DEBUG_CMAKE)
+   message(STATUS "ALLEGRO_LINK_LIBS = ${ALLEGRO_LINK_LIBS}")
+endif()
 
 #Finding PhysFS
 
@@ -210,7 +214,8 @@ if (WANT_EXAMPLES)
                target_compile_options(${EXNAME} PUBLIC ${OPTS}) 
                target_include_directories(${EXNAME} PUBLIC "${EAGLE_INCLUDE_DIR}" "${A5_INCLUDE_DIRECTORY}")
                target_link_directories(${EXNAME} PUBLIC "${ALLEGRO5_LIB_DIR}")
-               target_link_libraries(${EXNAME} PUBLIC EagleA5Shared EagleShared ${ALLEGRO_LINK_LIBS})
+               target_link_libraries(${EXNAME} PUBLIC EagleA5Shared EagleShared)
+               target_link_libraries(${EXNAME} PUBLIC ${ALLEGRO_LINK_LIBS})
                install(TARGETS ${EXNAME} RUNTIME DESTINATION bin)
             endif (EAGLE_SHARED_LIBRARY_BUILD)
 
