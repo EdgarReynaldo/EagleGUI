@@ -64,6 +64,7 @@ endif()
 
 # Find allegro5.h header
 
+unset(A5_INCLUDE_DIRECTORY CACHE)
 find_path (A5_INCLUDE_DIRECTORY "allegro5/allegro5.h" PATHS ${A5INCDIR} NO_DEFAULT_PATH)
 if (A5_INCLUDE_DIRECTORY)
    message(STATUS "Allegro 5 header found at ${A5INCDIR}/allegro5")
@@ -89,9 +90,11 @@ message(STATUS ${A5LIBS})
 
 # Find Allegro 5 monolith
 
+unset(A5_MONOLITH_LIB CACHE)
 find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS ${A5LIBDIR} NO_DEFAULT_PATH)
 find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS "/usr/lib" "/usr/local/lib" "/usr/lib/x86_64-linux-gnu")
 
+unset(ALLEGRO_LINK_LIBS CACHE)
 if (NOT A5_MONOLITH_LIB)
    # Find allegro addons in case monolith is not there
    message(STATUS "Allegro 5 monolith library not found. Falling back to addons.")
@@ -115,6 +118,7 @@ endif()
 
 #Finding PhysFS
 
+unset(PHYSFS_LIB CACHE)
 if (WIN32)
    find_library(PHYSFS_LIB "physfs.dll"
                 PATHS "${A5LIBDIR}" "/usr/lib" "/usr/local/lib"
