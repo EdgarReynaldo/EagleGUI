@@ -317,6 +317,10 @@ int main(int argc , char** argv) {
             WidgetMsg msg = gui.TakeNextMessage();
             (void)msg;
          }
+         if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
+            gui.SetWidgetArea(Rectangle(0 , 0 , e.window->Width() , e.window->Height()) , false);
+            win->AcknowledgeResize();
+         }
          if (e.type == EAGLE_EVENT_WIDGET) {
             if (e.source == &radios[0]) {
                for (unsigned int i = 0 ; i < 2 ; ++i) {

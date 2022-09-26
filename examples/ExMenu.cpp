@@ -106,6 +106,11 @@ int main(int argc , char** argv) {
       while (!sys->UpToDate()) {
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
          
+         if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
+            gui.SetWidgetArea(Rectangle(0 , 0 , e.window->Width() , e.window->Height()) , false);
+            win->AcknowledgeResize();
+         }
+         
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
             quit = true;
          }
