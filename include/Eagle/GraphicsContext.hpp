@@ -610,7 +610,6 @@ public :
    
    
    /// Font loading - these fonts are owned by the window
-
    EagleFont* GetFont(std::string file , int height , int fontflags = FONT_NORMAL , IMAGE_TYPE memflag = VIDEO_IMAGE);
    
    void               FreeFont(EagleFont* font);///< Frees any references this window has to the font and destroys it

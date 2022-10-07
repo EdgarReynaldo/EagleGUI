@@ -58,6 +58,15 @@ int main(int argc , char** argv) {
    /// Wait 3 seconds
    sys->Rest(3.0);
    
+   /// Load the font English.ttf from disk at a height of 40 pixels tall
+   EagleFont* font = win->GetFont("Data/Fonts/English.ttf" , -160);
+   
+   /// Clear the screen and display our hello world text
+   win->Clear();
+   win->DrawTextString(font , "Hello World" , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+   win->FlipDisplay();
+   sys->Rest(3.0);
+   
    /// Return 0 to the system to indicate success - Eagle will clean itself up using the atexit routines
    return 0;
 }
