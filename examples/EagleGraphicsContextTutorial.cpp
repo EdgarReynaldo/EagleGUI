@@ -67,6 +67,19 @@ int main(int argc , char** argv) {
    win->FlipDisplay();
    sys->Rest(3.0);
    
+   /// Image loading
+   EagleImage* bg = win->LoadImageFromFile("Data/Images/Stallions2.jpg");
+   EAGLE_ASSERT(bg && bg->Valid());
+   
+   /// Clear the window and draw our image
+   win->Clear();
+   win->Draw(bg , 0 , 0);
+   win->FlipDisplay();
+   sys->Rest(3.0);
+   
+   
+   
+   
    /// Return 0 to the system to indicate success - Eagle will clean itself up using the atexit routines
    return 0;
 }
