@@ -118,18 +118,18 @@
 		<Unit filename="docs/src/EagleCopyright.txt" />
 		<Unit filename="docs/src/EagleFAQ.txt" />
 		<Unit filename="docs/src/EagleFeatures.txt" />
-		<Unit filename="docs/src/EagleGraphicsContextTutorial.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
 		<Unit filename="docs/src/EagleLicense.txt" />
 		<Unit filename="docs/src/EagleNotes.txt" />
-		<Unit filename="docs/src/EagleSystemTutorial.cpp">
+		<Unit filename="docs/src/README.md" />
+		<Unit filename="examples/CMakeLists.txt" />
+		<Unit filename="examples/EagleGraphicsContextTutorial.cpp">
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="docs/src/README.md" />
-		<Unit filename="examples/CMakeLists.txt" />
+		<Unit filename="examples/EagleSystemTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
