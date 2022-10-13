@@ -122,6 +122,10 @@
 		<Unit filename="docs/src/EagleNotes.txt" />
 		<Unit filename="docs/src/README.md" />
 		<Unit filename="examples/CMakeLists.txt" />
+		<Unit filename="examples/EagleEventTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="examples/EagleGraphicsContextTutorial.cpp">
 			<Option compile="0" />
 			<Option link="0" />
