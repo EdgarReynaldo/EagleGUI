@@ -31,6 +31,7 @@ set(incdirs
    "include/Eagle/Gui/Decorators/"
    "include/Eagle/Gui/Factory/"
    "include/Eagle/Gui/Layout/"
+   "include/Eagle/Gui/Menu/"
    "include/Eagle/Gui/Scripting/"
    "include/Eagle/Gui/Text/"
    )

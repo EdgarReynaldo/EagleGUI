@@ -887,6 +887,12 @@ EagleImage* Allegro5GraphicsContext::LoadImageFromFile(std::string file , IMAGE_
 
 
 
+bool Allegro5GraphicsContext::SaveImage(EagleImage* image , std::string file) {
+   return al_save_bitmap(file.c_str() , GetAllegroBitmap(image));
+}
+
+
+
 Transformer* Allegro5GraphicsContext::GetTransformer() {
    return our_transformer;
 }

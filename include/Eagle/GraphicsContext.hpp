@@ -599,6 +599,8 @@ public :
    ///< Load an image from file using the specified @ref IMAGE_TYPE
    virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
 
+   virtual bool SaveImage(EagleImage* image , std::string file)=0;
+   
    void                FreeImage(EagleImage* img);///< Frees any references this window has to the image and destroys it
    void                FreeAllImages();///< Frees all images owned by this display
 

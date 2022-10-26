@@ -224,6 +224,8 @@ public :
    EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo");
    EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE);
 
+   bool SaveImage(EagleImage* image , std::string file);
+   
    ALLEGRO_DISPLAY* AllegroDisplay() {return display;}
 
    Transformer* GetTransformer();
