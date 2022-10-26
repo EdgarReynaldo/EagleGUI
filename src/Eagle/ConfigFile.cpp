@@ -28,10 +28,43 @@
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/StringWork.hpp"
-
+#include "Eagle/GraphicsContext.hpp"
 
 #include <sstream>
 #include <fstream>
+#include <cstring>
+
+
+bool STOB(std::string b) {
+   bool ret = false;
+   if (strcmp(b.c_str() , "On") == 0) {ret = true;}
+   if (strcmp(b.c_str() , "True") == 0) {ret = true;}
+   return ret;
+}
+
+
+
+int STOI(std::string i) {
+   int n = 0;
+   sscanf(i.c_str() , "%d" , &n);
+   return n;
+}
+
+
+
+float STOF(std::string f) {
+   float n = 0;
+   sscanf(f.c_str() , "%f" , &n);
+   return n;
+}
+
+
+
+double STOD(std::string d) {
+   double n = 0;
+   sscanf(d.c_str() , "%lf" , &n);
+   return n;
+}
 
 
 
@@ -169,6 +202,21 @@ std::vector<ConfigLine*>::const_iterator ConfigSection::GetConfigIteratorConst(s
 ConfigSection::ConfigSection() :
       clines()
 {}
+
+
+
+ConfigSection::~ConfigSection() {
+   ClearConfigSection();
+}
+
+
+
+void ConfigSection::ClearConfigSection() {
+   for (unsigned int i = 0 ; i < clines.size() ; ++i) {
+      delete clines[i];
+   }
+   clines.clear();
+}
 
 
 
@@ -322,7 +370,13 @@ ConfigFile::ConfigFile() :
 
 
 
-void ConfigFile::Clear() {
+ConfigFile::~ConfigFile() {
+   ClearContents();
+}
+
+
+
+void ConfigFile::ClearContents() {
    sectionmap.clear();
    contents = "";
 }
@@ -331,7 +385,7 @@ void ConfigFile::Clear() {
 
 bool ConfigFile::LoadFromFile(const char* path) {
 
-   Clear();
+   ClearContents();
    
    EagleSystem* sys = Eagle::EagleLibrary::System("Any");
    
@@ -444,6 +498,134 @@ const ConfigSection& ConfigFile::operator[] (std::string section) const {
    }
    return it->second;
 }
+
+
+
+
+/// --------------------------      GraphicsConfig      ----------------------
+
+
+
+
+GraphicsConfig::GraphicsConfig() :
+      ConfigFile(),
+      file(),
+      setup(false),
+      gl(true),
+      flags(0),
+      fs(false),
+      fullscreen(0),
+      fsw(1920),
+      fsh(1280),
+      sw(800),
+      sh(600),
+      gw(800),
+      gh(600),
+      sys(0),
+      win(0)
+{}
+
+
+
+GraphicsConfig::GraphicsConfig(std::string path) :
+      ConfigFile(),
+      file(path),
+      setup(false),
+      gl(true),
+      flags(0),
+      fs(false),
+      fullscreen(0),
+      fsw(1920),
+      fsh(1280),
+      sw(800),
+      sh(600),
+      gw(800),
+      gh(600),
+      sys(0),
+      win(0)
+{
+   setup = Setup(path);
+}
+
+
+
+bool GraphicsConfig::Load(std::string path) {
+   file = path;
+   return LoadFromFile(path.c_str());
+}
+
+
+
+bool GraphicsConfig::Save(std::string path) {
+   file = path;
+   return SaveToFile(path.c_str());
+}
+
+
+
+void GraphicsConfig::Create() {
+   ConfigSection& s = (*this)["Graphics"];
+   s.AddConfigLine("Driver" , "OpenGL");
+   s.AddConfigLine("Fullscreen" , "False");
+   s.AddConfigLine("FullscreenWidth" , "1920");
+   s.AddConfigLine("FullscreenHeight" , "1080");
+   s.AddConfigLine("ScreenWidth" , "800");
+   s.AddConfigLine("ScreenHeight" , "600");
+}
+
+
+
+bool GraphicsConfig::Setup(std::string filepath) {
+   if (!Load(filepath)) {
+      EagleInfo() << "Failed to load config file. Attempting creation." << std::endl;
+      Create();
+      if (!Save(filepath)) {
+         EagleWarn() << "Failed to create config file! Proceeding." << std::endl;
+      }
+   }
+   return setup = Parse();
+}
+
+
+
+bool GraphicsConfig::Parse() {
+   bool error = false;
+   fsw = STOI((*this)["Graphics"]["FullscreenWidth"]);
+   fsh = STOI((*this)["Graphics"]["FullscreenHeight"]);
+   sw = STOI((*this)["Graphics"]["ScreenWidth"]);
+   sh = STOI((*this)["Graphics"]["ScreenHeight"]);
+
+   if (fsw == 0 || fsh == 0) {error = true;}
+   if (sw == 0 || sh == 0) {error = true;}
+
+   gl = (*this)["Graphics"]["Driver"].compare("OpenGL") == 0;
+   flags = gl?EAGLE_OPENGL:0;
+   fs = STOB((*this)["Graphics"]["Fullscreen"]);
+   fullscreen = fs?EAGLE_FULLSCREEN_WINDOW:EAGLE_WINDOWED;
+   flags |= fullscreen;
+   
+   
+   return !error;
+}
+
+
+
+EagleGraphicsContext* GraphicsConfig::SetupWindow(EagleSystem* system) {
+   sys = system;
+   win = sys->CreateGraphicsContext("Graphics Window" , sw , sh , flags);
+   if (fs) {
+      fsw = win->Width();
+      fsh = win->Height();
+   }
+   gw = fs?fsw:sw;
+   gh = fs?fsh:sh;
+
+   return win;
+}
+
+
+
+
 
 
 

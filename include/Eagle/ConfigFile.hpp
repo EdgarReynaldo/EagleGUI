@@ -36,6 +36,15 @@
 #include <string>
 
 
+/**! String to data functions. These do not throw exceptions. Rather they have default values of false, 0, 0.0f, and 0.0 */
+
+bool STOB(std::string b);
+int STOI(std::string i);
+float STOF(std::string f);
+double STOD(std::string d);
+
+
+
 /**! @class ConfigLine
  *   @brief The ConfigLine class is used to store a line from a config file
  */
@@ -51,6 +60,9 @@ class ConfigLine {
 
 public :
    ConfigLine();///< Empty constructor
+   ~ConfigLine() {}
+   
+   void ClearConfigSection();
    
    ConfigLine(std::string ln);///< Line constructor
 
@@ -91,7 +103,10 @@ class ConfigSection {
 public :
    
    ConfigSection();///< Empty constructor
+   ~ConfigSection();
    
+   void ClearConfigSection();
+
    ConfigLine* FindConfig(std::string key);///< Get a pointer to the config line corresponding to this key, may be null if empty
    const ConfigLine* FindConfigConst(std::string key) const ;///< const @ref FindConfig 
 
@@ -141,7 +156,9 @@ protected :
 public :
    ConfigFile();///< Empty constructor
    
-   void Clear();///< Clear this ConfigFile's string @ref contents
+   virtual ~ConfigFile();
+   
+   void ClearContents();///< Clear this ConfigFile's string @ref contents
       
    bool LoadFromFile(const char* path);///< Load config from a file, path may be relative or absolute
    
@@ -151,9 +168,63 @@ public :
    
    ConfigSection* FindSection(std::string section);///< Lookup a section by name, may be null
    
-   ConfigSection& operator[] (std::string section);///< Get a reference to a config section, if none exists, and empty one is created
+   ConfigSection& operator[] (std::string section);///< Get a reference to a config section, if none exists, an empty one is created
    const ConfigSection& operator[] (std::string section) const;///< Like @ref operator[] but will throw if the section does not exist
 };
+
+
+
+class EagleSystem;
+class EagleGraphicsContext;
+
+class GraphicsConfig : public ConfigFile {
+   
+protected :
+   std::string file;
+   
+   bool setup;
+   
+   bool gl;
+   int flags;
+   bool fs;
+   int fullscreen;
+
+   int fsw;
+   int fsh;
+   int sw;
+   int sh;
+   
+   int gw;
+   int gh;
+
+   EagleSystem* sys;
+   EagleGraphicsContext* win;
+
+public :   
+   GraphicsConfig();
+   GraphicsConfig(std::string path);
+   
+   bool Load(std::string path);
+   bool Save(std::string path);
+   void Create();
+   bool Parse();
+
+   bool Setup(std::string path = "Eagle.cfg");
+
+   EagleGraphicsContext* SetupWindow(EagleSystem* system);
+
+   bool IsSetup() {return setup;}
+   bool UsingOpenGL() {return gl;}
+   bool Fullscreen() {return fs;}
+   int FSWidth() {return fsw;}
+   int FSHeight() {return fsh;}
+   int WWidth() {return sw;}
+   int WHeight() {return sh;}
+   int GraphicsWidth() {return gw;}
+   int GraphicsHeight() {return gh;}
+};
+
+
 
 
 
