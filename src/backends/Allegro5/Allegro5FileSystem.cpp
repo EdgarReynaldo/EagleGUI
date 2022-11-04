@@ -161,7 +161,7 @@ Allegro5FileSystem::~Allegro5FileSystem() {
 
 
 FSInfo Allegro5FileSystem::GetFileInfo(FilePath fpath) {
-   std::string path = fpath.Path();
+   std::string path = fpath.Path();/// e:/usr64/projects/Spiraloid2/Graphics.cfg
    ALLEGRO_FS_ENTRY* fs = al_create_fs_entry(path.c_str());
    FSInfo info;
    if (al_fs_entry_exists(fs)) {

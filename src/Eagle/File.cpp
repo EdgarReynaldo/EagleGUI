@@ -184,7 +184,7 @@ void FilePath::SetPathComponents(const std::vector<std::string>& paths) {
    for (int i = 1 ; i < (int)paths.size() - 1 ; ++i) {
       folderpath.push_back(paths[i]);
    }
-   file = paths[(int)paths.size() - 1];
+   file = paths.back();
 }
 
 

@@ -104,7 +104,7 @@ std::vector<std::string> ExplodePath(std::string path) {
 
 
 
-std::vector<std::string> GetAbsolutePath(std::string path) {
+std::vector<std::string> GetAbsolutePath(std::string path) {/// TODO : DOES NOT WORK ON ABSOLUTE PATHS
 
 
    if (!path.size()) {
@@ -117,7 +117,7 @@ std::vector<std::string> GetAbsolutePath(std::string path) {
    
    std::vector<std::string>::iterator it = paths.begin();
    while (it != paths.end()) {
-      if (it->compare(".") == 0) {
+      if (it->compare(".") == 0) {/// MAJOR BUG
          it = paths.erase(it);
       }
       else {
@@ -181,7 +181,7 @@ std::string SanitizePath(std::string path) {
 
 
 std::string CurrentDirectory() {
-   const int SIZE = 512;
+   const int SIZE = 1024;
    char buf[SIZE];
 #ifdef EAGLE_WIN32
    _getcwd(buf , SIZE - 1);

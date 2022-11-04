@@ -104,6 +104,9 @@ public :
    MenuBase* parentmenu;
    MenuBase* submenu;
    
+   MenuItemBase() : parentmenu(0) , submenu(0) {}
+   virtual ~MenuItemBase() {}
+   
    virtual void Toggle()=0;
    virtual void Activate()=0;
    virtual bool HasSubMenu()=0;
