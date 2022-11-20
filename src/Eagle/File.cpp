@@ -73,6 +73,12 @@ FSInfo::FSInfo(FilePath path , bool exists , FSMode mode ,
 
 
 
+void FSInfo::SetPath(FilePath fp) {
+   fpath = fp;
+}
+
+
+
 /// ----------------------------     Folder     ---------------------------------------------
 
 

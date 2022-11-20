@@ -184,6 +184,7 @@ protected :
    
    bool setup;
    
+   int monitor;
    bool gl;
    int flags;
    bool fs;

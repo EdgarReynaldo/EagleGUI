@@ -391,7 +391,7 @@ bool ConfigFile::LoadFromFile(const char* path) {
    
    EAGLE_ASSERT(sys);
 
-   FSInfo finfo = sys->GetFileSystem()->GetFileInfo(std::string(path));
+   FSInfo finfo = sys->GetFileSystem()->GetFileInfo(FilePath(std::string(path)));
    
    std::string fpath = finfo.Path();
    
@@ -531,6 +531,7 @@ GraphicsConfig::GraphicsConfig(std::string path) :
       ConfigFile(),
       file(path),
       setup(false),
+      monitor(0),
       gl(true),
       flags(0),
       fs(false),
@@ -565,6 +566,7 @@ bool GraphicsConfig::Save(std::string path) {
 
 void GraphicsConfig::Create() {
    ConfigSection& s = (*this)["Graphics"];
+   s.AddConfigLine("Monitor" , "0");
    s.AddConfigLine("Driver" , "OpenGL");
    s.AddConfigLine("Fullscreen" , "False");
    s.AddConfigLine("FullscreenWidth" , "1920");
@@ -590,6 +592,7 @@ bool GraphicsConfig::Setup(std::string filepath) {
 
 bool GraphicsConfig::Parse() {
    bool error = false;
+   monitor = STOI((*this)["Graphics"]["Monitor"]);
    fsw = STOI((*this)["Graphics"]["FullscreenWidth"]);
    fsh = STOI((*this)["Graphics"]["FullscreenHeight"]);
    sw = STOI((*this)["Graphics"]["ScreenWidth"]);
@@ -612,6 +615,7 @@ bool GraphicsConfig::Parse() {
 
 EagleGraphicsContext* GraphicsConfig::SetupWindow(EagleSystem* system) {
    sys = system;
+   /// TODO : Set new monitor
    win = sys->CreateGraphicsContext("Graphics Window" , sw , sh , flags);
    if (fs) {
       fsw = win->Width();

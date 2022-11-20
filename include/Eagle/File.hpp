@@ -119,7 +119,9 @@ public :
           time_t creation_time , time_t modify_time , time_t access_time , unsigned long long size);
    virtual ~FSInfo() {}
           
-             
+   
+   void SetPath(FilePath fp);
+   
    std::string Path() {return fpath.Path();}///< Returns the full string path
    bool Exists() {return fexists;}///< True if this path exists
    FSMode Mode() {return fmode;}///< Returns the @ref FSMode

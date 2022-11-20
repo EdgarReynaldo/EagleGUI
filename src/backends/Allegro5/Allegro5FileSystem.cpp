@@ -31,13 +31,15 @@ FSMode GetFSModeFromAllegroFileMode(uint32_t amode) {
 FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f) {
    EAGLE_ASSERT(al_fs_entry_exists(f));
    std::string fpath = al_get_fs_entry_name(f);
+   EagleInfo() << fpath << std::endl;
+   FilePath fp(fpath);
    uint32_t amode = al_get_fs_entry_mode(f);
    FSMode fmode = GetFSModeFromAllegroFileMode(amode);
    time_t fcreate = al_get_fs_entry_ctime(f);
    time_t fmodify = al_get_fs_entry_mtime(f);
    time_t faccess = al_get_fs_entry_atime(f);
    unsigned long long int fsize = al_get_fs_entry_size(f);
-   return FSInfo(fpath , true , fmode , fcreate , fmodify , faccess , fsize);
+   return FSInfo(fp , true , fmode , fcreate , fmodify , faccess , fsize);
 }
 
 
@@ -167,6 +169,9 @@ FSInfo Allegro5FileSystem::GetFileInfo(FilePath fpath) {
    if (al_fs_entry_exists(fs)) {
       info = GetFSInfo(fs);
    }
+   else {
+      info.SetPath(fpath);/// This file does not exist yet, but we still need the path
+   }
    al_destroy_fs_entry(fs);
    return info;
 }
@@ -176,6 +181,7 @@ FSInfo Allegro5FileSystem::GetFileInfo(FilePath fpath) {
 std::shared_ptr<File> Allegro5FileSystem::ReadFile(FilePath fpath) {
    std::string path = fpath.Path();
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
+   
    std::shared_ptr<File> file = ReadFileInfo(f);
    al_destroy_fs_entry(f);
    if (!file) {
