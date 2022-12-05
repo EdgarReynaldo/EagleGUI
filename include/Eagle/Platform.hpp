@@ -45,7 +45,7 @@
 #else /// !defined EAGLE_LIBRARY_BUILD - Not building library - user building app / dll
 
    /// User building app
-   #ifdef WIN32
+   #ifdef _WIN32
       #ifndef EAGLE_STATIC_LINK
          #define EAGLE_LINK_TYPE __declspec(dllimport)
       #endif
