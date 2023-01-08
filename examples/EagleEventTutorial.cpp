@@ -71,7 +71,7 @@ int main(int argc , char** argv) {
             pause = true;
          }
          else if (e.type == EAGLE_EVENT_TIMER) {
-            redraw = false;
+            redraw = true;
             (void)0;
          }
          else {
