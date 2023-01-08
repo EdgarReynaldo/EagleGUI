@@ -280,6 +280,21 @@ Triangle::Triangle() :
 
 
 
+Triangle& Triangle::operator=(const Triangle& t) {
+   p1 = t.p1;
+   p2 = t.p2;
+   p3 = t.p3;
+   angle_ab = t.angle_ab;
+   angle_bc = t.angle_bc;
+   angle_ca = t.angle_ca;
+   inside_is_positive_angle = t.inside_is_positive_angle;
+   points_unique = t.points_unique;
+   points_make_triangle = t.points_make_triangle;
+   return *this;
+}
+
+
+
 Triangle::Triangle(const Triangle& t) :
       p1(t.p1),
       p2(t.p2),
@@ -410,6 +425,12 @@ std::ostream& Triangle::DescribeTo(std::ostream& os , Indenter indent) const {
 
 
 
+bool Overlaps(const Triangle& t1 , const Triangle& t2) {
+   return t1.Contains(t2.p1.tx,t2.p1.ty) || t1.Contains(t2.p2.tx,t2.p2.ty) || t1.Contains(t2.p3.tx,t2.p3.ty) ||
+          t2.Contains(t1.p1.tx,t1.p3.ty) || t2.Contains(t1.p2.tx,t1.p2.ty) || t2.Contains(t1.p3.tx,t1.p3.ty);
+}
+
+
 
 /// -----------------------------------      Circle clsss         -----------------------------------------
 
@@ -426,8 +447,8 @@ Circle::Circle(int xpos , int ypos , int radius) : x(xpos) , y(ypos) , r(radius)
 bool Circle::Contains(int xpos , int ypos) const {
    float dx = (float)(xpos - x);
    float dy = (float)(ypos - y);
-   float dist = sqrt(dx*dx + dy*dy);
-   if (dist <= (float)r) {return true;}
+   float dsq = dx*dx + dy*dy;
+   if (dsq <= (float)r*r) {return true;}
    return false;
 }
 

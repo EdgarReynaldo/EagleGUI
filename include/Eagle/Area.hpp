@@ -201,9 +201,11 @@ protected :
 
    void CheckPoints();
    void RenewAngles();
-
+   friend bool Overlaps(const Triangle&, const Triangle&);
+   
 public :
    Triangle();
+   Triangle& operator=(const Triangle& t);
    Triangle(const Triangle& t);
    Triangle(int x1 , int y1 , int x2 , int y2 , int x3 , int y3);
    
@@ -222,6 +224,7 @@ public :
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output the triangle to a stream
 };
 
+bool Overlaps(const Triangle& t1 , const Triangle& t2);
 
 /// -----------------------------------      Circle clsss         -----------------------------------------
 
@@ -253,6 +256,10 @@ public :
    void SetRadius(int radius);///< Set the radius
    
 
+   int X() const {return x;}
+   int Y() const {return y;}
+   int R() const {return r;}
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output this circle to a stream
 
 };
