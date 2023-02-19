@@ -289,6 +289,14 @@ EagleColor Allegro5Image::GetPixel(int x , int y) {
 
 
 
+void Allegro5Image::PutPixel(int x , int y , EagleColor c) {
+   EAGLE_ASSERT(bmp);
+   /// TODO : Drawing target is (im)plicitly set by user
+   al_put_pixel(x , y , GetAllegroColor(c));
+}
+
+
+
 void ConvertMaskColorToAlphaZero(Allegro5Image* img , EagleColor mask) {
    EAGLE_ASSERT(img);
    ALLEGRO_BITMAP* bmp = img->AllegroBitmap();

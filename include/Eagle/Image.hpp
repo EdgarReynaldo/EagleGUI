@@ -148,6 +148,11 @@ public :
 
    ///< Reads the specified pixel from this image and returns its color
    virtual EagleColor GetPixel(int x , int y)=0;
+   
+   /// writing operations
+   
+   ///< Writes the specified pixel into the image
+   virtual void PutPixel(int x , int y , EagleColor c)=0;
 
    /// Getters
    

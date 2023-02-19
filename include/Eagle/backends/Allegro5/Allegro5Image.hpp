@@ -108,6 +108,9 @@ public :
    /// Get the color of a single pixel
    virtual EagleColor GetPixel(int x , int y);
 
+   /// Write a single pixel
+   virtual void PutPixel(int x , int y , EagleColor c);
+
    ///< Get a reference to the ALLEGRO_BITMAP* used by this image
    ALLEGRO_BITMAP* AllegroBitmap() {return bmp;}
    

@@ -236,7 +236,9 @@ void AnimationBase::SetAnimationPercent(double percent) {
       }
    }
    if (animation_percent >= nloops && old_animation_percent < nloops) {
-      Complete();
+      if (!Repeats()) {
+         Complete();
+      }
    }
 }
 
