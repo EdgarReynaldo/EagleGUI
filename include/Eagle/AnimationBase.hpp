@@ -100,10 +100,15 @@ protected :
 
 public :
    
-   AnimationBase();
-   virtual ~AnimationBase();
+   AnimationBase();///< Base constructor
    
-   void Init(int num_frames , int num_loops , double loop_time , EAGLE_ANIMATION_TYPE play_type = ANIMATION_ONCE_FORWARDS);
+   AnimationBase(const AnimationBase& ab);///< Copy constructor performs deep copy
+   
+   virtual ~AnimationBase();///< Nothing to destroy, virtual for descendants use
+   
+   AnimationBase& operator=(const AnimationBase& a);///< Assignment operator, deep copy
+   
+   void Init(int num_frames , int num_loops , double loop_time , EAGLE_ANIMATION_TYPE play_type = ANIMATION_ONCE_FORWARDS);///< Basic initialization with # frames,loops, loop time and animation type
    
    void ResetAnimation();///< Resets the animation playback to the beginning
 

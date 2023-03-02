@@ -314,6 +314,16 @@ EagleEventSource::~EagleEventSource() {
 
 
 
+EagleEventSource& EagleEventSource::operator=(const EagleEventSource& rhs) {
+   StopBroadcasting();
+   for (LISTENERS::const_iterator it = rhs.listeners.begin() ; it != rhs.listeners.end() ; ++it) {
+      SubscribeListener(*it);
+   }
+   return *this;
+}
+
+
+
 std::vector<EagleEventListener*> EagleEventSource::Listeners() {
    return listeners;
 }
@@ -356,6 +366,16 @@ EagleEventListener::EagleEventListener() :
 
 EagleEventListener::~EagleEventListener() {
    StopListening();
+}
+
+
+
+EagleEventListener& EagleEventListener::operator=(const EagleEventListener& l) {
+   StopListening();
+   for (SOURCES::const_iterator it = l.sources.begin() ; it != l.sources.end() ; ++it) {
+      ListenTo(*it);
+   }
+   return *this;
 }
 
 

@@ -564,7 +564,7 @@ protected :
    typedef std::vector<EagleEventListener*> LISTENERS;
    typedef LISTENERS::iterator LIT;
 
-   LISTENERS listeners;
+   mutable LISTENERS listeners;
 
    LIT FindListener(EagleEventListener* l);
 
@@ -578,6 +578,8 @@ protected :
 public :
    EagleEventSource();
    virtual ~EagleEventSource();
+   
+   EagleEventSource& operator=(const EagleEventSource& rhs);
 
    virtual void EmitEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);///< Emit an event from this source on the specified thread
 
@@ -598,7 +600,7 @@ private :
    typedef std::vector<EagleEventSource*> SOURCES;
    typedef SOURCES::iterator SIT;
    
-   SOURCES sources;
+   mutable SOURCES sources;
 
    SIT FindSource(EagleEventSource* s);
 
@@ -608,6 +610,9 @@ protected :
 public :
    EagleEventListener();
    virtual ~EagleEventListener();
+   
+   EagleEventListener& operator=(const EagleEventListener& l);
+   
 
    ///< Virtual function for responding to events. Override if you need different behavior
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD)=0;

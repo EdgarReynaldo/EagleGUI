@@ -127,6 +127,26 @@ AnimationBase::AnimationBase() :
 }
 
 
+/*! \brief Copy constructor
+ *       Initializes the object with a deep copy of the right hand side using operator=
+ */
+AnimationBase::AnimationBase(const AnimationBase& ab) :
+      EagleEventSource(),
+      animation_percent(0.0),
+      normal_percent(0.0),
+      animation_time(0.0),
+      loop_duration(1.0),
+      animation_type(ANIMATION_ONCE_FORWARDS),
+      nloops(1),
+      loop_num(0),
+      nframes(1),
+      frame_num(0)
+{
+   *this = ab;
+}
+
+
+
 /*! \brief Empty destructor.
  * 
  */
@@ -134,6 +154,22 @@ AnimationBase::AnimationBase() :
 AnimationBase::~AnimationBase() 
 {
    
+}
+
+
+
+AnimationBase& AnimationBase::operator=(const AnimationBase& a) {
+///   EagleEventSource::operator=(a);/// This does not work as expected. It breaks messaging
+   animation_percent = a.animation_percent;
+   normal_percent = a.normal_percent;
+   animation_time = a.animation_time;
+   loop_duration = a.loop_duration;
+   animation_type = a.animation_type;
+   nloops = a.nloops;
+   loop_num = a.loop_num;
+   nframes = a.nframes;
+   frame_num = a.frame_num;
+   return *this;
 }
 
 
