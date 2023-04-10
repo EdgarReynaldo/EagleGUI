@@ -35,7 +35,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   EagleFont* font = win->GetFont("Verdana.ttf" , -20);
+   EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
    
    EAGLE_ASSERT(font && font->Valid());
    
@@ -154,11 +154,11 @@ int main(int argc , char** argv) {
    widgets[7] = sliders[1];
    widgets[8] = sliders[2];
 
-   EagleFont* verdana = win->GetFont("Verdana.ttf" , -8);
-   EagleFont* verdana12 = win->GetFont("Verdana.ttf" , -12);
+//   EagleFont* verdana = win->GetFont("Verdana.ttf" , -8);
+//   EagleFont* verdana12 = win->GetFont("Verdana.ttf" , -12);
    
-   EAGLE_ASSERT(verdana && verdana->Valid());
-   EAGLE_ASSERT(verdana12 && verdana12->Valid());
+//   EAGLE_ASSERT(verdana && verdana->Valid());
+//   EAGLE_ASSERT(verdana12 && verdana12->Valid());
    
    
    GridLayout rgrids[6];
