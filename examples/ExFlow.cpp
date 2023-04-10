@@ -318,8 +318,12 @@ int main(int argc , char** argv) {
             (void)msg;
          }
          if (e.type == EAGLE_EVENT_DISPLAY_RESIZE) {
-            gui.SetWidgetArea(Rectangle(0 , 0 , e.window->Width() , e.window->Height()) , false);
             win->AcknowledgeResize();
+            EagleLog() << "DISPLAY " << e.display.width << " " << e.display.height << std::endl;
+            EagleLog() << "WINDOW " << e.window->Width() << " " << e.window->Height() << std::endl;
+            
+            gui.SetWidgetArea(Rectangle(0 , 0 , e.window->Width() , e.window->Height()) , false);
+            redraw = true;
          }
          if (e.type == EAGLE_EVENT_WIDGET) {
             if (e.source == &radios[0]) {
