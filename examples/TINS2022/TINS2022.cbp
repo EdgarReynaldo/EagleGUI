@@ -83,7 +83,6 @@
 		<Linker>
 			<Add directory="E:/usr64/lib" />
 		</Linker>
-		<Unit filename="../ExMenu.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

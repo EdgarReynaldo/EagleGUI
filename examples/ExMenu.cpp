@@ -39,7 +39,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   EagleFont* font = win->GetFont("Verdana.ttf" , -20);
+   EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
    
    EAGLE_ASSERT(font && font->Valid());
    
