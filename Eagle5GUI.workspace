@@ -14,5 +14,7 @@
 		<Project filename="../../../usrclang64/krampus22/KH22/KrampusHack2022.cbp" />
 		<Project filename="examples/ExFlow.cbp" />
 		<Project filename="../../projects/Spiraloid2/Spiraloid2.cbp" />
+		<Project filename="examples/ExFileSystem.cbp" />
+		<Project filename="examples/ExMenu.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
