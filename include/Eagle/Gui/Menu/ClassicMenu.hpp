@@ -63,6 +63,8 @@ public :
 
    void CloseOtherMenus(ClassicMenuItemLayout* exclude);///< Close all other sub menus except 'exclude'
 
+   std::vector<ClassicMenuItemLayout*> MItems() {return mitems;}
+   
 };
 
 
