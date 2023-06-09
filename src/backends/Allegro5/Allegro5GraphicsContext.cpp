@@ -42,6 +42,20 @@ ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float 
 
 
 
+void Allegro5GraphicsContext::ClearImageSet(EagleGraphicsContext* newowner) {
+   (void)newowner;/// TODO : DO SOMETHING
+   EagleGraphicsContext::ClearImageSet(newowner);
+}
+
+
+
+void Allegro5GraphicsContext::ClearNPSet(EagleGraphicsContext* newowner) {
+   (void)newowner;/// TODO : DO SOMETHING
+   EagleGraphicsContext::ClearNPSet(newowner);
+}
+
+
+
 void Allegro5GraphicsContext::ResetBackBuffer() {
    realbackbuffer.ReferenceBitmap(al_get_backbuffer(display));
    backbuffer = &realbackbuffer;
@@ -901,6 +915,41 @@ Transformer* Allegro5GraphicsContext::GetTransformer() {
 
 void Allegro5GraphicsContext::MakeDisplayCurrent() {
    ResetBackBuffer();
+}
+
+
+
+void Allegro5GraphicsContext::AdoptBitmaps(EagleGraphicsContext* window) {
+
+   MakeDisplayCurrent();
+
+   LockMutex(window_mutex);
+
+   EagleGraphicsContext::NPSET wnpset = window->NPSet();
+   window->ClearNPSet(this);
+   EagleGraphicsContext::IMAGESET wimgset = window->ImageSet();
+   window->ClearImageSet(this);
+
+   UnLockMutex(window_mutex);
+
+
+   EagleGraphicsContext::ISIT image = wimgset.begin();
+   while (image != wimgset.end()) {
+      CloneImage(*image , (*image)->ShortName());
+      ++image;
+   }
+
+   EagleGraphicsContext::NPSIT np = wnpset.begin();
+   while (np != wnpset.end()) {
+      NinePatch* pnp = *np;
+      EagleImage* parent = pnp->srcimage;
+      CloneImage(parent , parent->ShortName());
+      CreateNinePatchSubImages(parent , pnp->srcarea);
+      ++np;
+   }
+
+   window->FreeAllNinePatch();
+   window->FreeAllImages();
 }
 
 

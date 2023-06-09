@@ -174,7 +174,7 @@ bool Allegro5Image::Allocate(int width , int height , IMAGE_TYPE type) {
    }
    bmp = al_create_bitmap(width , height);
    if (!bmp) {
-      EagleError() << "Failed to create " << width << " x " << height << " bitmap." << std::endl;
+      EagleError() << "Failed to create " << width << " x " << height << " " << (type==VIDEO_IMAGE?"VIDEO":"MEMORY") << " bitmap." << std::endl;
    }
    else {
       pcontext = GetAllegro5WindowManager()->GetAssociatedContext(al_get_current_display());

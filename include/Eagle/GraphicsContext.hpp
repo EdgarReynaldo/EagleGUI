@@ -210,12 +210,21 @@ class FontManager;
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
 
-protected :
+public :
    typedef std::unordered_set<EagleImage*> IMAGESET;
    typedef std::unordered_set<NinePatch*> NPSET;
 
    typedef IMAGESET::iterator ISIT;
    typedef NPSET::iterator NPSIT;
+
+
+
+   virtual void ClearImageSet(EagleGraphicsContext* newowner);
+   virtual void ClearNPSet(EagleGraphicsContext* newowner);
+   
+   const IMAGESET& ImageSet() {return imageset;}
+   const NPSET& NPSet() {return npset;}
+protected :
 
    int newx;
    int newy;
@@ -584,22 +593,13 @@ public :
 
    /// Image creation / loading / sub division - these images are owned by the window
 
-   ///< Create an empty image
-   virtual EagleImage* EmptyImage(std::string iname = "Nemo")=0;
+   virtual EagleImage* EmptyImage(std::string iname = "Nemo")=0;///< Create an empty image
+   virtual EagleImage* CloneImage(EagleImage* clone , std::string iname = "Nemo")=0;///< Clone an image
+   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;///< Create a sub image from an existing EagleImage
+   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;///< Create an image of the specified width, height, @ref IMAGE_TYPE , and name
 
-   ///< Clone an image
-   virtual EagleImage* CloneImage(EagleImage* clone , std::string iname = "Nemo")=0;
-   
-   ///< Create a sub image from an existing EagleImage
-   virtual EagleImage* CreateSubImage(EagleImage* parent , int x , int y , int width , int height , std::string iname = "Nemo")=0;
-
-   ///< Create an image of the specified width, height, @ref IMAGE_TYPE , and name
-   virtual EagleImage* CreateImage(int width , int height , IMAGE_TYPE type = VIDEO_IMAGE , std::string iname = "Nemo")=0;
-
-   ///< Load an image from file using the specified @ref IMAGE_TYPE
-   virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;
-
-   virtual bool SaveImage(EagleImage* image , std::string file)=0;
+   virtual EagleImage* LoadImageFromFile(std::string file , IMAGE_TYPE type = VIDEO_IMAGE)=0;///< Load an image from file using the specified @ref IMAGE_TYPE
+   virtual bool SaveImage(EagleImage* image , std::string file)=0;///< Save an image as the specified file type, returns true on success
    
    void                FreeImage(EagleImage* img);///< Frees any references this window has to the image and destroys it
    void                FreeAllImages();///< Frees all images owned by this display
@@ -692,6 +692,8 @@ public :
 
    /// The display must be current to draw to it, when dealing with multiple windows
    virtual void MakeDisplayCurrent()=0;///< Pure virtual function to make the display current in multi threaded applications
+   virtual void AdoptBitmaps(EagleGraphicsContext* window)=0;///< Pure virtual function to make all textures compatible with the current display
+   
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    

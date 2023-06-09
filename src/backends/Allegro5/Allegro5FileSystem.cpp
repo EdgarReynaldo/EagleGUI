@@ -56,11 +56,21 @@ std::shared_ptr<Folder> Allegro5FileSystem::ReadFolderInfo(ALLEGRO_FS_ENTRY* f) 
 
 
 std::shared_ptr<File> Allegro5FileSystem::ReadFileInfo(ALLEGRO_FS_ENTRY* f) {
+
    if (!f) {return 0;}
    if (!al_fs_entry_exists(f)) {
       return 0;
    }
-   return std::shared_ptr<File>(new File(GetFSInfo(f)));
+   
+   FSInfo fsi = GetFSInfo(f);
+   FilePath path = fsi.Path();
+   File* newfile = new File(fsi);
+   if (newfile->IsArchive()) {
+      delete newfile;
+      newfile = new ArchiveFile(fsi);
+   }
+   
+   return std::shared_ptr<File>(newfile);
 }
 
 
@@ -106,7 +116,7 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
          FSInfo info = GetFSInfo(f);
          if (info.Mode().IsFile()) {
             std::string ext = GetFileExt(GetFileName(info.Path()));
-            if (reslib->DeduceResourceType(ext) == RT_ARCHIVE) {
+            if (ResourceLibrary::GetResourceType(ext) == RT_ARCHIVE) {
                RegisterArchiveFile(folder , std::shared_ptr<ArchiveFile>(new ArchiveFile(info)));
             }
             else {

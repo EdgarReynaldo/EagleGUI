@@ -121,6 +121,7 @@ class EagleImage;
 
 class NinePatch {
 
+public :
    friend EagleGraphicsContext;
 
    EagleGraphicsContext* window;///< Our graphics context window

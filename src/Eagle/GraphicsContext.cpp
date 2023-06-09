@@ -253,6 +253,20 @@ void EagleDrawingInfo::ClearSettings() {
 
 
 
+void EagleGraphicsContext::ClearImageSet(EagleGraphicsContext* newowner) {
+   /// TODO : FUTURE DO SOMETHING WITH THE OLD IMAGES
+   imageset.clear();
+}
+
+
+
+void EagleGraphicsContext::ClearNPSet(EagleGraphicsContext* newowner) {
+   /// TODO : FUTURE DO SOMETHING WITH THE OLD NPS
+   npset.clear();
+}
+
+
+
 /**! @fn EagleGraphicsContext::EagleGraphicsContext <std::string , std::string>
  *   
  *   NOTE : derived class needs to instantiate mp_manager

@@ -147,7 +147,7 @@ void ConfigLine::SetValue(std::string v) {
 
 
 
-std::string ConfigLine::Line() {
+std::string ConfigLine::Line() const {
    if (comment || spacer) {
       return line;
    }
@@ -475,12 +475,10 @@ void ConfigFile::Absorb(const ConfigFile& c) {
 
 
 
-ConfigSection* ConfigFile::FindSection(std::string section) {
-   SMIT it = sectionmap.find(section);
-   if (it != sectionmap.end()) {
-      return &(it->second);
-   }
-   return 0;
+const ConfigSection* ConfigFile::FindSection(std::string section) const {
+   SECTIONMAP::const_iterator it = sectionmap.find(section);
+   if (it == sectionmap.end()) {return 0;}
+   return &it->second;
 }
 
 

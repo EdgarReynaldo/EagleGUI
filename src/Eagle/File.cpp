@@ -255,4 +255,12 @@ void File::SetParent(Folder* parent_folder) {
 
 
 
+bool File::IsArchive() {
+   if ((fext.compare("zip") == 0) ||
+       (fext.compare("7z") == 0) ||
+       (fext.compare("tar") == 0)) {
+      return true;
+   }
+   return false;
+}
 

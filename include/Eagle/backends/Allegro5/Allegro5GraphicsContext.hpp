@@ -63,6 +63,9 @@ EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);///< Get a display event from an AL
 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
 
+   virtual void ClearImageSet(EagleGraphicsContext* newowner) override;
+   virtual void ClearNPSet(EagleGraphicsContext* newowner) override;
+
 private :
 
    ALLEGRO_DISPLAY* display;
@@ -233,6 +236,10 @@ public :
    /// Window functions
    
    virtual void MakeDisplayCurrent();
+   virtual void AdoptBitmaps(EagleGraphicsContext* window);
+   
+   
+   
    virtual void ShowWindow();
    virtual void HideWindow();
 

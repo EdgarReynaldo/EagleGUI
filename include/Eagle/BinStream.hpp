@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -28,38 +28,54 @@
 
 
 
-extern const unsigned int endian_value;
-extern const bool big_endian;
-extern const bool little_endian;
-
 #include <vector>
 #include <string>
 #include <cstring>
+#include "Eagle/Endian.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Exception.hpp"
+#include "Eagle/File.hpp"
+
+
 
 
 class BinStream {
-   unsigned int offset;
+   mutable uint64_t roffset;
+   uint64_t woffset;
    
-   std::vector<unsigned char> bytes;
-   
-   void PushData(const void* dat , unsigned int sz , bool reverse);
-   
-   template <class D>
-   void PopDataFront(D& data , bool reverse);
+   std::vector<uint8_t> bytes;
 
 public :
 
-   const void* Data() const {return &bytes[0];}
-   unsigned int Size() const {return bytes.size();}
-
-   void Rewind() {offset = 0;}
-   bool Seek(unsigned int bytenum);
+   const uint8_t* Data() const;
+   uint64_t Size() const;
    
-   void Clear() {bytes.clear();}
+   bool SaveDataToFile(FilePath fp) const ;
+   bool ReadDataFromFile(FilePath fp);
+   
+   void RewindReadHead() const;
+   void RewindWriteHead();
 
-   unsigned int Offset() {return offset;}
+   bool SeekReadHead(uint64_t bytenum) const;
+   bool SeekWriteHead(uint64_t bytenum);
+   
+   void Clear();
+   void Resize(uint64_t nbytes);
+
+   uint64_t ReadOffset() const;
+   uint64_t WriteOffset() const;
+   
+   uint64_t ReadData(uint8_t* dest , uint32_t sz , bool reverse) const;/// returns number of bytes read or zero on error
+   uint64_t WriteData(const uint8_t* src , uint32_t sz , bool reverse);/// returns number of bytes written or zero on error
+
+   template <class D>
+   uint64_t ReadData(D& data , bool reverse) const;
+   template <class D>
+   uint64_t WriteData(const D& data , bool reverse);
+
+   
+   template <class D>
+   const BinStream& operator>>(D& data) const;
 
    template <class T>
    BinStream& operator<<(const T* t);
@@ -67,41 +83,46 @@ public :
    template <class T>
    BinStream& operator<<(const T& t);
 
-   
-   template <class D>
-   BinStream& operator>>(D& data);
 
-//   template <>
-//   BinStream& operator>>(std::string& str);
 };
 
 
 
 
 template <class D>
-BinStream& BinStream::operator>>(D& data) {
-   PopDataFront(data , big_endian);
+uint64_t BinStream::ReadData(D& data , bool reverse) const {
+   return ReadData((uint8_t*)&data , sizeof(D) , reverse);
+}
+
+
+
+template <class D>
+uint64_t BinStream::WriteData(const D& data , bool reverse) {
+   return WriteData(data , reverse);
+}
+
+
+
+template <class D>
+const BinStream& BinStream::operator>>(D& data) const {
+   bool dataread = sizeof(D) == ReadData(data , big_endian);
+   EAGLE_ASSERT(dataread);
+   if (!dataread) {
+      EagleError() << "Failed to read " << sizeof(D) << " bytes from bin stream." << std::endl;
+   }
    return *this;
 }
 
 
 
 template <class D>
-void BinStream::PopDataFront(D& data , bool reverse) {
-   
-   if (sizeof(data) + offset > Size()) {
-      throw EagleException(StringPrintF("Tried to read past end of read buffer!"));
+BinStream& BinStream::operator<<(const D& data) {
+   const bool datawritten = sizeof(D) == WriteData(data , big_endian);
+   EAGLE_ASSERT(datawritten);
+   if (!datawritten) {
+      EagleError() << "Failed to write " << sizeof(D) << " bytes to bin stream." << std::endl;
    }
-   
-   if (!reverse) {
-      memcpy((void*)&data , &bytes[offset] , sizeof(data));
-   }
-   else {
-      for (unsigned int i = 1 ; i <= sizeof(data) ; ++i) {
-         *(unsigned char*)(&data) = bytes[bytes.size() - i];
-      }
-   }
-   offset += sizeof(data);
+   return *this;
 }
 
 
@@ -114,14 +135,10 @@ BinStream& BinStream::operator<<(const T* t) {
 
 
 
-template <class T>
-BinStream& BinStream::operator<<(const T& t) {
-   this->PushData((const void*)t , sizeof(t) , big_endian);
-   return *this;
-}
-
 template <>
 BinStream& BinStream::operator<<(const char* str);
+
+
 
 template <>
 BinStream& BinStream::operator<<(const std::string& str);

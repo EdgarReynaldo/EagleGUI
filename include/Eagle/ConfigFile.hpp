@@ -75,11 +75,11 @@ public :
    std::string Key() const {return key;}///< Get the key string
    std::string& Value() {return value;}///< Get a reference to the value string
    const std::string& Value() const {return value;}///< Get a const reference to the value string
-   std::string Line();///< Get a copy of the current line
+   std::string Line() const ;///< Get a copy of the current line
    
-   bool IsComment() {return comment;}///< Returns true if this is a comment line
-   bool IsSpacer() {return spacer;}///< Returns true if this is a spacer line
-   bool IsKeyValuePair() {return !comment && !spacer;}///< Returns true if there is a key and value associated with this line
+   bool IsComment() const      {return comment;}///< Returns true if this is a comment line
+   bool IsSpacer() const       {return spacer;} ///< Returns true if this is a spacer line
+   bool IsKeyValuePair() const {return !comment && !spacer;}///< Returns true if there is a key and value associated with this line
 };
 
 
@@ -166,7 +166,7 @@ public :
    
    void Absorb(const ConfigFile& c);///< Absorb another ConfigFile object, combining this and that
    
-   ConfigSection* FindSection(std::string section);///< Lookup a section by name, may be null
+   const ConfigSection* FindSection(std::string section) const ;///< Lookup a section by name will throw if none
    
    ConfigSection& operator[] (std::string section);///< Get a reference to a config section, if none exists, an empty one is created
    const ConfigSection& operator[] (std::string section) const;///< Like @ref operator[] but will throw if the section does not exist

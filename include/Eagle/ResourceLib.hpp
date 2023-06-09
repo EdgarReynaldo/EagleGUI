@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -34,39 +34,75 @@
 
 #include "Eagle/Resources.hpp"
 #include "Eagle/SharedMemory.hpp"
+#include "Eagle/ConfigFile.hpp"
+
 
 
 
 class ResourceLibrary {
 public :
-   typedef std::map<RESOURCEID , SHAREDOBJECT<ResourceBase> > RESMAP;
+   typedef std::map<RESOURCEID , ResourceBase* > RESMAP;/// Resource ids are unique and we can track our memory with thme
    typedef RESMAP::iterator RMIT;
+
+   typedef std::map<std::string , RESOURCEID> LOOKUPMAP;/// This is for getting a resource from a path, name, or string
+   typedef LOOKUPMAP::iterator LMIT;
+
    typedef std::map<RESOURCE_TYPE , std::set<std::string> > TYPEMAP;
 
+   
 protected :
    RESMAP resmap;
-   TYPEMAP typemap;
+   LOOKUPMAP lookupmap;
+   static TYPEMAP typemap;
 
+   EagleGraphicsContext* window;// optional, if null, memory bitmaps and fonts will be created
+   
+   void RegisterRID(RESOURCEID rid , ResourceBase* resource);
+   void UnregisterRID(RESOURCEID rid);
+   
+   friend class ResourceBase;
+   static ResourceLibrary* ResLib();
+   
 public :
    
-///   ResourceLibrary();
-   ResourceLibrary() :
-         resmap(),
-         typemap()
-   {}
+   ResourceLibrary(EagleGraphicsContext* win = 0);
+
    virtual ~ResourceLibrary();
+
+   void SetWindow(EagleGraphicsContext* win);
+   
+   bool LoadResourcesFromConfig(const ConfigFile& cfg);
+   
+   bool LoadFileResource(std::shared_ptr<File> file);
+   bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
+   bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
    
    void FreeResources();
    
-   std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);
+   static std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);
    
-   RESOURCE_TYPE DeduceResourceType(std::string ext);
+   static RESOURCE_TYPE GetResourceType(std::string ext);
 
-   SHAREDOBJECT<ResourceBase> GetResource(RESOURCEID rid);
-
-///   virtual RESOURCEID LoadResourceFromFile(FilePath fp)=0;
-///   virtual RESOURCEID LoadResourceFromMemory(const MemFile* memfile)=0;
+   RESOURCEID LookupResourceID(std::string path);
+   ResourceBase* LookupResourceByID(RESOURCEID rid);
+   
+   ResourceBase* LookupResourceByPath(std::string path);
 };
+
+
+
+
+
+
+/// Trick to force variant return type
+template <class TYPE>
+TYPE* GetTypedResource(ResourceBase* resbase , TYPE** store) {
+   EAGLE_ASSERT(store);
+   *store = dynamic_cast<TYPE*>(resbase);
+   return *store;
+}
+
+
 
 
 

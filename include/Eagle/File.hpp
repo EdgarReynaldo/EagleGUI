@@ -122,6 +122,7 @@ public :
    
    void SetPath(FilePath fp);
    
+   FilePath FPath() {return fpath;}
    std::string Path() {return fpath.Path();}///< Returns the full string path
    bool Exists() {return fexists;}///< True if this path exists
    FSMode Mode() {return fmode;}///< Returns the @ref FSMode
@@ -144,9 +145,9 @@ class ArchiveFile;
 
 class Folder {
 public :
-   typedef std::map<std::string , std::shared_ptr<File>> FILEMAP;
-   typedef std::map<std::string , std::shared_ptr<ArchiveFile>> ARCHIVEMAP;
-   typedef std::map<std::string , std::shared_ptr<Folder>> SUBFOLDERMAP;
+   typedef std::map<std::string , std::shared_ptr<File> > FILEMAP;
+   typedef std::map<std::string , std::shared_ptr<ArchiveFile> > ARCHIVEMAP;
+   typedef std::map<std::string , std::shared_ptr<Folder> > SUBFOLDERMAP;
 
 protected :
    Folder* parent;
@@ -205,17 +206,21 @@ public :
 
 class File {
 
+   friend class Folder;
+
 protected :
    Folder* parent;
    FSInfo finfo;
    std::string fname;
    std::string fext;
    
+   void SetParent(Folder* parent_folder);///< Sets the parent, for internal use only
+
 public :   
    
    File(FSInfo info);///< Create a file object from an @ref FSInfo object (a path)
    
-   void SetParent(Folder* parent_folder);///< Sets the parent, for internal use only
+   bool IsArchive();
    
    FSInfo Info() {return finfo;}///< Get the @ref FSInfo for this file object
    std::string Name() {return fname;}///< Get the file's name
