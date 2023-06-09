@@ -129,8 +129,11 @@ int main(int argc , char** argv) {
          while (gui.HasMessages()) {
             WidgetMsg msg = gui.TakeNextMessage();
             EagleInfo() << Indenter() << msg << std::endl;
+            if (msg == WidgetMsg(foptions.MItems()[3] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
+               /// file option 4 is quit
+               quit = true;
+            }
          }
-
       }
    }
    return 0;
