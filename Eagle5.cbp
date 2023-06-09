@@ -139,6 +139,7 @@
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
+		<Unit filename="include/Eagle/BinFileStream.hpp" />
 		<Unit filename="include/Eagle/BinStream.hpp" />
 		<Unit filename="include/Eagle/BoxArea.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
@@ -148,6 +149,7 @@
 		<Unit filename="include/Eagle/Conditions.hpp" />
 		<Unit filename="include/Eagle/ConfigFile.hpp" />
 		<Unit filename="include/Eagle/Container.hpp" />
+		<Unit filename="include/Eagle/Endian.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
 		<Unit filename="include/Eagle/Exception.hpp" />
 		<Unit filename="include/Eagle/File.hpp" />
@@ -274,6 +276,7 @@
 		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
+		<Unit filename="src/Eagle/BinFileStream.cpp" />
 		<Unit filename="src/Eagle/BinStream.cpp" />
 		<Unit filename="src/Eagle/BoxArea.cpp" />
 		<Unit filename="src/Eagle/CMakeLists.txt" />
@@ -283,6 +286,7 @@
 		<Unit filename="src/Eagle/Color.cpp" />
 		<Unit filename="src/Eagle/Conditions.cpp" />
 		<Unit filename="src/Eagle/ConfigFile.cpp" />
+		<Unit filename="src/Eagle/Endian.cpp" />
 		<Unit filename="src/Eagle/Events.cpp" />
 		<Unit filename="src/Eagle/Exception.cpp" />
 		<Unit filename="src/Eagle/File.cpp" />
