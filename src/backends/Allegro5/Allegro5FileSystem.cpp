@@ -1,5 +1,24 @@
-
-
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2023+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5FileSystem.cpp
+ * @brief Allegro 5 implementation of the Eagle FileSystem class
+ * 
+ */
 
 #include "allegro5/allegro.h"
 
@@ -56,21 +75,24 @@ std::shared_ptr<Folder> Allegro5FileSystem::ReadFolderInfo(ALLEGRO_FS_ENTRY* f) 
 
 
 std::shared_ptr<File> Allegro5FileSystem::ReadFileInfo(ALLEGRO_FS_ENTRY* f) {
+   EAGLE_ASSERT(f);
+   if (!f) {return 0;}
+   if (!al_fs_entry_exists(f)) {
+      return 0;
+   }
+   return std::shared_ptr<File>(new File(GetFSInfo(f));
+}
 
+
+
+std::shared_ptr<ArchiveFile> Allegro5FileSystem::ReadArchiveInfo(ALLEGRO_FS_ENTRY* f) {
+   EAGLE_ASSERT(f);
    if (!f) {return 0;}
    if (!al_fs_entry_exists(f)) {
       return 0;
    }
    
-   FSInfo fsi = GetFSInfo(f);
-   FilePath path = fsi.Path();
-   File* newfile = new File(fsi);
-   if (newfile->IsArchive()) {
-      delete newfile;
-      newfile = new ArchiveFile(fsi);
-   }
-   
-   return std::shared_ptr<File>(newfile);
+   return std::shared_ptr<ArchiveFile>(new ArchiveFile(GetFSInfo(f)));
 }
 
 
@@ -107,8 +129,6 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
       throw EagleException(StringPrintF(
          "Allegro5FileSystem::ReadDirectoryContents - failed to read %s path '%s'\n" , archive?"archive":"folder" , p.c_str()));
    }
-   
-   ResourceLibrary* reslib = Eagle::EagleLibrary::System("Any")->GetResourceLibrary();
    
    if (al_open_directory(fs)) {
       ALLEGRO_FS_ENTRY* f = 0;
@@ -203,8 +223,13 @@ std::shared_ptr<File> Allegro5FileSystem::ReadFile(FilePath fpath) {
 
 
 std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(FilePath fpath , bool descending) {
+
    std::string path = fpath.Path();
+
    ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
+   EAGLE_ASSERT(f);
+   if (!f) {return std::shared_ptr<Folder>(0);}
+   
    std::shared_ptr<Folder> folder = ReadFolderInfo(f);
    al_destroy_fs_entry(f);
    if (!folder) {
@@ -214,6 +239,28 @@ std::shared_ptr<Folder> Allegro5FileSystem::ReadFolder(FilePath fpath , bool des
       ReadDirectoryContents(folder.get() , descending);
    }
    return folder;
+}
+
+
+
+std::shared_ptr<ArchiveFile> Allegro5FileSystem::ReadArchive(FilePath fpath) {
+
+   std::string path = fpath.Path();
+
+   ALLEGRO_FS_ENTRY* f = al_create_fs_entry(path.c_str());
+   EAGLE_ASSERT(f);
+   if (!f) {return std::shared_ptr<ArchiveFile>(0);}
+
+   std::shared_ptr<ArchiveFile> archive = ReadArchiveInfo(f);
+   al_destroy_fs_entry(f);
+
+   if (!archive) {
+      EagleWarn() << StringPrintF("Failed to read archive '%s' from filesystem.\n" , path.c_str());
+   }
+   else {
+      ReadDirectoryContents(dynamic_cast<Folder*>(archive.get()) , true);
+   }
+   return archive;
 }
 
 

@@ -119,20 +119,13 @@ protected :
    bool LoadFromFilePath();
 
 public :
-   ImageResource();
+   ImageResource(EagleGraphicsContext* win);
    ~ImageResource();
 
    void Free();
 
    EagleImage* GetImage();
 
-   bool SetOurWindow(EagleGraphicsContext* newwin);
-
-
-
-
-   
-   
 };
 
 
@@ -151,13 +144,10 @@ protected :
    bool LoadFromFilePath();
 
 public :
-   FontResource();
+   FontResource(EagleGraphicsContext* win);
    ~FontResource();
    
    void Free();
-   
-   void SetOurWindow(EagleGraphicsContext* newwin);
-   
    
    EagleFont* GetTheFont() {return font;}
 };
@@ -200,14 +190,16 @@ protected :
    
    bool LoadFromFilePath();
    
-   bool LoadFolder(std::shared_ptr<Folder> folder);
-   bool LoadFileResources(std::shared_ptr<Folder> folder);
-   bool LoadSubFolders(std::shared_ptr<Folder> folder);
-   bool LoadNestedArchives(std::shared_ptr<Folder> folder);
+//   bool LoadFolder(std::shared_ptr<Folder> folder);
+//   bool LoadFileResources(std::shared_ptr<Folder> folder);
+//   bool LoadSubFolders(std::shared_ptr<Folder> folder);
+//   bool LoadNestedArchives(std::shared_ptr<Folder> folder);
    
 public :
    ArchiveResource(EagleGraphicsContext* window);
    ~ArchiveResource();
+   
+   std::shared_ptr<Folder> GetContents() {return contents;}
    
    void FreeContents();
    void FreeResources();

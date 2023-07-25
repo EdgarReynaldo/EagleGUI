@@ -55,23 +55,24 @@ enum EAGLE_INIT_STATE {
    EAGLE_AUDIO =      1 << 4, ///< Support audio
    EAGLE_SHADERS =    1 << 5, ///< Support shaders
    EAGLE_PRIMITIVES = 1 << 6, ///< Support primitive drawing
-   EAGLE_KEYBOARD =   1 << 7, ///< Install the keyboard
-   EAGLE_MOUSE =      1 << 8, ///< Install the mouse
-   EAGLE_JOYSTICK =   1 << 9, ///< Install the joystick
-   EAGLE_TOUCH =      1 << 10,///< Install the touch driver
+   EAGLE_DIALOG     = 1 << 7, ///< Support native dialogs
+   EAGLE_KEYBOARD =   1 << 8, ///< Install the keyboard
+   EAGLE_MOUSE =      1 << 9, ///< Install the mouse
+   EAGLE_JOYSTICK =   1 << 10, ///< Install the joystick
+   EAGLE_TOUCH =      1 << 11,///< Install the touch driver
 
    EAGLE_STANDARD_INPUT  = EAGLE_KEYBOARD | EAGLE_MOUSE | EAGLE_JOYSTICK,
    EAGLE_STANDARD_SYSTEM = EAGLE_SYSTEM | EAGLE_IMAGES | EAGLE_FONTS | EAGLE_TTF_FONTS | EAGLE_AUDIO | EAGLE_PRIMITIVES,
    EAGLE_STANDARD_SETUP  = EAGLE_STANDARD_INPUT | EAGLE_STANDARD_SYSTEM,
 
    EAGLE_FULL_INPUT      = EAGLE_STANDARD_INPUT | EAGLE_TOUCH,
-   EAGLE_FULL_SYSTEM     = EAGLE_STANDARD_SYSTEM | EAGLE_SHADERS,
+   EAGLE_FULL_SYSTEM     = EAGLE_STANDARD_SYSTEM | EAGLE_SHADERS | EAGLE_DIALOG,
    EAGLE_FULL_SETUP      = EAGLE_FULL_INPUT | EAGLE_FULL_SYSTEM
 };
 
 
 
-extern const char* const eagle_init_state_strs[12];///< To convert an @ref EAGLE_INIT_STATE bit flag to a string
+extern const char* const eagle_init_state_strs[13];///< To convert an @ref EAGLE_INIT_STATE bit flag to a string
 
 
 
@@ -91,7 +92,7 @@ std::string PrintFailedEagleInitStates(int desired_state , int actual_state);///
 
 class FileSystem;
 class ResourceLibrary;
-
+class DialogManager;
 
 
 /**! @class EagleSystem
@@ -128,6 +129,9 @@ protected :
    
    GraphicsHardware* graphics_hardware;
    
+   DialogManager* dialog_manager;
+   
+   
    
    bool system_up;
    bool images_up;
@@ -136,6 +140,7 @@ protected :
    bool audio_up;
    bool shaders_up;
    bool primitives_up;
+   bool dialog_up;
 
    bool keyboard_running;
    bool mouse_running;
@@ -152,6 +157,7 @@ protected :
    virtual bool PrivateInitializeAudio()=0;
    virtual bool PrivateInitializeShaders()=0;
    virtual bool PrivateInitializePrimitives()=0;
+   virtual bool PrivateInitializeDialog()=0;
 
    virtual bool PrivateInstallKeyboard()=0;
    virtual bool PrivateInstallMouse()=0;
@@ -171,6 +177,7 @@ protected :
    virtual FileSystem*           PrivateCreateFileSystem()=0;
    virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
    virtual GraphicsHardware*     PrivateCreateGraphicsHardware()=0;
+   virtual DialogManager*        PrivateCreateDialogManager()=0;
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
 
@@ -207,6 +214,7 @@ public :
    bool InitializeAudio();
    bool InitializeShaders();
    bool InitializePrimitives();
+   bool InitializeDialog();
 
    virtual bool InitializeAll();// call this in overridden method calls
 
@@ -225,6 +233,7 @@ public :
    bool AudioUp()         {return audio_up;}
    bool ShadersUp()       {return shaders_up;}
    bool PrimitivesUp()    {return primitives_up;}
+   bool DialogUp()        {return dialog_up;}
 
    bool KeyboardRunning() {return keyboard_running;}
    bool MouseRunning()    {return mouse_running;}
@@ -243,6 +252,7 @@ public :
    FileSystem*         GetFileSystem();
    ResourceLibrary*    GetResourceLibrary();
    GraphicsHardware*   GetGraphicsHardware();
+   DialogManager*      GetDialogManager();
 
 	EagleInputHandler*    CreateInputHandler(std::string objname = "Nemo");
 	

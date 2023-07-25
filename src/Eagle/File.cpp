@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -183,14 +183,21 @@ void Folder::PrintContentsAbsolute() {
 
 
 
-void FilePath::SetPathComponents(const std::vector<std::string>& paths) {
-   EAGLE_ASSERT(paths.size() >= 2);
-   drive = paths[0];
-   folderpath.clear();
-   for (int i = 1 ; i < (int)paths.size() - 1 ; ++i) {
-      folderpath.push_back(paths[i]);
+void FilePath::SetPathComponents() {
+   int fstop = 0;
+   if (fullpath.size()) {
+      drive = kablooey[0];
+      if (fullpath[fullpath.size() - 1] != '/') {
+         fstop = kablooey.size() - 1;
+         file = kablooey.back();
+      }
+      else {
+         fstop = kablooey.size();
+      }
+      for (int i = 1 ; i < fstop ; ++i) {
+         folderpath.push_back(kablooey[i]);
+      }
    }
-   file = paths.back();
 }
 
 
@@ -198,15 +205,19 @@ void FilePath::SetPathComponents(const std::vector<std::string>& paths) {
 FilePath::FilePath(std::string path) :
       drive(""),
       folderpath(),
-      file("")
+      file(""),
+      fullpath(""),
+      kablooey()
 {
-   SetPathComponents(GetAbsolutePath(path));
+   kablooey = GetAbsolutePath(path);
+   fullpath = SanitizePath(kablooey);
+   SetPathComponents();
 }
 
 
 
 std::string FilePath::Drive() {
-   return drive + "/";/// DONT USE NativePathSeparator();
+   return drive + "/";/// DONT USE NativePathSeparator
 }
 
 
@@ -214,21 +225,22 @@ std::string FilePath::Drive() {
 std::string FilePath::Folder() {
    std::string f = FilePath::Drive();
    for (unsigned int i = 0 ; i < folderpath.size() ; ++i) {
-      f += folderpath[i] + "/";/// DONT USE NativePathSeparator();
+      f += folderpath[i];
+      f += std::string("/");/// DONT USE NativePathSeparator();
    }
    return f;
 }
 
 
 
-std::string FilePath::Path() {
-   return Folder() + File();
+std::string FilePath::File() {
+   return file;
 }
 
 
 
-std::string FilePath::File() {
-   return file;
+std::string FilePath::Path() {
+   return fullpath;
 }
 
 
@@ -256,11 +268,9 @@ void File::SetParent(Folder* parent_folder) {
 
 
 bool File::IsArchive() {
-   if ((fext.compare("zip") == 0) ||
-       (fext.compare("7z") == 0) ||
-       (fext.compare("tar") == 0)) {
-      return true;
-   }
-   return false;
+   RESOURCE_TYPE rt = ResourceLibrary::GetResourceType(fext);
+   return rt == RT_ARCHIVE;
 }
+
+
 

@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -82,8 +82,14 @@ protected :
    std::string drive;///< Standard 'drive' on windows like "C:" on linux always "" for root
    std::vector<std::string> folderpath;///< Vector of folder names
    std::string file;///< File name
+
+   std::string fullpath;
+
+   std::vector<std::string> kablooey;/// All path components
    
-   void SetPathComponents(const std::vector<std::string>& paths);
+
+
+   void SetPathComponents();
 
 public :
    ///< FilePath constructor. This uses SanitizePath, so it can be as dumb as you want
@@ -196,6 +202,7 @@ protected :
    
 public :
    Drive(FSInfo info) : Folder(info) {}
+   ~Drive() {}
 };
 
 
@@ -219,6 +226,8 @@ protected :
 public :   
    
    File(FSInfo info);///< Create a file object from an @ref FSInfo object (a path)
+   virtual ~File() {}
+   
    
    bool IsArchive();
    

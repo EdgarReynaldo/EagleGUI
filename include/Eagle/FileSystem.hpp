@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -55,7 +55,10 @@ std::vector<std::string> ExplodePath(std::string path);
 ///< Get an absolute path from a relative one, depends on the Current Working Directory...
 std::vector<std::string> GetAbsolutePath(std::string rpath);
 
-///< Sanitize a path by removing all relative directories, and replacing all separators with native ones
+///< Sanitize a vector of strings by adding directory separators as appropriate, shortcut to SanitizePath(GetAbsolutePath(path))
+std::string SanitizePath(std::vector<std::string> abspath);
+
+///< Sanitize a path by removing all relative directories, and replacing all separators with forward slash
 std::string SanitizePath(std::string path);
 
 ///< Get the current directory
@@ -77,7 +80,7 @@ class FileSystem {
 protected :
    std::vector<Drive*> drives;
    
-   bool archive_mounted;
+   bool archive_mounted;/// TODO : This works only for non nested mounts
    FilePath mount_file_path;
    
    
@@ -105,6 +108,10 @@ public :
    ///< Pure virtual function for reading a folder
    virtual std::shared_ptr<Folder> ReadFolder(FilePath path , bool descending = false)=0;
    
+   ///< Pure virtual function for reading an archive
+   virtual std::shared_ptr<ArchiveFile> ReadArchive(FilePath path)=0;
+   
+   
    /// Directory functions
    
    ///< Mount an archive file. Returns true on success
@@ -112,6 +119,13 @@ public :
    
    ///< Unmount the current archive
    virtual void UnmountArchive()=0;
+   
+   ///< Change the working directory
+   virtual bool ChangeFSDirectory(std::string dir)=0;
+
+   ///< Get the current working file system directory
+   virtual std::string CurrentFSDirectory()=0;
+   
 };
 
 

@@ -13,7 +13,7 @@
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 #include "Eagle/backends/Allegro5/Allegro5FileSystem.hpp"
 #include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
-
+#include "Eagle/backends/Allegro5/Allegro5DialogManager.hpp"
 
 
 #include "allegro5/allegro.h"
@@ -23,7 +23,7 @@
 #include "allegro5/allegro_font.h"
 #include "allegro5/allegro_ttf.h"
 #include "allegro5/allegro_primitives.h"
-
+#include "allegro5/allegro_native_dialog.h"
 #include <cstdlib>
 
 
@@ -88,6 +88,14 @@ bool Allegro5System::PrivateInitializeShaders() {
 bool Allegro5System::PrivateInitializePrimitives() {
    bool ret = al_init_primitives_addon();
    if (!ret) {EagleError() << "Allegro 5 failed to initialize primitives addon." << std::endl;}
+   return ret;
+}
+
+
+
+bool Allegro5System::PrivateInitializeDialog() {
+   bool ret = al_init_native_dialog_addon();
+   if (!ret) {EagleError() << "Allegro 5 failed to initialize dialog addon." << std::endl;}
    return ret;
 }
 
@@ -211,6 +219,12 @@ ResourceLibrary* Allegro5System::PrivateCreateResourceLibrary() {
 
 GraphicsHardware* Allegro5System::PrivateCreateGraphicsHardware() {
    return new Allegro5GraphicsHardware();
+}
+
+
+
+DialogManager* Allegro5System::PrivateCreateDialogManager() {
+   return new Allegro5DialogManager();
 }
 
 

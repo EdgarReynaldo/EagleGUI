@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -87,7 +87,7 @@ inline void __cdecl invalid_parameter_handler(const wchar_t *, const wchar_t *, 
 //*/
 
 
-const char* const eagle_init_state_strs[12] = {
+const char* const eagle_init_state_strs[13] = {
    "EAGLE_NOT_INSTALLED",
    "EAGLE_SYSTEM",
    "EAGLE_IMAGES",
@@ -96,6 +96,7 @@ const char* const eagle_init_state_strs[12] = {
    "EAGLE_AUDIO",
    "EAGLE_SHADERS",
    "EAGLE_PRIMITIVES",
+   "EAGLE_DIALOG",
    "EAGLE_KEYBOARD",
    "EAGLE_MOUSE",
    "EAGLE_JOYSTICK",
@@ -107,7 +108,7 @@ const char* const eagle_init_state_strs[12] = {
 std::string PrintEagleInitState(int state) {
    std::stringstream ss;
    if (state) {
-      for (int bitshift = 0 ; bitshift < 11 ; ++bitshift) {
+      for (int bitshift = 0 ; bitshift < 12 ; ++bitshift) {
          int flag = 1 << bitshift;
          ss << ((state & flag)?"+":"-");
          ss << eagle_init_state_strs[bitshift + 1];
@@ -138,7 +139,7 @@ std::string PrintFailedEagleInitStates(int desired_state , int actual_state) {
          return "ALL DESIRED STATES SUCCEEDED TO INITIALIZE";
       }
 
-      for (int bitshift = 0 ; bitshift < 11 ; ++bitshift) {
+      for (int bitshift = 0 ; bitshift < 12 ; ++bitshift) {
          int flag = 1 << bitshift;
 
          if ((desired_state & flag) && !(actual_state & flag)) {
@@ -187,6 +188,7 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    file_system(0),
    resource_library(0),
    graphics_hardware(0),
+   dialog_manager(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -194,6 +196,7 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    audio_up(false),
    shaders_up(false),
    primitives_up(false),
+   dialog_up(false),
    keyboard_running(false),
    mouse_running(false),
    joystick_running(false),
@@ -255,6 +258,7 @@ int EagleSystem::Initialize(int state) {
    if (state & EAGLE_AUDIO)      {InitializeAudio();}
    if (state & EAGLE_SHADERS)    {InitializeShaders();}
    if (state & EAGLE_PRIMITIVES) {InitializePrimitives();}
+   if (state & EAGLE_DIALOG)     {InitializeDialog();}
 
    if (state & EAGLE_KEYBOARD)   {InstallKeyboard();}
    if (state & EAGLE_MOUSE)      {InstallMouse();}
@@ -310,6 +314,7 @@ bool EagleSystem::FinalizeSystem() {
    if (!file_system)        {file_system        = PrivateCreateFileSystem();}
    if (!resource_library)   {resource_library   = PrivateCreateResourceLibrary();}
    if (!graphics_hardware)  {graphics_hardware  = PrivateCreateGraphicsHardware();}
+   if (!dialog_manager)     {dialog_manager     = PrivateCreateDialogManager();}
 
    system_up = (system_up && input_handler && system_timer && system_queue && system_clipboard && window_manager);
 
@@ -408,6 +413,19 @@ bool EagleSystem::InitializePrimitives() {
       EagleInfo() << "Eagle : Initialized primitives." << std::endl;
    }
    return primitives_up;
+}
+
+
+
+bool EagleSystem::InitializeDialog() {
+   dialog_up = PrivateInitializeDialog();
+   if (!dialog_up) {
+      EagleError() << "Eagle : Failed to initilialize native dialogs." << std::endl;
+   }
+   else {
+      EagleInfo() << "Eagle : Initialized native dialogs." << std::endl;
+   }
+   return dialog_up;
 }
 
 
@@ -637,6 +655,15 @@ GraphicsHardware* EagleSystem::GetGraphicsHardware() {
       graphics_hardware = PrivateCreateGraphicsHardware();
    }
    return graphics_hardware;
+}
+
+
+
+DialogManager* EagleSystem::GetDialogManager() {
+   if (!dialog_manager) {
+      dialog_manager = PrivateCreateDialogManager();
+   }
+   return dialog_manager;
 }
 
 

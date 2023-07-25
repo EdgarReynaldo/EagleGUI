@@ -82,6 +82,7 @@ public :
    
    void Toggle();
    void Activate();
+   void Deactivate();
    bool HasSubMenu();
    void OpenSubMenu();
    void CloseSubMenu();

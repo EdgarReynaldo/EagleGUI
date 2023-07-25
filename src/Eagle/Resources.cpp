@@ -108,11 +108,13 @@ bool ImageResource::LoadFromFilePath() {
 
 
 
-ImageResource::ImageResource() :
+ImageResource::ImageResource(EagleGraphicsContext* win) :
       ResourceBase(RT_IMAGE),
-      window(0),
+      window(win),
       image(0)
-{}
+{
+   EAGLE_ASSERT(win);
+}
 
 
 
@@ -138,18 +140,6 @@ EagleImage* ImageResource::GetImage() {
 
 
 
-bool ImageResource::SetOurWindow(EagleGraphicsContext* newwin) {
-   Free();
-   window = newwin;
-   if ((filepath.Path().size() > 0) && LoadFromFilePath()) {
-      return true;
-   }
-   return false;
-}
-
-
-
-
 /// -------------------- FontResource ------------------------
 
 
@@ -161,12 +151,14 @@ bool FontResource::LoadFromFilePath() {
 
 
 
-FontResource::FontResource() :
+FontResource::FontResource(EagleGraphicsContext* win) :
       ResourceBase(RT_FONT),
-      window(0),
+      window(win),
       font(0),
       pixelheight(-20)
-{}
+{
+   EAGLE_ASSERT(win);
+}
 
 
 
@@ -181,13 +173,6 @@ void FontResource::Free() {
       window->FreeFont(font);
       font = 0;
    }
-}
-
-
-
-void FontResource::SetOurWindow(EagleGraphicsContext* newwin) {
-   Free();
-   window = newwin;
 }
 
 
@@ -233,10 +218,10 @@ bool ArchiveResource::LoadFromFilePath() {
 
       fs->MountArchive(filepath);/// This opens the archive for reading as a directory
 
-      contents = fs->ReadFolder(FilePath(".") , true);/// Get the folders and files in the archive
+      contents = fs->ReadFolder(filepath , true);/// Get the folders and files in the archive
 
       /// Recursively load contents here
-      folderloaded = LoadFolder(contents);
+///      folderloaded = LoadFolder(contents);/** Leave loading to resource library */
       
       fs->UnmountArchive();
    }
@@ -244,7 +229,7 @@ bool ArchiveResource::LoadFromFilePath() {
 }
       
       
-
+/**
 bool ArchiveResource::LoadFolder(std::shared_ptr<Folder> folder) {
    bool files = LoadFileResources(folder);
    bool folders = LoadSubFolders(folder);
@@ -391,7 +376,7 @@ bool ArchiveResource::LoadNestedArchives(std::shared_ptr<Folder> folder) {
    return success;
 }
 
-
+*/
 
 ArchiveResource::ArchiveResource(EagleGraphicsContext* window) :
       ResourceBase(RT_ARCHIVE),

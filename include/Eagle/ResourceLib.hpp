@@ -77,6 +77,8 @@ public :
    bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
    bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
    
+   void FreeResource(RESOURCEID rid);
+   
    void FreeResources();
    
    static std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);

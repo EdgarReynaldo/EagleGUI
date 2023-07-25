@@ -50,6 +50,7 @@ private :
    virtual bool PrivateInitializeAudio();
    virtual bool PrivateInitializeShaders();
    virtual bool PrivateInitializePrimitives();
+   virtual bool PrivateInitializeDialog();
 
    virtual bool PrivateInstallKeyboard();
    virtual bool PrivateInstallMouse();
@@ -69,7 +70,8 @@ private :
    FileSystem*           PrivateCreateFileSystem();
    ResourceLibrary*      PrivateCreateResourceLibrary();
    GraphicsHardware*     PrivateCreateGraphicsHardware();
-
+   DialogManager*        PrivateCreateDialogManager();
+   
    friend class EagleLibrary;
 
    static EagleSystem* CreateAllegro5System();

@@ -87,7 +87,7 @@ ResourceLibrary::ResourceLibrary(EagleGraphicsContext* win) :
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_VIDEO   , {"ogv"}));
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_ARCHIVE , {"zip" , "7z" , "tar"}));
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_BINFILE , {"dat" , "bin"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE, {"txt"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE, {"txt" , "log"}));
    
    SetWindow(win);
 }
@@ -198,18 +198,10 @@ bool ResourceLibrary::LoadFileResource(std::shared_ptr<File> file) {
    if (restype > RT_UNKNOWN && restype < NUM_RT_TYPES) {
       switch(restype) {
       case RT_IMAGE :
-         {
-            ImageResource* ires = new ImageResource();
-            ires->SetOurWindow(window);
-            res = ires;
-         }
+         res = new ImageResource(window);
          break;
       case RT_FONT :
-         {
-            FontResource* fres = new FontResource();
-            fres->SetOurWindow(window);
-            res = fres;
-         }
+         res = new FontResource(window);
          break;
       case RT_AUDIO :
          res = new AudioResource();
@@ -218,7 +210,7 @@ bool ResourceLibrary::LoadFileResource(std::shared_ptr<File> file) {
          res = new VideoResource();
          break;
       case RT_ARCHIVE :
-         EAGLE_ASSERT(restype != RT_ARCHIVE);/// We don't treat archives like regular files, they are dealt with separately
+         res = new ArchiveResource(window);
          break;
       case RT_BINFILE :
          res = new BinaryResource();
@@ -339,6 +331,15 @@ bool ResourceLibrary::LoadArchiveResource(std::shared_ptr<ArchiveFile> archive) 
       fs->UnmountArchive();
    }
    return success;
+}
+
+
+
+void ResourceLibrary::FreeResource(RESOURCEID rid) {
+   if (resmap[rid]) {
+      delete resmap[rid];
+      resmap[rid] = 0;
+   }
 }
 
 

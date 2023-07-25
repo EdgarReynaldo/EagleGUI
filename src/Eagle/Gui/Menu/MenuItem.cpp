@@ -188,6 +188,12 @@ void ClassicMenuItemLayout::Activate() {
 
 
 
+void ClassicMenuItemLayout::Deactivate() {
+   menu_button.get()->SetButtonState(false , true , false);
+}
+
+
+
 bool ClassicMenuItemLayout::HasSubMenu() {
    return (bool)submenu;
 }

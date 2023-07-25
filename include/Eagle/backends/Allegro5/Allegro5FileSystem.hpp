@@ -46,6 +46,7 @@ class Allegro5FileSystem : public FileSystem {
 protected :
    std::shared_ptr<Folder> ReadFolderInfo(ALLEGRO_FS_ENTRY* f);
    std::shared_ptr<File> ReadFileInfo(ALLEGRO_FS_ENTRY* f);
+   std::shared_ptr<ArchiveFile> ReadArchiveInfo(ALLEGRO_FS_ENTRY* f);
 
    virtual void ReadDirectoryContents(Folder* folder , bool descending = false);
    
@@ -62,8 +63,13 @@ public :
     *   @brief Get a @ref Folder for a path
     *   @param descending Whether or not to read this folder recursively descending into sub-directories
     */
-   virtual std::shared_ptr<Folder> ReadFolder(FilePath path , bool descending = false);
+   virtual std::shared_ptr<Folder> ReadFolder(FilePath fpath , bool descending = false);
 
+   /**! @fn ReadArchive <FilePath>
+    *   @brief Get an @ref ArchiveFile for a file path
+    */
+   virtual std::shared_ptr<ArchiveFile> ReadArchive(FilePath fpath);
+   
    ///< Mount an archive file using the given file path
    virtual bool MountArchive(FilePath fp);
    
