@@ -3,13 +3,7 @@
 
 #include "Eagle.hpp"
 #include "Eagle/backends/Allegro5Backend.hpp"
-#include "allegro5/allegro.h"
-#include "allegro5/allegro_native_dialog.h"
-
-
-
-#include "Eagle/Gui/Menu/SimpleMenu.hpp"
-
+#include "physfs.h"
 
 
 void PipeToEagleLog(const char* str) {
@@ -23,6 +17,8 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
+   PHYSFS_init(argv[0]);
+   
    al_set_config_value(al_get_system_config() , "trace" , "level" , "error");
    
    al_register_trace_handler(PipeToEagleLog);
@@ -35,23 +31,18 @@ int main(int argc , char** argv) {
       EagleWarn() << "Some subsystems not initialized. Proceeding" << std::endl;
    }
    
+   FileSystem* fsys = sys->GetFileSystem();
+   
    int sw = 800;
    int sh = 600;
-   
-   bool dialogs = al_init_native_dialog_addon();
-   if (!al_is_native_dialog_addon_initialized()) {
-      EagleCritical() << "Failed to initialize the dialog addon." << std::endl;
-   }
-   if (dialogs) {
-      EagleInfo() << "Allegro native dialog addon initialized" << std::endl;
-   }
-   
-   
    
    EagleGraphicsContext* win = sys->CreateGraphicsContext("Main Window" , sw , sh , EAGLE_OPENGL | EAGLE_WINDOWED | EAGLE_RESIZABLE);
    
    EAGLE_ASSERT(win && win->Valid());
    
+   
+   
+   /** GLOBAL RESOURCES */
    EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
    
    EAGLE_ASSERT(font && font->Valid());
@@ -59,7 +50,9 @@ int main(int argc , char** argv) {
    EagleImage* checkbox_down = win->LoadImageFromFile("Data/Images/Checkbox_Checked.png");
    EagleImage* checkbox_up = win->LoadImageFromFile("Data/Images/Checkbox_Unchecked.png");
    
+   EAGLE_ASSERT(checkbox_down && checkbox_up);
    
+   /**     GUI SETUP     */
    WidgetHandler gui(win , "GUI" , "Example GUI");
    
    gui.SetupBuffer(sw , sh , win);
@@ -102,14 +95,64 @@ int main(int argc , char** argv) {
    
 //   EagleInfo() << gui << std::endl << std::endl;
    
+   /** RESOURCE_LIBRARY DEMO */
+
+   ResourceLibrary* reslib = sys->GetResourceLibrary();
+   reslib->SetWindow(win);
+   RESOURCEID rid = BADRESOURCEID;
+   ResourceBase* rb = 0;
+   RESOURCE_TYPE rt = RT_UNKNOWN;
+
+   TextResource* textres = 0;
+   ImageResource* ires = 0;
+   FontResource* fres = 0;
+   ArchiveResource* arcres = 0;
+   
+   DialogManager* dman = sys->GetDialogManager();
+   
    sys->GetSystemTimer()->Start();
    
-   bool show = true;
+   bool shown = true;
    
    bool quit = false;
    bool redraw = true;
    while (!quit) {
       if (redraw) {
+         
+         
+         if (rb) {
+            win->SetDrawingTarget(gui.BackgroundBitmap());
+            win->Clear(EagleColor(0,0,0));
+            switch (rt) {
+            case RT_TEXTFILE :
+               textres = dynamic_cast<TextResource*>(rb);
+               win->DrawMultiLineTextString(font , textres->FileText() , 25 , 50 , EagleColor(255,255,255) , font->Height() , HALIGN_LEFT , VALIGN_TOP);
+               break;
+            case RT_IMAGE :
+               ires = dynamic_cast<ImageResource*>(rb);
+               win->DrawImageFit(ires->GetImage() , Rectangle(300,225,200,150));
+               win->DrawTextString(font , "Preview" , 300 , 200 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
+               break;
+            case RT_FONT :
+               fres = dynamic_cast<FontResource*>(rb);
+               win->DrawTextString(fres->GetTheFont() , "Example Text" , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+               break;
+            case RT_ARCHIVE :
+               if (!shown) {
+                  arcres = dynamic_cast<ArchiveResource*>(rb);
+                  std::shared_ptr<Folder> folder = arcres->GetContents();
+                  folder.get()->PrintContents();
+                  shown = true;
+               }
+               break;
+            default:
+               break;
+            };
+            gui.MakeAreaDirty(Rectangle(0 , 0 , gui.OuterArea().W() , gui.OuterArea().H()));
+         }
+         
+         
+         
          win->SetDrawingTarget(win->GetBackBuffer());
          win->Clear();
          gui.Display(win , 0 , 0);
@@ -144,22 +187,35 @@ int main(int argc , char** argv) {
             EagleInfo() << Indenter() << msg << std::endl;
             if (msg == WidgetMsg(foptions.MItems()[0] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// file option 1 is load
-               ALLEGRO_FILECHOOSER* fchoose = al_create_native_file_dialog("./" , "Select an archive to explore" , "*.*" , ALLEGRO_FILECHOOSER_FILE_MUST_EXIST);
-               al_show_native_file_dialog(dynamic_cast<Allegro5GraphicsContext*>(win)->AllegroDisplay() , fchoose);
-               std::vector<std::string> filenames;
-               for (int i = 0 ; i < al_get_native_file_dialog_count(fchoose) ; ++i) {
-                  std::string path = al_get_native_file_dialog_path(fchoose , i);
-                  filenames.push_back(path);
+               /** al_show_native_file_dialog blocks here*/
+               std::vector<std::string> filenames = dman->ShowFileDialog("Pick a resource to load" , FilePath{"/"} , true , false , true , false);
+               if (filenames.size()) {
+                  rt = reslib->GetResourceType(GetFileExt(filenames[0]);;
+                  if (rb) {
+                     reslib->FreeResource(rid);
+                     rid = BADRESOURCEID;
+                     rb = 0;
+                  }
+                  FilePath fp = filenames[0];
+                  EagleLog() << "Loading file " << fp.Path() << std::endl;
+                  if (rt == RT_ARCHIVE) {
+                     std::shared_ptr<ArchiveFile> afile = fsys->ReadArchive(fp);
+                     Folder* fl = dynamic_cast<Folder*>(afile.get());
+                     fl->PrintContentsAbsolute();
+                  }
+                  else if (rt != RT_UNKNOWN) {
+                     std::shared_ptr<File> file = fsys->ReadFile(fp);
+                     bool success = reslib->LoadFileResource(file);
+                     if (success) {
+                        rid = reslib->LookupResourceID(fp.Path());
+                        rb = reslib->LookupResourceByID(rid);
+                     }
+                  }
                }
-               al_destroy_native_file_dialog(fchoose);
-               for (unsigned int i = 0 ; i < filenames.size() ; ++i) {
-                  std::string path = filenames[i];
-                  EagleInfo() << path << std::endl;
-                  FileSystem* fs = sys->GetFileSystem();
-                  FSInfo fsi(FilePath{path});
-                  ArchiveResource* arc = new ArchiveResource(win);
-                  arc->LoadFromFile(fsi.FPath());
-               }
+               foptions.MItems()[0]->Deactivate();
+               foptions.SetVisibleState(false);
+               shown = false;
+               redraw = true;
             }
             else if (msg == WidgetMsg(foptions.MItems()[1] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// file option 2 is save
