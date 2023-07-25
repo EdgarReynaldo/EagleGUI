@@ -146,6 +146,10 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="examples/ExResource.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
@@ -160,6 +164,7 @@
 		<Unit filename="include/Eagle/Conditions.hpp" />
 		<Unit filename="include/Eagle/ConfigFile.hpp" />
 		<Unit filename="include/Eagle/Container.hpp" />
+		<Unit filename="include/Eagle/Dialog.hpp" />
 		<Unit filename="include/Eagle/Endian.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
 		<Unit filename="include/Eagle/Exception.hpp" />
@@ -297,6 +302,7 @@
 		<Unit filename="src/Eagle/Color.cpp" />
 		<Unit filename="src/Eagle/Conditions.cpp" />
 		<Unit filename="src/Eagle/ConfigFile.cpp" />
+		<Unit filename="src/Eagle/Dialog.cpp" />
 		<Unit filename="src/Eagle/Endian.cpp" />
 		<Unit filename="src/Eagle/Events.cpp" />
 		<Unit filename="src/Eagle/Exception.cpp" />
