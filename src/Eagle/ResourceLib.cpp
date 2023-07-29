@@ -173,9 +173,9 @@ bool ResourceLibrary::LoadResourcesFromConfig(const ConfigFile& cfg) {
 
 bool ResourceLibrary::LoadFileResource(std::shared_ptr<File> file) {
    File* f = file.get();
-   EAGLE_ASSERT(f);
    if (!f) {
       EagleError() << "NULL file in LoadFileResource" << std::endl;
+      EAGLE_ASSERT(f);
       return false;
    }
    FSInfo fsinfo = f->Info();

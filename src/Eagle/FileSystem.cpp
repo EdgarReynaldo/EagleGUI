@@ -103,11 +103,19 @@ std::vector<std::string> ExplodePath(std::string path) {
 
 
 
-
+/// For EagleSystem and FileSystem
+#include "Eagle/System.hpp"
+#include "Eagle/Lib.hpp"
 
 std::vector<std::string> GetAbsolutePath(std::string path) {
    
-   std::string CWD = GetCWD();
+   
+   EagleSystem* sys = Eagle::EagleLibrary::System("Any");
+   EAGLE_ASSERT(sys);
+   FileSystem* fs = sys->GetFileSystem();
+   EAGLE_ASSERT(fs);
+   
+   std::string CWD = fs->CurrentFSDirectory();
    std::vector<std::string> cwdir = ExplodePath(CWD);
 
    if (!path.size()) {
@@ -177,7 +185,7 @@ std::string SanitizePath(std::string path) {
 
 
 
-std::string CurrentDirectory() {
+std::string FileSystem::CurrentDirectory() {
    const int SIZE = 4096;// 4k SHOULD be enough....
    char buf[SIZE];
 #ifdef EAGLE_WIN32
@@ -189,7 +197,7 @@ std::string CurrentDirectory() {
 }
 
 
-std::string GetCWD() {return CurrentDirectory();}
+std::string FileSystem::GetCWD() {return CurrentDirectory();}
 
 
 
@@ -200,7 +208,7 @@ std::string GetCWD() {return CurrentDirectory();}
 FileSystem::FileSystem() : 
       drives(),
       archive_mounted(false),
-      mount_file_path(std::string(""))
+      mount_file_path()
 {}
 
 

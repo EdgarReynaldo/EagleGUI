@@ -80,7 +80,7 @@ std::shared_ptr<File> Allegro5FileSystem::ReadFileInfo(ALLEGRO_FS_ENTRY* f) {
    if (!al_fs_entry_exists(f)) {
       return 0;
    }
-   return std::shared_ptr<File>(new File(GetFSInfo(f));
+   return std::shared_ptr<File>(new File(GetFSInfo(f)));
 }
 
 
@@ -270,6 +270,7 @@ void Allegro5FileSystem::UnmountArchive() {
       std::string oldmount = mount_file_path.Path();
       PHYSFS_unmount(oldmount.c_str());
       al_set_standard_file_interface();
+      al_set_standard_fs_interface();
       archive_mounted = false;
    }
 }
@@ -298,7 +299,10 @@ bool Allegro5FileSystem::ChangeFSDirectory(std::string dir) {
 
 
 std::string Allegro5FileSystem::CurrentFSDirectory() {
-   return al_get_current_directory();
+   if (archive_mounted) {
+      return al_get_current_directory();
+   }
+   return GetCWD();
 }
 
 

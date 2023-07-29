@@ -28,8 +28,8 @@
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Lib.hpp"
-
-
+#include "Eagle/Resources.hpp"
+#include "Eagle/ResourceLib.hpp"
 
 /// -------------------------      FSInfo     -----------------------------
 
@@ -202,6 +202,18 @@ void FilePath::SetPathComponents() {
 
 
 
+FilePath::FilePath() :
+      drive(""),
+      folderpath(),
+      file(""),
+      fullpath(""),
+      kablooey()
+{
+   
+}
+
+
+
 FilePath::FilePath(std::string path) :
       drive(""),
       folderpath(),
@@ -209,6 +221,12 @@ FilePath::FilePath(std::string path) :
       fullpath(""),
       kablooey()
 {
+   SetPath(path);
+}
+
+
+
+void FilePath::SetPath(std::string path) {
    kablooey = GetAbsolutePath(path);
    fullpath = SanitizePath(kablooey);
    SetPathComponents();

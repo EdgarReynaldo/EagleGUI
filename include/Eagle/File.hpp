@@ -92,9 +92,13 @@ protected :
    void SetPathComponents();
 
 public :
-   ///< FilePath constructor. This uses SanitizePath, so it can be as dumb as you want
+   ///< Default FilePath constructor. Only constructor safe to call before initialing Eagle and the filesystem driver
+   FilePath();
+   
+   ///< FilePath constructor. This uses CurrentFSDirectory, GetAbsolutePath, and SanitizePath, so it can be as dumb as you want
    FilePath(std::string path);
    
+   void SetPath(std::string path);
    
    std::string Drive();///< Get the drive letter (on Linux is always empty string "")
    std::string Folder();///< Get the full folder path

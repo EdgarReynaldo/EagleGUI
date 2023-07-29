@@ -155,7 +155,7 @@ FontResource::FontResource(EagleGraphicsContext* win) :
       ResourceBase(RT_FONT),
       window(win),
       font(0),
-      pixelheight(-20)
+      pixelheight(-80)
 {
    EAGLE_ASSERT(win);
 }

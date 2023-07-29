@@ -53,7 +53,7 @@ std::string GetFileExt(std::string filename);
 std::vector<std::string> ExplodePath(std::string path);
 
 ///< Get an absolute path from a relative one, depends on the Current Working Directory...
-std::vector<std::string> GetAbsolutePath(std::string rpath);
+std::vector<std::string> GetAbsolutePath(std::string rpath);///< Eagle must be initialized before calling this function.
 
 ///< Sanitize a vector of strings by adding directory separators as appropriate, shortcut to SanitizePath(GetAbsolutePath(path))
 std::string SanitizePath(std::vector<std::string> abspath);
@@ -61,11 +61,11 @@ std::string SanitizePath(std::vector<std::string> abspath);
 ///< Sanitize a path by removing all relative directories, and replacing all separators with forward slash
 std::string SanitizePath(std::string path);
 
-///< Get the current directory
-std::string CurrentDirectory();
+///< Get the current directory - internal use only
+//static std::string CurrentDirectory();
 
-///< Shortcut to @ref CurrentDirectory
-std::string GetCWD();
+///< Shortcut to @ref CurrentDirectory internal use only
+//static std::string GetCWD();
 
 
 class Drive;
@@ -83,6 +83,11 @@ protected :
    bool archive_mounted;/// TODO : This works only for non nested mounts
    FilePath mount_file_path;
    
+   /// Not for public use - does not reflect physfs paths properly - internal use only
+   static std::string CurrentDirectory();
+
+   /// Not for public use - shortcut to @ref CurrentDirectory - internal use only
+   static std::string GetCWD();
    
    virtual void ReadDirectoryContents(Folder* folder , bool descending = false)=0;
    
