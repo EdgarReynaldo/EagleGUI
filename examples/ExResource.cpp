@@ -23,7 +23,7 @@ int main(int argc , char** argv) {
    
    al_register_trace_handler(PipeToEagleLog);
    
-   SendOutputToFile("ExMenu.log" , "" , false);
+   SendOutputToFile("ExResource.log" , "" , false);
    
    Allegro5System* sys = GetAllegro5System();
    
@@ -188,9 +188,9 @@ int main(int argc , char** argv) {
             if (msg == WidgetMsg(foptions.MItems()[0] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// file option 1 is load
                /** al_show_native_file_dialog blocks here*/
-               std::vector<std::string> filenames = dman->ShowFileDialog("Pick a resource to load" , FilePath{"/"} , true , false , true , false);
+               std::vector<std::string> filenames = dman->ShowFileDialog("Pick a resource to load" , FilePath("") , true , false , true , false);
                if (filenames.size()) {
-                  rt = reslib->GetResourceType(GetFileExt(filenames[0]);;
+                  rt = reslib->GetResourceType(GetFileExt(filenames[0]));
                   if (rb) {
                      reslib->FreeResource(rid);
                      rid = BADRESOURCEID;
