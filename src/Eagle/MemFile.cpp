@@ -63,14 +63,14 @@ bool MemFile::WriteFileToDisk() {
 }
 
 
-unsigned char* MemFile::Begin() {
+uint8_t* MemFile::Begin() {
    if (fmem.empty()) {return 0;}
    return &fmem[0];
 }
 
 
 
-unsigned char* MemFile::End() {
+uint8_t* MemFile::End() {
    if (fmem.empty()) {return 0;}
    return (&fmem[0] + fmem.size());
 }

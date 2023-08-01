@@ -38,7 +38,7 @@
 
 class MemFile : public File {
 protected :
-   std::vector<unsigned char> fmem;
+   std::vector<uint8_t> fmem;
    
 public :
    MemFile(std::string file) : File(FSInfo(FilePath(file))) {}
@@ -46,15 +46,15 @@ public :
 
    ~MemFile() {Clear();}///< Destructor frees reserved memory
    
-   void Clear() {fmem.clear();}///< Free the stored memory
+   void Clear() {fmem.clear();fmem.reserve(0);}///< Free the stored memory
    
    bool ReadFileIntoMemory();///< Read the file from the stored file path
    bool WriteFileToDisk();///< Write the file back out to disk
    
-   unsigned char* Begin();///< Get a pointer to the beginning of the file memory
-   unsigned char* End();///< Get a pointer to the end of the file memory
+   uint8_t* Begin();///< Get a pointer to the beginning of the file memory
+   uint8_t* End();///< Get a pointer to the end of the file memory
 
-   unsigned int Size() {return fmem.size();}///< Get the size in bytes of the memfile
+   uint32_t Size() {return fmem.size();}///< Get the size in bytes of the memfile
 };
 
 
