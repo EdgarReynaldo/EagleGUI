@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
