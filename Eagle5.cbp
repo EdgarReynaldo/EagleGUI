@@ -258,7 +258,6 @@
 		<Unit filename="include/Eagle/LineEquations.hpp" />
 		<Unit filename="include/Eagle/Logging.hpp" />
 		<Unit filename="include/Eagle/Math.hpp" />
-		<Unit filename="include/Eagle/Media.hpp" />
 		<Unit filename="include/Eagle/MemFile.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
 		<Unit filename="include/Eagle/Memory.hpp" />
@@ -385,7 +384,6 @@
 		<Unit filename="src/Eagle/Lib.cpp" />
 		<Unit filename="src/Eagle/LineEquations.cpp" />
 		<Unit filename="src/Eagle/Logging.cpp" />
-		<Unit filename="src/Eagle/Media.cpp" />
 		<Unit filename="src/Eagle/MemFile.cpp" />
 		<Unit filename="src/Eagle/Memory.cpp" />
 		<Unit filename="src/Eagle/MousePointer.cpp" />
