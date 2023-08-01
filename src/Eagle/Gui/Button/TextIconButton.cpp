@@ -3,8 +3,9 @@
 
 
 #include "Eagle/Gui/Button/TextIconButton.hpp"
-#include "Eagle.hpp"
-
+#include "Eagle/Gui/Button/IconButton.hpp"
+#include "Eagle/GraphicsContext.hpp"
+#include "Eagle/Font.hpp"
 
 
 

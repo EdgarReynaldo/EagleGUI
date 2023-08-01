@@ -25,10 +25,14 @@
 #ifndef Sound_HPP
 #define Sound_HPP
 
-/**
-
 #include <string>
 
+
+
+
+class SoundMan {
+
+};
 
 
 
@@ -37,22 +41,36 @@ public :
    virtual ~Sound() {}
    virtual bool Load(std::string file)=0;
    virtual void Play()=0;
-   virtual void Free()=0;
+   virtual void Pause()=0;
+   virtual void Stop()=0;
+   
 };
 
 
-
-class SoundManager {
+class SoundSample : public Sound {
+protected:
+   
 public :
-   virtual ~SoundManager() {}
-   virtual void SetupDefaultSoundEnvironment()=0;
-   virtual Sound* CreateSound(std::string sound_file)=0;
-   virtual void FreeSound(Sound* s)=0;
+   
 };
 
-*/
+
+class SoundBuffer {
+protected:
+   
+public :
+   
+
+};
 
 
+
+class SoundStream : public Sound {
+protected:
+   
+public :
+   
+};
 
 #endif // Sound_HPP
 
