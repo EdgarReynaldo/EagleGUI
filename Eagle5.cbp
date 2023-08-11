@@ -151,7 +151,6 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="include/Eagle.hpp" />
-		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/BinFileStream.hpp" />
@@ -260,7 +259,6 @@
 		<Unit filename="include/Eagle/Math.hpp" />
 		<Unit filename="include/Eagle/MemFile.hpp" />
 		<Unit filename="include/Eagle/MemberFunctors.hpp" />
-		<Unit filename="include/Eagle/Memory.hpp" />
 		<Unit filename="include/Eagle/MousePointer.hpp" />
 		<Unit filename="include/Eagle/Mutexes.hpp" />
 		<Unit filename="include/Eagle/NDimensionArray.hpp" />
@@ -279,6 +277,7 @@
 		<Unit filename="include/Eagle/SFXGenerator.hpp" />
 		<Unit filename="include/Eagle/SharedMemory.hpp" />
 		<Unit filename="include/Eagle/Sound.hpp" />
+		<Unit filename="include/Eagle/SoundManager.hpp" />
 		<Unit filename="include/Eagle/StringWork.hpp" />
 		<Unit filename="include/Eagle/System.hpp" />
 		<Unit filename="include/Eagle/TableVec.hpp" />
@@ -288,7 +287,6 @@
 		<Unit filename="include/Eagle/Transforms.hpp" />
 		<Unit filename="include/Eagle/Transitions.hpp" />
 		<Unit filename="include/Eagle/WindowManager.hpp" />
-		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
 		<Unit filename="src/Eagle/BinFileStream.cpp" />
@@ -385,7 +383,6 @@
 		<Unit filename="src/Eagle/LineEquations.cpp" />
 		<Unit filename="src/Eagle/Logging.cpp" />
 		<Unit filename="src/Eagle/MemFile.cpp" />
-		<Unit filename="src/Eagle/Memory.cpp" />
 		<Unit filename="src/Eagle/MousePointer.cpp" />
 		<Unit filename="src/Eagle/Mutexes.cpp" />
 		<Unit filename="src/Eagle/NamedParameters.cpp" />
@@ -400,6 +397,7 @@
 		<Unit filename="src/Eagle/ResourceLib.cpp" />
 		<Unit filename="src/Eagle/Resources.cpp" />
 		<Unit filename="src/Eagle/Sound.cpp" />
+		<Unit filename="src/Eagle/SoundManager.cpp" />
 		<Unit filename="src/Eagle/StringWork.cpp" />
 		<Unit filename="src/Eagle/System.cpp" />
 		<Unit filename="src/Eagle/Threads.cpp" />
