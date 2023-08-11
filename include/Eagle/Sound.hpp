@@ -19,7 +19,7 @@
  * @file Sound.hpp
  * @brief The interface for all sounds in Eagle
  * 
- * TODO : Implement and stuff
+ * Base classes for audio drivers to use
  */
 
 #ifndef Sound_HPP
@@ -30,37 +30,32 @@
 
 
 
-class SoundMan {
-
-};
+class SoundManager;
 
 
 
-class Sound {
+class Sound {///< Base class for all sounds
+protected :
+   SoundManager* soundman;
+   
 public :
+   SoundManager(SoundManager* sndman) : soundman(sndman) {}
+   
    virtual ~Sound() {}
-   virtual bool Load(std::string file)=0;
+   
    virtual void Play()=0;
    virtual void Pause()=0;
    virtual void Stop()=0;
-   
+   ///< Pan, gain, seek, etc
 };
 
 
-class SoundSample : public Sound {
+
+class SoundInstance : public Sound {
 protected:
    
 public :
-   
-};
-
-
-class SoundBuffer {
-protected:
-   
-public :
-   
-
+   SoundInstance(SoundManager* sndman) : Sound(sndman) {}
 };
 
 
@@ -69,10 +64,19 @@ class SoundStream : public Sound {
 protected:
    
 public :
+   SoundStream(SoundManager* sndman) : Sound(sndman) {}
    
 };
 
+
+
+
+
+
 #endif // Sound_HPP
+
+
+
 
 
 
