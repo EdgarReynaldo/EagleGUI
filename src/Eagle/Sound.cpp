@@ -16,8 +16,45 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
+ * @file Sound.cpp
+ * @brief Base class implementations of sound objects
  * 
- *
  */
+
+
+ 
+#include "Eagle/Sound.hpp"
+ 
+ 
+
+
+SoundSample::SoundSample() 
+{}
+
+
+
+SoundSample::~SoundSample() 
+{}
+
+
+
+SoundInstance::~SoundInstance() 
+{}
+
+
+
+SoundInstance::SoundInstance(SoundSample* parent_sample) :
+      parent(parent_sample)
+{}
+
+
+
+SoundStream::SoundStream()
+{}
+
+
+
+SoundStream::~SoundStream() 
+{}
+
+

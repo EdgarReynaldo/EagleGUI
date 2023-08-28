@@ -34,73 +34,58 @@
 
 
 
-class Allegro5Sound : public Sound {
-protected :
-   Allegro5SoundManager* a5sndman;
-   
-   
-   
+
+
+class Allegro5SoundSample : public SoundSample {
+protected:
+   ALLEGRO_SAMPLE* sample_data;
 public :
-   virtual ~Sound() {}
-   virtual bool Load(std::string file)=0;
-   virtual void Free()=0;
-   virtual void Play()=0;
-   virtual void Pause()=0;
-   virtual void Stop()=0;
+   Allegro5SoundSample();
+   ~Allegro5SoundSample();
    
+   bool LoadFromFile(FilePath fp);
+   void Free();
+   
+   ALLEGRO_SAMPLE* Data();
 };
 
 
-class Allegro5SoundSample : public Allegro5Sound {
-protected:
-   std::string shortname;///< For accessing the sound manager and our sample to play instances
-   ALLEGRO_SAMPLE* psample;///< We own this
-   std::set<Allegro5SoundInstance*> our_active_instances;
+
+class Allegro5SoundInstance : public SoundInstance {
+   ALLEGRO_SAMPLE_INSTANCE* pinst;
 public :
-   virtual ~Sound();
+
+   Allegro5SoundInstance(SoundSample* psample);
+   ~Allegro5SoundInstance();
    
    void Free();
-void Allegro5SoundSample::Free() {
-   if (psample) {
-      a5sndman->DestroySampleInstances(this);
-      al_destroy_sample(psample);
-      psample = 0;
-   }
-}
-   
-   virtual bool Load(FilePath fp);
 
-   virtual bool Load(FilePath fp) {
-      Free();
-      psample = al_load_sample(fp.Path());
-      if (psample) {
-         shortname = f->Name();
-      }
-      return psample;
-   }
-   virtual void Play();
-   virtual void Pause();
-   virtual void Stop();
+   void SetSample(SoundSample* psample);///< Resets the sample for this instance and plays it, recycling the instance
    
-   std::string GetShortName() {return shortname;}
-   
+   ALLEGRO_SAMPLE_INSTANCE* AllegroInstance();
+
 };
 
-void Allegro5SoundSample::Play() {
-   Allegro5SoundInstance* instance = a5sndman->PlayNewSampleInstance(shortname);
-   our_active_instances.insert(instance);
-}
-void Allegro5SoundSample::Pause() {
 
-}
-void Allegro5SoundSample::Stop() {
 
-}
+class Allegro5SoundStream : public SoundStream {
+   ALLEGRO_AUDIO_STREAM* astream;
+public :
+   Allegro5SoundStream();
+   ~Allegro5SoundStream();
+   virtual bool LoadFromFile(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768);
+   void Free();
+   
+   ALLEGRO_AUDIO_STREAM* AllegroStream();
+};
 
 
 
 
 #endif // Allegro5Sound_HPP
+
+
+
 
 
 

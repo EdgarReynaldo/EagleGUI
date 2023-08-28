@@ -31,20 +31,8 @@
 
 
 
-class SoundSample {
-protected:
-   
-public :
-   SoundSample():{}
-   virtual ~SoundSample() {}
-   
-   virtual bool LoadFromFile(FilePath fp)=0;
-   
-   virtual void Free()=0;
-};
 
-
-
+class SoundSample;
 class SoundStream;
 class SoundInstance;
 
@@ -58,16 +46,26 @@ protected :
    virtual SoundInstance* PrivateCreateSoundInstance(SoundSample* psample)=0;
    
 public :
+   SoundManager() {}
+   virtual ~SoundManager() {}
    virtual bool Initialize()=0;
+   virtual void CheckInstances()=0;
+   virtual bool ReserveInstances(size_t n)=0;
+   virtual SoundInstance* GetInstance(size_t index)=0;
    
    SoundSample* CreateSoundSample(FilePath fp);
-   SoundInstance* CreateSoundInstance(SoundSample* psample);
+   SoundInstance* CreateSoundInstance(SoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it
    SoundStream* CreateSoundStream(FilePath fp);
    
-   virtual SoundInstance* PlayNewSampleInstance(std::string shortfilename)=0;
-   virtual void ReadyBGStream(std::string shortfilename)=0;
+   virtual void ReadyBGStream()=0;
    virtual void SetBGStreamPlaying(bool playing)=0;
    virtual void SetSampleMixerPlaying(bool playing)=0;
+
+   virtual void PlayAllSound(bool play)=0;
+   void PauseAllSound(bool pause) {PlayAllSound(!pause);}
+
+   virtual SoundInstance* PlayNewSampleInstance(SoundSample* psample)=0;
+   virtual bool SetSample(SoundInstance* inst , SoundSample* sample)=0;///< Use with @fn ReserveInstances
 };
 
 

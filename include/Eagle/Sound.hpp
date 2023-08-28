@@ -27,45 +27,40 @@
 
 #include <string>
 
+#include "Eagle/File.hpp"
 
 
 
-class SoundManager;
-
-
-
-class Sound {///< Base class for all sounds
-protected :
-   SoundManager* soundman;
-   
+class SoundSample {
 public :
-   SoundManager(SoundManager* sndman) : soundman(sndman) {}
-   
-   virtual ~Sound() {}
-   
-   virtual void Play()=0;
-   virtual void Pause()=0;
-   virtual void Stop()=0;
-   ///< Pan, gain, seek, etc
+   SoundSample();
+   virtual ~SoundSample();
+
+   virtual bool LoadFromFile(FilePath fp)=0;
+   virtual void Free()=0;
 };
 
 
 
-class SoundInstance : public Sound {
-protected:
-   
+class SoundInstance {
 public :
-   SoundInstance(SoundManager* sndman) : Sound(sndman) {}
+   SoundSample* parent;
+
+   SoundInstance(SoundSample* parent_sample);
+   virtual ~SoundInstance();
+   
+   SoundSample* Parent() {return parent;}
 };
 
 
 
-class SoundStream : public Sound {
-protected:
-   
+class SoundStream {
 public :
-   SoundStream(SoundManager* sndman) : Sound(sndman) {}
-   
+   SoundStream();
+   virtual ~SoundStream();
+
+   virtual bool LoadFromFile(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768)=0;
+   virtual void Free()=0;
 };
 
 
