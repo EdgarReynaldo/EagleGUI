@@ -55,6 +55,7 @@ SoundInstance* Allegro5SoundManager::PrivateCreateSoundInstance(SoundSample* psa
    Allegro5SoundInstance* pinstance = new Allegro5SoundInstance(psample);
    pinstance->SetSample(psample);
    al_attach_sample_instance_to_mixer(pinstance->AllegroInstance() , psample_mixer);
+   al_set_sample_instance_playing(pinstance->AllegroInstance() , true);
    return pinstance;
 }
 

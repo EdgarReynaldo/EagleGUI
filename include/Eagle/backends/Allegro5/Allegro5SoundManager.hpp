@@ -74,10 +74,11 @@ public :
    virtual ~Allegro5SoundManager();
 
    void Free();
-   virtual bool Initialize();
+   virtual bool Initialize();///< Get ready to produce sound. Setup mixers and voice
    virtual void CheckInstances();///< Remove dead instances, no need to call
-   virtual bool ReserveInstances(size_t n);
-   virtual SoundInstance* GetInstance(size_t index);
+   virtual bool ReserveInstances(size_t n);///< For convenience and sample reuse - saves memory and allocation/deallocations
+   virtual SoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
+   void size_t InstanceCount() {return instances.size();}
 //   SoundSample* CreateSoundSample(FilePath fp);
 //   SoundInstance* CreateSoundInstance(SoundSample* psample);
 //   SoundStream* CreateSoundStream(FilePath fp);
@@ -90,7 +91,7 @@ public :
    virtual void PlayAllSound(bool play);
    
    virtual SoundInstance* PlayNewSampleInstance(SoundSample* sample);
-   virtual bool SetSample(SoundInstance* inst , SoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstaces<size_t>
+   virtual bool SetSample(SoundInstance* inst , SoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
 
 
 };

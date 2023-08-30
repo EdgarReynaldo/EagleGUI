@@ -54,10 +54,10 @@ public :
    virtual SoundInstance* GetInstance(size_t index)=0;
    
    SoundSample* CreateSoundSample(FilePath fp);
-   SoundInstance* CreateSoundInstance(SoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it
+   SoundInstance* CreateSoundInstance(SoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it, may be NULL
    SoundStream* CreateSoundStream(FilePath fp);
    
-   virtual void ReadyBGStream()=0;
+   virtual void ReadyBGStream(SoundStream* stream)=0;
    virtual void SetBGStreamPlaying(bool playing)=0;
    virtual void SetSampleMixerPlaying(bool playing)=0;
 

@@ -66,6 +66,7 @@
 #include "Eagle/ResourceLib.hpp"
 #include "Eagle/Resources.hpp"
 #include "Eagle/Sound.hpp"
+#include "Eagle/SoundManager.hpp"
 #include "Eagle/StringWork.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/Threads.hpp"
