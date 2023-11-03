@@ -34,16 +34,16 @@
 
 
 
-
-
 class Allegro5SoundSample : public SoundSample {
 protected:
    ALLEGRO_SAMPLE* sample_data;
+
+   bool LoadFromArgs(std::vector<std::string> args) override;
+
 public :
    Allegro5SoundSample();
    ~Allegro5SoundSample();
    
-   bool LoadFromFile(FilePath fp);
    void Free();
    
    ALLEGRO_SAMPLE* Data();
@@ -53,9 +53,11 @@ public :
 
 class Allegro5SoundInstance : public SoundInstance {
    ALLEGRO_SAMPLE_INSTANCE* pinst;
+
 public :
 
    Allegro5SoundInstance(SoundSample* psample);
+
    ~Allegro5SoundInstance();
    
    void Free();
@@ -63,17 +65,23 @@ public :
    void SetSample(SoundSample* psample);///< Resets the sample for this instance and plays it, recycling the instance
    
    ALLEGRO_SAMPLE_INSTANCE* AllegroInstance();
-
 };
 
 
 
 class Allegro5SoundStream : public SoundStream {
+
    ALLEGRO_AUDIO_STREAM* astream;
+
+   bool LoadFromArgs(std::vector<std::string> args) override;/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
+
 public :
    Allegro5SoundStream();
+
    ~Allegro5SoundStream();
-   virtual bool LoadFromFile(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768);
+
+   virtual bool LoadFromFile(size_t nbuffers = 3 , size_t buf_sample_count = 32768);
+
    void Free();
    
    ALLEGRO_AUDIO_STREAM* AllegroStream();

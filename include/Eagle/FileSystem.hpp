@@ -80,8 +80,9 @@ class FileSystem {
 protected :
    std::vector<Drive*> drives;
    
-   bool archive_mounted;/// TODO : This works only for non nested mounts
-   FilePath mount_file_path;
+//   bool archive_mounted;/// TODO : This works only for non nested mounts
+//   FilePath mount_file_path;
+   std::stack<FilePath> mount_file_path_stack;
    
    /// Not for public use - does not reflect physfs paths properly - internal use only
    static std::string CurrentDirectory();

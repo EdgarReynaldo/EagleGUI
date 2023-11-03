@@ -95,8 +95,31 @@ int UntranslateFontFlags(std::string flagstr) {
 
 
 
+bool EagleFont::LoadFromArgs(std::vector<std::string> args) {
+   IMAGE_TYPE it = VIDEO_IMAGE;
+   std::string flags;
+   int ptsize;
+   if (args.size() < 1) {
+      EagleError() << "No args passed to LoadFromArgs." << std::endl;
+      return false;
+   }
+   ptsize = STOI(args[0]);
+   if (args.size() > 1) {
+      flags = args[1];
+      if (args.size() > 2) {
+         if (args[2].compare("MEMORY")==0) {
+            it = MEMORY_IMAGE;
+         }
+      }
+   }
+   return Load(filepath.Path() , ptsize , flags , it);
+}
+
+
+
 EagleFont::EagleFont(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
+      ResourceBase(RT_FONT),
       owner(0),
       fontman(0),
       height(0),

@@ -71,11 +71,12 @@ public :
 
    void SetWindow(EagleGraphicsContext* win);
    
-   bool LoadResourcesFromConfig(const ConfigFile& cfg);
+   virtual bool LoadResourcesFromConfig(const ConfigFile& cfg)=0;
    
-   bool LoadFileResource(std::shared_ptr<File> file);
-   bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
-   bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
+   virtual bool LoadFileResource(std::shared_ptr<File> file)=0;
+   virtual bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false)=0;
+   virtual bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive)=0;
+
    
    void FreeResource(RESOURCEID rid);
    

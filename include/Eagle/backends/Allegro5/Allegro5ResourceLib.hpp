@@ -52,6 +52,14 @@ public :
 
    
    static Allegro5ResourceLibrary* Instance() {return me;}
+   
+   
+   
+   
+   virtual bool LoadFileResource(std::shared_ptr<File> file);
+   virtual bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
+   virtual bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
+   
 };
 
 

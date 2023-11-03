@@ -83,7 +83,7 @@ public :
 //   SoundInstance* CreateSoundInstance(SoundSample* psample);
 //   SoundStream* CreateSoundStream(FilePath fp);
 
-   virtual void ReadyBGStream(SoundStream* stream);///< May be null to clear the stream, but don't try to play it!
+   virtual void ReadyBGStream(SoundStream* stream);///< May be null to clear the stream
    
    virtual void SetBGStreamPlaying(bool playing);
    virtual void SetSampleMixerPlaying(bool playing);

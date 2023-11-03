@@ -68,8 +68,21 @@ void EagleImage::RemoveChild(EagleImage* child) {
 
 
 
+bool EagleImage::LoadFromArgs(std::vector<std::string> args) {
+   IMAGE_TYPE it = VIDEO_IMAGE;
+   if (args.size()) {
+      if (args[0].compare("MEMORY") == 0) {
+         it = MEMORY_IMAGE;
+      }
+   }
+   return Load(filepath.Path() , it);
+}
+
+
+
 EagleImage::EagleImage(std::string objclass , std::string objname) :
       EagleObject(objclass , objname),
+      ResourceBase(RT_IMAGE),
       pcontext(0),
       w(0),
       h(0),

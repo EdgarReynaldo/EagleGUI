@@ -4,6 +4,13 @@
 
 
 
+bool Allegro5SoundSample::LoadFromArgs(std::vector<std::string> args) {
+   (void)args;
+   return LoadFromFile(fp);
+}
+
+
+
 Allegro5SoundSample::Allegro5SoundSample() :
       SoundSample(),
       sample_data(0)
@@ -90,9 +97,17 @@ ALLEGRO_SAMPLE_INSTANCE* Allegro5SoundInstance::AllegroInstance()
 
 
 
-
-
-
+bool Allegro5SoundStream::LoadFromArgs(std::vector<std::string> args) {
+   int nbuffers = 3;
+   int fragcount = 32768;
+   if (args.size) {
+      nbuffers = STOI(args[0]);
+      if (args.size() > 1) {
+         fragcount = STOI(args[1]);0
+      }
+   }
+   return LoadFromFile(nbuffers , fragcount);
+}
 
 
 
@@ -108,9 +123,10 @@ Allegro5SoundStream::~Allegro5SoundStream() {
 
 
 
-bool Allegro5SoundStream::LoadFromFile(FilePath fp , size_t nbuffers , size_t buf_sample_count) {
+bool Allegro5SoundStream::LoadFromFile(size_t nbuffers , size_t buf_sample_count) {
    Free();
-   return (astream = al_load_audio_stream(fp.Path().c_str() , nbuffers , buf_sample_count));
+   std::string p = filepath.Path();
+   return (astream = al_load_audio_stream(p.c_str() , nbuffers , buf_sample_count));
 }
 
 

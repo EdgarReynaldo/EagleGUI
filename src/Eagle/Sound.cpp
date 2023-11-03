@@ -28,7 +28,8 @@
  
 
 
-SoundSample::SoundSample() 
+SoundSample::SoundSample() :
+      ResourceBase(RT_AUDIO)
 {}
 
 
@@ -49,7 +50,8 @@ SoundInstance::SoundInstance(SoundSample* parent_sample) :
 
 
 
-SoundStream::SoundStream()
+SoundStream::SoundStream() :
+      ResourceBase(RT_AUDIO)
 {}
 
 

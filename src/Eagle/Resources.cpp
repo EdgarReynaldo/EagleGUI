@@ -94,85 +94,14 @@ ResourceBase::~ResourceBase() {
 
 
 
-/// --------------------------     ImageResource     --------------------
-
-
-
-
-bool ImageResource::LoadFromFilePath() {
-   Free();
-   if (!window) {return false;}
-   image = window->LoadImageFromFile(filepath.Path());
-   return image && image->Valid();
-}
-
-
-
-ImageResource::ImageResource(EagleGraphicsContext* win) :
-      ResourceBase(RT_IMAGE),
-      window(win),
-      image(0)
-{
-   EAGLE_ASSERT(win);
-}
-
-
-
-ImageResource::~ImageResource() {
-   Free();
-}
-
-
-
-void ImageResource::Free() {
-   if (window && image) {
-      window->FreeImage(image);
-      image = 0;
+bool LoadFromFileWithArgs(std::vector<std::string> args) {
+   if (args.size() < 1) {
+      EagleWarn() << "No args passed to LoadFromFileWithArgs." << std::endl;
+      return false;
    }
-}
-   
-
-
-
-EagleImage* ImageResource::GetImage() {
-   return image;
-}
-
-
-
-/// -------------------- FontResource ------------------------
-
-
-
-bool FontResource::LoadFromFilePath() {
-   Free();
-   return (font = window->GetFont(filepath.Path() , pixelheight , FONT_NORMAL , VIDEO_IMAGE));
-}
-
-
-
-FontResource::FontResource(EagleGraphicsContext* win) :
-      ResourceBase(RT_FONT),
-      window(win),
-      font(0),
-      pixelheight(-80)
-{
-   EAGLE_ASSERT(win);
-}
-
-
-
-FontResource::~FontResource() {
-   Free();
-}
-
-
-
-void FontResource::Free() {
-   if (window && font) {
-      window->FreeFont(font);
-      font = 0;
-   }
+   filepath = FilePath(args[0]);
+   args.erase(args.begin());
+   return LoadFromArgs(args);
 }
 
 

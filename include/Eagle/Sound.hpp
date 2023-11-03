@@ -28,15 +28,18 @@
 #include <string>
 
 #include "Eagle/File.hpp"
+#include "Eagle/Resources.hpp"
 
 
 
-class SoundSample {
+class EagleSoundSample : public ResourceBase {
+
+   virtual bool LoadFromArgs(std::vector<std::string> args);/*(void)args*/
 public :
    SoundSample();
+
    virtual ~SoundSample();
 
-   virtual bool LoadFromFile(FilePath fp)=0;
    virtual void Free()=0;
 };
 
@@ -54,12 +57,13 @@ public :
 
 
 
-class SoundStream {
+class SoundStream : public ResourceBase::{
+
+   virtual bool LoadFromArgs(std::vector<std::string> args);/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
 public :
    SoundStream();
    virtual ~SoundStream();
 
-   virtual bool LoadFromFile(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768)=0;
    virtual void Free()=0;
 };
 

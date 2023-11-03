@@ -31,6 +31,7 @@
 
 #include "Eagle/Image.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Resources.hpp"
 #include "Eagle/SharedMemory.hpp"
 #include "Eagle/MemFile.hpp"
 
@@ -87,7 +88,7 @@ class FontManager;
 
 
 
-class EagleFont : public EagleObject {
+class EagleFont : public EagleObject , public ResourceBase {
    
 protected :
    EagleGraphicsContext* owner;
@@ -99,6 +100,8 @@ protected :
    int memtype;
    
    friend class FontManager;
+   
+   bool LoadFromArgs(std::vector<std::string> args) override;
    
 public :   
    EagleFont(std::string objclass = "EagleFont" , std::string objname = "Nemo");///< Base constructor for font objects

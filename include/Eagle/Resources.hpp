@@ -38,7 +38,6 @@ extern const RESOURCEID BADRESOURCEID;
 
 RESOURCEID NextRid();
 
-
 /** @enum RESOURCE_TYPE
  *  @brief Simple deduction of resource type based on extension string for the file path minus the leading dot
  *     Supported image types are bmp png jpg and tga. Font extensions include ttf only. 
@@ -74,19 +73,8 @@ protected :
 
    FilePath filepath;
 
+   virtual bool LoadFromArgs(std::vector<std::string> args)=0;
 
-   virtual bool LoadFromFilePath()=0;
-
-
-
-//   MemFile memfile;
-
-//   virtual bool LoadFromMemory(MemFile mf)=0;
-   
-   ResourceBase(const ResourceBase& r);/// copying is prohibited
-   ResourceBase& operator=(const ResourceBase& r);/// assignment is prohibited
-
-   
 public :
 ///   ResourceBase();
    ResourceBase(RESOURCE_TYPE rt = RT_UNKNOWN);
@@ -94,69 +82,21 @@ public :
    virtual ~ResourceBase();
 
    /// Getters
+   ResourceLibrary* Owner() {return owner;}
    RESOURCEID RID() {return rid;}
    RESOURCE_TYPE RType() {return rtype;}
    bool Loaded() {return loaded;}
    FilePath GetFilePath() {return filepath;}
 
-
-   /// Virtual methods
-   bool LoadFromFile(FilePath fp);
-
-
-};
-
-
-
-class EagleImage;
-class EagleGraphicsContext;
-
-class ImageResource : public ResourceBase {
-protected :
-   EagleGraphicsContext* window;
-   EagleImage* image;
-   
-   bool LoadFromFilePath();
-
-public :
-   ImageResource(EagleGraphicsContext* win);
-   ~ImageResource();
-
-   void Free();
-
-   EagleImage* GetImage();
-
-};
-
-
-class EagleFont;
-
-class FontResource : public ResourceBase {
-protected :
-   
-   EagleGraphicsContext* window;
-
-   EagleFont* font;/// We don't own this, but we can ask to free it when we're done with it
-
-   int pixelheight;/// pixel height of a font, in em for >0 and pixels for <0
-
-      
-   bool LoadFromFilePath();
-
-public :
-   FontResource(EagleGraphicsContext* win);
-   ~FontResource();
-   
-   void Free();
-   
-   EagleFont* GetTheFont() {return font;}
+   /// Load a resource
+   bool LoadFromFileWithArgs(std::vector<std::string> args);/// File is first arg, rest are optional parameters
 };
 
 
 
 class AudioResource : public ResourceBase {
 
-   bool LoadFromFilePath();
+   bool LoadFromArgs(std::vector<std::string> args);
 
 public :
    AudioResource() :
@@ -188,7 +128,10 @@ protected :
    std::map<std::shared_ptr<File> , std::shared_ptr<ResourceBase> > resfilemap;
    
    
-   bool LoadFromFilePath();
+   bool LoadFromArgs();
+bool ArchiveResource::LoadFromArgs() {
+   
+}
    
 //   bool LoadFolder(std::shared_ptr<Folder> folder);
 //   bool LoadFileResources(std::shared_ptr<Folder> folder);

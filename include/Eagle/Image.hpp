@@ -29,6 +29,7 @@
 #include "Eagle/Color.hpp"
 #include "Eagle/Container.hpp"
 #include "Eagle/Object.hpp"
+#include "Eagle/Resources.hpp"
 #include "Eagle/SharedMemory.hpp"
 
 #include <string>
@@ -81,7 +82,7 @@ typedef SHAREDOBJECT<EagleImage> SHAREDIMAGE;
  *   TODO : Add in member to track window ownership (done), and ability to traverse windows (not done)
  */
 
-class EagleImage : public EagleObject {
+class EagleImage : public EagleObject , public ResourceBase {
 protected :
    EagleGraphicsContext* pcontext;///< Parent graphics context - this is the window that created us, or owns us currently
    int w;///< Image width
@@ -112,7 +113,8 @@ protected :
    void AddChild(EagleImage* child);///< Add a child to the @ref EagleImage::children image set
    void RemoveChild(EagleImage* child);///< Remove a child from the @ref EagleImage::children image set
 
-   
+   bool LoadFromArgs(std::vector<std::string> args) override;
+
 public :
 
    EagleImage(std::string objclass = "EagleImage" , std::string objname = "Nemo");///< Default empty constructor
