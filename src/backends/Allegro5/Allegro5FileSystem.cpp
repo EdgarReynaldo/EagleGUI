@@ -106,6 +106,8 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
    
    std::string p = folder->Path();
    if (archive) {
+      MountArchive(p);
+/**
       if (!archive_mounted) {
          MountArchive(p);
          p = "";/// This is now root
@@ -115,6 +117,7 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
          EagleWarn() << "Allegro5FileSystem::ReadDirectoryContents - reading inside nested archives is not currently possible" << std::endl;
          return;
       }
+*/
    }
    else {
       if (!(folder->Info().Mode().IsDir())) {
@@ -172,6 +175,17 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
    if (archive) {
       UnmountArchive();
    }
+}
+
+
+
+bool Allegro5FileSystem::RemountArchive() {
+   EAGLE_ASSERT(!mount_stack.empty());;
+   bool success = MountArchive(mount_stack.top());
+   if (success) {
+      mount_stack.pop();///< To offset the remount of an old directory
+   }
+   return success;
 }
 
 
@@ -266,24 +280,27 @@ std::shared_ptr<ArchiveFile> Allegro5FileSystem::ReadArchive(FilePath fpath) {
 
 
 void Allegro5FileSystem::UnmountArchive() {
-   if (archive_mounted) {
-      std::string oldmount = mount_file_path.Path();
+   if (!mount_stack.empty()) {
+      FilePath fp = mount_stack.top();
+      mount_stack.pop();
+      std::string oldmount = fp.Path();
       PHYSFS_unmount(oldmount.c_str());
       al_set_standard_file_interface();
       al_set_standard_fs_interface();
-      archive_mounted = false;
+   }
+   if (!mount_stack.empty()) {
+      if (!RemountArchive()) {
+         EagleError() << "Failed to remount back of mount stack." << std::endl;
+      }
    }
 }
 
 
 
 bool Allegro5FileSystem::MountArchive(FilePath fp) {
-   UnmountArchive();
-
    std::string archive = fp.Path();
    if (PHYSFS_mount(archive.c_str() , NULL , false) != 0) {
-      mount_file_path = fp;
-      archive_mounted = true;
+      mount_stack.push(fp);
       al_set_physfs_file_interface();
       return true;
    }
@@ -299,7 +316,7 @@ bool Allegro5FileSystem::ChangeFSDirectory(std::string dir) {
 
 
 std::string Allegro5FileSystem::CurrentFSDirectory() {
-   if (archive_mounted) {
+   if (!mount_stack.empty()) {
       return al_get_current_directory();
    }
    return GetCWD();

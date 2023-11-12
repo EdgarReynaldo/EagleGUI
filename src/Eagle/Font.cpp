@@ -34,6 +34,12 @@
 
 
 
+int default_font_size = -20;
+
+int default_font_flags = FONT_NORMAL;
+
+
+
 std::string TranslateFontFlags(int fontflags) {
    if (fontflags == FONT_NORMAL) {
       return "FONT_NORMAL";
@@ -112,7 +118,7 @@ bool EagleFont::LoadFromArgs(std::vector<std::string> args) {
          }
       }
    }
-   return Load(filepath.Path() , ptsize , flags , it);
+   return Load(filepath.Path() , ptsize , UntranslateFontFlags(flags) , it);
 }
 
 

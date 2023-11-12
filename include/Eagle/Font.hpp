@@ -37,6 +37,12 @@
 
 
 
+
+extern int default_font_size;
+extern int default_font_flags;
+
+
+
 /**! @enum FONT_LOADING_FLAGS
  *   @brief A set of flags indicating how to load the font
  */

@@ -61,7 +61,6 @@ protected :
    void UnregisterRID(RESOURCEID rid);
    
    friend class ResourceBase;
-   static ResourceLibrary* ResLib();
    
 public :
    
@@ -71,11 +70,11 @@ public :
 
    void SetWindow(EagleGraphicsContext* win);
    
-   virtual bool LoadResourcesFromConfig(const ConfigFile& cfg)=0;
+   virtual std::vector<RESOURCEID> LoadResourcesFromConfig(const ConfigFile& cfg);
    
-   virtual bool LoadFileResource(std::shared_ptr<File> file)=0;
-   virtual bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false)=0;
-   virtual bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive)=0;
+   virtual RESOURCEID LoadFileResource(std::shared_ptr<File> file)=0;
+   virtual std::vector<RESOURCEID> LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false)=0;
+   virtual std::vector<RESOURCEID> LoadArchiveResource(std::shared_ptr<ArchiveFile> archive)=0;
 
    
    void FreeResource(RESOURCEID rid);

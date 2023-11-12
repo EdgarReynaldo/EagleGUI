@@ -48,15 +48,16 @@ RESOURCEID NextRid();
  */
 
 enum RESOURCE_TYPE {
-   RT_UNKNOWN   =  0,///< unsupported extension
-   RT_IMAGE     =  1,///< bmp png jpg tga
-   RT_FONT      =  2,///< ttf bmp
-   RT_AUDIO     =  3,///< ogg wav
-   RT_VIDEO     =  4,///< ogv
-   RT_ARCHIVE   =  5,///< zip, 7z, tar
-   RT_BINFILE   =  6,///< dat bin
-   RT_TEXTFILE  =  7,///< txt
-   NUM_RT_TYPES =  8
+   RT_UNKNOWN      =  0,///< unsupported extension
+   RT_IMAGE        =  1,///< bmp png jpg tga
+   RT_FONT         =  2,///< ttf bmp
+   RT_AUDIO_SAMPLE =  3,///< ogg wav mp3
+   RT_AUDIO_STREAM =  4,///< ogg wav mp3
+   RT_VIDEO        =  5,///< ogv
+   RT_ARCHIVE      =  6,///< zip, 7z, tar, gz
+   RT_BINFILE      =  7,///< dat bin exe dll
+   RT_TEXTFILE     =  8,///< txt
+   NUM_RT_TYPES    =  9
 };
 
 
@@ -75,12 +76,16 @@ protected :
 
    virtual bool LoadFromArgs(std::vector<std::string> args)=0;
 
+   ResourceBase& operator=(const ResourceBase& r);
+   ResourceBase(const ResourceBase& r);
 public :
 ///   ResourceBase();
    ResourceBase(RESOURCE_TYPE rt = RT_UNKNOWN);
 
    virtual ~ResourceBase();
 
+   
+   
    /// Getters
    ResourceLibrary* Owner() {return owner;}
    RESOURCEID RID() {return rid;}
@@ -89,49 +94,23 @@ public :
    FilePath GetFilePath() {return filepath;}
 
    /// Load a resource
-   bool LoadFromFileWithArgs(std::vector<std::string> args);/// File is first arg, rest are optional parameters
+   bool LoadFromFile(FilePath fp);///< Shortcut for loading resources with no argumentsW
+   bool LoadFromFileWithArgs(std::vector<std::string> args);///< File is first arg, rest are optional parameters
 };
 
 
 
-class AudioResource : public ResourceBase {
-
-   bool LoadFromArgs(std::vector<std::string> args);
-
-public :
-   AudioResource() :
-      ResourceBase(RT_AUDIO)
-   {}
-};
-
-
-
-class VideoResource : public ResourceBase {
-
-   bool LoadFromFilePath();
-
-public :
-   VideoResource() :
-         ResourceBase(RT_VIDEO)
-   {}
-};
-
-
-class EagleSystem;
-class FileSystem;
+class EagleGraphicsContext;
 
 class ArchiveResource : public ResourceBase {
 protected :
    EagleGraphicsContext* win;
 
-   std::shared_ptr<Folder> contents;
-   std::map<std::shared_ptr<File> , std::shared_ptr<ResourceBase> > resfilemap;
+   std::shared_ptr<ArchiveFile> contents;
+   std::map<std::string , ResourceBase*> resfilemap;
    
    
-   bool LoadFromArgs();
-bool ArchiveResource::LoadFromArgs() {
-   
-}
+   virtual bool LoadFromArgs(std::vector<std::string> args);
    
 //   bool LoadFolder(std::shared_ptr<Folder> folder);
 //   bool LoadFileResources(std::shared_ptr<Folder> folder);
@@ -156,7 +135,7 @@ class BinaryResource : public ResourceBase {
 protected : 
    BinStream binstream;
    
-   bool LoadFromFilePath();
+   bool LoadFromArgs(std::vector<std::string> args) override;
    
    
 public :
@@ -173,7 +152,7 @@ class TextResource : public ResourceBase {
 protected :
    std::string filetext;
    
-   bool LoadFromFilePath();
+   bool LoadFromArgs(std::vector<std::string> args) override;
    
 public :
    TextResource() :

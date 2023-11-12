@@ -27,8 +27,8 @@
 
 
 
-SoundSample* Allegro5SoundManager::PrivateCreateSoundSample(FilePath fp) {
-   SoundSample* psample = new Allegro5SoundSample();
+EagleSoundSample* Allegro5SoundManager::PrivateCreateSoundSample(FilePath fp) {
+   EagleSoundSample* psample = new Allegro5SoundSample();
    bool success = psample->LoadFromFile(fp);
    if (!success) {
       delete psample;
@@ -39,8 +39,8 @@ SoundSample* Allegro5SoundManager::PrivateCreateSoundSample(FilePath fp) {
 
 
 
-SoundStream* Allegro5SoundManager::PrivateCreateSoundStream(FilePath fp) {
-   SoundStream* pstream = new Allegro5SoundStream();
+EagleSoundStream* Allegro5SoundManager::PrivateCreateSoundStream(FilePath fp) {
+   EagleSoundStream* pstream = new Allegro5SoundStream();
    bool success = pstream->LoadFromFile(fp);
    if (!success) {
       delete pstream;
@@ -51,7 +51,7 @@ SoundStream* Allegro5SoundManager::PrivateCreateSoundStream(FilePath fp) {
 
 
 
-SoundInstance* Allegro5SoundManager::PrivateCreateSoundInstance(SoundSample* psample) {
+EagleSoundInstance* Allegro5SoundManager::PrivateCreateSoundInstance(EagleSoundSample* psample) {
    Allegro5SoundInstance* pinstance = new Allegro5SoundInstance(psample);
    pinstance->SetSample(psample);
    al_attach_sample_instance_to_mixer(pinstance->AllegroInstance() , psample_mixer);
@@ -207,13 +207,13 @@ bool Allegro5SoundManager::ReserveInstances(size_t n) {
 
 
 
-SoundInstance* Allegro5SoundManager::GetInstance(size_t index) {
+EagleSoundInstance* Allegro5SoundManager::GetInstance(size_t index) {
    return instances[index];
 }
 
 
 
-void Allegro5SoundManager::ReadyBGStream(SoundStream* stream) {
+void Allegro5SoundManager::ReadyBGStream(EagleSoundStream* stream) {
    
    if (bgstream) {
       al_detach_audio_stream(bgstream->AllegroStream());
@@ -248,7 +248,7 @@ void Allegro5SoundManager::PlayAllSound(bool play) {
 
 
 
-SoundInstance* Allegro5SoundManager::PlayNewSampleInstance(SoundSample* psample) {
+EagleSoundInstance* Allegro5SoundManager::PlayNewSampleInstance(EagleSoundSample* psample) {
    Allegro5SoundInstance* inst = dynamic_cast<Allegro5SoundInstance*>(PrivateCreateSoundInstance(psample));
    ALLEGRO_SAMPLE_INSTANCE* ainst = inst->AllegroInstance();
    al_attach_sample_instance_to_mixer(ainst , psample_mixer);
@@ -259,10 +259,11 @@ SoundInstance* Allegro5SoundManager::PlayNewSampleInstance(SoundSample* psample)
 
 
 
-bool Allegro5SoundManager::SetSample(SoundInstance* inst , SoundSample* sample) {
+bool Allegro5SoundManager::SetSample(EagleSoundInstance* inst , EagleSoundSample* sample) {
    Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(inst);
    if (a5inst) {
       a5inst->SetSample(sample);
+      return true;
    }
    return false;
 }

@@ -28,35 +28,35 @@
  
 
 
-SoundSample::SoundSample() :
-      ResourceBase(RT_AUDIO)
+EagleSoundSample::EagleSoundSample() :
+      ResourceBase(RT_AUDIO_SAMPLE)
 {}
 
 
 
-SoundSample::~SoundSample() 
+EagleSoundSample::~EagleSoundSample() 
 {}
 
 
 
-SoundInstance::~SoundInstance() 
-{}
-
-
-
-SoundInstance::SoundInstance(SoundSample* parent_sample) :
+EagleSoundInstance::EagleSoundInstance(EagleSoundSample* parent_sample) :
       parent(parent_sample)
 {}
 
 
 
-SoundStream::SoundStream() :
-      ResourceBase(RT_AUDIO)
+EagleSoundInstance::~EagleSoundInstance() 
 {}
 
 
 
-SoundStream::~SoundStream() 
+EagleSoundStream::EagleSoundStream() :
+      ResourceBase(RT_AUDIO_STREAM)
+{}
+
+
+
+EagleSoundStream::~EagleSoundStream() 
 {}
 
 

@@ -29,19 +29,11 @@
 
 
 #include "Eagle/MemFile.hpp"
-
+#include "Eagle/StringWork.hpp"
 
 
 #include <vector>
 #include <string>
-
-
-/**! String to data functions. These do not throw exceptions. Rather they have default values of false, 0, 0.0f, and 0.0 */
-
-bool STOB(std::string b);
-int STOI(std::string i);
-float STOF(std::string f);
-double STOD(std::string d);
 
 
 

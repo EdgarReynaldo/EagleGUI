@@ -34,7 +34,7 @@
 
 
 
-class Allegro5SoundSample : public SoundSample {
+class Allegro5SoundSample : public EagleSoundSample {
 protected:
    ALLEGRO_SAMPLE* sample_data;
 
@@ -44,6 +44,8 @@ public :
    Allegro5SoundSample();
    ~Allegro5SoundSample();
    
+   bool LoadFromFile(FilePath fp);
+
    void Free();
    
    ALLEGRO_SAMPLE* Data();
@@ -51,25 +53,25 @@ public :
 
 
 
-class Allegro5SoundInstance : public SoundInstance {
+class Allegro5SoundInstance : public EagleSoundInstance {
    ALLEGRO_SAMPLE_INSTANCE* pinst;
 
 public :
 
-   Allegro5SoundInstance(SoundSample* psample);
+   Allegro5SoundInstance(EagleSoundSample* psample);
 
    ~Allegro5SoundInstance();
    
    void Free();
 
-   void SetSample(SoundSample* psample);///< Resets the sample for this instance and plays it, recycling the instance
+   void SetSample(EagleSoundSample* psample);///< Resets the sample for this instance and plays it, recycling the instance
    
    ALLEGRO_SAMPLE_INSTANCE* AllegroInstance();
 };
 
 
 
-class Allegro5SoundStream : public SoundStream {
+class Allegro5SoundStream : public EagleSoundStream {
 
    ALLEGRO_AUDIO_STREAM* astream;
 

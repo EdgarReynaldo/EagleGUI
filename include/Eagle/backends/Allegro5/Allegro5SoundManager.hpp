@@ -64,9 +64,9 @@ class Allegro5SoundManager : public SoundManager {
    Allegro5SoundStream* bgstream;///< For a soundstream object
    
    
-   virtual SoundSample* PrivateCreateSoundSample(FilePath fp);
-   virtual SoundStream* PrivateCreateSoundStream(FilePath fp);
-   virtual SoundInstance* PrivateCreateSoundInstance(SoundSample* psample);
+   virtual EagleSoundSample* PrivateCreateSoundSample(FilePath fp);
+   virtual EagleSoundStream* PrivateCreateSoundStream(FilePath fp);
+   virtual EagleSoundInstance* PrivateCreateSoundInstance(EagleSoundSample* psample);
 
 public :
    Allegro5SoundManager();
@@ -77,21 +77,18 @@ public :
    virtual bool Initialize();///< Get ready to produce sound. Setup mixers and voice
    virtual void CheckInstances();///< Remove dead instances, no need to call
    virtual bool ReserveInstances(size_t n);///< For convenience and sample reuse - saves memory and allocation/deallocations
-   virtual SoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
-   void size_t InstanceCount() {return instances.size();}
-//   SoundSample* CreateSoundSample(FilePath fp);
-//   SoundInstance* CreateSoundInstance(SoundSample* psample);
-//   SoundStream* CreateSoundStream(FilePath fp);
+   virtual EagleSoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
+   size_t InstanceCount() {return instances.size();}
 
-   virtual void ReadyBGStream(SoundStream* stream);///< May be null to clear the stream
+   virtual void ReadyBGStream(EagleSoundStream* stream);///< May be null to clear the stream
    
    virtual void SetBGStreamPlaying(bool playing);
    virtual void SetSampleMixerPlaying(bool playing);
    
    virtual void PlayAllSound(bool play);
    
-   virtual SoundInstance* PlayNewSampleInstance(SoundSample* sample);
-   virtual bool SetSample(SoundInstance* inst , SoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
+   virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* sample);
+   virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
 
 
 };

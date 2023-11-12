@@ -19,17 +19,20 @@
  */
 
 
-#include "Eagle/Resources.hpp"
 
+#include "Eagle/Resources.hpp"
 #include "Eagle/Lib.hpp"
 #include "Eagle/Exception.hpp"
-
 #include "Eagle/System.hpp"
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/File.hpp"
 #include "Eagle/ResourceLib.hpp"
+#include "Eagle/GraphicsContext.hpp"
+
+
 
 #include <atomic>
+
 
 
 const RESOURCEID BADRESOURCEID = ~0UL;
@@ -44,13 +47,6 @@ unsigned int NextRid() {
 
 
 /// ---------------------      ResourceBase     ------------------------
-
-
-
-bool ResourceBase::LoadFromFile(FilePath fp) {
-   filepath = fp;
-   return loaded = LoadFromFilePath();
-}
 
 
 
@@ -75,7 +71,7 @@ ResourceBase& ResourceBase::operator=(const ResourceBase& r) {
 
 
 ResourceBase::ResourceBase(RESOURCE_TYPE rt) :
-      owner(ResourceLibrary::ResLib()),
+      owner(Eagle::EagleLibrary::System("Any")->GetResourceLibrary()),
       rid(NextRid()),
       rtype(rt),
       loaded(false),
@@ -94,7 +90,16 @@ ResourceBase::~ResourceBase() {
 
 
 
-bool LoadFromFileWithArgs(std::vector<std::string> args) {
+bool ResourceBase::LoadFromFile(FilePath fp) {
+   filepath = fp;
+   std::vector<std::string> args;
+   (void)args;
+   return (loaded = LoadFromArgs(args));
+}
+
+
+
+bool ResourceBase::LoadFromFileWithArgs(std::vector<std::string> args) {
    if (args.size() < 1) {
       EagleWarn() << "No args passed to LoadFromFileWithArgs." << std::endl;
       return false;
@@ -106,55 +111,40 @@ bool LoadFromFileWithArgs(std::vector<std::string> args) {
 
 
 
-/// --------------------     Audio Resource     -----------------------------
-
-
-
-bool AudioResource::LoadFromFilePath() {
-   return false;
-}
-
-
-
-/// -------------------      Video Resource     ---------------------------------
-
-
-
-bool VideoResource::LoadFromFilePath() {
-   return false;
-}
-
-
-
 /// --------------------     Archive resource     -------------------------------
 
 
 
-bool ArchiveResource::LoadFromFilePath() {
+bool ArchiveResource::LoadFromArgs(std::vector<std::string> args) {
+   (void)args;
    FreeContents();
-   bool folderloaded = false;
-   
    std::string file = filepath.File();
    size_t index = file.find_last_of('.');
    if (index == std::string::npos) {return false;}/// No extension
    std::string ext = file.substr(++index);
-   if ((ext.compare("zip") == 0) || (ext.compare("7z") == 0) || (ext.compare("tar") == 0)) {
+   std::vector<RESOURCEID> rids;
+   
+   if ((ext.compare("zip") == 0) || (ext.compare("7z") == 0) || (ext.compare("tar") == 0) || (ext.compare("gz") == 0)) {
 
       EagleSystem* sys = Eagle::EagleLibrary::System("Any");
       EAGLE_ASSERT(sys);
       FileSystem* fs = sys->GetFileSystem();
       EAGLE_ASSERT(fs);
-
-      fs->MountArchive(filepath);/// This opens the archive for reading as a directory
-
-      contents = fs->ReadFolder(filepath , true);/// Get the folders and files in the archive
-
-      /// Recursively load contents here
-///      folderloaded = LoadFolder(contents);/** Leave loading to resource library */
+      ResourceLibrary* reslib = sys->GetResourceLibrary();
+      EAGLE_ASSERT(reslib);
       
-      fs->UnmountArchive();
+      /// Recursively load contents here
+      contents = fs->ReadArchive(filepath);/// Get the folders and files in the archive
+      rids = reslib->LoadArchiveResource(contents);
+
+      for (unsigned int i = 0 ; i < rids.size() ; ++i) {
+         RESOURCEID rid1 = rids[i];
+         ResourceBase* rb = reslib->LookupResourceByID(rid1);
+         std::string path = rb->GetFilePath().Path();
+         resfilemap[path] = rb;
+      }
    }
-   return folderloaded;
+   return rids.size();
 }
       
       
@@ -318,8 +308,9 @@ ArchiveResource::ArchiveResource(EagleGraphicsContext* window) :
 
 ArchiveResource::~ArchiveResource()
 {
-   FreeResources();
+///   FreeResources();///< Resources are owned by the resource library or the window, not us
    FreeContents();
+   resfilemap.clear();
 }
 
 
@@ -329,26 +320,24 @@ void ArchiveResource::FreeContents() {
 }
 
 
-void ArchiveResource::FreeResources() {
-}
-
-
 
 /// --------------------    Binary resource     -----------------------
 
 
 
-bool BinaryResource::LoadFromFilePath() {
+bool BinaryResource::LoadFromArgs(std::vector<std::string> args) {
+   (void)args;
    return binstream.ReadDataFromFile(filepath);
 }
+
 
 
 /// -------------------    Text resource     -----------------------
 
 
 
-
-bool TextResource::LoadFromFilePath() {
+bool TextResource::LoadFromArgs(std::vector<std::string> args) {
+   (void)args;
    EagleSystem* sys = Eagle::EagleLibrary::System("Any");
    EAGLE_ASSERT(sys);
    FileSystem* fs = sys->GetFileSystem();

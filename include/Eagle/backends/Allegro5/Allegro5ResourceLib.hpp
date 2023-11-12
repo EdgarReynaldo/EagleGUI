@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -33,33 +33,26 @@
 
 
 /**! @class Allegro5ResourceLibrary
- *   @brief The Allegro 5 implementation of the ResourceLibrary
+ *   @brief The Allegro 5 implementation of the ResourceLibrary. To use, call System::GetResourceLibrary or Allegro5ResourceLibrary::Instance().
  */
 
 class Allegro5ResourceLibrary : public ResourceLibrary {
 
 protected :
    
-   static Allegro5ResourceLibrary* me;
+   Allegro5ResourceLibrary();
    
 public :
 
-   Allegro5ResourceLibrary();
 
+   static Allegro5ResourceLibrary* Instance();
 
 
    virtual std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);
 
-   
-   static Allegro5ResourceLibrary* Instance() {return me;}
-   
-   
-   
-   
-   virtual bool LoadFileResource(std::shared_ptr<File> file);
-   virtual bool LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
-   virtual bool LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
-   
+   virtual RESOURCEID LoadFileResource(std::shared_ptr<File> file);
+   virtual std::vector<RESOURCEID> LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
+   virtual std::vector<RESOURCEID> LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
 };
 
 

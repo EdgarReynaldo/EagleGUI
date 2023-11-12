@@ -41,13 +41,6 @@ ResourceLibrary::TYPEMAP ResourceLibrary::typemap;
 
 
 
-ResourceLibrary* ResourceLibrary::ResLib() {
-   static ResourceLibrary reslib((EagleGraphicsContext*)0);
-   return &reslib;
-}
-
-
-
 void ResourceLibrary::RegisterRID(RESOURCEID rid , ResourceBase* resource) {
    EAGLE_ASSERT(rid != BADRESOURCEID);
    EAGLE_ASSERT(resource);
@@ -80,14 +73,15 @@ ResourceLibrary::ResourceLibrary(EagleGraphicsContext* win) :
       lookupmap(),
       window(0)
 {
-   
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_IMAGE   , {"bmp" , "png" , "jpg" , "tga"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_FONT    , {"ttf"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_AUDIO   , {"wav" , "ogg"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_VIDEO   , {"ogv"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_ARCHIVE , {"zip" , "7z" , "tar"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_BINFILE , {"dat" , "bin"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE, {"txt" , "log"}));
+   ///< Supported types of resources defined here
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_IMAGE        , {"bmp" , "png" , "jpg" , "tga"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_FONT         , {"ttf"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_AUDIO_SAMPLE , {"wav" , "ogg" , "mp3"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_AUDIO_STREAM , {"wav" , "ogg" , "mp3"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_VIDEO        , {"ogv"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_ARCHIVE      , {"zip" , "7z" , "tar" , "gz"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_BINFILE      , {"dat" , "bin" , "exe" , "dll"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE     , {"txt" , "log"}));
    
    SetWindow(win);
 }
@@ -111,12 +105,15 @@ void ResourceLibrary::SetWindow(EagleGraphicsContext* win) {
 
 
 
-bool ResourceLibrary::LoadResourcesFromConfig(const ConfigFile& cfg) {
+std::vector<RESOURCEID> ResourceLibrary::LoadResourcesFromConfig(const ConfigFile& cfg) {
 
    EagleSystem* sys = Eagle::EagleLibrary::System("Any");
    EAGLE_ASSERT(sys);
    FileSystem* fs = sys->GetFileSystem();
    EAGLE_ASSERT(fs);
+   
+   std::vector<RESOURCEID> rids;
+   RESOURCEID rid = BADRESOURCEID;
    
    const ConfigSection* cs = 0;
    try {
@@ -124,19 +121,21 @@ bool ResourceLibrary::LoadResourcesFromConfig(const ConfigFile& cfg) {
    }
    catch(...) {
       EagleWarn() << "Resources section not found in config file. No resources to load." << std::endl;
-      return false;
+      return rids;
    }
    
    std::vector<std::string> keys = cs->GetKeys();
-   bool success = true;
 
    for (unsigned int i = 0 ; i < keys.size() ; ++i) {
+
       std::string key = keys[i];
       const ConfigLine* cl = cs->FindConfigConst(key);
+
       if (!cl) {
          EagleWarn() << "No config line found for key '" << key << "'" << std::endl;
          continue;
       }
+
       if (cl->IsKeyValuePair()) {
          std::string resource = cl->Value();
          std::shared_ptr<File> pfile = fs->ReadFile(FilePath(resource));
@@ -145,28 +144,35 @@ bool ResourceLibrary::LoadResourcesFromConfig(const ConfigFile& cfg) {
             continue;
          }
          std::shared_ptr<ArchiveFile> arcfile(pfile.get()->IsArchive()?new ArchiveFile(pfile.get()->Info()):0);
+         std::vector<RESOURCEID> rids2;
          bool floaded = true;
          if (arcfile.get()) {
-            floaded = floaded && LoadArchiveResource(arcfile);
+            rids2 = LoadArchiveResource(arcfile);
+            floaded = (bool)rids2.size();
          }
          else {
-            floaded = floaded && LoadFileResource(pfile);
+            rid = LoadFileResource(pfile);
+            floaded = rid != BADRESOURCEID;
+            if (floaded) {
+               rids2.push_back(rid);
+            }
          }
-         success = success && floaded;
          if (!floaded) {
             EagleError() << "Failed to load resource for path '" << resource << "'" << std::endl;
             continue;
          }
+         rids.insert(rids.end() , rids2.begin() , rids2.end());
          ResourceBase* rbase = LookupResourceByPath(FilePath(resource).Path());
          EAGLE_ASSERT(rbase);
          if (!rbase) {
             EagleError() << "Failed to look up resource by path in resource library for path'" << FilePath(resource).Path() << "'" << std::endl;
             continue;
          }
-         lookupmap[key] = rbase->RID();
+         lookupmap[cl->Key()] = rbase->RID();
+         resmap[rbase->RID()] = rbase;
       }
    }
-   return success;
+   return rids;
 }
 
 
@@ -186,9 +192,19 @@ void ResourceLibrary::FreeResources() {
    while (it != resmap.end()) {
       ResourceBase* rbase = it->second;
       if (rbase) {
-         delete rbase;/// Resourcebase destructor unregisters itself with us
+         EagleFont* f = dynamic_cast<EagleFont*>(rbase);
+         EagleImage* i = dynamic_cast<EagleImage*>(rbase);
+         if (f) {
+            f->Owner()->FreeFont(f);
+         }
+         else if (i) {
+            i->ParentContext()->FreeImage(i);
+         }
+         else {
+            delete rbase;/// Resourcebase destructor unregisters itself with us
+         }
       }
-///      it->second = 0;
+      it->second = 0;
       ++it;
    }
    resmap.clear();

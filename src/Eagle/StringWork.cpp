@@ -40,6 +40,41 @@ using std::list;
 size_t STRINGPRINTF_BUFFER_SIZE = 1024;
 
    
+
+
+bool STOB(std::string b) {
+   bool ret = false;
+   if (strcmp(b.c_str() , "On") == 0) {ret = true;}
+   if (strcmp(b.c_str() , "True") == 0) {ret = true;}
+   return ret;
+}
+
+
+
+int STOI(std::string i) {
+   int n = 0;
+   sscanf(i.c_str() , "%d" , &n);
+   return n;
+}
+
+
+
+float STOF(std::string f) {
+   float n = 0;
+   sscanf(f.c_str() , "%f" , &n);
+   return n;
+}
+
+
+
+double STOD(std::string d) {
+   double n = 0;
+   sscanf(d.c_str() , "%lf" , &n);
+   return n;
+}
+
+
+
 string StringPrintF(const char* format_str , ...) {
    char* buffer = new char[STRINGPRINTF_BUFFER_SIZE];
    va_list args;

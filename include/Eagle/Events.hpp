@@ -700,8 +700,11 @@ public :
    ///< Enqueues an event and handles it
    void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
-   void ListenTo(EagleEventSource* s , EagleThread* t = MAIN_THREAD);///< Start listening to s
-   void StopListeningTo(EagleEventSource* s , EagleThread* t = MAIN_THREAD);///< Stop listening to s
+   void ListenTo(EagleEventSource* s) override;///< Start listening to s on main thread
+   void StopListeningTo(EagleEventSource* s) override;///< Stop listening to s on main thread
+
+   void ListenTo(EagleEventSource* s , EagleThread* t);///< Start listening to s on thread t
+   void StopListeningTo(EagleEventSource* s , EagleThread* t);///< Stop listening to s on thread t
 
 
    /// EagleEventHandler

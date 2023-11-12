@@ -7,19 +7,19 @@
 
 
 
-SoundSample* SoundManager::CreateSoundSample(FilePath fp) {
+EagleSoundSample* SoundManager::CreateSoundSample(FilePath fp) {
    return PrivateCreateSoundSample(fp);
 }
 
 
 
-SoundInstance* SoundManager::CreateSoundInstance(SoundSample* psample) {
+EagleSoundInstance* SoundManager::CreateSoundInstance(EagleSoundSample* psample) {
    return PrivateCreateSoundInstance(psample);
 }
 
 
 
-SoundStream* SoundManager::CreateSoundStream(FilePath fp) {
+EagleSoundStream* SoundManager::CreateSoundStream(FilePath fp) {
    return PrivateCreateSoundStream(fp);
 }
 

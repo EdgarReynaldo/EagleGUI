@@ -6,13 +6,13 @@
 
 bool Allegro5SoundSample::LoadFromArgs(std::vector<std::string> args) {
    (void)args;
-   return LoadFromFile(fp);
+   return LoadFromFile(filepath);
 }
 
 
 
 Allegro5SoundSample::Allegro5SoundSample() :
-      SoundSample(),
+      EagleSoundSample(),
       sample_data(0)
 {}
    
@@ -47,8 +47,13 @@ ALLEGRO_SAMPLE* Allegro5SoundSample::Data() {
 
 
 
-Allegro5SoundInstance::Allegro5SoundInstance(SoundSample* psample) :
-      SoundInstance(0),
+/// -----------------------     Allegro5SoundInstance    -------------------------
+
+
+
+
+Allegro5SoundInstance::Allegro5SoundInstance(EagleSoundSample* psample) :
+      EagleSoundInstance(psample),
       pinst(0)
 {
    Allegro5SoundSample* asample = dynamic_cast<Allegro5SoundSample*>(psample);
@@ -77,7 +82,7 @@ void Allegro5SoundInstance::Free() {
 
 
 
-void Allegro5SoundInstance::SetSample(SoundSample* psample) {
+void Allegro5SoundInstance::SetSample(EagleSoundSample* psample) {
    parent = psample;
    ALLEGRO_SAMPLE* smp = dynamic_cast<Allegro5SoundSample*>(psample)->Data();
    if (pinst) {
@@ -97,13 +102,18 @@ ALLEGRO_SAMPLE_INSTANCE* Allegro5SoundInstance::AllegroInstance()
 
 
 
+/// -----------------------     Allegro5SoundStream     ----------------------
+
+
+
+
 bool Allegro5SoundStream::LoadFromArgs(std::vector<std::string> args) {
    int nbuffers = 3;
    int fragcount = 32768;
-   if (args.size) {
+   if (args.size()) {
       nbuffers = STOI(args[0]);
       if (args.size() > 1) {
-         fragcount = STOI(args[1]);0
+         fragcount = STOI(args[1]);
       }
    }
    return LoadFromFile(nbuffers , fragcount);

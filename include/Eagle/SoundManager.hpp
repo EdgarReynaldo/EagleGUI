@@ -32,18 +32,18 @@
 
 
 
-class SoundSample;
-class SoundStream;
-class SoundInstance;
+class EagleSoundSample;
+class EagleSoundInstance;
+class EagleSoundStream;
 
 
 
 class SoundManager {
    
 protected :
-   virtual SoundSample* PrivateCreateSoundSample(FilePath fp)=0;
-   virtual SoundStream* PrivateCreateSoundStream(FilePath fp)=0;
-   virtual SoundInstance* PrivateCreateSoundInstance(SoundSample* psample)=0;
+   virtual EagleSoundSample* PrivateCreateSoundSample(FilePath fp)=0;
+   virtual EagleSoundStream* PrivateCreateSoundStream(FilePath fp)=0;
+   virtual EagleSoundInstance* PrivateCreateSoundInstance(EagleSoundSample* psample)=0;
    
 public :
    SoundManager() {}
@@ -51,21 +51,21 @@ public :
    virtual bool Initialize()=0;
    virtual void CheckInstances()=0;
    virtual bool ReserveInstances(size_t n)=0;
-   virtual SoundInstance* GetInstance(size_t index)=0;
+   virtual EagleSoundInstance* GetInstance(size_t index)=0;
    
-   SoundSample* CreateSoundSample(FilePath fp);
-   SoundInstance* CreateSoundInstance(SoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it, may be NULL
-   SoundStream* CreateSoundStream(FilePath fp);
+   EagleSoundSample* CreateSoundSample(FilePath fp);
+   EagleSoundInstance* CreateSoundInstance(EagleSoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it, may be NULL
+   EagleSoundStream* CreateSoundStream(FilePath fp);
    
-   virtual void ReadyBGStream(SoundStream* stream)=0;
+   virtual void ReadyBGStream(EagleSoundStream* stream)=0;
    virtual void SetBGStreamPlaying(bool playing)=0;
    virtual void SetSampleMixerPlaying(bool playing)=0;
 
    virtual void PlayAllSound(bool play)=0;
    void PauseAllSound(bool pause) {PlayAllSound(!pause);}
 
-   virtual SoundInstance* PlayNewSampleInstance(SoundSample* psample)=0;
-   virtual bool SetSample(SoundInstance* inst , SoundSample* sample)=0;///< Use with @fn ReserveInstances
+   virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* psample)=0;
+   virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample)=0;///< Use with @fn ReserveInstances
 };
 
 

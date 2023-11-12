@@ -207,8 +207,7 @@ std::string FileSystem::GetCWD() {return CurrentDirectory();}
 
 FileSystem::FileSystem() : 
       drives(),
-      archive_mounted(false),
-      mount_file_path()
+      mount_stack()
 {}
 
 

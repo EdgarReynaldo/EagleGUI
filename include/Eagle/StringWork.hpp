@@ -34,6 +34,15 @@
 extern size_t STRINGPRINTF_BUFFER_SIZE;///< How large our working string print f buffer should be, defaults to 1024
 
 
+/**! String to data functions. These do not throw exceptions. Rather they have default values of false, 0, 0.0f, and 0.0 */
+
+bool STOB(std::string b);
+int STOI(std::string i);
+float STOF(std::string f);
+double STOD(std::string d);
+
+
+
 
 #if defined __GNUC__
    #define PRINTF_FORMAT_STYLE __attribute__ ((format (printf, 1, 2)))

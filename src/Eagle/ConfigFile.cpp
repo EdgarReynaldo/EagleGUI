@@ -35,39 +35,6 @@
 #include <cstring>
 
 
-bool STOB(std::string b) {
-   bool ret = false;
-   if (strcmp(b.c_str() , "On") == 0) {ret = true;}
-   if (strcmp(b.c_str() , "True") == 0) {ret = true;}
-   return ret;
-}
-
-
-
-int STOI(std::string i) {
-   int n = 0;
-   sscanf(i.c_str() , "%d" , &n);
-   return n;
-}
-
-
-
-float STOF(std::string f) {
-   float n = 0;
-   sscanf(f.c_str() , "%f" , &n);
-   return n;
-}
-
-
-
-double STOD(std::string d) {
-   double n = 0;
-   sscanf(d.c_str() , "%lf" , &n);
-   return n;
-}
-
-
-
 /// --------------------------     ConfigLine      -------------------------
 
 

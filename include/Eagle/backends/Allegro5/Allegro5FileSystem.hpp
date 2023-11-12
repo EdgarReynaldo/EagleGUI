@@ -50,6 +50,8 @@ protected :
 
    virtual void ReadDirectoryContents(Folder* folder , bool descending = false);
    
+   bool RemountArchive();
+
 public :
    Allegro5FileSystem();
    ~Allegro5FileSystem();

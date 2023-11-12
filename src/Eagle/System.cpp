@@ -226,7 +226,6 @@ void EagleSystem::Shutdown() {
    }
    
    if (resource_library) {
-      delete resource_library;
       resource_library = 0;
    }
 

@@ -29,6 +29,7 @@
 
 
 #include <vector>
+#include <stack>
 
 #include "Eagle/File.hpp"
 
@@ -79,11 +80,9 @@ class Drive;
 class FileSystem {
 protected :
    std::vector<Drive*> drives;
+   std::stack<FilePath> mount_stack;
    
-//   bool archive_mounted;/// TODO : This works only for non nested mounts
-//   FilePath mount_file_path;
-   std::stack<FilePath> mount_file_path_stack;
-   
+
    /// Not for public use - does not reflect physfs paths properly - internal use only
    static std::string CurrentDirectory();
 
@@ -96,6 +95,9 @@ protected :
    void RegisterArchiveFile(Folder* parent , std::shared_ptr<ArchiveFile> afile);
    void RegisterSubFolder(Folder* parent , std::shared_ptr<Folder> sub);
    
+
+
+
 public :
    FileSystem();///< Empty constructor does nothing
 

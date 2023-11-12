@@ -34,35 +34,35 @@
 
 class EagleSoundSample : public ResourceBase {
 
-   virtual bool LoadFromArgs(std::vector<std::string> args);/*(void)args*/
+   virtual bool LoadFromArgs(std::vector<std::string> args)=0;/*(void)args*/
 public :
-   SoundSample();
+   EagleSoundSample();
 
-   virtual ~SoundSample();
+   virtual ~EagleSoundSample();
 
    virtual void Free()=0;
 };
 
 
 
-class SoundInstance {
+class EagleSoundInstance {
 public :
-   SoundSample* parent;
+   EagleSoundSample* parent;
 
-   SoundInstance(SoundSample* parent_sample);
-   virtual ~SoundInstance();
+   EagleSoundInstance(EagleSoundSample* parent_sample);
+   virtual ~EagleSoundInstance();
    
-   SoundSample* Parent() {return parent;}
+   EagleSoundSample* Parent() {return parent;}
 };
 
 
 
-class SoundStream : public ResourceBase::{
+class EagleSoundStream : public ResourceBase {
 
-   virtual bool LoadFromArgs(std::vector<std::string> args);/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
+   virtual bool LoadFromArgs(std::vector<std::string> args)=0;/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
 public :
-   SoundStream();
-   virtual ~SoundStream();
+   EagleSoundStream();
+   virtual ~EagleSoundStream();
 
    virtual void Free()=0;
 };
