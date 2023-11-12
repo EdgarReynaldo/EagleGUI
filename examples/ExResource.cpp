@@ -61,8 +61,6 @@ int main(int argc , char** argv) {
    
 
    SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Load"  , input_key_press(EAGLE_KEY_L) , "L"},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Save"  , input_key_press(EAGLE_KEY_S) , "S"},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Print" , input_key_press(EAGLE_KEY_P) , "P"},
                                {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit"  , input_key_held(EAGLE_KEY_ANY_CTRL) && input_key_press(EAGLE_KEY_Q) , "CTRL-Q"}};
 
    SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Option &1" , input_key_press(EAGLE_KEY_1) , "1"},
@@ -78,7 +76,7 @@ int main(int argc , char** argv) {
    ClassicMenuBar menubar;
    
    options.SetItems(&omenu[0] , 3);
-   foptions.SetItems(&fmenu[0] , 4);
+   foptions.SetItems(&fmenu[0] , 2);
    menubar.SetBarItems(&mbar[0] , 2);
    
    menubar.SetSubMenu(0 , &foptions);
@@ -104,8 +102,8 @@ int main(int argc , char** argv) {
    RESOURCE_TYPE rt = RT_UNKNOWN;
 
    TextResource* textres = 0;
-   ImageResource* ires = 0;
-   FontResource* fres = 0;
+   EagleImage* image = 0;
+   EagleFont*  efont = 0;
    ArchiveResource* arcres = 0;
    
    DialogManager* dman = sys->GetDialogManager();
@@ -129,13 +127,15 @@ int main(int argc , char** argv) {
                win->DrawMultiLineTextString(font , textres->FileText() , 25 , 50 , EagleColor(255,255,255) , font->Height() , HALIGN_LEFT , VALIGN_TOP);
                break;
             case RT_IMAGE :
-               ires = dynamic_cast<ImageResource*>(rb);
-               win->DrawImageFit(ires->GetImage() , Rectangle(300,225,200,150));
-               win->DrawTextString(font , "Preview" , 300 , 200 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
+               if (image) {
+                  win->DrawImageFit(image , Rectangle(300,225,200,150));
+                  win->DrawTextString(font , "Preview" , 300 , 200 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
+               }
                break;
             case RT_FONT :
-               fres = dynamic_cast<FontResource*>(rb);
-               win->DrawTextString(fres->GetTheFont() , "Example Text" , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+               if (efont) {
+                  win->DrawTextString(efont , "Example Text" , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
+               }
                break;
             case RT_ARCHIVE :
                if (!shown) {
@@ -205,11 +205,8 @@ int main(int argc , char** argv) {
                   }
                   else if (rt != RT_UNKNOWN) {
                      std::shared_ptr<File> file = fsys->ReadFile(fp);
-                     bool success = reslib->LoadFileResource(file);
-                     if (success) {
-                        rid = reslib->LookupResourceID(fp.Path());
-                        rb = reslib->LookupResourceByID(rid);
-                     }
+                     rid = reslib->LoadFileResource(file);
+                     rb = reslib->LookupResourceByID(rid);
                   }
                }
                foptions.MItems()[0]->Deactivate();
@@ -218,14 +215,6 @@ int main(int argc , char** argv) {
                redraw = true;
             }
             else if (msg == WidgetMsg(foptions.MItems()[1] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
-               /// file option 2 is save
-               continue;
-            }
-            else if (msg == WidgetMsg(foptions.MItems()[2] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
-               /// file option 3 is print, not implemented
-               continue;
-            }
-            else if (msg == WidgetMsg(foptions.MItems()[3] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// file option 4 is quit
                quit = true;
             }

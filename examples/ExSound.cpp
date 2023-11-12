@@ -27,6 +27,9 @@ int main(int argc , char** argv) {
    soundman.ReserveInstances(10);
    EAGLE_ASSERT(soundman.InstanceCount() == 10);
    
-   SoundStream = soundman.CreateSoundStream("")
+   EagleSoundStream* stream = soundman.CreateSoundStream(FilePath("bgmusic.mp3"));
+   
+   
+   
    return 0;
 }
