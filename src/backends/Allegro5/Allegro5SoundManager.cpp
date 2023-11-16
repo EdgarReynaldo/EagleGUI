@@ -236,6 +236,19 @@ void Allegro5SoundManager::SetBGStreamPlaying(bool playing) {
 
 
 
+void Allegro5SoundManager::SetInstancePlaying(EagleSoundInstance* instance, bool play) {
+   if (instance) {
+      Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(instance);
+      if (a5inst) {
+         ALLEGRO_SAMPLE_INSTANCE* inst = a5inst->AllegroInstance();
+         if (inst) {
+            al_set_sample_instance_playing(inst , play);
+         }
+      }
+   }
+}
+
+
 void Allegro5SoundManager::SetSampleMixerPlaying(bool playing) {
    al_set_mixer_playing(psample_mixer , playing);
 }

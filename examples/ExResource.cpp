@@ -110,7 +110,7 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
-   bool shown = true;
+   bool shown = false;
    
    bool quit = false;
    bool redraw = true;

@@ -58,12 +58,17 @@ public :
    EagleSoundStream* CreateSoundStream(FilePath fp);
    
    virtual void ReadyBGStream(EagleSoundStream* stream)=0;
+
    virtual void SetBGStreamPlaying(bool playing)=0;
+   virtual void SetInstancePlaying(EagleSoundInstance* sound , bool play)=0;
+   
    virtual void SetSampleMixerPlaying(bool playing)=0;
 
    virtual void PlayAllSound(bool play)=0;
    void PauseAllSound(bool pause) {PlayAllSound(!pause);}
 
+   
+   
    virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* psample)=0;
    virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample)=0;///< Use with @fn ReserveInstances
 };

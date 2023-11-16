@@ -83,10 +83,13 @@ public :
    virtual void ReadyBGStream(EagleSoundStream* stream);///< May be null to clear the stream
    
    virtual void SetBGStreamPlaying(bool playing);
+   virtual void SetInstancePlaying(EagleSoundInstance* sound , bool play);
+
    virtual void SetSampleMixerPlaying(bool playing);
-   
+
    virtual void PlayAllSound(bool play);
    
+
    virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* sample);
    virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
 

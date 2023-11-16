@@ -58,7 +58,7 @@ Allegro5SoundInstance::Allegro5SoundInstance(EagleSoundSample* psample) :
 {
    Allegro5SoundSample* asample = dynamic_cast<Allegro5SoundSample*>(psample);
    
-   ALLEGRO_SAMPLE* smp = asample->Data();
+   ALLEGRO_SAMPLE* smp = asample?asample->Data():0;
    pinst = al_create_sample_instance(smp);
    SetSample(asample);
 }
@@ -84,7 +84,8 @@ void Allegro5SoundInstance::Free() {
 
 void Allegro5SoundInstance::SetSample(EagleSoundSample* psample) {
    parent = psample;
-   ALLEGRO_SAMPLE* smp = dynamic_cast<Allegro5SoundSample*>(psample)->Data();
+   Allegro5SoundSample* a5sample = dynamic_cast<Allegro5SoundSample*>(psample);
+   ALLEGRO_SAMPLE* smp = a5sample?a5sample->Data():0;
    if (pinst) {
       al_set_sample(pinst , smp);
       if (smp) {
