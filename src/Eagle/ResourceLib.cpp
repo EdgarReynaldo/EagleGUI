@@ -89,7 +89,7 @@ ResourceLibrary::ResourceLibrary(EagleGraphicsContext* win) :
 
 
 ResourceLibrary::~ResourceLibrary() {
-   FreeResources();
+   
 }
 
 

@@ -43,7 +43,7 @@ protected :
    Allegro5ResourceLibrary();
    
 public :
-
+   ~Allegro5ResourceLibrary() {}
 
    static Allegro5ResourceLibrary* Instance();
 

@@ -226,6 +226,7 @@ void EagleSystem::Shutdown() {
    }
    
    if (resource_library) {
+      resource_library->FreeResources();/// Their destructor is in global atexit so we call free resources here
       resource_library = 0;
    }
 
