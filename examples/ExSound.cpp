@@ -17,6 +17,11 @@ int main(int argc , char** argv) {
       EagleWarn() << "Failed to initialize some subsystem. Continuiing." << std::endl;
    }
 
+   EagleGraphicsContext* window = sys->CreateGraphicsContext("Soundboard" , 800 , 600 , EAGLE_OPENGL | EAGLE_WINDOWED , -1 , -1);
+   EAGLE_ASSERT(window && window->Valid());
+   window->Clear();
+   window->FlipDisplay();
+
    Allegro5SoundManager soundman;
    bool soundup = soundman.Initialize();
    if (!soundup) {
@@ -43,7 +48,9 @@ int main(int argc , char** argv) {
    int i = 0;
    for (Folder::FILEMAP::iterator it = sfxmap.begin() ; it != sfxmap.end() ; ++it) {
       std::shared_ptr<File> file = it->second;
-      soundboard.push_back(soundman.CreateSoundSample(file->Path()));
+      EagleSoundSample* sample = soundman.CreateSoundSample(file->Path());
+      soundboard.push_back(sample);
+      EAGLE_ASSERT(sample);
       soundman.SetSample(soundman.GetInstance(i) , soundboard[i]);
       instances.push_back(soundman.GetInstance(i));
       ++i;
@@ -54,12 +61,6 @@ int main(int argc , char** argv) {
    bool sampleson = true;
    
    std::vector<int32_t> keycodes = {EAGLE_KEY_0 , EAGLE_KEY_1  , EAGLE_KEY_2 , EAGLE_KEY_3 , EAGLE_KEY_4 , EAGLE_KEY_5 , EAGLE_KEY_6 , EAGLE_KEY_7 , EAGLE_KEY_8 , EAGLE_KEY_9};
-   
-   EagleGraphicsContext* window = sys->CreateGraphicsContext("Soundboard" , 800 , 600 , EAGLE_OPENGL | EAGLE_WINDOWED , -1 , -1);
-   EAGLE_ASSERT(window && window->Valid());
-   
-   window->Clear();
-   window->FlipDisplay();
    
    EagleFont* font = window->GetFont("Data/Fonts/Verdana.ttf" , -40 , 0 , VIDEO_IMAGE);
    EAGLE_ASSERT(font);
