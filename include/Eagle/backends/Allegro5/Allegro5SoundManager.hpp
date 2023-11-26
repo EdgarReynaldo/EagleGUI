@@ -76,9 +76,15 @@ public :
    void Free();
    virtual bool Initialize();///< Get ready to produce sound. Setup mixers and voice
    virtual void CheckInstances();///< Remove dead instances, no need to call
-   virtual bool ReserveInstances(size_t n);///< For convenience and sample reuse - saves memory and allocation/deallocations
+   virtual bool ReserveInstances(size_t n , size_t max = 32);///< For convenience and sample reuse - saves memory and allocation/deallocations
    virtual EagleSoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
    size_t InstanceCount() {return instances.size();}
+
+   virtual void ClearSoundSamples();
+   virtual void ClearSoundInstances();
+   virtual void ClearBGStream();
+
+
 
    virtual void ReadyBGStream(EagleSoundStream* stream);///< May be null to clear the stream
    
@@ -87,7 +93,8 @@ public :
 
    virtual void SetSampleMixerPlaying(bool playing);
 
-   virtual void PlayAllSound(bool play);
+   virtual void SetMasterMixerPlaying(bool play);
+   
    
 
    virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* sample);

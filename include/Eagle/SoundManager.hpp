@@ -50,13 +50,17 @@ public :
    virtual ~SoundManager() {}
    virtual bool Initialize()=0;
    virtual void CheckInstances()=0;
-   virtual bool ReserveInstances(size_t n)=0;
+   virtual bool ReserveInstances(size_t n , size_t max)=0;
    virtual EagleSoundInstance* GetInstance(size_t index)=0;
    
    EagleSoundSample* CreateSoundSample(FilePath fp);
    EagleSoundInstance* CreateSoundInstance(EagleSoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it, may be NULL
    EagleSoundStream* CreateSoundStream(FilePath fp);
    
+   virtual void ClearSoundSamples()=0;
+   virtual void ClearSoundInstances()=0;
+   virtual void ClearBGStream()=0;
+
    virtual void ReadyBGStream(EagleSoundStream* stream)=0;
 
    virtual void SetBGStreamPlaying(bool playing)=0;
@@ -64,8 +68,7 @@ public :
    
    virtual void SetSampleMixerPlaying(bool playing)=0;
 
-   virtual void PlayAllSound(bool play)=0;
-   void PauseAllSound(bool pause) {PlayAllSound(!pause);}
+   virtual void SetMasterMixerPlaying(bool play)=0;
 
    
    

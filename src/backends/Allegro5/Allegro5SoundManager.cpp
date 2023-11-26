@@ -31,6 +31,7 @@ EagleSoundSample* Allegro5SoundManager::PrivateCreateSoundSample(FilePath fp) {
    EagleSoundSample* psample = new Allegro5SoundSample();
    bool success = psample->LoadFromFile(fp);
    if (!success) {
+      EagleError() << StringPrintF("Failed to load file path '%s' from file into new Allegro 5 sound sample" , fp.Path().c_str()) << std::endl;
       delete psample;
       psample = 0;
    }
@@ -55,7 +56,7 @@ EagleSoundInstance* Allegro5SoundManager::PrivateCreateSoundInstance(EagleSoundS
    Allegro5SoundInstance* pinstance = new Allegro5SoundInstance(psample);
    pinstance->SetSample(psample);
    al_attach_sample_instance_to_mixer(pinstance->AllegroInstance() , psample_mixer);
-   al_set_sample_instance_playing(pinstance->AllegroInstance() , true);
+///   al_set_sample_instance_playing(pinstance->AllegroInstance() , true);
    return pinstance;
 }
 
@@ -172,8 +173,10 @@ void Allegro5SoundManager::CheckInstances() {
 
 
 
-bool Allegro5SoundManager::ReserveInstances(size_t n) {
-   if (n > 32) {n = 32;}///< Set a max of 32 instances for some arbitrary reason
+bool Allegro5SoundManager::ReserveInstances(size_t n , size_t max) {
+   if (max > 64) {max = 64;}///< Set a max of 64 instances for some arbitrary reason
+   
+   if (n > max) {n = max;}
    
    int nnew = 0;
    int nold = 0;
@@ -188,18 +191,18 @@ bool Allegro5SoundManager::ReserveInstances(size_t n) {
       return true;
    }
    
-   /// New instances
-   for (int inew = 0 ; inew < nnew ; ++inew) {
-      Allegro5SoundInstance* inst = dynamic_cast<Allegro5SoundInstance*>(PrivateCreateSoundInstance(0));
-      instances.push_back(inst);
-   }
-   
    /// Old instances
-   
    for (int iold = 0 ; iold < nold ; ++iold) {
       Allegro5SoundInstance* inst = *instances.begin();
       delete inst;
       instances.pop_front();
+   }
+
+   /// New instances
+   for (int inew = 0 ; inew < nnew ; ++inew) {
+      Allegro5SoundInstance* inst = dynamic_cast<Allegro5SoundInstance*>(PrivateCreateSoundInstance(0));
+      EAGLE_ASSERT(inst);
+      instances.push_back(inst);
    }
    
    return true;///?
@@ -209,6 +212,38 @@ bool Allegro5SoundManager::ReserveInstances(size_t n) {
 
 EagleSoundInstance* Allegro5SoundManager::GetInstance(size_t index) {
    return instances[index];
+}
+
+
+
+void Allegro5SoundManager::ClearSoundSamples() {
+   ClearSoundInstances();
+   for (std::map<std::string , Allegro5SoundSample*>::iterator it = sample_map.begin() ; it != sample_map.end() ; ++it) {
+      delete it->second;
+   }
+   sample_map.clear();
+}
+
+
+
+void Allegro5SoundManager::ClearSoundInstances() {
+   for (unsigned int i = 0 ; i < instances.size() ; ++i) {
+      EagleSoundInstance* instance = instances[i];
+      Allegro5SoundInstance* a5instance = dynamic_cast<Allegro5SoundInstance*>(instance);
+      if (a5instance) {
+         a5instance->SetSample(0);
+      }
+   }
+}
+
+
+
+void Allegro5SoundManager::ClearBGStream() {
+   if (bgstream) {  
+      al_detach_audio_stream(bgstream->AllegroStream());
+      delete bgstream;
+      bgstream = 0;
+   }
 }
 
 
@@ -255,7 +290,7 @@ void Allegro5SoundManager::SetSampleMixerPlaying(bool playing) {
 
 
 
-void Allegro5SoundManager::PlayAllSound(bool play) {
+void Allegro5SoundManager::SetMasterMixerPlaying(bool play) {
    al_set_mixer_playing(pmaster_mixer , play);
 }
 
