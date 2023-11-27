@@ -37,7 +37,7 @@
 #include "Eagle/Gui/Button/IconButton.hpp"
 #include "Eagle/Gui/Button/RadioGroup.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
-#include "Eagle/Gui/Button/TextButton.hpp"
+#include "Eagle/Gui/Button/TextIconButton.hpp"
 
 #include "Eagle/Gui/Scripting/Parsing.hpp"
 
@@ -57,15 +57,15 @@ RegisteredWidgetCreator::RegisteredWidgetCreator(string widget_class , WIDGET_CR
 
 
 
-REGISTERED_WIDGET_CREATOR(BasicText ,    CreateBasicTextWidget);
-REGISTERED_WIDGET_CREATOR(SelectText ,   CreateSelectTextWidget);
-REGISTERED_WIDGET_CREATOR(LinkText ,     CreateLinkTextWidget);
-REGISTERED_WIDGET_CREATOR(BasicButton ,  CreateBasicButtonWidget);
-REGISTERED_WIDGET_CREATOR(GuiButton ,    CreateGuiButtonWidget);
-REGISTERED_WIDGET_CREATOR(IconButton ,   CreateIconButtonWidget);
-REGISTERED_WIDGET_CREATOR(RadioButton ,  CreateRadioButtonWidget);
+REGISTERED_WIDGET_CREATOR(BasicText         , CreateBasicTextWidget);
+REGISTERED_WIDGET_CREATOR(SelectText        , CreateSelectTextWidget);
+REGISTERED_WIDGET_CREATOR(LinkText          , CreateLinkTextWidget);
+REGISTERED_WIDGET_CREATOR(BasicButton       , CreateBasicButtonWidget);
+REGISTERED_WIDGET_CREATOR(GuiButton         , CreateGuiButtonWidget);
+REGISTERED_WIDGET_CREATOR(IconButton        , CreateIconButtonWidget);
+REGISTERED_WIDGET_CREATOR(RadioButton       , CreateRadioButtonWidget);
 REGISTERED_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
-///REGISTERED_WIDGET_CREATOR(TextButton ,   CreateTextButtonWidget);
+REGISTERED_WIDGET_CREATOR(TextIconButton    , CreateTextIconButtonWidget);
 
 
 
@@ -132,6 +132,15 @@ WidgetBase* CreateScrollButtonWidget(std::string object_name , AttributeValueMap
    widget->SetAttributes(avmap);
    return widget;
 }
+
+
+WidgetBase* CreateTextIconButtonWidget(std::string object_name , AttributeValueMap avmap) {
+   /// TODO : Parse font and text from avmap
+   TextIconButton* tbtn = new TextIconButton("TextIconButton" , object_name);
+   tbtn->SetAttributes(avmap);
+   return tbtn;
+}
+
 
 
 /**

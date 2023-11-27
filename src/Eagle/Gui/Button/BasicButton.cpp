@@ -184,11 +184,6 @@ int BasicButton::PrivateCheckInputs() {
    } else if (input_mouse_press(LMB)) {
       Rectangle real = OuterArea();
       click_area->MoveBy(real.X() , real.Y());
-
-      EAGLE_DEBUG(
-         EagleInfo() << "Mouse = " << msx << "," << msy << " Real = " << real << std::endl;
-      );
-
       if (real.Contains(msx,msy)) {
          activated = true;
          /// If there is no click area we use the whole button
@@ -358,7 +353,7 @@ BasicButton::~BasicButton() {
 
 
 
-void BasicButton::SetButtonType(BUTTON_ACTION_TYPE type) {
+void BasicButton::SetActionType(BUTTON_ACTION_TYPE type) {
    btn_action_type = type;
    bool hover = Flags().FlagOn(HOVER);
    bool up = true;

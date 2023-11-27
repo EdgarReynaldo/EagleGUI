@@ -160,7 +160,7 @@ void Slider::SetButton(BasicButton* btn) {
       handle->SetParent(NULL);
    }
    handle = btn?btn:&basic_handle_button;
-   handle->SetButtonType(SPRING_BTN);
+   handle->SetActionType(SPRING_BTN);
    ListenTo(handle);
    handle->SetParent(this);
    SetPercent(slider_percent);
@@ -347,7 +347,7 @@ void Slider2D::SetButton(BasicButton* btn) {
       handle->SetParent(NULL);
    }
    handle = btn?btn:&basic_handle_button;
-   handle->SetButtonType(SPRING_BTN);
+   handle->SetActionType(SPRING_BTN);
    ListenTo(handle);
    handle->SetParent(this);
    SetPercent(slider_xpercent , slider_ypercent);

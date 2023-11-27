@@ -93,6 +93,6 @@ void BasicRadioButton::SetWidgets(BasicButton* button_to_use , BasicText* text_t
    our_text = text_to_use;
    our_button->SetParent(this);
    our_text->SetParent(this);
-   our_button->SetButtonType(TOGGLE_BTN);
+   our_button->SetActionType(TOGGLE_BTN);
    ResetWidgetAreas();
 }

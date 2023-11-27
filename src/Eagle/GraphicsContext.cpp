@@ -420,6 +420,45 @@ void EagleGraphicsContext::DrawTinted(EagleImage* img , int x , int y ,
 
 
 
+void EagleGraphicsContext::DrawImageAligned(EagleImage* img , Rectangle dest , HALIGNMENT halign , VALIGNMENT valign , EagleColor tint , int flags) {
+   EAGLE_ASSERT(img && img->Valid());
+   
+   float xpos = dest.RX();
+   float ypos = dest.BY();
+   switch (halign) {
+   case HALIGN_LEFT :
+      xpos -= dest.W();
+      break;
+   case HALIGN_CENTER :
+      xpos -= (dest.W() - img->W())/2;
+      break;
+   case HALIGN_RIGHT :
+      xpos -= img->W()/2;
+      break;
+   default :
+      break;
+   }
+   switch (valign) {
+   case VALIGN_TOP :
+      ypos -= dest.H();
+      break;
+   case VALIGN_CENTER :
+      ypos -= (dest.H() - img->H())/2;
+      break;
+   case VALIGN_BOTTOM :
+      ypos -= img->H()/2;
+      break;
+   default :
+      break;
+   }
+   
+   Clipper clip(img , dest);
+   
+   Draw(img , xpos , ypos , HALIGN_LEFT , VALIGN_TOP , tint , flags);
+}
+
+
+
 void EagleGraphicsContext::DrawImageCenter(EagleImage* img , Rectangle dest , EagleColor tint , int flags) {
    EAGLE_ASSERT(img && img->Valid());
 

@@ -114,7 +114,7 @@ void ClassicMenuItemLayout::SetItemInfo(SIMPLE_MENU_ITEM* mitem) {
    menu_button->SetButtonState(!mitem->down , false);
    menu_button->SetZOrder(ZORDER_PRIORITY_LOW);
    menu_button->SetInputGroup(mitem->hotkey);
-   menu_button->SetButtonType(mitem->batype);
+   menu_button->SetActionType(mitem->batype);
    item_layout.reset(new SimpleTable("Menu item layout"));
 
    PlaceWidget(menu_button.get(), 0);

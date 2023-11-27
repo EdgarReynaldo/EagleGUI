@@ -25,6 +25,14 @@ void TextIconButton::OnFlagChanged(WIDGET_FLAGS f , bool on) {
 
 
 
+TextIconButton::TextIconButton(std::string classname , std::string objname) :
+      IconButton(classname , objname),
+      label(""),
+      label_font(0)
+{}
+
+
+
 TextIconButton::TextIconButton(EagleFont* font , std::string text , std::string classname , std::string objname) :
       IconButton(classname , objname),
       label(text),
@@ -33,7 +41,15 @@ TextIconButton::TextIconButton(EagleFont* font , std::string text , std::string 
 
 
 
-void TextIconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos) {
+void TextIconButton::SetupText(EagleFont* font , std::string text) {
+   label_font = font;
+   label = text;
+}
+
+
+
+void TextIconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint) {
+   (void)tint;/// hack to avoid warning
    switch (state) {
    case BUTTON_UP :
       IconButton::DisplayIcon(win , state , xpos , ypos , GetColor(FGCOL));
@@ -54,18 +70,8 @@ void TextIconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state 
 
 
 
-void TextIconButton::DisplayText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor tint) {
-   Transform t = win->GetTransformer()->GetViewTransform();
-   
-   t.Scale(1 , //0.8*InnerArea().W()/label_font->Width(label),
-           0.8*InnerArea().H()/label_font->Height());
-   t.Translate(xpos + InnerArea().CX() , ypos + InnerArea().CY());
-   
-   win->PushViewTransform(t);
-   
-   win->DrawTextString(label_font , label , 0 , 0 , tint , HALIGN_CENTER , VALIGN_CENTER);
-   
-   win->PopViewTransform();
+void TextIconButton::DisplayText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor textcolor) {
+   win->DrawTextString(label_font , label , InnerArea().X() + xpos , InnerArea().CY() + ypos , textcolor , HALIGN_LEFT , VALIGN_CENTER);
 }
 
 

@@ -58,7 +58,7 @@ void DropDownList::SetButton(BasicButton* btn) {
    if (!btn) {
       btn = &basic_button;
    }
-   btn->SetButtonType(TOGGLE_BTN);
+   btn->SetActionType(TOGGLE_BTN);
    if (our_toggle_button) {
       StopListeningTo(our_toggle_button);
    }

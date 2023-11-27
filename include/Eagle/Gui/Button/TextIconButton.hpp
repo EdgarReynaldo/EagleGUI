@@ -12,15 +12,12 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
- * 
- * 
- * 
+ * @file TextIconButton.hpp
+ * @brief Interface for text icon buttons
  */
 
 #ifndef TextIconButton_HPP
@@ -35,7 +32,7 @@
 
 
 class TextIconButton : public IconButton {
-   
+protected :
    std::string label;
    EagleFont* label_font;
 
@@ -48,10 +45,13 @@ class TextIconButton : public IconButton {
    virtual void OnFlagChanged(WIDGET_FLAGS f , bool on);
    
 public :
+   TextIconButton(std::string classname = "TextIconButton" , std::string objname = "Nemo");
    TextIconButton(EagleFont* font , std::string text , std::string classname = "TextIconButton" , std::string objname = "Nemo");
 
-   void DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos);
-   virtual void DisplayText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor tint = EagleColor(255,255,255));
+   void SetupText(EagleFont* font , std::string text);
+   
+   virtual void DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint = EagleColor(255,255,255)) override;
+   virtual void DisplayText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor textcolor = EagleColor(255,255,255));
 };
 
 

@@ -56,15 +56,15 @@ public :
 
 
 
-WidgetBase* CreateBasicTextWidget   (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateSelectTextWidget  (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateLinkTextWidget    (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateBasicButtonWidget (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateGuiButtonWidget   (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateIconButtonWidget  (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateRadioButtonWidget (std::string object_name , AttributeValueMap avmap);
-WidgetBase* CreateScrollButtonWidget(std::string object_name , AttributeValueMap avmap);
-///WidgetBase* CreateTextButtonWidget  (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateBasicTextWidget     (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateSelectTextWidget    (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateLinkTextWidget      (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateBasicButtonWidget   (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateGuiButtonWidget     (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateIconButtonWidget    (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateRadioButtonWidget   (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateScrollButtonWidget  (std::string object_name , AttributeValueMap avmap);
+WidgetBase* CreateTextIconButtonWidget(std::string object_name , AttributeValueMap avmap);
 
 
 
@@ -77,7 +77,7 @@ REGISTER_WIDGET_CREATOR(GuiButton         , CreateGuiButtonWidget);
 REGISTER_WIDGET_CREATOR(IconButton        , CreateIconButtonWidget);
 REGISTER_WIDGET_CREATOR(RadioButton       , CreateRadioButtonWidget);
 REGISTER_WIDGET_CREATOR(BasicScrollButton , CreateScrollButtonWidget);
-///REGISTER_WIDGET_CREATOR(TextButton        , CreateTextButtonWidget);
+REGISTER_WIDGET_CREATOR(TextIconButton    , CreateTextIconButtonWidget);
 
 
 

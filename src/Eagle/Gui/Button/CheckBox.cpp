@@ -113,7 +113,7 @@ BasicCheckBox::BasicCheckBox(std::string objname) :
       cb_images(),
       current(false)
 {
-   SetButtonType(TOGGLE_BTN);
+   SetActionType(TOGGLE_BTN);
 }
 
 

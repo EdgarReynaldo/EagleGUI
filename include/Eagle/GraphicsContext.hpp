@@ -530,6 +530,11 @@ public :
     */
    void DrawTintedRegion(EagleImage* img , Rectangle src , float x , float y , EagleColor col = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 
+   /**! @fn DrawImageAligned <EagleImage* , Rectangle , HALIGNMENT , VALIGNMENT , EagleColor>
+    *   @brief Aligns the image to the destination without scaling
+    */
+   void DrawImageAligned(EagleImage* img , Rectangle dest , HALIGNMENT halign , VALIGNMENT valign , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
+   
    ///< Centers the image, no scaling is performed
    void DrawImageCenter (EagleImage* img , Rectangle dest , EagleColor tint = EagleColor(255,255,255,255) , int flags = DRAW_NORMAL);
 

@@ -233,7 +233,7 @@ void BasicScrollButton::UseButton(BasicButton* button) {
    EAGLE_ASSERT(button);
    scroll_button = button;
    scroll_button->SetParent(this);
-   scroll_button->SetButtonType(SPRING_BTN);
+   scroll_button->SetActionType(SPRING_BTN);
    SyncButtonArea();
 }
 

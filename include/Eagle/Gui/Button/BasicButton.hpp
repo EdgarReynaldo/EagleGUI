@@ -173,7 +173,7 @@ public :
    virtual ~BasicButton();
 
 
-   virtual void SetButtonType(BUTTON_ACTION_TYPE type);///< Set to SPRING_BTN or TOGGLE_BTN
+   virtual void SetActionType(BUTTON_ACTION_TYPE type);///< Set to SPRING_BTN or TOGGLE_BTN
    
 ///   virtual void SetHoverState (bool state);
 

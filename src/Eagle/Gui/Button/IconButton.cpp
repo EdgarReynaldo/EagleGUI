@@ -80,16 +80,12 @@ void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , in
    EagleImage* image = original_images[(int)state];
    EAGLE_ASSERT(image && image->Valid());
    
-   Transform t = win->GetTransformer()->GetViewTransform();
    
-   t.Scale((double)InnerArea().W()/image->W() , (double)InnerArea().H()/image->H());
-   t.Translate(InnerArea().X() + xpos , InnerArea().Y() + ypos);
+   win->DrawImageAligned(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , HALIGN_RIGHT , VALIGN_CENTER , tint);
    
-   win->PushViewTransform(t);
    
-   win->DrawTinted(image , 0 , 0 , tint);
-   
-   win->PopViewTransform();
+///   win->DrawTinted(image , InnerArea().X() + xpos , InnerArea().Y() + ypos , tint);
+//   win->DrawTinted(image , InnerArea().X() + xpos , InnerArea().Y() + ypos , tint);
 }
 
 
