@@ -25,6 +25,8 @@ public:
 };
 
 
+int sw = 800;
+int sh = 600;
 
 
 int main(int argc , char** argv) {
@@ -32,8 +34,6 @@ int main(int argc , char** argv) {
    (void)argc;
    (void)argv;
    
-   int sw = 800;
-   int sh = 600;
    
 
    Allegro5System* sys = GetAllegro5System();
@@ -86,17 +86,17 @@ int main(int argc , char** argv) {
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));
    
    
-   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "Load SF&X Folder"  , input_key_press(EAGLE_KEY_X) , "X"},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "Load BG Music &Stream"  , input_key_press(EAGLE_KEY_S) , "S"},
-                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font , "&Quit" , input_key_press(EAGLE_KEY_Q) , "Q"}};
+   SIMPLE_MENU_ITEM fmenu[] = {{SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font20 , "Load SF&X Folder"  , input_key_press(EAGLE_KEY_X) , "X"},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font20 , "Load BG Music &Stream"  , input_key_press(EAGLE_KEY_S) , "S"},
+                               {SPRING_BTN , false , (EagleImage*)0 , (EagleImage*)0 , font20 , "&Quit" , input_key_press(EAGLE_KEY_Q) , "Q"}};
 
 
-   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Mute All Sound" , input_key_press(EAGLE_KEY_F1) , "F1"},
-                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Mute Music" , input_key_press(EAGLE_KEY_F2) , "F2"},
-                               {TOGGLE_BTN , true , checkbox_up , checkbox_down , font , "Mute Effects" , input_key_press(EAGLE_KEY_F3) , "F3"}};
+   SIMPLE_MENU_ITEM omenu[] = {{TOGGLE_BTN , true , checkbox_down , checkbox_up , font20 , "Mute All Sound" , input_key_press(EAGLE_KEY_F1) , "F1"},
+                               {TOGGLE_BTN , true , checkbox_down , checkbox_up , font20 , "Mute Music" , input_key_press(EAGLE_KEY_F2) , "F2"},
+                               {TOGGLE_BTN , true , checkbox_down , checkbox_up , font20 , "Mute Effects" , input_key_press(EAGLE_KEY_F3) , "F3"}};
 
-   SIMPLE_MENU_BAR_ITEM mbar[] = {{font , "&File"    , input_key_press(EAGLE_KEY_F)},
-                                  {font , "&Options" , input_key_press(EAGLE_KEY_O)}};
+   SIMPLE_MENU_BAR_ITEM mbar[] = {{font40 , "&File"    , input_key_press(EAGLE_KEY_F)},
+                                  {font40 , "&Options" , input_key_press(EAGLE_KEY_O)}};
 
    ClassicMenu options;
    ClassicMenu foptions;
@@ -112,18 +112,19 @@ int main(int argc , char** argv) {
    RelativeLayout rlayout;
    rlayout.Resize(4);
    
-   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.1));
-   rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0 , 0.1 , 0.3 , 0.3));
-   rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.3 , 0.1 , 0.3 , 0.3));
+   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.05));
+   rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0 , 0.05 , 0.5 , 0.15));
+   rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.5 , 0.05 , 0.5 , 0.15));
    
    FlowLayout flow;
    flow.SetFlowDirection(FLOW_FAVOR_VERTICAL);
-   flow.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);
+   flow.SetAlignment(HALIGN_LEFT , VALIGN_TOP);
+   flow.SetBoxSpacing(BOX_SPACE_EVEN);
    flow.SetAnchorPosition(FBOX_ANCHOR_NW);
    
    std::vector<std::shared_ptr<TextIconButton> > sample_btns;
    
-   rlayout.PlaceWidget(&flow , 3 , LayoutRectangle(0 , 0.4 , 1.0 , 0.5));
+   rlayout.PlaceWidget(&flow , 3 , LayoutRectangle(0 , 0.05 , 1.0 , 0.95));
    
    gui.SetRootLayout(&rlayout);
 
@@ -147,6 +148,9 @@ int main(int argc , char** argv) {
    
    bool quit = false;
    bool redraw = true;
+   
+   sys->GetSystemTimer()->Start();
+   
    
    while (!quit) {
       if (redraw) {
@@ -175,16 +179,10 @@ int main(int argc , char** argv) {
          gui.HandleEvent(e);
          while (gui.HasMessages()) {
             WidgetMsg wmsg = gui.TakeNextMessage();
-            for (unsigned int i = 0 ; i < fnum ; ++i) {
+            for (int i = 0 ; i < fnum ; ++i) {
                if (wmsg.From() == sample_btns[i].get()) {
                   /// Sample link activated, play sample instance
-                  if (input_key_held(EAGLE_KEY_ANY_SHIFT)) {
-                     soundman.SetInstancePlaying(instances[i] , false);
-                  }
-                  else {
-                     /// Play sample instance
-                     soundman.SetInstancePlaying(instances[i] , true);
-                  }
+                  soundman.SetInstancePlaying(instances[i] , !sample_btns[i].get()->Up());
                }
             }
             
@@ -212,6 +210,7 @@ int main(int argc , char** argv) {
 ///                                                   bool search_for_files , bool select_multiple , bool must_exist , bool save)=0;
             else if (wmsg == WidgetMsg(foptions.MItems()[0] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// Load sfx folder
+               sys->GetSystemTimer()->Stop();
                std::vector<std::string> foldername = sys->GetDialogManager()->ShowFileDialog("Select sfx folder" , FilePath() , false , false , true , false);
                if (foldername.size() == 1) {
                   std::shared_ptr<Folder> spfolder = sys->GetFileSystem()->ReadFolder(FilePath(foldername[0]) , false);
@@ -226,14 +225,18 @@ int main(int argc , char** argv) {
                         soundman.ClearSoundSamples();
                         soundboard.clear();
                         sample_btns.clear();
+                        flow.ClearWidgets();
                         for (Folder::FILEMAP::iterator it = sfxmap.begin() ; it != sfxmap.end() ; ++it) {
                            EagleSoundSample* sample = soundman.CreateSoundSample(it->second.get()->Path());
                            if (!sample) {continue;}
                            soundboard.push_back(sample);
                            instances.push_back(soundman.CreateSoundInstance(sample));
+                           soundman.SetInstancePlaying(instances.back() , false);
                            TextIconButton* pbtn = new TextIconButton(font20 , it->second.get()->Name() , "Sample button" , it->second.get()->Path());
+                           pbtn->SetPreferredSize(sw , 30);
+                           pbtn->SetActionType(TOGGLE_BTN);
                            sample_btns.push_back(std::shared_ptr<TextIconButton>(pbtn));
-                           flow.PlaceWidget(pbtn , fnum);
+                           flow.AddWidget(pbtn);
                            pbtn->SetImages(play_button , pause_button , play_button , pause_button);
                            ++fnum;
                         }
@@ -243,9 +246,11 @@ int main(int argc , char** argv) {
                      }
                   }
                }
+               sys->GetSystemTimer()->Start();
             }
             else if (wmsg == WidgetMsg(foptions.MItems()[1] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// Load bg music
+               sys->GetSystemTimer()->Stop();
                bool success = false;
                std::vector<std::string> files = sys->GetDialogManager()->ShowFileDialog("Select BG Music" , FilePath() , true , false , true , false);
                if (files.size() == 1) {
@@ -263,6 +268,7 @@ int main(int argc , char** argv) {
                if (!success) {
                   sys->GetDialogManager()->ShowMessageBox("Failed to load bg music stream" , "OK");
                }
+               sys->GetSystemTimer()->Start();
             }
          }
       } while (!sys->UpToDate());
@@ -279,10 +285,10 @@ TickerTape::TickerTape(std::string txt , EagleFont* fnt) :
       text(txt),
       font(fnt),
       lx(0),
-      rx(800),
-      cy(600),
+      rx(sw),
+      cy(sh),
       tcurrent(0.0),
-      ttotal(10.0)
+      ttotal(8.0)
 {
 }
 
@@ -290,6 +296,12 @@ TickerTape::TickerTape(std::string txt , EagleFont* fnt) :
 
 void TickerTape::UpdateTime(double dt) {
    tcurrent += dt;
+   if (tcurrent < 0.0) {
+      tcurrent += -(int)tcurrent + 1;
+   }
+   else if (tcurrent > ttotal) {
+      tcurrent = tcurrent - floor(tcurrent);
+   }
 }
 
 
