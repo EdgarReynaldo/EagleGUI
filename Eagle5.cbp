@@ -191,7 +191,6 @@
 		<Unit filename="include/Eagle/Gui/Button/NPButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/RadioGroup.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/ScrollButton.hpp" />
-		<Unit filename="include/Eagle/Gui/Button/TextButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Button/TextIconButton.hpp" />
 		<Unit filename="include/Eagle/Gui/Camera.hpp" />
 		<Unit filename="include/Eagle/Gui/Decorators/Decorator.hpp" />
@@ -325,7 +324,6 @@
 		<Unit filename="src/Eagle/Gui/Button/NPButton.cpp" />
 		<Unit filename="src/Eagle/Gui/Button/RadioGroup.cpp" />
 		<Unit filename="src/Eagle/Gui/Button/ScrollButton.cpp" />
-		<Unit filename="src/Eagle/Gui/Button/TextButton.cpp" />
 		<Unit filename="src/Eagle/Gui/Button/TextIconButton.cpp" />
 		<Unit filename="src/Eagle/Gui/Camera.cpp" />
 		<Unit filename="src/Eagle/Gui/Decorator/Decorator.cpp" />
