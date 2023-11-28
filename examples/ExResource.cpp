@@ -85,9 +85,9 @@ int main(int argc , char** argv) {
    RelativeLayout rlayout;
    rlayout.Resize(3);
    
-   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.1));
-   rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
-   rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
+   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.05));
+   rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0 , 0.05 , 0.5 , 0.15));
+   rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.5 , 0.05 , 0.5 , 0.15));
    
    gui.SetRootLayout(&rlayout);
    
@@ -104,6 +104,7 @@ int main(int argc , char** argv) {
    TextResource* textres = 0;
    EagleImage* image = 0;
    EagleFont*  efont = 0;
+   default_font_size = -32;
    ArchiveResource* arcres = 0;
    
    DialogManager* dman = sys->GetDialogManager();
@@ -127,12 +128,14 @@ int main(int argc , char** argv) {
                win->DrawMultiLineTextString(font , textres->FileText() , 25 , 50 , EagleColor(255,255,255) , font->Height() , HALIGN_LEFT , VALIGN_TOP);
                break;
             case RT_IMAGE :
+               image = dynamic_cast<EagleImage*>(rb);
                if (image) {
                   win->DrawImageFit(image , Rectangle(300,225,200,150));
                   win->DrawTextString(font , "Preview" , 300 , 200 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_TOP);
                }
                break;
             case RT_FONT :
+               efont = dynamic_cast<EagleFont*>(rb);
                if (efont) {
                   win->DrawTextString(efont , "Example Text" , 400 , 300 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
                }
