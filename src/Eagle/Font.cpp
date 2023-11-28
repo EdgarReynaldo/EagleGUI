@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -103,18 +103,16 @@ int UntranslateFontFlags(std::string flagstr) {
 
 bool EagleFont::LoadFromArgs(std::vector<std::string> args) {
    IMAGE_TYPE it = VIDEO_IMAGE;
-   std::string flags;
-   int ptsize;
-   if (args.size() < 1) {
-      EagleError() << "No args passed to LoadFromArgs." << std::endl;
-      return false;
-   }
-   ptsize = STOI(args[0]);
-   if (args.size() > 1) {
-      flags = args[1];
-      if (args.size() > 2) {
-         if (args[2].compare("MEMORY")==0) {
-            it = MEMORY_IMAGE;
+   std::string flags = "FONT_NORMAL";
+   int ptsize = default_font_size;
+   if (args.size() > 0) {
+      ptsize = STOI(args[0]);
+      if (args.size() > 1) {
+         flags = args[1];
+         if (args.size() > 2) {
+            if (args[2].compare("MEMORY")==0) {
+               it = MEMORY_IMAGE;
+            }
          }
       }
    }

@@ -109,10 +109,10 @@ bool Allegro5Font::Load(std::string file , int size , int flags , IMAGE_TYPE typ
       ttf = true;
    }
    else if (ext.compare("BMP") == 0 || ext.compare("bmp") == 0) {
-      bmp = true;
+      bmp = true;/// TODO : Support bitmap fonts
    }
    else if (ext.compare("pcx") == 0) {
-      pcx = true;
+      pcx = true;/// TODO : Support bitmap fonts
    }
    
    

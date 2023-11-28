@@ -430,10 +430,10 @@ void EagleGraphicsContext::DrawImageAligned(EagleImage* img , Rectangle dest , H
       xpos -= dest.W();
       break;
    case HALIGN_CENTER :
-      xpos -= (dest.W() - img->W())/2;
+      xpos -= (dest.W() + img->W())/2;
       break;
    case HALIGN_RIGHT :
-      xpos -= img->W()/2;
+      xpos -= img->W();
       break;
    default :
       break;
@@ -443,16 +443,14 @@ void EagleGraphicsContext::DrawImageAligned(EagleImage* img , Rectangle dest , H
       ypos -= dest.H();
       break;
    case VALIGN_CENTER :
-      ypos -= (dest.H() - img->H())/2;
+      ypos -= (dest.H() + img->H())/2;
       break;
    case VALIGN_BOTTOM :
-      ypos -= img->H()/2;
+      ypos -= img->H();
       break;
    default :
       break;
    }
-   
-   Clipper clip(img , dest);
    
    Draw(img , xpos , ypos , HALIGN_LEFT , VALIGN_TOP , tint , flags);
 }

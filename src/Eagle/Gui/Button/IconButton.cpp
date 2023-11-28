@@ -81,7 +81,7 @@ void IconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , in
    EAGLE_ASSERT(image && image->Valid());
    
    
-   win->DrawImageAligned(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , HALIGN_RIGHT , VALIGN_CENTER , tint);
+   win->DrawImageStretch(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , tint);
    
    
 ///   win->DrawTinted(image , InnerArea().X() + xpos , InnerArea().Y() + ypos , tint);

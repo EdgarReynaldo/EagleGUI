@@ -230,6 +230,8 @@ void Allegro5SoundManager::ClearSoundInstances() {
    for (unsigned int i = 0 ; i < instances.size() ; ++i) {
       EagleSoundInstance* instance = instances[i];
       Allegro5SoundInstance* a5instance = dynamic_cast<Allegro5SoundInstance*>(instance);
+      al_set_sample_instance_playing(a5instance->AllegroInstance() , false);
+      al_detach_sample_instance(a5instance->AllegroInstance());
       if (a5instance) {
          a5instance->SetSample(0);
       }

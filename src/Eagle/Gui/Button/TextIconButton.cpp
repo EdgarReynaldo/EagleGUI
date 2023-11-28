@@ -49,23 +49,26 @@ void TextIconButton::SetupText(EagleFont* font , std::string text) {
 
 
 void TextIconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state , int xpos , int ypos , EagleColor tint) {
-   (void)tint;/// hack to avoid warning
-   switch (state) {
-   case BUTTON_UP :
-      IconButton::DisplayIcon(win , state , xpos , ypos , GetColor(FGCOL));
-      break;
-   case BUTTON_DOWN :
-      IconButton::DisplayIcon(win , state , xpos , ypos , GetColor(BGCOL));
-      break;
-   case BUTTON_HOVER_UP :
-      IconButton::DisplayIcon(win , state , xpos , ypos , GetColor(HLCOL));
-      break;
-   case BUTTON_HOVER_DOWN :
-      IconButton::DisplayIcon(win , state , xpos , ypos , GetColor(MGCOL));
-      break;
-   default :
-      break;
-   };
+   EagleColor c = GetColor(FGCOL);
+   if (state != BUTTON_UP) {
+      if (state == BUTTON_DOWN) {
+         c = GetColor(BGCOL);
+      }
+      else if (state == BUTTON_HOVER_UP) {
+         c = GetColor(HLCOL);
+      }
+      else if (state == BUTTON_HOVER_DOWN) {
+         c = GetColor(MGCOL);
+      }
+   }
+   c.fa = c.fa*tint.fa;
+   c.fr = c.fr*tint.fr;
+   c.fg = c.fg*tint.fg;
+   c.fb = c.fb*tint.fb;
+   EagleImage* image = original_images[(int)state];
+   EAGLE_ASSERT(image && image->Valid());
+
+   win->DrawImageAligned(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , HALIGN_RIGHT , VALIGN_CENTER , c);
 }
 
 
