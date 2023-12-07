@@ -54,8 +54,6 @@ protected :
    std::unique_ptr<BasicText>         ktext;/// Label to tell what key to press
    std::unique_ptr<BasicScrollButton> hbtn;/// MENU_BTN for hover trigger to open sub menu
    
-   MenuBase* submenu;
-   
    std::unique_ptr<BasicButton> menu_button;
    std::unique_ptr<SimpleTable> item_layout;
 
@@ -97,9 +95,13 @@ public :
  *   @brief Interface for a classic menu bar item in Eagle
  */
 
-class ClassicMenuBarItem : public MenuItemBase , public GuiButton {
+class ClassicMenuBarItem : public MenuItemBase , public GuiButton , public EagleEventListener {
 protected :
    SIMPLE_MENU_BAR_ITEM item;
+
+   virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
+
+
 
    virtual void QueueUserMessage(const WidgetMsg& msg);
    
@@ -110,6 +112,7 @@ public :
 
    virtual void Toggle();
    virtual void Activate();
+   virtual void Deactivate();
    virtual bool HasSubMenu();
    virtual void OpenSubMenu();
    virtual void CloseSubMenu();

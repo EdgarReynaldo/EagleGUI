@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2022+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -80,8 +80,6 @@ public :
 /**! @class ClassicMenuBarLayout
  *   @brief A classic menu bar, laid out horizontally
  *
- *   TODO : COMPLETE ME
- *   Needs : Key shortcuts, hover, focus, etc...
  */
 
 class ClassicMenuBarLayout : public ClassicMenuLayout {

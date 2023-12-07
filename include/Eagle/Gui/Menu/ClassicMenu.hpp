@@ -25,7 +25,7 @@
 
 
 #include "Eagle/Gui/Menu/SimpleMenu.hpp"
-#include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 #include "Eagle/Gui/Menu/MenuItem.hpp"
 #include "Eagle/Events.hpp"
 

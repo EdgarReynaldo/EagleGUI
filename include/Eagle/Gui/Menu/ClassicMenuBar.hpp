@@ -27,7 +27,7 @@
 
 
 
-#include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 #include "Eagle/Gui/Menu/MenuItem.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Gui/Button/RadioGroup.hpp"

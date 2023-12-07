@@ -37,7 +37,7 @@
 
 void ClassicMenuItemLayout::RespondToEvent(EagleEvent e , EagleThread* thread) {
    if (e.type == EAGLE_EVENT_WIDGET) {
-      if (e.source == dynamic_cast<EagleEventSource*>(submenu)) {
+      if (e.source == dynasubmenu) {
          if (e.widget.topic == TOPIC_MENU && e.widget.msgs == MENU_ITEM_ACTIVATED) {
             /// Leave the source alone this is from a submenu, pass it up
             EmitEvent(e,thread);

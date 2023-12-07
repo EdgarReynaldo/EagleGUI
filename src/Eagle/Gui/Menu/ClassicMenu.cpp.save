@@ -21,7 +21,7 @@
  */
 
 #include "Eagle/Gui/Menu/ClassicMenu.hpp"
-#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
+#include "Eagle/Gui/Layout/MenuLayout.hpp"
 #include "Eagle/Events.hpp"
 
 #include <cstring>
@@ -68,8 +68,8 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                      CloseOtherMenus(mitem);
                   }
                   else {
-                     ClassicMenu* cmenu = dynamic_cast<ClassicMenu*>(this->parentmenu);
-                     ClassicMenuBar* cbar = dynamic_cast<ClassicMenuBar*>(this->parentmenu);
+                     ClassicMenu* cmenu = dynamic_cast<ClassicMenu*>(this->pGetParent());
+                     ClassicMenuBar* cbar = dynamic_cast<ClassicMenuBar*>(this->GetParent());
                      if (cmenu) {cmenu->CloseMe();}
                      if (cbar) {cbar->CloseMe();}
                   }

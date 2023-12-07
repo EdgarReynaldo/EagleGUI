@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2022+ by Edgar Reynaldo
+ *    Copyright 2009-2023+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -109,6 +109,7 @@ public :
    
    virtual void Toggle()=0;
    virtual void Activate()=0;
+   virtual void Deactivate()=0;
    virtual bool HasSubMenu()=0;
    virtual void OpenSubMenu()=0;
    virtual void CloseSubMenu()=0;
