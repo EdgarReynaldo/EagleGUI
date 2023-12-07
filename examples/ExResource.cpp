@@ -104,7 +104,7 @@ int main(int argc , char** argv) {
    TextResource* textres = 0;
    EagleImage* image = 0;
    EagleFont*  efont = 0;
-   default_font_size = -32;
+   default_font_size = -64;
    ArchiveResource* arcres = 0;
    
    DialogManager* dman = sys->GetDialogManager();
