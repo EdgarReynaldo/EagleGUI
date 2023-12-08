@@ -225,11 +225,11 @@ void ClassicMenuItemLayout::CloseSubMenu() {
 
 void ClassicMenuItemLayout::SetSubMenu(MenuBase* smenu) {
    if (submenu) {
-      StopListeningTo(submenu);
+      StopListeningTo(dynamic_cast<EagleEventSource*>(submenu));
    }
    submenu = smenu;
    if (submenu) {
-      ListenTo(submenu);
+      ListenTo(dynamic_cast<EagleEventSource*>(submenu));
    }
 }
 
@@ -337,12 +337,12 @@ void ClassicMenuBarItem::CloseSubMenu() {
 
 void ClassicMenuBarItem::SetSubMenu(MenuBase* smenu) {
    if (submenu) {
-      StopListeningTo(submenu);
+      StopListeningTo(dynamic_cast<EagleEventSource*>(submenu));
    }
    submenu = smenu;
    if (submenu) {
       submenu->CloseMe();
-      ListenTo(submenu);
+      ListenTo(dynamic_cast<EagleEventSource*>(submenu));
    }
 }
 

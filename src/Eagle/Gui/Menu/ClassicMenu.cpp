@@ -68,10 +68,10 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
                      CloseOtherMenus(mitem);
                   }
                   else {
-                     ClassicMenu* cmenu = dynamic_cast<ClassicMenu*>(this->parentmenu);
-                     ClassicMenuBar* cbar = dynamic_cast<ClassicMenuBar*>(this->parentmenu);
-                     if (cmenu) {cmenu->CloseMe();}
-                     if (cbar) {cbar->CloseMe();}
+//                     ClassicMenu* cmenu = dynamic_cast<ClassicMenu*>(this->parentmenu);
+//                     ClassicMenuBar* cbar = dynamic_cast<ClassicMenuBar*>(this->parentmenu);
+//                     if (cmenu) {cmenu->CloseMe();}
+//                     if (cbar) {cbar->CloseMe();}
                   }
                }
                else if (e.widget.msgs == BUTTON_TOGGLED) {

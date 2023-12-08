@@ -23,7 +23,7 @@
 
 
 
-#include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 
 
 
