@@ -94,7 +94,7 @@ public :
    FilePath GetFilePath() {return filepath;}
 
    /// Load a resource
-   bool LoadFromFile(FilePath fp);///< Shortcut for loading resources with no argumentsW
+   bool LoadFromFile(FilePath fp);///< Shortcut for loading resources with no arguments
    bool LoadFromFileWithArgs(std::vector<std::string> args);///< File is first arg, rest are optional parameters
 };
 

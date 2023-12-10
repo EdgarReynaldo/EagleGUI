@@ -16,39 +16,40 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file MemFile.hpp
- * @brief Interface for working with memory files
+ * @file Allegro5MemFile.hpp
+ * @brief Interface for working with allegro 5 memory files
  *
  * Note: Plain MemFile objects do not work with archives. Use an Allegro5MemFile instead.
  */
 
-#ifndef MemFile_HPP
-#define MemFile_HPP
+#ifndef Allegro5MemFile_HPP
+#define Allegro5MemFile_HPP
 
 
 
 #include <vector>
+#include <string>
 
 
-
-#include "Eagle/File.hpp"
+#include "Eagle/MemFile.hpp"
 
 
 /**! @class MemFile
  *   @brief A class to store files in memory, edit, and save them
  */
 
-class MemFile : public File {
+class Allegro5MemFile : public MemFile {
 protected :
    std::vector<uint8_t> fmem;
    
 public :
-   MemFile(std::string file) : File(FSInfo(FilePath(file))) {}
-   MemFile(FSInfo info) : File(info) {}///< Construct a MemFile from @param info
+   Allegro5MemFile(std::string file);
+   Allegro5MemFile(FSInfo info);
 
-   virtual ~MemFile() {Clear();}///< Destructor frees reserved memory
+
+   ~Allegro5MemFile() {Clear();}///< Destructor frees reserved memory
    
-   void Clear();///< Free the stored memory
+   void Clear() {fmem.clear();fmem.reserve(0);}///< Free the stored memory
    
    bool ReadFileIntoMemory();///< Read the file from the stored file path
    bool WriteFileToDisk();///< Write the file back out to disk
@@ -62,7 +63,8 @@ public :
 
 
 
-#endif // MemFile_HPP
+#endif // Allegro5MemFile_HPP
+
 
 
 

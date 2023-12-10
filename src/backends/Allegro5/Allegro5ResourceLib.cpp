@@ -108,14 +108,13 @@ std::set<std::string> Allegro5ResourceLibrary::GetSupportedTypes(RESOURCE_TYPE r
 
 
 
-RESOURCEID Allegro5ResourceLibrary::LoadFileResource(std::shared_ptr<File> file) {
-   File* f = file.get();
-   if (!f) {
+RESOURCEID Allegro5ResourceLibrary::LoadFileResource(File* file) {
+   if (!file) {
       EagleError() << "NULL file in LoadFileResource" << std::endl;
-      EAGLE_ASSERT(f);
+      EAGLE_ASSERT(file);
       return BADRESOURCEID;
    }
-   FSInfo fsinfo = f->Info();
+   FSInfo fsinfo = file->Info();
    if (!fsinfo.Exists()) {
       EagleError() << "File " << fsinfo.Path() << " does not exist." << std::endl;
       return BADRESOURCEID;
@@ -128,17 +127,17 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(std::shared_ptr<File> file)
       EagleError() << "FS Object " << fsinfo.Path() << " is not a file." << std::endl;
       return BADRESOURCEID;
    }
-   std::string ext = f->Ext();
+   std::string ext = file->Ext();
    RESOURCE_TYPE restype = GetResourceType(ext);
    ResourceBase* res = 0;
    bool success = true;
    if (restype > RT_UNKNOWN && restype < NUM_RT_TYPES) {
       switch(restype) {
       case RT_IMAGE :
-         res = window->LoadImageFromFile(f->Path());
+         res = window->LoadImageFromFile(file->Path());
          break;
       case RT_FONT :
-         res = window->GetFont(f->Path() , default_font_size , default_font_flags , VIDEO_IMAGE);
+         res = window->GetFont(file->Path() , default_font_size , default_font_flags , VIDEO_IMAGE);
          break;
       case RT_AUDIO_SAMPLE :
          res = new Allegro5SoundSample();
@@ -170,7 +169,7 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(std::shared_ptr<File> file)
          return BADRESOURCEID;
       }
       else {
-         /// Save references to the File and ResourceBase* of the resource
+         /// Save references to the file path and ResourceBase* of the resource
          resmap[res->RID()] = res;
          lookupmap.insert(std::pair<std::string , RESOURCEID>(file->Path() , res->RID()));
       }
@@ -184,18 +183,16 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(std::shared_ptr<File> file)
 
 
 
-std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadFolderResource(std::shared_ptr<Folder> folder , bool descend) {
-   Folder* fl = folder.get();
-
+std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadFolderResource(Folder* folder , bool descend) {
    std::vector<RESOURCEID> resids;
    
-   EAGLE_ASSERT(fl);
-   if (!fl) {
+   EAGLE_ASSERT(folder);
+   if (!folder) {
       EagleError() << "NULL folder in LoadFolderResource" << std::endl;
       return resids;
    }
    
-   FSInfo fsinfo = fl->Info();
+   FSInfo fsinfo = folder->Info();
    
    if (!fsinfo.Exists()) {
       EagleError() << "Folder " << fsinfo.Path() << " does not exist." << std::endl;
@@ -206,27 +203,30 @@ std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadFolderResource(std::shared_
       return resids;
    }
    else if (fsinfo.Mode().IsFile()) {
-      EagleError() << "FS Object " << fsinfo.Path() << " is not a folder." << std::endl;
-      return resids;
+      /// Archive files are folders
+      if (!dynamic_cast<ArchiveFile*>(folder)) {
+         EagleError() << "FS Object " << fsinfo.Path() << " is not a folder." << std::endl;
+         return resids;
+      }
    }
 
-   Folder::FILEMAP fmap = fl->Files();
+   Folder::FILEMAP fmap = folder->Files();
 
    for (Folder::FILEMAP::iterator it = fmap.begin() ; it != fmap.end() ; it++) {
-      resids.push_back(LoadFileResource(it->second));
+      resids.push_back(LoadFileResource(it->second.get()));
    }
 
    if (descend) {
-      Folder::SUBFOLDERMAP flmap = fl->SubFolders();
-      for (Folder::SUBFOLDERMAP::iterator it = flmap.begin() ; it != flmap.end() ; ++it) {
-         std::vector<RESOURCEID> rid2 = LoadFolderResource(it->second , descend);
+      Folder::SUBFOLDERMAP foldermap = folder->SubFolders();
+      for (Folder::SUBFOLDERMAP::iterator it = foldermap.begin() ; it != foldermap.end() ; ++it) {
+         std::vector<RESOURCEID> rid2 = LoadFolderResource(it->second.get() , descend);
          resids.insert(resids.end() , rid2.begin() , rid2.end());
       }
    }
    
-   Folder::ARCHIVEMAP arcmap = fl->Archives();
+   Folder::ARCHIVEMAP arcmap = folder->Archives();
    for (Folder::ARCHIVEMAP::iterator it = arcmap.begin() ; it != arcmap.end() ; ++it) {
-         std::vector<RESOURCEID> rid2 = LoadArchiveResource(it->second);
+         std::vector<RESOURCEID> rid2 = LoadArchiveResource(it->second.get());
          resids.insert(resids.end() , rid2.begin() , rid2.end());
    }
    
@@ -235,18 +235,16 @@ std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadFolderResource(std::shared_
 
 
 
-std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadArchiveResource(std::shared_ptr<ArchiveFile> archive) {
-   ArchiveFile* arc = archive.get();
-   
+std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadArchiveResource(ArchiveFile* archive) {
    std::vector<RESOURCEID> resids;
    
-   EAGLE_ASSERT(arc);
-   if (!arc) {
+   EAGLE_ASSERT(archive);
+   if (!archive) {
       EagleError() << "NULL archive in LoadFileResource" << std::endl;
       return resids;
    }
    
-   FSInfo fsinfo = arc->File::Info();
+   FSInfo fsinfo = archive->File::Info();
    
    if (!fsinfo.Exists()) {
       EagleError() << "Archive " << fsinfo.Path() << " does not exist." << std::endl;
@@ -270,9 +268,8 @@ std::vector<RESOURCEID> Allegro5ResourceLibrary::LoadArchiveResource(std::shared
    
 
    bool mount = fs->MountArchive(FilePath(fsinfo.Path()));
-   std::shared_ptr<Folder> root = fs->ReadFolder(FilePath("./") , true);
    if (mount) {
-      resids = LoadFolderResource(root , true);
+      resids = LoadFolderResource(dynamic_cast<Folder*>(archive) , true);
       fs->UnmountArchive();
    }
    return resids;

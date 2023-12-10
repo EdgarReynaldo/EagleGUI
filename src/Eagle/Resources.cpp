@@ -135,7 +135,7 @@ bool ArchiveResource::LoadFromArgs(std::vector<std::string> args) {
       
       /// Recursively load contents here
       contents = fs->ReadArchive(filepath);/// Get the folders and files in the archive
-      rids = reslib->LoadArchiveResource(contents);
+      rids = reslib->LoadArchiveResource(contents.get());
 
       for (unsigned int i = 0 ; i < rids.size() ; ++i) {
          RESOURCEID rid1 = rids[i];

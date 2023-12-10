@@ -1,9 +1,32 @@
 
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2023+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Allegro5FontManager.cpp
+ * @brief Implementation of the font manager using Allegro 5
+ *
+ */
+
 
 
 
 #include "Eagle/backends/Allegro5/Allegro5FontManager.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Font.hpp"
+#include "Eagle/backends/Allegro5/Allegro5MemFile.hpp"
 #include "allegro5/allegro.h"
 
 #include <string>
@@ -43,20 +66,20 @@ EagleFont* Allegro5FontManager::LoadFontPath(std::string path , int size , int f
    }
    const std::string fullfontname = std::to_string(size) + path + TranslateFontFlags(fontflags);
    
-   FNTIT fntit = fonts.find(fullfontname);/// Fonts are stored in the map as ###Font.path$FLAGS$ with the point size at the left of the string
+   FNTIT fntit = fonts.find(fullfontname);///< Fonts are stored in the map as ###Font.path$FLAGS$ with the point size at the left of the string
    if (fntit != fonts.end()) {
       return fntit->second;/// Font already in font map
    }
    
-   MemFile* mfile = 0;
+   Allegro5MemFile* mfile = 0;
    MFMIT mfmit = memfiles.find(path);/// Memfiles are tracked by base file path
    if (mfmit != memfiles.end()) {
       /// This font is stored in memory - create an allegro file and then use al_load_ttf_font_f
-      mfile = mfmit->second;
+      mfile = dynamic_cast<Allegro5MemFile*>(mfmit->second);
    }
    else {// mfmit == memfiles.end()
       if (path.compare("BUILTIN") != 0) {
-         mfile = new MemFile(path);
+         mfile = new Allegro5MemFile(path);
          bool loaded = mfile->ReadFileIntoMemory();
          if (!loaded) {
             EAGLE_ASSERT(loaded);

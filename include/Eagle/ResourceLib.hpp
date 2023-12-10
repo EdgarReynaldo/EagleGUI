@@ -72,9 +72,9 @@ public :
    
    virtual std::vector<RESOURCEID> LoadResourcesFromConfig(const ConfigFile& cfg);
    
-   virtual RESOURCEID LoadFileResource(std::shared_ptr<File> file)=0;
-   virtual std::vector<RESOURCEID> LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false)=0;
-   virtual std::vector<RESOURCEID> LoadArchiveResource(std::shared_ptr<ArchiveFile> archive)=0;
+   virtual RESOURCEID LoadFileResource(File* file)=0;
+   virtual std::vector<RESOURCEID> LoadFolderResource(Folder* folder , bool descend = false)=0;
+   virtual std::vector<RESOURCEID> LoadArchiveResource(ArchiveFile* archive)=0;
 
    
    void FreeResource(RESOURCEID rid);

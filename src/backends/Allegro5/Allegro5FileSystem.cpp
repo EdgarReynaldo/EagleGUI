@@ -107,23 +107,11 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
    std::string p = folder->Path();
    if (archive) {
       MountArchive(p);
-/**
-      if (!archive_mounted) {
-         MountArchive(p);
-         p = "";/// This is now root
-      }
-      else {
-         /// There is already an archive mounted here
-         EagleWarn() << "Allegro5FileSystem::ReadDirectoryContents - reading inside nested archives is not currently possible" << std::endl;
-         return;
-      }
-*/
+      p = "";/// This is now root
    }
-   else {
-      if (!(folder->Info().Mode().IsDir())) {
-         throw EagleException(StringPrintF(
-            "Allegro5FileSystem::ReadDirectoryContents - folder entry '%s' is not a directory!\n" , folder->Path().c_str()));
-      }
+   else if (!(folder->Info().Mode().IsDir())) {
+      throw EagleException(StringPrintF(
+         "Allegro5FileSystem::ReadDirectoryContents - folder entry '%s' is not a directory!\n" , folder->Path().c_str()));
    }
 
    fs = al_create_fs_entry(p.c_str());

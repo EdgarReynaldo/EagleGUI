@@ -1,28 +1,36 @@
 
-
-
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2023+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file FontManager.hpp
+ * @brief A simple utility to handle all our fonts.
+ *
+ */
 
 #ifndef FONT_MANAGER_HPP
 #define FONT_MANAGER_HPP
 
 
-
 #include "Eagle/Font.hpp"
 #include "Eagle/MemFile.hpp"
-
 
 #include <map>
 #include <string>
 
-
-
-
-/**! @fn SetDefaultFontPath @fn SetDefaultFontSize @fn SetDefaultFontFlags
- *   @brief Set the default font path, size, or flags
- *
- *   The default font path, size, and flags will be used whenever a new display is created.
- *   You can retrieve the default font from a display @ref EagleGraphicsContext with the @ref DefaultFont function
- */
 
 
 class EagleGraphicsContext;
@@ -68,6 +76,13 @@ public :
    void FreeFontFile(std::string path);
    void FreeAll();
    
+/**! @fn FontManager::SetDefaultFontPath @fn FontManager::SetDefaultFontSize @fn FontManager::SetDefaultFontFlags
+ *   @brief Set the default font path, size, or flags
+ *
+ *   The default font path, size, and flags will be used whenever a new display is created.
+ *   You can retrieve the default font from a display @ref EagleGraphicsContext with the @ref DefaultFont function
+ */
+
    void SetDefaultFontPath(std::string path);///< Set the default font path
    void SetDefaultFontSize(int pointsize);///< Set the default font size
    void SetDefaultFontFlags(int flags);///< Set the default font flags

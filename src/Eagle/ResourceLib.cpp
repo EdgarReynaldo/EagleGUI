@@ -147,11 +147,11 @@ std::vector<RESOURCEID> ResourceLibrary::LoadResourcesFromConfig(const ConfigFil
          std::vector<RESOURCEID> rids2;
          bool floaded = true;
          if (arcfile.get()) {
-            rids2 = LoadArchiveResource(arcfile);
+            rids2 = LoadArchiveResource(arcfile.get());
             floaded = (bool)rids2.size();
          }
          else {
-            rid = LoadFileResource(pfile);
+            rid = LoadFileResource(pfile.get());
             floaded = rid != BADRESOURCEID;
             if (floaded) {
                rids2.push_back(rid);

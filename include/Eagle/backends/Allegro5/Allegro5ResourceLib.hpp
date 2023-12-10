@@ -50,9 +50,9 @@ public :
 
    virtual std::set<std::string> GetSupportedTypes(RESOURCE_TYPE rt);
 
-   virtual RESOURCEID LoadFileResource(std::shared_ptr<File> file);
-   virtual std::vector<RESOURCEID> LoadFolderResource(std::shared_ptr<Folder> folder , bool descend = false);
-   virtual std::vector<RESOURCEID> LoadArchiveResource(std::shared_ptr<ArchiveFile> archive);
+   virtual RESOURCEID LoadFileResource(File* file);
+   virtual std::vector<RESOURCEID> LoadFolderResource(Folder* folder , bool descend = false);
+   virtual std::vector<RESOURCEID> LoadArchiveResource(ArchiveFile* archive);
 };
 
 
