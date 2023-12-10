@@ -132,6 +132,7 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5GraphicsHardware.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Image.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5InputHandler.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5MemFile.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5MousePointer.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5ResourceLib.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Sound.hpp" />
@@ -153,6 +154,7 @@
 		<Unit filename="src/backends/Allegro5/Allegro5GraphicsHardware.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Image.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5InputHandler.cpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5MemFile.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5MousePointer.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Mutex.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5ResourceLib.cpp" />
