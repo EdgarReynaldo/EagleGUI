@@ -191,7 +191,9 @@ int main(int argc , char** argv) {
             if (msg == WidgetMsg(foptions.MItems()[0] , TOPIC_MENU , MENU_ITEM_ACTIVATED)) {
                /// file option 1 is load
                /** al_show_native_file_dialog blocks here*/
+               sys->GetSystemTimer()->Stop();
                std::vector<std::string> filenames = dman->ShowFileDialog("Pick a resource to load" , FilePath("") , true , false , true , false);
+               sys->GetSystemTimer()->Start();
                if (filenames.size()) {
                   rt = reslib->GetResourceType(GetFileExt(filenames[0]));
                   if (rb) {
@@ -205,10 +207,13 @@ int main(int argc , char** argv) {
                      std::shared_ptr<ArchiveFile> afile = fsys->ReadArchive(fp);
                      Folder* fl = dynamic_cast<Folder*>(afile.get());
                      fl->PrintContentsAbsolute();
+                     ArchiveResource ar(win);
+                     bool loaded = ar.LoadFromFile(afile.get()->Path());
+                     if (!loaded) {EagleError() << "Failed to load archive file resource" << std::endl;}
                   }
                   else if (rt != RT_UNKNOWN) {
                      std::shared_ptr<File> file = fsys->ReadFile(fp);
-                     rid = reslib->LoadFileResource(file);
+                     rid = reslib->LoadFileResource(file.get());
                      rb = reslib->LookupResourceByID(rid);
                   }
                }
