@@ -80,16 +80,4 @@ bool Allegro5MemFile::WriteFileToDisk() {
 }
 
 
-uint8_t* Allegro5MemFile::Begin() {
-   if (fmem.empty()) {return 0;}
-   return &fmem[0];
-}
-
-
-
-uint8_t* Allegro5MemFile::End() {
-   if (fmem.empty()) {return 0;}
-   return (&fmem[0] + fmem.size());
-}
-
 

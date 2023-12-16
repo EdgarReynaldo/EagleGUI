@@ -40,24 +40,24 @@
 
 class Allegro5MemFile : public MemFile {
 protected :
-   std::vector<uint8_t> fmem;
+//   std::vector<uint8_t> fmem;
    
 public :
    Allegro5MemFile(std::string file);
    Allegro5MemFile(FSInfo info);
 
 
-   ~Allegro5MemFile() {Clear();}///< Destructor frees reserved memory
+   ~Allegro5MemFile() {}///< Destructor frees reserved memory
    
-   void Clear() {fmem.clear();fmem.reserve(0);}///< Free the stored memory
+//   void Clear() {fmem.clear();fmem.reserve(0);}///< Free the stored memory
    
    bool ReadFileIntoMemory();///< Read the file from the stored file path
    bool WriteFileToDisk();///< Write the file back out to disk
    
-   uint8_t* Begin();///< Get a pointer to the beginning of the file memory
-   uint8_t* End();///< Get a pointer to the end of the file memory
+//   uint8_t* Begin();///< Get a pointer to the beginning of the file memory
+//   uint8_t* End();///< Get a pointer to the end of the file memory
 
-   uint32_t Size() {return fmem.size();}///< Get the size in bytes of the memfile
+//   uint32_t Size() {return fmem.size();}///< Get the size in bytes of the memfile
 };
 
 

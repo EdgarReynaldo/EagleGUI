@@ -40,7 +40,7 @@ protected :
    
 public :
    
-   
+   virtual ~DialogManager() {}
    
    virtual std::vector<std::string> ShowFileDialog(std::string title , FilePath initial_path , 
                                                      bool search_for_files , bool select_multiple , bool must_exist , bool save)=0;

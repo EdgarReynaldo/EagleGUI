@@ -30,6 +30,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Conditions.hpp"
+#include "Eagle/backends/Allegro5/Allegro5DialogManager.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5FileSystem.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Font.hpp"
