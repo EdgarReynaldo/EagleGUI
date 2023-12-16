@@ -159,6 +159,10 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="examples/ExSoundConfig.cfg" />
+		<Unit filename="examples/KRAMPUS23/ExMokkan.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
