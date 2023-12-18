@@ -14,6 +14,6 @@
 		<Project filename="../../projects/TINS2022/TINS2022.cbp" />
 		<Project filename="../../projects/Spiraloid2/Spiraloid2.cbp" />
 		<Project filename="../../../MyWebsite/home/marcdavenport/public_html/marc/MyWebsite.cbp" />
-		<Project filename="examples/KRAMPUS23/KrampusHack2023.cbp" />
+		<Project filename="../../projects/Krampus2023/KrampusHack2023.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
