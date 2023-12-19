@@ -113,7 +113,7 @@ protected :
    void AddChild(EagleImage* child);///< Add a child to the @ref EagleImage::children image set
    void RemoveChild(EagleImage* child);///< Remove a child from the @ref EagleImage::children image set
 
-   bool LoadFromArgs(std::vector<std::string> args) override;
+   virtual bool LoadFromArgs(std::vector<std::string> args) override;
 
 public :
 

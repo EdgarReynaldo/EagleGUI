@@ -107,7 +107,7 @@ protected :
    
    friend class FontManager;
    
-   bool LoadFromArgs(std::vector<std::string> args) override;
+   virtual bool LoadFromArgs(std::vector<std::string> args) override;
    
 public :   
    EagleFont(std::string objclass = "EagleFont" , std::string objname = "Nemo");///< Base constructor for font objects
