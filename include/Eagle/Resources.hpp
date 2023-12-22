@@ -153,7 +153,7 @@ class TextResource : public ResourceBase {
 protected :
    std::string filetext;
    
-   bool LoadFromArgs(std::vector<std::string> args) override;
+   virtual bool LoadFromArgs(std::vector<std::string> args) override;
    
 public :
    TextResource() :

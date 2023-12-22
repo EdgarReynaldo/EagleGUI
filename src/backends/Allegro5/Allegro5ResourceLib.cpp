@@ -22,9 +22,6 @@
  *
  */
 
-#include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
-#include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
-
 #include "Eagle/Exception.hpp"
 #include "Eagle/Font.hpp"
 #include "Eagle/Image.hpp"
@@ -33,6 +30,10 @@
 #include "Eagle/Sound.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/FileSystem.hpp"
+
+#include "Eagle/backends/Allegro5/Allegro5Resources.hpp"
+#include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
 
 
 
