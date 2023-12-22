@@ -155,7 +155,7 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(File* file) {
          res = new BinaryResource();
          break;
       case RT_TEXTFILE :
-         res = new TextResource();
+         res = new Allegro5TextResource();
          break;
       default :
          EAGLE_ASSERT(0);

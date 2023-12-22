@@ -335,30 +335,9 @@ bool BinaryResource::LoadFromArgs(std::vector<std::string> args) {
 /// -------------------    Text resource     -----------------------
 
 
+#include "allegro5/allegro.h"
 
-bool TextResource::LoadFromArgs(std::vector<std::string> args) {
-   (void)args;
-   EagleSystem* sys = Eagle::EagleLibrary::System("Any");
-   EAGLE_ASSERT(sys);
-   FileSystem* fs = sys->GetFileSystem();
-   EAGLE_ASSERT(fs);
-   
-   std::shared_ptr<File> fl = fs->ReadFile(filepath);
-   if (!fl.get()->Info().Exists()) {
-      EagleError() << "Failed to find file " << filepath.Path() << std::endl;
-      return false;
-   }
-   if (!fl.get()->Info().Mode().CanRead()) {
-      EagleError() << "Cannot read file " << filepath.Path() << std::endl;
-   }
-   FILE* f = fopen(filepath.Path().c_str() , "rb");
-   EAGLE_ASSERT(f);
-   filetext.resize(fl.get()->Info().Size() + 1);
-   bool success = (fread(&filetext.at(0) , sizeof(char) , fl.get()->Info().Size() , f) == sizeof(char)*fl.get()->Info().Size());
-   filetext[fl.get()->Info().Size()] = '\0';
-   fclose(f);
-   return success;
-}
+
 
 
 

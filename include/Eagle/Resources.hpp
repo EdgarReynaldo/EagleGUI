@@ -29,6 +29,7 @@
 #include "Eagle/MemFile.hpp"
 #include "Eagle/SharedMemory.hpp"
 
+#include <vector>
 #include <memory>
 #include <atomic>
 
