@@ -110,7 +110,11 @@
 			<Add option="-Wformat" />
 			<Add option="-DNOGDI" />
 			<Add directory="include" />
+			<Add directory="C:/usr64/include" />
 		</Compiler>
+		<Linker>
+			<Add directory="C:/usr64/lib" />
+		</Linker>
 		<Unit filename="CMakeLists.txt" />
 		<Unit filename="Doxybuild/Doxyfile" />
 		<Unit filename="LICENSE" />
