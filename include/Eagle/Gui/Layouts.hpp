@@ -18,9 +18,9 @@
  *
  * @file Layouts.hpp
  * @brief The main include header for all of the different Eagle layout classes
- * 
+ *
  * Include this file to gain access to all the layouts available in Eagle.
- * 
+ *
  */
 
 #ifndef Layouts_HPP
@@ -35,7 +35,7 @@
 #include "Eagle/Gui/Layout/NPLayout.hpp"
 #include "Eagle/Gui/Layout/FlowLayout.hpp"
 #include "Eagle/Gui/Layout/GridLayout.hpp"
-#include "Eagle/Gui/Layout/MenuLayout.hpp"
+#include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
 #include "Eagle/Gui/Layout/RelativeLayout.hpp"
 #include "Eagle/Gui/Layout/DropDownList.hpp"
 #include "Eagle/Gui/Layout/ListBox.hpp"
