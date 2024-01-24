@@ -45,6 +45,7 @@ set (A5LIBS
 "allegro_physfs"
 "allegro_primitives"
 "allegro_ttf"
+"allegro_dialog"
 "allegro_video"
 "allegro"
 "allegro_main"
@@ -176,8 +177,8 @@ if (WANT_EXAMPLES)
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             list(APPEND OPTS "-g" "-fno-inline" "-O0")
          endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-         
-         
+
+
          set(WINSTATICLIBS "-static" "-lOpenAL32" "-ljpeg" "-ldumb" "-lwebp" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-lopengl32" "-lglu32" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
 
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -201,7 +202,7 @@ if (WANT_EXAMPLES)
                add_executable(${EXNAMESTATICDEBUG} ${EX})
                target_compile_definitions(${EXNAMESTATICDEBUG} PRIVATE ALLEGRO_STATICLINK AL_LIBTYPE_STATIC)
                target_compile_definitions(${EXNAMESTATICDEBUG} PRIVATE EAGLE_ASSERT_EXCEPTIONS DEBUG EAGLE_LOG)
-               target_compile_options(${EXNAMESTATICDEBUG} PUBLIC ${OPTS}) 
+               target_compile_options(${EXNAMESTATICDEBUG} PUBLIC ${OPTS})
                target_include_directories(${EXNAMESTATICDEBUG} PUBLIC "${EAGLE_INCLUDE_DIR}" "${A5_INCLUDE_DIRECTORY}")
                target_link_directories(${EXNAMESTATICDEBUG} PUBLIC "${A5LIBDIR}")
                target_link_libraries(${EXNAMESTATICDEBUG} PUBLIC EagleA5Debug EagleDebug ${ALLEGRO_LINK_LIBS} ${WINSTATICLIBS})
@@ -215,7 +216,7 @@ if (WANT_EXAMPLES)
             if (EAGLE_SHARED_LIBRARY_BUILD)
                message(STATUS "Building example " ${EXNAME} " ${EX}")
                add_executable(${EXNAME} ${EX})
-               target_compile_options(${EXNAME} PUBLIC ${OPTS}) 
+               target_compile_options(${EXNAME} PUBLIC ${OPTS})
                target_include_directories(${EXNAME} PUBLIC "${EAGLE_INCLUDE_DIR}" "${A5_INCLUDE_DIRECTORY}")
                target_link_directories(${EXNAME} PUBLIC "${A5LIBDIR}")
                target_link_libraries(${EXNAME} PUBLIC EagleA5Shared EagleShared)
@@ -227,7 +228,7 @@ if (WANT_EXAMPLES)
                message(STATUS "Building example " ${EXNAMESTATIC} " ${EX}")
                add_executable(${EXNAMESTATIC} ${EX})
                target_compile_definitions(${EXNAMESTATIC} PRIVATE ALLEGRO_STATICLINK AL_LIBTYPE_STATIC)
-               target_compile_options(${EXNAMESTATIC} PUBLIC ${OPTS}) 
+               target_compile_options(${EXNAMESTATIC} PUBLIC ${OPTS})
                target_include_directories(${EXNAMESTATIC} PUBLIC "${EAGLE_INCLUDE_DIR}" "${A5_INCLUDE_DIRECTORY}")
                target_link_directories(${EXNAMESTATIC} PUBLIC "${A5LIBDIR}")
                target_link_libraries(${EXNAMESTATIC} PUBLIC EagleA5 Eagle ${ALLEGRO_LINK_LIBS} ${WINSTATICLIBS})
