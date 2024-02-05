@@ -284,6 +284,7 @@
 		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
+		<Unit filename="src/Eagle/BinFileStream.cpp" />
 		<Unit filename="src/Eagle/BinStream.cpp" />
 		<Unit filename="src/Eagle/BoxArea.cpp" />
 		<Unit filename="src/Eagle/CMakeLists.txt" />
@@ -293,6 +294,8 @@
 		<Unit filename="src/Eagle/Color.cpp" />
 		<Unit filename="src/Eagle/Conditions.cpp" />
 		<Unit filename="src/Eagle/ConfigFile.cpp" />
+		<Unit filename="src/Eagle/Dialog.cpp" />
+		<Unit filename="src/Eagle/Endian.cpp" />
 		<Unit filename="src/Eagle/Events.cpp" />
 		<Unit filename="src/Eagle/Exception.cpp" />
 		<Unit filename="src/Eagle/File.cpp" />
@@ -327,6 +330,7 @@
 		<Unit filename="src/Eagle/Gui/Factory/WidgetFactory.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BasicTextButtonLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/BoxLayout.cpp" />
+		<Unit filename="src/Eagle/Gui/Layout/ClassicMenuLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DropDownList.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/DumbLayout.cpp" />
 		<Unit filename="src/Eagle/Gui/Layout/FillLayout.cpp" />
@@ -400,6 +404,7 @@
 		<Unit filename="src/Eagle/ResourceLib.cpp" />
 		<Unit filename="src/Eagle/Resources.cpp" />
 		<Unit filename="src/Eagle/Sound.cpp" />
+		<Unit filename="src/Eagle/SoundManager.cpp" />
 		<Unit filename="src/Eagle/StringWork.cpp" />
 		<Unit filename="src/Eagle/System.cpp" />
 		<Unit filename="src/Eagle/TextUtility.cpp" />
@@ -411,9 +416,6 @@
 		<Unit filename="src/Eagle/WindowManager.cpp" />
 		<Unit filename="src/backends/Allegro5/CMakeLists.txt" />
 		<Extensions>
-			<code_completion />
-			<debugger />
-			<envvars />
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />
 				<doxyfile_project />
@@ -423,7 +425,6 @@
 				<doxyfile_dot />
 				<general />
 			</DoxyBlocks>
-			<fortran_project />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
