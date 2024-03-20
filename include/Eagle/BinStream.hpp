@@ -18,9 +18,9 @@
  *
  * @file BinStream.hpp
  * @brief For streaming binary data to a data file
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 #ifndef BinStream_HPP
@@ -38,33 +38,49 @@
 
 
 
+/**! @class BinStream
+ *   @brief A binary memory stream, that can be easily read and written to, as well as read from and saved to a file.
+ *
+ *   This class cannot read or write into archive files. For that, see Allegro5BinStream. It derives and inherits
+ *   directly from BinStream.
+ */
+
+
 
 class BinStream {
    mutable uint64_t roffset;
    uint64_t woffset;
-   
+
    std::vector<uint8_t> bytes;
 
 public :
 
+//   BinStream();
+   BinStream() :
+         roffset(~0ULL),
+         woffset(~0ULL),
+         bytes()
+   {}
+   virtual ~BinStream() {}
+
    const uint8_t* Data() const;
    uint64_t Size() const;
-   
-   bool SaveDataToFile(FilePath fp) const ;
-   bool ReadDataFromFile(FilePath fp);
-   
+
+   virtual bool SaveDataToFile(FilePath fp) const ;
+   virtual bool ReadDataFromFile(FilePath fp);
+
    void RewindReadHead() const;
    void RewindWriteHead();
 
    bool SeekReadHead(uint64_t bytenum) const;
    bool SeekWriteHead(uint64_t bytenum);
-   
+
    void Clear();
    void Resize(uint64_t nbytes);
 
    uint64_t ReadOffset() const;
    uint64_t WriteOffset() const;
-   
+
    uint64_t ReadData(uint8_t* dest , uint32_t sz , bool reverse) const;/// returns number of bytes read or zero on error
    uint64_t WriteData(const uint8_t* src , uint32_t sz , bool reverse);/// returns number of bytes written or zero on error
 
@@ -73,7 +89,7 @@ public :
    template <class D>
    uint64_t WriteData(const D& data , bool reverse);
 
-   
+
    template <class D>
    const BinStream& operator>>(D& data) const;
 

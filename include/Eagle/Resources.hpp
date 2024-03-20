@@ -41,7 +41,7 @@ RESOURCEID NextRid();
 
 /** @enum RESOURCE_TYPE
  *  @brief Simple deduction of resource type based on extension string for the file path minus the leading dot
- *     Supported image types are bmp png jpg and tga. Font extensions include ttf only. 
+ *     Supported image types are bmp png jpg and tga. Font extensions include ttf only.
  *     Treatment of an image file as a font does not constitute it as such. Supported audio includes ogg and wav.
  *     Supported video containers are ogv through theora. Supported archives include zip files and 7z files.
  *     Second to last check sees whether they are a binary data file according to the extensions dat or bin.
@@ -85,8 +85,8 @@ public :
 
    virtual ~ResourceBase();
 
-   
-   
+
+
    /// Getters
    ResourceLibrary* Owner() {return owner;}
    RESOURCEID RID() {return rid;}
@@ -109,57 +109,58 @@ protected :
 
    std::shared_ptr<ArchiveFile> contents;
    std::map<std::string , ResourceBase*> resfilemap;
-   
-   
+
+
    virtual bool LoadFromArgs(std::vector<std::string> args);
-   
+
 //   bool LoadFolder(std::shared_ptr<Folder> folder);
 //   bool LoadFileResources(std::shared_ptr<Folder> folder);
 //   bool LoadSubFolders(std::shared_ptr<Folder> folder);
 //   bool LoadNestedArchives(std::shared_ptr<Folder> folder);
-   
+
 public :
    ArchiveResource(EagleGraphicsContext* window);
    ~ArchiveResource();
-   
+
    std::shared_ptr<Folder> GetContents() {return contents;}
-   
+
    void FreeContents();
    void FreeResources();
 };
 
-#include "Eagle/BinStream.hpp"
 
 
+class BinStream;
 
 class BinaryResource : public ResourceBase {
-protected : 
-   BinStream binstream;
-   
-   bool LoadFromArgs(std::vector<std::string> args) override;
-   
-   
+protected :
+   BinStream* binstream;
+
+   virtual bool LoadFromArgs(std::vector<std::string> args) override;
+
+
 public :
-   BinaryResource() :
-         ResourceBase(RT_BINFILE),
-         binstream()
-   {}
-   BinStream& GetBinStream() {return binstream;}
+   BinaryResource();
+   virtual ~BinaryResource();
+
+   virtual BinStream* GetBinStream() {return binstream;}
 };
+
+
 
 #include <string>
 
 class TextResource : public ResourceBase {
 protected :
    std::string filetext;
-   
+
    virtual bool LoadFromArgs(std::vector<std::string> args) override;
-   
+
 public :
    TextResource() :
          ResourceBase(RT_TEXTFILE)
    {}
-   
+
    const std::string& FileText() {return filetext;}
 };
 

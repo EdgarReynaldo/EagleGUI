@@ -75,7 +75,7 @@ EagleThread::~EagleThread() {
 void EagleThread::DoLockOnMutex(EagleMutex* m , const char* func) {
    EAGLE_ASSERT(m);
    MutexManager::Instance()->DoThreadLockOnMutex(this , m , func);
-/*   
+/*
    mutex_state = MTX_WAITLOCK;
    our_mutex = m;
    m->DoLock(this , func);
@@ -106,7 +106,7 @@ bool EagleThread::DoTryLockOnMutex(EagleMutex* m , const char* func) {
 
 bool EagleThread::DoLockWaitOnMutex(EagleMutex* m , const char* func , double timeout) {
    EAGLE_ASSERT(m);
-   
+
    return MutexManager::Instance()->DoThreadLockWaitOnMutex(this , m , func , timeout);
 /* OLD KEEP?
    mutex_state = MTX_WAITLOCK;
@@ -157,6 +157,10 @@ ThreadManager::ThreadManager() :
 
 
 
+~ThreadManager() {
+   thread_map.clear();
+   thread_log.close();
+}
 
 
 

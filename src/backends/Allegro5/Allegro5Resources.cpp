@@ -3,10 +3,35 @@
 
 
 #include "Eagle/backends/Allegro5/Allegro5Resources.hpp"
+#include "Eagle/backends/Allegro5/Allegro5BinStream.hpp"
 #include "Eagle/Lib.hpp"
 #include "Eagle/System.hpp"
 #include "Eagle/FileSystem.hpp"
 #include "allegro5/allegro.h"
+
+
+Allegro5BinaryResource() :
+      BinaryResource(),
+      a5binstream(0)
+{
+   a5binstream = new Allegro5BinStream;
+}
+
+
+
+Allegro5BinaryResource::~Allegro5BinaryResource() {
+   if (a5binstream) {
+      delete a5binstream;
+      a5binstream = 0;
+   }
+}
+
+
+
+Allegro5BinaryResource::BinStream* GetBinStream() {
+   return a5binstream;
+}
+
 
 
 bool Allegro5TextResource::LoadFromArgs(std::vector<std::string> args) {
@@ -15,7 +40,7 @@ bool Allegro5TextResource::LoadFromArgs(std::vector<std::string> args) {
    EAGLE_ASSERT(sys);
    FileSystem* fs = sys->GetFileSystem();
    EAGLE_ASSERT(fs);
-   
+
    std::shared_ptr<File> fl = fs->ReadFile(filepath);
    if (!fl.get()->Info().Exists()) {
       EagleError() << "Failed to find file " << filepath.Path() << std::endl;
