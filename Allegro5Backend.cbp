@@ -120,6 +120,7 @@
 			<Add directory="E:/usr64/lib" />
 		</Linker>
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5BinStream.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Conditions.hpp" />
@@ -143,6 +144,7 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Timer.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp" />
+		<Unit filename="src/backends/Allegro5/Allegro5BinStream.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Clipboard.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Color.cpp" />
 		<Unit filename="src/backends/Allegro5/Allegro5Conditions.cpp" />
