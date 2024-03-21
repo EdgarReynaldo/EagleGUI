@@ -1,6 +1,7 @@
 
 
 #include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
+#include "Eagle/StringWork.hpp"
 
 
 
@@ -15,11 +16,11 @@ Allegro5SoundSample::Allegro5SoundSample() :
       EagleSoundSample(),
       sample_data(0)
 {}
-   
+
 
 
 Allegro5SoundSample::~Allegro5SoundSample() {
-   
+
 }
 
 
@@ -57,7 +58,7 @@ Allegro5SoundInstance::Allegro5SoundInstance(EagleSoundSample* psample) :
       pinst(0)
 {
    Allegro5SoundSample* asample = dynamic_cast<Allegro5SoundSample*>(psample);
-   
+
    ALLEGRO_SAMPLE* smp = asample?asample->Data():0;
    pinst = al_create_sample_instance(smp);
    SetSample(asample);
@@ -78,7 +79,7 @@ void Allegro5SoundInstance::Free() {
       pinst = 0;
    }
 }
-   
+
 
 
 
@@ -96,7 +97,7 @@ void Allegro5SoundInstance::SetSample(EagleSoundSample* psample) {
 
 
 
-ALLEGRO_SAMPLE_INSTANCE* Allegro5SoundInstance::AllegroInstance() 
+ALLEGRO_SAMPLE_INSTANCE* Allegro5SoundInstance::AllegroInstance()
 {
    return pinst;
 }

@@ -48,6 +48,8 @@
 
 
 class BinStream {
+protected :
+
    mutable uint64_t roffset;
    uint64_t woffset;
 

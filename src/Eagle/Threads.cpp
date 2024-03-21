@@ -157,7 +157,7 @@ ThreadManager::ThreadManager() :
 
 
 
-~ThreadManager() {
+ThreadManager::~ThreadManager() {
    thread_map.clear();
    thread_log.close();
 }

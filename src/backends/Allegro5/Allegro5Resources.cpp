@@ -10,7 +10,14 @@
 #include "allegro5/allegro.h"
 
 
-Allegro5BinaryResource() :
+bool Allegro5BinaryResource::LoadFromArgs(std::vector<std::string> args) {
+   (void)args;
+   return a5binstream->ReadDataFromFile(filepath);
+}
+
+
+
+Allegro5BinaryResource::Allegro5BinaryResource() :
       BinaryResource(),
       a5binstream(0)
 {
@@ -28,7 +35,7 @@ Allegro5BinaryResource::~Allegro5BinaryResource() {
 
 
 
-Allegro5BinaryResource::BinStream* GetBinStream() {
+BinStream* Allegro5BinaryResource::GetBinStream() {
    return a5binstream;
 }
 

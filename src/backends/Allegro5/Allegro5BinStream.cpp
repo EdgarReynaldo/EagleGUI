@@ -3,7 +3,12 @@
 
 
 #include "Eagle/backends/Allegro5/Allegro5BinStream.hpp"
+#include "Eagle/System.hpp"
+#include "Eagle/FileSystem.hpp"
+#include "Eagle/Lib.hpp"
 
+
+#include "allegro5/allegro.h"
 
 
 bool Allegro5BinStream::SaveDataToFile(FilePath fp) const  {
