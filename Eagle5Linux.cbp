@@ -281,7 +281,6 @@
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Transform.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5WindowManager.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5Backend.hpp" />
-		<Unit filename="src/Eagle/AVHandler.cpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
 		<Unit filename="src/Eagle/BinFileStream.cpp" />
@@ -387,9 +386,7 @@
 		<Unit filename="src/Eagle/Lib.cpp" />
 		<Unit filename="src/Eagle/LineEquations.cpp" />
 		<Unit filename="src/Eagle/Logging.cpp" />
-		<Unit filename="src/Eagle/Media.cpp" />
 		<Unit filename="src/Eagle/MemFile.cpp" />
-		<Unit filename="src/Eagle/Memory.cpp" />
 		<Unit filename="src/Eagle/MousePointer.cpp" />
 		<Unit filename="src/Eagle/Mutexes.cpp" />
 		<Unit filename="src/Eagle/NamedParameters.cpp" />
