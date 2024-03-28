@@ -18,7 +18,7 @@
  *
  * @file Allegro5SoundManager.cpp
  * @brief Allegro 5 implementation of the sound driver for Eagle
- * 
+ *
  *
  */
 
@@ -88,9 +88,13 @@ Allegro5SoundManager::~Allegro5SoundManager() {
 
 void Allegro5SoundManager::Free() {
    ///< Mutex lock here?
-   al_detach_mixer(pmaster_mixer);
-   al_detach_mixer(psample_mixer);
-   if (bgstream) {  
+   if (pmaster_mixer) {
+      al_detach_mixer(pmaster_mixer);
+   }
+   if (psample_mixer) {
+      al_detach_mixer(psample_mixer);
+   }
+   if (bgstream) {
       al_detach_audio_stream(bgstream->AllegroStream());
       delete bgstream;
       bgstream = 0;
@@ -105,8 +109,12 @@ void Allegro5SoundManager::Free() {
       ++it;
    }
    instances.clear();
-   al_destroy_mixer(pmaster_mixer);
-   al_destroy_mixer(psample_mixer);
+   if (pmaster_mixer) {
+      al_destroy_mixer(pmaster_mixer);
+   }
+   if (psample_mixer) {
+      al_destroy_mixer(psample_mixer);
+   }
    al_destroy_voice(phardware);
    phardware = 0;
    pmaster_mixer = 0;
@@ -175,12 +183,12 @@ void Allegro5SoundManager::CheckInstances() {
 
 bool Allegro5SoundManager::ReserveInstances(size_t n , size_t max) {
    if (max > 64) {max = 64;}///< Set a max of 64 instances for some arbitrary reason
-   
+
    if (n > max) {n = max;}
-   
+
    int nnew = 0;
    int nold = 0;
-   
+
    if (n > instances.size()) {
       nnew = n - instances.size();
    }
@@ -190,7 +198,7 @@ bool Allegro5SoundManager::ReserveInstances(size_t n , size_t max) {
    else {
       return true;
    }
-   
+
    /// Old instances
    for (int iold = 0 ; iold < nold ; ++iold) {
       Allegro5SoundInstance* inst = *instances.begin();
@@ -204,7 +212,7 @@ bool Allegro5SoundManager::ReserveInstances(size_t n , size_t max) {
       EAGLE_ASSERT(inst);
       instances.push_back(inst);
    }
-   
+
    return true;///?
 }
 
@@ -241,7 +249,7 @@ void Allegro5SoundManager::ClearSoundInstances() {
 
 
 void Allegro5SoundManager::ClearBGStream() {
-   if (bgstream) {  
+   if (bgstream) {
       al_detach_audio_stream(bgstream->AllegroStream());
       delete bgstream;
       bgstream = 0;
@@ -251,13 +259,13 @@ void Allegro5SoundManager::ClearBGStream() {
 
 
 void Allegro5SoundManager::ReadyBGStream(EagleSoundStream* stream) {
-   
+
    if (bgstream) {
       al_detach_audio_stream(bgstream->AllegroStream());
    }
-   
+
    bgstream = dynamic_cast<Allegro5SoundStream*>(stream);
-   
+
    if (bgstream) {
       al_attach_audio_stream_to_mixer(bgstream->AllegroStream() , pmaster_mixer);
    }
