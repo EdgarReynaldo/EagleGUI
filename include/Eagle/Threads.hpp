@@ -36,7 +36,7 @@ class EagleThread;
 
 /**! @typedef EAGLE_THREAD_PROCESS
  *   @brief Typedef for a function you wish to run inside an @ref EagleThread
- * 
+ *
  *   Your process will be given access to the eagle thread, and the ptr specified in EagleThread::Create
  */
 
@@ -55,28 +55,28 @@ extern EagleThread* const NOT_A_THREAD;///< Use NOT_A_THREAD for any EagleThread
  */
 
 class EagleThread : public EagleObject {
-   
+
    friend class EagleMutex;
-   
+
 private :
    static int new_thread_id;
-   
+
    int thread_id;
    std::atomic<EAGLE_MUTEX_STATE> mutex_state;
    EagleMutex* our_mutex;
    const char* latest_func_caller;
-   
+
    void SetState(EAGLE_MUTEX_STATE s);
    void SetCaller(const char* caller);
-   
+
 public :
    ///< Default constructor supplying class and object name
    EagleThread(std::string objclass = "EagleThread" , std::string objname = "Nemo");
 
    ///< Virtual destructor
    virtual ~EagleThread();
-   
-   
+
+
    ///< Pure virtual function to create a thread using the specified process and argument
    virtual bool Create(EAGLE_THREAD_PROCESS process_to_run , void* arg)=0;
 
@@ -114,14 +114,14 @@ public :
 ///   EAGLE_MUTEX_STATE State() {return mutex_state;}///< Return the state of our mutex, for what??? Hmm..
 
 ///   EagleMutex* OurMutex() {return our_mutex;}///< Get a pointer to our mutex??? Why...
-   
+
    void DoLockOnMutex(EagleMutex* m , const char* func);
    bool DoTryLockOnMutex(EagleMutex* m , const char* func);
    bool DoLockWaitOnMutex(EagleMutex* m , const char* func , double timeout);
    void DoUnLockOnMutex(EagleMutex* m , const char* func);
-   
-   
-   
+
+
+
 };
 
 
@@ -134,32 +134,35 @@ class ThreadManager {
    friend class EagleThread;
 
 private :
-   
+
    static ThreadManager* threadman;
-   
-   
+
+
    typedef std::map<int , EagleThread*> THREAD_MAP;
    typedef THREAD_MAP::iterator TMIT;
-   
+
    THREAD_MAP thread_map;
-   
+
    std::ofstream thread_log;
-   
+
    ThreadManager();
-   
+   ~ThreadManager();
+
+
+
    void Create();
    void Destroy();
 
    void RegisterThread(EagleThread* t);
    void UnRegisterThread(EagleThread* t);
-   
+
    friend void DestroyThreadManager();
    friend std::ostream& ThreadLog();
-   
+
 public :
 
    static ThreadManager* Instance();
-   
+
 /**
 ///   void PrintThreadReport();
    void PrintThreadReport() {

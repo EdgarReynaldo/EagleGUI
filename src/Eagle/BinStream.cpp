@@ -18,7 +18,7 @@
  *
  * @file BinStream.cpp
  * @brief Implementations for streaming binary data to a data file
- * 
+ *
  */
 
 
@@ -219,7 +219,7 @@ const BinStream& BinStream::operator>>(std::string& str) const {
 
 template <>
 BinStream& BinStream::operator<<(const char* str) {
-   this->WriteData((const uint8_t*)str , strlen(str) + 1 , false);
+   this->WriteData((const uint8_t*)str , strlen(str) + 1 , false);/// write the trailing null in the char* so it can be read again
    return *this;
 }
 

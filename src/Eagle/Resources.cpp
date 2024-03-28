@@ -28,7 +28,7 @@
 #include "Eagle/File.hpp"
 #include "Eagle/ResourceLib.hpp"
 #include "Eagle/GraphicsContext.hpp"
-
+#include "Eagle/BinStream.hpp"
 
 
 #include <atomic>
@@ -123,7 +123,7 @@ bool ArchiveResource::LoadFromArgs(std::vector<std::string> args) {
    if (index == std::string::npos) {return false;}/// No extension
    std::string ext = file.substr(++index);
    std::vector<RESOURCEID> rids;
-   
+
    if ((ext.compare("zip") == 0) || (ext.compare("7z") == 0) || (ext.compare("tar") == 0) || (ext.compare("gz") == 0)) {
 
       EagleSystem* sys = Eagle::EagleLibrary::System("Any");
@@ -132,7 +132,7 @@ bool ArchiveResource::LoadFromArgs(std::vector<std::string> args) {
       EAGLE_ASSERT(fs);
       ResourceLibrary* reslib = sys->GetResourceLibrary();
       EAGLE_ASSERT(reslib);
-      
+
       /// Recursively load contents here
       contents = fs->ReadArchive(filepath);/// Get the folders and files in the archive
       rids = reslib->LoadArchiveResource(contents.get());
@@ -146,8 +146,8 @@ bool ArchiveResource::LoadFromArgs(std::vector<std::string> args) {
    }
    return rids.size();
 }
-      
-      
+
+
 /**
 bool ArchiveResource::LoadFolder(std::shared_ptr<Folder> folder) {
    bool files = LoadFileResources(folder);
@@ -159,10 +159,10 @@ bool ArchiveResource::LoadFolder(std::shared_ptr<Folder> folder) {
 
 
 bool ArchiveResource::LoadFileResources(std::shared_ptr<Folder> folder) {
-   
+
    Folder* fl = folder.get();
    EAGLE_ASSERT(fl);
-   
+
    Folder::FILEMAP fmap = fl->Files();
    bool success = true;
    for (Folder::FILEMAP::iterator it = fmap.begin() ; it != fmap.end() ; ) {
@@ -327,9 +327,25 @@ void ArchiveResource::FreeContents() {
 
 bool BinaryResource::LoadFromArgs(std::vector<std::string> args) {
    (void)args;
-   return binstream.ReadDataFromFile(filepath);
+   return binstream->ReadDataFromFile(filepath);
 }
 
+
+
+BinaryResource::BinaryResource() :
+      ResourceBase(RT_BINFILE),
+      binstream(0)
+{
+   binstream = new BinStream;
+}
+
+
+BinaryResource::~BinaryResource() {
+   if (binstream){
+      delete binstream;
+      binstream = 0;
+   }
+}
 
 
 /// -------------------    Text resource     -----------------------
@@ -342,7 +358,7 @@ bool TextResource::LoadFromArgs(std::vector<std::string> args) {
    EAGLE_ASSERT(sys);
    FileSystem* fs = sys->GetFileSystem();
    EAGLE_ASSERT(fs);
-   
+
    std::shared_ptr<File> fl = fs->ReadFile(filepath);
    if (!fl.get()->Info().Exists()) {
       EagleError() << "Failed to find file " << filepath.Path() << std::endl;
