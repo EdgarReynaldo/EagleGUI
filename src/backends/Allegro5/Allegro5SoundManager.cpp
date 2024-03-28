@@ -88,17 +88,12 @@ Allegro5SoundManager::~Allegro5SoundManager() {
 
 void Allegro5SoundManager::Free() {
    ///< Mutex lock here?
-<<<<<<< HEAD
    if (pmaster_mixer) {
       al_detach_mixer(pmaster_mixer);
    }
    if (psample_mixer) {
       al_detach_mixer(psample_mixer);
    }
-=======
-   al_detach_mixer(pmaster_mixer);
-   al_detach_mixer(psample_mixer);
->>>>>>> edd5cd6f12940033cc238b1f4deae47bd290982a
    if (bgstream) {
       al_detach_audio_stream(bgstream->AllegroStream());
       delete bgstream;
