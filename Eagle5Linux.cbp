@@ -119,6 +119,45 @@
 		<Unit filename="EagleLicense.txt" />
 		<Unit filename="EagleNotes.txt" />
 		<Unit filename="READMEmd" />
+		<Unit filename="examples/EagleEventTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/EagleGraphicsContextTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/EagleSystemTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExArchive.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExFileSystem.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExFlow.cbp" />
+		<Unit filename="examples/ExFlow.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExMenu.cbp" />
+		<Unit filename="examples/ExMenu.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExResource.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExSound.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/ExSoundConfig.cfg" />
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AVHandler.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />

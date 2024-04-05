@@ -118,6 +118,7 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="E:/LIBS/LIBS81Redistro/Allegro525/lib" />
 		</Linker>
+		<Unit filename="include/Eagle/backends/Allegro5/Allegro5BinStream.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Clipboard.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Color.hpp" />
 		<Unit filename="include/Eagle/backends/Allegro5/Allegro5Conditions.hpp" />
