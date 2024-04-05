@@ -38,6 +38,7 @@ int main(int argc , char** argv) {
    sys->GetSystemTimer()->Start();
 
    int mscnt = 0;
+   int tcnt = 0;
 
    while (!quit) {
       if (redraw) {
@@ -64,6 +65,12 @@ int main(int argc , char** argv) {
          else {
             mscnt = 0;
          }
+         if (e.type == EAGLE_EVENT_TIMER) {
+            tcnt++;
+         }
+         else {
+            tcnt = 0;
+         }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             message = "Display closed.";
             messages.push_back(message);
@@ -75,6 +82,13 @@ int main(int argc , char** argv) {
             quit = true;
          }
          else if (e.type == EAGLE_EVENT_TIMER) {
+            message = StringPrintF("EAGLE_EVENT_TIMER %d" , tcnt);
+            if (tcnt == 1) {
+               messages.push_back(message);
+            }
+            else {
+               messages[messages.size() - 1] = message;
+            }
             redraw = true;
          }
          else if (e.type == EAGLE_EVENT_MOUSE_AXES) {
