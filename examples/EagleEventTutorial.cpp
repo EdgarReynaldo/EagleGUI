@@ -53,7 +53,7 @@ int main(int argc , char** argv) {
          win->FlipDisplay();
          redraw = false;
 
-         while (messages.size() > 9) {
+         while (messages.size() > 22) {
             messages.pop_front();
          }
       }
