@@ -39,8 +39,7 @@ int main(int argc , char** argv) {
 
    int mscnt = 0;
 
-   while (!quit || pause) {
-      pause = false;
+   while (!quit) {
       if (redraw) {
          win->Clear();
          if (messages.size()) {
@@ -52,12 +51,12 @@ int main(int argc , char** argv) {
          }
          win->FlipDisplay();
          redraw = false;
+
          while (messages.size() > 9) {
             messages.pop_front();
          }
       }
       if (q->HasEvent()) {
-         redraw = true;
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
          if (e.type == EAGLE_EVENT_MOUSE_AXES) {
             mscnt++;
@@ -69,27 +68,27 @@ int main(int argc , char** argv) {
             message = "Display closed.";
             messages.push_back(message);
             quit = true;
-            pause = true;
          }
          else if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
             message = "Escape pressed";
             messages.push_back(message);
             quit = true;
-            pause = true;
          }
          else if (e.type == EAGLE_EVENT_TIMER) {
             redraw = true;
          }
          else if (e.type == EAGLE_EVENT_MOUSE_AXES) {
-            if (messages.size() &&
-                messages.back().compare(0 , 22 , "EAGLE_EVENT_MOUSE_AXES") == 0) {
-               messages[messages.size() - 1] = StringPrintF("EAGLE_EVENT_MOUSE_AXES %d" , mscnt);
+            message = StringPrintF("EAGLE_EVENT_MOUSE_AXES %d" , mscnt);
+            if (mscnt == 1) {
+               messages.push_back(message);
+            }
+            else {
+               messages[messages.size() - 1] = message;
             }
          }
          else {
             message = EagleEventName(e.type);
             messages.push_back(message);
-            pause = true;
          }
       }
    }
