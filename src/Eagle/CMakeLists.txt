@@ -4,19 +4,19 @@
 ## This is the main CMakeLists.txt for building the Eagle librasry, not including the backends
 
 set(srcdirs
-   "Eagle/" 
-   "Eagle/Gui/" 
-   "Eagle/Gui/Button/" 
-   "Eagle/Gui/Decorator/" 
-   "Eagle/Gui/Factory/" 
-   "Eagle/Gui/Layout/" 
-   "Eagle/Gui/Menu/" 
-   "Eagle/Gui/Scripting/" 
+   "Eagle/"
+   "Eagle/Gui/"
+   "Eagle/Gui/Button/"
+   "Eagle/Gui/Decorator/"
+   "Eagle/Gui/Factory/"
+   "Eagle/Gui/Layout/"
+   "Eagle/Gui/Menu/"
+   "Eagle/Gui/Scripting/"
    "Eagle/Gui/Text/"
    )
-   
+
 set(sourcefiles)
-   
+
 foreach(dir ${srcdirs})
    file(GLOB cppsrcs "${EAGLE_ROOT_DIR}/src/${dir}*.cpp")
    file(GLOB csrcs   "${EAGLE_ROOT_DIR}/src/${dir}*.c")
@@ -80,14 +80,14 @@ if (${EAGLE_SHARED_LIBRARY_BUILD})
       install(TARGETS EagleDebugShared LIBRARY DESTINATION bin)
    else()
       add_library(EagleShared SHARED $<TARGET_OBJECTS:EagleObjects>)
-      install(TARGETS EagleShared LIBRARY DESTINATION lib)
+      install(TARGETS EagleShared LIBRARY DESTINATION bin)
    endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 endif (${EAGLE_SHARED_LIBRARY_BUILD})
 
 if (${EAGLE_STATIC_LIBRARY_BUILD})
    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
       add_library(EagleDebug STATIC $<TARGET_OBJECTS:EagleObjects>)
-      install(TARGETS EagleDebug ARCHIVE DESTINATION lib)
+      install(TARGETS EagleDebug ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
    else()
       add_library(Eagle STATIC $<TARGET_OBJECTS:EagleObjects>)
       install(TARGETS Eagle ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")

@@ -34,7 +34,7 @@ option(DEBUG_ALLEGRO5 "Enable debugging of allegro 5" OFF)
 
 option(EAGLE_DEBUG_MUTEX_LOCKS "Enable debug logging of mutex locks on all threads created with Eagle" OFF)
 
-set (A5_MONOLITH "allegro_monolith" CACHE STRING "The allegro 5 monolith base name")
+unset(A5LIBS CACHE)
 set (A5LIBS
 "allegro_acodec"
 "allegro_audio"
@@ -50,6 +50,19 @@ set (A5LIBS
 "allegro"
 "allegro_main"
 CACHE STRING "A list of the allegro addon libraries")
+if (DEBUG_ALLEGRO5)
+   foreach(A5LIB ${A5LIBS})
+      string(APPEND ${A5LIB} "-debug")
+   endforeach()
+endif()
+
+unset(A5_MONOLITH CACHE)
+if (DEBUG_ALLEGRO5)
+   set(A5_MONOLITH "allegro_monolith-debug")
+else ()
+   set (A5_MONOLITH "allegro_monolith" CACHE STRING "The allegro 5 monolith base name")
+endif()
+
 
 # Set search directories
 
@@ -81,19 +94,13 @@ if (WIN32)
    set(LIBEXT ".dll.a")
 endif()
 
-if (DEBUG_ALLEGRO5)
-   string(PREPEND LIBEXT "-debug")
-endif()
-
-string(APPEND ${A5_MONOLITH} ${LIBEXT})
-
 message(STATUS ${A5LIBS})
 
 # Find Allegro 5 monolith
 
 unset(A5_MONOLITH_LIB CACHE)
-find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS ${A5LIBDIR} NO_DEFAULT_PATH)
-find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}" PATHS "/usr/lib" "/usr/local/lib" "/usr/lib/x86_64-linux-gnu")
+find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}${LIBEXT}" PATHS ${A5LIBDIR} NO_DEFAULT_PATH)
+find_library(A5_MONOLITH_LIB "lib${A5_MONOLITH}${LIBEXT}" PATHS "/usr/lib" "/usr/local/lib" "/usr/lib/x86_64-linux-gnu")
 
 unset(ALLEGRO_LINK_LIBS CACHE)
 if (NOT A5_MONOLITH_LIB)
