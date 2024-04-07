@@ -57,7 +57,8 @@ int main(int argc , char** argv) {
             messages.pop_front();
          }
       }
-      if (q->HasEvent()) {
+      sys->Rest(0.005);
+      while (q->HasEvent()) {
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
          if (e.type == EAGLE_EVENT_MOUSE_AXES) {
             mscnt++;
