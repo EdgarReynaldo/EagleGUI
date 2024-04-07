@@ -30,7 +30,6 @@ int main(int argc , char** argv) {
 
    bool quit = false;
    bool redraw = true;
-   bool pause = false;
    std::string message;
 
    std::deque<std::string> messages;
@@ -39,21 +38,22 @@ int main(int argc , char** argv) {
 
    int mscnt = 0;
    int tcnt = 0;
+   int ccnt = 0;
 
    while (!quit) {
       if (redraw) {
          win->Clear();
          if (messages.size()) {
             int i = 0;
-            for (std::deque<std::string>::iterator it = messages.begin() ; it != messages.end() ; ++it) {
-               win->DrawTextString(win->DefaultFont() , *it , 320 , 460 - 10*i , EagleColor(0,255,0) , HALIGN_CENTER , VALIGN_CENTER);
+            for (std::deque<std::string>::reverse_iterator rit = messages.rbegin() ; rit != messages.rend() ; ++rit) {
+               win->DrawTextString(win->DefaultFont() , *rit , 20 , 20+ 10*i , EagleColor(0,255,0) , HALIGN_LEFT , VALIGN_CENTER);
                ++i;
             }
          }
          win->FlipDisplay();
          redraw = false;
 
-         while (messages.size() > 22) {
+         while (messages.size() > 36) {
             messages.pop_front();
          }
       }
@@ -70,6 +70,12 @@ int main(int argc , char** argv) {
          }
          else {
             tcnt = 0;
+         }
+         if (e.type == EAGLE_EVENT_KEY_CHAR) {
+            ccnt++;
+         }
+         else {
+            ccnt = 0;
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             message = "Display closed.";
@@ -100,12 +106,22 @@ int main(int argc , char** argv) {
                messages[messages.size() - 1] = message;
             }
          }
+         else if (e.type == EAGLE_EVENT_KEY_CHAR) {
+            message = StringPrintF("EAGLE_EVENT_KEY_CHAR '%s' %d" , keycode_to_name(e.keyboard.keycode) , ccnt);
+            if (ccnt == 1) {
+               messages.push_back(message);
+            }
+            else {
+               messages[messages.size() - 1] = message;
+            }
+         }
          else {
             message = EagleEventName(e.type);
             messages.push_back(message);
          }
       }
    }
+   sys->Rest(2.0);
    return 0;
 }
 
