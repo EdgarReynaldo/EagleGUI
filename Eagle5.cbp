@@ -115,6 +115,7 @@
 		<Linker>
 			<Add directory="C:/usr64/lib" />
 		</Linker>
+		<Unit filename="../../bin/EagleThreadLog.txt" />
 		<Unit filename="CMakeLists.txt" />
 		<Unit filename="Doxybuild/Doxyfile" />
 		<Unit filename="LICENSE" />

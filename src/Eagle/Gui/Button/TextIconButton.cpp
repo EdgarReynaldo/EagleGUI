@@ -68,13 +68,14 @@ void TextIconButton::DisplayIcon(EagleGraphicsContext* win , BUTTON_STATE state 
    EagleImage* image = original_images[(int)state];
    EAGLE_ASSERT(image && image->Valid());
 
-   win->DrawImageAligned(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , HALIGN_RIGHT , VALIGN_CENTER , c);
+   win->DrawImageAligned(image , InnerArea().MovedBy(Pos2I(xpos,ypos)) , HALIGN_LEFT , VALIGN_CENTER , c);
 }
 
 
 
 void TextIconButton::DisplayText(EagleGraphicsContext* win , int xpos , int ypos , EagleColor textcolor) {
-   win->DrawTextString(label_font , label , InnerArea().X() + xpos , InnerArea().CY() + ypos , textcolor , HALIGN_LEFT , VALIGN_CENTER);
+   EagleImage* image = original_images[0];
+   win->DrawTextString(label_font , label , InnerArea().X() + xpos + image->W() , InnerArea().CY() + ypos , textcolor , HALIGN_LEFT , VALIGN_CENTER);
 }
 
 
