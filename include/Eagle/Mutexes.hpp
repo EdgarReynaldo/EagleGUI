@@ -78,12 +78,12 @@ class EagleMutex  : public EagleObject {
 
 protected :
    EAGLE_MUTEX_TYPE type;  ///< The type of mutex
-   EAGLE_MUTEX_STATE state;///< The state of the mutex
-   
+   volatile std::atomic<EAGLE_MUTEX_STATE> state_atomic;///< The state of the mutex, is an atomic type for thread safety
+
    /**! @union MTX
     *   @brief This is to make our lives easier, and store the mutex in a single variable even if it is a different type
     */
-   
+
    union {
       std::mutex*                 mtx;                ///< Plain mutex
       std::timed_mutex*           mtx_timed;          ///< Timed mutex
@@ -91,9 +91,9 @@ protected :
       std::recursive_timed_mutex* mtx_recursive_timed;///< Timed recursive mutex
    } MTX;
 
-   std::atomic<int> lock_count;///< Estimate of the number of times we've been locked
+   std::atomic<int> lock_count;///<  Count of the number of times we've been locked. 0 and 1 are valid for all mutexes. Greater than 1 is only valid for recursive mutices.
 
-   EagleThread* owner;///< The thread that owns us, may be @ref MAIN_THREAD
+   EagleThread* owner;///< The thread that owns us, may be @ref MAIN_THREAD . If invalid, it will be NOT_A_THREAD
 
    bool log;///< Whether or not to log this mutex's state
 
@@ -111,7 +111,7 @@ protected :
 
    friend class EagleThread;
    friend class MutexManager;
-   
+
    /**! @fn DoLock <EagleThread* , std::string>
     *   @brief Locks the mutex, private
     */
@@ -147,7 +147,7 @@ protected :
    void DoUnLock     (std::string callfunc);
 
    ///< Helper function to log the thread state
-   void LogThreadState(EagleThread* callthread , const char* func , EAGLE_MUTEX_STATE tstate);
+   void LogThreadState(EagleThread* callthread , const char* func , const EAGLE_MUTEX_STATE& state);
 
 public :
 
@@ -173,14 +173,14 @@ public :
    virtual void Destroy()=0;
 
    void TurnLogOn();///< Turn the log on, only affects things if EAGLE_DEBUG_MUTEX_LOCKS is defined
-   void TurnLogOff();///< Turn the log off
-   
+   void TurnLogOff();///< Turn the log off, on by default, does nothing if EAGLE_DEBUG_MUTEX_LOCKS is not defined
+
    bool Valid();///< True if this mutex is valid
    bool Timed();///< True if this mutex is timed
    bool Recursive();///< True if this mutex is recursive
 
    EAGLE_MUTEX_STATE GetMutexState();///< Get the mutex state (may not always be accurate!!!)
-   
+
    EagleThread* Owner() {return owner;}///< Return a pointer to the owning @ref EagleThread object
 };
 
@@ -203,17 +203,17 @@ typedef EAGLE_MUTEX_MAP::iterator EMMIT;
 
 
 /**! @class MutexReporter
- *   @brief A class to report on the current state of all mutexes 
+ *   @brief A class to report on the current state of all mutexes
  *   TODO : Finish me
  */
 
 class MutexReporter {
-   
+
    typedef std::map<EagleMutex* , std::list<EagleThread*> > MUTEX_LOCK_STATE_MAP;
    typedef MUTEX_LOCK_STATE_MAP::iterator LSMIT;
    typedef std::list<EagleThread*>::iterator ETLIT;
-   
-public :   
+
+public :
 ///   static std::string CreateReport(EAGLE_MUTEX_MAP mtx_map);
 std::string CreateReport(EAGLE_MUTEX_MAP mtx_map) {
    MUTEX_LOCK_STATE_MAP lockmap;
@@ -231,11 +231,11 @@ std::string CreateReport(EAGLE_MUTEX_MAP mtx_map) {
    }
    for (EMMIT it = mtx_map.begin() ; it != mtx_map.end() ; ++it) {
 ///      EagleMutex* m = it->second;
-      
+
    }
    return "";
 }
-   
+
 };
 
 
@@ -248,25 +248,25 @@ std::string CreateReport(EAGLE_MUTEX_MAP mtx_map) {
  */
 
 class MutexManager {
-   
+
    friend class EagleMutex;///< Give private access to the @ref EagleMutex class
-   
+
 protected :
-   
+
    static MutexManager* mutex_man;///< A singleton for the mutex manager
-   
+
    EAGLE_MUTEX_MAP mutex_map;///< A map of all the mutexes
 
    MutexManager();///< Protected constructor
-   
+
    void RegisterMutex(EagleMutex* m);///< Protected registration function for EagleMutex objects
    void UnRegisterMutex(EagleMutex* m);///< Protected deregistration function for EagleMutex objects
-   
-   
-   
+
+
+
 public :
    static MutexManager* Instance();///< Get the singleton
-   
+
    ///< Locks the mutex m on @ref EagleThread *t , from function callfunc
    static void DoThreadLockOnMutex    (EagleThread* t , EagleMutex* m , const char* callfunc);
 
@@ -278,7 +278,7 @@ public :
 
    ///< Unlocks the mutex m on @ref EagleThread *t , from function callfunc
    static void DoThreadUnLockOnMutex  (EagleThread* t , EagleMutex* m , const char* callfunc);
-   
+
 
    ///< Locks the mutex m on the @ref MAIN_THREAD , from function callfunc
    static void DoLockOnMutex    (EagleMutex* m , const char* callfunc);
@@ -291,15 +291,15 @@ public :
 
    ///< Unlocks the mutex m on the @ref MAIN_THREAD , from function callfunc
    static void DoUnLockOnMutex  (EagleMutex* m , const char* callfunc);
-   
-   
+
+
 };
 
 /**! @defgroup MutexLocks MutexLocks
- *   @brief Some helper macros to make threading and mutex locks cleaner and easier to use 
- *   
+ *   @brief Some helper macros to make threading and mutex locks cleaner and easier to use
+ *
  *   @def ThreadLockMutex(t,m)
- *   @brief Locks the mutex m on thread t 
+ *   @brief Locks the mutex m on thread t
  *   @def LockMutex(m)
  *   @brief Locks the mutex m on the @ref MAIN_THREAD
  *
@@ -307,7 +307,7 @@ public :
  *   @brief Tries to lock the mutex m on thread t
  *   @def TryLockMutex(m)
  *   @brief Tries to lock the mutex m on the @ref MAIN_THREAD
- *   
+ *
  *   @def ThreadWaitLockMutex(t,m,timeout)
  *   @brief Tries to lock the mutex m on thread t, waiting for timeout seconds
  *   @def WaitLockMutex(m,timeout)
@@ -343,9 +343,9 @@ public :
 #define UnLockMutex(m)\
         MutexManager::DoUnLockOnMutex(m,EAGLE__FUNC)
 
-        
-        
-        
+
+
+
 #endif // EagleMutex_HPP
 
 

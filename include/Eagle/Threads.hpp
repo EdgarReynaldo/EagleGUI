@@ -66,7 +66,7 @@ private :
    EagleMutex* our_mutex;
    const char* latest_func_caller;
 
-   void SetState(const std::atomic<EAGLE_MUTEX_STATE>& s);
+   void SetState(EAGLE_MUTEX_STATE state);
    void SetCaller(const char* caller);
 
 public :

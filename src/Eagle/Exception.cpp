@@ -31,7 +31,7 @@
 
 
 std::string EagleTraceStr(const char* exp , const char* file , int line , const char* func) {
-   return StringPrintF("%s in file %s on line %d in function %s" , exp , file , line , func);
+   return StringPrintF("(%s) in file %s on line %d in function %s" , exp , file , line , func);
 }
 
 

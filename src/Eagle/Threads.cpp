@@ -42,8 +42,8 @@ EagleThread* const NOT_A_THREAD = (EagleThread*)-1;
 
 
 
-void EagleThread::SetState(const std::atomic<EAGLE_MUTEX_STATE>& s) {
-   mutex_state = s;
+void EagleThread::SetState(EAGLE_MUTEX_STATE state) {
+   mutex_state = state;/// Atomic read and assignment
 }
 
 
