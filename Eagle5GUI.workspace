@@ -4,5 +4,6 @@
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
 		<Project filename="../../projects/Hexagoner/Hexagoner.cbp" />
+		<Project filename="../../projects/Krampus2023/KrampusHack2023_Win11.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
