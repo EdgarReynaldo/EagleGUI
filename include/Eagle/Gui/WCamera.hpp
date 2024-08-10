@@ -21,8 +21,8 @@
  * 
  */
 
-#ifndef Camera_H
-#define Camera_H
+#ifndef WCamera_H
+#define WCamera_H
 
 
 
@@ -298,7 +298,7 @@ public :
 
 
 
-#endif // Camera_H
+#endif // WCamera_H
 
 
 

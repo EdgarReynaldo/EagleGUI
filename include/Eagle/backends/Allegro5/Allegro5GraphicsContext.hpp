@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2024+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -25,6 +25,7 @@
 
 
 
+#include "Eagle/Area.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Mutexes.hpp"
 #include "Eagle/FontManager.hpp"
@@ -61,6 +62,8 @@ EagleEvent GetDisplayEvent(ALLEGRO_EVENT ev);///< Get a display event from an AL
  *   @brief The Allegro 5 graphics driver
  */
 
+ class Rectangle;
+ 
 class Allegro5GraphicsContext : public EagleGraphicsContext {
 
    virtual void ClearImageSet(EagleGraphicsContext* newowner) override;
@@ -165,7 +168,7 @@ public :
    virtual void DrawFilledEllipse(float cx , float cy , float rx , float ry , EagleColor c);
    virtual void DrawTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , float thickness , EagleColor c);
    virtual void DrawFilledTriangle(float x1 , float y1 , float x2 , float y2 , float x3 , float y3 , EagleColor c);
-	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl);
+	virtual void DrawShadedRectangle(const Rectangle* r , EagleColor tl , EagleColor tr , EagleColor br , EagleColor bl) override;
 	virtual void DrawShadedQuad(float x1 , float y1 , EagleColor c1 ,
 										 float x2 , float y2 , EagleColor c2 ,
 										 float x3 , float y3 , EagleColor c3 ,
@@ -204,6 +207,16 @@ public :
    virtual void DrawVTextString(EagleFont* font , std::string str , float x , float y , EagleColor c ,
                                 HALIGNMENT halign = HALIGN_LEFT ,
                                 VALIGNMENT valign = VALIGN_TOP , int letter_spacing = -1);
+
+   /// Mesh drawing
+   void RenderFacesFrontBack    (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1)) override;
+
+   void RenderTexturedFacesFront(const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1)) override;
+
+   void RenderFacesFront        (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1)) override;
+   void RenderFacesBack         (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1)) override;
+
+   void RenderEdges             (const Mesh* mesh , const EagleColor col , const SpatialInfo info = SpatialInfo() , Vec3 scale = Vec3(1,1,1)) override;
 
    /// getters
    virtual EagleImage* GetBackBuffer();

@@ -37,7 +37,7 @@
 #include "Gui/Alignment.hpp"
 #include "Gui/BasicIcon.hpp"
 #include "Gui/Button.hpp"
-#include "Gui/Camera.hpp"
+#include "Gui/WCamera.hpp"
 #include "Gui/Layouts.hpp"
 #include "Gui/Menu.hpp"
 #include "Gui/Slider.hpp"

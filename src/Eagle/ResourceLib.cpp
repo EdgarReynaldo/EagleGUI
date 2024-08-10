@@ -81,7 +81,7 @@ ResourceLibrary::ResourceLibrary(EagleGraphicsContext* win) :
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_VIDEO        , {"ogv"}));
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_ARCHIVE      , {"zip" , "7z" , "tar" , "gz"}));
    typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_BINFILE      , {"dat" , "bin" , "exe" , "dll"}));
-   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE     , {"txt" , "log"}));
+   typemap.insert(std::pair<RESOURCE_TYPE , std::set<std::string> >(RT_TEXTFILE     , {"txt" , "log" , "cfg" , "obj" , "mat"}));
    
    SetWindow(win);
 }

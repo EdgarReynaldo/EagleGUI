@@ -153,18 +153,21 @@ public :
 class TextResource : public ResourceBase {
 protected :
    std::string filetext;
-
+   std::vector<std::string> flines;
+   
+   
    virtual bool LoadFromArgs(std::vector<std::string> args) override;
 
 public :
    TextResource() :
-         ResourceBase(RT_TEXTFILE)
+         ResourceBase(RT_TEXTFILE),
+         filetext(),
+         flines()
    {}
 
    const std::string& FileText() {return filetext;}
+   std::vector<std::string>& FileLines() {return flines;}
 };
-
-
 
 
 

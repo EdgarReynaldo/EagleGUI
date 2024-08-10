@@ -93,6 +93,8 @@ std::string PrintFailedEagleInitStates(int desired_state , int actual_state);///
 class FileSystem;
 class ResourceLibrary;
 class DialogManager;
+class Mesh;
+
 
 
 /**! @class EagleSystem
@@ -178,6 +180,7 @@ protected :
    virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
    virtual GraphicsHardware*     PrivateCreateGraphicsHardware()=0;
    virtual DialogManager*        PrivateCreateDialogManager()=0;
+
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
 
@@ -272,8 +275,6 @@ public :
    void FreeThread(EagleThread* thread);
    void FreeMutex(EagleMutex* mutex);
    void FreeClipboard(EagleClipboard* clipboard);
-
-
 
    ///< Returns true if there are no system events waiting in the system queue
    bool UpToDate();

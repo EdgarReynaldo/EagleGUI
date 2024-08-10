@@ -43,7 +43,7 @@ BinStream* Allegro5BinaryResource::GetBinStream() {
 
 bool Allegro5TextResource::LoadFromArgs(std::vector<std::string> args) {
    (void)args;
-   EagleSystem* sys = Eagle::EagleLibrary::System("Any");
+   EagleSystem* sys = Eagle::EagleLibrary::System("Allegro5");
    EAGLE_ASSERT(sys);
    FileSystem* fs = sys->GetFileSystem();
    EAGLE_ASSERT(fs);
@@ -62,5 +62,18 @@ bool Allegro5TextResource::LoadFromArgs(std::vector<std::string> args) {
    bool success = (al_fread(f , &filetext.at(0) , sizeof(char)*fl.get()->Info().Size()) == sizeof(char)*fl.get()->Info().Size());
    filetext[fl.get()->Info().Size()] = '\0';
    al_fclose(f);
+   
+   flines = SplitByNewLinesChomp(filetext);
+   
    return success;
 }
+
+
+
+
+
+
+
+
+
+

@@ -1,21 +1,23 @@
 
 /**
  *
- *     _______       ___       ____      __       _______
- *    /\  ____\    /|   \     /  __\    /\ \     /\  ____\
- *    \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
- *     \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
- *      \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
- *       \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
- *        \/______/|/_/  \/_/  \_\_____/    \/_____/ \/______/
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
  *
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2024+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
+ * @file GraphicsContext.cpp
+ * @brief Contains EagleGraphicsContext class and drawing function headers
  */
 
 
@@ -25,9 +27,11 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/Gui/Text/GlobalText.hpp"
 #include "Eagle/System.hpp"
+#include "Eagle/Image.hpp"
+#include "Eagle/Font.hpp"
 #include "Eagle/FontManager.hpp"
-
-
+#include "Eagle/Mesh.hpp"
+#include "Eagle/Transforms.hpp"
 
 #include <vector>
 using std::vector;

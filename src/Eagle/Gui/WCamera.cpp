@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "Eagle/Gui/Camera.hpp"
+#include "Eagle/Gui/WCamera.hpp"
 
 #include "Eagle/Image.hpp"
 #include "Eagle/InputHandler.hpp"

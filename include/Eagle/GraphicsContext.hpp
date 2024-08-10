@@ -30,16 +30,23 @@
 #include <list>
 #include <string>
 #include <map>
+//#include <vector>
+#include <unordered_set>
+
+class Mesh;
+class EagleThread;
+class EagleMutex;
 
 #include "Eagle/Area.hpp"
-#include "Eagle/Color.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/Font.hpp"
-#include "Eagle/Container.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/NinePatch.hpp"
 #include "Eagle/Transforms.hpp"
+#include "Eagle/SpatialInfo.hpp"
+#include "Eagle/Vec3.hpp"
+//#include "Eagle/Mesh.hpp"
 #include "Eagle/Gui/Alignment.hpp"
 
 
@@ -206,6 +213,8 @@ enum QUADRANT_DIR {
  */
 
 class FontManager;
+class Mesh;
+
 
 
 class EagleGraphicsContext : public EagleObject , public EagleEventSource {
@@ -580,6 +589,17 @@ public :
                           VALIGNMENT valign = VALIGN_TOP);
 
 
+   /// Mesh drawing
+
+   virtual void RenderFacesFrontBack    (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1))=0;
+
+   virtual void RenderTexturedFacesFront(const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1))=0;
+
+   virtual void RenderFacesFront        (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1))=0;
+   virtual void RenderFacesBack         (const Mesh* mesh , const SpatialInfo info = SpatialInfo() , const Vec3 scale = Vec3(1,1,1))=0;
+
+   virtual void RenderEdges             (const Mesh* mesh , const EagleColor col , const SpatialInfo info = SpatialInfo() , Vec3 scale = Vec3(1,1,1))=0;
+
    /// getters
 
    virtual EagleImage* GetBackBuffer()=0;///< Pure virtual function to get the back buffer
@@ -705,7 +725,7 @@ public :
 };
 
 
-#include "Eagle/Position2.hpp"
+//#include "Eagle/Position2.hpp"
 
 
 /**! @class DrawingTargeter

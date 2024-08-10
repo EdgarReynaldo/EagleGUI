@@ -34,7 +34,7 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/Layout.hpp"
 #include "Eagle/Gui/Layout/DumbLayout.hpp"
-#include "Eagle/Gui/Camera.hpp"
+#include "Eagle/Gui/WCamera.hpp"
 
 
 

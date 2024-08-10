@@ -29,7 +29,8 @@ public :
 class Allegro5TextResource : public TextResource {
 protected :
    virtual bool LoadFromArgs(std::vector<std::string> args) override;
-
+public :
+   Allegro5TextResource() : TextResource() {}
 };
 #endif // Allegro5Resources_HPP
 

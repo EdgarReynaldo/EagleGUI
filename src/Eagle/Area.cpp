@@ -22,6 +22,7 @@
 
 #include "Eagle/Area.hpp"
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/Position2.hpp"
 #include "Eagle/StringWork.hpp"
 
 #include <cmath>

@@ -34,7 +34,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Resources.hpp"
 #include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
-
+#include "Eagle/backends/Allegro5/Allegro5ObjModel.hpp"
 
 
 Allegro5ResourceLibrary::Allegro5ResourceLibrary() :
@@ -89,6 +89,8 @@ std::set<std::string> Allegro5ResourceLibrary::GetSupportedTypes(RESOURCE_TYPE r
       stypes[RT_TEXTFILE].push_back("txt");
       stypes[RT_TEXTFILE].push_back("cfg");
       stypes[RT_TEXTFILE].push_back("ini");
+      stypes[RT_TEXTFILE].push_back("obj");
+      stypes[RT_TEXTFILE].push_back("mat");
 
       stypes[RT_UNKNOWN].insert(stypes[RT_UNKNOWN].end() , stypes[RT_IMAGE       ].begin() , stypes[RT_IMAGE       ].end());
       stypes[RT_UNKNOWN].insert(stypes[RT_UNKNOWN].end() , stypes[RT_FONT        ].begin() , stypes[RT_FONT        ].end());
@@ -153,10 +155,20 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(File* file) {
          res = new ArchiveResource(window);
          break;
       case RT_BINFILE :
-         res = new BinaryResource();
+         res = new Allegro5BinaryResource();
          break;
       case RT_TEXTFILE :
-         res = new Allegro5TextResource();
+         {
+            if (ext.compare("obj")) {
+               res = new Allegro5ObjectFile();
+            }
+            else if (ext.compare("mat")) {
+               res = new Allegro5MaterialFile();
+            }
+            else {
+               res = new Allegro5TextResource();
+            }
+         }
          break;
       default :
          EAGLE_ASSERT(0);

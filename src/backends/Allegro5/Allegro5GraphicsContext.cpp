@@ -1,17 +1,19 @@
 
 
+#include "Eagle/Area.hpp"
 #include "Eagle/Lib.hpp"
 #include "Eagle/Events.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/CXX11Mutexes.hpp"
 #include "Eagle/StringWork.hpp"
+#include "Eagle/Mesh.hpp"
+//#include "Eagle.hpp"
 
-
+#include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5EventHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Font.hpp"
 #include "Eagle/backends/Allegro5/Allegro5FontManager.hpp"
-#include "Eagle/backends/Allegro5/Allegro5GraphicsContext.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5MousePointer.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
@@ -19,8 +21,14 @@
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 
+#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
+#include "allegro5/allegro_opengl.h"
+#include "GL/gl.h"
+#include "GL/glu.h"
 
-
+#ifdef Rectangle
+   #error Rectangle redefined
+#endif // Rectangle
 
 ALLEGRO_VERTEX MakeAllegro5Vertex(float x , float y , float z , float u , float v , ALLEGRO_COLOR ac) {
 	ALLEGRO_VERTEX vtx;
@@ -785,6 +793,124 @@ void Allegro5GraphicsContext::DrawVTextString(EagleFont* font , std::string str 
       }
    }
    al_hold_bitmap_drawing(false);
+}
+
+
+/// Mesh drawing
+
+
+void Allegro5GraphicsContext::RenderFacesFrontBack(const Mesh* mesh , const SpatialInfo info , const Vec3 scale) {
+   glColor4d(1.0 , 1.0 , 1.0 , 1.0);
+   RenderFacesFront(mesh , info , scale);
+   RenderFacesBack(mesh , info , scale);
+}
+
+
+
+void Allegro5GraphicsContext::RenderFacesFront(const Mesh* mesh , const SpatialInfo info , const Vec3 scale) {
+   
+   Transform old = mesh->SetupTransform(this , info , scale);
+//      glEnable(GL_COLOR);
+   for (unsigned int f = 0 ; f < mesh->faces.size() ; ++f) {
+      const TRIFACE& face = mesh->faces[f];
+      const VERTEX* v[3] = {&mesh->vertices[face.v1] , &mesh->vertices[face.v2] , &mesh->vertices[face.v3]};
+      
+      eglBegin(GL_TRIANGLES);
+      for (unsigned int i = 0 ; i < 3 ; ++i) {
+         EagleColor c = v[i]->col;
+         glColor4ub(c.r , c.g , c.b , c.a);
+         glVertex3d(v[i]->pos.x , v[i]->pos.y , v[i]->pos.z);
+///         glNormal3d(v[i].nml.x , v[i].nml.y , v[i].nml.z);
+      }
+      eglEnd();
+   }
+
+   SetViewTransform(old);
+}
+
+
+
+void Allegro5GraphicsContext::RenderTexturedFacesFront(const Mesh* mesh , const SpatialInfo info , const Vec3 scale) {
+   Transform old = mesh->SetupTransform(this , info , scale);
+//      glEnable(GL_COLOR);
+   glGetError();
+
+   glEnable(GL_TEXTURE_2D);
+
+   for (unsigned int f = 0 ; f < mesh->faces.size() ; ++f) {
+      const TRIFACE& face = mesh->faces[f];
+      const VERTEX* v[3] = {&mesh->vertices[face.v1] , &mesh->vertices[face.v2] , &mesh->vertices[face.v3]};
+      
+      const unsigned int texfaces[3] = {face.tv1 , face.tv2 , face.tv3};
+      
+      bool textured = face.Textured();
+      EAGLE_ASSERT(textured);
+      if (textured) {
+         EagleImage* pimg = mesh->texverts[face.tv1].tid.pimg;
+         ALLEGRO_BITMAP* pbmp = GetAllegroBitmap(pimg);
+         GLuint texid = al_get_opengl_texture(pbmp);
+         glBindTexture(GL_TEXTURE_2D , texid);
+         glTexParameteri(GL_TEXTURE_2D , GL_TEXTURE_WRAP_S , GL_REPEAT);
+         glTexParameteri(GL_TEXTURE_2D , GL_TEXTURE_WRAP_T , GL_REPEAT);
+      }
+      
+      eglBegin(GL_TRIANGLES);
+      for (unsigned int i = 0 ; i < 3 ; ++i) {
+         EagleColor c = v[i]->col;
+         glColor4ub(c.r , c.g , c.b , c.a);
+         glTexCoord2d(mesh->texverts[texfaces[i]].uv.u , mesh->texverts[texfaces[i]].uv.v);
+         glVertex3d(v[i]->pos.x , v[i]->pos.y , v[i]->pos.z);
+///         glNormal3d(v[i].nml.x , v[i].nml.y , v[i].nml.z);
+      }
+      eglEnd();
+   }
+
+   glDisable(GL_TEXTURE_2D);
+   
+   SetViewTransform(old);
+}
+
+
+
+void Allegro5GraphicsContext::RenderFacesBack(const Mesh* mesh , const SpatialInfo info , const Vec3 scale) {
+   
+   Transform old = mesh->SetupTransform(this , info , scale);
+//      glEnable(GL_COLOR);
+   eglBegin(GL_TRIANGLES);
+   for (unsigned int f = 0 ; f < mesh->faces.size() ; ++f) {
+      const TRIFACE& face = mesh->faces[f];
+      const VERTEX* v[3] = {&mesh->vertices[face.v3] , &mesh->vertices[face.v2] , &mesh->vertices[face.v1]};
+      
+      for (unsigned int i = 0 ; i < 3 ; ++i) {
+         EagleColor c = v[i]->col;
+         glColor4ub(c.r , c.g , c.b , c.a);
+         glVertex3d(v[i]->pos.x , v[i]->pos.y , v[i]->pos.z);
+///         glNormal3d(v[i].nml.x , v[i].nml.y , v[i].nml.z);
+      }
+   }
+   eglEnd();
+
+   SetViewTransform(old);
+}
+
+
+
+void Allegro5GraphicsContext::RenderEdges(const Mesh* mesh , const EagleColor col , const SpatialInfo info , const Vec3 scale) {
+
+   Transform old = mesh->SetupTransform(this , info , scale);
+   
+   eglBegin(GL_LINES);
+   glColor4ub(col.r , col.g , col.b , col.a);
+   for (unsigned int e = 0 ; e < mesh->edges.size() ; ++e) {
+      const EDGE& edge = mesh->edges[e];
+      const VERTEX& v1 = mesh->vertices[edge.vfrom];
+      const VERTEX& v2 = mesh->vertices[edge.vto];
+      glVertex3d(v1.pos.x , v1.pos.y , v1.pos.z);
+      glVertex3d(v2.pos.x , v2.pos.y , v2.pos.z);
+   }
+   eglEnd();
+   
+   SetViewTransform(old);
 }
 
 

@@ -82,7 +82,8 @@ EagleFont* Allegro5FontManager::LoadFontPath(std::string path , int size , int f
          mfile = new Allegro5MemFile(path);
          bool loaded = mfile->ReadFileIntoMemory();
          if (!loaded) {
-            EAGLE_ASSERT(loaded);
+            EagleWarn() << "Failed to read font into memory from path '" << path << "'" << std::endl;
+            delete mfile;
             return 0;
          }
          memfiles.insert(std::pair<std::string , MemFile*>(path , mfile));

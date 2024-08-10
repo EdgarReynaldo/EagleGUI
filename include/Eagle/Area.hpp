@@ -31,10 +31,14 @@
    #warning Eagle::Rectangle has issues with OpenGL headers. Include Eagle headers first.
 #endif
 
+#define NOGDI
+
 #include "Eagle/Color.hpp"
 #include "Eagle/Exception.hpp"
 #include "Eagle/Object.hpp"
 #include "Eagle/Position.hpp"
+
+
 
 #include <iostream>
 #include <list>
