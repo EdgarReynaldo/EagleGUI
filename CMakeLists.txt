@@ -139,7 +139,7 @@ if (UNIX)
                 DOC "The shared physfs library")
 endif()
 
-list(APPEND ALLEGRO_LINK_LIBS ${PHYSFS_LIB})
+list(APPEND ALLEGRO_LINK_LIBS ${PHYSFS_LIB} "opengl32" "glu32")
 
 add_subdirectory(src/Eagle)
 
