@@ -29,7 +29,7 @@
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/InputHandler.hpp"
-
+#include "Eagle/InputGroup.hpp"
 
 #include <string>
 

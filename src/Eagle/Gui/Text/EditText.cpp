@@ -5,6 +5,7 @@
 #include "Eagle/StringWork.hpp"
 
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/InputGroup.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/System.hpp"
 

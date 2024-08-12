@@ -30,6 +30,7 @@
 #include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/InputGroup.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/Gui/Layout/Layout.hpp"

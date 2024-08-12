@@ -24,7 +24,6 @@
 #include "Eagle/Gui/WidgetMover.hpp"
 #include "Eagle/Gui/WidgetHandler.hpp"
 
-
 const unsigned int TOPIC_WIDGET_MOVER = NextFreeTopicId();
 
 

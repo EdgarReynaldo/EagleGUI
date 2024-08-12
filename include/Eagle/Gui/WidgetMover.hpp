@@ -27,6 +27,7 @@
 
 
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/InputGroup.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/MousePointer.hpp"
 #include "Eagle/Events.hpp"
