@@ -264,6 +264,9 @@
 		<Unit filename="include/Eagle/Image.hpp" />
 		<Unit filename="include/Eagle/ImageAtlas.hpp" />
 		<Unit filename="include/Eagle/Indenter.hpp" />
+		<Unit filename="include/Eagle/Input.hpp" />
+		<Unit filename="include/Eagle/InputAssignment.hpp" />
+		<Unit filename="include/Eagle/InputGroup.hpp" />
 		<Unit filename="include/Eagle/InputHandler.hpp" />
 		<Unit filename="include/Eagle/Interpolate.hpp" />
 		<Unit filename="include/Eagle/Lib.hpp" />
@@ -403,6 +406,9 @@
 		<Unit filename="src/Eagle/Image.cpp" />
 		<Unit filename="src/Eagle/ImageAtlas.cpp" />
 		<Unit filename="src/Eagle/Indenter.cpp" />
+		<Unit filename="src/Eagle/Input.cpp" />
+		<Unit filename="src/Eagle/InputAssignment.cpp" />
+		<Unit filename="src/Eagle/InputGroup.cpp" />
 		<Unit filename="src/Eagle/InputHandler.cpp" />
 		<Unit filename="src/Eagle/Lib.cpp" />
 		<Unit filename="src/Eagle/LineEquations.cpp" />
