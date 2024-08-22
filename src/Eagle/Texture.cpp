@@ -108,3 +108,18 @@ TexID TexLib::TID(std::string texname) {
 
 
 
+TextureVertex::TextureVertex() :
+      tid(0),
+      uv()
+{}
+
+
+
+TextureVertex::TextureVertex(TexID texid , Vec2 tuv) :
+      tid(texid),
+      uv(tuv)
+{}
+
+
+
+

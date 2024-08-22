@@ -39,6 +39,14 @@ const Vec3 FORWARD(0,0,1);
 
 
 
+void Vec3::SetXYZ(double xpos , double ypos , double zpos) {
+   x = xpos;
+   y = ypos;
+   z = zpos;
+}
+
+
+
 Vec3 Rotate3D(const Vec3& vec , const Vec3& axis , const double theta_radians) {
 /**
    /// TODO : This uses allegro's transformation matrices, which only use floating point precision

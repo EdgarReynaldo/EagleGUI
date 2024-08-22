@@ -32,6 +32,8 @@ public :
    Vec3() : x(0.0) , y(0.0) , z(0.0) {}
    Vec3(double xpos , double ypos , double zpos) : x(xpos) , y(ypos) , z(zpos) {}
    
+   void SetXYZ(double xpos , double ypos , double zpos);
+   
    Vec3 operator+(const Vec3& v) const {
       return Vec3(x + v.x , y + v.y , z + v.z);
    }

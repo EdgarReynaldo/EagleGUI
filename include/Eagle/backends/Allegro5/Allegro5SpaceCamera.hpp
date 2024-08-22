@@ -29,7 +29,7 @@
 #include "Eagle/SpaceCamera.hpp"
 
 class Allegro5SpaceCamera : public SpaceCamera {
-
+public :
    /// These affect the view and projection matrix
    virtual void Setup2D(int w , int h);
    virtual void Setup3D(bool orthographic);

@@ -22,6 +22,8 @@
  *
  */
 
+#ifndef SpaceCamera_HPP
+#define SpaceCamera_HPP
 
 #include "Eagle/SpatialInfo.hpp"
 
@@ -80,4 +82,8 @@ public :
    virtual void DrawAxes(float axis_length)=0;
 
 };
+
+
+
+#endif // SpaceCamera_HPP
 

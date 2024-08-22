@@ -27,6 +27,7 @@
 
 #include "Eagle.hpp"
 
+#include "Eagle/backends/Allegro5/Allegro5BinStream.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Color.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Conditions.hpp"
@@ -39,12 +40,21 @@
 #include "Eagle/backends/Allegro5/Allegro5GraphicsHardware.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Image.hpp"
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
+#include "Eagle/backends/Allegro5/Allegro5MemFile.hpp"
 #include "Eagle/backends/Allegro5/Allegro5MousePointer.hpp"
+#include "Eagle/backends/Allegro5/Allegro5ObjModel.hpp"
+#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Resources.hpp"
+#include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
 #include "Eagle/backends/Allegro5/Allegro5SoundManager.hpp"
+#include "Eagle/backends/Allegro5/Allegro5SpaceCamera.hpp"
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
+#include "Eagle/backends/Allegro5/Allegro5TextFile.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Texture.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Timer.hpp"
+#include "Eagle/backends/Allegro5/Allegro5Transform.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
 
 

@@ -82,10 +82,8 @@ class TextureVertex {
 public :
 
 ///   TextureVertex(ALLEGRO_BITMAP* tex , Vec2 tuv);
-   TextureVertex(TexID texid , Vec2 tuv) :
-         tid(texid),
-         uv(tuv)
-   {}
+   TextureVertex();
+   TextureVertex(TexID texid , Vec2 tuv);
    TexID tid;
    Vec2 uv;///double u,v;
 };

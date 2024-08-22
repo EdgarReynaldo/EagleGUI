@@ -2,16 +2,17 @@
 
 
 
-#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
+#include <cstdio>
+#include <map>
+
 #include "Eagle.hpp"
+#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_opengl.h"
 
 #include "GL/gl.h"
 #include "GL/glu.h"
 #include "GL/glext.h"
-
-#include <cstdio>
 
 
 bool bpoint = false;
@@ -20,10 +21,6 @@ bool cont = true;
 unsigned int errcount = 0;
 
 
-
-
-#include <cstdio>
-#include <map>
 
 std::map<unsigned int , int> errmap;
 

@@ -20,9 +20,15 @@
  * @brief Simple text file simplicator
  */
 
- #include <string>
- #include <vector>
  
+ 
+#ifndef TextFile_HPP
+#define TextFile_HPP
+
+
+
+#include <string>
+#include <vector>
 class TextFile {
    
 protected :
@@ -45,3 +51,5 @@ public :
    virtual bool LoadFile(std::string txtfilepath)=0;
    virtual bool SaveFile(std::string filepath , const char* newline)=0;
 };
+
+#endif // TextFile_HPP
