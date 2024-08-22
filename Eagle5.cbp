@@ -168,6 +168,7 @@
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
 		<Unit filename="include/Eagle/BinFileStream.hpp" />
+		<Unit filename="include/Eagle/BinFileStream2.hpp" />
 		<Unit filename="include/Eagle/BinStream.hpp" />
 		<Unit filename="include/Eagle/BoxArea.hpp" />
 		<Unit filename="include/Eagle/CXX11Mutexes.hpp" />
