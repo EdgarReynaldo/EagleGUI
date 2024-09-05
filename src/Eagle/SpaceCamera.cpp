@@ -79,6 +79,43 @@ void SpaceCamera::Turn(Vec3 omega , double dt) {
 }
 
 
+
+void SpaceCamera::StrafeRight(double horizontal) {
+   Move(Right() , horizontal);
+}
+
+
+
+void SpaceCamera::ElevateUp(double vertical) {
+   Move(Up() , vertical);
+}
+
+
+
+void SpaceCamera::AdvanceForward(double forward) {
+   Move(Forward() , forward);
+}
+
+   
+
+void SpaceCamera::PitchUp(double pitch_radians) {
+   Turn(Vec3(0.0 , pitch_radians , 0.0) , 1.0);
+}
+
+
+
+void SpaceCamera::YawRight(double yaw_radians) {
+   Turn(Vec3(-yaw_radians , 0.0 , 0.0) , 1.0);
+}
+
+
+
+void SpaceCamera::SpinCCW(double roll_radians) {
+   Turn(Vec3(0.0 , 0.0 , -roll_radians) , 1.0);
+}
+
+
+
 Vec3 OrbitOrigin(double distance , double yaxisrotation , double ascension) {
    /// sine(ascension) = yheight/distance;
    double y = distance*sin(ascension*M_PI/180.0);

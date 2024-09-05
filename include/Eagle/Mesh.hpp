@@ -17,7 +17,7 @@
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file Mesh.hpp
- * @brief A class to store a model in the form of a mesh
+ * @brief A class to store a model in the form of a mesh, includes edge and triface class as well as mesh
  */
 
 

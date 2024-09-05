@@ -169,24 +169,62 @@ protected :
    
 public :
    
-WidgetBase(std::string classname , std::string objname) :
-      EagleObject(classname , objname),
-      EagleEventSource(),
-      widgets(),
-      warea(),
-      wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE | NEEDS_REDRAW),
-      wattributes(),
-      wparent(0),
-      wlayout(0),
-      whandler(0),
-      wpainter(),
-      wcolors(),
-      zdepth(ZORDER_PRIORITY_NORMAL),
-      prefw(0),
-      prefh(0)
-{
+private :/// Compile time error to prevent copying
+   WidgetBase() :
+         EagleObject("WIDGETBASE" , "IMPOSSIBLE"),
+         EagleEventSource(),
+         widgets(),
+         warea(),
+         wflags(FLAGS_NONE),
+         wattributes(),
+         wparent(0),
+         wlayout(0),
+         whandler(0),
+         wpainter(),
+         wcolors(),
+         wdecorator(),
+         zdepth(ZORDER_PRIORITY_LOWEST),
+         prefw(0),
+         prefh(0)
+         {}
+   WidgetBase(const WidgetBase& wb) :
+         EagleObject("WIDGETBASE" , "IMPOSSIBLE"),
+         EagleEventSource(),
+         widgets(),
+         warea(),
+         wflags(FLAGS_NONE),
+         wattributes(),
+         wparent(0),
+         wlayout(0),
+         whandler(0),
+         wpainter(),
+         wcolors(),
+         wdecorator(),
+         zdepth(ZORDER_PRIORITY_LOWEST),
+         prefw(0),
+         prefh(0)
+         {
+            (void)wb;
+         }
+public :
    
-}
+   WidgetBase(std::string classname , std::string objname) :
+         EagleObject(classname , objname),
+         EagleEventSource(),
+         widgets(),
+         warea(),
+         wflags(VISIBLE | ENABLED | MOVEABLE | RESIZEABLE | NEEDS_REDRAW),
+         wattributes(),
+         wparent(0),
+         wlayout(0),
+         whandler(0),
+         wpainter(),
+         wcolors(),
+         wdecorator(),
+         zdepth(ZORDER_PRIORITY_NORMAL),
+         prefw(0),
+         prefh(0)
+   {}
    virtual ~WidgetBase();
    
    /// Main interface
