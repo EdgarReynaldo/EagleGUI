@@ -182,6 +182,7 @@
 		<Unit filename="include/Eagle/Endian.hpp" />
 		<Unit filename="include/Eagle/Events.hpp" />
 		<Unit filename="include/Eagle/Exception.hpp" />
+		<Unit filename="include/Eagle/Face.hpp" />
 		<Unit filename="include/Eagle/File.hpp" />
 		<Unit filename="include/Eagle/FileSystem.hpp" />
 		<Unit filename="include/Eagle/FileWork.hpp" />
