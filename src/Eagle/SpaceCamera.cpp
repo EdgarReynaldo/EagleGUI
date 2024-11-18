@@ -75,7 +75,7 @@ void SpaceCamera::Move(Vec3 vel , double dt) {
 
 
 void SpaceCamera::Turn(Vec3 omega , double dt) {
-   info.orient.TurnLocal(omega , dt);
+   iinfo.orient = info.orient.TurnLocal(omega , dt);
 }
 
 

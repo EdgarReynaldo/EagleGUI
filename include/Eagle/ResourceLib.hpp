@@ -12,14 +12,14 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2023+ by Edgar Reynaldo
+ *    Copyright 2009-2025+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  * @file ResourceLib.hpp
  * @brief The main interface for working with resources and resource files in Eagle
  * 
- * TODO : Incomplete
+ * A lookup map between resource name, type, id, and resource pointer
  */
 
 #ifndef ResourceLib_HPP
@@ -96,7 +96,7 @@ public :
 
 
 
-/// Trick to force variant return type
+///< Trick to force variant return type
 template <class TYPE>
 TYPE* GetTypedResource(ResourceBase* resbase , TYPE** store) {
    EAGLE_ASSERT(store);
