@@ -1,4 +1,27 @@
 
+/**
+ *
+ *         _______       ___       ____      __       _______
+ *        /\  ____\    /|   \     /  __\    /\ \     /\  ____\
+ *        \ \ \___/_   ||  _ \   |  /__/____\ \ \    \ \ \___/_
+ *         \ \  ____\  || |_\ \  |\ \ /\_  _\\ \ \    \ \  ____\
+ *          \ \ \___/_ ||  ___ \ \ \ \\//\ \/ \ \ \____\ \ \___/_
+ *           \ \______\||_|__/\_\ \ \ \_\/ |   \ \_____\\ \______\
+ *            \/______/|/_/  \/_/  \_\____/     \/_____/ \/______/
+ *
+ *
+ *    Eagle Agile Gui Library and Extensions
+ *
+ *    Copyright 2009-2024+ by Edgar Reynaldo
+ *
+ *    See EagleLicense.txt for allowed uses of this library.
+ *
+ * @file Orient.hpp
+ * @brief A class to store orientation in space
+ * 
+ *
+ */
+
 
 
 
@@ -29,7 +52,7 @@ public :
    void SetTheta(Vec3 t) {theta = t;CalcAxes();}
    
    void Turn(Vec3 omega , double dt);
-   void TurnLocal(Vec3 omega , double dt);
+   Orient TurnLocal(Vec3 omega , double dt);
    
    inline Vec3 Fw() const {return fw;}
    inline Vec3 Rt() const {return rt;}

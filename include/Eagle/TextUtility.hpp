@@ -16,8 +16,8 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
+ * @file TextUtility.hpp
+ * @brief Some line wrapping algorithms. WIP.
  * 
  * 
  * 

@@ -80,8 +80,9 @@ void Orient::Turn(Vec3 omega , double dt) {
 
 
 
-void Orient::TurnLocal(Vec3 omega , double dt) {
+Orient Orient::TurnLocal(Vec3 omega , double dt) {
    *this = LocalTurn(*this , omega , dt);
+   return *this;
 }
 
 
