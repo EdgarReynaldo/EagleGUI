@@ -16,7 +16,7 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file MenuLayout.hpp
+ * @file ClassicMenuLayout.hpp
  * @brief The interface for menu layouts in Eagle
  */
 

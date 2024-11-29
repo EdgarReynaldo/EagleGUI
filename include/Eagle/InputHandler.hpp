@@ -408,11 +408,13 @@ public :
    void HandleInputEvent(EagleEvent ev);
 
    /**! @fn RecordInputPress <EagleEventHandler*,Input*> @fn RecordInputGroup<EagleEventHandler*,InputGroup*>
-    *   Input recording functions for setting Inputs and InputGroups to key/mouse/joystick input
+    *   @brief Input recording functions for setting Inputs and InputGroups to key/mouse/joystick input
     *
-    *   @ref RecordInputPress records the next single @ref Input object, storing it in the provided pointer. 
+    *   @ref RecordInputPress records the next single @ref Input object, storing it in the provided pointer.
+    *        @param queue to record the press from. It should be listening to the keyboard.
     *        @param input must be non-null.
     *   @ref RecordInputGroup records the next @ref InputGroup object, storing both the press, and any modifiers held.
+    *        @param queue to record the press from. It should be listening to the keyboard.
     *        @param input_group must be non-NULL
     *   These are both blocking calls - they will wait forever until there is input 
     */

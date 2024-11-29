@@ -16,7 +16,7 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file Camera.hpp
+ * @file WCamera.hpp
  * @brief A simple widget class to view a bitmap. Includes scrolling, timed view movement, and zooming.
  * 
  */

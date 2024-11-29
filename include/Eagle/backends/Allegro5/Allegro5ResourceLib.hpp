@@ -12,11 +12,11 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2023+ by Edgar Reynaldo
+ *    Copyright 2009-2024+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file Allegro5ResourceLibrary.hpp
+ * @file Allegro5ResourceLib.hpp
  * @brief The Allegro 5 implementation of the ResourceLibrary
  */
 

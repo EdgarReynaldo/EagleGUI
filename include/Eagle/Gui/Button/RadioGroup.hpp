@@ -12,14 +12,14 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2024+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
  *
  *
  *
- * @file RadioButton.hpp
+ * @file RadioGroup.hpp
  * @brief Generic class for radio buttons
  * 
  */

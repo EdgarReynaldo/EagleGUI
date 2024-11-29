@@ -16,7 +16,7 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file Text.hpp
+ * @file TextWidgets.hpp
  * @brief Main include file for text widgets
  * 
  * Include this header to access all of the different kinds of text widgets available in Eagle

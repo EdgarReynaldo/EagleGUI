@@ -184,9 +184,6 @@ AnimationBase& AnimationBase::operator=(const AnimationBase& a) {
  *  The loop time is always positive, the number of loops is
  *  always at least 1 and the number of frames is always at
  *  least 1.
- *  
- *  @retval None The function is always successful.
- *  
  */
 
 void AnimationBase::Init(int num_frames , int num_loops , double loop_time , EAGLE_ANIMATION_TYPE play_type) {
@@ -245,8 +242,6 @@ void AnimationBase::AdvanceAnimationTime(double dt) {
  *  EagleEventListener to listen for events from this object.
  *  
  *      event_queue.ListenTo(&animation_object);
- *  
- *  @retval None This function cannot fail.
  */
 
 void AnimationBase::SetAnimationPercent(double percent) {
