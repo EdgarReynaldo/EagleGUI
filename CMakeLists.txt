@@ -186,7 +186,7 @@ if (WANT_EXAMPLES)
          endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 
-         set(WINSTATICLIBS "-static" "-lOpenAL32" "-ljpeg" "-ldumb" "-lwebp" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-lopengl32" "-lglu32" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
+         set(WINSTATICLIBS "-static" "-lOpenAL32" "-ljpeg" "-lwebp" "-lsharpyuv" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-lopengl32" "-lglu32" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
 
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             if (EAGLE_SHARED_LIBRARY_BUILD)

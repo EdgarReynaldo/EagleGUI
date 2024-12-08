@@ -118,7 +118,7 @@ int main(int argc , char** argv) {
 
    FlowLayout flow;
    flow.SetFlowDirection(FLOW_FAVOR_VERTICAL);
-   flow.SetAlignment(HALIGN_CENTER , VALIGN_TOP);
+   flow.SetAlignment(HALIGN_LEFT , VALIGN_CENTER);
    flow.SetBoxSpacing(BOX_SPACE_EVEN);
    flow.SetAnchorPosition(FBOX_ANCHOR_NW);
 
@@ -234,7 +234,7 @@ int main(int argc , char** argv) {
                            instances.push_back(soundman.CreateSoundInstance(sample));
                            soundman.SetInstancePlaying(instances.back() , false);
                            TextIconButton* pbtn = new TextIconButton(font20 , it->second.get()->Name() , "Sample button" , it->second.get()->Name());
-                           pbtn->SetPreferredSize(sw , 25);
+                           pbtn->SetPreferredSize(sw/2 , 25);
                            pbtn->SetActionType(TOGGLE_BTN);
                            sample_btns.push_back(std::shared_ptr<TextIconButton>(pbtn));
                            flow.AddWidget(pbtn);
