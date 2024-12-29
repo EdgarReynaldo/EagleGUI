@@ -111,12 +111,8 @@ Orient LocalTurn(const Orient& o , Vec3 omega , double dt) {
    r = Rotate3D(r , f , theta.roll);
    u = Rotate3D(u , f , theta.roll);
 
-   f.Normalize();
-   r.Normalize();
-   u.Normalize();
-   
    o2.theta = CalcTheta(o2);
-   
+      
    return o2;
 }
 

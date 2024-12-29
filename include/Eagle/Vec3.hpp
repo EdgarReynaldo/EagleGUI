@@ -30,7 +30,7 @@
 #include <cmath>
 #include <cassert>
 
-
+#include "Eagle/StringWork.hpp"
 
 class Vec3 {
 public :
@@ -90,6 +90,10 @@ public :
    friend Vec3 operator*(double factor , const Vec3& lhs);
    friend Vec3 CrossProduct(const Vec3& a , const Vec3& b);
    friend double DotProduct(const Vec3& a , const Vec3& b);
+//   std::string ToString();
+std::string ToString() {
+   return StringPrintF("{%3.4lf,%3.4lf,%3.4lf}" , x , y , z);
+}
 };
 
 Vec3 Rotate3D(const Vec3& vec , const Vec3& axis , const double theta_radians);

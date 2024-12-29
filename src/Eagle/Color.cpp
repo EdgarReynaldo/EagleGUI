@@ -107,6 +107,21 @@ EagleColor::EagleColor(float red , float green , float blue , float alpha) :
 
 
 
+bool EagleColor::operator==(const EagleColor& c) {
+   return (c.a == a) &&
+          (c.r == r) &&
+          (c.g == g) &&
+          (c.b == b);
+}
+
+
+
+bool EagleColor::operator!=(const EagleColor& c) {
+   return !(*this == c);
+}
+
+
+
 void EagleColor::SetColor(int red , int green , int blue , int alpha , bool mult_alpha) {
    if (red < 0) {red = 0;}
    if (green < 0) {green = 0;}
@@ -175,6 +190,28 @@ void EagleColor::SetFloatAlpha(float alpha) {
 
 
 
+EagleColor EagleColor::operator++(int) {
+   r += 1;
+   if (r == 256) {
+      r = 0;
+      g += 1;
+   }
+   if (g == 256) {
+      g = 0;
+      b += 1;
+   }
+   if (b == 256) {
+      b = 0;
+      a += 1;
+   }
+   if (a == 256) {
+      r = g = b = a = 0;/// wrap
+   }
+   return *this;/// Not a reference
+}
+
+
+
 std::ostream& operator<<(std::ostream& os , const EagleColor& c) {
    os << "RGBA = " << c.r << "," << c.g << "," << c.b << "," << c.a;
    return os;
@@ -182,3 +219,9 @@ std::ostream& operator<<(std::ostream& os , const EagleColor& c) {
 
 
 
+bool operator<(const EagleColor& lhs , const EagleColor& rhs) {
+   return !((lhs.a >= rhs.a) &&
+            (lhs.b >= rhs.b) &&
+            (lhs.g >= rhs.g) &&
+            (lhs.r >= rhs.r));
+}

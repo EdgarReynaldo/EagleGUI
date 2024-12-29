@@ -56,7 +56,7 @@ public :
 
    void SetHFOV(double v);
    void SetAspect(double a);
-   void LookAt(double x , double y , double z);
+   void LookAt(Vec3 lookat , Vec3 upvec);//double x , double y , double z);
 
    void Move(Vec3 vel , double dt);/// relative to orientation
    void Turn(Vec3 omega , double dt);/// relative to orientation

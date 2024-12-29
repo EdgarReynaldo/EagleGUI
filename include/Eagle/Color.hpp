@@ -62,6 +62,10 @@ public :
    ///< EagleColor constructor from floating point r,g,b or r,g,b,a values
    EagleColor(float red , float green , float blue , float alpha = 1.0);
 
+   bool operator==(const EagleColor& c);
+   bool operator!=(const EagleColor& c);
+   
+   
    /// Setters
    
    ///< Set the color and whether or not to apply alpha or pre multiply the color
@@ -89,9 +93,11 @@ public :
    inline EagleColor operator*(float alpha) {
       return EagleColor(fr*alpha , fg*alpha , fb*alpha , alpha);
    }
+   EagleColor operator++(int);
+   friend bool operator<(const EagleColor& lhs , const EagleColor& rhs);
 };
 
-
+bool operator<(const EagleColor& lhs , const EagleColor& rhs);
 
 #endif // EagleColor_HPP
 

@@ -60,8 +60,14 @@ void SpaceCamera::SetHFOV(double v) {
 void SpaceCamera::SetAspect(double a) {
    aspect = a;
 }
-void SpaceCamera::LookAt(double x , double y , double z) {
-
+void SpaceCamera::LookAt(Vec3 lookat , Vec3 upvec) {
+   Vec3 f = lookat - info.pos;
+   f.Normalize();
+   info.orient.fw = f;//(info.pos - lookat).Normalize()
+   upvec.Normalize();
+   info.orient.up = upvec;
+   info.orient.rt = CrossProduct(info.orient.fw , info.orient.up);
+   info.orient.theta = CalcTheta(info.orient);
 }
 
 void SpaceCamera::Move(Vec3 vel , double dt) {

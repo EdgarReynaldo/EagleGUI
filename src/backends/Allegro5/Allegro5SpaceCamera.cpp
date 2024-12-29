@@ -51,7 +51,7 @@ void Allegro5SpaceCamera::Setup3D(bool orthographic) {
    ALLEGRO_TRANSFORM proj;
    ALLEGRO_TRANSFORM cam;
    
-   const double nearby = 1.0;
+   const double nearby = 0.1;
    const double w = nearby*tan(hfov/2.0);
 
 ///   const double l = -w;
@@ -63,7 +63,7 @@ void Allegro5SpaceCamera::Setup3D(bool orthographic) {
    
    const double top = w/aspect;
    const double bot = -w/aspect;
-   const double farther = 2000.0;
+   const double farther = 100.0;
 
    
    al_identity_transform(&proj);

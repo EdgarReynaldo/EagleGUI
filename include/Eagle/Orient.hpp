@@ -32,8 +32,8 @@
 
 
 class Orient {
-
-protected :
+   
+public :
    Vec3 theta;/// yaw,pitch,roll
    
    Vec3 fw,rt,up;
