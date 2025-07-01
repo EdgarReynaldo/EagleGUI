@@ -192,6 +192,17 @@ bool IsNetworkEvent (EagleEvent e) {
 }
 
 
+bool IsAudioEvent(EagleEvent e) {
+   return ((e.type >= EAGLE_EVENT_AUDIO_EVENT_START) && (e.type <= EAGLE_EVENT_AUDIO_EVENT_STOP));
+}
+
+
+
+bool IsVideoEvent(EagleEvent e) {
+   return ((e.type >= EAGLE_EVENT_VIDEO_EVENT_START) && (e.type <= EAGLE_EVENT_VIDEO_EVENT_STOP));
+}
+
+
 
 bool IsSystemEvent(EagleEvent e) {
    return (e.type >= EAGLE_EVENT_NONE && e.type < EAGLE_EVENT_USER_START);

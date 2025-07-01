@@ -101,9 +101,16 @@ public :
    virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
 
 
+   virtual bool Record(EagleSoundRecorder* recorder);
+
+   virtual void Play(EagleSound* sound);
+   virtual void Pause(EagleSound* sound);
+   virtual void Continue(EagleSound* sound);
+   virtual void Stop(EagleSound* sound);
+   
+   virtual bool SeekIndex(EagleSound* sound , uint32_t sample_index);
+   virtual uint32_t TellIndex(EagleSound* sound);
 };
-
-
 
 
 

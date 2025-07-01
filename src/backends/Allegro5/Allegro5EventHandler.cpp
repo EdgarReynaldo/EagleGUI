@@ -100,6 +100,16 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
          ee.touch.dy = ev.touch.dy;
          ee.touch.primary = ev.touch.primary;
          break;
+      case ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT :
+         ee.window = 0;
+         ee.audio.audio_source = GetEagleSoundSource(ev.audio.source);
+         ee.audio.sample_count = ev.samples;
+         ee.audio.byte_buffer = ev.buffer;
+         break;
+      case ALLEGRO_EVENT_AUDIO_STREAM_FRAGMENT :
+         
+         break;
+         
       default : break;
    }
    return ee;
@@ -167,9 +177,10 @@ bool Allegro5EventHandler::Running() {
 
 
 
-Allegro5EventHandler::Allegro5EventHandler(std::string objname , bool delay_emitted_events) :
+Allegro5EventHandler::Allegro5EventHandler(ALLEGRO_EVENT_QUEUE* queue , std::string objname , bool delay_emitted_events) :
       EagleEventHandler("Allegro5EventHandler" , objname , delay_emitted_events),
-      event_queue(0),
+      event_queue(queue),
+      destroy_queue(queue),
       main_source(),
       event_thread(0)
 {
@@ -183,13 +194,15 @@ Allegro5EventHandler::~Allegro5EventHandler() {
 
 
 
-bool Allegro5EventHandler::Create() {
+bool Allegro5EventHandler::Create(ALLEGRO_EVENT_QUEUE* q) {
    EAGLE_ASSERT(Eagle::EagleLibrary::Eagle()->System("Allegro5"));// System must be initialized and running
    Destroy();
 
    al_init_user_event_source(&main_source);
 
-   event_queue = al_create_event_queue();
+   destroy_queue = true;
+   if (q) {destroy_queue = false;}
+   event_queue = (q?q:al_create_event_queue();
    al_register_event_source(event_queue , &main_source);
 
    mutex = new CXX11Mutex("A5EH::mutex");
@@ -261,8 +274,11 @@ void Allegro5EventHandler::Destroy() {
    if (event_queue) {
       al_unregister_event_source(event_queue , &main_source);
       al_destroy_user_event_source(&main_source);
-      al_destroy_event_queue(event_queue);
-      event_queue = 0;
+      if (destroy_queue) {
+         al_destroy_event_queue(event_queue);
+         event_queue = 0;
+         destroy_queue = false;
+      }
    }
    if (mutex) {
       delete mutex;

@@ -124,6 +124,7 @@ bool Allegro5SoundStream::LoadFromArgs(std::vector<std::string> args) {
 
 
 Allegro5SoundStream::Allegro5SoundStream() :
+      EagleSoundStream(),
       astream(0)
 {}
 
@@ -157,6 +158,42 @@ ALLEGRO_AUDIO_STREAM* Allegro5SoundStream::AllegroStream() {
 }
 
 
+
+bool Allegro5SoundRecorder::Create(int32_t frequency , int32_t nsamples_per_fragment , int32_t fragment_count) {
+   Destroy();
+   freq = frequency;
+   num_samples = nsamples_per_fragment;
+   frag_count = fragment_count;
+   size_of_data = 2;/// int16_t audio data
+   assert(sizeof(int16_t) == 2);
+   stereo = true;
+   total_buffer_size = (stereo?2:1)*size_of_data*num_samples*frag_count;
+   buffer_duration = num_samples/(double)freq;
+   record_index = 0;
+   buffer.resize(total_buffer_size , 0);
+/**
+ALLEGRO_AUDIO_RECORDER *al_create_audio_recorder(size_t fragment_count,
+unsigned int samples, unsigned int frequency,
+ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
+//*/
+   recorder = al_create_audio_recorder(frag_count , num_samples , freq , ALLEGRO_AUDIO_DEPTH_INT16 , ALLEGRO_CHANNEL_CONF_2);
+   if (recorder) {
+      return true;
+   }
+   return false;
+}
+
+
+
+void Allegro5SoundRecorder::Destroy() {
+   if (recorder) {
+      if (al_is_audio_recorder_recording(recorder)) {
+         al_stop_recording(recorder);
+      }
+      al_destroy_audio_recorder(recorder);
+      recorder = 0;
+   }
+}
 
 
 

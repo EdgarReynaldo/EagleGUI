@@ -59,6 +59,7 @@ private :
    friend void* Allegro5EventThreadProcess(EagleThread* thread , void* data);///< Friend function for the event thread process
 
    ALLEGRO_EVENT_QUEUE* event_queue;///< Main event queue
+   bool destroy_queue;
    ALLEGRO_EVENT_SOURCE main_source;///< For messages to the event thread
    
    Allegro5Thread* event_thread;///< The thread our event process runs on
@@ -67,10 +68,10 @@ private :
 
 public :
 
-   Allegro5EventHandler(std::string objname = "A5EH" , bool delay_emitted_events = false);
+   Allegro5EventHandler(ALLEGRO_EVENT_QUEUE* adopt = 0 , std::string objname = "A5EH" , bool delay_emitted_events = false);
    ~Allegro5EventHandler();
 
-   virtual bool Create();
+   virtual bool Create(ALLEGRO_EVENT_QUEUE* q);
    virtual void Destroy();
    virtual bool Valid();
 

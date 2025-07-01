@@ -16,8 +16,33 @@
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
- * 
- *
+ * @file Video.hpp
+ * @brief Interface for EagleVideo objects
  */
+
+ 
+#ifndef EagleVideo_HPP
+#define EagleVideo_HPP
+
+class EagleGraphicsContext;
+class EagleSound;
+class EagleImage;
+ 
+class EagleVideo {
+protected :
+   EagleGraphicsContext* window;
+   EagleSound* sound;
+   int64_t audio_sample_index;///< Counted in samples
+   EagieImage** frames;
+   int32_t frame_buffer_count;
+   int32_t frame_buffer_index;
+   
+public :
+   
+   
+   
+};
+
+
+
+#endif // EagleVideo_HPP

@@ -90,9 +90,50 @@ public :
 };
 
 
+/**
+
+class EagleSoundRecorder : public EagleSound {
+protected :
+   
+   int32_t freq;// nsamples/second
+   int32_t num_samples;/// number of samples in a fragment
+   int32_t frag_count;/// how many fragments to buffer with
+   int32_t size_of_data;
+   bool    stereo;
+   int32_t total_buffer_size;/// duh, 4*nsamples due to stereo int16_t buffer in recorder
+   double  buffer_duration;/// secs
+   int32_t record_index;
+   
+   
+   std::vector<char> buffer;
+
+//*/
+class Allegro5SoundRecorder : public EagleSoundRecorder {
+
+protected :
+   ALLEGRO_AUDIO_RECORDER* recorder;
+
+public :
+   Allegro5SoundRecorder();
+   Allegro5SoundRecorder() :
+         EagleSoundRecorder(),
+         recorder(0)
+   {
+   }
+
+   bool Create(int32_t frequency , int32_t nsamples_per_fragment , int32_t fragment_count)
+   void Destroy();
+
+};
+
 
 
 #endif // Allegro5Sound_HPP
+
+
+
+
+
 
 
 

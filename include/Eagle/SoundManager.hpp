@@ -12,14 +12,13 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2023+ by Edgar Reynaldo
+ *    Copyright 2009-2025+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
- * @file 
- * @brief
+ * @file SoundManager.hpp
+ * @brief Some classes to tidy up the soundscape in Eagle
  * 
- *
  */
 
 #ifndef SoundManager_HPP
@@ -31,10 +30,19 @@
 
 
 
-
+class EagleSound;
 class EagleSoundSample;
 class EagleSoundInstance;
 class EagleSoundStream;
+
+
+
+/***
+ * @class SoundManager
+ * @brief Workhorse class to make audio simpler
+ * The @ref SoundManager class lets you setup audio, samples, instances, 
+      streams, and recording and all audio made available by Allegro.
+ */
 
 
 
@@ -54,7 +62,7 @@ public :
    virtual EagleSoundInstance* GetInstance(size_t index)=0;
    
    EagleSoundSample* CreateSoundSample(FilePath fp);
-   EagleSoundInstance* CreateSoundInstance(EagleSoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and play it, may be NULL
+   EagleSoundInstance* CreateSoundInstance(EagleSoundSample* psample);///< Will create a new instance, attach it to the sample mixer, and pause it, may be NULL
    EagleSoundStream* CreateSoundStream(FilePath fp);
    
    virtual void ClearSoundSamples()=0;
@@ -70,10 +78,18 @@ public :
 
    virtual void SetMasterMixerPlaying(bool play)=0;
 
-   
-   
    virtual EagleSoundInstance* PlayNewSampleInstance(EagleSoundSample* psample)=0;
    virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample)=0;///< Use with @fn ReserveInstances
+   
+   virtual bool Record(EagleSoundRecorder* recorder)=0;
+
+   virtual void Play(EagleSound* sound)=0;
+   virtual void Pause(EagleSound* sound)=0;
+   virtual void Continue(EagleSound* sound)=0;
+   virtual void Stop(EagleSound* sound)=0;
+   
+   virtual bool SeekIndex(EagleSound* sound , uint32_t sample_index)=0;
+   virtual uint32_t TellIndex(EagleSound* sound)=0;
 };
 
 

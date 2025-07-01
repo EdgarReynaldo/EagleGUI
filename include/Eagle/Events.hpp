@@ -140,6 +140,23 @@ enum EAGLE_EVENT_TYPE {
    
    EAGLE_EVENT_NETWORK_EVENT_STOP          = 84,///< Stop id for network events
 
+   EAGLE_EVENT_AUDIO_EVENT_START           = 100,
+   
+   EAGLE_EVENT_AUDIO_RECORDER_FRAGMENT     = 100,/// audio recorder fragment is ready
+   EAGLE_EVENT_AUDIO_BUFFER_READY          = 101,/// audio buffer is ready to be filled
+   EAGLE_EVENT_AUDIO_SAMPLE_COMPLETE       = 102,/// Sample has finished playing
+   
+   EAGLE_EVENT_AUDIO_EVENT_STOP            = 102,
+   
+   EAGLE_EVENT_VIDEO_EVENT_START           = 110,
+   
+   EAGLE_EVENT_VIDEO_AUDIO_BUFFER_READY    = 110,
+   EAGLE_EVENT_VIDEO_FRAME_READY           = 111,
+   EAGLE_EVENT_VIDEO_COMPLETE              = 112,
+   
+   EAGLE_EVENT_VIDEO_EVENT_STOP            = 112,
+   
+   
    EAGLE_EVENT_USER_START                  = 1024///< Event id's above this value are free to use for user events
 };
 
@@ -337,28 +354,32 @@ enum AVSTATE {
 
 
 
-class EagleAudio;
+class EagleSound;
 
 /**! @struct AUDIO_EVENT_DATA
  *   @brief Data for audio events
  */
 
 struct AUDIO_EVENT_DATA {
-   EagleAudio* audio_source;///< The audio source
-   AVSTATE avstate;///< The current audio state
+   EagleSound* sound_source;///< The audio source
+   char* byte_buffer;
+   int sample_count;
 };
 
 
 
 class EagleVideo;
-
+class EagleImage;
 /**! @struct VIDEO_EVENT_DATA
  *   @brief Data for video events
  */
 
 struct VIDEO_EVENT_DATA {
+   /// Video and audio are played separately
    EagleVideo* video_source;///< The video source
-   AVSTATE avstate;///< The current video state
+   EagleSound* sound_source;///< The audio source
+   EagleImage** buffered_frames;
+   int frame_buffer_count;
 };
 
 
@@ -525,10 +546,12 @@ enum EAGLE_EVENT_GROUP_TYPE {
    EAGLE_DISPLAY_EVENT_TYPE   = 1 << 4,///< Display event
    EAGLE_WIDGET_EVENT_TYPE    = 1 << 5,///< Widget event
    EAGLE_NETWORK_EVENT_TYPE   = 1 << 6,///< Network event
-   EAGLE_SYSTEM_EVENT_TYPE    = 1 << 7,///< System event
-   EAGLE_USER_EVENT_TYPE      = 1 << 8,///< User event
-   EAGLE_ANY_EVENT_TYPE       = 1 << 9,///< Generic event
-   EAGLE_UNDEFINED_EVENT_TYPE = 1 << 10 ///< Undefined event
+   EAGLE_AUDIO_EVENT_TYPE     = 1 << 7,///< Network event
+   EAGLE_VIDEO_EVENT_TYPE     = 1 << 8,///< Network event
+   EAGLE_SYSTEM_EVENT_TYPE    = 1 << 9,///< System event
+   EAGLE_USER_EVENT_TYPE      = 1 << 10,///< User event
+   EAGLE_ANY_EVENT_TYPE       = 1 << 11,///< Generic event
+   EAGLE_UNDEFINED_EVENT_TYPE = 1 << 12 ///< Undefined event
 };
 
 

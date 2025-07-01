@@ -87,19 +87,22 @@ void SpaceCamera::Turn(Vec3 omega , double dt) {
 
 
 void SpaceCamera::StrafeRight(double horizontal) {
-   Move(Right() , horizontal);
+//   Move(Right() , horizontal);
+   Move(RIGHT , horizontal);
 }
 
 
 
 void SpaceCamera::ElevateUp(double vertical) {
-   Move(Up() , vertical);
+//   Move(Up() , vertical);
+   Move(UP , vertical);
 }
 
 
 
 void SpaceCamera::AdvanceForward(double forward) {
-   Move(Forward() , forward);
+//   Move(Forward() , forward);
+   Move(FORWARD , forward);
 }
 
    

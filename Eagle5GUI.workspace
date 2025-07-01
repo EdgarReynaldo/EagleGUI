@@ -4,6 +4,5 @@
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
 		<Project filename="../../projects/Maze3D/Maze3D.cbp" />
-		<Project filename="../../projects/TINS2024/LibKrampus18.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

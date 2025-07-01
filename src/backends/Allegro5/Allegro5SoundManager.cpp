@@ -56,7 +56,7 @@ EagleSoundInstance* Allegro5SoundManager::PrivateCreateSoundInstance(EagleSoundS
    Allegro5SoundInstance* pinstance = new Allegro5SoundInstance(psample);
    pinstance->SetSample(psample);
    al_attach_sample_instance_to_mixer(pinstance->AllegroInstance() , psample_mixer);
-///   al_set_sample_instance_playing(pinstance->AllegroInstance() , true);
+   al_set_sample_instance_playing(pinstance->AllegroInstance() , false);
    return pinstance;
 }
 
@@ -327,5 +327,141 @@ bool Allegro5SoundManager::SetSample(EagleSoundInstance* inst , EagleSoundSample
 }
 
 
+
+
+bool Allegro5SoundManager::Record(EagleSoundRecorder* recorder) {
+   Allegro5SoundRecorder* a5recorder = dynamic_cast<Allegro5SoundRecorder*>(recorder);
+   ALLEGRO_AUDIO_RECORDER* sndrec = a5recorder?a5recorder->GetAllegroSoundRecorder():0;
+   EAGLE_ASSERT(sndrec);
+   if (sndrec) {
+      return al_start_recorder(sndrec);
+   }
+   return false;
+}
+
+
+
+bool Allegro5SoundManager::Play(EagleSound* sound) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   Allegro5SoundRecorder* a5recorder = dynamic_cast<Allegro5SoundRecorder*>(recorder);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         return al_set_sample_instance_playing(smp , true);
+      }
+   }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         return al_set_audio_stream_playing(stream , true);
+      }
+   }
+   if (a5recorder) {
+      ALLEGRO_AUDIO_RECORDER* sndrec = a5recorder?a5recorder->GetAllegroSoundRecorder():0;
+      if (sndrec) {
+      }
+   }
+   return false;
+}
+
+
+
+bool Allegro5SoundManager::Pause(EagleSound* sound) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         return al_set_sample_instance_playing(smp , false);
+      }
+   }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         return al_set_audio_stream_playing(stream , false);
+      }
+   }
+   return false;
+}
+
+
+
+bool Allegro5SoundManager::Continue(EagleSound* sound) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         return al_set_sample_instance_playing(smp , true);
+      }
+   }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         return al_set_audio_stream_playing(stream , true);
+      }
+   }
+}
+
+
+
+bool Allegro5SoundManager::Stop(EagleSound* sound) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         return (al_set_sample_instance_playing(smp , false) &&
+                 al_set_sample_instance_position(smp , 0));
+      }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         return (al_set_audio_stream_playing(stream , false) && 
+                 al_rewind_audio_stream(stream));
+      }
+   }
+   
+   return false;
+}
+
+
+
+bool Allegro5SoundManager::SeekIndex(EagleSound* sound , uint32_t sample_index) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         
+      }
+   }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         
+      }
+   }
+}
+
+
+
+uint32_t Allegro5SoundManager::TellIndex(EagleSound* sound) {
+   Allegro5SoundInstance* a5inst = dynamic_cast<Allegro5SoundInstance*>(sound);
+   Allegro5SoundStream* a5strm = dynamic_cast<Allegro5SoundStream*>(sound);
+   if (a5inst) {
+      ALLEGRO_SAMPLE_INSTANCE* smp = a5inst->AllegroInstance();
+      if (smp) {
+         
+      }
+   }
+   if (a5strm) {
+      ALLEGRO_AUDIO_STREAM* stream = a5strm->AllegroStream();
+      if (stream) {
+         
+      }
+   }
+}
 
 

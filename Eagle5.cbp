@@ -164,6 +164,14 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="examples/ExSoundConfig.cfg" />
+		<Unit filename="examples/ExVisualize.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="examples/UsingWidgetsTutorial.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="include/Eagle.hpp" />
 		<Unit filename="include/Eagle/AnimationBase.hpp" />
 		<Unit filename="include/Eagle/Area.hpp" />
@@ -316,6 +324,7 @@
 		<Unit filename="include/Eagle/Vec2.hpp" />
 		<Unit filename="include/Eagle/Vec3.hpp" />
 		<Unit filename="include/Eagle/Vertex.hpp" />
+		<Unit filename="include/Eagle/Video.hpp" />
 		<Unit filename="include/Eagle/WindowManager.hpp" />
 		<Unit filename="src/Eagle/AnimationBase.cpp" />
 		<Unit filename="src/Eagle/Area.cpp" />
@@ -449,6 +458,7 @@
 		<Unit filename="src/Eagle/UnitCube.cpp" />
 		<Unit filename="src/Eagle/Vec3.cpp" />
 		<Unit filename="src/Eagle/Vertex.cpp" />
+		<Unit filename="src/Eagle/Video.cpp" />
 		<Unit filename="src/Eagle/WindowManager.cpp" />
 		<Extensions>
 			<DoxyBlocks>
