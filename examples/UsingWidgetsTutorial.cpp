@@ -49,7 +49,8 @@ int main(int argc , char** argv) {
    /** Start of WidgetBase widget use tutorial */
    
    /// To handle all our widgets, we need a WidgetHandler
-   WidgetHandler gui;
+   WidgetHandler gui(win);
+   gui.SetupBuffer(800,600,win);
    
    /// Since a WidgetHandler is derived from WidgetBase, we can use all our widget functions on our gui
    /// Widgets start at a size of 0,0 and position of 0,0 so we need to give them an area to occupy. Layouts do this for us
@@ -72,7 +73,7 @@ int main(int argc , char** argv) {
    FlowLayout flow;
    gui.SetRootLayout(&flow);
    
-   flow.SetFlowDirection(FLOW_FAVORED_VERTICAL);/// can be FLOW_FAVORED_VERTICAL or FLOW_FAVORED_HORIZONTAL
+   flow.SetFlowDirection(FLOW_FAVOR_VERTICAL);/// can be FLOW_FAVORED_VERTICAL or FLOW_FAVORED_HORIZONTAL
    flow.SetAnchorPosition(FBOX_ANCHOR_NW);/// Can be FBOX_ANCHOR_* [NW SE SW NE]
    flow.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);/// Left top is default alignment, let's use centered alignment
    flow.SetBoxSpacing(BOX_SPACE_EVEN);/// Spread out the extra space evenly

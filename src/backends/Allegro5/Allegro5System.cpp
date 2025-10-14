@@ -11,6 +11,7 @@
 #include "Eagle/backends/Allegro5/Allegro5Threads.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Clipboard.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
+#include "Eagle/backends/Allegro5/Allegro5SoundManager.hpp"
 #include "Eagle/backends/Allegro5/Allegro5FileSystem.hpp"
 #include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
 #include "Eagle/backends/Allegro5/Allegro5DialogManager.hpp"
@@ -18,11 +19,11 @@
 
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
-#include "allegro5/allegro_audio.h"
 #include "allegro5/allegro_acodec.h"
 #include "allegro5/allegro_font.h"
 #include "allegro5/allegro_ttf.h"
 #include "allegro5/allegro_primitives.h"
+#include "allegro5/allegro_audio.h"
 #include "allegro5/allegro_native_dialog.h"
 #include <cstdlib>
 
@@ -72,6 +73,7 @@ bool Allegro5System::PrivateInitializeAudio() {
    bool ret = al_install_audio();
    ret = ret && al_init_acodec_addon();
    if (!ret) {EagleError() << "Allegro failed to initialize audio addon." << std::endl;}
+   sound_manager = PrivateCreateSoundManager();
    return ret;
 }
 
@@ -140,7 +142,7 @@ EagleInputHandler* Allegro5System::PrivateCreateInputHandler(std::string objname
 
 
 EagleEventHandler* Allegro5System::PrivateCreateEventHandler(std::string objname , bool delay_events) {
-   Allegro5EventHandler* a5_handler = new Allegro5EventHandler(objname , delay_events);
+   Allegro5EventHandler* a5_handler = new Allegro5EventHandler(0 , objname , delay_events);
    if (!a5_handler->Create()) {
       delete a5_handler;
       return 0;
@@ -227,6 +229,11 @@ DialogManager* Allegro5System::PrivateCreateDialogManager() {
    return new Allegro5DialogManager();
 }
 
+
+
+SoundManager* Allegro5System::PrivateCreateSoundManager() {
+   return new Allegro5SoundManager();
+}
 
 
 EagleSystem* Allegro5System::CreateAllegro5System() {

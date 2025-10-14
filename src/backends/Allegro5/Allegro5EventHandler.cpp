@@ -10,8 +10,9 @@
 #include "Eagle/backends/Allegro5/Allegro5InputHandler.hpp"
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
 #include "Eagle/backends/Allegro5/Allegro5WindowManager.hpp"
+#include "Eagle/backends/Allegro5/Allegro5SoundManager.hpp"
 
-
+#include "allegro5/allegro_audio.h"
 
 
 EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
@@ -101,12 +102,23 @@ EagleEvent GetEagleEvent(ALLEGRO_EVENT ev) {
          ee.touch.primary = ev.touch.primary;
          break;
       case ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT :
-         ee.window = 0;
-         ee.audio.audio_source = GetEagleSoundSource(ev.audio.source);
-         ee.audio.sample_count = ev.samples;
-         ee.audio.byte_buffer = ev.buffer;
+         {
+            ee.window = 0;
+            ALLEGRO_AUDIO_RECORDER_EVENT* rev = al_get_audio_recorder_event(&ev);
+            ee.audio.sound_source = dynamic_cast<EagleSound*>(GetAllegro5System()->GetSoundManager()->GetSoundSource(al_get_audio_recorder_event_source(rev->source)));
+            ee.audio.avstate = AV_STATE_PLAYING;
+            ee.audio.rec_byte_buffer = (char*)rev->buffer;
+            ee.audio.as_byte_buffer = 0;
+            ee.audio.sample_count = rev->samples;
+            if (ee.audio.sample_count == 0) {
+               ee.audio.avstate = AV_STATE_READY;
+            }
+         }
          break;
       case ALLEGRO_EVENT_AUDIO_STREAM_FRAGMENT :
+         
+         break;
+      case ALLEGRO_EVENT_AUDIO_STREAM_FINISHED :
          
          break;
          
@@ -177,10 +189,10 @@ bool Allegro5EventHandler::Running() {
 
 
 
-Allegro5EventHandler::Allegro5EventHandler(ALLEGRO_EVENT_QUEUE* queue , std::string objname , bool delay_emitted_events) :
+Allegro5EventHandler::Allegro5EventHandler(ALLEGRO_EVENT_QUEUE* adopt , std::string objname , bool delay_emitted_events) :
       EagleEventHandler("Allegro5EventHandler" , objname , delay_emitted_events),
-      event_queue(queue),
-      destroy_queue(queue),
+      event_queue(adopt),
+      destroy_queue(adopt),
       main_source(),
       event_thread(0)
 {
@@ -194,6 +206,12 @@ Allegro5EventHandler::~Allegro5EventHandler() {
 
 
 
+bool Allegro5EventHandler::Create() {
+   return Create((ALLEGRO_EVENT_QUEUE*)0);
+}
+
+
+
 bool Allegro5EventHandler::Create(ALLEGRO_EVENT_QUEUE* q) {
    EAGLE_ASSERT(Eagle::EagleLibrary::Eagle()->System("Allegro5"));// System must be initialized and running
    Destroy();
@@ -202,7 +220,7 @@ bool Allegro5EventHandler::Create(ALLEGRO_EVENT_QUEUE* q) {
 
    destroy_queue = true;
    if (q) {destroy_queue = false;}
-   event_queue = (q?q:al_create_event_queue();
+   event_queue = (q?q:al_create_event_queue());
    al_register_event_source(event_queue , &main_source);
 
    mutex = new CXX11Mutex("A5EH::mutex");

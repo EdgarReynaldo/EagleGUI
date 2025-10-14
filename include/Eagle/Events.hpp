@@ -140,13 +140,17 @@ enum EAGLE_EVENT_TYPE {
    
    EAGLE_EVENT_NETWORK_EVENT_STOP          = 84,///< Stop id for network events
 
-   EAGLE_EVENT_AUDIO_EVENT_START           = 100,
+   EAGLE_EVENT_AUDIO_EVENT_START           = 100,///< Start id for audio events
    
-   EAGLE_EVENT_AUDIO_RECORDER_FRAGMENT     = 100,/// audio recorder fragment is ready
-   EAGLE_EVENT_AUDIO_BUFFER_READY          = 101,/// audio buffer is ready to be filled
-   EAGLE_EVENT_AUDIO_SAMPLE_COMPLETE       = 102,/// Sample has finished playing
+   EAGLE_EVENT_AUDIO_RECORDER_FRAGMENT     = 100,///< audio recorder fragment is ready
+
+   EAGLE_EVENT_AUDIO_STREAM_FRAGMENT       = 101,///< audio stream buffer is ready to be filled
+
+   EAGLE_EVENT_AUDIO_STREAM_COMPLETE       = 102,///< audio stream buffer is finished
    
-   EAGLE_EVENT_AUDIO_EVENT_STOP            = 102,
+   EAGLE_EVENT_AUDIO_INSTANCE_COMPLETE     = 103,///< Sample instance has finished playing
+   
+   EAGLE_EVENT_AUDIO_EVENT_STOP            = 103,///< Stop event for audio events
    
    EAGLE_EVENT_VIDEO_EVENT_START           = 110,
    
@@ -346,10 +350,11 @@ struct ANIMATION_EVENT_DATA {
  */
 
 enum AVSTATE {
-   AV_STATE_NOTREADY    = -1,///< This audio video object is stopped
+   AV_STATE_NOTREADY    = -1,///< This audio video object is invalid
    AV_STATE_READY       =  0,///< This audio video object is ready to play
    AV_STATE_PLAYING     =  1,///< This audio video object is currently playing
-   AV_STATE_PAUSED      =  2 ///< This audio video object is paused
+   AV_STATE_PAUSED      =  2,///< This audio video object is paused
+   AV_STATE_COMPLETE    =  4 ///< This audio video object has completed playing 
 };
 
 
@@ -362,7 +367,9 @@ class EagleSound;
 
 struct AUDIO_EVENT_DATA {
    EagleSound* sound_source;///< The audio source
-   char* byte_buffer;
+   AVSTATE avstate;///< Audio visual state of event
+   char* rec_byte_buffer;
+   char* as_byte_buffer;
    int sample_count;
 };
 
@@ -375,11 +382,13 @@ class EagleImage;
  */
 
 struct VIDEO_EVENT_DATA {
-   /// Video and audio are played separately
+   /// Video and audio are tracked separately
    EagleVideo* video_source;///< The video source
    EagleSound* sound_source;///< The audio source
+   AVSTATE avstate;///< Audio visual state of event
    EagleImage** buffered_frames;
-   int frame_buffer_count;
+   int32_t frame_buffer_count;
+   int32_t frame_buffer_index;
 };
 
 
@@ -516,10 +525,10 @@ public :
       TIMER_EVENT_DATA timer;// source count
       DISPLAY_EVENT_DATA display;// source x y width height orientation
       ANIMATION_EVENT_DATA animation;
-      AUDIO_EVENT_DATA audio;
-      VIDEO_EVENT_DATA video;
       WIDGET_EVENT_DATA widget;
       NETWORK_EVENT_DATA* network;
+      AUDIO_EVENT_DATA audio;
+      VIDEO_EVENT_DATA video;
       USER_EVENT_DATA data;
    };
 
@@ -546,8 +555,8 @@ enum EAGLE_EVENT_GROUP_TYPE {
    EAGLE_DISPLAY_EVENT_TYPE   = 1 << 4,///< Display event
    EAGLE_WIDGET_EVENT_TYPE    = 1 << 5,///< Widget event
    EAGLE_NETWORK_EVENT_TYPE   = 1 << 6,///< Network event
-   EAGLE_AUDIO_EVENT_TYPE     = 1 << 7,///< Network event
-   EAGLE_VIDEO_EVENT_TYPE     = 1 << 8,///< Network event
+   EAGLE_AUDIO_EVENT_TYPE     = 1 << 7,///< Audio event
+   EAGLE_VIDEO_EVENT_TYPE     = 1 << 8,///< Video event
    EAGLE_SYSTEM_EVENT_TYPE    = 1 << 9,///< System event
    EAGLE_USER_EVENT_TYPE      = 1 << 10,///< User event
    EAGLE_ANY_EVENT_TYPE       = 1 << 11,///< Generic event
@@ -563,6 +572,8 @@ bool IsTouchEvent   (EagleEvent e);///< True if e is a touch event
 bool IsDisplayEvent (EagleEvent e);///< True if e is a display event
 bool IsWidgetEvent  (EagleEvent e);///< True if e is a widget event
 bool IsNetworkEvent (EagleEvent e);///< True if e is a network event
+bool IsAudioEvent   (EagleEvent e);///< True if e is an audio event
+bool IsVideoEvent   (EagleEvent e);///< True if e is a video event
 bool IsSystemEvent  (EagleEvent e);///< True if e is a system event
 bool IsUserEvent    (EagleEvent e);///< True if e is a user event
 

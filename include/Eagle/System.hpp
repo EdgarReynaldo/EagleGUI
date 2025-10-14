@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2025+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -93,6 +93,7 @@ std::string PrintFailedEagleInitStates(int desired_state , int actual_state);///
 class FileSystem;
 class ResourceLibrary;
 class DialogManager;
+class SoundManager;
 class Mesh;
 
 
@@ -133,7 +134,7 @@ protected :
    
    DialogManager* dialog_manager;
    
-   
+   SoundManager* sound_manager;
    
    bool system_up;
    bool images_up;
@@ -180,7 +181,7 @@ protected :
    virtual ResourceLibrary*      PrivateCreateResourceLibrary()=0;
    virtual GraphicsHardware*     PrivateCreateGraphicsHardware()=0;
    virtual DialogManager*        PrivateCreateDialogManager()=0;
-
+   virtual SoundManager*         PrivateCreateSoundManager()=0;
 
    EagleWindowManager* CreateWindowManager() {return PrivateCreateWindowManager();}
 
@@ -256,6 +257,7 @@ public :
    ResourceLibrary*    GetResourceLibrary();
    GraphicsHardware*   GetGraphicsHardware();
    DialogManager*      GetDialogManager();
+   SoundManager*       GetSoundManager();
 
 	EagleInputHandler*    CreateInputHandler(std::string objname = "Nemo");
 	
@@ -275,7 +277,7 @@ public :
    void FreeThread(EagleThread* thread);
    void FreeMutex(EagleMutex* mutex);
    void FreeClipboard(EagleClipboard* clipboard);
-
+   
    ///< Returns true if there are no system events waiting in the system queue
    bool UpToDate();
 

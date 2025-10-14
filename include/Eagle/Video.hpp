@@ -28,12 +28,15 @@ class EagleGraphicsContext;
 class EagleSound;
 class EagleImage;
  
+ 
+#include <cstdint>
+ 
 class EagleVideo {
 protected :
    EagleGraphicsContext* window;
    EagleSound* sound;
    int64_t audio_sample_index;///< Counted in samples
-   EagieImage** frames;
+   EagleImage** frames;
    int32_t frame_buffer_count;
    int32_t frame_buffer_index;
    

@@ -30,22 +30,26 @@
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/System.hpp"
 
+#define ALLEGRO_UNSTABLE
+#include "allegro5/allegro.h"
 #include "allegro5/allegro_audio.h"
 
 
 
 class Allegro5SoundSample : public EagleSoundSample {
 protected:
+   std::vector<int16_t> internal_buffer;/// Used when creating samples (not loading them)
    ALLEGRO_SAMPLE* sample_data;
 
    bool LoadFromArgs(std::vector<std::string> args) override;
 
 public :
-   Allegro5SoundSample();
+   Allegro5SoundSample(SoundManager* sound_man);
    ~Allegro5SoundSample();
    
    bool LoadFromFile(FilePath fp);
-
+   bool CreateSample(int32_t nsamples , int32_t freq , int32_t sampledepth , bool stereo);
+   
    void Free();
    
    ALLEGRO_SAMPLE* Data();
@@ -58,7 +62,7 @@ class Allegro5SoundInstance : public EagleSoundInstance {
 
 public :
 
-   Allegro5SoundInstance(EagleSoundSample* psample);
+   Allegro5SoundInstance(SoundManager* sound_man , EagleSoundSample* psample);
 
    ~Allegro5SoundInstance();
    
@@ -78,11 +82,12 @@ class Allegro5SoundStream : public EagleSoundStream {
    bool LoadFromArgs(std::vector<std::string> args) override;/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
 
 public :
-   Allegro5SoundStream();
+   Allegro5SoundStream(SoundManager* sound_man);
 
    ~Allegro5SoundStream();
 
-   virtual bool LoadFromFile(size_t nbuffers = 3 , size_t buf_sample_count = 32768);
+   virtual bool Load(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768);///< Automatically fed by Allegro
+   virtual bool Create(int32_t nfragments , int32_t nsamples_per_fragment , int32_t frequency);///< Filling buffer is done manually
 
    void Free();
    
@@ -114,15 +119,12 @@ protected :
    ALLEGRO_AUDIO_RECORDER* recorder;
 
 public :
-   Allegro5SoundRecorder();
-   Allegro5SoundRecorder() :
-         EagleSoundRecorder(),
-         recorder(0)
-   {
-   }
+   Allegro5SoundRecorder(SoundManager* sound_man);
 
-   bool Create(int32_t frequency , int32_t nsamples_per_fragment , int32_t fragment_count)
+   bool Create(int32_t frequency , int32_t nsamples_per_fragment , int32_t fragment_count);
    void Destroy();
+   
+   ALLEGRO_AUDIO_RECORDER* GetRecorder();
 
 };
 

@@ -71,7 +71,8 @@ public :
    Allegro5EventHandler(ALLEGRO_EVENT_QUEUE* adopt = 0 , std::string objname = "A5EH" , bool delay_emitted_events = false);
    ~Allegro5EventHandler();
 
-   virtual bool Create(ALLEGRO_EVENT_QUEUE* q);
+   virtual bool Create();
+   bool Create(ALLEGRO_EVENT_QUEUE* q);
    virtual void Destroy();
    virtual bool Valid();
 

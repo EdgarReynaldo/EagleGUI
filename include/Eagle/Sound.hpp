@@ -29,11 +29,13 @@
 
 #include "Eagle/File.hpp"
 #include "Eagle/Resources.hpp"
+#include "Eagle/Events.hpp"
+
 
 
 class SoundManager;
 
-class EagleSound {
+class EagleSound : public EagleEventSource {
 protected :
    SoundManager* owner;
    uint32_t sample_index_master;
@@ -64,13 +66,18 @@ public :
 
 class EagleSoundSample : public ResourceBase {
 
+protected:
+   SoundManager* parent;
    virtual bool LoadFromArgs(std::vector<std::string> args)=0;/*(void)args*/
 public :
-   EagleSoundSample();
+   EagleSoundSample(SoundManager* sound_man);
 
    virtual ~EagleSoundSample();
 
    virtual void Free()=0;
+
+   virtual bool LoadFromFile(FilePath fp)=0;
+   virtual bool CreateSample(int32_t nsamples , int32_t freq , int32_t sampledepth , bool stereo)=0;
 };
 
 
@@ -79,7 +86,7 @@ class EagleSoundInstance : public EagleSound {
 public :
    EagleSoundSample* parent;
 
-   EagleSoundInstance(EagleSoundSample* parent_sample);
+   EagleSoundInstance(SoundManager* sound_man , EagleSoundSample* parent_sample);
    virtual ~EagleSoundInstance();
    
    EagleSoundSample* Parent() {return parent;}
@@ -89,18 +96,33 @@ public :
 
 class EagleSoundStream : public EagleSound , public ResourceBase {
 
+protected:
+   int32_t freq;// nsamples/second
+   int32_t num_samples;/// number of samples in a fragment
+   int32_t frag_count;/// how many fragments to buffer with
+   int32_t size_of_data;
+   bool    stereo;
+   int32_t total_buffer_size;/// duh, 4*nsamples due to stereo int16_t buffer in recorder
+   double  buffer_duration;/// secs
+   std::vector<uint8_t> buffer;
+   
    virtual bool LoadFromArgs(std::vector<std::string> args)=0;/*size_t nbuffers = 3 , size_t buf_sample_count = 32768*/
 public :
-   EagleSoundStream();
+   EagleSoundStream(SoundManager* sound_man);
    virtual ~EagleSoundStream();
 
    virtual void Free()=0;
+   
+   virtual bool Load(FilePath fp , size_t nbuffers = 3 , size_t buf_sample_count = 32768)=0;/// Automatically fed by Allegro
+   virtual bool Create(int32_t nfragments , int32_t nsamples_per_fragment , int32_t frequency)=0;/// Filling buffer is done manually
 };
 
 
 
-class EagleSoundRecorder : public EagleSoundInstance {
+class EagleSoundRecorder : public EagleSound {
 protected :
+   
+   SoundManager* sound_manager;
    
    int32_t freq;// nsamples/second
    int32_t num_samples;/// number of samples in a fragment
@@ -112,26 +134,20 @@ protected :
    int32_t record_index;
    
    
-   std::vector<char> buffer;
+   std::vector<int8_t> buffer;
+   
+   EagleSoundSample* recorder_sample;
+   EagleSoundInstance* recorder_sample_instance;
    
 ///   ALLEGRO_SAMPLE* smp;/// For playback
    
 public :
 //   EagleSoundRecorder();
-   EagleSoundRecorder() :
-         EagleSoundInstance(0),
-         freq(-1),
-         num_samples(-1),
-         frag_count(-1),
-         size_of_data(0),
-         stereo(false),
-         total_buffer_size(0),
-         buffer_duration(0),
-         record_index(0),
-         buffer()
-   {}
+   EagleSoundRecorder(SoundManager* sound_man);
    
    bool Record();
+   
+   int8_t Buffer(uint32_t index);
 };
 
 

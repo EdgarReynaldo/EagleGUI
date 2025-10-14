@@ -207,10 +207,10 @@ Allegro5InputHandler::Allegro5InputHandler(std::string objname) :
       input_extra_event_source(),
       input_queue(0),
       input_thread("A5 Input Thread"),
-      keyboard_event_handler("A5 KeyboardEventHandler" , false),
-      joystick_event_handler("A5 JoystickEventHandler" , false),
-      mouse_event_handler("A5 MouseEventHandler" , false),
-      touch_event_handler("A5 TouchEventHandler" , false)
+      keyboard_event_handler(0 , "A5 KeyboardEventHandler" , false),
+      joystick_event_handler(0 , "A5 JoystickEventHandler" , false),
+      mouse_event_handler(0 , "A5 MouseEventHandler" , false),
+      touch_event_handler(0 , "A5 TouchEventHandler" , false)
 {
    keyboard_event_handler.Create();
    joystick_event_handler.Create();

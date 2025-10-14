@@ -63,10 +63,15 @@ class Allegro5SoundManager : public SoundManager {
    
    Allegro5SoundStream* bgstream;///< For a soundstream object
    
+   Allegro5SoundRecorder* recorder;
+   Allegro5SoundSample* recorder_sample;
+   Allegro5SoundInstance* recorder_sample_instance;
    
    virtual EagleSoundSample* PrivateCreateSoundSample(FilePath fp);
+   virtual EagleSoundSample* PrivateCreateBlankSample(int32_t freq , int32_t samples , int32_t sample_size , bool stereo);
    virtual EagleSoundStream* PrivateCreateSoundStream(FilePath fp);
    virtual EagleSoundInstance* PrivateCreateSoundInstance(EagleSoundSample* psample);
+   virtual EagleSoundRecorder* PrivateCreateSoundRecorder();
 
 public :
    Allegro5SoundManager();
@@ -77,12 +82,15 @@ public :
    virtual bool Initialize();///< Get ready to produce sound. Setup mixers and voice
    virtual void CheckInstances();///< Remove dead instances, no need to call
    virtual bool ReserveInstances(size_t n , size_t max = 32);///< For convenience and sample reuse - saves memory and allocation/deallocations
-   virtual EagleSoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
+   virtual Allegro5SoundInstance* GetInstance(size_t index);///< Get the SoundInstance at the specified index, 0 to InstanceCount()-1;
    size_t InstanceCount() {return instances.size();}
-
+   Allegro5SoundRecorder* GetRecorder();
+   Allegro5SoundStream* GetBGStream();
+   
    virtual void ClearSoundSamples();
    virtual void ClearSoundInstances();
    virtual void ClearBGStream();
+   virtual void ClearRecorder();
 
 
 
@@ -101,15 +109,19 @@ public :
    virtual bool SetSample(EagleSoundInstance* inst , EagleSoundSample* sample);///< Reuses a sound instance to play this sample, used with @fn ReserveInstances<size_t>
 
 
-   virtual bool Record(EagleSoundRecorder* recorder);
+   virtual bool Record(EagleSoundRecorder* rec);
 
-   virtual void Play(EagleSound* sound);
-   virtual void Pause(EagleSound* sound);
-   virtual void Continue(EagleSound* sound);
-   virtual void Stop(EagleSound* sound);
+   virtual bool Play(EagleSound* sound);/// Play sound from beginning
+   virtual bool Pause(EagleSound* sound);/// Pause anywhere
+   virtual bool Continue(EagleSound* sound);/// Once the pause is over
+   virtual bool Stop(EagleSound* sound);/// Stops the sound and resets it
    
    virtual bool SeekIndex(EagleSound* sound , uint32_t sample_index);
-   virtual uint32_t TellIndex(EagleSound* sound);
+   virtual uint64_t TellIndex(EagleSound* sound);
+   
+   
+   EagleEventSource* GetSoundSource(ALLEGRO_EVENT_SOURCE* src);
+
 };
 
 

@@ -142,17 +142,13 @@ See also: al_get_audio_recorder_event
 
 //*/
          if (ee.type == EAGLE_EVENT_AUDIO_RECORDER_FRAGMENT) {
-         //if (ev.type == ALLEGRO_EVENT_AUDIO_RECORDER) {
-            ALLEGRO_AUDIO_RECORDER_EVENT rev = *al_get_audio_recorder_event(&ev);
-            if (rev.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
-               /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
-               for (int i = 0 ; i < 4*rev.samples ; i += 4) {
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(rev.buffer))[i];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(rev.buffer))[i+1];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(rev.buffer))[i+2];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(rev.buffer))[i+3];
-                  record_index = record_index%storage_size;
-               }
+            /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
+            for (int i = 0 ; i < 4*ee.audio.sample_count ; i += 4) {
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+1];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+2];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+3];
+               record_index = record_index%storage_size;
             }
          }
          

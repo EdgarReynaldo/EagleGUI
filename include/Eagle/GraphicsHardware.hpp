@@ -8,6 +8,9 @@
 
 #include <vector>
 #include <map>
+#include <string>
+
+
 
 struct MODE_INFO {
    int w,h,format,refresh;
@@ -43,6 +46,8 @@ enum GRAPHICS_DRIVER {
 
 bool CompareModes(const MODE_INFO& m1 , const MODE_INFO& m2);///< Returns false if m1 comes first. Descending sort by area, width, and refresh rate
 
+std::string GraphicsDriverToString(GRAPHICS_DRIVER drv);
+
 
 /**! @class GraphicsHardware
  *   @brief Simple abstract base class to track graphics adapters and modes and sort them
@@ -61,7 +66,7 @@ public :
    
    std::vector<ADAPTER_INFO> GetAdapters(GRAPHICS_DRIVER driver);
 
-   int NumAdapters(GRAPHICS_DRIVER driver);
+   int NumAdapters(GRAPHICS_DRIVER driver);/// Redundant
 
    MONITOR_INFO GetMonitor(GRAPHICS_DRIVER driver , int adapter_num);
 

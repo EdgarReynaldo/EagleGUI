@@ -71,6 +71,7 @@ private :
    ResourceLibrary*      PrivateCreateResourceLibrary();
    GraphicsHardware*     PrivateCreateGraphicsHardware();
    DialogManager*        PrivateCreateDialogManager();
+   SoundManager*         PrivateCreateSoundManager();
    
    friend class EagleLibrary;
 

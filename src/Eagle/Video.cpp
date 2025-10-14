@@ -20,7 +20,7 @@
  * @brief Implementations for EagleVideo class
  */
 
-#include "Eagle/Video,hpp"
+#include "Eagle/Video.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Sound.hpp"

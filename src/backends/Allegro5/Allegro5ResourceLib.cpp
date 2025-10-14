@@ -35,7 +35,7 @@
 #include "Eagle/backends/Allegro5/Allegro5ResourceLib.hpp"
 #include "Eagle/backends/Allegro5/Allegro5Sound.hpp"
 #include "Eagle/backends/Allegro5/Allegro5ObjModel.hpp"
-
+#include "Eagle/backends/Allegro5/Allegro5System.hpp"
 
 Allegro5ResourceLibrary::Allegro5ResourceLibrary() :
       ResourceLibrary()
@@ -143,10 +143,10 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(File* file) {
          res = window->GetFont(file->Path() , default_font_size , default_font_flags , VIDEO_IMAGE);
          break;
       case RT_AUDIO_SAMPLE :
-         res = new Allegro5SoundSample();
+         res = new Allegro5SoundSample(GetAllegro5System()->GetSoundManager());
          break;
       case RT_AUDIO_STREAM :
-         res = new Allegro5SoundStream();
+         res = new Allegro5SoundStream(GetAllegro5System()->GetSoundManager());
          break;
       case RT_VIDEO :
 ///< TODO : DO ME         res = new VideoResource();

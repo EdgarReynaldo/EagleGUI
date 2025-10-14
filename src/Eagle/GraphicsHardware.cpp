@@ -20,6 +20,16 @@ bool CompareModes(const MODE_INFO& m1 , const MODE_INFO& m2) {
 }
 
 
+std::string GraphicsDriverToString(GRAPHICS_DRIVER drv) {
+   static const char* drivers[4] = {
+      "GRAPHICS_NONE",
+      "GRAPHICS_SOFTWARE",
+      "GRAPHICS_OPENGL",
+      "GRAPHICS_DIRECTX"
+   };
+   return drivers[drv];
+}
+
 
 std::vector<ADAPTER_INFO> GraphicsHardware::GetAdapters(GRAPHICS_DRIVER driver) {
    std::vector<ADAPTER_INFO> info;

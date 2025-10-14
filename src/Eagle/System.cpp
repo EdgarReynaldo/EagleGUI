@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2023+ by Edgar Reynaldo
+ *    Copyright 2009-2025+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -26,7 +26,7 @@
 #include "Eagle/StringWork.hpp"
 #include "Eagle/FileSystem.hpp"
 #include "Eagle/ResourceLib.hpp"
-
+#include "Eagle/SoundManager.hpp"
 
 #include <signal.h>
 
@@ -189,6 +189,7 @@ EagleSystem::EagleSystem(std::string objclass , std::string objname) :
    resource_library(0),
    graphics_hardware(0),
    dialog_manager(0),
+   sound_manager(0),
    system_up(false),
    images_up(false),
    fonts_up(false),
@@ -211,6 +212,11 @@ void EagleSystem::Shutdown() {
 
    EagleInfo() << "EagleSystem::Shutdown called" << std::endl;
 
+   if (sound_manager) {
+      delete sound_manager;
+      sound_manager = 0;
+   }
+   
    if (window_manager) {
       delete window_manager;
       window_manager = 0;
@@ -666,6 +672,14 @@ DialogManager* EagleSystem::GetDialogManager() {
    return dialog_manager;
 }
 
+
+
+SoundManager* EagleSystem::GetSoundManager() {
+   if (!sound_manager) {
+      sound_manager = PrivateCreateSoundManager();
+   }
+   return sound_manager;
+}
 
 
 EagleInputHandler* EagleSystem::CreateInputHandler(std::string objname) {
