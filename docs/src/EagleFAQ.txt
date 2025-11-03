@@ -43,7 +43,8 @@ EAGLE FAQ :
    A1. If a widget uses alpha colors, or doesn't always fully redraw it's area, there can be artifacts left over. Make sure to 
        set the background redraw flag using WidgetBase::SetBgRedrawFlag.
 
-
+7. For some reason unknown to man I have nested archives. I'm sorry those don't load properly. PHYSFS cannot stack mounts afaik.
+   A1. Don't use nested archives, flatten them to folders and files no archives inside of archives at this time.
 
 
 

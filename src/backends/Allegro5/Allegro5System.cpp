@@ -214,7 +214,7 @@ FileSystem* Allegro5System::PrivateCreateFileSystem() {
 
 
 ResourceLibrary* Allegro5System::PrivateCreateResourceLibrary() {
-   return Allegro5ResourceLibrary::Instance();
+   return new Allegro5ResourceLibrary();
 }
 
 

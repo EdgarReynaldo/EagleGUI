@@ -4,6 +4,7 @@
 /// We need to include the main Eagle header.
 /// This gives us access to everything Eagle has to offer.
 #include "Eagle.hpp"
+#include "physfs.h"
 
 /// We need to include the backend header that we are going to use. 
 /// It imports all of the necessary system and graphics code to use Allegro 5.
@@ -13,6 +14,8 @@ int main(int argc , char** argv) {
    
    (void)argc;
    (void)argv;
+   
+   PHYSFS_init(argv[0]);
    
    /// To do most anything in Eagle, we need a system driver
    Allegro5System* sys = GetAllegro5System();
@@ -70,7 +73,7 @@ int main(int argc , char** argv) {
          std::vector<MODE_INFO> mdinfo = gfxhw->GetModes(gfx_driver , j);/// Grab the modes for this monitor
          for (unsigned int k = 0 ; k < mdinfo.size() ; ++k) {
             MODE_INFO mode_info = mdinfo[k];/// For each mode
-            EagleLog() << StringPrintF("Mode %i WxH = %ix%i format = %i refresh rate = %i" , j , mode_info.w , mode_info.h , mode_info.format , mode_info.refresh) << std::endl;
+            EagleLog() << StringPrintF("Mode %i WxH = %ix%i format = %i refresh rate = %i" , k , mode_info.w , mode_info.h , mode_info.format , mode_info.refresh) << std::endl;
          }
       }
    }
@@ -86,32 +89,14 @@ int main(int argc , char** argv) {
    FileSystem* fs = sys->GetFileSystem();
    
    /// For an example, we're going to recursively go through the contents of Eagle.zip
-   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Eagle.zip"));
-   Folder::SUBFOLDERMAP subfolders = archive.get()->SubFolders();
-   Folder* currentfolder = dynamic_cast<Folder*>(archive.get());
-   /// For pretty formatting
-   std::vector<Indenter> indentvec(1 , Indenter());
-   Indenter indent;
-   while (currentfolder) {
-      indent = indentvec[0];
-      EagleLog() << indent << "Folder " << currentfolder->Name() << std::endl;
-      Folder::FILEMAP files = currentfolder->Files();
-      Folder::SUBFOLDERMAP subfolders2 = currentfolder->SubFolders();
-      indent++;
-      for (Folder::SUBFOLDERMAP::iterator kit = subfolders2.begin() ; kit != subfolders2.end() ; ++kit) {
-         subfolders.insert(kit , *kit);
-         indentvec.insert(indentvec.begin() , indent);
-      }
-      indent--;
-      for (Folder::FILEMAP::iterator jit = files.begin() ; jit != files.end() ; ++jit) {
-         File* file = jit->second.get();
-         EagleLog() << indent << "File " << file->Name() << std::endl;
-      }
-      subfolders.erase(subfolders.begin());
-      indentvec.erase(indentvec.begin());
-      currentfolder = (subfolders.begin() != subfolders.end())?subfolders.begin()->second.get():0;
-   }
+//   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Eagle.zip"));
+   std::shared_ptr<Folder> archive = fs->ReadArchive(FilePath("Data/Fonts/Fonts.7z"));
+///   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Data/Fonts/Eagle.zip"));
+///   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Data/Fonts/Eagle.zip"));
 
+   archive->PrintContentsAbsolute();
+   
+   
    bool quit = false;
    bool redraw = true;
    sys->GetSystemTimer()->Start();/// The system timer is created automatically, but needs to be manually started

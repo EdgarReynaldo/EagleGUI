@@ -87,6 +87,7 @@ void Folder::RegisterFile(std::shared_ptr<File> f) {
    EAGLE_ASSERT(f);
    f->SetParent(this);
    files[f->Info().Path()] = f;
+   EagleLog() << "Registered file " << f->Path() << std::endl;
 }
 
 
@@ -95,6 +96,7 @@ void Folder::RegisterArchiveFile(std::shared_ptr<ArchiveFile> af) {
    EAGLE_ASSERT(af);
    af->SetParent(this);
    archives[af->File::Info().Path()] = af;
+   EagleLog() << "Registered archive " << af->Path() << std::endl;
 }
 
 
@@ -103,6 +105,7 @@ void Folder::RegisterSubFolder(std::shared_ptr<Folder> fl) {
    EAGLE_ASSERT(fl);
    fl->parent = this;
    subfolders[fl->Info().Path()] = fl;
+   EagleLog() << "Registered folder " << fl->Path() << std::endl;
 }
 
 

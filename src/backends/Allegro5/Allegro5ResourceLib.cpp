@@ -37,22 +37,11 @@
 #include "Eagle/backends/Allegro5/Allegro5ObjModel.hpp"
 #include "Eagle/backends/Allegro5/Allegro5System.hpp"
 
+
+
 Allegro5ResourceLibrary::Allegro5ResourceLibrary() :
       ResourceLibrary()
-{
-   static int init = 0;
-   if (init) {
-      throw EagleException("Allegro5ResourceLibrary reports multiple creation");
-   }
-   init = 1;
-}
-
-
-
-Allegro5ResourceLibrary* Allegro5ResourceLibrary::Instance() {
-   static Allegro5ResourceLibrary us;
-   return &us;
-}
+{}
 
 
 
@@ -91,6 +80,7 @@ std::set<std::string> Allegro5ResourceLibrary::GetSupportedTypes(RESOURCE_TYPE r
       stypes[RT_TEXTFILE].push_back("ini");
       stypes[RT_TEXTFILE].push_back("obj");
       stypes[RT_TEXTFILE].push_back("mat");
+      stypes[RT_TEXTFILE].push_back("rtf");
 
       stypes[RT_UNKNOWN].insert(stypes[RT_UNKNOWN].end() , stypes[RT_IMAGE       ].begin() , stypes[RT_IMAGE       ].end());
       stypes[RT_UNKNOWN].insert(stypes[RT_UNKNOWN].end() , stypes[RT_FONT        ].begin() , stypes[RT_FONT        ].end());
@@ -137,9 +127,11 @@ RESOURCEID Allegro5ResourceLibrary::LoadFileResource(File* file) {
    if (restype > RT_UNKNOWN && restype < NUM_RT_TYPES) {
       switch(restype) {
       case RT_IMAGE :
+         EAGLE_ASSERT(window);
          res = window->LoadImageFromFile(file->Path());
          break;
       case RT_FONT :
+         EAGLE_ASSERT(window);
          res = window->GetFont(file->Path() , default_font_size , default_font_flags , VIDEO_IMAGE);
          break;
       case RT_AUDIO_SAMPLE :

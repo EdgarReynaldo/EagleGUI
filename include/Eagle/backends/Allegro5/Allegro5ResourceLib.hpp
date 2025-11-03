@@ -38,11 +38,8 @@
 
 class Allegro5ResourceLibrary : public ResourceLibrary {
 
-protected :
-   
-   Allegro5ResourceLibrary();
-   
 public :
+   Allegro5ResourceLibrary();
    ~Allegro5ResourceLibrary() {}
 
    static Allegro5ResourceLibrary* Instance();

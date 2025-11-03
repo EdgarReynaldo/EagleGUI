@@ -50,7 +50,7 @@ FSMode GetFSModeFromAllegroFileMode(uint32_t amode) {
 FSInfo GetFSInfo(ALLEGRO_FS_ENTRY* f) {
    EAGLE_ASSERT(al_fs_entry_exists(f));
    std::string fpath = al_get_fs_entry_name(f);
-   EagleInfo() << fpath << std::endl;
+//   EagleInfo() << fpath << std::endl;
    FilePath fp(fpath);
    uint32_t amode = al_get_fs_entry_mode(f);
    FSMode fmode = GetFSModeFromAllegroFileMode(amode);
@@ -106,8 +106,12 @@ void Allegro5FileSystem::ReadDirectoryContents(Folder* folder , bool descend) {
    
    std::string p = folder->Path();
    if (archive) {
-      MountArchive(p);
-      p = "";/// This is now root
+      if (!MountArchive(p)) {
+         EagleError() << "Failed to mount archive " << p << std::endl;
+      }
+      else {
+         p = "";/// This is now root
+      }
    }
    else if (!(folder->Info().Mode().IsDir())) {
       throw EagleException(StringPrintF(
