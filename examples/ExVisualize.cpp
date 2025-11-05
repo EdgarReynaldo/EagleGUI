@@ -85,10 +85,10 @@ int main(int argc , char** argv) {
          win->Clear();
          const double y = sh/2.0;
          /// Just draw the input monitor
-         for (int i =  (record_index - samples)%storage_size; i < record_index ; i+=2) {
+///         for (int i =  (record_index - samples)%storage_size; i < record_index ; i+=2) {
 ///         for (int i = record_index - samples + 4 ; i < record_index ; i += 2) {
 ///         for (int i = record_index/8 + 4 ; i < (record_index/8 + 1)*samples ; i += 2) {
-//         for (int i = 4 ; i < storage_size ; i+=2) {
+        for (int i = 4 ; i < storage_size ; i+=2) {
             double x1 = ((double)(i-2)/storage_size)*sw;
             double x2 = ((double)i/storage_size)*sw;
             int16_t l1 = 0;
@@ -119,11 +119,6 @@ int main(int argc , char** argv) {
          redraw = false;
       }
       
-      do {
-         EagleEvent ee = a5sys->WaitForSystemEventAndUpdateState();
-         if (ee.type == EAGLE_EVENT_TIMER) {
-            redraw = true;
-         }
 /**
 ALLEGRO_AUDIO_RECORDER_EVENT
 typedef struct ALLEGRO_AUDIO_RECORDER_EVENT ALLEGRO_AUDIO_RECORDER_EVENT;
@@ -141,25 +136,36 @@ Since 5.1.1
 See also: al_get_audio_recorder_event
 
 //*/
-         if (ee.type == EAGLE_EVENT_AUDIO_RECORDER_FRAGMENT) {
-            /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
-            for (int i = 0 ; i < 4*ee.audio.sample_count ; i += 4) {
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+1];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+2];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(ee.audio.rec_byte_buffer))[i+3];
-               record_index = record_index%storage_size;
+      int rcount = 0;
+      do {
+         ALLEGRO_EVENT evt;
+         while (al_get_next_event(receiver , &evt)) {
+            if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
+               ++rcount;
+               ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
+               /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
+               for (int i = 0 ; i < 4*revt->samples ; i += 4) {
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+1];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+2];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+3];
+                  record_index = record_index%storage_size;
+               }
+               redraw = true;
             }
          }
          
          
-         
+         EagleEvent ee = a5sys->WaitForSystemEventAndUpdateState();
+         if (ee.type == EAGLE_EVENT_TIMER) {
+//            redraw = true;
+         }
          if (ee.type == EAGLE_EVENT_KEY_DOWN) {
             if (ee.keyboard.keycode == EAGLE_KEY_ESCAPE) {quit = true;}
             
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
-      } while (!a5sys->GetSystemQueue()->HasEvent());
+      } while (!a5sys->UpToDate());
       
       
       

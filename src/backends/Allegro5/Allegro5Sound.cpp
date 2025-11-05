@@ -132,10 +132,10 @@ ALLEGRO_SAMPLE_INSTANCE* Allegro5SoundInstance::AllegroInstance()
 bool Allegro5SoundStream::LoadFromArgs(std::vector<std::string> args) {
    int nbuffers = 3;
    int fragcount = 32768;
-   filepath.SetPath(args[0]);
    if (args.size()) {
-      nbuffers = STOI(args[1]);
-      if (args.size() > 1) {
+      filepath.SetPath(args[0]);
+      if (args.size() > 2) {
+         nbuffers = STOI(args[1]);
          fragcount = STOI(args[2]);
       }
    }
