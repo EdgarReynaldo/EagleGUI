@@ -44,6 +44,7 @@ protected :
    
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
    
+   virtual int PrivateHandleEvent(EagleEvent e);
    
    
 public :
@@ -65,6 +66,7 @@ public :
 
    std::vector<ClassicMenuItemLayout*> MItems() {return mitems;}
    
+   std::vector<Rectangle> SubTreeArea();
 };
 
 

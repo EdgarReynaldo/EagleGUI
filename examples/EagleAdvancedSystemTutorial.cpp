@@ -90,7 +90,7 @@ int main(int argc , char** argv) {
    
    /// For an example, we're going to recursively go through the contents of Eagle.zip
 //   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Eagle.zip"));
-   std::shared_ptr<Folder> archive = fs->ReadArchive(FilePath("Data/Fonts/Fonts.7z"));
+   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Data/Fonts/Fonts.7z"));
 ///   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Data/Fonts/Eagle.zip"));
 ///   std::shared_ptr<ArchiveFile> archive = fs->ReadArchive(FilePath("Data/Fonts/Eagle.zip"));
 

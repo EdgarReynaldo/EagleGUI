@@ -24,7 +24,7 @@
 
 
 #include "Eagle/Gui/Layout/ClassicMenuLayout.hpp"
-
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 /// -----------------------     ClassicMenuLayout     ---------------------------------
@@ -70,6 +70,7 @@ void ClassicMenuLayout::ResizeMenu(int new_menu_size , MENU_LAYOUT_DIRECTION new
 
 void ClassicMenuLayout::OpenMe() {
    ShowAndEnable();
+   RootHandler()->GiveWidgetFocus(this , true);
 }
 
 

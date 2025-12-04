@@ -31,6 +31,7 @@
 #include "Eagle/Gui/Button/CheckBox.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 #include "Eagle/Gui/Menu/ClassicMenuBar.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 /// -----------------------     ClassicMenu     ----------------------------------
@@ -106,6 +107,33 @@ void ClassicMenu::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+int ClassicMenu::PrivateHandleEvent(EagleEvent e) {
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (IsOpen()) {
+         /// See if our menu has been closed 
+         bool subtreecontains = false;
+         std::vector<Rectangle> subtree = SubTreeArea();
+         for (unsigned int i = 0 ; i < subtree.size() ; ++i) {
+            Rectangle r = subtree[i];
+            if (r.Contains(e.mouse.x , e.mouse.y)) {
+               subtreecontains = true;
+            }
+         }
+         if (!subtreecontains) {CloseMe();}
+      }
+   }
+   if (e.type == EAGLE_EVENT_KEY_DOWN && Flags().FlagOn(HASFOCUS)) {
+      if (e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+         CloseMe();
+         return DIALOG_INPUT_USED;
+      }
+   }
+   return DIALOG_OKAY;
+}
+
+
+
+
 ClassicMenu::ClassicMenu() :
       ClassicMenuLayout("Classic menu"),
       EagleEventListener(),
@@ -139,6 +167,7 @@ void ClassicMenu::SetItems(SIMPLE_MENU_ITEM* menu , int msize) {
       mitems[i] = new ClassicMenuItemLayout(&items[i]);
       PlaceWidget(mitems[i] , i);
       ListenTo(mitems[i]);
+      mitems[i]->SetParent(this);
    }
 }
 
@@ -150,6 +179,7 @@ void ClassicMenu::OpenMe() {
    if (citem) {
       citem->OpenSubMenu();
    }
+   if (RootHandler()) {RootHandler()->GiveWidgetFocus(this , true);}
    SetRedrawFlag();
 }
 
@@ -164,6 +194,7 @@ void ClassicMenu::CloseMe() {
    ClassicMenuLayout::CloseMe();
    open = false;
    HideAndDisable();
+   if (RootHandler()) {RootHandler()->GiveWidgetFocus(0 , true);}
    SetRedrawFlag();
 }
 
@@ -188,6 +219,20 @@ void ClassicMenu::CloseOtherMenus(ClassicMenuItemLayout* exclude) {
          item->CloseSubMenu();
       }
    }
+}
+
+
+
+std::vector<Rectangle> ClassicMenu::SubTreeArea() {
+   std::vector<Rectangle> tree;
+   tree.push_back(OuterArea());
+   if (citem) {
+      std::vector<Rectangle> subtree = citem->SubTreeArea();
+      for (unsigned int j = 0 ; j < subtree.size() ; ++j) {
+         tree.push_back(subtree[j]);
+      }
+   }
+   return tree;
 }
 
 

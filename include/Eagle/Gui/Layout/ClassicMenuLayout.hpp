@@ -59,7 +59,7 @@ public :
    virtual void Resize(unsigned int nsize);///< Resize the menu
 
    
-   
+   virtual bool AcceptsFocus() override {return true;}
    
    /// Classic menu options
    
@@ -74,6 +74,8 @@ public :
    virtual bool IsOpen();
    
    virtual void SetSubMenu(int index , MenuBase* smenu);
+   
+   virtual std::vector<Rectangle> SubTreeArea()=0;
 };
 
 
@@ -92,7 +94,9 @@ public :
 
    virtual void Resize(unsigned int nsize);///< Resize the menu
 
-
+   virtual bool AcceptsFocus() override {return true;}
+   
+   virtual std::vector<Rectangle> SubTreeArea()=0;
 };
 
 

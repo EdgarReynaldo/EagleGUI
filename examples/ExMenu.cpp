@@ -39,7 +39,7 @@ int main(int argc , char** argv) {
    
    EAGLE_ASSERT(win && win->Valid());
    
-   EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
+   EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -14);
    
    EAGLE_ASSERT(font && font->Valid());
    
@@ -79,11 +79,16 @@ int main(int argc , char** argv) {
    menubar.SetSubMenu(1 , &options);
    
    RelativeLayout rlayout;
-   rlayout.Resize(3);
+   rlayout.Resize(4);
    
-   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.1));
+   BasicText label;
+   label.SetupText("" , font , HALIGN_LEFT , VALIGN_TOP , 2 , 2 , 4);
+   WidgetColorset& wcolors = *(label.GetWidgetColorset().get());
+   wcolors[TXTCOL] = EagleColor(0,255,255,255);
+   rlayout.PlaceWidget(&menubar  , 0 , LayoutRectangle(0 , 0 , 1 , 0.075));
    rlayout.PlaceWidget(&foptions , 1 , LayoutRectangle(0.25 , 0.25 , 0.25 , 0.25));
    rlayout.PlaceWidget(&options  , 2 , LayoutRectangle(0.5 , 0.25 , 0.25 , 0.25));
+   rlayout.PlaceWidget(&label    , 3 , LayoutRectangle(0.05 , 0.9 , 1.0 , 0.1));
    
    gui.SetRootLayout(&rlayout);
    
@@ -91,6 +96,7 @@ int main(int argc , char** argv) {
    
    sys->GetSystemTimer()->Start();
    
+   WidgetBase* mwidget = 0;
    bool show = true;
    
    bool quit = false;
@@ -112,7 +118,7 @@ int main(int argc , char** argv) {
          }
          
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
-            quit = true;
+//            quit = true;
          }
          if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
             quit = true;
@@ -123,6 +129,13 @@ int main(int argc , char** argv) {
          else {
             if (e.type != EAGLE_EVENT_MOUSE_AXES) {
                EagleInfo() << EagleEventName(e.type) << std::endl;
+            }
+            else {
+               mwidget = gui.GetWidgetAt(e.mouse.x , e.mouse.y);
+               label.SetupText(StringPrintF("%p , HASFOCUS=%s Name='%s'" , (void*)mwidget , (mwidget?(mwidget->Flags().FlagOn(HASFOCUS)?"Y":"N"):"NULL") , 
+                                            mwidget?mwidget->ShortName():"NULL") ,
+                                font , HALIGN_LEFT , VALIGN_BOTTOM , 2 , 2 , 4);
+               redraw = true;
             }
          }
          gui.HandleEvent(e);

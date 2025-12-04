@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2022+ by Edgar Reynaldo
+ *    Copyright 2009-2025+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -49,10 +49,10 @@ class ClassicMenuItemLayout : public LayoutBase , public MenuItemBase , public E
 protected :
    SIMPLE_MENU_ITEM item;/// Our init data
    
-   std::unique_ptr<BasicCheckBox>          cbox;/// Checkbox for toggle buttons
+   std::unique_ptr<BasicCheckBox>     cbox; /// Checkbox for toggle buttons
    std::unique_ptr<BasicText>         dtext;/// Text button to display description of command
    std::unique_ptr<BasicText>         ktext;/// Label to tell what key to press
-   std::unique_ptr<BasicScrollButton> hbtn;/// MENU_BTN for hover trigger to open sub menu
+   std::unique_ptr<BasicScrollButton> hbtn; /// MENU_BTN for hover trigger to open sub menu
    
    std::unique_ptr<BasicButton> menu_button;
    std::unique_ptr<SimpleTable> item_layout;
@@ -82,10 +82,15 @@ public :
    void Activate();
    void Deactivate();
    bool HasSubMenu();
+   bool SubMenuOpen();
    void OpenSubMenu();
    void CloseSubMenu();
    
    virtual void SetSubMenu(MenuBase* smenu);
+
+   virtual bool AcceptsFocus() {return true;}
+   
+   virtual std::vector<Rectangle> SubTreeArea();
 };
 
 
@@ -101,8 +106,6 @@ protected :
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread);
 
-
-
    virtual void QueueUserMessage(const WidgetMsg& msg);
    
 public :
@@ -114,9 +117,14 @@ public :
    virtual void Activate();
    virtual void Deactivate();
    virtual bool HasSubMenu();
+   virtual bool SubMenuOpen();
    virtual void OpenSubMenu();
    virtual void CloseSubMenu();
    virtual void SetSubMenu(MenuBase* smenu);
+
+   virtual bool AcceptsFocus() {return true;}
+   
+   virtual std::vector<Rectangle> SubTreeArea();
 };
 
 

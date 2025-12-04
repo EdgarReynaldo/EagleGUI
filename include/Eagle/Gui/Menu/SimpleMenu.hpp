@@ -26,11 +26,16 @@
 
 #include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/Area.hpp"
+
+
 
 class EagleImage;
 class EagleFont;
 
 #include <string>
+#include <vector>
+
 
 
 class SIMPLE_MENU_ITEM {
@@ -91,6 +96,8 @@ public :
    virtual void SetSubMenu(int index , MenuBase* smenu)=0;///< Allows you to set the sub menu for this menu's items
    
    bool IsClosed() {return !IsOpen();}///< True if closed
+   
+   virtual std::vector<Rectangle> SubTreeArea()=0;
 };
 
 
@@ -111,10 +118,13 @@ public :
    virtual void Activate()=0;
    virtual void Deactivate()=0;
    virtual bool HasSubMenu()=0;
+   virtual bool SubMenuOpen()=0;
    virtual void OpenSubMenu()=0;
    virtual void CloseSubMenu()=0;
    
    virtual void SetSubMenu(MenuBase* smenu)=0;
+   
+   virtual std::vector<Rectangle> SubTreeArea()=0;
 };
 
 

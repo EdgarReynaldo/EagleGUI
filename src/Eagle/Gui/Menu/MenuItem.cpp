@@ -28,6 +28,8 @@
 #include "Eagle/Gui/Button/BasicButton.hpp"
 #include "Eagle/Gui/Button/ScrollButton.hpp"
 #include "Eagle/Gui/Layout/SimpleTable.hpp"
+#include "Eagle/Gui/WidgetHandler.hpp"
+
 
 #include <cstring>
 
@@ -207,6 +209,12 @@ bool ClassicMenuItemLayout::HasSubMenu() {
 
 
 
+bool ClassicMenuItemLayout::SubMenuOpen() {
+   return (HasSubMenu() && submenu->IsOpen());
+}
+
+
+
 void ClassicMenuItemLayout::OpenSubMenu() {
    if (HasSubMenu()) {
       submenu->OpenMe();
@@ -235,6 +243,20 @@ void ClassicMenuItemLayout::SetSubMenu(MenuBase* smenu) {
 
 
 
+std::vector<Rectangle> ClassicMenuItemLayout::SubTreeArea() {
+   std::vector<Rectangle> tree;
+   tree.push_back(OuterArea());
+   if (submenu && submenu->IsOpen()) {
+      std::vector<Rectangle> subtree = submenu->SubTreeArea();
+      for (int i = 0 ; i < subtree.size() ; ++i) {
+         tree.push_back(subtree[i]);
+      }
+   }
+   return tree;
+}
+
+
+
 /// -----------------------     ClassicMenuBarItem     ----------------------------------
 
 
@@ -253,9 +275,11 @@ void ClassicMenuBarItem::QueueUserMessage(const WidgetMsg& msg) {
    const WidgetMsg gbtnmsg2(this , TOPIC_BUTTON_WIDGET , BUTTON_CLICKED);
    if (msg == gbtnmsg1) {
       Toggle();
+      RootHandler()->GiveWidgetFocus(this , false);
    }
    else if (msg == gbtnmsg2) {
       Activate();
+      RootHandler()->GiveWidgetFocus(this , false);
    }
    else {
       WidgetBase::QueueUserMessage(msg);
@@ -281,13 +305,14 @@ void ClassicMenuBarItem::SetItem(SIMPLE_MENU_BAR_ITEM mbitem) {
    SetFont(item.text_font);
    SetLabel(item.guitext);
    SetButtonType(RECTANGLE_BTN , TOGGLE_BTN , BUTTON_CLASS_HOVER);
+   
 }
 
 
 
 void ClassicMenuBarItem::Toggle() {
    WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_TOGGLED);
-   if (Up()) {
+   if (!Up()) {
       CloseSubMenu();
    }
    else {
@@ -302,6 +327,7 @@ void ClassicMenuBarItem::Activate() {
    WidgetMsg msg(this , TOPIC_MENU , MENU_ITEM_ACTIVATED);
    OpenSubMenu();
    RaiseEvent(msg);
+   if (RootHandler()) {RootHandler()->GiveWidgetFocus(this , true);}
 }
 
 
@@ -309,12 +335,19 @@ void ClassicMenuBarItem::Activate() {
 void ClassicMenuBarItem::Deactivate() {
    CloseSubMenu();
    SetButtonUpState(true);
+   if (RootHandler()) {RootHandler()->GiveWidgetFocus(0 , true);}
 }
 
 
 
 bool ClassicMenuBarItem::HasSubMenu() {
    return (bool)this->submenu;
+}
+
+
+
+bool ClassicMenuBarItem::SubMenuOpen() {
+   return (HasSubMenu() && submenu->IsOpen());
 }
 
 
@@ -344,6 +377,20 @@ void ClassicMenuBarItem::SetSubMenu(MenuBase* smenu) {
       submenu->CloseMe();
       ListenTo(dynamic_cast<EagleEventSource*>(submenu));
    }
+}
+
+
+
+std::vector<Rectangle> ClassicMenuBarItem::SubTreeArea() {
+   std::vector<Rectangle> tree;
+   tree.push_back(OuterArea());
+   if (submenu && submenu->IsOpen()) {
+      std::vector<Rectangle> subtree = submenu->SubTreeArea();
+      for (int i = 0 ; i < subtree.size() ; ++i) {
+         tree.push_back(subtree[i]);
+      }
+   }
+   return tree;
 }
 
 

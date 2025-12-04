@@ -22,7 +22,7 @@
 
  
 #include "Eagle/Gui/Menu/ClassicMenuBar.hpp"
-
+#include "Eagle/Gui/WidgetHandler.hpp"
 
 
 
@@ -61,6 +61,43 @@ void ClassicMenuBar::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+void ClassicMenuBar::OnFlagChanged(WIDGET_FLAGS f , bool on) {
+   if ((f & HASFOCUS) && !on) {
+      CloseMe();
+   }
+}
+
+
+
+int ClassicMenuBar::PrivateHandleEvent(EagleEvent e) {
+   if (toggle_key) {
+      ToggleOpen();
+   }
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (IsOpen()) {
+         bool subtreecontains = false;
+         std::vector<Rectangle> tree;
+         tree.push_back(OuterArea());
+         std::vector<Rectangle> subtreearea = SubTreeArea();
+         for (unsigned int i = 0 ; i < subtreearea.size() ; ++i) {
+            Rectangle r = subtreearea[i];
+            if (r.Contains(e.mouse.x , e.mouse.y)) {
+               subtreecontains = true;
+            }
+         }
+         if (OuterArea().Contains(e.mouse.x , e.mouse.y)) {
+            subtreecontains = true;
+         }
+         if (!subtreecontains) {
+            CloseMe();
+         }
+      }
+   }
+   return DIALOG_OKAY;
+}
+
+
+
 ClassicMenuBar::ClassicMenuBar() :
       ClassicMenuBarLayout("Menubar"),
       EagleEventListener(),
@@ -68,7 +105,8 @@ ClassicMenuBar::ClassicMenuBar() :
       mbitems(),
       citem(0),
       open(false),
-      radio()
+      radio(),
+      toggle_key(Input(KB , PRESS , EAGLE_KEY_ALT))
 {}
 
 
@@ -98,6 +136,7 @@ void ClassicMenuBar::SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems) {
          mbitems[i]->SetItem(bitems[i]);
          ListenTo(mbitems[i]);
          PlaceWidget(mbitems[i] , i);
+         mbitems[i]->SetParent(this);
          radio.AddRadioButton(mbitems[i]);
    }
    radio.SelectButton(0);
@@ -107,6 +146,7 @@ void ClassicMenuBar::SetBarItems(SIMPLE_MENU_BAR_ITEM* mbi , int nitems) {
 
 void ClassicMenuBar::OpenMe() {
    open = true;
+   RootHandler()->GiveWidgetFocus(this , true);
    SetRedrawFlag();
 }
 
@@ -117,7 +157,9 @@ void ClassicMenuBar::CloseMe() {
    if (citem) {
       citem->Deactivate();
       citem = 0;
+      radio.SelectButton(0);
    }
+   if (RootHandler()) {RootHandler()->GiveWidgetFocus(0 , true);}
    SetRedrawFlag();
 }
 
@@ -125,6 +167,18 @@ void ClassicMenuBar::CloseMe() {
 
 bool ClassicMenuBar::IsOpen() {
    return open;
+}
+
+
+
+bool ClassicMenuBar::ToggleOpen() {
+   if (!IsOpen()) {
+      OpenMe();
+   }
+   else {
+      CloseMe();
+   }
+   return IsOpen();
 }
 
 
@@ -144,6 +198,19 @@ void ClassicMenuBar::CloseOtherMenus(ClassicMenuBarItem* exclude) {
    }
 }
 
+
+
+std::vector<Rectangle> ClassicMenuBar::SubTreeArea() {
+   std::vector<Rectangle> tree;
+   tree.push_back(OuterArea());
+   if (citem) {
+      std::vector<Rectangle> subtree = citem->SubTreeArea();
+      for (unsigned int j = 0 ; j < subtree.size() ; ++j) {
+         tree.push_back(subtree[j]);
+      }
+   }
+   return tree;
+}
 
 
 

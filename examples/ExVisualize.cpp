@@ -50,11 +50,11 @@ int main(int argc , char** argv) {
 //   unsigned int samples, unsigned int frequency,
 //   ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
    int frequency = 44100;
-   int fragment_count = 60;/// Buffer one second at 60 hz
-   int samples = frequency/fragment_count;
+   int fragment_count = 4;/// Buffer one quarter second at 60 hz
+   int samples = 11025;
    double buf_duration = fragment_count*samples/(double)frequency;
    
-   ALLEGRO_AUDIO_RECORDER* rec = al_create_audio_recorder(4 , 11025 , 44100 , ALLEGRO_AUDIO_DEPTH_INT16 , ALLEGRO_CHANNEL_CONF_2);
+   ALLEGRO_AUDIO_RECORDER* rec = al_create_audio_recorder(fragment_count , samples , frequency , ALLEGRO_AUDIO_DEPTH_INT16 , ALLEGRO_CHANNEL_CONF_2);
    
    if (!rec) {
       EagleError() << "Failed to create audio recorder." << std::endl;

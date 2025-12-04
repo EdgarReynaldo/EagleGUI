@@ -1333,16 +1333,20 @@ bool WidgetHandler::InView(WidgetBase* w) {
 
 
 ///< Returns top most widget at x,y
-
+///< Ignores disabled and hidden
 WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
 
    /// If the absolute position is outside of our area
    if (!OuterArea().Contains(absx , absy)) {
       return (WidgetBase*)0;
    }
+   /// Absolute position is inside our buffer
+
    if (!InnerArea().Contains(absx , absy)) {
+      /// This contains our css buffer margin and padding, call it a hit
       return this;
    }
+
    /// Make the position relative to the buffer
    int relx = absx - InnerArea().X();
    int rely = absy - InnerArea().Y();
@@ -1354,14 +1358,13 @@ WidgetBase* WidgetHandler::GetWidgetAt(const int absx , const int absy) {
    /// Search drawlist from front to back
    for (int i = (int)drawlist.size() - 1 ; i >= 0 ; --i) {
       WidgetBase* w = drawlist[i];
-///      bool visible = w->Flags().FlagOn(VISIBLE);
-///      if (visible && w->OuterArea().Contains(relx , rely)) {/// TODO : FIXME?
-      if (w->OuterArea().Contains(relx , rely)) {
+      bool visible = w->Flags().FlagOn(VISIBLE);
+      if (visible && w->OuterArea().Contains(relx , rely)) {
          WidgetHandler* wh = dynamic_cast<WidgetHandler*>(w);
-         if (!wh) {
-            return w;
+         if (wh) {
+            return wh->GetWidgetAt(relx , rely);
          }
-         return wh->GetWidgetAt(relx , rely);
+         return w;
       }
    }
 

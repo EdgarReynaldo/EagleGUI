@@ -261,7 +261,7 @@ void LayoutBase::OnAreaChanged() {
 
 
 
-int LayoutBase::PrivateHandleInputEvent(EagleEvent e) {
+int LayoutBase::PrivateHandleEvent(EagleEvent e) {
    (void)e;
    return DIALOG_OKAY;
 }
