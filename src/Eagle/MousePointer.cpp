@@ -222,7 +222,12 @@ bool MousePointerManager::AcquireMousePointer(void* caller , MOUSE_POINTER_TYPE 
    bool ret = SelectMousePointerDirect(new_pointer);
 
    if (ret) {
-      if (mouse_owners.back().first != caller) {
+         
+      if (!mouse_owners.size()) {
+         std::pair<void* , MousePointer**> mouse_owner(caller , new_pointer);
+         mouse_owners.push_back(mouse_owner);
+      }
+      else if (mouse_owners.back().first != caller) {
          std::pair<void* , MousePointer**> mouse_owner(caller , new_pointer);
          mouse_owners.push_back(mouse_owner);
       }

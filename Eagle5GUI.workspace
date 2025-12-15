@@ -3,6 +3,7 @@
 	<Workspace title="EaglePlus">
 		<Project filename="Eagle5.cbp" />
 		<Project filename="Allegro5Backend.cbp" />
-		<Project filename="../../projects/Maze3D/Maze3D.cbp" />
+		<Project filename="GenericEagleProject.cbp" />
+		<Project filename="D:/Uploads/AllegroMemberWebsite/AllegroMemberWebsite.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

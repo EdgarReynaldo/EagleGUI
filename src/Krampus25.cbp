@@ -2,13 +2,13 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="GenericEagleProject" />
+		<Option title="Krampus2025" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/EagleDebug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/Krampus25" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -18,8 +18,8 @@
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
 				</Compiler>
 				<Linker>
-					<Add option="-leagle_a5_debug.dll" />
-					<Add option="-leagle_debug.dll" />
+					<Add option="-lEagleA5DebugShared.dll" />
+					<Add option="-lEagleDebugShared.dll" />
 					<Add option="-lallegro_monolith-debug.dll" />
 				</Linker>
 			</Target>
@@ -34,8 +34,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-leagle_a5.dll" />
-					<Add option="-leagle.dll" />
+					<Add option="-lEagleA5Shared.dll" />
+					<Add option="-lEagleShared.dll" />
 					<Add option="-lallegro_monolith.dll" />
 				</Linker>
 			</Target>
@@ -54,8 +54,8 @@
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-leagle_a5_debug-static" />
-					<Add option="-leagle_debug-static" />
+					<Add option="-lEagleA5StaticDebug" />
+					<Add option="-lEagleStaticDebug" />
 					<Add option="-lallegro_monolith-debug-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
@@ -101,8 +101,8 @@
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-leagle_a5-static" />
-					<Add option="-leagle-static" />
+					<Add option="-lEagleA5Static" />
+					<Add option="-lEagleStatic" />
 					<Add option="-lallegro_monolith-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
@@ -144,10 +144,15 @@
 			<Add directory="c:/usr64/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="cbbuild/lib" />
-			<Add directory="Allegro525/lib" />
+			<Add directory="c:/usr64/lib" />
 		</Linker>
-		<Unit filename="Krampus25.cpp" />
+		<Unit filename="Krampus25/KObject.cpp" />
+		<Unit filename="Krampus25/KObject.hpp" />
+		<Unit filename="Krampus25/Krampus25.cpp" />
+		<Unit filename="Krampus25/RNG.cpp" />
+		<Unit filename="Krampus25/RNG.hpp" />
+		<Unit filename="Krampus25/Terrain.cpp" />
+		<Unit filename="Krampus25/Terrain.hpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -28,7 +28,7 @@
 
 
 #include <vector>
-
+#include <cstdint>
 
 
 #include "Eagle/File.hpp"

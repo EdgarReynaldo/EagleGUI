@@ -27,7 +27,7 @@
 
 
 #include "Eagle/File.hpp"
-
+#include <cstdint>
 
 
 class EagleSound;
