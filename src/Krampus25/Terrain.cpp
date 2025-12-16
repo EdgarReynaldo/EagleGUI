@@ -4,8 +4,7 @@
 
 #include "Terrain.hpp"
 #include "RNG.hpp"
-
-
+#include "Eagle/Math.hpp"
 
 Terrain::Terrain() :
       spans()
@@ -23,12 +22,19 @@ void Terrain::Clear() {
 
 void Terrain::Generate(int sw , int sh) {
    Clear();
+   double baseh = 400.0;
+   double slope = 5.0;
+   double sign = 1.0;
    spans.resize(sw , VSPAN());
    for (int xpos = 0 ; xpos < sw ; ++xpos) {
       spans[xpos].x = xpos;
       spans[xpos].y = sh;
-      spans[xpos].h = (double)(sh/2 - 100);
-      spans[xpos].h *= rng.DPercent();
+      spans[xpos].h = baseh;
+      baseh += sin(slope*M_PI/180.0);
+      slope += sign;
+      if (rng.DPercent() < 0.05) {
+         sign *= -1.0;
+      }
    }
 }
 

@@ -146,11 +146,18 @@
 		<Linker>
 			<Add directory="c:/usr64/lib" />
 		</Linker>
+		<Unit filename="Krampus25/Artillery.cpp" />
+		<Unit filename="Krampus25/Artillery.hpp" />
+		<Unit filename="Krampus25/ArtilleryGame.cpp" />
+		<Unit filename="Krampus25/ArtilleryGame.hpp" />
 		<Unit filename="Krampus25/KObject.cpp" />
 		<Unit filename="Krampus25/KObject.hpp" />
 		<Unit filename="Krampus25/Krampus25.cpp" />
+		<Unit filename="Krampus25/Projectile.cpp" />
+		<Unit filename="Krampus25/Projectile.hpp" />
 		<Unit filename="Krampus25/RNG.cpp" />
 		<Unit filename="Krampus25/RNG.hpp" />
+		<Unit filename="Krampus25/Scene.hpp" />
 		<Unit filename="Krampus25/Terrain.cpp" />
 		<Unit filename="Krampus25/Terrain.hpp" />
 		<Extensions />
