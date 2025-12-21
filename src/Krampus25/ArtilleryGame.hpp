@@ -20,9 +20,6 @@ class EagleGraphicsContext;
 class ArtilleryPlayer;
 class Projectile;
 
-
-class EagleGraphicsContext;
-
 class ArtilleryGame : public Scene {
 
    EagleGraphicsContext* window;

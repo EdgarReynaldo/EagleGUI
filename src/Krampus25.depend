@@ -1323,15 +1323,14 @@
 1766207544 c:\usr64\libs\eaglegui\src\krampus25\games.hpp
 	"ArtilleryGame.hpp"
 
-1766273663 c:\usr64\libs\eaglegui\src\krampus25\artillerygame.hpp
+1766286977 c:\usr64\libs\eaglegui\src\krampus25\artillerygame.hpp
 	"Scene.hpp"
 	"Terrain.hpp"
 	"Eagle/Events.hpp"
 	<vector>
 
-1766266932 c:\usr64\libs\eaglegui\src\krampus25\scene.hpp
+1766286696 c:\usr64\libs\eaglegui\src\krampus25\scene.hpp
 	"Eagle/Events.hpp"
-	"Eagle/GraphicsContext.hpp"
 
 1766207585 source:c:\usr64\libs\eaglegui\src\krampus25\games.cpp
 	"Games.hpp"

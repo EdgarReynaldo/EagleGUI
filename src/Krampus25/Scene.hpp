@@ -8,7 +8,8 @@
 
 
 #include "Eagle/Events.hpp"
-#include "Eagle/GraphicsContext.hpp"
+
+class EagleGraphicsContext;
 
 class Scene {
 public :

@@ -23,7 +23,7 @@ ArtilleryGame::ArtilleryGame(EagleGraphicsContext* win) :
       windvel(0.0),
       windangled(0.0),
       game_over(false),
-      p1ayers(),
+      players(),
       live_rounds()
 {
    terrain.Generate(win->Width() , win->Height());
