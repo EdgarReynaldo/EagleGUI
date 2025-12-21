@@ -8,8 +8,10 @@
 
 #include "Eagle/Color.hpp"
 
-class Area;
-class ArtilleryGame;
+
+
+class AreaBase;
+//class ArtilleryGame;
 
 class Artillery {
 public :
@@ -19,8 +21,10 @@ public :
    EagleColor color;
    
    Artillery();
-   void Setup(double cxpos , double cypos , AreaBase* shape , EagleColor c)
-   virtual bool Launch(double angle_degrees , double pps , double power);
+   void Setup(double cxpos , double cypos , AreaBase* shape , EagleColor c);
+   
+   
+   virtual void Launch(double angle_degrees , double pps , double power);
 
 
 };

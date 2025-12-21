@@ -150,6 +150,12 @@
 		<Unit filename="Krampus25/Artillery.hpp" />
 		<Unit filename="Krampus25/ArtilleryGame.cpp" />
 		<Unit filename="Krampus25/ArtilleryGame.hpp" />
+		<Unit filename="Krampus25/ArtilleryIntro.cpp" />
+		<Unit filename="Krampus25/ArtilleryIntro.hpp" />
+		<Unit filename="Krampus25/ArtilleryPlayer.cpp" />
+		<Unit filename="Krampus25/ArtilleryPlayer.hpp" />
+		<Unit filename="Krampus25/Games.cpp" />
+		<Unit filename="Krampus25/Games.hpp" />
 		<Unit filename="Krampus25/KObject.cpp" />
 		<Unit filename="Krampus25/KObject.hpp" />
 		<Unit filename="Krampus25/Krampus25.cpp" />

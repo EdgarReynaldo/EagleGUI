@@ -1,11 +1,14 @@
 # depslib dependency file v1.0
 1765412431 source:c:\usr64\libs\eaglegui\src\krampus25\kobject.cpp
 
-1765752687 source:c:\usr64\libs\eaglegui\src\krampus25\terrain.cpp
+1766266240 source:c:\usr64\libs\eaglegui\src\krampus25\terrain.cpp
 	"Terrain.hpp"
-
-1765750705 c:\usr64\libs\eaglegui\src\krampus25\terrain.hpp
+	"RNG.hpp"
+	"Eagle/Math.hpp"
 	"Eagle/GraphicsContext.hpp"
+
+1766266260 c:\usr64\libs\eaglegui\src\krampus25\terrain.hpp
+	<vector>
 
 1723233214 c:\usr64\include\eagle\graphicscontext.hpp
 	<list>
@@ -194,11 +197,10 @@
 1605942606 c:\usr64\include\eagle\gui\alignment.hpp
 	<string>
 
-1765818724 source:c:\usr64\libs\eaglegui\src\krampus25\krampus25.cpp
+1766274171 source:c:\usr64\libs\eaglegui\src\krampus25\krampus25.cpp
 	"Eagle.hpp"
 	"Eagle/backends/Allegro5Backend.hpp"
-	"KObject.hpp"
-	"Terrain.hpp"
+	"Games.hpp"
 
 1723907489 c:\usr64\include\eagle.hpp
 	"Eagle/Platform.hpp"
@@ -1297,4 +1299,42 @@
 
 1765825218 c:\usr64\libs\eaglegui\src\krampus25\rng.hpp
 	"Eagle/Random.hpp"
+
+1766265956 source:c:\usr64\libs\eaglegui\src\krampus25\projectile.cpp
+	"Projectile.hpp"
+	"Eagle/GraphicsContext.hpp"
+	"Eagle/Gui/WidgetBase.hpp"
+
+1766199690 source:c:\usr64\libs\eaglegui\src\krampus25\artilleryintro.cpp
+
+1766273963 source:c:\usr64\libs\eaglegui\src\krampus25\artillery.cpp
+	"Artillery.hpp"
+	"Projectile.hpp"
+	"Games.hpp"
+	"ArtilleryGame.hpp"
+	"Eagle/Area.hpp"
+
+1766273964 c:\usr64\libs\eaglegui\src\krampus25\artillery.hpp
+	"Eagle/Color.hpp"
+
+1766265934 c:\usr64\libs\eaglegui\src\krampus25\projectile.hpp
+	"Eagle/AnimationBase.hpp"
+
+1766207544 c:\usr64\libs\eaglegui\src\krampus25\games.hpp
+	"ArtilleryGame.hpp"
+
+1766273663 c:\usr64\libs\eaglegui\src\krampus25\artillerygame.hpp
+	"Scene.hpp"
+	"Terrain.hpp"
+	"Eagle/Events.hpp"
+	<vector>
+
+1766266932 c:\usr64\libs\eaglegui\src\krampus25\scene.hpp
+	"Eagle/Events.hpp"
+	"Eagle/GraphicsContext.hpp"
+
+1766207585 source:c:\usr64\libs\eaglegui\src\krampus25\games.cpp
+	"Games.hpp"
+
+1766272980 source:c:\usr64\libs\eaglegui\src\krampus25\artilleryplayer.cpp
 

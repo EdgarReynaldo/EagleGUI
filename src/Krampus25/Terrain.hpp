@@ -5,13 +5,16 @@
 #ifndef Terrain_HPP
 #define Terrain_HPP
 
-#include "Eagle/GraphicsContext.hpp"
+#include <vector>
+
 
 struct VSPAN {
    int x;
    int y;
    int h;
 };
+
+class EagleGraphicsContext;
 
 class Terrain {
 
@@ -29,7 +32,7 @@ public :
 
    virtual void Generate(int sw , int sh);
 
-   void DrawOn(EagleGraphicsContext* win);
+   void DisplayOn(EagleGraphicsContext* win);
 };
 
 #endif // Terrain_HPP

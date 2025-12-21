@@ -21,12 +21,7 @@ As always, feel free to ditch any or all of these if something else inspires you
 #include "Eagle/backends/Allegro5Backend.hpp"
 
 
-
-
-
-
-#include "KObject.hpp"
-#include "Terrain.hpp"
+#include "Games.hpp"
 
 
 int main(int argc , char** argv) {
@@ -48,15 +43,14 @@ int main(int argc , char** argv) {
    if (argc > 1) {
       
    }
-//   KGame* game[4] = {0,0,0,0};
+   Scene* pgame[4] = {0,0,0,0};
 //   KGame* cgame = 0;
    
-   Terrain terrain;
-   terrain.Generate(1024,768);
    
 //   game[0] = new FroggerGame;
 //   game[1] = new RedBaronGame;
-//   game[0] = new ArtilleryGame;
+   pgame[0] = agame = new ArtilleryGame(win);
+   Scene* cgame = pgame[0];
 //   cgame = game[0];
 //   game[3] = new AsciiFroggerGame;
 
@@ -67,7 +61,7 @@ int main(int argc , char** argv) {
    while (!quit) {
       if (redraw) {
          win->Clear();
-         terrain.DrawOn(win);
+         cgame->DisplayOn(win);
          win->FlipDisplay();
          redraw = false;
       }
@@ -77,6 +71,17 @@ int main(int argc , char** argv) {
             quit = true;
          }
          if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+            quit = true;
+         }
+         if (e.type == EAGLE_EVENT_TIMER) {
+            redraw = true;
+            ret = cgame->Update(e.timer.eagle_timer_source->SPT());
+            if (ret & DIALOG_CLOSE) {
+               quit = true;
+            }
+         }
+         ret = cgame->HandleEvent(e);
+         if (ret & DIALOG_CLOSE) {
             quit = true;
          }
       }
