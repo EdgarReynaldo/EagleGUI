@@ -37,7 +37,7 @@ public :
    EagleImage* map;
    
    
-   Projectile(double x , double y , double angle_degrees , double velocity , double power);
+   Projectile(double x , double y , double angle_degrees , double power);
    virtual ~Projectile();
    
    virtual void DisplayOn(EagleGraphicsContext* win);

@@ -8,9 +8,9 @@
 
 
 
-
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/InputHandler.hpp"
 
 
 
@@ -52,10 +52,31 @@ void ArtilleryGame::Clear() {
 
 
 
+void ArtilleryGame::Reset() {
+   Clear();
+   ++level;
+   turn = 0;
+   players.push_back(new HumanPlayer());
+   players[0]->Setup();
+   players.push_back(new HumanPlayer());
+   players[1]->Setup();
+   
+   terrain.Generate(window->Width() , window->Height());
+}
+
+
+
 int ArtilleryGame::HandleEvent(EagleEvent e) {
    if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
       return DIALOG_CLOSE;
    }
+   if (game_over) {
+      return DIALOG_REMOVE_ME;
+   }
+   if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_SPACE) {
+      Reset();
+   }
+   
    return DIALOG_OKAY;
 }
 
@@ -86,10 +107,11 @@ int ArtilleryGame::Update(double dt) {
       if (ret & DIALOG_REMOVE_ME) {
          Projectile* p = live_rounds[i];
          delete p;
-         --i;
          if (live_rounds.size()) {
+            live_rounds[i] = live_rounds.back();
             live_rounds.pop_back();
          }
+         --i;
       }
    }
    return DIALOG_OKAY;

@@ -166,6 +166,8 @@
 		<Unit filename="Krampus25/Scene.hpp" />
 		<Unit filename="Krampus25/Terrain.cpp" />
 		<Unit filename="Krampus25/Terrain.hpp" />
+		<Unit filename="Krampus25/Turret.cpp" />
+		<Unit filename="Krampus25/Turret.hpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

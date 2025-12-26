@@ -42,6 +42,8 @@ public :
    
    void Clear();
    
+   void Reset();
+   
    virtual int HandleEvent(EagleEvent e);
    virtual void DisplayOn(EagleGraphicsContext* win);
    virtual int Update(double dt);
