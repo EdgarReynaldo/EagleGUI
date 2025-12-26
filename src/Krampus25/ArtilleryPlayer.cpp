@@ -5,10 +5,14 @@
 #include "ArtilleryPlayer.hpp"
 #include "Artillery.hpp"
 #include "Turret.hpp"
+#include "ArtilleryGame.hpp"
+#include "Games.hpp"
+#include "Projectile.hpp"
 
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Input.hpp"
+#include "Eagle/Gui/WidgetBase.hpp"
 
 #include <cmath>
 
@@ -84,12 +88,10 @@ int HumanPlayer::HandleEvent(EagleEvent e) {
    }
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
       if (e.mouse.button == 1) {
-         
-      {
          aim = !aim;
       }
       else if (e.mouse.button == 3) {
-         agame->AddProjectile(new Projectile(turret.xpos , turret.ypos , , turret.aimpower));
+         agame->AddProjectile(new Projectile(turret.xpos , turret.ypos , atan2(turret.aimy - turret.ypos , turret.aimx - turret.xpos) , turret.aimpower));
       }
    }
    return DIALOG_OKAY;
@@ -100,6 +102,7 @@ int HumanPlayer::HandleEvent(EagleEvent e) {
 int HumanPlayer::Update(double dt) {
 //   base.Update(dt);
 //   turret.Update(dt);
+   return DIALOG_OKAY;
 }
 
 

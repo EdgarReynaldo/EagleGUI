@@ -45,9 +45,11 @@ void ArtilleryGame::Clear() {
    for (unsigned int i = 0 ; i < players.size() ; ++i) {
       delete players[i];
    }
+   players.clear();
    for (unsigned int i = 0 ; i < live_rounds.size() ; ++i) {
       delete live_rounds[i];
    }
+   live_rounds.clear();
 }
 
 

@@ -38,12 +38,12 @@ public :
    
    
    Projectile(double x , double y , double angle_degrees , double power);
-   virtual ~Projectile();
+   ~Projectile();
    
-   virtual void DisplayOn(EagleGraphicsContext* win);
-   virtual int Update(double dt);
+   void DisplayOn(EagleGraphicsContext* win);
+   int Update(double dt);
 
-   void Explode(EagleGraphicsContext* win , EagleImage* game_map);
+   void Explode(EagleImage* game_map);
 
 
 

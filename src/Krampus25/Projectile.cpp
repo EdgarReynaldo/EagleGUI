@@ -7,12 +7,12 @@
 #include "Eagle/Gui/WidgetBase.hpp"
 
 
-Projectile::Projectile(double x , double y , double angle_degrees , double velocity , double power) :
+Projectile::Projectile(double x , double y , double angle_degrees , double power) :
       startxpos(x),
       startypos(y),
       launch_angle_degrees(angle_degrees),
       wind_angle_degrees(0.0),
-      vel(velocity),
+      vel(power),
       velwind(0.0),
       expower(power),
       xpos(x),
@@ -81,7 +81,7 @@ int Projectile::Update(double dt) {
 
 
 
-void Projectile::Explode(EagleGraphicsContext* win , EagleImage* game_map) {
+void Projectile::Explode(EagleImage* game_map) {
    explode = true;
    explosion.ResetAnimation();
    map = game_map;
