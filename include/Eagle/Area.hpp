@@ -94,6 +94,9 @@ public :
    /// Pure virtual function to create a copy of the current shape and class
    virtual AreaBase* Clone() const =0;// returns a newed copy of itself
    
+   virtual int Width() const=0;
+   virtual int Height() const=0;
+
    ///< Virtual function to describe an area to a stream
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
@@ -162,6 +165,9 @@ public :
    
    int size() {return areas.size();}///< The area count
 
+   virtual int Width() const ;
+   virtual int Height() const ;
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output to a stream, with optional indentation
 };
 
@@ -226,6 +232,10 @@ public :
    
    void SetPos(int x1 , int y1 , int x2 , int y2 , int x3 , int y3);///< Set the corners of the triangle
    
+   virtual int Width() const ;
+   virtual int Height() const ;
+   
+   
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output the triangle to a stream
 };
 
@@ -265,6 +275,10 @@ public :
    int Y() const {return y;}
    int R() const {return r;}
    
+   virtual int Width() const ;
+   
+   virtual int Height() const ;
+
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;///< Output this circle to a stream
 
 };
@@ -533,6 +547,7 @@ public :
    
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
    
+   
    void SetRadii(int hradius , int vradius);///< Set the rounding radii
    void SetRoundingPercent(float hp , float vp);///< Set the rounding percent [0.0,1.0]
 };
@@ -637,7 +652,7 @@ public :
    virtual void Draw(EagleGraphicsContext* win , double thickness , EagleColor color) const ;
    virtual void Fill(EagleGraphicsContext* win , EagleColor color) const;
    virtual AreaBase* Clone() const;
-   
+
    virtual std::ostream& DescribeTo(std::ostream& os , Indenter indent = Indenter()) const ;
 };
 

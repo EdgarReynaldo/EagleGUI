@@ -17,13 +17,9 @@ struct VSPAN {
 class EagleGraphicsContext;
 
 class Terrain {
-
-protected :
-   std::vector<VSPAN> spans;
-   
-   
-   
 public :
+   std::vector<VSPAN> spans;
+
    Terrain();
    
    

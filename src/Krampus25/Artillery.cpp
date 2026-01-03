@@ -25,6 +25,7 @@ void Artillery::Setup(double cxpos , double cypos , AreaBase* shape , EagleColor
    cx = cxpos;
    cy = cypos;
    area = shape;
+   
    fillcolor = fill;
    drawcolor = draw;
 }

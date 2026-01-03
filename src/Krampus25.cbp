@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="c:/usr64/bin/Krampus25" prefix_auto="1" extension_auto="1" />
+				<Option output="c:/usr64/bin/Krampus25D" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
 				<Option type="1" />
@@ -24,8 +24,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/Eagle" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/Krampus25" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -40,8 +40,8 @@
 				</Linker>
 			</Target>
 			<Target title="DebugStatic">
-				<Option output="cbbuild/bin/EagleDebugStatic" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/Krampus25DS" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Static/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -88,8 +88,8 @@
 				</Linker>
 			</Target>
 			<Target title="ReleaseStatic">
-				<Option output="cbbuild/bin/EagleStatic" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/Krampus25S" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Static/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />

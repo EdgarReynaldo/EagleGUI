@@ -36,7 +36,7 @@ int main(int argc , char** argv) {
       EagleLog() << "Failed to setup standard Allegro 5 system" << std::endl;
    }
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext("Window" , 1024,768,EAGLE_WINDOWED | EAGLE_OPENGL);
+   EagleGraphicsContext* win = sys->CreateGraphicsContext("Window" , 800 , 600 , EAGLE_WINDOWED | EAGLE_OPENGL);
    
    /// Menu, 0 frogger 1 red baron 2 artillery 3 ascii frogger
    int menu_choice = -1;

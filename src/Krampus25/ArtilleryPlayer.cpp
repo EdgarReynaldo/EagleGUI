@@ -32,11 +32,11 @@ HumanPlayer::HumanPlayer() :
 
 
 
-void HumanPlayer::Setup() {
-   base.Setup(50 , 400 , new Rectangle(0 , 0 , 40 , 40) , EagleColor(255,0,255) , EagleColor(0,255,0));
-   turret.Place(50 , 400);
-   turret.Aim(100 , 400);
-   turret.Power(500);
+void HumanPlayer::Setup(int x , int y , EagleColor fill , EagleColor draw , double angle) {
+   base.Setup(x , y  , new Rectangle(x-20 , y - 20 , 40 , 40) , fill , draw);
+   turret.Place(x , y);
+   turret.Aim(x + 100*cos(angle) , y - 100*sin(angle));
+   turret.Power(25);
    score = 0;
    aim = false;
 }
@@ -53,33 +53,23 @@ void HumanPlayer::Launch() {
 
 
 int HumanPlayer::HandleEvent(EagleEvent e) {
-   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-      if (e.mouse.button == 1) {
-         aim = !aim;
-      }
-      else if (e.mouse.button == 3) {
-         
-      }
-   }
    if (e.type == EAGLE_EVENT_MOUSE_AXES) {
-      if (aim) {
-         turret.Aim(e.mouse.x , e.mouse.y);
-      }
+      turret.Aim(e.mouse.x , e.mouse.y);
       int power = turret.aimpower;
       if (e.mouse.dz) {
          if (input_key_held(EAGLE_KEY_ANY_SHIFT)) {
-            power += 5*e.mouse.dz;
+            power += 2*e.mouse.dz;
          }
          else if (input_key_held(EAGLE_KEY_ANY_CTRL)) {
-            power += 25*e.mouse.dz;
+            power += 4*e.mouse.dz;
          }
          else if (input_key_held(EAGLE_KEY_ANY_ALT)) {
-            power += 100*e.mouse.dz;
+            power += 10*e.mouse.dz;
          }
          else {
             power += e.mouse.dz;
          }
-         if (power > 1000) {power = 1000;}
+         if (power > 50) {power = 50;}
          if (power < 0) {
             power = 0;
          }
@@ -100,6 +90,7 @@ int HumanPlayer::HandleEvent(EagleEvent e) {
 
 
 int HumanPlayer::Update(double dt) {
+   (void)dt;
 //   base.Update(dt);
 //   turret.Update(dt);
    return DIALOG_OKAY;
@@ -108,6 +99,10 @@ int HumanPlayer::Update(double dt) {
 
 
 void HumanPlayer::DisplayOn(EagleGraphicsContext* win) {
+   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%i" , score) , base.cx , 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
+   win->DrawFilledRectangle(base.cx , 100 , 104 , 24 , EagleColor(0,0,0));
+   win->DrawRectangle(base.cx , 102 , 104 , 24 , 2.0 , EagleColor(255,255,255));
+   win->DrawFilledRectangle(base.cx + 2 , 102 , turret.aimpower , 20 , EagleColor(0,255,0));
    base.DisplayOn(win);
    turret.DisplayOn(win);
 }

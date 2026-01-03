@@ -214,6 +214,30 @@ void AreaGroup::AdoptAreaGroup(AreaGroup& ag) {
 
 
 
+int AreaGroup::Width() const {
+   int max = 0;
+   for (int i = 0 ; i < (int)areas.size() ; ++i) {
+      if (areas[i]->Width() > max) {
+         max = areas[i]->Width();
+      }
+   }
+   return max;
+}
+
+
+
+int AreaGroup::Height() const {
+   int max = 0;
+   for (int i = 0 ; i < (int)areas.size() ; ++i) {
+      if (areas[i]->Height() > max) {
+         max = areas[i]->Height();
+      }
+   }
+   return max;
+}
+
+
+
 std::ostream& AreaGroup::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << areas.size() << " areas. Area = ";
    if (!areas.size()) {
@@ -419,6 +443,38 @@ void Triangle::SetPos(int x1 , int y1 , int x2 , int y2 , int x3 , int y3) {
 
 
 
+int Triangle::Width() const {
+   double maxw = 0.0;
+   if (abs(p2.X() - p1.X()) > maxw) {
+      maxw = abs(p2.X() - p1.X());
+   }
+   if (abs(p3.X() - p1.X()) > maxw) {
+      maxw = abs(p3.X() - p1.X());
+   }
+   if (abs(p3.X() - p2.X()) > maxw) {
+      maxw = abs(p3.X() - p2.X());
+   }
+   return (int)maxw;
+}
+
+
+
+int Triangle::Height() const {
+   double maxh = 0.0;
+   if (abs(p2.Y() - p1.Y()) > maxh) {
+      maxh = abs(p2.Y() - p1.Y());
+   }
+   if (abs(p3.Y() - p1.Y()) > maxh) {
+      maxh = abs(p3.Y() - p1.Y());
+   }
+   if (abs(p3.Y() - p2.Y()) > maxh) {
+      maxh = abs(p3.Y() - p2.Y());
+   }
+   return (int)maxh;
+}
+
+
+
 std::ostream& Triangle::DescribeTo(std::ostream& os , Indenter indent) const {
    os << indent << "Triangle points = [" << p1 << "] [" << p2 << "] [" << p3 << "]";
    return os;
@@ -512,6 +568,18 @@ void Circle::SetCenter(int xpos , int ypos) {
 void Circle::SetRadius(int radius) {
    if (radius < 0) {radius = 0;}
    r = radius;
+}
+
+
+
+int Circle::Width() const {
+   return 2*r;
+}
+
+
+
+int Circle::Height() const {
+   return 2*r;
 }
 
 

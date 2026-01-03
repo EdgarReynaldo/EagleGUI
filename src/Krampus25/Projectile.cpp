@@ -21,7 +21,7 @@ Projectile::Projectile(double x , double y , double angle_degrees , double power
       vely(0.0),
       windvelx(0.0),
       windvely(0.0),
-      gravity(9.8),
+      gravity(-9.8),
       explode(false),
       exp_timer(2.0),
       explosion(),

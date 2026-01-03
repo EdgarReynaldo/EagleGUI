@@ -26,7 +26,7 @@ void Turret::Aim(int x , int y) {
 
 void Turret::Power(int p) {
    if (p < 1) {p = 1;}
-   if (p > 1000) {p = 1000;}
+   if (p > 50) {p = 100;}
    aimpower = p;
 }
    
@@ -35,7 +35,8 @@ void Turret::Power(int p) {
 void Turret::DisplayOn(EagleGraphicsContext* win) {
    /// Draw turret at xpos,ypos
    double angle = atan2(aimy - ypos , aimx - xpos);
-   win->DrawLine(xpos , ypos , xpos + 10.0*cos(angle) , ypos + 10.0*sin(angle) , 2.0 , EagleColor(255,255,255));
+   win->DrawLine(xpos , ypos , xpos + 30.0*cos(angle) , ypos + 30.0*sin(angle) , 2.0 , EagleColor(255,255,255));
    /// Draw crosshairs at aimx,aimy
    win->DrawCircle(aimx , aimy , 20 , 1.5 , EagleColor(255,255,255));
+   
 }

@@ -5,13 +5,13 @@
 #include "ArtilleryGame.hpp"
 #include "Projectile.hpp"
 #include "ArtilleryPlayer.hpp"
-
+#include "RNG.hpp"
 
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/InputHandler.hpp"
-
+#include "Eagle/Math.hpp"
 
 
 ArtilleryGame::ArtilleryGame(EagleGraphicsContext* win) :
@@ -26,7 +26,7 @@ ArtilleryGame::ArtilleryGame(EagleGraphicsContext* win) :
       players(),
       live_rounds()
 {
-   terrain.Generate(win->Width() , win->Height());
+   Reset();
 }
 
 
@@ -58,12 +58,19 @@ void ArtilleryGame::Reset() {
    Clear();
    ++level;
    turn = 0;
+   int sw = window->Width();
+   int sh= window->Height();
+   terrain.Generate(sw , sh);
+   int lx = rng.Rand0toNM1(sw/2);
+   int rx = rng.Rand0toNM1(sw/2) + sw/2;
    players.push_back(new HumanPlayer());
-   players[0]->Setup();
+   players[0]->Setup(lx , sh - terrain.spans[lx].h , EagleColor(0,0,255) , EagleColor(255,255,0) , 45.0*M_PI/180.0);
+//   players[0]->Setup(50 , window->Height() - (terrain.spans[50].h + 25) , EagleColor(0,0,255) , EagleColor(127,255,0) , 45.0);
    players.push_back(new HumanPlayer());
-   players[1]->Setup();
+//   players[1]->Setup(750 , window->Height() - (terrain.spans[window->Width() - 50].h + 25) , EagleColor(255,0,0) , EagleColor(127,255,0) , 135.0);
+   players[1]->Setup(rx , sh - terrain.spans[rx].h , EagleColor(255,0,0) , EagleColor(255,255,0) , 45.0*M_PI/180.0);
+//   players[1]->Setup(750 , window->Height() - (terrain.spans[window->Width() - 50].h + 25) , EagleColor(255,0,0) , EagleColor(127,255,0) , 135.0);
    
-   terrain.Generate(window->Width() , window->Height());
 }
 
 
@@ -77,6 +84,19 @@ int ArtilleryGame::HandleEvent(EagleEvent e) {
    }
    if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_SPACE) {
       Reset();
+   }
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && e.mouse.button == 1) {
+      players[turn]->aim = !players[turn]->aim;
+   }
+   for (unsigned int i = 0 ; i < players.size() ; ++i) {
+      int ret = players[i]->HandleEvent(e);
+      if (ret & DIALOG_REMOVE_ME) {
+         
+      }
+   }
+   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && e.mouse.button == 2) {
+      players[turn]->Launch();
+      turn = (turn + 1) % players.size();
    }
    
    return DIALOG_OKAY;
@@ -97,11 +117,17 @@ void ArtilleryGame::DisplayOn(EagleGraphicsContext* win) {
 
 
 int ArtilleryGame::Update(double dt) {
-   for (unsigned int i = 0 ; i < players.size() ; ++i) {
+   for (int i = 0 ; i < (int)players.size() ; ++i) {
       int ret = players[i]->Update(dt);
       if (ret & DIALOG_DISABLED) {
          game_over = true;
-         return DIALOG_REMOVE_ME;
+         for (int j = 0 ; j < (int)players.size() ; ++j) {
+            if (j != i) {
+               players[j]->score++;
+            }
+         }
+         Reset();
+         return DIALOG_DISABLED;
       }
    }
    for (int i = 0 ; i < (int)live_rounds.size() ; ++i) {

@@ -26,7 +26,7 @@ public :
 
    ArtilleryPlayer();
 
-   virtual void Setup()=0;
+   virtual void Setup(int x , int y , EagleColor fill , EagleColor draw , double angle)=0;
    virtual void Launch()=0;
    
    
@@ -41,7 +41,7 @@ public :
    
    HumanPlayer();
    
-   virtual void Setup();
+   virtual void Setup(int x , int y , EagleColor fill , EagleColor draw , double angle);
    virtual void Launch();
    
    virtual int HandleEvent(EagleEvent e);
