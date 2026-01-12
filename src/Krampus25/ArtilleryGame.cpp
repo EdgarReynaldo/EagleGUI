@@ -6,7 +6,7 @@
 #include "Projectile.hpp"
 #include "ArtilleryPlayer.hpp"
 #include "RNG.hpp"
-
+#include "Games.hpp"
 
 #include "Eagle/Gui/WidgetBase.hpp"
 #include "Eagle/GraphicsContext.hpp"
@@ -58,8 +58,6 @@ void ArtilleryGame::Reset() {
    Clear();
    ++level;
    turn = 0;
-   int sw = window->Width();
-   int sh= window->Height();
    terrain.Generate(sw , sh);
    int lx = rng.Rand0toNM1(sw/2);
    int rx = rng.Rand0toNM1(sw/2) + sw/2;
@@ -96,7 +94,9 @@ int ArtilleryGame::HandleEvent(EagleEvent e) {
    }
    if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN && e.mouse.button == 2) {
       players[turn]->Launch();
+      players[turn]->turn = false;
       turn = (turn + 1) % players.size();
+      players[turn]->turn = true;
    }
    
    return DIALOG_OKAY;
@@ -127,16 +127,30 @@ int ArtilleryGame::Update(double dt) {
             }
          }
          Reset();
-         return DIALOG_DISABLED;
+         return DIALOG_OKAY;
       }
    }
    for (int i = 0 ; i < (int)live_rounds.size() ; ++i) {
+      double xpos = live_rounds[i]->xpos;
+      double ypos = live_rounds[i]->ypos;
       int ret = live_rounds[i]->Update(dt);
+      Projectile* p = live_rounds[i];
+      double xpos2 = p->xpos;
+      double ypos2 = p->ypos;
+      int dx = (int)(ceil(xpos2 - xpos));
+      int dy = (int)(ceil(ypos2 - ypos));
+      
+      for (int x = 0 ; x < abs(dx) ; (dx>0)?++x:--x) {
+         if ((double)terrain.HeightAtX(x + (int)xpos) >= ypos + (double)x*dy/dx) {
+            p->Explode(buffer);
+         }
+      }
       if (ret & DIALOG_REMOVE_ME) {
-         Projectile* p = live_rounds[i];
-         delete p;
-         if (live_rounds.size()) {
+         if (live_rounds.size() > 1) {
             live_rounds[i] = live_rounds.back();
+            delete p;
+         }
+         if (live_rounds.size()) {
             live_rounds.pop_back();
          }
          --i;

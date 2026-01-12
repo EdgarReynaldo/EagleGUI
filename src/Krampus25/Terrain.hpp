@@ -22,7 +22,7 @@ public :
 
    Terrain();
    
-   
+   int HeightAtX(int xpos);
    
    void Clear();
 

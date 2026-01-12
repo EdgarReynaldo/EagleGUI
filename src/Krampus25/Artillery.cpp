@@ -33,7 +33,7 @@ void Artillery::Setup(double cxpos , double cypos , AreaBase* shape , EagleColor
 
    
 void Artillery::Launch(double angle_degrees , double power) {
-   Projectile* p = new Projectile(cx , cy , angle_degrees , power);
+   Projectile* p = new Projectile(cx + 30*cos(angle_degrees) , cy + 30*sin(angle_degrees) , angle_degrees , power);
    agame->AddProjectile(p);
 }
 

@@ -22,6 +22,7 @@ public :
    Turret turret;
    int score;
    bool aim;
+   bool turn;
 
 
    ArtilleryPlayer();

@@ -22,6 +22,7 @@ class Projectile;
 
 class ArtilleryGame : public Scene {
 
+public :
    EagleGraphicsContext* window;
    Terrain terrain;
    
@@ -35,7 +36,6 @@ class ArtilleryGame : public Scene {
    std::vector<ArtilleryPlayer*> players;
    std::vector<Projectile*> live_rounds;
 
-public :
    ArtilleryGame(EagleGraphicsContext* win);
    ~ArtilleryGame();
    

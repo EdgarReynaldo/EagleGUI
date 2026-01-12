@@ -1,7 +1,7 @@
 
 
 
-
+#include "Games.hpp"
 #include "Projectile.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
@@ -21,7 +21,7 @@ Projectile::Projectile(double x , double y , double angle_degrees , double power
       vely(0.0),
       windvelx(0.0),
       windvely(0.0),
-      gravity(-9.8),
+      gravity(9.8),/// up is down
       explode(false),
       exp_timer(2.0),
       explosion(),
@@ -30,6 +30,11 @@ Projectile::Projectile(double x , double y , double angle_degrees , double power
 {
    velx = vel*cos(angle_degrees);
    vely = vel*sin(angle_degrees);
+   explosion.Init(4 , 1 , exp_timer);
+   frames.resize(4 , 0);
+   for (unsigned int i = 0 ; i < 4 ; ++i) {
+      frames[i] = expsubimages[i];
+   }
 }
 
 
@@ -54,17 +59,22 @@ void Projectile::DisplayOn(EagleGraphicsContext* win) {
 
 
 int Projectile::Update(double dt) {
+   std::vector<VSPAN>& train = agame->terrain.spans;
    if (dt > 0.0 && !explode) {
-      xpos += (velx = cos(launch_angle_degrees)*vel);
-      ypos += (vely = sin(launch_angle_degrees)*vel);
-      /// Add wind here
-      xpos += (windvelx = cos(wind_angle_degrees)*velwind);
-      ypos += (windvely = sin(wind_angle_degrees)*velwind);
+      double dx = dt*(velx + windvelx);
+      double dy = dt*(vely + windvely);
+      xpos += dx;
+      ypos += dy;
+      if (xpos < 0.0 || xpos >= train.size()) {
+         return DIALOG_REMOVE_ME;
+      }
       /// Add drag here
-      velx *= 0.95;
-      vely *= 0.95;
+      velx *= 0.999;
+      vely *= 0.999;
       /// Add gravity here
       vely += gravity*dt;
+      vel = sqrt(velx*velx + vely*vely);
+      
       return DIALOG_OKAY;
    }
    if (explode) {

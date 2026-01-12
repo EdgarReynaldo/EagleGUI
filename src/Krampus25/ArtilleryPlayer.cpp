@@ -21,7 +21,8 @@ ArtilleryPlayer::ArtilleryPlayer() :
       base(),
       turret(),
       score(0),
-      aim(false)
+      aim(false),
+      turn(false)
 {}
 
 
@@ -53,6 +54,8 @@ void HumanPlayer::Launch() {
 
 
 int HumanPlayer::HandleEvent(EagleEvent e) {
+   if (!turn) {return DIALOG_OKAY;}
+      
    if (e.type == EAGLE_EVENT_MOUSE_AXES) {
       turret.Aim(e.mouse.x , e.mouse.y);
       int power = turret.aimpower;
@@ -103,6 +106,7 @@ void HumanPlayer::DisplayOn(EagleGraphicsContext* win) {
    win->DrawFilledRectangle(base.cx , 100 , 104 , 24 , EagleColor(0,0,0));
    win->DrawRectangle(base.cx , 102 , 104 , 24 , 2.0 , EagleColor(255,255,255));
    win->DrawFilledRectangle(base.cx + 2 , 102 , turret.aimpower , 20 , EagleColor(0,255,0));
+   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%i" , turret.aimpower) , base.cx + 106 , 102 , EagleColor(0,255,0));
    base.DisplayOn(win);
    turret.DisplayOn(win);
 }

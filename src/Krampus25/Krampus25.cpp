@@ -1,4 +1,7 @@
 /**
+
+Mark Oates wishlist for Krampus 2025:
+
 Dear Mr. Krampus,
 
 My wishes are as follows. Pick some, one, or none!
@@ -13,6 +16,12 @@ ASCII Tiles: Visually, I enjoy a good ASCII style glyph font for game boards. In
 
 As always, feel free to ditch any or all of these if something else inspires you. :) Thanks!
 
+-Oates
+
+I really wanted to do so much more with this, but all I managed to do was a basic artillery game.
+
+
+
 //*/
 
 
@@ -23,6 +32,14 @@ As always, feel free to ditch any or all of these if something else inspires you
 
 #include "Games.hpp"
 
+int sw = 800;
+int sh = 600;
+
+EagleImage* buffer = 0;
+EagleGraphicsContext* window = 0;
+
+EagleImage* explosionimage = 0;// = window->LoadImageFromFile("Data/Images/Explosion.png");
+EagleImage* expsubimages[4] = {0,0,0,0};
 
 int main(int argc , char** argv) {
 
@@ -36,20 +53,33 @@ int main(int argc , char** argv) {
       EagleLog() << "Failed to setup standard Allegro 5 system" << std::endl;
    }
    
-   EagleGraphicsContext* win = sys->CreateGraphicsContext("Window" , 800 , 600 , EAGLE_WINDOWED | EAGLE_OPENGL);
+//   sw = 800;
+//   sh = 600;
    
+   window = sys->CreateGraphicsContext("Window" , sw , sh , EAGLE_WINDOWED | EAGLE_OPENGL);
+   buffer = window->CreateImage(sw , sh);
+   window->SetDrawingTarget(buffer);
+   window->Clear(EagleColor(0,0,0,0));
+   window->FlipDisplay();
    /// Menu, 0 frogger 1 red baron 2 artillery 3 ascii frogger
-   int menu_choice = -1;
-   if (argc > 1) {
-      
+///   int menu_choice = -1;
+///   if (argc > 1) {
+///      
+///   }
+
+   explosionimage = window->LoadImageFromFile("Data/Images/Explosion.png");
+   
+   for (int i = 0 ; i < 4 ; ++i) {
+      expsubimages[i] = window->CreateSubImage(explosionimage , i * 32 , 0 , 32 , 32 , StringPrintF("Explosion frame #%i" , i + 1));
    }
+
    Scene* pgame[4] = {0,0,0,0};
 //   KGame* cgame = 0;
    
    
 //   game[0] = new FroggerGame;
 //   game[1] = new RedBaronGame;
-   pgame[0] = agame = new ArtilleryGame(win);
+   pgame[0] = agame = new ArtilleryGame(window);
    Scene* cgame = pgame[0];
 //   cgame = game[0];
 //   game[3] = new AsciiFroggerGame;
@@ -57,12 +87,15 @@ int main(int argc , char** argv) {
    bool quit = false;
    bool redraw = true;
    sys->GetSystemTimer()->Start();
-
+   EagleLog() << StringPrintF("%lf SPT" , sys->GetSystemTimer()->SPT()) << std::endl;
    while (!quit) {
       if (redraw) {
-         win->Clear();
-         cgame->DisplayOn(win);
-         win->FlipDisplay();
+         window->SetDrawingTarget(buffer);
+         window->Clear();
+         cgame->DisplayOn(window);
+         window->DrawToBackBuffer();
+         window->DrawImageFit(buffer , Rectangle(0,0,sw,sh));
+         window->FlipDisplay();
          redraw = false;
       }
       do {
