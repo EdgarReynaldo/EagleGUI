@@ -341,7 +341,9 @@ double AnimationBase::GetNormalizedPercent() {
       forward = false;
    }
    else {
-      pct = fmod(pct , 1.0);
+      if (pct != 0.0) {
+         pct = fmod(pct , 1.0);
+      }
    }
    if (!forward) {
       return 1.0 - pct;
