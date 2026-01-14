@@ -69,8 +69,8 @@ int Projectile::Update(double dt) {
          return DIALOG_REMOVE_ME;
       }
       /// Add drag here
-      velx *= 0.999;
-      vely *= 0.999;
+//      velx *= 0.999;
+//      vely *= 0.999;
       /// Add gravity here
       vely += gravity*dt;
       vel = sqrt(velx*velx + vely*vely);
