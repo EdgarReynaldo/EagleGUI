@@ -88,7 +88,7 @@ int main(int argc , char** argv) {
 ///         for (int i =  (record_index - samples)%storage_size; i < record_index ; i+=2) {
 ///         for (int i = record_index - samples + 4 ; i < record_index ; i += 2) {
 ///         for (int i = record_index/8 + 4 ; i < (record_index/8 + 1)*samples ; i += 2) {
-        for (int i = 4 ; i < storage_size ; i+=2) {
+        for (int i = 4 ; i < storage_size ; i+=4) {
             double x1 = ((double)(i-2)/storage_size)*sw;
             double x2 = ((double)i/storage_size)*sw;
             int16_t l1 = 0;
