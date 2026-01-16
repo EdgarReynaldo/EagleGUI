@@ -26,7 +26,7 @@ void Turret::Aim(int x , int y) {
 
 void Turret::Power(int p) {
    if (p < 1) {p = 1;}
-   if (p > 500) {p = 500;}
+   if (p > 250) {p = 250;}
    aimpower = p;
 }
    

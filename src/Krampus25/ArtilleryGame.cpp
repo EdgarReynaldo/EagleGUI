@@ -143,7 +143,7 @@ int ArtilleryGame::Update(double dt) {
       if (dx >= 0) {
          for (int x = 0 ; x <= dx ; ++x) {
             int htatx = terrain.HeightAtX(x + (int)xpos);
-            if (sh - htatx >= ypos + (double)x*dy/dx) {
+            if (sh - htatx <= ypos + (double)x*dy/dx) {
                p->Explode(buffer);
             }
          }
@@ -151,7 +151,7 @@ int ArtilleryGame::Update(double dt) {
       else {
          for (int x = 0 ; x >= dx ; --x) {
             int htatx = terrain.HeightAtX(x + (int)xpos);
-            if (sh - htatx >= ypos + (double)x*dy/dx) {
+            if (sh - htatx <= ypos + (double)x*dy/dx) {
                p->Explode(buffer);
             }
          }

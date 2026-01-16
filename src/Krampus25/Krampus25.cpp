@@ -93,6 +93,8 @@ int main(int argc , char** argv) {
          window->SetDrawingTarget(buffer);
          window->Clear();
          cgame->DisplayOn(window);
+         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("Height at x = %i is %i" , mouse_x , agame->terrain.HeightAtX(mouse_x)) , 50 , sh - 40 , EagleColor(255,0,0));
+         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%u" , agame->live_rounds.size()) , 50 , sh-20 , EagleColor(0,255,255)); 
          window->DrawToBackBuffer();
          window->DrawImageFit(buffer , Rectangle(0,0,sw,sh));
          window->FlipDisplay();

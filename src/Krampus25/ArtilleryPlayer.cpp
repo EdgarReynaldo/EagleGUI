@@ -64,15 +64,15 @@ int HumanPlayer::HandleEvent(EagleEvent e) {
             power += 5*e.mouse.dz;
          }
          else if (input_key_held(EAGLE_KEY_ANY_CTRL)) {
-            power += 25*e.mouse.dz;
+            power += 10*e.mouse.dz;
          }
          else if (input_key_held(EAGLE_KEY_ANY_ALT)) {
-            power += 100*e.mouse.dz;
+            power += 25*e.mouse.dz;
          }
          else {
             power += e.mouse.dz;
          }
-         if (power > 500) {power = 500;}
+         if (power > 250) {power = 250;}
          if (power < 1) {
             power = 1;
          }
@@ -105,7 +105,7 @@ void HumanPlayer::DisplayOn(EagleGraphicsContext* win) {
    win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%i" , score) , base.cx , 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_TOP);
    win->DrawFilledRectangle(base.cx , 100 , 104 , 24 , EagleColor(0,0,0));
    win->DrawRectangle(base.cx , 102 , 104 , 24 , 2.0 , EagleColor(255,255,255));
-   win->DrawFilledRectangle(base.cx + 2 , 102 , turret.aimpower/5 , 20 , EagleColor(0,255,0));
+   win->DrawFilledRectangle(base.cx + 2 , 104 , turret.aimpower*2/5 , 20 , EagleColor(0,255,0));
    win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%i" , turret.aimpower) , base.cx + 106 , 102 , EagleColor(0,255,0));
    base.DisplayOn(win);
    turret.DisplayOn(win);
