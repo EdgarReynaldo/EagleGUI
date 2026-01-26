@@ -32,8 +32,8 @@ I really wanted to do so much more with this, but all I managed to do was a basi
 
 #include "Games.hpp"
 
-int sw = 800;
-int sh = 600;
+int scrw = 1280;
+int scrh = 800;
 
 EagleImage* buffer = 0;
 EagleGraphicsContext* window = 0;
@@ -52,12 +52,9 @@ int main(int argc , char** argv) {
    if (!(ret & EAGLE_STANDARD_SETUP)) {
       EagleLog() << "Failed to setup standard Allegro 5 system" << std::endl;
    }
-   
-//   sw = 800;
-//   sh = 600;
-   
-   window = sys->CreateGraphicsContext("Window" , sw , sh , EAGLE_WINDOWED | EAGLE_OPENGL);
-   buffer = window->CreateImage(sw , sh);
+
+   window = sys->CreateGraphicsContext("Window" , scrw , scrh , EAGLE_WINDOWED | EAGLE_OPENGL);
+   buffer = window->CreateImage(scrw , scrh);
    window->SetDrawingTarget(buffer);
    window->Clear(EagleColor(0,0,0,0));
    window->FlipDisplay();
@@ -93,10 +90,10 @@ int main(int argc , char** argv) {
          window->SetDrawingTarget(buffer);
          window->Clear();
          cgame->DisplayOn(window);
-         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("Height at x = %i is %i" , mouse_x , agame->terrain.HeightAtX(mouse_x)) , 50 , sh - 40 , EagleColor(255,0,0));
-         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%u" , agame->live_rounds.size()) , 50 , sh-20 , EagleColor(0,255,255)); 
+         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("Height at x = %i is %i" , mouse_x , agame->terrain.HeightAtX(mouse_x)) , 50 , scrh - 40 , EagleColor(255,0,0));
+         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%llu" , agame->live_rounds.size()) , 50 , scrh-20 , EagleColor(0,255,255)); 
          window->DrawToBackBuffer();
-         window->DrawImageFit(buffer , Rectangle(0,0,sw,sh));
+         window->DrawImageFit(buffer , Rectangle(0,0,scrw,scrh));
          window->FlipDisplay();
          redraw = false;
       }

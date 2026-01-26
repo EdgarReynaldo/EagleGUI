@@ -18,13 +18,13 @@ Terrain::Terrain() :
 
 int Terrain::HeightAtX(int xpos) {
    if (xpos < 0) {
-      return sh;
+      return scrh;
    }
    if (xpos >= (int)spans.size()) {
-      return sh;
+      return scrh;
    }
    if (!spans.size()) {
-      return sh;
+      return scrh;
    }
    return spans[xpos].h;
 }
@@ -37,19 +37,19 @@ void Terrain::Clear() {
 
 
 
-void Terrain::Generate(int scrw , int scrh) {
+void Terrain::Generate(int sw , int sh) {
    Clear();
-   spans.resize(scrw , VSPAN());/// One VSPAN for every x in scrw
-   double htleft = 0.0*scrh*rng.DPercent();/// From 0.0 to 1.0, representing height on left side, limited to on screen;
+   spans.resize(sw , VSPAN());/// One VSPAN for every x in scrw
+   double htleft = 100 + (sh/4)*rng.DPercent();/// From 0.0 to 1.0, representing height on left side, limited to on screen;
    //double htright = scrh*rng.DPercent();/// From 0.0 to 1.0, representing height on right side, limited to on screen;
    double ht = htleft;
-   double slope = 5.0;
+   double slope = rng.Rand0toNM1(10) - 5.0;
    double sign = 1.0;
    double accel = -2.0;
    double asign = 1.0;
-   for (int x = 0 ; x < scrw ; ++x) {
+   for (int x = 0 ; x < sw ; ++x) {
       spans[x].x = x;
-      spans[x].y = scrh - (int)ht;
+      spans[x].y = sh - (int)ht;
       spans[x].h = ht;
       ht += sin(slope*M_PI/180.0);
       if (ht < 0) {
@@ -58,10 +58,10 @@ void Terrain::Generate(int scrw , int scrh) {
 //      ht = ((1.0 - x/(double)scrw)*ht + htright*(double)x/(double)scrw);
       slope += sign + asign*accel;
       accel += asign;
-      if (rng.DPercent() < 0.05) {
+      if (rng.DPercent() < 0.025) {
          sign *= -1.0;
       }
-      if (rng.DPercent() < 0.2) {
+      if (rng.DPercent() < 0.04) {
          asign *= -1.0;
       }
    }

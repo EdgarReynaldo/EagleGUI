@@ -23,7 +23,7 @@ public :
    void Place(int x , int y);
    void Aim(int x , int y);
    void Power(int p);
-   void DisplayOn(EagleGraphicsContext* win);
+   void DisplayOn(EagleGraphicsContext* win , bool aim);
 
 
 

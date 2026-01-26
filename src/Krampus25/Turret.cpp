@@ -32,11 +32,12 @@ void Turret::Power(int p) {
    
 
 
-void Turret::DisplayOn(EagleGraphicsContext* win) {
+void Turret::DisplayOn(EagleGraphicsContext* win , bool aim) {
    /// Draw turret at xpos,ypos
    double angle = atan2(aimy - ypos , aimx - xpos);
-   win->DrawLine(xpos , ypos , xpos + 30.0*cos(angle) , ypos + 30.0*sin(angle) , 2.0 , EagleColor(255,255,255));
+   if (aim) {
+      win->DrawLine(xpos , ypos , xpos + 30.0*cos(angle) , ypos + 30.0*sin(angle) , 2.0 , EagleColor(255,255,255));
    /// Draw crosshairs at aimx,aimy
-   win->DrawCircle(aimx , aimy , 20 , 1.5 , EagleColor(255,255,255));
-   
+      win->DrawCircle(aimx , aimy , 20 , 1.5 , EagleColor(255,255,255));
+   }
 }

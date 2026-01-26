@@ -9,8 +9,8 @@
 
 extern ArtilleryGame* agame;
 
-extern int sw;
-extern int sh;
+extern int scrw;
+extern int scrh;
 
 extern EagleImage* buffer;
 extern EagleGraphicsContext* window;
