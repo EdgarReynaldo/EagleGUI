@@ -91,7 +91,7 @@ int main(int argc , char** argv) {
          window->Clear();
          cgame->DisplayOn(window);
          window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("Height at x = %i is %i" , mouse_x , agame->terrain.HeightAtX(mouse_x)) , 50 , scrh - 40 , EagleColor(255,0,0));
-         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%llu" , agame->live_rounds.size()) , 50 , scrh-20 , EagleColor(0,255,255)); 
+         window->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%llu" , agame->live_rounds.size()) , 50 , scrh-20 , EagleColor(0,255,0)); 
          window->DrawToBackBuffer();
          window->DrawImageFit(buffer , Rectangle(0,0,scrw,scrh));
          window->FlipDisplay();

@@ -154,50 +154,68 @@ int ArtilleryGame::Update(double dt) {
       int dx = (int)(ceil(xpos2 - xpos));
       int dy = (int)(ceil(ypos2 - ypos));
       
-      if (dx >= 0) {
-         for (int x = 0 ; x <= dx ; ++x) {
-            int htatx = terrain.HeightAtX(x + (int)xpos);
-            if (scrh - htatx <= ypos + (double)x*dy/dx) {
+      /// Collision vs ground
+      if (dx > 0) {
+         // projectile moving right
+         for (unsigned int x = 0 ; x <= dx ; ++x) {
+            int htatx = terrain.HeightAtX(xpos + x);
+            if (scrh - htatx < ypos + (double)x*dy/dx) {
                p->Explode(buffer);
                break;
             }
-            for (int k = 0 ; k < (int)agame->players.size() ; ++k) {
-               
-               if (agame->players[k]->base.area->Contains(x + xpos , ypos + (double)x*dy/dx)) {
+         }
+      } else if (dx < 0) {
+         // projectile moving left
+         for (signed int x = 0 ; x >= dx ; --x) {
+            int htatx = terrain.HeightAtX(xpos + x);
+            if (scrh - htatx < ypos + (double)x*dy/dx) {
+               p->Explode(buffer);
+               break;
+            }
+         }
+         
+      } else {
+         // dx == 0
+         for (int y = 0 ; y < abs(dy) ; ++y) {
+            int htatx = terrain.HeightAtX(xpos);
+            if (scrh - htatx < y) {
+               p->Explode(buffer);
+               break;
+            }
+         }
+      }
+      
+      /// Collision vs bases
+//if (agame->players[k]->base.area->Contains(x + xpos , ypos + (double)x*dy/dx)) {
+      for (unsigned int i = 0 ; i < players.size() ; ++i) {
+         if (dx) {
+            for (int jx = 0 ; jx < abs(dx) ; ++jx) {
+               if (players[i]->base.area->Contains(xpos + (dx > 0)?jx:-jx , ypos + (double)((dx > 0)?jx:-jx)*dy/dx)) {
                   p->Explode(buffer);
-                  for (int j = 0 ; j < (int)agame->players.size() ; ++j) {
-                     if (j != k) {
-                        agame->players[j]->score++;
+                  for (unsigned int k = 0 ; k < players.size() ; ++k) {
+                     if (k != i) {
+                        players[k]->score++;
+                        
                      }
                   }
-                  break;
+               }
+            }
+         }
+         else {
+            for (int y = 0 ; y <= abs(dy) ; ++y) {
+               if (players[i]->base.area->Contains(xpos , ypos + (dy>0)?y:-y)) {
+                  p->Explode(buffer);
+                  for (unsigned int k = 0 ; k < players.size() ; ++k) {
+                     if (k != i) {
+                        players[k]->score++;
+                     }
+                  }
                }
             }
          }
       }
-      else {
-         EAGLE_ASSERT(dx <= 0.0);
-         for (int x = 0 ; x >= dx ; --x) {
-            int htatx = terrain.HeightAtX(x + (int)xpos);
-            EAGLE_ASSERT(htatx >= 0);
-            if (scrh - htatx <= ypos + (double)x*dy/dx) {
-               p->Explode(buffer);
-               break;
-            }
-            for (int k = 0 ; k < (int)agame->players.size() ; ++k) {
-               
-               if (agame->players[k]->base.area->Contains(x + xpos , ypos + (double)x*dy/dx)) {
-                  p->Explode(buffer);
-                  for (int j = 0 ; j < (int)agame->players.size() ; ++j) {
-                     if (j != k) {
-                        agame->players[j]->score++;
-                     }
-                  }
-                  break;
-               }
-            }
-         }
-      }
+
+
       if (ret & DIALOG_REMOVE_ME) {
          if (live_rounds.size() > 1) {
             live_rounds[i] = live_rounds.back();

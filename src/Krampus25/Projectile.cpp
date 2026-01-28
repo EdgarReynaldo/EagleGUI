@@ -46,7 +46,7 @@ Projectile::~Projectile() {
 
 
 void Projectile::DisplayOn(EagleGraphicsContext* win) {
-   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%3.2lf,%3.2lf" , xpos , ypos) , xpos , ypos , EagleColor(255,255,255),HALIGN_CENTER , VALIGN_CENTER);
+   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%3.2lf,%3.2lf" , xpos , ypos) , xpos , ypos , EagleColor(255,127,0),HALIGN_CENTER , VALIGN_CENTER);
    if (!explode) {
       win->DrawLine(xpos -1, ypos , xpos + 1 , ypos , 1.0 , EagleColor(255,255,255));
       win->DrawLine(xpos , ypos - 1 , xpos , ypos + 1 , 1.0 , EagleColor(255,255,255));
