@@ -178,7 +178,7 @@ int ArtilleryGame::Update(double dt) {
          // dx == 0
          for (int y = 0 ; y < abs(dy) ; ++y) {
             int htatx = terrain.HeightAtX(xpos);
-            if (scrh - htatx < y) {
+            if (scrh - htatx < ypos + (dy > 0)?y:-y) {
                p->Explode(buffer);
                break;
             }
