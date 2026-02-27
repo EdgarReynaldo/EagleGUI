@@ -74,8 +74,10 @@ void ArtilleryGame::Reset() {
       }
    }
    terrain.Generate(scrw , scrh);
-   int lx = rng.Rand0toNM1(scrw/2);
-   int rx = rng.Rand0toNM1(scrw/2) + scrw/2;
+   int lx = rng.Rand0toNM1(scrw/2 - 100);
+   lx += 50;
+   int rx = rng.Rand0toNM1(scrw/2 - 100);
+   rx += (scrw/2);
    players.push_back(new HumanPlayer());
    players[0]->Setup(lx , scrh - terrain.spans[lx].h , EagleColor(0,0,255) , EagleColor(255,255,0) , 45.0*M_PI/180.0);
 //   players[0]->Setup(50 , window->Height() - (terrain.spans[50].h + 25) , EagleColor(0,0,255) , EagleColor(127,255,0) , 45.0);
@@ -137,7 +139,7 @@ int ArtilleryGame::Update(double dt) {
          game_over = true;
          for (int j = 0 ; j < (int)players.size() ; ++j) {
             if (j != i) {
-               players[j]->score++;
+//               players[j]->score++;
             }
          }
          Reset();
@@ -149,17 +151,22 @@ int ArtilleryGame::Update(double dt) {
       double ypos = live_rounds[i]->ypos;
       int ret = live_rounds[i]->Update(dt);
       Projectile* p = live_rounds[i];
+      if (p->explode) {continue;}
       double xpos2 = p->xpos;
       double ypos2 = p->ypos;
-      int dx = (int)(ceil(xpos2 - xpos));
-      int dy = (int)(ceil(ypos2 - ypos));
+      double ddx = xpos2 - xpos;
+      double ddy = ypos2 - ypos;
+      int dx = (int)ddx;
+      int dy = (int)ddy;
+//      double dx = ((xpos2-xpos < 0.0)?-1:1)*(int)(fabs(xpos2 - xpos) + 0.5);
+//      double dy = ((ypos2-ypos < 0.0)?-1:1)*(int)(fabs(ypos2 - ypos) + 0.5);
       
       /// Collision vs ground
       if (dx > 0) {
          // projectile moving right
-         for (unsigned int x = 0 ; x <= dx ; ++x) {
+         for (int x = 0 ; x <= dx ; ++x) {
             int htatx = terrain.HeightAtX(xpos + x);
-            if (scrh - htatx < ypos + (double)x*dy/dx) {
+            if (scrh - htatx < ypos + (double)x*ddy/ddx) {
                p->Explode(buffer);
                break;
             }
@@ -168,7 +175,7 @@ int ArtilleryGame::Update(double dt) {
          // projectile moving left
          for (signed int x = 0 ; x >= dx ; --x) {
             int htatx = terrain.HeightAtX(xpos + x);
-            if (scrh - htatx < ypos + (double)x*dy/dx) {
+            if (scrh - htatx < ypos + (double)x*ddy/ddx) {
                p->Explode(buffer);
                break;
             }
@@ -176,9 +183,9 @@ int ArtilleryGame::Update(double dt) {
          
       } else {
          // dx == 0
-         for (int y = 0 ; y < abs(dy) ; ++y) {
+         for (int y = 0 ; y <= abs(dy) ; ++y) {
             int htatx = terrain.HeightAtX(xpos);
-            if (scrh - htatx < ypos + (dy > 0)?y:-y) {
+            if ((scrh - htatx) <= (ypos + y*((dy > 0)?1:-1))) {
                p->Explode(buffer);
                break;
             }
@@ -189,13 +196,15 @@ int ArtilleryGame::Update(double dt) {
 //if (agame->players[k]->base.area->Contains(x + xpos , ypos + (double)x*dy/dx)) {
       for (unsigned int i = 0 ; i < players.size() ; ++i) {
          if (dx) {
-            for (int jx = 0 ; jx < abs(dx) ; ++jx) {
-               if (players[i]->base.area->Contains(xpos + (dx > 0)?jx:-jx , ypos + (double)((dx > 0)?jx:-jx)*dy/dx)) {
-                  p->Explode(buffer);
-                  for (unsigned int k = 0 ; k < players.size() ; ++k) {
-                     if (k != i) {
-                        players[k]->score++;
-                        
+            for (int jx = 0 ; jx <= abs(dx) ; ++jx) {
+               if (players[i]->base.area->Contains(xpos + jx*((dx > 0)?1:-1) , ypos + (double)jx*((dx > 0)?1:-1)*dy/dx)) {
+                  if (!p->explode) {
+                     p->Explode(buffer);
+                     for (unsigned int k = 0 ; k < players.size() ; ++k) {
+                        if (k != i) {
+                           players[k]->score++;
+                           
+                        }
                      }
                   }
                }
@@ -203,11 +212,13 @@ int ArtilleryGame::Update(double dt) {
          }
          else {
             for (int y = 0 ; y <= abs(dy) ; ++y) {
-               if (players[i]->base.area->Contains(xpos , ypos + (dy>0)?y:-y)) {
-                  p->Explode(buffer);
-                  for (unsigned int k = 0 ; k < players.size() ; ++k) {
-                     if (k != i) {
-                        players[k]->score++;
+               if (players[i]->base.area->Contains(xpos , ypos + y*((dy>0)?1:-1))) {
+                  if (!p->explode) {
+                     p->Explode(buffer);
+                     for (unsigned int k = 0 ; k < players.size() ; ++k) {
+                        if (k != i) {
+                           players[k]->score++;
+                        }
                      }
                   }
                }

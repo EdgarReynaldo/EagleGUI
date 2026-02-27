@@ -43,8 +43,8 @@ void Terrain::Generate(int sw , int sh) {
    double htleft = 100 + (sh/4)*rng.DPercent();/// From 0.0 to 1.0, representing height on left side, limited to on screen;
    //double htright = scrh*rng.DPercent();/// From 0.0 to 1.0, representing height on right side, limited to on screen;
    double ht = htleft;
-   double slope = rng.Rand0toNM1(10) - 5.0;
-   double sign = 1.0;
+   double slope = rng.Rand0toNM1(45);
+   double sign = 3.0;
    double accel = -2.0;
    double asign = 1.0;
    for (int x = 0 ; x < sw ; ++x) {
@@ -58,12 +58,13 @@ void Terrain::Generate(int sw , int sh) {
 //      ht = ((1.0 - x/(double)scrw)*ht + htright*(double)x/(double)scrw);
       slope += sign + asign*accel;
       accel += asign;
-      if (rng.DPercent() < 0.025) {
-         sign *= -1.0;
-      }
-      if (rng.DPercent() < 0.04) {
+      if (rng.DPercent() < 0.0125) {
+//         sign *= -1.0;
          asign *= -1.0;
       }
+//      if (rng.DPercent() < 0.04) {
+//         asign *= -1.0;
+//      }
    }
 }
 /**

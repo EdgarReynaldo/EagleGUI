@@ -49,18 +49,22 @@
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
 					<Add option="-DEAGLE_ASSERT_EXCEPTION" />
+					<Add option="-DALLEGRO_UNSTABLE" />
+					<Add option="-DALLEGRO_STATICLINK" />
 				</Compiler>
 				<Linker>
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-lEagleA5StaticDebug" />
-					<Add option="-lEagleStaticDebug" />
+					<Add option="-lEagleA5Debug" />
+					<Add option="-lEagleDebug" />
 					<Add option="-lallegro_monolith-debug-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lwebp" />
+					<Add option="-lsharpyuv" />
 					<Add option="-lFLAC" />
+					<Add option="-lOpenAL32.dll" />
 					<Add option="-ltheora" />
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
@@ -95,19 +99,23 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DALLEGRO_UNSTABLE" />
+					<Add option="-DALLEGRO_STATICLINK" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
-					<Add option="-lEagleA5Static" />
-					<Add option="-lEagleStatic" />
+					<Add option="-lEagleA5" />
+					<Add option="-lEagle" />
 					<Add option="-lallegro_monolith-static" />
 					<Add option="-ljpeg" />
 					<Add option="-ldumb" />
 					<Add option="-lwebp" />
+					<Add option="-lsharpyuv" />
 					<Add option="-lFLAC" />
+					<Add option="-lOpenAL32.dll" />
 					<Add option="-ltheora" />
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
