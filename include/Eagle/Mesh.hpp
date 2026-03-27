@@ -33,6 +33,9 @@
 
 
 #include <vector>
+#include <climits>
+
+
 
 extern const int BAD_INDEX;
 

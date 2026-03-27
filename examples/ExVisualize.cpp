@@ -50,8 +50,8 @@ int main(int argc , char** argv) {
 //   unsigned int samples, unsigned int frequency,
 //   ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
    int frequency = 44100;
-   int fragment_count = 4;/// Buffer one quarter second at 60 hz
-   int samples = 11025;
+   int fragment_count = 60;/// Buffer one quarter second at 60 hz
+   int samples = 105;// 15 * 8 = 120 *7 = 105
    double buf_duration = fragment_count*samples/(double)frequency;
    
    ALLEGRO_AUDIO_RECORDER* rec = al_create_audio_recorder(fragment_count , samples , frequency , ALLEGRO_AUDIO_DEPTH_INT16 , ALLEGRO_CHANNEL_CONF_2);

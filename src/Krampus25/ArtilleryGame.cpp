@@ -139,7 +139,7 @@ int ArtilleryGame::Update(double dt) {
          game_over = true;
          for (int j = 0 ; j < (int)players.size() ; ++j) {
             if (j != i) {
-//               players[j]->score++;
+//f               players[j]->score++;
             }
          }
          Reset();
@@ -194,14 +194,14 @@ int ArtilleryGame::Update(double dt) {
       
       /// Collision vs bases
 //if (agame->players[k]->base.area->Contains(x + xpos , ypos + (double)x*dy/dx)) {
-      for (unsigned int i = 0 ; i < players.size() ; ++i) {
+      for (unsigned int j = 0 ; j < players.size() ; ++j) {
          if (dx) {
             for (int jx = 0 ; jx <= abs(dx) ; ++jx) {
-               if (players[i]->base.area->Contains(xpos + jx*((dx > 0)?1:-1) , ypos + (double)jx*((dx > 0)?1:-1)*dy/dx)) {
+               if (players[j]->base.area->Contains(xpos + jx*((dx > 0)?1:-1) , ypos + (double)jx*((dx > 0)?1:-1)*dy/dx)) {
                   if (!p->explode) {
                      p->Explode(buffer);
                      for (unsigned int k = 0 ; k < players.size() ; ++k) {
-                        if (k != i) {
+                        if (k != j) {
                            players[k]->score++;
                            
                         }
@@ -212,11 +212,11 @@ int ArtilleryGame::Update(double dt) {
          }
          else {
             for (int y = 0 ; y <= abs(dy) ; ++y) {
-               if (players[i]->base.area->Contains(xpos , ypos + y*((dy>0)?1:-1))) {
+               if (players[j]->base.area->Contains(xpos , ypos + y*((dy>0)?1:-1))) {
                   if (!p->explode) {
                      p->Explode(buffer);
                      for (unsigned int k = 0 ; k < players.size() ; ++k) {
-                        if (k != i) {
+                        if (k != j) {
                            players[k]->score++;
                         }
                      }

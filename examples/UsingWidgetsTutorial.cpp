@@ -3,11 +3,42 @@
 
 /// We need to include the main Eagle header.
 /// This gives us access to everything Eagle has to offer.
+
+
+#include "Eagle/Gui/WidgetBase.hpp"
+#include "Eagle/Gui/WidgetColorset.hpp"
+
+
 #include "Eagle.hpp"
 
 /// We need to include the backend header that we are going to use. 
 /// It imports all of the necessary system and graphics code to use Allegro 5.
 #include "Eagle/backends/Allegro5Backend.hpp"
+
+
+
+enum CSLIDER {
+   CSLIDERR = 0,
+   CSLIDERG = 1,
+   CSLIDERB = 2,
+   CSLIDERA = 3,
+   NUMCSLIDERS = 4
+};
+
+class RGBASlider : public Slider {
+protected:
+
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);///< Virtual function that controls how a widget is drawn
+
+
+public:
+   CSLIDER type;
+   
+   
+};
+
+
+
 
 int main(int argc , char** argv) {
    
@@ -78,6 +109,65 @@ int main(int argc , char** argv) {
    flow.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);/// Left top is default alignment, let's use centered alignment
    flow.SetBoxSpacing(BOX_SPACE_EVEN);/// Spread out the extra space evenly
    
+   GuiButton clrbtns[EAGLE_NUMCOLORS];/// color buttons
+   RadioGroup clrgroup;/// make them a radio button
+   for (unsigned int n = 0 ; n <= EAGLE_NUMCOLORS ; ++n) {
+      clrbtns[n].SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
+      clrbtns[n].SetLabel(WidgetColorName((WIDGETCOLOR)n));
+      clrbtns[n].SetPreferredSize(200 , 20);
+      flow.AddWidget(&clrbtns[n]);
+      clrgroup.AddRadioButton(&clrbtns[n]);
+   }
+   clrgroup.SelectButton(&clrbtns[0]);
+   
+   RGBASlider rgbaslider[4];/// RGBA sliders
+   for (unsigned int n = 0 ; n < 4 ; ++n) {
+      rgbaslider[n].type = (CSLIDER)n;
+      rgbaslider[n].SetPreferredSize(50 , 256);
+      flow.AddWidget(&rgbaslider[n]);
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   bool redraw = true;
+   bool quit = false;
+   sys->GetSystemTimer()->Start();
+   
+   while (!quit) {
+      if (redraw) {
+         win->Clear();
+         gui.Display(win , 0 , 0);
+         win->FlipDisplay();
+         redraw = false;
+      }
+      
+      do {
+         EagleEvent e = sys->WaitForSystemEventAndUpdateState();
+         if (e.type == EAGLE_EVENT_TIMER) {
+            redraw = true;
+         }
+         else {
+            if (e.type == EAGLE_EVENT_KEY_DOWN && e.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+               quit = true;
+            }
+            if (e.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+               quit = true;
+            }
+         }
+      } while (!sys->UpToDate());
+      
+      
+   }
+   
+   
+   
+   
+   
    
    
    return 0;
@@ -86,6 +176,12 @@ int main(int argc , char** argv) {
 
 
 
+void RGBASlider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   Slider::Display(win , xpos , ypos);
+   
+   char c[4] = {'R' , 'G' , 'B' , 'A'};
+   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%c" , c[type]) , xpos + OuterArea().CX() , ypos + OuterArea().CY() , (*wcolors.get())[TXTCOL] , HALIGN_CENTER , VALIGN_CENTER);
+}
 
 
 
