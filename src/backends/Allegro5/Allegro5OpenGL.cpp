@@ -25,14 +25,13 @@ unsigned int errcount = 0;
 
 std::map<unsigned int , int> errmap;
 
-void __stdcall
-Eagle_GL_MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLbyte* message,
-                 const void* userParam )
+void __stdcall MessageCallback(GLenum source,
+                              GLenum type,
+                              GLuint id,
+                              GLenum severity,
+                              GLsizei length,
+                              const GLbyte* message,
+                              const void* userParam )
 {
    unsigned int err = glGetError();
    fprintf( stdout, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
@@ -50,7 +49,7 @@ Eagle_GL_MessageCallback( GLenum source,
 
 void SetupOpenGLDebug() {
    glEnable              ( GL_DEBUG_OUTPUT );
-   glDebugMessageCallback( (GLDEBUGPROCEagle_GL_MessageCallback, 0 );
+   glDebugMessageCallback( (GLDEBUGPROC)MessageCallback, 0 );
 
    al_set_new_display_option(ALLEGRO_OPENGL_MAJOR_VERSION , 2 , ALLEGRO_REQUIRE);
    al_set_new_display_option(ALLEGRO_OPENGL_MINOR_VERSION , 1 , ALLEGRO_REQUIRE);
