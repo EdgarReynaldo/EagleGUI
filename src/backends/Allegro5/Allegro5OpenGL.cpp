@@ -26,7 +26,7 @@ unsigned int errcount = 0;
 std::map<unsigned int , int> errmap;
 
 void __stdcall
-GLMessageCallback( GLenum source,
+Eagle_GL_MessageCallback( GLenum source,
                  GLenum type,
                  GLuint id,
                  GLenum severity,
@@ -50,7 +50,7 @@ GLMessageCallback( GLenum source,
 
 void SetupOpenGLDebug() {
    glEnable              ( GL_DEBUG_OUTPUT );
-   glDebugMessageCallback( (GLDEBUGPROC)GLMessageCallback, 0 );
+   glDebugMessageCallback( (GLDEBUGPROCEagle_GL_MessageCallback, 0 );
 
    al_set_new_display_option(ALLEGRO_OPENGL_MAJOR_VERSION , 2 , ALLEGRO_REQUIRE);
    al_set_new_display_option(ALLEGRO_OPENGL_MINOR_VERSION , 1 , ALLEGRO_REQUIRE);
