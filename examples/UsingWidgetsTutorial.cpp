@@ -86,7 +86,7 @@ int main(int argc , char** argv) {
    /// Since a WidgetHandler is derived from WidgetBase, we can use all our widget functions on our gui
    /// Widgets start at a size of 0,0 and position of 0,0 so we need to give them an area to occupy. Layouts do this for us
    /// But here we see how to do it manually
-   gui.SetWidgetArea(Rectangle(200,200,400,300));/// Set our position to 200,200 and our size to 400x300
+   gui.SetWidgetArea(Rectangle(100,100,600,400));/// Set our position to 200,200 and our size to 400x300
 
    WidgetColorset wc = *gui.GetWidgetColorset();/// Get a copy of our gui's colors
    wc[SDCOL] = GetColorByName("purple");/// Set the shadow color to purple   wc[BGCOL] = GetColorByName("blue");/// Set the background color to blue
@@ -103,6 +103,8 @@ int main(int argc , char** argv) {
    /// Here we're going to use a flow layout for the root layout
    FlowLayout flow;
    gui.SetRootLayout(&flow);
+   
+   flow.Resize(16);
    
    flow.SetFlowDirection(FLOW_FAVOR_VERTICAL);/// can be FLOW_FAVORED_VERTICAL or FLOW_FAVORED_HORIZONTAL
    flow.SetAnchorPosition(FBOX_ANCHOR_NW);/// Can be FBOX_ANCHOR_* [NW SE SW NE]

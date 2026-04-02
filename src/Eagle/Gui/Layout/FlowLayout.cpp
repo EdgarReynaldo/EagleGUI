@@ -482,7 +482,6 @@ void FlowLayout::MirrorFlow() {
 
 
 
-
 FlowLayout::FlowLayout(std::string classname , std::string objname) :
       BoxLayout(classname , objname),
       favored_direction(FLOW_FAVOR_HORIZONTAL),
