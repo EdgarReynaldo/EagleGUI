@@ -31,6 +31,16 @@ MessageCallback( GLenum source,
                  GLenum severity,
                  GLsizei length,
                  const GLbyte* message,
+                 const void* userParam );
+
+
+void __stdcall
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLbyte* message,
                  const void* userParam )
 {
    unsigned int err = glGetError();
