@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <map>
 
+#include "Eagle.hpp"
+#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
+
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_opengl.h"
 
@@ -12,8 +15,6 @@
 #include "GL/glu.h"
 #include "GL/glext.h"
 
-#include "Eagle.hpp"
-#include "Eagle/backends/Allegro5/Allegro5OpenGL.hpp"
 
 
 bool bpoint = false;
@@ -25,7 +26,7 @@ unsigned int errcount = 0;
 
 std::map<unsigned int , int> errmap;
 
-void __stdcall MessageCallback(GLenum source,
+void MessageCallback(GLenum source,
                               GLenum type,
                               GLuint id,
                               GLenum severity,
