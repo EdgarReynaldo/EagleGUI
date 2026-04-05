@@ -139,8 +139,8 @@ if (UNIX)
                 DOC "The shared physfs library")
 endif()
 
-find_library(OGL32LIB  "OPENGL32" DOC "OpenGL 32 library")
-find_library(OGLU32LIB "GLU32"    DOC "OpenGL Utility Library")
+find_library(OGL32LIB  "opengl32" PATHS "/usr/x86_64-w64-mingw32/lib" DOC "OpenGL 32 library")
+find_library(OGLU32LIB "glu32"    PATHS "/usr/x86_64-w64-mingw32/lib" DOC "OpenGL Utility Library")
 
 
 list(APPEND ALLEGRO_LINK_LIBS ${PHYSFS_LIB} ${OGL32LIB} ${OGLU32LIB})
