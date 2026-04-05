@@ -139,7 +139,11 @@ if (UNIX)
                 DOC "The shared physfs library")
 endif()
 
-list(APPEND ALLEGRO_LINK_LIBS ${PHYSFS_LIB} "opengl32" "glu32")
+find_library(OGL32LIB  "OPENGL32" DOC "OpenGL 32 library")
+find_library(OGLU32LIB "GLU32"    DOC "OpenGL Utility Library")
+
+
+list(APPEND ALLEGRO_LINK_LIBS ${PHYSFS_LIB} ${OGL32LIB} ${OGLU32LIB})
 
 add_subdirectory(src/Eagle)
 
@@ -186,7 +190,7 @@ if (WANT_EXAMPLES)
          endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 
-         set(WINSTATICLIBS "-static" "-lOpenAL32" "-ljpeg" "-lwebp" "-lsharpyuv" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-lopengl32" "-lglu32" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
+         set(WINSTATICLIBS "-static" "-lOpenAL32" "-ljpeg" "-lwebp" "-lsharpyuv" "-lFLAC" "-ltheora" "-lvorbisfile" "-lvorbis" "-logg" "-lfreetype" "-lpng16" "-lzlibstatic" "-ldsound" "-lgdiplus" "-luuid" "-lkernel32" "-lwinmm" "-lpsapi" "-luser32" "-lcomdlg32" "-lgdi32" "-lshell32" "-lole32" "-ladvapi32" "-lws2_32" "-lshlwapi" "-lpthread" "-static-libstdc++" "-static-libgcc")
 
          if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             if (EAGLE_SHARED_LIBRARY_BUILD)
