@@ -26,7 +26,7 @@ unsigned int errcount = 0;
 
 std::map<unsigned int , int> errmap;
 
-void MessageCallback(GLenum source,
+void APIENTRY MessageCallback(GLenum source,
                               GLenum type,
                               GLuint id,
                               GLenum severity,
