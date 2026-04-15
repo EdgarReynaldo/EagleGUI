@@ -3,7 +3,7 @@
 #include <cstdio>
 
 
-#include "Eagle/Backends/Allegro5Backend.hpp"
+#include "Eagle/backends/Allegro5Backend.hpp"
 #include "Eagle/System.hpp"
 
 
