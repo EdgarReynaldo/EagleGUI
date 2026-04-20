@@ -38,6 +38,12 @@ int main(int argc , char** argv) {
    Allegro5System* a5sys = GetAllegro5System();
    
    bool sysup = a5sys->InitializeSystem();
+   
+   bool kb = a5sys->InstallKeyboard();
+   bool ms = a5sys->InstallMouse();
+   bool js = a5sys->InstallJoystick();
+   bool tc = a5sys->InstallTouch();
+
    bool sysgood = a5sys->FinalizeSystem();
    
    std::cout << "Sys " << sysup << " Good " << sysgood << std::endl;
