@@ -79,6 +79,9 @@ int main(int argc , char** argv) {
 
    /** Start of WidgetBase widget use tutorial */
    
+   EagleFont* gfont = win->GetFont("Data/Fonts/Verdana.ttf" , -16);
+   EAGLE_ASSERT(gfont);
+   
    /// To handle all our widgets, we need a WidgetHandler
    WidgetHandler gui(win);
    gui.SetupBuffer(800,600,win);
@@ -104,19 +107,21 @@ int main(int argc , char** argv) {
    FlowLayout flow;
    gui.SetRootLayout(&flow);
    
-   flow.Resize(16);
    
    flow.SetFlowDirection(FLOW_FAVOR_VERTICAL);/// can be FLOW_FAVORED_VERTICAL or FLOW_FAVORED_HORIZONTAL
    flow.SetAnchorPosition(FBOX_ANCHOR_NW);/// Can be FBOX_ANCHOR_* [NW SE SW NE]
    flow.SetAlignment(HALIGN_CENTER , VALIGN_CENTER);/// Left top is default alignment, let's use centered alignment
    flow.SetBoxSpacing(BOX_SPACE_EVEN);/// Spread out the extra space evenly
    
+   flow.Resize(16);
+
    GuiButton clrbtns[EAGLE_NUMCOLORS];/// color buttons
    RadioGroup clrgroup;/// make them a radio button
-   for (unsigned int n = 0 ; n <= EAGLE_NUMCOLORS ; ++n) {
+   for (unsigned int n = 0 ; n < EAGLE_NUMCOLORS ; ++n) {
       clrbtns[n].SetButtonType(RECTANGLE_BTN , SPRING_BTN , BUTTON_CLASS_HOVER);
       clrbtns[n].SetLabel(WidgetColorName((WIDGETCOLOR)n));
       clrbtns[n].SetPreferredSize(200 , 20);
+      clrbtns[n].SetFont(gfont);
       flow.AddWidget(&clrbtns[n]);
       clrgroup.AddRadioButton(&clrbtns[n]);
    }
@@ -179,10 +184,11 @@ int main(int argc , char** argv) {
 
 
 void RGBASlider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   Slider::Display(win , xpos , ypos);
+   Slider::PrivateDisplay(win , xpos , ypos);
    
    char c[4] = {'R' , 'G' , 'B' , 'A'};
-   win->DrawTextString(GetFont("Data/Fonts/Verdana.ttf") , StringPrintF("%c" , c[type]) , xpos + OuterArea().CX() , ypos + OuterArea().CY() , (*wcolors.get())[TXTCOL] , HALIGN_CENTER , VALIGN_CENTER);
+   win->DrawTextString(win->GetFont("Data/Fonts/Verdana.ttf" , -16) , StringPrintF("%c" , c[type]) ,
+                       xpos + OuterArea().CX() , ypos + OuterArea().CY() , GetColor(TXTCOL) , HALIGN_CENTER , VALIGN_CENTER);
 }
 
 

@@ -139,7 +139,10 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="examples/EagleSystemDebug.cpp" />
+		<Unit filename="examples/EagleSystemDebug.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="examples/EagleSystemTutorial.cpp">
 			<Option compile="0" />
 			<Option link="0" />

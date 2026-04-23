@@ -52,8 +52,8 @@ void GuiButton::ResetRadii() {
          break;
       case ROUNDED_BTN :
          {
-            rad_a = hradpercent*InnerArea().W()/2.0;
-            rad_b = vradpercent*InnerArea().H()/2.0;
+            rad_a = hradpercent*r.W()/2.0;
+            rad_b = vradpercent*r.H()/2.0;
          }
          break;
       case ELLIPSE_BTN : 
@@ -66,18 +66,20 @@ void GuiButton::ResetRadii() {
 
 
 void GuiButton::ResetClickArea() {
+   int iw = InnerArea().W();
+   int ih = InnerArea().H();
    switch(btn_shape) {
    case RECTANGLE_BTN :
-      SetClickArea(new Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()) , true);
+      SetClickArea(new Rectangle(0 , 0 , iw , ih) , true);
       break;
    case ROUNDED_BTN :
-      SetClickArea(new RoundedRectangle(Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()) , rad_a , rad_b) , true);
+      SetClickArea(new RoundedRectangle(Rectangle(0 , 0 , iw , ih) , rad_a , rad_b) , true);
       break;
    case ELLIPSE_BTN :
-      SetClickArea(new Ellipse(0 , 0 , InnerArea().W() , InnerArea().H()) , true);
+      SetClickArea(new Ellipse(0 , 0 , iw , ih) , true);
       break;
    case CIRCLE_BTN :
-      SetClickArea(new Circle(InnerArea().W()/2 , InnerArea().H()/2 , rad_a) , true);
+      SetClickArea(new Circle(iw/2 , ih/2 , rad_a) , true);
       break;
    default :
       break;
