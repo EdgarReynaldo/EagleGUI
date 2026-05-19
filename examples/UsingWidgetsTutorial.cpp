@@ -16,6 +16,7 @@
 #include "Eagle/backends/Allegro5Backend.hpp"
 
 
+extern int selected_color;
 
 enum CSLIDER {
    CSLIDERR = 0,
@@ -97,7 +98,8 @@ int main(int argc , char** argv) {
    /// But here we see how to do it manually
    gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));/// Set our position to 200,200 and our size to 400x300
 
-   WidgetColorset wc = *gui.GetWidgetColorset();/// Get a copy of our gui's colors
+   SHAREDOBJECT<WidgetColorset> swc = gui.GetWidgetColorset();/// Get a shared copy of our gui's colors
+   WidgetColorset& wc = *swc.get();
    wc[SDCOL] = GetColorByName("purple");/// Set the shadow color to purple   wc[BGCOL] = GetColorByName("blue");/// Set the background color to blue
    wc[MGCOL] = GetColorByName("dark_gray");/// Set the middle ground color to dark gray
    wc[FGCOL] = GetColorByName("light_gray");/// Set the foreground color to light gray
@@ -127,7 +129,7 @@ int main(int argc , char** argv) {
    cgrid.SetPreferredSize(125,220);
    
    GridLayout rgbagrid(4 , 1 , "GridLayout" , "RGBA grid");
-   rgbagrid.SetPreferredSize(200 , 256);
+   rgbagrid.SetPreferredSize(256 , 100);
    
    
    flow.Resize(2);
@@ -144,7 +146,6 @@ int main(int argc , char** argv) {
       cgrid.PlaceWidget(&clrbtns[n] , n);
       clrgroup.AddRadioButton(&clrbtns[n]);
    }
-   int selected_color = (int)SDCOL;
    clrgroup.SelectButton(&clrbtns[selected_color]);
    
    wc2 = wc;
@@ -153,7 +154,8 @@ int main(int argc , char** argv) {
    for (unsigned int n = 0 ; n < 4 ; ++n) {
       rgbaslider[n].SetWidgetColorset(wc2);
       rgbaslider[n].type = (CSLIDER)n;
-      rgbaslider[n].SetPreferredSize(50 , 256);
+      rgbaslider[n].SetPreferredSize(256 , 24);
+      rgbaslider[n].SetOrientation(true);
       rgbagrid.PlaceWidget(&rgbaslider[n] , n);
    }
    
@@ -179,22 +181,31 @@ int main(int argc , char** argv) {
       
       do {
          EagleEvent e = sys->WaitForSystemEventAndUpdateState();
+         
+         if (e.type != EAGLE_EVENT_TIMER) {
+            EagleLog() << EagleEventName(e.type) << std::endl;
+         }
          gui.HandleEvent(e);
          WidgetMsg msg;
          while (gui.HasMessages()) {
             msg = gui.TakeNextMessage();
             if (msg.Topic() == TOPIC_BUTTON_WIDGET) {
+               if (msg.msgs != BUTTON_CLICKED)
+               for (unsigned int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {
+                  if (&clrbtns[i] == msg.From()) {
+                     selected_color = i;
+                     break;
+                  }
+               }
                /// color button pressed, reset rgba sliders to wc[selected_color]
                SetSliders(&wc2 , rgbaslider , wc[selected_color]);
 
             }
-            else if (msg.Topic() == TOPIC_SLIDER) {
+            if (msg.Topic() == TOPIC_SLIDER) {
                /// A color slider was changed, reset the BGCOL of the selected color button
-               SHAREDOBJECT<WidgetColorset> wcshared = clrbtns[selected_color].GetWidgetColorset();
-               (*wcshared.get())[BGCOL] = EagleColor(rgbaslider[0].GetColor(BGCOL).R() , rgbaslider[1].GetColor(BGCOL).G() ,
+               (*(gui.GetWidgetColorset().get()))[BGCOL] = EagleColor(rgbaslider[0].GetColor(BGCOL).R() , rgbaslider[1].GetColor(BGCOL).G() ,
                                                   rgbaslider[2].GetColor(BGCOL).B() , rgbaslider[3].GetColor(BGCOL).A());
-               clrbtns[selected_color].SetWidgetColorset(wcshared);
-               SetSliders(wcshared.get() , rgbaslider , (*wcshared.get())[BGCOL]);
+               SetSliders(gui.GetWidgetColorset().get() , rgbaslider , (*(gui.GetWidgetColorset().get()))[BGCOL]);
             }
          }
          if (e.type == EAGLE_EVENT_TIMER) {
@@ -226,13 +237,37 @@ int main(int argc , char** argv) {
 
 
 void RGBASlider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-   Slider::PrivateDisplay(win , xpos , ypos);
+   EagleColor bg = GetColor(BGCOL);
+   Rectangle i = InnerArea();
+   switch(type) {
+   case CSLIDERR :
+      bg = EagleColor(bg.R() , 0 , 0 , 255);
+      break;
+   case CSLIDERG :
+      bg = EagleColor(0 , bg.G() , 0 , 255);
+      break;
+   case CSLIDERB :
+      bg = EagleColor(0 , 0 , bg.B() , 255);
+      break;
+   case CSLIDERA :
+      bg = EagleColor(bg.A() , bg.A() , bg.A() , bg.A());
+      break;
+   default :
+      break;
+   }
+   i.DrawGuiRectDown(win , bg , GetColor(SDCOL));
+   handle->Display(win , 0 , 0);
+//   Slider::PrivateDisplay(win , xpos , ypos);
    xpos += InnerArea().CX();
    ypos += InnerArea().CY();
    char c[4] = {'R' , 'G' , 'B' , 'A'};
    win->DrawTextString(win->GetFont("Data/Fonts/Verdana.ttf" , -16) , StringPrintF("%c" , c[type]) ,
-                       xpos , ypos , GetColor(TXTCOL) , HALIGN_CENTER , VALIGN_CENTER);
+                       xpos , ypos , GetColorByName("white") , HALIGN_CENTER , VALIGN_CENTER);
 }
+
+
+
+int selected_color = (int)SDCOL;
 
 
 
@@ -241,14 +276,19 @@ void SetSliders(WidgetColorset* wc , RGBASlider* slarray4 , EagleColor c) {
    if (wc) {
       wc2 = *wc;
    }
-   wc2[MGCOL] = EagleColor(c.R() , 0 , 0 , 255);
+   wc2[selected_color] = EagleColor(c.R() , 0 , 0 , 255);
    slarray4[0].SetWidgetColorset(wc2);
-   wc2[MGCOL] = EagleColor(0 , c.G() , 0 , 255);
+   slarray4[0].SetupSlider(c.R() , 255);
+   wc2[selected_color] = EagleColor(0 , c.G() , 0 , 255);
+   slarray4[1].SetupSlider(c.G() , 255);
    slarray4[1].SetWidgetColorset(wc2);
-   wc2[MGCOL] = EagleColor(0 , 0 , c.B() , 255);
+   wc2[selected_color] = EagleColor(0 , 0 , c.B() , 255);
+   slarray4[2].SetupSlider(c.B() , 255);
    slarray4[2].SetWidgetColorset(wc2);
-   wc2[MGCOL] = EagleColor(c.A() , c.A() , c.A() , c.A());
+   wc2[selected_color] = EagleColor(c.A() , c.A() , c.A() , c.A());
+   slarray4[3].SetupSlider(c.A() , 255);
    slarray4[3].SetWidgetColorset(wc2);
+   
 }
 
 

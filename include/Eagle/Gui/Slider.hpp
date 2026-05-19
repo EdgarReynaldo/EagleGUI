@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -46,8 +46,8 @@ enum SLIDER_MSGS {
 class Slider : public WidgetBase , public EagleEventListener {
 
 protected :
-   int slider_pos;
-   int slider_max;
+   unsigned int slider_pos;
+   unsigned int slider_max;
    double slider_percent;
    bool drag;
    int slider_start;
@@ -81,14 +81,16 @@ public :
 
    void SetPercent(double pct , bool sendmessage = true);///< Set the percent of the slider (from 0.0 to 1.0)
 
-   int GetSliderValue(double pct);///< Return pct*slider_max
-   int GetSliderMax();
+   int GetSliderValue();/// returns slider_pos
+   int GetSliderMax();/// returns slider_max
 
    double GetPercent();///< [0.0,1.0]
    double GetInverted();///< [0.0,1.0]
 
    void SetInversion(bool invert_me);///< Pass true to invert (use right to left or use bottom to top)
    void SetOrientation(bool horizontal_slider);///< Pass true to use a horizontal scrollbar, false for vertical
+   
+   void SetupSlider(unsigned int pos , unsigned int max);
 };
 
 

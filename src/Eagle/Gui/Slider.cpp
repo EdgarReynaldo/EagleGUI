@@ -83,7 +83,7 @@ int Slider::PrivateUpdate(double dt) {
 
 void Slider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    Rectangle inner = warea.InnerArea();
-   inner.DrawGuiRectDown(win , GetColor(MGCOL) , GetColor(SDCOL));
+   inner.DrawGuiRectDown(win , GetColor(BGCOL) , GetColor(SDCOL));
    handle->Display(win , xpos , ypos);
 }
 
@@ -135,8 +135,8 @@ void Slider::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 Slider::Slider(std::string classname , std::string objname , bool vertical , bool inverted) :
       WidgetBase(classname , objname),
-      slider_pos(0),
-      slider_max(1),
+      slider_pos(0U),
+      slider_max(1U),
       slider_percent(0.0),
       drag(false),
       slider_start(0),
@@ -173,7 +173,7 @@ void Slider::SetPercent(double pct , bool sendmessage) {
    if (pct < 0.0) {pct = 0.0;}
    if (pct > 1.0) {pct = 1.0;}
    slider_percent = pct;
-   slider_pos = GetSliderValue(pct);
+   slider_pos = (unsigned int)(slider_percent*slider_max);
    ResizeButton();
    SetRedrawFlag();
    if (sendmessage && (old != slider_percent)) {
@@ -183,8 +183,8 @@ void Slider::SetPercent(double pct , bool sendmessage) {
 
 
 
-int Slider::GetSliderValue(double pct) {
-   return pct*slider_max;
+int Slider::GetSliderValue() {
+   return slider_pos;
 }
 
 
@@ -218,6 +218,24 @@ void Slider::SetOrientation(bool horizontal_slider) {
    horizontal = horizontal_slider;
    SetPercent(slider_percent);
 }
+
+
+
+void Slider::SetupSlider(unsigned int pos , unsigned int max) {
+   double old = slider_percent;
+   if (max < 1) {max = 1;}
+   if (pos > max) {pos = max;}
+   slider_pos = pos;
+   slider_max = max;
+   slider_percent = pos/(double)max;
+   ResizeButton();
+   SetRedrawFlag();
+   if (old != slider_percent) {
+      QueueUserMessage(WidgetMsg(this , TOPIC_SLIDER , SLIDER_VALUE_CHANGED));
+   }
+   
+}
+
 
 
 

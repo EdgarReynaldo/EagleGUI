@@ -325,7 +325,7 @@ public :
    LayoutBase*    GetLayout()  const {return wlayout;} ///< Returns this widget's layout owner
    WidgetHandler* GetHandler() const {return whandler;}///< Returns this widget's widget handler
    
-   bool HasGui();/// Returns true if this widget is also a widget handler or uses one
+   bool HasGui();///< Returns true if this widget is also a widget handler or uses one
    virtual WidgetHandler* GetGui();///< Returns a pointer to this widget dynamically cast as a WidgetHandler*
    
    int ZValue() const {return zdepth;}///< Gets the z priority. See @ref WIDGET_ZORDER_PRIORITY 
