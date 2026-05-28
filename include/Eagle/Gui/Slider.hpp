@@ -38,6 +38,10 @@ enum SLIDER_MSGS {
 };
 
 
+REGISTER_WIDGET_MESSAGE(TOPIC_SLIDER , SLIDER_VALUE_CHANGED);
+
+
+
 /**! @class Slider
  *   @brief Simple 1D slider class, can use custom button, can be configured to display left to right,
  *   right to left (inverted) , up to down , down to up (inverted)

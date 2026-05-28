@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -26,12 +26,17 @@
 const unsigned int TOPIC_SLIDER = NextFreeTopicId();
 
 
+
+REGISTERED_WIDGET_MESSAGE(TOPIC_SLIDER , SLIDER_VALUE_CHANGED);
+
+
+
 int Slider::PrivateHandleEvent(EagleEvent ee) {
-   int ret = DIALOG_OKAY;
    
 //   EagleLog() << "Event " << EagleEventName(ee.type) << " received.\n";
-   
-   
+   int ret = handle->HandleEvent(ee);
+   if (ret & DIALOG_INPUT_USED) {return DIALOG_INPUT_USED;}
+
    if (ee.type == EAGLE_EVENT_MOUSE_AXES) {
       if (!drag) {
          mxstart = ee.mouse.x;
@@ -47,11 +52,6 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
          return DIALOG_INPUT_USED;
       }
    }
-   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN || ee.type == EAGLE_EVENT_MOUSE_BUTTON_UP) {
-      if (ee.mouse.button == 1) {
-         ret = handle->HandleEvent(ee);
-      }
-   }
    if (ee.type == EAGLE_EVENT_WIDGET) {
       if (ee.widget.from == handle) {
          if (ee.widget.msgs == BUTTON_CLICKED) {
@@ -62,6 +62,40 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
             drag = false;
          }
          return DIALOG_OKAY;
+      }
+   }
+   /// Handle didn't use the event so now we can to enable the ability to click on the bg of the slider and jump 10% of the way toward 0 / max
+   if (ee.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
+      if (ee.mouse.button == 1) {
+         if (InnerArea().Contains(ee.mouse.x , ee.mouse.y)) {
+            /// Click scroll by 10%
+            double pct = 0.1;
+            double inv = (invert?1.0:-1.0);
+            double pos = slider_pos;
+            if (invert) {
+               pos = slider_max - slider_pos;
+            }
+            if (horizontal) {
+               if (ee.mouse.x - InnerArea().X() < (int)pos) {
+                  pct = 0.1;
+               }
+               else {
+                  pct = -0.1;
+               }
+            }
+            else {
+               // vertical
+               if (ee.mouse.y - InnerArea().Y() < (int)pos) {
+                  pct = 0.1;
+               }
+               else {
+                  pct = -0.1;
+               }
+            }
+            pct *= inv;
+            SetPercent(slider_percent + pct);
+            return DIALOG_INPUT_USED;
+         }
       }
    }
    return ret;
@@ -229,11 +263,10 @@ void Slider::SetupSlider(unsigned int pos , unsigned int max) {
    slider_max = max;
    slider_percent = pos/(double)max;
    ResizeButton();
-   SetRedrawFlag();
    if (old != slider_percent) {
       QueueUserMessage(WidgetMsg(this , TOPIC_SLIDER , SLIDER_VALUE_CHANGED));
    }
-   
+   SetRedrawFlag();
 }
 
 

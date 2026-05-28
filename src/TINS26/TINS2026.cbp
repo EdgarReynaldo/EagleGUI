@@ -2,13 +2,13 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="GenericEagleProject" />
+		<Option title="TINS2026" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="cbbuild/bin/EagleDebug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/tins26d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -24,8 +24,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="cbbuild/bin/Eagle" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/tins26" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Dynamic/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -40,8 +40,8 @@
 				</Linker>
 			</Target>
 			<Target title="DebugStatic">
-				<Option output="cbbuild/bin/EagleDebugStatic" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/tins26ds" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Static/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -88,8 +88,8 @@
 				</Linker>
 			</Target>
 			<Target title="ReleaseStatic">
-				<Option output="cbbuild/bin/EagleStatic" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="cbbuild/bin" />
+				<Option output="c:/usr64/bin/tins26s" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="c:/usr64/bin" />
 				<Option object_output="cbbuild/obj/Static/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -147,6 +147,7 @@
 			<Add directory="cbbuild/lib" />
 			<Add directory="Allegro525/lib" />
 		</Linker>
+		<Unit filename="tins.cpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

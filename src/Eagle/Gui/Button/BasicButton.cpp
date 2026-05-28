@@ -250,7 +250,7 @@ void BasicButton::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos
          }
          else {
             click_area->Fill(win , wc[BGCOL]);
-            click_area->Draw(win , wc[MGCOL]);
+            click_area->Draw(win , wc[SDCOL]);
          }
       }
       click_area->MoveBy(-xoffset , -yoffset);
