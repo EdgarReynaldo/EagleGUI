@@ -51,6 +51,10 @@ int main(int argc , char** argv) {
    EagleGraphicsContext* win = sys->CreateGraphicsContext("TINS2026" , 1024 , 768 , EAGLE_WINDOWED | EAGLE_OPENGL);
    EAGLE_ASSERT(win && win->Valid());
    
+   EagleFont* emoji32 = win->GetFont("Data/Fonts/NotoColorEmoji.ttf" , -48);
+   ALLEGRO_FONT* emoji = dynamic_cast<Allegro5Font*>(emoji32)->AllegroFont();
+   
+   
    bool quit = false;
    bool redraw = true;
    sys->GetSystemTimer()->Start();/// The system timer is created automatically, but needs to be manually started
@@ -58,6 +62,8 @@ int main(int argc , char** argv) {
    while (!quit) {
       if (redraw) {
          win->Clear();
+//         al_draw_text(emoji , al_map_rgba(255,255,255,255) , 10 , 10 , 0 , U+007f);
+         win->DrawTextString(emoji32 , "🐴" , 512 , 384 , EagleColor(255,255,255,255) , HALIGN_CENTER , VALIGN_CENTER);
          win->FlipDisplay();
       }
       do {

@@ -44,10 +44,10 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
       }
       else {
          if (horizontal) {
-            SetPercent((double)(slider_start + (invert?-1:1)*(ee.mouse.x - mxstart))/slider_max);
+            SetPercent((double)(slider_start + (invert?-1:1)*(ee.mouse.x - mxstart))/slidermax);
          }
          else {
-            SetPercent((double)(slider_start + (invert?-1:1)*(ee.mouse.y - mystart))/slider_max);
+            SetPercent((double)(slider_start + (invert?-1:1)*(ee.mouse.y - mystart))/slidermax);
          }
          return DIALOG_INPUT_USED;
       }
@@ -56,7 +56,7 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
       if (ee.widget.from == handle) {
          if (ee.widget.msgs == BUTTON_CLICKED) {
             drag = true;
-            slider_start = slider_pos;
+            slider_start = sliderval;
          }
          else if (ee.widget.msgs == BUTTON_RELEASED) {
             drag = false;
@@ -71,9 +71,9 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
             /// Click scroll by 10%
             double pct = 0.1;
             double inv = (invert?1.0:-1.0);
-            double pos = slider_pos;
+            double pos = sliderval;
             if (invert) {
-               pos = slider_max - slider_pos;
+               pos = slidermax - sliderval;
             }
             if (horizontal) {
                if (ee.mouse.x - InnerArea().X() < (int)pos) {
@@ -93,7 +93,7 @@ int Slider::PrivateHandleEvent(EagleEvent ee) {
                }
             }
             pct *= inv;
-            SetPercent(slider_percent + pct);
+            SetPercent(dpercent + pct);
             return DIALOG_INPUT_USED;
          }
       }
@@ -124,38 +124,46 @@ void Slider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
 
 
 void Slider::OnAreaChanged() {
-   if (horizontal) {
-      slider_max = InnerArea().W() - handle->OuterArea().W();
-   }
-   else {
-      slider_max = InnerArea().H() - handle->OuterArea().H();
-   }
-   if (slider_max < 1) {slider_max = 1;}
-   SetPercent(slider_percent);
+   ResizeButton();
+   SetPercent(sliderval/(double)slidermax);
 }
 
 
 
 void Slider::ResizeButton() {
    Rectangle inner = warea.InnerArea();
+   
+   int x = InnerArea().X();
+   int y = InnerArea().Y();
+   int w = InnerArea().W()/10;
+   int h = InnerArea().H()/10;
    if (horizontal) {
-      slider_max = InnerArea().W() - handle->InnerArea().W();
-      if (invert) {
-         handle->SetWidgetArea(WidgetArea(Rectangle(inner.X() + slider_max - slider_pos , inner.Y() , inner.W()/10 , inner.H()) , false));
-      }
-      else {
-         handle->SetWidgetArea(WidgetArea(Rectangle(inner.X() + slider_pos , inner.Y() , inner.W()/10 , inner.H()) , false));
-      }
+      slidermax = InnerArea().W() - w;
+      if (sliderval > slidermax) {sliderval = slidermax;}
    }
    else {
-      slider_max = InnerArea().H() - handle->InnerArea().H();
-      if (invert) {
-         handle->SetWidgetArea(WidgetArea(Rectangle(inner.X() , inner.Y() + slider_max - slider_pos , inner.W() , inner.H()/10)) , false);
+      slidermax = InnerArea().H() - h;
+      if (sliderval > slidermax) {sliderval = slidermax;}
+   }
+   if (horizontal) {
+      h = InnerArea().H();
+      if (invert) {// R TO L
+         x = InnerArea().BRX() - sliderval - w;
       }
-      else {
-         handle->SetWidgetArea(WidgetArea(Rectangle(inner.X() , inner.Y() + slider_pos , inner.W() , inner.H()/10)) , false);
+      else {// L TO R
+         x += sliderval;
       }
    }
+   else {// vertical
+      w = InnerArea().W();
+      if (invert) {// T TO B
+         y += sliderval;
+      }
+      else {// B TO T
+         y = InnerArea().BRY() - sliderval - h;
+      }
+   }
+   handle->SetWidgetArea(WidgetArea(Rectangle(x,y,w,h)) , false);
 }
 
 
@@ -167,22 +175,33 @@ void Slider::RespondToEvent(EagleEvent e , EagleThread* thread) {
 
 
 
+void Slider::SetRedrawFlag() {
+   SetBgRedrawFlag();
+   handle->SetRedrawFlag();
+}
+
+
+
 Slider::Slider(std::string classname , std::string objname , bool vertical , bool inverted) :
       WidgetBase(classname , objname),
-      slider_pos(0U),
-      slider_max(1U),
-      slider_percent(0.0),
+      basic_handle_button("BasicButton" , "Slider button"),
+      handle(0),
+      precval(0U),
+      precmax(1U),
+      sliderval(0U),
+      slidermax(1U),
+      dpercent(0.0),
+      dactual(0.0),
       drag(false),
       slider_start(0),
       mxstart(-1),
       mystart(-1),
       invert(inverted),
-      horizontal(!vertical),
-      basic_handle_button(),
-      handle(0)
+      horizontal(!vertical)
 {
-   basic_handle_button.SetWidgetArea(WidgetArea(Rectangle(0 , 0 , InnerArea().W() , InnerArea().H()/10)) , false);
+   
    SetButton(&basic_handle_button);
+   ResizeButton();
 }
 
 
@@ -197,20 +216,21 @@ void Slider::SetButton(BasicButton* btn) {
    handle->SetActionType(SPRING_BTN);
    ListenTo(handle);
    handle->SetParent(this);
-   SetPercent(slider_percent);
+   SetPercent(dpercent , false);
 }
 
 
 
 void Slider::SetPercent(double pct , bool sendmessage) {
-   double old = slider_percent;
+   double old = dpercent;
    if (pct < 0.0) {pct = 0.0;}
    if (pct > 1.0) {pct = 1.0;}
-   slider_percent = pct;
-   slider_pos = (unsigned int)(slider_percent*slider_max);
+   dpercent = pct;
+   sliderval = (unsigned int)(dpercent*slidermax);
+   precval = (unsigned int)(dpercent*precmax);
    ResizeButton();
    SetRedrawFlag();
-   if (sendmessage && (old != slider_percent)) {
+   if (sendmessage && (old != dpercent)) {
       QueueUserMessage(WidgetMsg(this , TOPIC_SLIDER , SLIDER_VALUE_CHANGED));
    }
 }
@@ -218,25 +238,25 @@ void Slider::SetPercent(double pct , bool sendmessage) {
 
 
 int Slider::GetSliderValue() {
-   return slider_pos;
+   return sliderval;
 }
 
 
 
 int Slider::GetSliderMax() {
-   return slider_max;
+   return slidermax;
 }
 
 
 
 double Slider::GetPercent() {
-   return slider_percent;
+   return dpercent;
 }
 
 
 
 double Slider::GetInverted() {
-   return 1.0 - slider_percent;
+   return 1.0 - dpercent;
 }
 
 
@@ -250,22 +270,21 @@ void Slider::SetInversion(bool invert_me) {
 
 void Slider::SetOrientation(bool horizontal_slider) {
    horizontal = horizontal_slider;
-   SetPercent(slider_percent);
+   ResizeButton();
+   SetPercent(dpercent);
 }
 
 
 
 void Slider::SetupSlider(unsigned int pos , unsigned int max) {
-   double old = slider_percent;
+   double old = dpercent;
    if (max < 1) {max = 1;}
    if (pos > max) {pos = max;}
-   slider_pos = pos;
-   slider_max = max;
-   slider_percent = pos/(double)max;
+   precval = pos;
+   precmax = max;
+   dpercent = precval/(double)precmax;
+   sliderval = (unsigned int)(dpercent*slidermax);
    ResizeButton();
-   if (old != slider_percent) {
-      QueueUserMessage(WidgetMsg(this , TOPIC_SLIDER , SLIDER_VALUE_CHANGED));
-   }
    SetRedrawFlag();
 }
 

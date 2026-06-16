@@ -50,18 +50,22 @@ REGISTER_WIDGET_MESSAGE(TOPIC_SLIDER , SLIDER_VALUE_CHANGED);
 class Slider : public WidgetBase , public EagleEventListener {
 
 protected :
-   unsigned int slider_pos;
-   unsigned int slider_max;
-   double slider_percent;
+   BasicButton basic_handle_button;
+   BasicButton* handle;
+   
+   unsigned int precval;
+   unsigned int precmax;
+   unsigned int sliderval;
+   unsigned int slidermax;
+   double dpercent;
+   double dactual;
+   
    bool drag;
    int slider_start;
    int mxstart;
    int mystart;
    bool invert;
    bool horizontal;
-
-   BasicButton basic_handle_button;
-   BasicButton* handle;
 
 
 
@@ -76,8 +80,8 @@ protected :
 
    virtual void RespondToEvent(EagleEvent e , EagleThread* thread = MAIN_THREAD);
 
-   virtual void  SetRedrawFlag() {SetBgRedrawFlag();}
 public :
+   virtual void  SetRedrawFlag(); 
    
    Slider(std::string classname = "Slider" , std::string objname = "Nemo" , bool vertical = true , bool inverted = false);
 
@@ -94,7 +98,7 @@ public :
    void SetInversion(bool invert_me);///< Pass true to invert (use right to left or use bottom to top)
    void SetOrientation(bool horizontal_slider);///< Pass true to use a horizontal scrollbar, false for vertical
    
-   void SetupSlider(unsigned int pos , unsigned int max);
+   void SetupSlider(unsigned int precisionval , unsigned int precisionmax);
 };
 
 

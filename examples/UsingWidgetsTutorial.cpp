@@ -32,12 +32,7 @@ protected:
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);///< Virtual function that controls how a widget is drawn
 
 //   virtual int HandleEvent(EagleEvent e);
-   virtual int PrivateHandleEvent(EagleEvent e) {
-      
-      int ret = DIALOG_OKAY;
-      ret = Slider::PrivateHandleEvent(e);
-      return ret;
-   }
+   virtual int PrivateHandleEvent(EagleEvent e);
 public:
    CSLIDER type;
    
@@ -53,6 +48,10 @@ void SetSliders(RGBASlider* slarray4 , EagleColor c);
 
 
 int main(int argc , char** argv) {
+   
+   (void)argc;
+   (void)argv;
+   
    
    /// To do most anything in Eagle, we need a system driver
    Allegro5System* sys = GetAllegro5System();
@@ -104,7 +103,7 @@ int main(int argc , char** argv) {
    /// Since a WidgetHandler is derived from WidgetBase, we can use all our widget functions on our gui
    /// Widgets start at a size of 0,0 and position of 0,0 so we need to give them an area to occupy. Layouts do this for us
    /// But here we see how to do it manually
-   gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));/// Set our position to 200,200 and our size to 400x300
+   gui.SetWidgetArea(Rectangle(0 , 0 , sw , sh));/// Set our position to the top left corner and our size to screen size
 
    SHAREDOBJECT<WidgetColorset> swc = gui.GetWidgetColorset();/// Get a shared copy of our gui's colors
    WidgetColorset& wc = *swc.get();
@@ -139,8 +138,8 @@ int main(int argc , char** argv) {
    
    GridLayout rgbagrid(4 , 1 , "GridLayout" , "RGBA grid");
    rgbagrid.SetPreferredSize(256 , 100);
-   rgbagrid.SetWidgetColorset(wc);
-   SHAREDOBJECT<WidgetColorset> wc2 = rgbagrid.GetWidgetColorset();
+   rgbagrid.SetWidgetColorset(wc);/// Copy wc but private now
+   WidgetColorset& wc2 = *(rgbagrid.GetWidgetColorset().get());/// Get direct reference to the second grid's colorset
    
    flow.Resize(2);
    flow.AddWidget(&cgrid);
@@ -174,8 +173,16 @@ int main(int argc , char** argv) {
    EagleColor c = wc[selected_color];
    SetSliders(rgbaslider , c);
    
+   /// If we want to get events from our gui we have two options :
+   /// 1 : Have the EagleEventHandler queue we're using listen to the GUI, OR
+   /// 2 : Always listen for WidgetMsgs from the GUI. They come in response to handling events passed to them by the gui
+   /// The best option is 1. using the system queue for a listener. The reasoning behind it is because the system already listens
+   /// to everything that emits events system wide and all we have to do is wait for it to nab an event.
+   sys->GetSystemQueue()->ListenTo(&gui);/// In addition, all messages from any widgets handled by this gui will pass up the chain
+   /// Through the gui parent child structure.
    
    
+   /// For testing and laziness only.
    gui.SetFullRedraw();
    
    bool redraw = true;
@@ -196,42 +203,42 @@ int main(int argc , char** argv) {
          if ((e.type != EAGLE_EVENT_TIMER) && (e.type != EAGLE_EVENT_MOUSE_AXES)) {
             EagleLog() << EagleEventName(e.type) << std::endl;
          }
-         gui.HandleEvent(e);
-         WidgetMsg msg;
-         while (gui.HasMessages()) {
-            msg = gui.TakeNextMessage();
-            EagleLog() << "WidgetMsg " << msg << std::endl;
-            if (msg.Topic() == TOPIC_BUTTON_WIDGET) {
+         if (e.type == EAGLE_EVENT_WIDGET) {
+            if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
                bool slider_button = true;
                for (unsigned int i = 0 ; i < EAGLE_NUMCOLORS ; ++i) {
-                  if (&clrbtns[i] == msg.From()) {
+                  if (&clrbtns[i] == e.widget.from) {
                      selected_color = i;
                      slider_button = false;
                      break;
                   }
                }
                if (slider_button) {
-                  wc[selected_color] = (*(wc2.get()))[BGCOL] = GetSliderColor(rgbaslider);;
+                  wc[selected_color] = wc2[BGCOL] = GetSliderColor(rgbaslider);;
                }
                else {
                   /// color button pressed, reset rgba sliders to wc[selected_color]
                   
-                  (*(wc2.get()))[BGCOL] = wc[selected_color];
+                  wc2[BGCOL] = wc[selected_color];
                   
-                  SetSliders(&rgbaslider[0] , (*(wc2.get()))[BGCOL]);
+                  SetSliders(&rgbaslider[0] , wc2[BGCOL]);
                }
             }
-            if (msg.Topic() == TOPIC_SLIDER) {
+            else if (e.widget.topic == TOPIC_SLIDER) {
                /// A color slider was changed, reset the BGCOL of the selected color button
-               if (msg.msgs == SLIDER_VALUE_CHANGED) {
-                  wc[selected_color] = (*(wc2.get()))[BGCOL] = GetSliderColor(rgbaslider);
+               if (e.widget.msgs == SLIDER_VALUE_CHANGED) {
+                  wc[selected_color] = wc2[BGCOL] = GetSliderColor(rgbaslider);
+                  e.widget.from->SetBgRedrawFlag();
                }
             }
+         } else {
+           gui.HandleEvent(e);
          }
+         WidgetMsg msg;
+         if (gui.HasMessages()) {
+            gui.ClearMessages();
+         } 
          
-         if (e.type == EAGLE_EVENT_WIDGET) {
-            EagleLog() << "WIDGET EVENT" << std::endl;
-         }
          
          if (e.type == EAGLE_EVENT_TIMER) {
             redraw = true;
@@ -245,16 +252,7 @@ int main(int argc , char** argv) {
             }
          }
       } while (!sys->UpToDate());
-      
-      
    }
-   
-   
-   
-   
-   
-   
-   
    return 0;
 }
 
@@ -290,6 +288,13 @@ void RGBASlider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos)
                        xpos , ypos , GetColorByName("white") , HALIGN_CENTER , VALIGN_CENTER);
 }
 
+
+
+int RGBASlider::PrivateHandleEvent(EagleEvent e) {
+   int ret = DIALOG_OKAY;
+   ret = Slider::PrivateHandleEvent(e);
+   return ret;
+}
 
 
 int selected_color = (int)SDCOL;

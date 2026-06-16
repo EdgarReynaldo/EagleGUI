@@ -68,7 +68,6 @@
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
 					<Add option="-logg" />
-					<Add option="-lphysfs" />
 					<Add option="-lfreetype" />
 					<Add option="-lpng16" />
 					<Add option="-lzlibstatic" />
@@ -116,7 +115,6 @@
 					<Add option="-lvorbisfile" />
 					<Add option="-lvorbis" />
 					<Add option="-logg" />
-					<Add option="-lphysfs" />
 					<Add option="-lfreetype" />
 					<Add option="-lpng16" />
 					<Add option="-lzlibstatic" />
@@ -149,6 +147,8 @@
 		<Linker>
 			<Add directory="c:/usr64/lib" />
 		</Linker>
+		<Unit filename="Entity.cpp" />
+		<Unit filename="Entity.hpp" />
 		<Unit filename="tins.cpp" />
 		<Extensions />
 	</Project>
