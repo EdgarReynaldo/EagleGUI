@@ -58,7 +58,6 @@ protected :
    unsigned int sliderval;
    unsigned int slidermax;
    double dpercent;
-   double dactual;
    
    bool drag;
    int slider_start;
@@ -88,6 +87,9 @@ public :
    void SetButton(BasicButton* btn);///< Use a custom button, pass NULL to revert to default button
 
    void SetPercent(double pct , bool sendmessage = true);///< Set the percent of the slider (from 0.0 to 1.0)
+
+   int GetPrecisionValue();
+   int GetPrecisionMax();
 
    int GetSliderValue();/// returns slider_pos
    int GetSliderMax();/// returns slider_max

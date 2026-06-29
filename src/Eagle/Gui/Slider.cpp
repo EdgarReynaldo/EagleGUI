@@ -147,7 +147,7 @@ void Slider::ResizeButton() {
    }
    if (horizontal) {
       h = InnerArea().H();
-      if (invert) {// R TO L
+      if (!invert) {// R TO L
          x = InnerArea().BRX() - sliderval - w;
       }
       else {// L TO R
@@ -156,7 +156,7 @@ void Slider::ResizeButton() {
    }
    else {// vertical
       w = InnerArea().W();
-      if (invert) {// T TO B
+      if (!invert) {// T TO B
          y += sliderval;
       }
       else {// B TO T
@@ -191,7 +191,6 @@ Slider::Slider(std::string classname , std::string objname , bool vertical , boo
       sliderval(0U),
       slidermax(1U),
       dpercent(0.0),
-      dactual(0.0),
       drag(false),
       slider_start(0),
       mxstart(-1),
@@ -237,6 +236,18 @@ void Slider::SetPercent(double pct , bool sendmessage) {
 
 
 
+int Slider::GetPrecisionValue() {
+   return precval;
+}
+
+
+
+int Slider::GetPrecisionMax() {
+   return precmax;
+}
+
+
+
 int Slider::GetSliderValue() {
    return sliderval;
 }
@@ -263,6 +274,7 @@ double Slider::GetInverted() {
 
 void Slider::SetInversion(bool invert_me) {
    invert = invert_me;
+   ResizeButton();
    SetRedrawFlag();
 }
 
