@@ -107,12 +107,6 @@ int main(int argc , char** argv) {
 
    SHAREDOBJECT<WidgetColorset> swc = gui.GetWidgetColorset();/// Get a shared copy of our gui's colors
    WidgetColorset& wc = *swc.get();
-   wc[SDCOL] = GetColorByName("purple");/// Set the shadow color to purple   wc[BGCOL] = GetColorByName("blue");/// Set the background color to blue
-   wc[MGCOL] = GetColorByName("dark_gray");/// Set the middle ground color to dark gray
-   wc[FGCOL] = GetColorByName("light_gray");/// Set the foreground color to light gray
-   wc[HLCOL] = GetColorByName("green");/// Set the highlight color to green
-   wc[HVRCOL] = GetColorByName("green");/// Set the highlight color to green
-   wc[TXTCOL] = GetColorByName("white");/// Set the text color to white
    
 
    /// Now that we've finished setting our colors we assign them back to the gui widget
@@ -141,9 +135,6 @@ int main(int argc , char** argv) {
    rgbagrid.SetWidgetColorset(wc);/// Copy wc but private now
    WidgetColorset& wc2 = *(rgbagrid.GetWidgetColorset().get());/// Get direct reference to the second grid's colorset
    
-   flow.Resize(2);
-   flow.AddWidget(&cgrid);
-   flow.AddWidget(&rgbagrid);
    
    GuiButton clrbtns[EAGLE_NUMCOLORS];/// color buttons
    RadioGroup clrgroup;/// make them a radio button
@@ -168,6 +159,14 @@ int main(int argc , char** argv) {
       rgbagrid.PlaceWidget(&rgbaslider[n] , n);
    }
    
+   Slider2D sl2d("Slider2D" , "Minimap" , false , true);
+   sl2d.SetPreferredSize(280,280);
+   sl2d.SetWidgetArea(WidgetArea(BOXAREA(4) , BOXAREA(4) , BOXAREA(4) , sl2d.OuterArea() ) , false);
+   
+   flow.Resize(3);
+   flow.AddWidget(&cgrid);
+   flow.AddWidget(&rgbagrid);
+   flow.AddWidget(&sl2d);
    
    
    EagleColor c = wc[selected_color];
@@ -193,6 +192,13 @@ int main(int argc , char** argv) {
       if (redraw) {
          win->Clear();
          gui.Display(win , 0 , 0);
+         EagleColor c = GetSliderColor(rgbaslider);
+         win->DrawFilledRectangle(Rectangle(sw/2 , sh/2 , 60 , 60) , c);
+         std::string s = StringPrintF("%i,%i,%i,%i" , rgbaslider[0].GetPrecisionValue(),
+                                                      rgbaslider[1].GetPrecisionValue(),
+                                                      rgbaslider[2].GetPrecisionValue(),
+                                                      rgbaslider[3].GetPrecisionValue());
+         win->DrawTextString(gfont , s , 10 , sh/2 , c , HALIGN_LEFT , VALIGN_CENTER);
          win->FlipDisplay();
          redraw = false;
       }
@@ -297,15 +303,15 @@ int RGBASlider::PrivateHandleEvent(EagleEvent e) {
 }
 
 
-int selected_color = (int)SDCOL;
+int selected_color = (int)HVRCOL;
 
 
 EagleColor GetSliderColor(RGBASlider* s4) {
    
-   int r = s4[0].GetSliderValue();
-   int g = s4[1].GetSliderValue();
-   int b = s4[2].GetSliderValue();
-   int a = s4[3].GetSliderValue();
+   float r = s4[0].GetPercent();//.GetPrecisionValue()/(float)s4[0].GetPrecisionMax();
+   float g = s4[1].GetPercent();//GetPrecisionValue()/(float)s4[1].GetPrecisionMax();
+   float b = s4[2].GetPercent();//.GetPrecisionValue()/(float)s4[2].GetPrecisionMax();
+   float a = s4[3].GetPercent();//GetPrecisionValue()/(float)s4[3].GetPrecisionMax();
    
    
    EagleColor c(r,g,b,a);

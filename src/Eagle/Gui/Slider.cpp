@@ -295,6 +295,10 @@ void Slider::SetupSlider(unsigned int pos , unsigned int max) {
    precval = pos;
    precmax = max;
    dpercent = precval/(double)precmax;
+   slidermax = ((InnerArea().W()*9)/10);
+   if (!horizontal) {
+      slidermax = ((InnerArea().H()*9)/10);
+   }
    sliderval = (unsigned int)(dpercent*slidermax);
    ResizeButton();
    SetRedrawFlag();
