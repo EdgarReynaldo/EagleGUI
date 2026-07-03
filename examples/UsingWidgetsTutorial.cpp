@@ -116,6 +116,7 @@ int main(int argc , char** argv) {
    /// However, setting the root layout will allow you to position all widgets added to the gui
    /// Here we're going to use a flow layout for the root layout, which holds several other widget layouts
    FlowLayout flow;
+   
    gui.SetRootLayout(&flow);
    
    
@@ -163,10 +164,10 @@ int main(int argc , char** argv) {
    sl2d.SetPreferredSize(280,280);
    sl2d.SetWidgetArea(WidgetArea(BOXAREA(4) , BOXAREA(4) , BOXAREA(4) , sl2d.OuterArea() ) , false);
    
-   flow.Resize(3);
+   flow.Resize(2);
    flow.AddWidget(&cgrid);
    flow.AddWidget(&rgbagrid);
-   flow.AddWidget(&sl2d);
+   //flow.AddWidget(&sl2d);
    
    
    EagleColor c = wc[selected_color];
@@ -268,18 +269,19 @@ int main(int argc , char** argv) {
 void RGBASlider::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
    EagleColor bg = GetColor(BGCOL);
    Rectangle i = InnerArea();
+   float percent = dpercent;
    switch(type) {
    case CSLIDERR :
-      bg = EagleColor(bg.R() , 0 , 0 , 255);
+      bg = EagleColor(percent , 0.0f , 0.0f , 1.00);
       break;
    case CSLIDERG :
-      bg = EagleColor(0 , bg.G() , 0 , 255);
+      bg = EagleColor(0.0f , percent , 0.0f , 1.0f);
       break;
    case CSLIDERB :
-      bg = EagleColor(0 , 0 , bg.B() , 255);
+      bg = EagleColor(0.0f , 0.0f , percent , 1.0f);
       break;
    case CSLIDERA :
-      bg = EagleColor(bg.A() , bg.A() , bg.A() , bg.A());
+      bg = EagleColor(percent,percent,percent,percent);
       break;
    default :
       break;
