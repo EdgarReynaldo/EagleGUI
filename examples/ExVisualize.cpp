@@ -25,14 +25,14 @@ int main(int argc , char** argv) {
    }
    
    
-   int sw = 0;
-   int sh = 0;
+   int sw = 1920;
+   int sh = 1080;
    int ww = 1280;
    int wh = 800;
    int cw = 0;
    int ch = 0;
-   
-   EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , ww , wh , EAGLE_OPENGL | EAGLE_WINDOWED);
+   al_set_new_display_option(ALLEGRO_VSYNC , 0 , ALLEGRO_SUGGEST);
+   EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_DIRECT3D | EAGLE_FULLSCREEN);
    EAGLE_ASSERT(win && win->Valid());
    sw = win->Width();
    sh = win->Height();
@@ -44,15 +44,17 @@ int main(int argc , char** argv) {
    
    
    
-   
+   EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
 //al_create_audio_recorder
 //ALLEGRO_AUDIO_RECORDER *al_create_audio_recorder(size_t fragment_count,
 //   unsigned int samples, unsigned int frequency,
 //   ALLEGRO_AUDIO_DEPTH depth, ALLEGRO_CHANNEL_CONF chan_conf)
-   int frequency = 44100;
-   int fragment_count = 60;/// Buffer one quarter second at 60 hz
-   int samples = 105;// 15 * 8 = 120 *7 = 105
+   int frequency = 96100;
+   int fragment_count = 8;
+   int samples = 2048;// 15 * 8 = 120 *7 = 105 , // 44100/240 = 22050/120 = 11025/60 = 2205/12 = 1102.5/6 = 183~
    double buf_duration = fragment_count*samples/(double)frequency;
+   int frag_index = 0;// up to fragment_count - 1
+   
    
    ALLEGRO_AUDIO_RECORDER* rec = al_create_audio_recorder(fragment_count , samples , frequency , ALLEGRO_AUDIO_DEPTH_INT16 , ALLEGRO_CHANNEL_CONF_2);
    
@@ -88,9 +90,12 @@ int main(int argc , char** argv) {
 ///         for (int i =  (record_index - samples)%storage_size; i < record_index ; i+=2) {
 ///         for (int i = record_index - samples + 4 ; i < record_index ; i += 2) {
 ///         for (int i = record_index/8 + 4 ; i < (record_index/8 + 1)*samples ; i += 2) {
-        for (int i = 4 ; i < storage_size ; i+=4) {
-            double x1 = ((double)(i-2)/storage_size)*sw;
-            double x2 = ((double)i/storage_size)*sw;
+         int sample_index = 0;
+         sample_index = frag_index*samples*4;
+         for (int index = 4 ; index < samples*4 ; index += 4) {
+            int i = index + sample_index;
+            double x1 = (index - 2) / (double)(samples*4)*sw;
+            double x2 = (index) / (double)(samples*4)*sw;
             int16_t l1 = 0;
             int16_t r1 = 0;
             int16_t l2 = 0;
@@ -114,7 +119,9 @@ int main(int argc , char** argv) {
             win->DrawLine(x1 , y3 , x2 , y4 , 1.0 , EagleColor(255,255,255));
             
          }
-         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
+         win->DrawTextString(font , StringPrintF("%d" , frag_index) , 10 , 10 , EagleColor(255,255,255,255) , HALIGN_LEFT , VALIGN_TOP);
+//         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
+         win->DrawTextString(font , StringPrintF("FPS:%3.1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
          win->FlipDisplay();
          redraw = false;
       }
@@ -136,26 +143,7 @@ Since 5.1.1
 See also: al_get_audio_recorder_event
 
 //*/
-      int rcount = 0;
       do {
-         ALLEGRO_EVENT evt;
-         while (al_get_next_event(receiver , &evt)) {
-            if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
-               ++rcount;
-               ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
-               /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
-               for (int i = 0 ; i < 4*revt->samples ; i += 4) {
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+1];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+2];
-                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+3];
-                  record_index = record_index%storage_size;
-               }
-               redraw = true;
-            }
-         }
-         
-         
          EagleEvent ee = a5sys->WaitForSystemEventAndUpdateState();
          if (ee.type == EAGLE_EVENT_TIMER) {
 //            redraw = true;
@@ -165,11 +153,32 @@ See also: al_get_audio_recorder_event
             
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
+         
+         
       } while (!a5sys->UpToDate());
-      
+
+      int rcount = 0;
+      ALLEGRO_EVENT evt;
+      if (al_get_next_event(receiver , &evt)) {
+         if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
+            ++rcount;
+            ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
+            /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
+            for (int i = 0 ; i < 4*revt->samples ; i += 4) {
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+1];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+2];
+               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+3];
+               record_index = record_index%storage_size;
+            }
+            frag_index = (frag_index + 1) % fragment_count;
+            redraw = true;
+         }
+      }
       
       
    }
+   
    
    
    
