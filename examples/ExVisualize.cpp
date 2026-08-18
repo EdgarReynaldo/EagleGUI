@@ -31,7 +31,7 @@ int main(int argc , char** argv) {
    int wh = 800;
    int cw = 0;
    int ch = 0;
-   al_set_new_display_option(ALLEGRO_VSYNC , 0 , ALLEGRO_SUGGEST);
+   al_set_new_display_option(ALLEGRO_VSYNC , 0 , ALLEGRO_REQUIRE);
    EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_DIRECT3D | EAGLE_FULLSCREEN);
    EAGLE_ASSERT(win && win->Valid());
    sw = win->Width();
@@ -81,10 +81,23 @@ int main(int argc , char** argv) {
    int record_index = 0;
    int play_index = 0;
    
+   double clear_time = 0.0;
+   double draw_time = 0.0;
+   double flip_time = 0.0;
+   double frag_time = 0.0;
+   double flips;
+   double clear_time_avg = 0.0;
+   double draw_time_avg = 0.0;
+   double flip_time_avg = 0.0;
+   double frag_time_avg = 0.0;
+   double frag_count = 0.0;
    
    while (!quit) {
       if (redraw) {
+         ProgramTime start(ProgramTime::Now());
          win->Clear();
+         ProgramTime clear(ProgramTime::Now());
+         clear_time += clear - start;
          const double y = sh/2.0;
          /// Just draw the input monitor
 ///         for (int i =  (record_index - samples)%storage_size; i < record_index ; i+=2) {
@@ -122,8 +135,21 @@ int main(int argc , char** argv) {
          win->DrawTextString(font , StringPrintF("%d" , frag_index) , 10 , 10 , EagleColor(255,255,255,255) , HALIGN_LEFT , VALIGN_TOP);
 //         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
          win->DrawTextString(font , StringPrintF("FPS:%3.1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(font , StringPrintF("FLIP=%lf\tDRAW=%lf\tCLEAR=%lf" , flip_time_avg , draw_time_avg , clear_time_avg) , sw/2.0 , sh - 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
+         win->DrawTextString(font , StringPrintF("FRAGTIME=%lf" , frag_time_avg) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
+         ProgramTime draw(ProgramTime::Now());
+         draw_time += draw - clear;
          win->FlipDisplay();
+         flips += 1.0;
+         ProgramTime flip(ProgramTime::Now());
+         flip_time += flip - draw;
          redraw = false;
+         if (flips) {
+            flip_time_avg = flip_time / flips;
+            draw_time_avg = draw_time / flips;
+            clear_time_avg = clear_time / flips;
+         }
+         EagleLog() << StringPrintF("Flip took %lf.\tDraw took %lf.\tClear took %lf.\n" , flip_time_avg , draw_time_avg , clear_time_avg) << std::endl;
       }
       
 /**
@@ -143,7 +169,7 @@ Since 5.1.1
 See also: al_get_audio_recorder_event
 
 //*/
-      do {
+      while (!a5sys->UpToDate()) {
          EagleEvent ee = a5sys->WaitForSystemEventAndUpdateState();
          if (ee.type == EAGLE_EVENT_TIMER) {
 //            redraw = true;
@@ -154,14 +180,15 @@ See also: al_get_audio_recorder_event
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
          
-         
-      } while (!a5sys->UpToDate());
+      }
 
       int rcount = 0;
       ALLEGRO_EVENT evt;
       if (al_get_next_event(receiver , &evt)) {
+         ProgramTime event(ProgramTime::Now());
          if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
             ++rcount;
+            frag_count += 1.0;
             ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
             /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
             for (int i = 0 ; i < 4*revt->samples ; i += 4) {
@@ -173,6 +200,9 @@ See also: al_get_audio_recorder_event
             }
             frag_index = (frag_index + 1) % fragment_count;
             redraw = true;
+            ProgramTime fragment(ProgramTime::Now());
+            frag_time += fragment - event;
+            frag_time_avg = frag_time/frag_count;
          }
       }
       
