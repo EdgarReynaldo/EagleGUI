@@ -31,8 +31,8 @@ int main(int argc , char** argv) {
    int wh = 800;
    int cw = 0;
    int ch = 0;
-   al_set_new_display_option(ALLEGRO_VSYNC , 0 , ALLEGRO_REQUIRE);
-   EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_DIRECT3D | EAGLE_FULLSCREEN);
+   al_set_new_display_option(ALLEGRO_VSYNC , 2 , ALLEGRO_REQUIRE);
+   EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_OPENGL | EAGLE_FULLSCREEN_WINDOW);
    EAGLE_ASSERT(win && win->Valid());
    sw = win->Width();
    sh = win->Height();
@@ -91,6 +91,9 @@ int main(int argc , char** argv) {
    double flip_time_avg = 0.0;
    double frag_time_avg = 0.0;
    double frag_count = 0.0;
+   double event_time = 0.0;
+   double event_time_avg = 0.0;
+   double event_count = 0.0;
    
    while (!quit) {
       if (redraw) {
@@ -135,8 +138,8 @@ int main(int argc , char** argv) {
          win->DrawTextString(font , StringPrintF("%d" , frag_index) , 10 , 10 , EagleColor(255,255,255,255) , HALIGN_LEFT , VALIGN_TOP);
 //         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
          win->DrawTextString(font , StringPrintF("FPS:%3.1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
-         win->DrawTextString(font , StringPrintF("FLIP=%lf\tDRAW=%lf\tCLEAR=%lf" , flip_time_avg , draw_time_avg , clear_time_avg) , sw/2.0 , sh - 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
-         win->DrawTextString(font , StringPrintF("FRAGTIME=%lf" , frag_time_avg) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
+         win->DrawTextString(font , StringPrintF("FLIP=%lf DRAW=%lf CLEAR=%lf" , flip_time_avg , draw_time_avg , clear_time_avg) , sw/2.0 , sh - 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
+         win->DrawTextString(font , StringPrintF("EVTIME=%lf FRAGTIME=%lf" , event_time_avg , frag_time_avg) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
          ProgramTime draw(ProgramTime::Now());
          draw_time += draw - clear;
          win->FlipDisplay();
@@ -169,8 +172,14 @@ Since 5.1.1
 See also: al_get_audio_recorder_event
 
 //*/
+      ProgramTime start2(ProgramTime::Now());
       while (!a5sys->UpToDate()) {
-         EagleEvent ee = a5sys->WaitForSystemEventAndUpdateState();
+         EagleEvent ee = a5sys->GetSystemQueue()->TakeNextEvent(0);
+         ProgramTime mutex1(ProgramTime::Now());
+         event_time += mutex1 - start2;
+         event_count += 1.0;
+         event_time_avg = event_time / event_count;
+         a5sys->GetSystemInput()->HandleInputEvent(ee);
          if (ee.type == EAGLE_EVENT_TIMER) {
 //            redraw = true;
          }
@@ -179,13 +188,17 @@ See also: al_get_audio_recorder_event
             
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
-         
+         start2 = ProgramTime::Now();
       }
 
       int rcount = 0;
       ALLEGRO_EVENT evt;
       if (al_get_next_event(receiver , &evt)) {
+         event_count += 1.0;
          ProgramTime event(ProgramTime::Now());
+         event_time += event - start2;
+         event_time_avg = event_time / event_count;
+         start2 = event;
          if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
             ++rcount;
             frag_count += 1.0;
@@ -205,8 +218,6 @@ See also: al_get_audio_recorder_event
             frag_time_avg = frag_time/frag_count;
          }
       }
-      
-      
    }
    
    

@@ -307,6 +307,7 @@ int main(int argc , char** argv) {
          if (dndrect != BADRECTANGLE) {
             dndwidget->Display(win , 0 , 0);
          }
+         win->DrawTextString(win->DefaultFont() , StringPrintF("(1-9 | SHFT | CTRL) (ENTER)") , 10 , sh - 10 , EagleColor(255,255,255) , HALIGN_LEFT , VALIGN_BOTTOM);
          win->FlipDisplay();
          redraw = false;
       }
