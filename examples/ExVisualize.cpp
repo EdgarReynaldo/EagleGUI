@@ -32,7 +32,8 @@ int main(int argc , char** argv) {
    int cw = 0;
    int ch = 0;
    al_set_new_display_option(ALLEGRO_VSYNC , 2 , ALLEGRO_REQUIRE);
-   EagleGraphicsContext* win = a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_OPENGL | EAGLE_FULLSCREEN_WINDOW);
+   Allegro5GraphicsContext* win = dynamic_cast<Allegro5GraphicsContext*>(a5sys->CreateGraphicsContext("VizzuaLazer" , sw , sh , EAGLE_OPENGL | EAGLE_FULLSCREEN_WINDOW));
+   int vsync = al_get_display_option(win->AllegroDisplay() , ALLEGRO_VSYNC);
    EAGLE_ASSERT(win && win->Valid());
    sw = win->Width();
    sh = win->Height();
@@ -42,7 +43,7 @@ int main(int argc , char** argv) {
    win->Clear();
    win->FlipDisplay();
    
-   
+   EagleLog() << StringPrintF("VSYNC IS %s (%d)" , (vsync == 2)?"OFF":"ON" , vsync) << std::endl;
    
    EagleFont* font = win->GetFont("Data/Fonts/Verdana.ttf" , -20);
 //al_create_audio_recorder
@@ -70,7 +71,7 @@ int main(int argc , char** argv) {
    
    al_start_audio_recorder(rec);
    
-   a5sys->GetSystemTimer()->Start();
+//   a5sys->GetSystemTimer()->Start();
    
    bool quit = false;
    bool redraw = true;
@@ -95,9 +96,19 @@ int main(int argc , char** argv) {
    double event_time_avg = 0.0;
    double event_count = 0.0;
    
+   double frames = 0.0;
+   std::deque<double> frame_array;
+   double frametime = 0.0;
+   double frametotal = 0.0;
+   
+   double updatecount = 0.0;
+   double updatetime = 0.0;
+   double updateavg = 0.0;
+   
    while (!quit) {
       if (redraw) {
-         ProgramTime start(ProgramTime::Now());
+         ProgramTime frame_time_start(ProgramTime::Now());
+         ProgramTime start = frame_time_start;
          win->Clear();
          ProgramTime clear(ProgramTime::Now());
          clear_time += clear - start;
@@ -137,9 +148,10 @@ int main(int argc , char** argv) {
          }
          win->DrawTextString(font , StringPrintF("%d" , frag_index) , 10 , 10 , EagleColor(255,255,255,255) , HALIGN_LEFT , VALIGN_TOP);
 //         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
-         win->DrawTextString(font , StringPrintF("FPS:%3.1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(font , StringPrintF("FPS:%4 .1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(font , StringPrintF("FPS:%4 .1f" , frames/frametotal) , cw - 10 , 40 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
          win->DrawTextString(font , StringPrintF("FLIP=%lf DRAW=%lf CLEAR=%lf" , flip_time_avg , draw_time_avg , clear_time_avg) , sw/2.0 , sh - 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
-         win->DrawTextString(font , StringPrintF("EVTIME=%lf FRAGTIME=%lf" , event_time_avg , frag_time_avg) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
+         win->DrawTextString(font , StringPrintF("EVTIME=%lf FRAGTIME=%lf UPDATE=%lf" , event_time_avg , frag_time_avg , updatetime) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
          ProgramTime draw(ProgramTime::Now());
          draw_time += draw - clear;
          win->FlipDisplay();
@@ -152,7 +164,17 @@ int main(int argc , char** argv) {
             draw_time_avg = draw_time / flips;
             clear_time_avg = clear_time / flips;
          }
-         EagleLog() << StringPrintF("Flip took %lf.\tDraw took %lf.\tClear took %lf.\n" , flip_time_avg , draw_time_avg , clear_time_avg) << std::endl;
+         ProgramTime frame_time_stop(ProgramTime::Now());
+         frames += 1.0;
+         frametime = frame_time_stop - frame_time_start;
+         frametotal += frametime;
+         frame_array.push_back(frametime);
+         if (frame_array.size() > 120) {
+            frames = 120.0;
+            frametotal -= frame_array.front();
+            frame_array.pop_front();
+         }
+//         EagleLog() << StringPrintF("Flip took %lf.\tDraw took %lf.\tClear took %lf.\n" , flip_time_avg , draw_time_avg , clear_time_avg) << std::endl;
       }
       
 /**
@@ -172,14 +194,51 @@ Since 5.1.1
 See also: al_get_audio_recorder_event
 
 //*/
+      EagleEvent ee;
       ProgramTime start2(ProgramTime::Now());
-      while (!a5sys->UpToDate()) {
-         EagleEvent ee = a5sys->GetSystemQueue()->TakeNextEvent(0);
-         ProgramTime mutex1(ProgramTime::Now());
+      ProgramTime update(ProgramTime::Now());
+      ProgramTime mutex1 = start2;
+      while (!redraw) {
+         start2 = ProgramTime::Now();
+         int rcount = 0;
+         ALLEGRO_EVENT evt;
+         if (al_get_next_event(receiver , &evt)) {
+            event_count += 1.0;
+            ProgramTime event(ProgramTime::Now());
+            event_time += event - start2;
+            event_time_avg = event_time / event_count;
+
+            start2 = event;
+            if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
+               ++rcount;
+               frag_count += 1.0;
+               ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
+               /// Add fragment to buffer. We just got at least one fragment of 1/50 second a piece
+               for (int i = 0 ; i < 4*revt->samples ; i += 4) {
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+1];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+2];
+                  audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+3];
+                  record_index = record_index%storage_size;
+               }
+               frag_index = (frag_index + 1) % fragment_count;
+               redraw = true;
+               ProgramTime fragment(ProgramTime::Now());
+               frag_time += fragment - event;
+               frag_time_avg = frag_time/frag_count;
+            }
+         }
+         ee = a5sys->GetSystemQueue()->TakeNextEvent(0);
+         if (ee.type == EAGLE_EVENT_NONE) {break;}
+         mutex1 = ProgramTime::Now();
          event_time += mutex1 - start2;
          event_count += 1.0;
          event_time_avg = event_time / event_count;
-         a5sys->GetSystemInput()->HandleInputEvent(ee);
+         a5sys->UpdateSystemState();
+         update = ProgramTime::Now();
+         updatetime += update - mutex1;
+         updatecount += 1.0;
+         updateavg = updatecount / updatetime;
          if (ee.type == EAGLE_EVENT_TIMER) {
 //            redraw = true;
          }
@@ -188,35 +247,6 @@ See also: al_get_audio_recorder_event
             
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
-         start2 = ProgramTime::Now();
-      }
-
-      int rcount = 0;
-      ALLEGRO_EVENT evt;
-      if (al_get_next_event(receiver , &evt)) {
-         event_count += 1.0;
-         ProgramTime event(ProgramTime::Now());
-         event_time += event - start2;
-         event_time_avg = event_time / event_count;
-         start2 = event;
-         if (evt.type == ALLEGRO_EVENT_AUDIO_RECORDER_FRAGMENT) {
-            ++rcount;
-            frag_count += 1.0;
-            ALLEGRO_AUDIO_RECORDER_EVENT* revt = al_get_audio_recorder_event(&evt);
-            /// Add fragment to buffer. We just got at least one fragment of 1/4 second a piece
-            for (int i = 0 ; i < 4*revt->samples ; i += 4) {
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+1];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+2];
-               audio_storage[(record_index++)%storage_size] = ((int8_t*)(revt->buffer))[i+3];
-               record_index = record_index%storage_size;
-            }
-            frag_index = (frag_index + 1) % fragment_count;
-            redraw = true;
-            ProgramTime fragment(ProgramTime::Now());
-            frag_time += fragment - event;
-            frag_time_avg = frag_time/frag_count;
-         }
       }
    }
    
@@ -230,6 +260,6 @@ See also: al_get_audio_recorder_event
    
    al_destroy_audio_recorder(rec);
    
-   
+   EagleLog() << StringPrintF("Update average = %.8f" , updatetime / updatecount) << std::endl;
    return 0;
 }

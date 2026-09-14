@@ -27,7 +27,7 @@
 
 
 
-#include <list>
+#include <deque>
 #include <string>
 #include <map>
 //#include <vector>
@@ -253,12 +253,12 @@ protected :
 
    MousePointerManager* mp_manager;/// Derived class is responsible for instantiating this object, b/c a virtual creation function
                                    /// cannot be called in a base class constructor
-   float maxframes;
-   float numframes;
-   float total_frame_time;
-   std::list<float> frame_times;
-   float previoustime;
-   float currenttime;
+   int maxframes;
+   int numframes;
+   double total_frame_time;
+   std::deque<double> frame_times;
+   double previoustime;
+   double currenttime;
 
    FontManager* font_manager;
    
@@ -283,7 +283,7 @@ public :
    void CompleteDrawing(EagleThread* draw_thread);///< Only necessary for multi-threaded programs, will unlock the drawing mutex
 
 
-   float GetFPS();///< Get the floating point frames per second
+   double GetFPS();///< Get the floating point frames per second
 
    virtual EagleSystem* GetSystem()=0;///< Get the system that owns us
 

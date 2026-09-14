@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2024+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -31,6 +31,7 @@
 #include "Eagle/Font.hpp"
 #include "Eagle/FontManager.hpp"
 #include "Eagle/Mesh.hpp"
+#include "Eagle/Time.hpp"
 #include "Eagle/Transforms.hpp"
 
 #include <vector>
@@ -293,12 +294,12 @@ EagleGraphicsContext::EagleGraphicsContext(std::string objclass , std::string ob
       imageset(),
       npset(),
       mp_manager(0),
-      maxframes(60),
-      numframes(0.0f),
-      total_frame_time(0.0f),
+      maxframes(120),
+      numframes(0),
+      total_frame_time(0.0),
       frame_times(),
-      previoustime(0.0f),
-      currenttime(0.0f),
+      previoustime(0.0),
+      currenttime(0.0),
       font_manager(0),
       our_thread(0),
       window_mutex(0),
@@ -321,11 +322,11 @@ void EagleGraphicsContext::CompleteDrawing(EagleThread* draw_thread) {
 
 
 
-float EagleGraphicsContext::GetFPS() {
-   if (total_frame_time <= 0.0f) {
-      return 0.0f;
+double EagleGraphicsContext::GetFPS() {
+   if (total_frame_time <= 0.0) {
+      return 0.0;
    }
-   return numframes/total_frame_time;
+   return numframes / total_frame_time;
 }
 
 
@@ -610,20 +611,23 @@ void EagleGraphicsContext::DrawGuiTextString(EagleFont* font , std::string str ,
 void EagleGraphicsContext::FlipDisplay() {
 
    previoustime = currenttime;
-   currenttime = GetSystem()->GetProgramTime();
-   float deltatime = currenttime - previoustime;
-   total_frame_time += deltatime;
+   PrivateFlipDisplay();
+   currenttime = ProgramTime::Now();
 
    numframes++;
+   double deltatime = currenttime - previoustime;
+   total_frame_time += deltatime;
    frame_times.push_back(deltatime);
    if (numframes > maxframes) {
       numframes = maxframes;
-      float oldtime = frame_times.front();
-      total_frame_time -= oldtime;
       frame_times.pop_front();
+      total_frame_time = 0.0;
+      for (unsigned int i = 0 ; i < frame_times.size() ; ++i) {
+         total_frame_time += frame_times[i];
+      }
    }
+   currenttime = ProgramTime::Now();
 
-   PrivateFlipDisplay();
 
 }
 
