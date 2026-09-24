@@ -250,14 +250,7 @@ See also: al_get_audio_recorder_event
       }
    }
    
-   
-   
-   
    al_stop_audio_recorder(rec);
-   
-   
-   
-   
    al_destroy_audio_recorder(rec);
    
    EagleLog() << StringPrintF("Update average = %.8f" , updatetime / updatecount) << std::endl;
