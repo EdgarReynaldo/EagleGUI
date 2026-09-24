@@ -626,9 +626,6 @@ void EagleGraphicsContext::FlipDisplay() {
          total_frame_time += frame_times[i];
       }
    }
-   currenttime = ProgramTime::Now();
-
-
 }
 
 
