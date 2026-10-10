@@ -47,6 +47,28 @@ void SetSliders(RGBASlider* slarray4 , EagleColor c);
 
 
 
+class TestWidget : public WidgetBase {
+protected :
+   EagleColor ourcolor;
+public :
+   TestWidget();
+   TestWidget() :
+         ourcolor()
+   {
+   
+   }
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
+   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+      InnerArea().Fill(win , GetColor(BGCOL));
+      Rectangle r(InnerArea().X() + InnerArea().W()/4 , InnerArea().Y() + InnerArea().H()/4 , InnerArea().W()/2 , InnerArea().H()/2);
+      r.Fill(win , ourcolor);
+   }
+};
+
+
+
+
+
 int main(int argc , char** argv) {
    
    (void)argc;
@@ -172,6 +194,14 @@ int main(int argc , char** argv) {
    
    EagleColor c = wc[selected_color];
    SetSliders(rgbaslider , c);
+   
+   
+   TestWidget testee;
+   
+   WidgetMover wmover("Offscreen control");
+   wmover.WhiteList(&testee);
+   
+   
    
    /// If we want to get events from our gui we have two options :
    /// 1 : Have the EagleEventHandler queue we're using listen to the GUI, OR
