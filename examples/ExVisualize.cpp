@@ -104,8 +104,14 @@ int main(int argc , char** argv) {
    double updatecount = 0.0;
    double updatetime = 0.0;
    double updateavg = 0.0;
-   
+
+   double loop_total = 0.0;
+   int loop_count = 0;
+   double loop_max = 0.0;
+      
+      
    while (!quit) {
+      ProgramTime loop_start(ProgramTime::Now());
       if (redraw) {
          ProgramTime frame_time_start(ProgramTime::Now());
          ProgramTime start = frame_time_start;
@@ -248,11 +254,21 @@ See also: al_get_audio_recorder_event
          }
          if (ee.type == EAGLE_EVENT_DISPLAY_CLOSE) {quit = true;}
       }
+      ProgramTime loop_stop(ProgramTime::Now());
+      double dl = (double)(loop_stop - loop_start);
+      if (dl > loop_max) {loop_max = dl;}
+      if (dl > 0.001) {
+         loop_total += dl;
+         loop_count++;
+      }
    }
+   
    
    al_stop_audio_recorder(rec);
    al_destroy_audio_recorder(rec);
    
    EagleLog() << StringPrintF("Update average = %.8f" , updatetime / updatecount) << std::endl;
+   EagleLog() << "Average loop duration " << ((loop_total != 0.0)?loop_total:1.0)/(double)loop_count << std::endl;
+   EagleLog() << "Loop max : " << loop_max << std::endl;
    return 0;
 }
