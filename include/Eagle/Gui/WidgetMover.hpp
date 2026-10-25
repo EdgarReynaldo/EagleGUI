@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -100,8 +100,13 @@ public :
          
    void SetAbilities(bool can_move , bool can_size);///< Whether to allow moving or sizing. Both are true to begin with.
    void SetHotKey(InputGroup ig);///< Set the hot key for activation of the widget mover
-   void WhiteList(WidgetBase* widget);///< Add a widget to the whitelist
-   void BlackList(WidgetBase* widget);///< Add a widget to the blacklist
+   void WhiteList(WidgetBase* widget);///< Add a widget to the whitelist, will display movement and sizing icons
+   void BlackList(WidgetBase* widget);///< Add a widget to the blacklist, will not show movement or sizing icons for this widget on the blacklist
+   void ActivateMovement();///< Activate widget movement, allow the mover to display mouse icons and move or resize them.
+   void DeactivateMovement();///< Deactive movement of widgets by the mover
+   void SetMovement(bool activated);///< Change whether the mover is currently allowed to move widgets
+   void ToggleMovement();///< Default is inactive
+   
    
    WidgetBase* GetMoveWidget() {return mwidget;}///< The widget currently being moved
 };

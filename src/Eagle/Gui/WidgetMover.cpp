@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -28,11 +28,8 @@ const unsigned int TOPIC_WIDGET_MOVER = NextFreeTopicId();
 
 
 int WidgetMover::PrivateHandleEvent(EagleEvent e) {
-   if (e.type == EAGLE_EVENT_MOUSE_BUTTON_DOWN) {
-      EagleInfo() << "Breakpoint" << std::endl;/// Breakpoint, remove
-   }
    if (hotkey) {
-      active = !active;
+      ToggleMovement();
       if (!active) {/// Release the mouse pointer if we've got it
          if (macquired) {
             if (RootHandler()) {
@@ -42,18 +39,6 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             }
          }
          return DIALOG_INPUT_USED;
-      }
-      else {
-            /// TODO This doesn't work for some reason
-         e.type = EAGLE_EVENT_MOUSE_AXES;
-         e.mouse.x = mouse_x;
-         e.mouse.y = mouse_y;
-         e.mouse.button = 0;
-         e.mouse.dx = 0;
-         e.mouse.dy = 0;
-         e.mouse.dw = 0;
-         e.mouse.dz = 0;
-         /// Let this event through so the user can see the mouse pointer change when activated and over a margin or border of a whitelisted widget
       }
    }
    
@@ -76,6 +61,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
    if (e.type == EAGLE_EVENT_MOUSE_AXES) {
       /// TODO : FIXME : This doesn't work for the root gui
       if (moving) {
+         EagleLog() << "Moving event" << std::endl;
          Rectangle newarea = original_area.OuterArea();
          newarea.MoveBy(mdx , mdy);
          /// Emit a MOVING event
@@ -84,8 +70,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
          e2.widget.from = this;
          e2.widget.topic = TOPIC_WIDGET_MOVER;
          e2.widget.msgs = WIDGET_MOVER_MOVING;
-         dnd.dropx = newarea.X();
          dnd.dropy = newarea.Y();
+         dnd.dropx = newarea.X();
          dnd.dropw = newarea.W();
          dnd.droph = newarea.H();
          e2.widget.dnd = dnd;
@@ -93,6 +79,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
 ///         mwidget->SetWidgetArea(newarea , true);
       }
       else if (sizing) {
+         EagleLog() << "Sizing widget" << std::endl;
          Rectangle oldarea = original_area.OuterArea();
          Rectangle newarea = oldarea;
          if (anchorw || anchorh) {
@@ -172,8 +159,8 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
             CELL_AREA bcell = abs_area.BorderNP().GetCellArea(mabs.X() , mabs.Y());
             
             EAGLE_DEBUG(
-               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
-               EagleInfo() << "area = " << abs_area << std::endl;
+//               EagleInfo() << "mcell = " << mcell << " , bcell = " << bcell << " , mabsxy = " << mabs.X() << "," << mabs.Y() << std::endl;
+//               EagleInfo() << "area = " << abs_area << std::endl;
             );
             
             if (mcell != CELL_AREA_OUTSIDE) {
@@ -253,6 +240,7 @@ int WidgetMover::PrivateHandleEvent(EagleEvent e) {
        (e.mouse.button == 1) && /// only if LMB is pressed
        (!moving && !sizing)) /// so we don't interrupt ourselves
    {
+      EagleLog() << "Widget mover received mouse button down" << std::endl;
       mdxtotal = 0;
       mdytotal = 0;
       original_area = mwidget->GetWidgetArea();
@@ -414,6 +402,30 @@ void WidgetMover::BlackList(WidgetBase* widget) {
    /// Remove from whitelist
    if (wlist.find(widget) != wlist.end()) {wlist.erase(wlist.find(widget));}
 }
+
+
+void WidgetMover::ActivateMovement() {
+   SetMovement(true);
+}
+
+
+
+void WidgetMover::DeactivateMovement() {
+   SetMovement(false);
+}
+
+
+
+void WidgetMover::SetMovement(bool activated) {
+   active = activated;
+}
+
+
+
+void WidgetMover::ToggleMovement() {
+   SetMovement(!active);
+}
+
 
 
 

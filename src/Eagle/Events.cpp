@@ -12,7 +12,7 @@
  *
  *    Eagle Agile Gui Library and Extensions
  *
- *    Copyright 2009-2021+ by Edgar Reynaldo
+ *    Copyright 2009-2026+ by Edgar Reynaldo
  *
  *    See EagleLicense.txt for allowed uses of this library.
  *
@@ -26,7 +26,7 @@
 #include "Eagle/System.hpp"
 #include "Eagle/Time.hpp"
 #include "Eagle/Gui/WidgetBase.hpp"
-
+#include "Eagle/Gui/WidgetMover.hpp"
 #include <memory>
 #include <cstring>
 
@@ -75,6 +75,7 @@ std::string EagleEventName(int event_num) {
    else if (n == EAGLE_EVENT_ANIMATION_LOOP_COMPLETE){s = "EAGLE_EVENT_ANIMATION_LOOP_COMPLETE";}
    else if (n == EAGLE_EVENT_ANIMATION_COMPLETE)     {s = "EAGLE_EVENT_ANIMATION_COMPLETE";}
    else if (n == EAGLE_EVENT_WIDGET)                 {s = "EAGLE_EVENT_WIDGET";}
+   else if (n == EAGLE_EVENT_WIDGET_DRAG_AND_DROP)   {s = "EAGLE_EVENT_WIDGET_DRAG_AND_DROP";}
    else if (n == EAGLE_EVENT_NETWORK_CONNECT)        {s = "EAGLE_EVENT_NETWORK_CONNECT";}
    else if (n == EAGLE_EVENT_NETWORK_DISCONNECT)     {s = "EAGLE_EVENT_NETWORK_DISCONNECT";}
    else if (n == EAGLE_EVENT_NETWORK_RECV_MSG)       {s = "EAGLE_EVENT_NETWORK_RECV_MSG";}
@@ -242,9 +243,9 @@ EAGLE_EVENT_GROUP_TYPE EagleEventGroupType(EagleEvent e) {
 
 EagleEvent MakeEagleEvent(WidgetMsg msg) {
    EagleEvent e;
+   e.type = EAGLE_EVENT_WIDGET;
    e.source = msg.From();
    e.timestamp = EagleSystem::GetProgramTime();
-   e.type = EAGLE_EVENT_WIDGET;
    e.widget.from = msg.from;
    e.widget.topic = msg.topic;
    e.widget.msgs = msg.msgs;

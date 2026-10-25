@@ -246,6 +246,7 @@ public :
 
    void SetWidgetArea(WIDGETAREA area , bool notify_layout = true);///< Totally overwrites area if layout allows
    void SetWidgetArea(Rectangle oarea , bool notify_layout = true);///< Preserves CSS box areas as best as possible
+   void SetCSSBoxes(BOXAREA margin , BOXAREA border , BOXAREA padding , bool expand);///< Set the outer css box areas
    
    void SetWidgetFlags(WidgetFlags flags);///< Overwrites the widget's flags
    void SetHoverState(bool hover);///< Sets the hover state to the value of hover
