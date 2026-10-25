@@ -48,21 +48,12 @@ void SetSliders(RGBASlider* slarray4 , EagleColor c);
 
 
 class TestWidget : public WidgetBase {
-protected :
-   EagleColor ourcolor;
 public :
-   TestWidget();
-   TestWidget() :
-         ourcolor()
-   {
-   
-   }
+   EagleColor ourcolor;
+
    virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos);
-   virtual void PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
-      InnerArea().Fill(win , GetColor(BGCOL));
-      Rectangle r(InnerArea().X() + InnerArea().W()/4 , InnerArea().Y() + InnerArea().H()/4 , InnerArea().W()/2 , InnerArea().H()/2);
-      r.Fill(win , ourcolor);
-   }
+
+   TestWidget();
 };
 
 
@@ -119,7 +110,7 @@ int main(int argc , char** argv) {
    EAGLE_ASSERT(gfont);
    
    /// To handle all our widgets, we need a WidgetHandler
-   WidgetHandler gui(win);
+   WidgetHandler gui(win , "WidgetHandler" , "NemoGUI");
    gui.SetupBuffer(sw , sh , win);
    
    /// Since a WidgetHandler is derived from WidgetBase, we can use all our widget functions on our gui
@@ -134,12 +125,21 @@ int main(int argc , char** argv) {
    /// Now that we've finished setting our colors we assign them back to the gui widget
    gui.SetWidgetColorset(swc);
    
+   TestWidget testwidget;
+   testwidget.SetWidgetArea(WIDGETAREA(Rectangle(sw/2 - 40 , sh/2 - 40 , 80 , 80),BOXAREA(4) , BOXAREA(6) , BOXAREA(8)));
+   testwidget.SetPreferredSize(100,100);
+   
+   
+   
    /// A gui comes with a dumb root layout. If you want to position everything manually, this is the way.
    /// However, setting the root layout will allow you to position all widgets added to the gui
    /// Here we're going to use a flow layout for the root layout, which holds several other widget layouts
-   FlowLayout flow;
+   FlowLayout flow("FlowLayout" , "root flow layout");
    
+   flow.SetWidgetArea(WIDGETAREA(Rectangle(0,0,sw,sh) , BOXAREA(10),BOXAREA(10),BOXAREA(4)),false);
    gui.SetRootLayout(&flow);
+   
+   
    
    
    flow.SetFlowDirection(FLOW_FAVOR_HORIZONTAL);/// can be FLOW_FAVOR_VERTICAL or FLOW_FAVOR_HORIZONTAL
@@ -186,21 +186,28 @@ int main(int argc , char** argv) {
    sl2d.SetPreferredSize(280,280);
    sl2d.SetWidgetArea(WidgetArea(BOXAREA(4) , BOXAREA(4) , BOXAREA(4) , sl2d.OuterArea() ) , false);
    
-   flow.Resize(2);
+   flow.Resize(4);
    flow.AddWidget(&cgrid);
    flow.AddWidget(&rgbagrid);
    //flow.AddWidget(&sl2d);
-   
+   testwidget.SetPreferredSize(80 , 80);
+   flow.AddWidget(&testwidget);
    
    EagleColor c = wc[selected_color];
    SetSliders(rgbaslider , c);
    
    
-   TestWidget testee;
+   
    
    WidgetMover wmover("Offscreen control");
-   wmover.WhiteList(&testee);
+//   wmover.WhiteList(&testwidget);
+//   wmover.WhiteList(&flow);
+   wmover.SetPreferredSize(1,1);
+   wmover.SetAbilities(true , true);
+   wmover.SetMovement(true);
+   flow.AddWidget(&wmover);
    
+   gui.BringToFront(&wmover);
    
    
    /// If we want to get events from our gui we have two options :
@@ -208,12 +215,8 @@ int main(int argc , char** argv) {
    /// 2 : Always listen for WidgetMsgs from the GUI. They come in response to handling events passed to them by the gui
    /// The best option is 1. using the system queue for a listener. The reasoning behind it is because the system already listens
    /// to everything that emits events system wide and all we have to do is wait for it to nab an event.
+   sys->GetSystemQueue()->ListenTo(&wmover);/// In addition, all messages from any widgets handled by this gui will pass up the chain
    sys->GetSystemQueue()->ListenTo(&gui);/// In addition, all messages from any widgets handled by this gui will pass up the chain
-   /// Through the gui parent child structure.
-   
-   
-   /// For testing and laziness only.
-   gui.SetFullRedraw();
    
    bool redraw = true;
    bool quit = false;
@@ -221,15 +224,15 @@ int main(int argc , char** argv) {
    
    while (!quit) {
       if (redraw) {
+         testwidget.ourcolor = GetSliderColor(rgbaslider);
+         testwidget.SetBgRedrawFlag();
          win->Clear();
          gui.Display(win , 0 , 0);
-         EagleColor c = GetSliderColor(rgbaslider);
-         win->DrawFilledRectangle(Rectangle(sw/2 , sh/2 , 60 , 60) , c);
-         std::string s = StringPrintF("%i,%i,%i,%i" , rgbaslider[0].GetPrecisionValue(),
-                                                      rgbaslider[1].GetPrecisionValue(),
-                                                      rgbaslider[2].GetPrecisionValue(),
-                                                      rgbaslider[3].GetPrecisionValue());
-         win->DrawTextString(gfont , s , 10 , sh/2 , c , HALIGN_LEFT , VALIGN_CENTER);
+//         std::string s = StringPrintF("%i,%i,%i,%i" , rgbaslider[0].GetPrecisionValue(),
+//                                                      rgbaslider[1].GetPrecisionValue(),
+//                                                      rgbaslider[2].GetPrecisionValue(),
+//                                                      rgbaslider[3].GetPrecisionValue());
+//         win->DrawTextString(gfont , s , 10 , sh/2 , testwidget.ourcolor , HALIGN_LEFT , VALIGN_CENTER);
          win->FlipDisplay();
          redraw = false;
       }
@@ -239,6 +242,15 @@ int main(int argc , char** argv) {
          
          if ((e.type != EAGLE_EVENT_TIMER) && (e.type != EAGLE_EVENT_MOUSE_AXES)) {
             EagleLog() << EagleEventName(e.type) << std::endl;
+         }
+         if (e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP) {
+            if (e.widget.topic == TOPIC_WIDGET_MOVER) {
+               if (e.widget.msgs == WIDGET_MOVER_SIZING) {
+                  EagleLog() << "Sizing" << std::endl;
+                  e.widget.dnd.mwidget->SetWidgetArea(Rectangle(e.widget.dnd.dropx , e.widget.dnd.dropy , e.widget.dnd.dropw , e.widget.dnd.droph) , true);
+                  gui.SetRedrawFlag();
+               }
+            }
          }
          if (e.type == EAGLE_EVENT_WIDGET) {
             if (e.widget.topic == TOPIC_BUTTON_WIDGET) {
@@ -288,7 +300,7 @@ int main(int argc , char** argv) {
                quit = true;
             }
          }
-      } while (!sys->UpToDate());
+      } while (sys->GetSystemQueue()->HasEvent());
    }
    return 0;
 }
@@ -358,6 +370,19 @@ void SetSliders(RGBASlider* slarray4 , EagleColor c) {
 
 
 
+TestWidget::TestWidget() :
+      WidgetBase("TestWidget" , "test widget"),
+      ourcolor()
+{
+}
+
+
+
+void TestWidget::PrivateDisplay(EagleGraphicsContext* win , int xpos , int ypos) {
+   InnerArea().Fill(win , GetColor(BGCOL));
+   Rectangle r(InnerArea().X() + InnerArea().W()/4 , InnerArea().Y() + InnerArea().H()/4 , InnerArea().W()/2 , InnerArea().H()/2);
+   r.Fill(win , ourcolor);
+}
 
 
 

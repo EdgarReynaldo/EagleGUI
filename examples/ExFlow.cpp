@@ -60,6 +60,8 @@ int main(int argc , char** argv) {
    
    RelativeLayout rl("RelativeLayout" , "RLayout");
    
+   rl.SetZOrder(ZORDER_PRIORITY_LOWEST);
+   
    gui.SetRootLayout(&rl);
    
    rl.Resize(9);
@@ -174,6 +176,7 @@ int main(int argc , char** argv) {
       SHAREDOBJECT<WidgetColorset> wc = rgrids[i].GetWidgetColorset();
       WidgetArea wa = rgrids[i].GetWidgetArea();
       wa.SetBoxesContract(2,2,2);
+      rgrids[i].SetZOrder(ZORDER_PRIORITY_LOW);
       rgrids[i].SetWidgetArea(wa , false);
       rgrids[i].SetVisibleState(true);
       rgrids[i].GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
