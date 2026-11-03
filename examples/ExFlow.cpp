@@ -86,9 +86,9 @@ int main(int argc , char** argv) {
    hbox.SetWidgetColorset(wcol);
    flowbox.SetWidgetColorset(wcol);
    
-   hbox.SetWidgetArea(hbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
-   vbox.SetWidgetArea(vbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
-   flowbox.SetWidgetArea(flowbox.GetWidgetArea().SetBoxesContract(2,4,4) , false);
+   hbox.SetWidgetArea(hbox.GetWidgetArea().SetBoxesContract(4,4,2) , false);
+   vbox.SetWidgetArea(vbox.GetWidgetArea().SetBoxesContract(4,4,2) , false);
+   flowbox.SetWidgetArea(flowbox.GetWidgetArea().SetBoxesContract(4,4,2) , false);
    
    hbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
    vbox.GetWidgetPainter()->bgtype = BG_AREA_EMPTY;
@@ -419,11 +419,12 @@ int main(int argc , char** argv) {
          if (e.type == EAGLE_EVENT_WIDGET_DRAG_AND_DROP) {
             DRAG_AND_DROP_DATA dnd = e.widget.dnd;
             EagleInfo() << "DND event" << std::endl;
-            if (e.widget.topic == TOPIC_WIDGET_MOVER && e.widget.msgs == WIDGET_MOVER_SIZING) {
-               EagleInfo() << "Sizing event" << std::endl;
+            if (e.widget.topic == TOPIC_WIDGET_MOVER) {/// && e.widget.msgs == WIDGET_MOVER_SIZING) {
                dndrect = Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph);
                dndwidget = dnd.mwidget;
-               
+               if (dndwidget) {
+                  dndwidget->SetWidgetArea(dndrect , true);
+               }
             }
             else if (e.widget.topic == TOPIC_WIDGET_MOVER && e.widget.msgs == WIDGET_MOVER_DROP) {
                dnd.mwidget->SetWidgetArea(Rectangle(dnd.dropx , dnd.dropy , dnd.dropw , dnd.droph));
