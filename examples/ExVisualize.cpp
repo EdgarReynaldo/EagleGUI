@@ -96,6 +96,10 @@ int main(int argc , char** argv) {
    double event_time_avg = 0.0;
    double event_count = 0.0;
    
+   double since_last_frag = 0.0;
+   double last_frag = 0.0;
+   
+   
    double frames = 0.0;
    std::deque<double> frame_array;
    double frametime = 0.0;
@@ -156,8 +160,13 @@ int main(int argc , char** argv) {
 //         win->DrawLine(sw*record_index/(double)storage_size , 0 , sw*record_index/(double)storage_size , sh , 1.0 , EagleColor(0,255,0,255));
          win->DrawTextString(font , StringPrintF("FPS:%4 .1f" , win->GetFPS()) , cw - 10 , 10 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
          win->DrawTextString(font , StringPrintF("FPS:%4 .1f" , frames/frametotal) , cw - 10 , 40 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
+         win->DrawTextString(font , StringPrintF("FPS:%4 .1f" , 1.0/frametime) , cw - 10 , 40 , EagleColor(0,255,0,255) , HALIGN_RIGHT , VALIGN_TOP);
          win->DrawTextString(font , StringPrintF("FLIP=%lf DRAW=%lf CLEAR=%lf" , flip_time_avg , draw_time_avg , clear_time_avg) , sw/2.0 , sh - 50 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
          win->DrawTextString(font , StringPrintF("EVTIME=%lf FRAGTIME=%lf UPDATE=%lf" , event_time_avg , frag_time_avg , updatetime) , sw/2.0 , sh - 10 , GetColorByName("white") , HALIGN_CENTER , VALIGN_BOTTOM);
+         if (loop_count) {
+            win->DrawTextString(font , StringPrintF("LOOP %d LOOPAVE %lf" , loop_count , loop_total/(double)loop_count) , sw/2.0 , sh - 70 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
+            win->DrawTextString(font , StringPrintF("LASTFRAG %lf" , since_last_frag) , sw/2.0 , sh - 90 , EagleColor(255,255,255) , HALIGN_CENTER , VALIGN_BOTTOM);
+         }
          ProgramTime draw(ProgramTime::Now());
          draw_time += draw - clear;
          win->FlipDisplay();
@@ -230,6 +239,8 @@ See also: al_get_audio_recorder_event
                frag_index = (frag_index + 1) % fragment_count;
                redraw = true;
                ProgramTime fragment(ProgramTime::Now());
+               since_last_frag = (double)fragment - last_frag;
+               last_frag = (double)fragment;
                frag_time += fragment - event;
                frag_time_avg = frag_time/frag_count;
             }
