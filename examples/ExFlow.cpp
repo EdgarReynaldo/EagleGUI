@@ -69,6 +69,11 @@ int main(int argc , char** argv) {
    HBoxLayout hbox("HBOXLayout" , "hbox");
    VBoxLayout vbox("VBOXLayout" , "vbox");
    FlowLayout flowbox("FLOWLayout" , "flow");
+   
+   hbox.SetZOrder(ZORDER_PRIORITY_LOW);
+   vbox.SetZOrder(ZORDER_PRIORITY_LOW);
+   flowbox.SetZOrder(ZORDER_PRIORITY_LOW);
+   
    hbox.Resize(9);
    vbox.Resize(9);
    flowbox.Resize(9);
