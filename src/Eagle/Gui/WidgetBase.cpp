@@ -669,8 +669,8 @@ int WidgetBase::AbsMinHeight() const {
 
 
 void WidgetBase::SetPreferredSize(int pw , int ph) {
-   if (pw < 0) {prefw = 0;} else {prefw = pw;}
-   if (ph < 0) {prefh = 0;} else {prefh = ph;}
+   if (pw < 0) {prefw = -1;} else {prefw = pw;}
+   if (ph < 0) {prefh = -1;} else {prefh = ph;}
 }
 
 
